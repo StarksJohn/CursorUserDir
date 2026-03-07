@@ -1,0 +1,16 @@
+{
+  "name": "chrome_execute_script",
+  "description": "Execute JavaScript in the current page and return the result",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "script": {
+        "type": "string",
+        "description": "JavaScript code to execute"
+      }
+    },
+    "required": [
+      "script"
+    ]
+  }
+}

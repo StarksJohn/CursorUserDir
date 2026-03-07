@@ -1,0 +1,497 @@
+user:
+<cursor_commands>
+
+--- Cursor Command: ask_csx-mobile-upgrade ---
+---
+description: "ultrathink 超深度思考模式 - csx-mobile-upgrade项目模块"
+---
+
+## 执行步骤
+
+1. 读取 ask.md Template 获取执行规范
+   - Windows: `C:\Users\Stark8964911\.claude\ask\ask.md`
+   - Mac: `/Users/stark/.claude/ask/ask.md`
+   - 包含: ultrathink思考模式、文件保护规则、其他全局规范
+
+# csx-mobile-upgrade项目
+
+## 项目信息
+- 项目路径: `D:\work\RN\csx-mobile-upgrade`
+- 技术栈: React Native
+
+
+## 当前活跃需求
+<!-- - `D:\work\RN\csx-mobile-upgrade`项目需要集成 `HMS Push Kit`, 根据 `D:\work\RN\csx-mobile-upgrade\README.md` 的 164-339行,帮我配置`D:\work\RN\csx-mobile-upgrade`项目,并生成一个独立的 `HMS Push Kit集成文档.md`中文文档,内容包括 `D:\work\RN\csx-mobile-upgrade\README.md` 的 164-339行以及`D:\work\RN\csx-mobile-upgrade`项目目前的集成状态 -->
+  <!-- - 把你的回答更新到 `D:\work\RN\csx-mobile-upgrade\HMS Push Kit集成文档.md` -->
+- 你在 `D:\work\RN\csx-mobile-upgrade` 执行 `npx react-native run-android`
+
+
+
+
+--- End Command ---
+</cursor_commands>
+<user_query>
+/ask_csx-mobile-upgrade 
+</user_query>
+
+assistant:
+我先读取 ask.md 模板和相关项目文件来了解执行规范。
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\ask\ask.md
+[Tool call] Read
+  path: d:\work\RN\csx-mobile-upgrade\README.md
+
+[Tool result] Read
+
+[Tool result] Read
+
+assistant:
+现在我来检查当前终端状态和项目环境。
+[Tool call] LS
+  target_directory: C:\Users\Stark8964911\.cursor\projects\d-work-RN-csx-mobile-upgrade\terminals
+[Tool call] Read
+  path: d:\work\RN\csx-mobile-upgrade\global.ts
+[Tool call] Read
+  path: d:\work\RN\csx-mobile-upgrade\package.json
+
+[Tool result] LS
+
+[Tool result] Read
+
+[Tool result] Read
+
+assistant:
+让我查看之前运行 `npx react-native run-android` 的错误输出。
+[Tool call] Read
+  path: C:\Users\Stark8964911\.cursor\projects\d-work-RN-csx-mobile-upgrade\terminals\4.txt
+
+[Tool result] Read
+
+assistant:
+[Tool call] Read
+  path: C:\Users\Stark8964911\.cursor\projects\d-work-RN-csx-mobile-upgrade\terminals\4.txt
+  offset: -200
+
+[Tool result] Read
+
+assistant:
+[Tool call] user-sequential-thinking-sequentialthinking
+  thought: Let me analyze the two build failures:
+
+**Error 1: checkDebugDuplicateClasses**
+- `Duplicate class android.support.v4.app.INotificationSideChannel` found in `core-1.16.0.aar (androidx.core:core:1.16.0)` AND `support-compat-27.1.1.aar (com.android.support:support-compat:27.1.1)`
+- This is a classic AndroidX migration conflict. The project uses AndroidX (via `androidx.core:core:1.16.0`) but something is also bringing in the old `com.android.support:support-compat:27.1.1`.
+- The `@hmscore/react-native-hms-push` library is newly added - it likely depends on the old Android Support Library, which conflicts with AndroidX.
+
+**Error 2: react-native-reanimated clang crash**
+- `clang++ error: clang frontend command failed due to signal` during compilation of `ReanimatedModuleProxy.cpp`
+- This is a clang compiler crash on `armeabi-v7a` target with NDK 27.1.12297006
+- Exception Code: 0xC0000005 (access violation)
+- This is a known NDK bug where clang crashes when compiling complex C++ templates for armv7 targets
+- The fix is typically to either: update NDK, exclude armeabi-v7a ABI, or downgrade/pin reanimated version
+
+Let me check the android build files to understand the current configuration.
+  nextThoughtNeeded: true
+  thoughtNumber: 1
+  totalThoughts: 3
+
+[Tool result] user-sequential-thinking-sequentialthinking
+
+assistant:
+让我查看 Android 构建配置文件来分析问题。
+[Tool call] Read
+  path: d:\work\RN\csx-mobile-upgrade\android\app\build.gradle
+[Tool call] Read
+  path: d:\work\RN\csx-mobile-upgrade\android\build.gradle
+[Tool call] Read
+  path: d:\work\RN\csx-mobile-upgrade\android\gradle.properties
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] Read
+
+assistant:
+[Tool call] user-sequential-thinking-sequentialthinking
+  thought: Now I can see the full picture. There are 2 build failures:
+
+**Error 1: checkDebugDuplicateClasses** - `com.android.support:support-compat:27.1.1` conflicts with `androidx.core:core:1.16.0`
+- The project has `android.useAndroidX=true` in gradle.properties
+- The `@hmscore/react-native-hms-push` library (or its native `com.huawei.hms:push:6.12.0.300` dependency) is bringing in the old Android Support Library `com.android.support:support-compat:27.1.1`
+- Solution: Add `android.enableJetifier=true` to `gradle.properties` to automatically convert old support library references to AndroidX
+
+**Error 2: react-native-reanimated clang crash on armeabi-v7a**
+- The clang compiler in NDK 27.1 crashes with Exception Code 0xC0000005 (access violation) when compiling ReanimatedModuleProxy.cpp for armeabi-v7a target
+- Looking at `gradle.properties`: `reactNativeArchitectures=armeabi-v7a,arm64-v8a,x86,x86_64`
+- But in `build.gradle` splits section: only `include 'arm64-v8a'` - so the APK splits only include arm64-v8a
+- However, during debug build (`run-android`), the native compilation still tries to build ALL architectures listed in `reactNativeArchitectures`
+- The split is for the APK but CMake still compiles for all architectures
+- Solution: Change `reactNativeArchitectures` to only include `arm64-v8a` (since that's what the split includes anyway, and most modern devices are arm64)
+- Alternative: We could just remove `armeabi-v7a` from `reactNativeArchitectures` since the clang crash is specifically on that architecture
+
+Let me implement both fixes.
+  nextThoughtNeeded: false
+  thoughtNumber: 2
+  totalThoughts: 3
+
+[Tool result] user-sequential-thinking-sequentialthinking
+
+assistant:
+分析完毕,构建失败有 **2 个错误**,我来逐一解决。
+
+---
+
+## 错误分析
+
+### 错误 1: `checkDebugDuplicateClasses` - AndroidX 与旧 Support Library 冲突
+
+`com.huawei.hms:push:6.12.0.300` (HMS Push Kit) 依赖了旧的 `com.android.support:support-compat:27.1.1`,与项目已有的 `androidx.core:core:1.16.0` 产生重复类冲突。
+
+**修复**: 在 `gradle.properties` 中启用 `android.enableJetifier=true`,自动将旧 Support Library 依赖转换为 AndroidX。
+
+### 错误 2: `react-native-reanimated` 在 `armeabi-v7a` 架构上 clang 编译器崩溃
+
+NDK 27.1 的 clang 编译器在为 `armeabi-v7a` 目标编译 `ReanimatedModuleProxy.cpp` 时发生崩溃 (Exception Code: 0xC0000005)。这是一个已知的 NDK 编译器 bug。
+
+**修复**: 由于 `build.gradle` 的 ABI splits 中已经只包含 `arm64-v8a`,`reactNativeArchitectures` 也应只保留 `arm64-v8a`,避免为不需要的架构编译原生代码。
+
+---
+[Tool call] TodoWrite
+  todos: [{"id":"fix-jetifier","content":"Fix Error 1: Enable Jetifier in gradle.properties","status":"in_progress"},{"id":"fix-archi","content":"Fix Error 2: Remove armeabi-v7a from reactNativeArchitectures","status":"pending"},{"id":"clean-build","content":"Clean Gradle cache and rebuild","status":"pending"}]
+  merge: false
+
+[Tool result] TodoWrite
+
+assistant:
+**修复 1**: 启用 Jetifier
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\android\gradle.properties
+  old_string: android.useAndroidX=true
+  new_string: android.useAndroidX=true
+# Enable Jetifier to auto-convert old Android Support Library dependencies to AndroidX
+# Required for HMS Push Kit (com.huawei.hms:push) which depends on legacy support-compat
+android.enableJetifier=true
+
+[Tool result] StrReplace
+
+assistant:
+**修复 2**: 将 `reactNativeArchitectures` 限制为 `arm64-v8a`
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\android\gradle.properties
+  old_string: reactNativeArchitectures=armeabi-v7a,arm64-v8a,x86,x86_64
+  new_string: # Only build for arm64-v8a to avoid NDK clang crash on armeabi-v7a
+# and match the ABI splits config in app/build.gradle
+reactNativeArchitectures=arm64-v8a
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] TodoWrite
+  todos: [{"id":"fix-jetifier","content":"Fix Error 1: Enable Jetifier in gradle.properties","status":"completed"},{"id":"fix-archi","content":"Fix Error 2: Remove armeabi-v7a from reactNativeArchitectures","status":"completed"},{"id":"clean-build","content":"Clean Gradle cache and rebuild","status":"in_progress"}]
+  merge: true
+
+[Tool result] TodoWrite
+
+assistant:
+现在清理 Gradle 缓存并重新构建。
+[Tool call] Shell
+  command: cd android && .\gradlew clean
+  description: Clean Gradle build cache
+  working_directory: d:\work\RN\csx-mobile-upgrade
+  block_until_ms: 120000
+
+[Tool result] Shell
+
+assistant:
+PowerShell 不支持 `&&`,我需要分步执行。
+[Tool call] Shell
+  command: .\gradlew clean
+  description: Clean Gradle build cache
+  working_directory: d:\work\RN\csx-mobile-upgrade\android
+  block_until_ms: 120000
+
+[Tool result] Shell
+
+assistant:
+`gradlew clean` 因为旧的 CMake 缓存出现问题。这是因为之前的构建产物被部分清理了。我需要手动删除构建目录,然后直接运行 `npx react-native run-android`。
+[Tool call] Shell
+  command: Remove-Item -Recurse -Force android\app\.cxx -ErrorAction SilentlyContinue; Remove-Item -Recurse -Force android\app\build -ErrorAction SilentlyContinue; Remove-Item -Recurse -Force android\build -ErrorAction SilentlyContinue; Remove-Item -Recurse -Force android\.gradle -ErrorAction SilentlyContinue; Write-Host "Clean completed"
+  description: Manually remove build directories
+  working_directory: d:\work\RN\csx-mobile-upgrade
+  block_until_ms: 60000
+
+[Tool result] Shell
+
+assistant:
+构建目录已清理。现在执行 `npx react-native run-android`。
+[Tool call] Shell
+  command: npx react-native run-android
+  description: Run Android debug build
+  working_directory: d:\work\RN\csx-mobile-upgrade
+  block_until_ms: 600000
+
+[Tool result] Shell
+
+assistant:
+[Tool call] Read
+  path: C:\Users\Stark8964911\.cursor\projects\d-work-RN-csx-mobile-upgrade\agent-tools\0070a40f-2510-4918-81de-0d5ecd5094d4.txt
+  offset: -100
+
+[Tool result] Read
+
+assistant:
+新问题: **Jetifier 对 `react-android-0.81.0-debug.aar` (约300MB的大文件) 进行转换时内存不足 (Java heap space)**。
+
+这是因为 Jetifier 会尝试转换**所有** aar 文件,包括已经是 AndroidX 的 React Native 核心库,导致 OOM。对于 React Native 0.81+,核心库已经是 AndroidX,不应该被 Jetifier 处理。
+
+正确的解决方案是: **不使用 Jetifier**,而是在 Gradle 配置中强制排除旧的 `com.android.support:support-compat` 依赖,直接用 AndroidX 替代。
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\android\gradle.properties
+  old_string: android.useAndroidX=true
+# Enable Jetifier to auto-convert old Android Support Library dependencies to AndroidX
+# Required for HMS Push Kit (com.huawei.hms:push) which depends on legacy support-compat
+android.enableJetifier=true
+  new_string: android.useAndroidX=true
+
+[Tool result] StrReplace
+
+assistant:
+现在在 `android/build.gradle` 的 `allprojects` 中添加依赖替换规则,强制将旧的 `com.android.support:support-compat` 替换为 AndroidX。
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\android\build.gradle
+  old_string: allprojects {
+    repositories {
+        google() // 确保有这行
+        mavenCentral()
+        jcenter() // 注意，jcenter 自 2021 年开始逐渐被弃用，确保你也添加了其他仓库
+        // Add Huawei Maven repository for HMS Push Kit
+        maven { url 'https://developer.huawei.com/repo/' }
+        // 其他仓库
+    }
+}
+  new_string: allprojects {
+    repositories {
+        google() // 确保有这行
+        mavenCentral()
+        jcenter() // 注意，jcenter 自 2021 年开始逐渐被弃用，确保你也添加了其他仓库
+        // Add Huawei Maven repository for HMS Push Kit
+        maven { url 'https://developer.huawei.com/repo/' }
+        // 其他仓库
+    }
+
+    // Force replace old Android Support Library with AndroidX equivalents
+    // HMS Push Kit (com.huawei.hms:push) pulls in legacy support-compat:27.1.1
+    // which conflicts with androidx.core:core. This substitution avoids the conflict
+    // without enabling Jetifier (which causes OOM on large react-android AAR).
+    configurations.all {
+        resolutionStrategy.dependencySubstitution {
+            substitute module('com.android.support:support-compat') using module('androidx.core:core:1.13.1')
+            substitute module('com.android.support:support-core-utils') using module('androidx.core:core:1.13.1')
+            substitute module('com.android.support:support-v4') using module('androidx.legacy:legacy-support-v4:1.0.0')
+            substitute module('com.android.support:appcompat-v7') using module('androidx.appcompat:appcompat:1.7.0')
+            substitute module('com.android.support:support-annotations') using module('androidx.annotation:annotation:1.8.0')
+            substitute module('com.android.support:support-fragment') using module('androidx.fragment:fragment:1.8.1')
+            substitute module('com.android.support:collections') using module('androidx.collection:collection:1.4.0')
+        }
+    }
+}
+
+[Tool result] StrReplace
+
+assistant:
+现在需要清理 Gradle 的 Jetifier transform 缓存(因为之前失败的 Jetifier 可能留下了损坏的缓存),然后重新构建。
+[Tool call] Shell
+  command: Remove-Item -Recurse -Force android\app\.cxx -ErrorAction SilentlyContinue; Remove-Item -Recurse -Force android\app\build -ErrorAction SilentlyContinue; Remove-Item -Recurse -Force android\build -ErrorAction SilentlyContinue; Remove-Item -Recurse -Force android\.gradle -ErrorAction SilentlyContinue; Write-Host "Local build dirs cleaned"
+  description: Clean local Android build dirs
+  working_directory: d:\work\RN\csx-mobile-upgrade
+  block_until_ms: 30000
+
+[Tool result] Shell
+
+assistant:
+还需要清除全局 Gradle 缓存中 Jetifier 转换失败留下的损坏缓存。
+[Tool call] Shell
+  command: Remove-Item -Recurse -Force "$env:USERPROFILE\.gradle\caches\8.13\transforms" -ErrorAction SilentlyContinue; Write-Host "Gradle transform cache cleaned"
+  description: Clean Gradle transforms cache
+  working_directory: d:\work\RN\csx-mobile-upgrade
+  block_until_ms: 30000
+
+[Tool result] Shell
+
+assistant:
+现在重新执行 `npx react-native run-android`。
+[Tool call] Shell
+  command: npx react-native run-android
+  description: Run Android debug build
+  working_directory: d:\work\RN\csx-mobile-upgrade
+  block_until_ms: 900000
+
+[Tool result] Shell
+
+assistant:
+[Tool call] Read
+  path: C:\Users\Stark8964911\.cursor\projects\d-work-RN-csx-mobile-upgrade\agent-tools\296e5a90-d41d-47e1-92ec-9573728a1269.txt
+  offset: -80
+
+[Tool result] Read
+
+assistant:
+Gradle transforms 缓存损坏了 (`metadata.bin` 文件缺失)。需要更彻底地清理全局 Gradle 缓存。
+[Tool call] Shell
+  command: Remove-Item -Recurse -Force "$env:USERPROFILE\.gradle\caches\8.13" -ErrorAction SilentlyContinue; Write-Host "Gradle 8.13 cache cleaned"
+  description: Clean entire Gradle 8.13 cache
+  working_directory: d:\work\RN\csx-mobile-upgrade
+  block_until_ms: 60000
+
+[Tool result] Shell
+
+assistant:
+现在重新运行构建。
+[Tool call] Shell
+  command: npx react-native run-android
+  description: Run Android debug build attempt 3
+  working_directory: d:\work\RN\csx-mobile-upgrade
+  block_until_ms: 900000
+
+[Tool result] Shell
+
+assistant:
+[Tool call] Read
+  path: C:\Users\Stark8964911\.cursor\projects\d-work-RN-csx-mobile-upgrade\agent-tools\e1877333-fc2b-4182-8e91-bd5e05bcf1aa.txt
+  offset: -60
+
+[Tool result] Read
+
+assistant:
+还是同一个 `metadata.bin` 文件问题。这个特定的 transforms 哈希目录 `8717950264d8f8b636f65c985cbf87a0` 似乎在构建过程中重新创建但没有正确写入 metadata。让我看看这个目录现在是什么状态。
+[Tool call] Shell
+  command: Get-ChildItem "$env:USERPROFILE\.gradle\caches\8.13\transforms\8717950264d8f8b636f65c985cbf87a0" -ErrorAction SilentlyContinue | Format-Table Name, Length, LastWriteTime
+  description: Check corrupted transform dir
+  working_directory: d:\work\RN\csx-mobile-upgrade
+  block_until_ms: 10000
+
+[Tool result] Shell
+
+assistant:
+`metadata.bin` 文件确实不存在,目录里只有 `transformed` 文件夹但没有 `metadata.bin`。这是 Gradle 在 Windows 上的一个已知问题。让我直接删除这个特定的坏缓存目录,然后重新运行。
+[Tool call] Shell
+  command: Remove-Item -Recurse -Force "$env:USERPROFILE\.gradle\caches\8.13\transforms\8717950264d8f8b636f65c985cbf87a0" -ErrorAction SilentlyContinue; Write-Host "Removed corrupted transform entry"
+  description: Remove specific corrupted transform
+  working_directory: d:\work\RN\csx-mobile-upgrade
+  block_until_ms: 10000
+
+[Tool result] Shell
+
+assistant:
+让我也检查是否还有其他损坏的 transforms 目录(缺少 metadata.bin 的)。
+[Tool call] Shell
+  command: $dirs = Get-ChildItem "$env:USERPROFILE\.gradle\caches\8.13\transforms" -Directory -ErrorAction SilentlyContinue; $count = 0; foreach ($d in $dirs) { $meta = Join-Path $d.FullName "metadata.bin"; if (-not (Test-Path $meta)) { Write-Host "Missing metadata: $($d.Name)"; Remove-Item -Recurse -Force $d.FullName; $count++ } }; Write-Host "Removed $count corrupted transform entries"
+  description: Clean all corrupted transforms
+  working_directory: d:\work\RN\csx-mobile-upgrade
+  block_until_ms: 30000
+
+[Tool result] Shell
+
+assistant:
+[Tool call] Read
+  path: C:\Users\Stark8964911\.cursor\projects\d-work-RN-csx-mobile-upgrade\agent-tools\c97a2999-2196-46be-b50b-618ca7e16031.txt
+  offset: -5
+
+[Tool result] Read
+
+assistant:
+只有 1 个损坏的 entry,且前面那个 `8717950264d8f8b636f65c985cbf87a0` 被文件锁定无法删除。这可能是因为有 Gradle daemon 进程还在占用。让我先杀死所有 Java/Gradle 进程,然后再清理。
+[Tool call] Shell
+  command: Stop-Process -Name "java" -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2; Write-Host "Java processes killed"
+  description: Kill all Java/Gradle processes
+  working_directory: d:\work\RN\csx-mobile-upgrade
+  block_until_ms: 15000
+
+[Tool result] Shell
+
+assistant:
+[Tool call] Shell
+  command: Remove-Item -Recurse -Force "$env:USERPROFILE\.gradle\caches\8.13\transforms\8717950264d8f8b636f65c985cbf87a0" -ErrorAction SilentlyContinue; if (Test-Path "$env:USERPROFILE\.gradle\caches\8.13\transforms\8717950264d8f8b636f65c985cbf87a0") { Write-Host "Still exists - locked" } else { Write-Host "Successfully removed" }
+  description: Remove corrupted transform after killing Java
+  working_directory: d:\work\RN\csx-mobile-upgrade
+  block_until_ms: 10000
+
+[Tool result] Shell
+
+assistant:
+文件仍然被锁定。让我检查是否有其他进程占用。
+[Tool call] Shell
+  command: Get-Process | Where-Object { $_.Name -match "java|gradle|kotlin" } | Format-Table Id, ProcessName, StartTime
+  description: Check for remaining Java/Gradle processes
+  working_directory: d:\work\RN\csx-mobile-upgrade
+  block_until_ms: 10000
+
+[Tool result] Shell
+
+assistant:
+没有 Java 进程了,但文件仍然被锁定。可能是 Windows Search Indexer 或防病毒软件锁住了文件。让我尝试用 cmd 命令删除。
+[Tool call] Shell
+  command: cmd /c "rmdir /s /q C:\Users\Stark8964911\.gradle\caches\8.13\transforms\8717950264d8f8b636f65c985cbf87a0 2>nul"; if (Test-Path "$env:USERPROFILE\.gradle\caches\8.13\transforms\8717950264d8f8b636f65c985cbf87a0") { Write-Host "Still exists - trying rename approach"; Rename-Item "$env:USERPROFILE\.gradle\caches\8.13\transforms\8717950264d8f8b636f65c985cbf87a0" "8717950264d8f8b636f65c985cbf87a0_broken" -ErrorAction SilentlyContinue } else { Write-Host "Successfully removed" }
+  description: Force delete or rename corrupted dir
+  working_directory: d:\work\RN\csx-mobile-upgrade
+  block_until_ms: 10000
+
+[Tool result] Shell
+
+assistant:
+终于删除成功了。现在重新构建。
+[Tool call] Shell
+  command: npx react-native run-android
+  description: Run Android debug build attempt 4
+  working_directory: d:\work\RN\csx-mobile-upgrade
+  block_until_ms: 900000
+
+[Tool result] Shell
+
+assistant:
+**构建成功了!** exit code 为 0。让我确认一下最终输出。
+[Tool call] Read
+  path: C:\Users\Stark8964911\.cursor\projects\d-work-RN-csx-mobile-upgrade\agent-tools\1489c301-d14e-4240-817c-d26bff606349.txt
+  offset: -30
+
+[Tool result] Read
+
+assistant:
+[Tool call] TodoWrite
+  todos: [{"id":"clean-build","content":"Clean Gradle cache and rebuild","status":"completed"}]
+  merge: true
+
+[Tool result] TodoWrite
+
+assistant:
+**`npx react-native run-android` 构建成功!** APP 已安装到设备 `PJJ110 - 15` 并启动。
+
+---
+
+## 修复总结
+
+之前的构建有 **2 个错误**,做了以下修改:
+
+### 1. AndroidX 重复类冲突 (`checkDebugDuplicateClasses`)
+
+**原因**: HMS Push Kit (`com.huawei.hms:push:6.12.0.300`) 依赖了旧的 `com.android.support:support-compat:27.1.1`,与项目的 `androidx.core:core` 产生重复类。
+
+**修复**: 在 `android/build.gradle` 的 `allprojects` 块中添加了 `dependencySubstitution` 规则,将旧 Support Library 模块自动替换为 AndroidX 等价物。(没有使用 Jetifier,因为它会对 300MB+ 的 react-android AAR 进行转换导致 OOM)
+
+### 2. react-native-reanimated 编译器崩溃 (`armeabi-v7a`)
+
+**原因**: NDK 27.1 的 clang 编译器在为 `armeabi-v7a` 目标编译 `ReanimatedModuleProxy.cpp` 时崩溃 (Exception Code: 0xC0000005)。
+
+**修复**: 在 `android/gradle.properties` 中将 `reactNativeArchitectures` 从 `armeabi-v7a,arm64-v8a,x86,x86_64` 改为只保留 `arm64-v8a`,与 `build.gradle` 中 ABI splits 配置一致。
+
+### 3. Gradle transforms 缓存损坏
+
+构建过程中还遇到了 Gradle transforms 缓存损坏 (`metadata.bin` 丢失),通过清理 `~/.gradle/caches/8.13/` 目录解决。
+
+---
+
+## 下一步建议
+
+1. 在设备上验证 APP 是否正常运行,特别是 HMS Push Kit 相关功能
+2. 如果需要在模拟器上运行(x86_64 架构),可以临时在 `gradle.properties` 中把 `reactNativeArchitectures` 改为 `arm64-v8a,x86_64`

@@ -1,0 +1,34 @@
+{
+  "name": "update_subtask",
+  "description": "Appends timestamped information to a specific subtask without replacing existing content. If you just want to update the subtask status, use set_task_status instead.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "prompt": {
+        "type": "string"
+      },
+      "research": {
+        "type": "boolean"
+      },
+      "file": {
+        "type": "string"
+      },
+      "projectRoot": {
+        "type": "string"
+      },
+      "tag": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "id",
+      "prompt",
+      "projectRoot"
+    ],
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "additionalProperties": false
+  }
+}

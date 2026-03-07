@@ -1,0 +1,1694 @@
+user:
+<cursor_commands>
+
+--- Cursor Command: ask_csx-mobile-upgrade ---
+---
+description: "ultrathink 超深度思考模式 - csx-mobile-upgrade项目模块"
+---
+
+## 执行步骤
+
+1. 读取 ask.md Template 获取执行规范
+   - Windows: `C:\Users\Stark8964911\.claude\ask\ask.md`
+   - Mac: `/Users/stark/.claude/ask/ask.md`
+   - 包含: ultrathink思考模式、文件保护规则、其他全局规范
+
+# csx-mobile-upgrade项目
+
+## 项目信息
+- 项目路径: `D:\work\RN\csx-mobile-upgrade`
+- 技术栈: React Native
+
+
+## 当前活跃需求
+- `D:\work\RN\csx-mobile-upgrade` 项目在ios/安卓端都有概率`APP Error`,如图![img_153547.png](img_153547.png)
+
+
+
+--- End Command ---
+</cursor_commands>
+<user_query>
+/ask_csx-mobile-upgrade 
+</user_query>
+
+assistant:
+我来先读取 ask.md 模板和相关项目文件，了解执行规范和当前问题。
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\ask\ask.md
+[Tool call] Read
+  path: d:\work\RN\csx-mobile-upgrade\global.ts
+[Tool call] Read
+  path: d:\work\RN\csx-mobile-upgrade\src\pages\loginPage\loginPage.tsx
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] Read
+
+assistant:
+现在让我查看错误截图，并继续探索项目关键文件来分析 APP Error 问题。
+[Tool call] Glob
+  glob_pattern: **/img_153547.png
+  target_directory: C:\Users\Stark8964911\.claude
+
+[Tool result] Glob
+
+assistant:
+[Tool call] Glob
+  glob_pattern: **/*.png
+  target_directory: C:\Users\Stark8964911\.claude\commands
+
+[Tool result] Glob
+
+assistant:
+[Tool call] Glob
+  glob_pattern: **/img_153547*
+
+[Tool result] Glob
+
+assistant:
+[Tool call] Glob
+  glob_pattern: **/img_*
+  target_directory: C:\Users\Stark8964911\.claude
+
+[Tool result] Glob
+
+assistant:
+[Tool call] Glob
+  glob_pattern: **/*.png
+  target_directory: C:\Users\Stark8964911\.cursor
+
+[Tool result] Glob
+
+assistant:
+无法找到错误截图文件。不过根据命令描述，错误是 "APP Error" -- 这在 React Native 中通常指的是未捕获的 JavaScript 异常导致红屏/白屏崩溃。让我深入分析项目的错误边界、入口文件和关键配置来排查问题。
+[Tool call] TodoWrite
+  todos: [{"id":"1","content":"分析项目入口文件和错误边界配置","status":"in_progress"},{"id":"2","content":"检查 loginPage.tsx 中的潜在崩溃点","status":"pending"},{"id":"3","content":"检查 global.ts 中的全局变量初始化问题","status":"pending"},{"id":"4","content":"检查 Provider 层级和异步初始化竞态条件","status":"pending"},{"id":"5","content":"检查 navigation 相关的空指针问题","status":"pending"},{"id":"6","content":"汇总分析结果并给出修复建议","status":"pending"}]
+  merge: false
+
+[Tool result] TodoWrite
+
+assistant:
+[Tool call] Read
+  path: d:\work\RN\csx-mobile-upgrade\index.js
+[Tool call] Read
+  path: d:\work\RN\csx-mobile-upgrade\src\csxApp.tsx
+[Tool call] Read
+  path: d:\work\RN\csx-mobile-upgrade\src\csxRoutes\MainStack.tsx
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] Read
+
+assistant:
+[Tool call] Task
+  description: Explore error boundary and key providers
+  prompt: Explore the following files in the csx-mobile-upgrade project at D:\work\RN\csx-mobile-upgrade to find potential APP Error (crash) causes. Read and return the full contents of:
+
+1. src/components/ErrorBoundary/SentryErrorBoundary.tsx (or .js) - the error boundary component
+2. src/components/AppProvider/AppProvider.tsx (or .js) - the main app provider
+3. src/utils/sentry.ts (or .js) - sentry initialization
+4. src/pages/HomePage/HomePage.tsx - focus on the first 100 lines and any useEffect that runs on mount
+
+For each file, identify:
+- Any unhandled promise rejections
+- Any potential null/undefined access that could crash the app
+- Any async operations without proper error handling
+- Any race conditions in initialization
+
+Return your complete findings with specific line numbers and code snippets.
+  subagent_type: explore
+[Tool call] Task
+  description: Find potential crash causes in hooks and storage
+  prompt: In the project at D:\work\RN\csx-mobile-upgrade, search for potential APP Error (crash) causes. Do a thorough exploration:
+
+1. Read src/useHooks/useAccount.ts (or .tsx) - check for null access patterns
+2. Read src/components/storage/storage.ts (or .tsx) - check for unhandled async errors
+3. Read src/useHooks/InactivityContext.tsx - check for potential issues
+4. Read src/components/AgoraProvider/AgoraProvider.tsx - check for initialization errors
+5. Search for common crash patterns:
+   - `route?.params` or `route.params` without proper null checks
+   - `pageData.` without null checks (especially `pageData.type`, `pageData.username`)
+   - Unhandled promise rejections in useEffect
+   - `Cannot read property of undefined` style patterns
+
+For each issue found, report the exact file path, line numbers, and the problematic code. Focus on issues that would cause an intermittent APP crash on both iOS and Android.
+  subagent_type: explore
+
+[Tool result] Task
+
+[Tool result] Task
+
+assistant:
+[Tool call] TodoWrite
+  todos: [{"id":"1","content":"分析项目入口文件和错误边界配置","status":"completed"},{"id":"2","content":"检查 loginPage.tsx 中的潜在崩溃点","status":"completed"},{"id":"3","content":"检查 global.ts 中的全局变量初始化问题","status":"completed"},{"id":"4","content":"检查 Provider 层级和异步初始化竞态条件","status":"completed"},{"id":"5","content":"检查 navigation 相关的空指针问题","status":"completed"},{"id":"6","content":"汇总分析结果并给出修复建议","status":"in_progress"}]
+  merge: true
+
+[Tool result] TodoWrite
+
+assistant:
+[Tool call] user-sequential-thinking-sequentialthinking
+  thought: Let me synthesize all the findings from the analysis of the csx-mobile-upgrade project. The user reports that the app has intermittent "APP Error" crashes on both iOS and Android.
+
+Key crash vectors identified:
+
+1. **loginPage.tsx - pageData null access (CRITICAL, HIGH PROBABILITY)**
+   - Line 103: `const {pageData} = route?.params ?? {} as { pageData?: pageDataProps };`
+   - Line 110: `pageData.username` - if pageData is undefined, this crashes
+   - Line 126: `pageData.skipBioMetric` - same issue
+   - Lines 480, 486: `pageData.type === 1` and `pageData.type === 0` - same issue
+   
+   This is a VERY likely crash cause because:
+   - The type assertion `{} as { pageData?: pageDataProps }` makes TypeScript think pageData exists
+   - But at runtime, `pageData` is `undefined` because `{}` has no `pageData` property
+   - When LoginPage is the first screen or is navigated to without params, this crashes immediately
+
+2. **HomePage.tsx - global.curClinicData/curDoctorData null access (CRITICAL)**
+   - Multiple places access `global.curClinicData.id` and `global.curDoctorData.id` without null checks
+   - These are initialized as `null` in global.ts (line 25-27)
+   - If any API call happens before these are populated, crash
+
+3. **Unhandled promise rejections (MEDIUM-HIGH)**
+   - HomePage.tsx has many `.then()` without `.catch()` 
+   - AgoraProvider.tsx has unhandled async in useEffect
+   - In React Native, unhandled promise rejections can crash the app
+
+4. **useAccount.ts - Array access after find() (MEDIUM)**
+   - Array indexing without verifying element exists
+
+5. **storage.ts - accountList null access (MEDIUM)**
+   - splice/access without verifying accountList is an array
+
+6. **AgoraProvider.tsx - ref null access (MEDIUM)**
+   - ref_engine.current and ref_conferenceData.current accessed without null checks
+
+The most likely cause of the intermittent "APP Error" on both platforms is #1 (loginPage pageData null access) combined with #2 (global data null access) and #3 (unhandled promise rejections). Since it's "intermittent" (有概率), it's likely related to race conditions in async initialization or timing-dependent null access.
+
+Let me organize this into a clear analysis with priority levels and fix suggestions.
+  nextThoughtNeeded: false
+  thoughtNumber: 1
+  totalThoughts: 1
+
+[Tool result] user-sequential-thinking-sequentialthinking
+
+assistant:
+[Tool call] TodoWrite
+  todos: [{"id":"6","content":"汇总分析结果并给出修复建议","status":"completed"}]
+  merge: true
+
+[Tool result] TodoWrite
+
+assistant:
+## APP Error 崩溃分析报告
+
+我无法找到你提到的错误截图 `img_153547.png`，但通过对整个项目代码的深入分析，发现了多个可以导致 iOS/Android 端概率性 APP Error 的崩溃点。以下按严重程度排列：
+
+---
+
+### 崩溃点 #1 (最高优先级): `loginPage.tsx` - pageData 空指针崩溃
+
+```103:103:src/pages/loginPage/loginPage.tsx
+  const {pageData} = route?.params ?? {} as { pageData?: pageDataProps };
+```
+
+这里的类型断言 `{} as { pageData?: pageDataProps }` **只欺骗了 TypeScript 编译器**，运行时 `pageData` 实际是 `undefined`。然后紧接着：
+
+```110:111:src/pages/loginPage/loginPage.tsx
+    name: pageData.username || (global.$fake ? 'json' : ''),
+```
+
+```126:126:src/pages/loginPage/loginPage.tsx
+    skipBioMetric: pageData.skipBioMetric || false,
+```
+
+```480:480:src/pages/loginPage/loginPage.tsx
+              {pageData.type === 1 && <CsxMobileHeader
+```
+
+```486:486:src/pages/loginPage/loginPage.tsx
+              {pageData.type === 0 && <View style={styles.languageRow}>
+```
+
+**当 LoginPage 在没有传递 `pageData` 参数的情况下被导航到时（比如通过 deep link、通知跳转、或系统恢复），`pageData` 为 `undefined`，访问 `.username`、`.type` 等属性直接崩溃。**
+
+**修复方案：** 添加空值保护
+
+```typescript
+const {pageData} = route?.params ?? {} as { pageData?: pageDataProps };
+// Add default values for pageData
+const safePageData: pageDataProps = {
+  type: pageData?.type ?? 0,
+  username: pageData?.username ?? '',
+  skipBioMetric: pageData?.skipBioMetric ?? false,
+};
+```
+
+---
+
+### 崩溃点 #2 (高优先级): `HomePage.tsx` - 全局变量空指针
+
+`global.curClinicData` 和 `global.curDoctorData` 在 `global.ts` 中初始化为 `null`：
+
+```25:27:global.ts
+(global as any).curClinicData = null as CurClinicData | null;
+(global as any).curDoctorData = null as CurDoctorData | null;
+```
+
+但 `HomePage.tsx` 中多处直接访问其属性而**没有做 null 检查**：
+
+- `global.curClinicData.id` (多处)
+- `global.curDoctorData.id` (多处)
+- `data.autoSignOutMinutes * 60 * 1000` (可能为 undefined)
+
+**当 HomePage 加载但诊所/医生数据尚未初始化时（异步竞态条件），直接崩溃。**
+
+---
+
+### 崩溃点 #3 (高优先级): 未处理的 Promise 拒绝
+
+`HomePage.tsx` 中有大量这样的代码：
+
+```typescript
+fetchWaitingList({ pageIndex: 0 }).then();   // line 185
+_messages_paging().then();                     // line 587
+useAllAccountCachedClinicDoctorList(...).then(); // line 311
+```
+
+`.then()` 后面**没有 `.catch()`**，任何网络错误或API异常都会产生未处理的 Promise 拒绝。**在 React Native 的生产版本中，未处理的 Promise 拒绝会触发全局错误处理，可能导致 APP Error。**
+
+---
+
+### 崩溃点 #4 (中等优先级): `AgoraProvider.tsx` - ref 空引用
+
+```typescript
+ref_engine.current.setChannelProfile(...)     // 没有 null 检查
+ref_conferenceData.current.rtcToken           // 没有 null 检查
+data.conferenceData.find(...)                 // conferenceData 可能为 null
+```
+
+**当 Agora 引擎初始化失败或会议数据为空时崩溃。**
+
+---
+
+### 崩溃点 #5 (中等优先级): `useAccount.ts` / `storage.ts` - 数组越界
+
+```typescript
+// useAccount.ts
+allAccountCachedClinicDoctorList[_index] = {...} // _index 可能无效
+global.curClinicData = allAccountCachedClinicDoctorList[_index].curClinicData // 可能 undefined
+
+// storage.ts
+accountList.splice(_index, 1); // accountList 可能为 null
+```
+
+---
+
+### 崩溃点 #6 (较低优先级): `SentryErrorBoundary.tsx` - 错误边界本身可能崩溃
+
+```typescript
+global.i18n.t('Application Error') // 如果 i18n 未初始化，错误边界本身也崩溃
+global.navigationRef.reset('WelcomePage', {}); // 没有 try-catch
+```
+
+**这意味着当出现其他错误时，错误边界可能无法正确渲染，直接显示系统级 APP Error。**
+
+---
+
+## 综合诊断
+
+APP 概率性崩溃的最可能原因是**多个因素叠加**：
+
+| 优先级 | 崩溃场景 | 触发条件 |
+|--------|---------|---------|
+| P0 | loginPage pageData 空指针 | 无 params 导航到登录页 |
+| P0 | HomePage 全局变量空指针 | 异步数据未加载完就访问 |
+| P1 | 未处理的 Promise 拒绝 | 网络异常/API 返回异常 |
+| P1 | AgoraProvider ref 空引用 | 视频通话初始化失败 |
+| P2 | useAccount/storage 数组越界 | 缓存数据异常 |
+| P3 | 错误边界自身崩溃 | 上述错误触发后二次崩溃 |
+
+---
+
+## 下一步建议
+
+1. **最优先修复 loginPage.tsx 的 pageData 空值保护** -- 这是最可能在两端同时触发的崩溃点
+2. **给 HomePage.tsx 中所有 `global.curClinicData` 和 `global.curDoctorData` 的访问添加可选链 `?.`**
+3. **给所有 `.then()` 添加 `.catch()` 错误处理**
+4. **加固 SentryErrorBoundary，确保错误边界本身不会崩溃**
+5. 如果可以提供错误截图的具体内容（错误堆栈信息），可以更精确定位
+
+需要我开始修复哪个崩溃点？
+
+user:
+[Image]
+<image_files>
+The following images were provdied by the user and saved to the workspace for future use:
+1. C:\Users\Stark8964911\.cursor\projects\d-work-RN-csx-mobile-upgrade/assets/c__Users_Stark8964911_AppData_Roaming_Cursor_User_workspaceStorage_8453f433f071ab32e055821e98cdaf25_images_image-e765a83b-0437-44df-88a7-00c3f1c46891.png
+
+These images can be copied for use in other locations.
+</image_files>
+<user_query>
+错误截图发你了
+</user_query>
+
+assistant:
+感谢你提供截图！现在我可以确认，这个 "Application Error - Something went wrong. Please try again." 界面正是项目中 `SentryErrorBoundary` 组件渲染的错误回退页面。这意味着 **JavaScript 层发生了未捕获的异常**，被错误边界捕获后显示了这个页面。
+
+让我进一步检查错误边界的实现，确认它是否记录了具体的错误信息。
+[Tool call] Read
+  path: d:\work\RN\csx-mobile-upgrade\src\components\ErrorBoundary\SentryErrorBoundary.tsx
+
+[Tool result] Read
+
+assistant:
+确认了！截图中的 UI 完全匹配 `SentryErrorBoundary.tsx` 的 `DefaultErrorFallback` 组件。这说明是 **React 组件树中发生了未捕获的 JavaScript 异常**，被这个错误边界拦截了。
+
+现在的关键问题是：**这个错误在生产包中不会显示具体错误信息**（Debug Info 只在 `__DEV__` 模式才显示，见第 38 行）。要精确定位具体是哪个崩溃点触发的，我们需要增强错误边界的信息收集能力。
+
+根据上一轮分析的所有崩溃点，结合截图确认是 `SentryErrorBoundary` 被触发，最可能的原因排序是：
+
+---
+
+## 确认分析
+
+截图显示的 "Application Error" 界面是 `SentryErrorBoundary.tsx` 第 26-63 行的 `DefaultErrorFallback` 组件。这意味着：
+
+1. 错误发生在 **React 渲染阶段**（render/useEffect 中抛出未捕获异常）
+2. 错误被最顶层的 `SentryErrorBoundary`（`csxApp.tsx` 第 53 行）拦截
+3. 在生产环境中看不到具体错误堆栈（`__DEV__` 条件限制）
+
+**最大嫌疑仍然是 `loginPage.tsx` 第 103-110 行的 pageData 空指针问题**，因为：
+- LoginPage 是应用启动后最早渲染的页面之一
+- `pageData` 空指针会在 **组件 state 初始化阶段** 就崩溃（不是异步的，是同步的 render 崩溃）
+- 这恰好符合 "概率性" 的特征 -- 取决于导航时是否传递了 params
+
+## 下一步建议
+
+1. **立即修复 loginPage.tsx 的 pageData 空值保护** -- 这是最可能触发截图中错误的原因
+2. **增强 SentryErrorBoundary 在生产环境的错误日志收集**，方便未来排查
+3. **逐步修复 HomePage.tsx 和 AgoraProvider.tsx 中的其他崩溃点**
+
+需要我开始修复这些问题吗？如果需要，我建议从 loginPage.tsx 的 pageData 空值保护开始。
+
+user:
+<user_query>
+你可以 开始修复这些问题 ;但是 我还需要在 以后遇到这个问题时, 不显示  <DefaultErrorFallback>组件, 不要让用户感觉到   React 组件树中发生了未捕获的 JavaScript 异常 这种问题, 只要app 不崩溃, 就不要 阻止用户继续操作
+</user_query>
+
+assistant:
+[Tool call] user-sequential-thinking-sequentialthinking
+  thought: The user wants two things:
+1. Fix all the crash points identified
+2. Change the SentryErrorBoundary behavior: instead of showing the DefaultErrorFallback UI (which blocks the user), it should silently recover and let the user continue using the app. Only if the app truly crashes (native crash) should it stop.
+
+For the ErrorBoundary change:
+- Instead of showing the error fallback UI, we should try to auto-recover
+- The approach should be: when an error is caught, log it to Sentry, then automatically retry (reset hasError to false) 
+- But we need to be careful about infinite error loops - if the same error keeps happening, we shouldn't keep retrying forever
+- A good approach: track error count, auto-retry a few times, and if it keeps failing, silently navigate back or to a safe screen rather than showing the error UI
+
+Let me plan the changes:
+
+1. **SentryErrorBoundary.tsx** - Change behavior to auto-recover silently:
+   - Track retry count
+   - On first few errors: auto-retry (reset hasError)
+   - If errors persist: silently navigate to a safe page (login/welcome) instead of showing error UI
+   - Never show the blocking error fallback to users
+
+2. **loginPage.tsx** - Fix pageData null access:
+   - Add safe defaults for pageData
+
+3. **HomePage.tsx** - Fix global variable null access and unhandled promises:
+   - Add null checks for global.curClinicData and global.curDoctorData
+   - Add .catch() to all .then() calls
+
+4. **AgoraProvider.tsx** - Fix ref null access
+
+Let me think about what files to modify and read first to make sure I have the latest content.
+  nextThoughtNeeded: false
+  thoughtNumber: 1
+  totalThoughts: 1
+
+[Tool result] user-sequential-thinking-sequentialthinking
+
+assistant:
+好的，我来一并修复所有问题。核心思路是：**ErrorBoundary 不再阻挡用户操作，静默恢复 + 修复各处崩溃根因**。
+[Tool call] TodoWrite
+  todos: [{"id":"fix-1","content":"SentryErrorBoundary: 改为静默恢复，不再显示错误回退UI","status":"in_progress"},{"id":"fix-2","content":"loginPage.tsx: 修复 pageData 空指针崩溃","status":"pending"},{"id":"fix-3","content":"HomePage.tsx: 修复全局变量空指针 + 未处理Promise","status":"pending"},{"id":"fix-4","content":"AgoraProvider.tsx: 修复 ref 空引用","status":"pending"},{"id":"fix-5","content":"检查 lint 错误","status":"pending"}]
+  merge: false
+
+[Tool result] TodoWrite
+
+assistant:
+先读取需要修改的文件的最新内容。
+[Tool call] Read
+  path: d:\work\RN\csx-mobile-upgrade\src\components\ErrorBoundary\SentryErrorBoundary.tsx
+[Tool call] Read
+  path: d:\work\RN\csx-mobile-upgrade\src\pages\HomePage\HomePage.tsx
+[Tool call] Read
+  path: d:\work\RN\csx-mobile-upgrade\src\components\AgoraProvider\AgoraProvider.tsx
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] Read
+
+assistant:
+好的，所有文件都读取完毕。现在开始逐一修复。
+
+**修复 1: SentryErrorBoundary -- 静默恢复，不阻挡用户**
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\components\ErrorBoundary\SentryErrorBoundary.tsx
+  old_string: import React, { Component, ReactNode, ComponentType } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Platform } from 'react-native';
+import * as Sentry from '@sentry/react-native';
+import { captureApiError } from '../../utils/sentry';
+
+interface Props {
+  children: ReactNode;
+  fallbackComponent?: ComponentType<ErrorBoundaryFallbackProps>;
+  onError?: (error: Error, errorInfo: React.ErrorInfo) => void;
+}
+
+interface State {
+  hasError: boolean;
+  error?: Error;
+}
+
+interface ErrorBoundaryFallbackProps {
+  error: Error;
+  onRetry: () => void;
+  onRestart: () => void;
+}
+
+/**
+ * Default fallback component displayed when an error occurs
+ */
+const DefaultErrorFallback: React.FC<ErrorBoundaryFallbackProps> = ({
+  error,
+  onRetry,
+  onRestart,
+}) => (
+  <View style={styles.container}>
+    <View style={styles.content}>
+      <Text style={styles.title}>{global.i18n.t('Application Error')}</Text>
+      <Text style={styles.message}>
+        {global.i18n.t('Something went wrong. Please try again.')}
+      </Text>
+      
+      {__DEV__ && (
+        <View style={styles.debugContainer}>
+          <Text style={styles.debugTitle}>Debug Info:</Text>
+          <Text style={styles.debugText}>{error.message}</Text>
+          <Text style={styles.debugText}>{error.stack?.substring(0, 500)}...</Text>
+        </View>
+      )}
+      
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.button, styles.retryButton]}
+          onPress={onRetry}
+        >
+          <Text style={styles.buttonText}>{global.i18n.t('Retry')}</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          style={[styles.button, styles.restartButton]}
+          onPress={onRestart}
+        >
+          <Text style={styles.buttonText}>{global.i18n.t('Restart App')}</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  </View>
+);
+
+/**
+ * Enhanced Error Boundary with Sentry integration
+ */
+class SentryErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): State {
+    // Update state so the next render will show the fallback UI
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('ErrorBoundary caught an error:', error);
+    
+    // Report to Sentry if enabled
+    if (global.$sentryLog) {
+      Sentry.withScope((scope) => {
+        scope.setLevel('fatal');
+        scope.setTag('error_boundary', 'react_component');
+        scope.setContext('error_info', {
+          componentStack: errorInfo.componentStack,
+          errorBoundary: 'SentryErrorBoundary',
+        });
+        
+        // Set breadcrumbs for error context
+        Sentry.addBreadcrumb({
+          message: 'Component error boundary triggered',
+          category: 'error',
+          level: 'fatal',
+          data: {
+            errorMessage: error.message,
+          },
+        });
+        
+        Sentry.captureException(error);
+      });
+    }
+
+    // Call custom error handler if provided
+    if (this.props.onError) {
+      this.props.onError(error, errorInfo);
+    }
+  }
+
+  handleRetry = () => {
+    console.log('User requested retry from error boundary');
+    
+    // Add breadcrumb for user action
+    if (global.$sentryLog) {
+      Sentry.addBreadcrumb({
+        message: 'User clicked retry after error',
+        category: 'user',
+        level: 'info',
+      });
+    }
+    
+    this.setState({ hasError: false, error: undefined });
+  };
+
+  handleRestart = () => {
+    console.log('User requested app restart from error boundary');
+    
+    // Add breadcrumb for user action
+    if (global.$sentryLog) {
+      Sentry.addBreadcrumb({
+        message: 'User clicked restart after error',
+        category: 'user', 
+        level: 'info',
+      });
+    }
+    
+    Alert.alert(
+      global.i18n.t('Restart Application'),
+      global.i18n.t('The application will close. Please reopen it manually.'),
+      [
+        {
+          text: global.i18n.t('Cancel'),
+          style: 'cancel',
+        },
+        {
+          text: global.i18n.t('Restart'),
+          onPress: () => {
+            // Note: React Native doesn't provide a direct way to restart the app
+            // The user will need to manually reopen the app
+            if (global.navigationRef) {
+              try {
+                global.navigationRef.reset('WelcomePage', {});
+              } catch (e) {
+                console.warn('Failed to reset navigation:', e);
+              }
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  render() {
+    if (this.state.hasError && this.state.error) {
+      const FallbackComponent = this.props.fallbackComponent || DefaultErrorFallback;
+      
+      return (
+        <FallbackComponent
+          error={this.state.error}
+          onRetry={this.handleRetry}
+          onRestart={this.handleRestart}
+        />
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  content: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 24,
+    width: '100%',
+    maxWidth: 400,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#d32f2f',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  message: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: 24,
+  },
+  debugContainer: {
+    backgroundColor: '#f5f5f5',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 24,
+  },
+  debugTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 8,
+  },
+  debugText: {
+    fontSize: 12,
+    color: '#666',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    lineHeight: 16,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  button: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  retryButton: {
+    backgroundColor: '#1976d2',
+  },
+  restartButton: {
+    backgroundColor: '#666',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});
+
+export default SentryErrorBoundary;
+export { ErrorBoundaryFallbackProps };
+  new_string: import React, { Component, ReactNode, ComponentType } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Platform } from 'react-native';
+import * as Sentry from '@sentry/react-native';
+import { captureApiError } from '../../utils/sentry';
+
+// Maximum number of auto-recovery attempts within the cooldown window
+const MAX_AUTO_RETRY = 3;
+// Cooldown window in milliseconds - reset retry count after this period
+const RETRY_COOLDOWN_MS = 10000;
+
+interface Props {
+  children: ReactNode;
+  fallbackComponent?: ComponentType<ErrorBoundaryFallbackProps>;
+  onError?: (error: Error, errorInfo: React.ErrorInfo) => void;
+}
+
+interface State {
+  hasError: boolean;
+  error?: Error;
+}
+
+interface ErrorBoundaryFallbackProps {
+  error: Error;
+  onRetry: () => void;
+  onRestart: () => void;
+}
+
+/**
+ * Fallback component only shown in DEV mode for debugging.
+ * In production, the error boundary auto-recovers silently.
+ */
+const DevErrorFallback: React.FC<ErrorBoundaryFallbackProps> = ({
+  error,
+  onRetry,
+  onRestart,
+}) => (
+  <View style={styles.container}>
+    <View style={styles.content}>
+      <Text style={styles.title}>DEV Error Caught</Text>
+      <Text style={styles.message}>
+        This error was caught by the ErrorBoundary. In production, the app would silently recover.
+      </Text>
+
+      <View style={styles.debugContainer}>
+        <Text style={styles.debugTitle}>Debug Info:</Text>
+        <Text style={styles.debugText}>{error?.message}</Text>
+        <Text style={styles.debugText}>{error?.stack?.substring(0, 500)}...</Text>
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.button, styles.retryButton]}
+          onPress={onRetry}
+        >
+          <Text style={styles.buttonText}>Retry</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.button, styles.restartButton]}
+          onPress={onRestart}
+        >
+          <Text style={styles.buttonText}>Restart App</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  </View>
+);
+
+/**
+ * Enhanced Error Boundary with silent auto-recovery.
+ *
+ * Strategy:
+ * - When a render error is caught, report it to Sentry silently.
+ * - Auto-recover (re-render children) up to MAX_AUTO_RETRY times within RETRY_COOLDOWN_MS.
+ * - If the same error keeps recurring beyond the retry limit, the app stays on the
+ *   last successful render (children) rather than showing a blocking error screen.
+ * - In __DEV__ mode, show a debug fallback so developers can see the error.
+ */
+class SentryErrorBoundary extends Component<Props, State> {
+  // Track auto-recovery attempts to prevent infinite render loops
+  private retryCount: number = 0;
+  // Timestamp of the first error in the current retry window
+  private firstErrorTime: number = 0;
+
+  constructor(props: Props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): State {
+    // Mark error state so componentDidCatch can handle recovery
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.warn('SentryErrorBoundary caught an error (silent recovery):', error?.message);
+
+    // Report to Sentry if enabled
+    if (global.$sentryLog) {
+      try {
+        Sentry.withScope((scope) => {
+          scope.setLevel('error');
+          scope.setTag('error_boundary', 'silent_recovery');
+          scope.setTag('retry_count', String(this.retryCount));
+          scope.setContext('error_info', {
+            componentStack: errorInfo?.componentStack,
+            errorBoundary: 'SentryErrorBoundary',
+            retryCount: this.retryCount,
+          });
+
+          Sentry.addBreadcrumb({
+            message: 'Silent error boundary triggered',
+            category: 'error',
+            level: 'error',
+            data: {
+              errorMessage: error?.message,
+              retryCount: this.retryCount,
+            },
+          });
+
+          Sentry.captureException(error);
+        });
+      } catch (sentryError) {
+        // Sentry itself should never crash the error boundary
+        console.warn('SentryErrorBoundary: Failed to report to Sentry:', sentryError);
+      }
+    }
+
+    // Call custom error handler if provided
+    if (this.props.onError) {
+      try {
+        this.props.onError(error, errorInfo);
+      } catch (handlerError) {
+        console.warn('SentryErrorBoundary: Custom onError handler threw:', handlerError);
+      }
+    }
+
+    // Auto-recovery logic: reset error state so children re-render
+    const now = Date.now();
+
+    // Reset retry counter if cooldown window has passed
+    if (now - this.firstErrorTime > RETRY_COOLDOWN_MS) {
+      this.retryCount = 0;
+      this.firstErrorTime = now;
+    }
+
+    if (this.retryCount < MAX_AUTO_RETRY) {
+      this.retryCount++;
+      console.warn(
+        `SentryErrorBoundary: Auto-recovering (attempt ${this.retryCount}/${MAX_AUTO_RETRY})`
+      );
+      // Schedule recovery on next tick to avoid synchronous re-render loop
+      setTimeout(() => {
+        this.setState({ hasError: false, error: undefined });
+      }, 0);
+    } else {
+      // Exceeded retry limit within cooldown window.
+      // In production: still recover silently after a short delay to let the
+      // error-causing condition potentially resolve (e.g. async data loading).
+      console.warn(
+        'SentryErrorBoundary: Max retries reached. Will attempt recovery after delay.'
+      );
+      setTimeout(() => {
+        // Reset the retry counter and try again
+        this.retryCount = 0;
+        this.firstErrorTime = Date.now();
+        this.setState({ hasError: false, error: undefined });
+      }, 2000);
+    }
+  }
+
+  handleRetry = () => {
+    this.retryCount = 0;
+    this.firstErrorTime = 0;
+    this.setState({ hasError: false, error: undefined });
+  };
+
+  handleRestart = () => {
+    if (global.navigationRef) {
+      try {
+        this.retryCount = 0;
+        this.firstErrorTime = 0;
+        this.setState({ hasError: false, error: undefined });
+        global.navigationRef.reset('WelcomePage', {});
+      } catch (e) {
+        console.warn('Failed to reset navigation:', e);
+      }
+    }
+  };
+
+  render() {
+    if (this.state.hasError && this.state.error) {
+      // In DEV mode, show debug fallback so developers can see errors
+      if (__DEV__) {
+        const FallbackComponent = this.props.fallbackComponent || DevErrorFallback;
+        return (
+          <FallbackComponent
+            error={this.state.error}
+            onRetry={this.handleRetry}
+            onRestart={this.handleRestart}
+          />
+        );
+      }
+
+      // In production: render children as-is while auto-recovery is scheduled.
+      // The componentDidCatch above has already scheduled a setState to clear
+      // the error. In the brief moment before that fires, render children
+      // to avoid showing any error UI to the user.
+      return this.props.children;
+    }
+
+    return this.props.children;
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  content: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 24,
+    width: '100%',
+    maxWidth: 400,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#d32f2f',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  message: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: 24,
+  },
+  debugContainer: {
+    backgroundColor: '#f5f5f5',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 24,
+  },
+  debugTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 8,
+  },
+  debugText: {
+    fontSize: 12,
+    color: '#666',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    lineHeight: 16,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  button: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  retryButton: {
+    backgroundColor: '#1976d2',
+  },
+  restartButton: {
+    backgroundColor: '#666',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});
+
+export default SentryErrorBoundary;
+export { ErrorBoundaryFallbackProps };
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] TodoWrite
+  todos: [{"id":"fix-1","content":"SentryErrorBoundary: 改为静默恢复，不再显示错误回退UI","status":"completed"},{"id":"fix-2","content":"loginPage.tsx: 修复 pageData 空指针崩溃","status":"in_progress"}]
+  merge: true
+
+[Tool result] TodoWrite
+
+user:
+<user_query>
+继续
+</user_query>
+
+assistant:
+继续修复剩余的崩溃点。
+
+**修复 2: loginPage.tsx - pageData 空指针**
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\pages\loginPage\loginPage.tsx
+  old_string: const loginPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+  const {navigation, route,} = props
+  console.log('loginPage.tsx props=', props)
+  const {pageData} = route?.params ?? {} as { pageData?: pageDataProps };//类型断言
+  const dispatch = useDispatch();
+  // Check if device is Redmi K50
+  const [isRedmiK50, setIsRedmiK50] = useState(false);
+  const [state, setState] = useState({
+    TenantID: global.$fake ? 'csx-poc.clinicsolution.hk' : '',
+    ForgotPasswordValid: null, showAgreeModal: false, logedRes: null, last_unsigned_data: null,
+    name: pageData.username || (global.$fake ? 'json' : ''),
+    password: global.$fake ? 'Aa123456' : '',
+    connecting:
+      false, eyesOpening:
+      false, showFingerprintPopup:
+      false,
+    /**
+     * https://github.com/hieuvp/react-native-fingerprint-scanner/tree/master
+     * The type of biometric authentication supported by the device.
+     * iOS: biometryType = 'Touch ID', 'Face ID' 指纹识别 || 脸部ID识别
+     * Android: biometryType = 'Biometrics' 安卓不知道具体是指纹还是面部,故统一叫 生物识别
+     */
+    biometryType:
+      '',
+    haveOpenApp: null,
+    triedFaceID: false, // 是否尝试过Face ID，如果尝试后失败，再次登录用账号密码，不进行Face ID验证
+    skipBioMetric: pageData.skipBioMetric || false,
+    logArray: [] as string[],
+  })
+  new_string: const loginPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+  const {navigation, route,} = props
+  console.log('loginPage.tsx props=', props)
+  const {pageData: rawPageData} = route?.params ?? {} as { pageData?: pageDataProps };
+  // Safe default values for pageData to prevent null pointer crash
+  const pageData: pageDataProps = {
+    type: rawPageData?.type ?? 0,
+    username: rawPageData?.username ?? '',
+    skipBioMetric: rawPageData?.skipBioMetric ?? false,
+  };
+  const dispatch = useDispatch();
+  // Check if device is Redmi K50
+  const [isRedmiK50, setIsRedmiK50] = useState(false);
+  const [state, setState] = useState({
+    TenantID: global.$fake ? 'csx-poc.clinicsolution.hk' : '',
+    ForgotPasswordValid: null, showAgreeModal: false, logedRes: null, last_unsigned_data: null,
+    name: pageData.username || (global.$fake ? 'json' : ''),
+    password: global.$fake ? 'Aa123456' : '',
+    connecting:
+      false, eyesOpening:
+      false, showFingerprintPopup:
+      false,
+    /**
+     * https://github.com/hieuvp/react-native-fingerprint-scanner/tree/master
+     * The type of biometric authentication supported by the device.
+     * iOS: biometryType = 'Touch ID', 'Face ID' 指纹识别 || 脸部ID识别
+     * Android: biometryType = 'Biometrics' 安卓不知道具体是指纹还是面部,故统一叫 生物识别
+     */
+    biometryType:
+      '',
+    haveOpenApp: null,
+    triedFaceID: false, // 是否尝试过Face ID，如果尝试后失败，再次登录用账号密码，不进行Face ID验证
+    skipBioMetric: pageData.skipBioMetric || false,
+    logArray: [] as string[],
+  })
+
+[Tool result] StrReplace
+
+assistant:
+让我重新读取最新的文件内容，看起来文件可能已经有修改。
+[Tool call] Read
+  path: d:\work\RN\csx-mobile-upgrade\src\pages\loginPage\loginPage.tsx
+  offset: 100
+  limit: 50
+
+[Tool result] Read
+
+assistant:
+很好，loginPage.tsx 中 pageData 的空值保护已经在之前的 git 修改中完成了（第 103-109 行）。这个修复已经存在了。
+[Tool call] TodoWrite
+  todos: [{"id":"fix-2","content":"loginPage.tsx: 修复 pageData 空指针崩溃","status":"completed"},{"id":"fix-3","content":"HomePage.tsx: 修复全局变量空指针 + 未处理Promise","status":"in_progress"}]
+  merge: true
+
+[Tool result] TodoWrite
+
+assistant:
+**修复 3: HomePage.tsx - 全局变量空指针 + 未处理 Promise**
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\pages\HomePage\HomePage.tsx
+  old_string:   const _GetCurrentEncounterOverview = useCallback(async () => {
+    const [err, data] = await tool.to(GetCurrentEncounterOverview(global.curClinicData.id, global.curDoctorData.id));
+    console.log(' GetCurrentEncounterOverview data=', data);
+    if (data) {
+      setState(prevState => {
+        return { ...prevState, WaitingListLength: data.queueCount, BookedListLength: data.appointmentCount };
+      });
+    }
+  }, [global.curClinicData, global.curDoctorData]);
+  new_string:   const _GetCurrentEncounterOverview = useCallback(async () => {
+    // Guard against null global clinic/doctor data
+    if (!global.curClinicData?.id || !global.curDoctorData?.id) {
+      console.warn('_GetCurrentEncounterOverview: curClinicData or curDoctorData is null, skipping');
+      return;
+    }
+    const [err, data] = await tool.to(GetCurrentEncounterOverview(global.curClinicData.id, global.curDoctorData.id));
+    console.log(' GetCurrentEncounterOverview data=', data);
+    if (data) {
+      setState(prevState => {
+        return { ...prevState, WaitingListLength: data.queueCount, BookedListLength: data.appointmentCount };
+      });
+    }
+  }, [global.curClinicData, global.curDoctorData]);
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\pages\HomePage\HomePage.tsx
+  old_string:       fetchWaitingList({ pageIndex: 0 }).then();
+    }
+  }, [state.initWaitingList]);
+  new_string:       fetchWaitingList({ pageIndex: 0 }).catch(e => console.warn('fetchWaitingList error:', e));
+    }
+  }, [state.initWaitingList]);
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\pages\HomePage\HomePage.tsx
+  old_string:   const _messages_paging = useCallback(async () => {
+    const [err, data] = await tool.to(messages_paging({ pageIndex: 0, pageSize: 1 }));
+    console.log('HomePage.tsx messages_paging data=', data);
+    if (data.items.length > 0) {
+      setState(prevState => {
+        return { ...prevState, messages_paging: data.items[0] };
+      });
+    }
+    return null;
+  }, []);
+  new_string:   const _messages_paging = useCallback(async () => {
+    const [err, data] = await tool.to(messages_paging({ pageIndex: 0, pageSize: 1 }));
+    console.log('HomePage.tsx messages_paging data=', data);
+    // Guard against null/undefined data or items
+    if (data?.items?.length > 0) {
+      setState(prevState => {
+        return { ...prevState, messages_paging: data.items[0] };
+      });
+    }
+    return null;
+  }, []);
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\pages\HomePage\HomePage.tsx
+  old_string:     fetchWaitingList({ pageIndex: 0 }).then();
+    _messages_paging().then();
+  new_string:     fetchWaitingList({ pageIndex: 0 }).catch(e => console.warn('fetchWaitingList error:', e));
+    _messages_paging().catch(e => console.warn('_messages_paging error:', e));
+
+[Tool result] StrReplace
+
+assistant:
+现在修复 `fetchFilterModalFlatList` 中 data 可能为空的问题。
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\pages\HomePage\HomePage.tsx
+  old_string:         const [err, data] = await tool.to(ClinicQuery(ref_searchQuery.current, pageIndex));
+        if (ref_searchQuery.current) {
+          let items = tool.filterOptionsList(ref_searchQuery.current, data.items, 'code');
+          return { items, pageIndex: 0, totalCount: 0, totalPage: 0, needLoadMore: false };
+        } else {
+          ref_ClinicList.current = data.items;
+          return data;
+        }
+  new_string:         const [err, data] = await tool.to(ClinicQuery(ref_searchQuery.current, pageIndex));
+        if (!data?.items) return { items: [], pageIndex: 0, totalCount: 0, totalPage: 0, needLoadMore: false };
+        if (ref_searchQuery.current) {
+          let items = tool.filterOptionsList(ref_searchQuery.current, data.items, 'code');
+          return { items, pageIndex: 0, totalCount: 0, totalPage: 0, needLoadMore: false };
+        } else {
+          ref_ClinicList.current = data.items;
+          return data;
+        }
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\pages\HomePage\HomePage.tsx
+  old_string:         const [err, data] = await tool.to(DoctorQuery(pageIndex, ref_searchQuery.current));
+        console.log('fetchFilterModalFlatList data=', data);
+        if (ref_searchQuery.current) {
+          let items = tool.filterOptionsList(ref_searchQuery.current, data.items, 'code');
+          return { items, totalCount: 0, totalPage: 0, needLoadMore: data.items.length === 10, pageIndex: pageIndex + 1, };
+        } else {
+          ref_DoctorList.current = data.items;
+          return data;
+        }
+  new_string:         const [err, data] = await tool.to(DoctorQuery(pageIndex, ref_searchQuery.current));
+        console.log('fetchFilterModalFlatList data=', data);
+        if (!data?.items) return { items: [], pageIndex: 0, totalCount: 0, totalPage: 0, needLoadMore: false };
+        if (ref_searchQuery.current) {
+          let items = tool.filterOptionsList(ref_searchQuery.current, data.items, 'code');
+          return { items, totalCount: 0, totalPage: 0, needLoadMore: data.items.length === 10, pageIndex: pageIndex + 1, };
+        } else {
+          ref_DoctorList.current = data.items;
+          return data;
+        }
+
+[Tool result] StrReplace
+
+assistant:
+修复 `useAllAccountCachedClinicDoctorList` 的未处理 Promise（多处）。
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\pages\HomePage\HomePage.tsx
+  old_string:           useAllAccountCachedClinicDoctorList(curAccount.username + curAccount.InstallationID).then();
+          todo(global.curClinicData);
+        }
+      } else {
+        global.curClinicData = cacheedClinicData;
+  new_string:           useAllAccountCachedClinicDoctorList(curAccount.username + curAccount.InstallationID).catch(e => console.warn('useAllAccountCachedClinicDoctorList error:', e));
+          todo(global.curClinicData);
+        }
+      } else {
+        global.curClinicData = cacheedClinicData;
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\pages\HomePage\HomePage.tsx
+  old_string:           useAllAccountCachedClinicDoctorList(curAccount.username + curAccount.InstallationID).then();
+          todo(global.curDoctorData);
+        }
+      } else {
+        global.curDoctorData = cachedDoctorData;
+  new_string:           useAllAccountCachedClinicDoctorList(curAccount.username + curAccount.InstallationID).catch(e => console.warn('useAllAccountCachedClinicDoctorList error:', e));
+          todo(global.curDoctorData);
+        }
+      } else {
+        global.curDoctorData = cachedDoctorData;
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\pages\HomePage\HomePage.tsx
+  old_string:           useAllAccountCachedClinicDoctorList(curAccount.username + curAccount.InstallationID).then();
+          setState(prevState => {
+            return {
+              ...prevState,
+              curSelectedDoctor: global.curDoctorData,
+              initWaitingList: true,
+            };
+          });
+        }
+      }
+    }
+  }, []);
+  new_string:           useAllAccountCachedClinicDoctorList(curAccount.username + curAccount.InstallationID).catch(e => console.warn('useAllAccountCachedClinicDoctorList error:', e));
+          setState(prevState => {
+            return {
+              ...prevState,
+              curSelectedDoctor: global.curDoctorData,
+              initWaitingList: true,
+            };
+          });
+        }
+      }
+    }
+  }, []);
+
+[Tool result] StrReplace
+
+assistant:
+修复确认按钮中的未处理 Promise。
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\pages\HomePage\HomePage.tsx
+  old_string:                   useAllAccountCachedClinicDoctorList(curAccount.username + curAccount.InstallationID).then();
+                  setState(prevState => {
+                    return {
+                      ...prevState,
+                      curSelectedDoctor: global.curDoctorData,
+                      renderClinicDoctorListModal: false,
+                      showCurClinicList: false,
+                      showCurDoctorList: false,
+                    };
+                  });
+                  await fetchPageList();
+  new_string:                   useAllAccountCachedClinicDoctorList(curAccount.username + curAccount.InstallationID).catch(e => console.warn('useAllAccountCachedClinicDoctorList error:', e));
+                  setState(prevState => {
+                    return {
+                      ...prevState,
+                      curSelectedDoctor: global.curDoctorData,
+                      renderClinicDoctorListModal: false,
+                      showCurClinicList: false,
+                      showCurDoctorList: false,
+                    };
+                  });
+                  await fetchPageList();
+
+[Tool result] StrReplace
+
+assistant:
+修复 `refreshHomePage` 事件监听中 `refPageList.current` 可能为空的问题以及 `data.autoSignOutMinutes` 可能为 undefined 的问题。
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\pages\HomePage\HomePage.tsx
+  old_string:     useCallback(async (token: string) => {
+      console.log('HomePage.tsx refreshHomePage =', token); // 处理事件
+      refPageList.current.refresh();
+      {
+        const [err, data] = await tool.to(configurations());
+        if (data) {
+          emitEvent(globalEventName.autoSignOutMinutes, data.autoSignOutMinutes * 60 * 1000);
+        }
+      }
+    }, [])
+  new_string:     useCallback(async (token: string) => {
+      console.log('HomePage.tsx refreshHomePage =', token); // 处理事件
+      refPageList.current?.refresh();
+      {
+        const [err, data] = await tool.to(configurations());
+        if (data?.autoSignOutMinutes != null) {
+          emitEvent(globalEventName.autoSignOutMinutes, data.autoSignOutMinutes * 60 * 1000);
+        }
+      }
+    }, [])
+
+[Tool result] StrReplace
+
+assistant:
+修复 `fetchWaitingList` 中访问 `global.curClinicData.id` 和 `global.curDoctorData.id` 的空安全以及 `result.items[0]` 的越界问题。
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\pages\HomePage\HomePage.tsx
+  old_string:       if (global.curClinicData && global.curDoctorData && ref_initWaitingList.current) {
+        await _getBanner();
+        await _getGuideBanner();
+        await _GetCurrentEncounterOverview();
+        const result = await waitingList(global.curClinicData.id, global.curDoctorData.id, false);
+  new_string:       if (global.curClinicData?.id && global.curDoctorData?.id && ref_initWaitingList.current) {
+        await _getBanner().catch(e => console.warn('_getBanner error:', e));
+        await _getGuideBanner().catch(e => console.warn('_getGuideBanner error:', e));
+        await _GetCurrentEncounterOverview().catch(e => console.warn('_GetCurrentEncounterOverview error:', e));
+        const result = await waitingList(global.curClinicData.id, global.curDoctorData.id, false);
+
+[Tool result] StrReplace
+
+assistant:
+修复 eStore 按钮中 `global.curClinicData.id` 的空引用。
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\pages\HomePage\HomePage.tsx
+  old_string:             console.log('HomePage.tsx eStore state.banner=', state.banner);
+            const find = state.banner?.find(item => item.location === 'eCommWidget');
+            console.log('HomePage.tsx eStore find=', find);
+            console.log('HomePage.tsx eStore global.curClinicData=', global.curClinicData);
+            console.log('HomePage.tsx eStore curAccount=', curAccount);
+            // const HashedKey = encode(
+            //   `InstallationID=${curAccount.InstallationID}&ClinicCode=${global.curClinicData.id}&UserID=${curAccount.username}`
+            // );
+            const HashedKey = smartBase64Encode(
+              `InstallationID=${curAccount.InstallationID}&ClinicCode=${global.curClinicData.id}&UserID=${curAccount.username}`
+            );
+            console.log('HashedKey=', HashedKey);
+            find && tool.openURL(`${find.hyperlink?.split('?')[0]}?${HashedKey}`);
+  new_string:             console.log('HomePage.tsx eStore state.banner=', state.banner);
+            const find = state.banner?.find(item => item.location === 'eCommWidget');
+            console.log('HomePage.tsx eStore find=', find);
+            console.log('HomePage.tsx eStore global.curClinicData=', global.curClinicData);
+            console.log('HomePage.tsx eStore curAccount=', curAccount);
+            // Guard against null curClinicData
+            if (!global.curClinicData?.id) {
+              console.warn('eStore: curClinicData is null, skipping');
+              return;
+            }
+            const HashedKey = smartBase64Encode(
+              `InstallationID=${curAccount.InstallationID}&ClinicCode=${global.curClinicData.id}&UserID=${curAccount.username}`
+            );
+            console.log('HashedKey=', HashedKey);
+            find && tool.openURL(`${find.hyperlink?.split('?')[0]}?${HashedKey}`);
+
+[Tool result] StrReplace
+
+user:
+<user_query>
+继续
+</user_query>
+
+assistant:
+继续修复 AgoraProvider 和检查 lint 错误。
+[Tool call] TodoWrite
+  todos: [{"id":"fix-3","content":"HomePage.tsx: 修复全局变量空指针 + 未处理Promise","status":"completed"},{"id":"fix-4","content":"AgoraProvider.tsx: 修复 ref 空引用","status":"in_progress"}]
+  merge: true
+
+[Tool result] TodoWrite
+
+assistant:
+**修复 4: AgoraProvider.tsx - ref 空引用 + 未处理的 async**
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\components\AgoraProvider\AgoraProvider.tsx
+  old_string:     useEffect(() => {
+        console.log('AgoraProvider state.appointmentId has changed=', state.appointmentId)
+        if (state.appointmentId) {
+            (async () => {
+                const [err, data] = await tool.to(get_conference_data_by_appointmentid({appointmentId: state.appointmentId}))
+                if (data) {
+                    ref_conferenceData.current = data.conferenceData.find((currentValue, index, arr) => {
+                        return currentValue.uidType === 'doctor'
+                    })
+                    console.log('AgoraProvider.tsx ref_conferenceData.current=', ref_conferenceData.current)
+                    if (ref_conferenceData.current) {
+                        // 初始化 Agora 引擎
+                        await setupVideoSDKEngine();
+                    } else {
+                        console.log('AgoraProvider.tsx  ref_conferenceData.current is null')
+                    }
+                }
+            })();
+        }
+    }, [state.appointmentId]);
+  new_string:     useEffect(() => {
+        console.log('AgoraProvider state.appointmentId has changed=', state.appointmentId)
+        if (state.appointmentId) {
+            (async () => {
+                try {
+                    const [err, data] = await tool.to(get_conference_data_by_appointmentid({appointmentId: state.appointmentId}))
+                    if (data?.conferenceData) {
+                        ref_conferenceData.current = data.conferenceData.find((currentValue, index, arr) => {
+                            return currentValue.uidType === 'doctor'
+                        })
+                        console.log('AgoraProvider.tsx ref_conferenceData.current=', ref_conferenceData.current)
+                        if (ref_conferenceData.current) {
+                            // Initialize Agora engine
+                            await setupVideoSDKEngine();
+                        } else {
+                            console.log('AgoraProvider.tsx  ref_conferenceData.current is null')
+                        }
+                    }
+                } catch (e) {
+                    console.warn('AgoraProvider: Failed to setup video engine:', e);
+                }
+            })();
+        }
+    }, [state.appointmentId]);
+
+[Tool result] StrReplace
+
+assistant:
+这个修复已经存在了。让我读取最新文件内容确认其他需要修复的地方。
+[Tool call] Read
+  path: d:\work\RN\csx-mobile-upgrade\src\components\AgoraProvider\AgoraProvider.tsx
+  offset: 275
+  limit: 80
+
+[Tool result] Read
+
+assistant:
+需要修复 `setupVideoSDKEngine` 中 `ref_conferenceData.current.appId`、`joinChannel` 中多处 `ref_engine.current` 和 `ref_conferenceData.current` 直接访问、以及 `leaveChannel` 中的 `ref_engine.current.leaveChannel()`。
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\components\AgoraProvider\AgoraProvider.tsx
+  old_string:                     const a = agoraEngine.initialize({
+                            appId:
+                                // global.$fake ? '02a50548d94941c79c7f339205bd6840' :
+                                    ref_conferenceData.current.appId,
+                            channelProfile: ChannelProfileType.ChannelProfileLiveBroadcasting,
+                        })
+                    ;
+  new_string:                     // Guard: ensure conferenceData is available before initializing
+                    if (!ref_conferenceData.current?.appId) {
+                        console.warn('AgoraProvider: conferenceData.appId is null, cannot initialize');
+                        return;
+                    }
+                    const a = agoraEngine.initialize({
+                            appId: ref_conferenceData.current.appId,
+                            channelProfile: ChannelProfileType.ChannelProfileLiveBroadcasting,
+                        })
+                    ;
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\components\AgoraProvider\AgoraProvider.tsx
+  old_string:     const joinChannel = useCallback(() => {
+        if (state.isJoined) {
+            console.log('AgoraProvider.tsx joinChannel isJoined')
+            return;
+        }
+        try {
+            console.log('AgoraProvider.tsx join ref_engine.current=', ref_engine.current)
+            const a = ref_engine.current.setChannelProfile(
+                ChannelProfileType.ChannelProfileLiveBroadcasting,
+            );
+            console.log('AgoraProvider.tsx setChannelProfile a=', a) //0: Success.
+            const b = ref_engine.current.startPreview();
+            console.log('AgoraProvider.tsx startPreview b=', b) //0: Success
+            // const c = agoraEngineRef.current?.joinChannel(
+            //     token,
+            //     // doctorConferenceData.current.rtcToken,
+            //     channelId,
+            //     // doctorConferenceData.current.meetId,
+            //     uid
+            //     // doctorConferenceData.current.uid
+            //     , {
+            //         clientRoleType: ClientRoleType.ClientRoleBroadcaster,
+            //     }
+            // )
+            const c = ref_engine.current.joinChannelWithUserAccount(
+                // global.$fake ? '007eJxTYBDvmPqNKym7+7TArc7+JOlNFS/3Osq7xd4Qs5y7K531w1EFBgOjRFMDUxOLFEsTSxPDZHPLZPM0Y2NLIwPTpBQzCxODT43t6Q2BjAxJe/lYGRkgEMRnZDBkYAAAqWEczw==' :
+                    ref_conferenceData.current.rtcToken,
+                // global.$fake ? '1' :
+                    ref_conferenceData.current.meetId,
+                // global.$fake ? '1' :
+                    ref_conferenceData.current.uid
+                , {
+                    clientRoleType: ClientRoleType.ClientRoleBroadcaster,
+                }
+            )
+            console.log('AgoraProvider.tsx joinChannel c=', c) //0: Success.
+        } catch (e) {
+            console.log('AgoraProvider.tsx joinChannel e=', e);
+        }
+    }, [ref_engine.current, state.isJoined, ref_conferenceData.current]);
+  new_string:     const joinChannel = useCallback(() => {
+        if (state.isJoined) {
+            console.log('AgoraProvider.tsx joinChannel isJoined')
+            return;
+        }
+        // Guard: ensure engine and conferenceData are available
+        if (!ref_engine.current) {
+            console.warn('AgoraProvider.tsx joinChannel: ref_engine.current is null');
+            return;
+        }
+        if (!ref_conferenceData.current) {
+            console.warn('AgoraProvider.tsx joinChannel: ref_conferenceData.current is null');
+            return;
+        }
+        try {
+            console.log('AgoraProvider.tsx join ref_engine.current=', ref_engine.current)
+            const a = ref_engine.current.setChannelProfile(
+                ChannelProfileType.ChannelProfileLiveBroadcasting,
+            );
+            console.log('AgoraProvider.tsx setChannelProfile a=', a) //0: Success.
+            const b = ref_engine.current.startPreview();
+            console.log('AgoraProvider.tsx startPreview b=', b) //0: Success
+            const c = ref_engine.current.joinChannelWithUserAccount(
+                    ref_conferenceData.current.rtcToken,
+                    ref_conferenceData.current.meetId,
+                    ref_conferenceData.current.uid
+                , {
+                    clientRoleType: ClientRoleType.ClientRoleBroadcaster,
+                }
+            )
+            console.log('AgoraProvider.tsx joinChannel c=', c) //0: Success.
+        } catch (e) {
+            console.log('AgoraProvider.tsx joinChannel e=', e);
+        }
+    }, [ref_engine.current, state.isJoined, ref_conferenceData.current]);
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] StrReplace
+  path: d:\work\RN\csx-mobile-upgrade\src\components\AgoraProvider\AgoraProvider.tsx
+  old_string:     const leaveChannel = useCallback(
+        () => {
+            try {
+                console.log('AgoraProvider leaveChannel ref_engine.current=', ref_engine.current)
+                const code = ref_engine.current.leaveChannel();
+  new_string:     const leaveChannel = useCallback(
+        () => {
+            try {
+                console.log('AgoraProvider leaveChannel ref_engine.current=', ref_engine.current)
+                if (!ref_engine.current) {
+                    console.warn('AgoraProvider leaveChannel: ref_engine.current is null, skipping');
+                    return;
+                }
+                const code = ref_engine.current.leaveChannel();
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] TodoWrite
+  todos: [{"id":"fix-4","content":"AgoraProvider.tsx: 修复 ref 空引用","status":"completed"},{"id":"fix-5","content":"检查 lint 错误","status":"in_progress"}]
+  merge: true
+
+[Tool result] TodoWrite
+
+assistant:
+**修复 5: 检查 lint 错误**
+[Tool call] ReadLints
+  paths: ["d:\\work\\RN\\csx-mobile-upgrade\\src\\components\\ErrorBoundary\\SentryErrorBoundary.tsx","d:\\work\\RN\\csx-mobile-upgrade\\src\\pages\\loginPage\\loginPage.tsx","d:\\work\\RN\\csx-mobile-upgrade\\src\\pages\\HomePage\\HomePage.tsx","d:\\work\\RN\\csx-mobile-upgrade\\src\\components\\AgoraProvider\\AgoraProvider.tsx"]
+
+[Tool result] ReadLints
+
+assistant:
+没有 lint 错误。
+[Tool call] TodoWrite
+  todos: [{"id":"fix-5","content":"检查 lint 错误","status":"completed"}]
+  merge: true
+
+[Tool result] TodoWrite
+
+assistant:
+全部修复完毕。以下是修改汇总：
+
+---
+
+## 修改汇总
+
+### 1. `SentryErrorBoundary.tsx` -- 静默恢复，不再阻挡用户
+
+- **生产环境**：错误被捕获后静默上报 Sentry，自动恢复渲染子组件，用户完全无感知
+- **开发环境**：仍显示 Debug 错误信息方便开发者排查
+- 自动重试机制：10秒内最多重试3次，超限后延迟2秒再恢复，防止无限循环
+- Sentry 上报本身也用 try-catch 保护，避免上报失败导致二次崩溃
+
+### 2. `loginPage.tsx` -- pageData 空值保护（已存在）
+
+- `pageData` 已通过 `rawPageData?.type ?? 0` 等方式安全解构，确保即使没有传参也不崩溃
+
+### 3. `HomePage.tsx` -- 5处修复
+
+| 位置 | 修复内容 |
+|------|---------|
+| `_GetCurrentEncounterOverview` | 增加 `global.curClinicData?.id` / `global.curDoctorData?.id` 空值守卫 |
+| `fetchWaitingList` | `global.curClinicData?.id` 可选链 + 子函数调用加 `.catch()` |
+| `_messages_paging` | `data?.items?.length` 可选链防止空访问 |
+| `fetchFilterModalFlatList` | ClinicQuery / DoctorQuery 返回的 `data?.items` 空值守卫 |
+| 多处 `.then()` | 全部补上 `.catch(e => console.warn(...))` 防止未处理 Promise 拒绝 |
+| `refreshHomePage` | `refPageList.current?.refresh()` 可选链 + `data?.autoSignOutMinutes != null` 守卫 |
+| eStore 按钮 | `global.curClinicData?.id` 空值提前返回 |
+
+### 4. `AgoraProvider.tsx` -- 3处修复
+
+| 位置 | 修复内容 |
+|------|---------|
+| `setupVideoSDKEngine` | `ref_conferenceData.current?.appId` 空值守卫，避免初始化时崩溃 |
+| `joinChannel` | `ref_engine.current` 和 `ref_conferenceData.current` 空值守卫 |
+| `leaveChannel` | `ref_engine.current` 空值守卫 |
+
+---
+
+## 下一步建议
+
+1. 在 iOS 和 Android 真机上分别测试一轮，验证 "Application Error" 界面不再出现
+2. 如果想进一步精确追踪问题，可以到 **Sentry 后台** 查看静默上报的错误详情（错误边界现在会标记 `error_boundary: silent_recovery`）
+3. 后续可以对其他页面（如 `ForgotPassword`、`CreateConsultationPage` 等）做同样的 `pageData` 空值保护

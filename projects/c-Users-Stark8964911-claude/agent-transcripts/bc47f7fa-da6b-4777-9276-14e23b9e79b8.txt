@@ -1,0 +1,235 @@
+user:
+<cursor_commands>
+
+--- Cursor Command: ask_通用问题 ---
+---
+description: "ultrathink 超深度思考模式 - 通用问题模块"
+---
+
+## 执行步骤
+
+1. 读取 ask.md Template 获取执行规范
+   - Windows: `C:\Users\Stark8964911\.claude\ask\ask.md`
+   - Mac: `/Users/stark/.claude/ask/ask.md`
+   - 包含: ultrathink思考模式、文件保护规则、其他全局规范
+
+# 通用问题
+
+## 当前活跃需求
+- 把 ![img_163710.png](img_163710.png) 和并到 ![img_163721.png](img_163721.png)里
+
+
+## 历史需求参考(已完成)
+
+<!--
+### 历史需求1: 使用Figma API访问设计数据
+怎么使用Figma API访问设计数据? 'figma-to-rn-toolkit';
+-->
+
+<!--
+### 历史需求2: 清理图片文件
+读取 `C:\Users\Stark8964911\.claude\ask\ask.md` 的内容, 包括注释的内容,
+找出所有用 img_ 开头的图片名字,
+然后在 `C:\Users\Stark8964911\.claude\ask` 目录下保留这些图片,
+删除 `ask.md` 里没有提到的图片
+-->
+
+<!--
+### 历史需求3: Claude Code安装问题
+当前Win11系统, 为什么已经安装了 claude code, 但是经常在 powershell 里遇到报错
+解法: `npm install -g @anthropic-ai/claude-code`
+-->
+
+---
+
+## 使用说明
+
+### 如何添加新需求
+1. 在"当前活跃需求"部分添加新的问题
+2. 使用 `/ask_通用问题` 命令处理
+
+--- End Command ---
+</cursor_commands>
+<user_query>
+
+/ask_通用问题 
+</user_query>
+
+assistant:
+执行 `ask_通用问题` 命令：先读取 ask 模板，再处理当前需求。
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\ask\ask.md
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\ask_通用问题.md
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_163710.png
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_163721.png
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] Read
+
+assistant:
+执行合并：
+- img_163721.png：含 4 张照片的拼贴
+- img_163710.png：单张照片
+
+创建一个 Python 脚本，使用 Pillow 将 img_163710.png 合并到 img_163721.png 中。
+[Tool call] TodoWrite
+  todos: [{"id":"1","content":"Create Python script to merge img_163710 into img_163721 collage","status":"in_progress"},{"id":"2","content":"Update ask_通用问题.md to mark task complete and move to history","status":"pending"}]
+  merge: false
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_163710.png
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_163721.png
+
+[Tool result] TodoWrite
+
+[Tool result] Read
+
+[Tool result] Read
+
+assistant:
+[Tool call] mcp_filesystem_get_file_info
+  path: C:\Users\Stark8964911\.claude\commands\img_163710.png
+[Tool call] mcp_filesystem_get_file_info
+  path: C:\Users\Stark8964911\.claude\commands\img_163721.png
+[Tool call] Glob
+  target_directory: C:\Users\Stark8964911\.claude
+  glob_pattern: requirements*.txt
+
+[Tool result] mcp_filesystem_get_file_info
+
+[Tool result] mcp_filesystem_get_file_info
+
+[Tool result] Glob
+
+assistant:
+创建 Python 脚本合并两张图片：
+[Tool call] Write
+  path: C:\Users\Stark8964911\.claude\commands\merge_images.py
+  contents: """
+Merge img_163710.png into img_163721.png collage.
+Creates a vertical stack: original 4-photo collage + the 5th photo.
+"""
+from pathlib import Path
+
+try:
+    from PIL import Image
+except ImportError:
+    print("Install Pillow: pip install Pillow")
+    raise
+
+COMMANDS_DIR = Path(__file__).parent
+IMG_BASE = COMMANDS_DIR / "img_163721.png"
+IMG_ADD = COMMANDS_DIR / "img_163710.png"
+IMG_OUT = COMMANDS_DIR / "img_163721.png"  # Overwrite with merged result
+
+
+def main():
+    base = Image.open(IMG_BASE).convert("RGB")
+    add = Image.open(IMG_ADD).convert("RGB")
+
+    # Resize add image to match base width, preserve aspect ratio
+    target_width = base.width
+    ratio = target_width / add.width
+    new_height = int(add.height * ratio)
+    add_resized = add.resize((target_width, new_height), Image.Resampling.LANCZOS)
+
+    # Create new canvas: base on top, add on bottom
+    total_height = base.height + add_resized.height
+    merged = Image.new("RGB", (target_width, total_height))
+    merged.paste(base, (0, 0))
+    merged.paste(add_resized, (0, base.height))
+
+    merged.save(IMG_OUT, "PNG", optimize=True)
+    print(f"Merged image saved to {IMG_OUT}")
+    print(f"Dimensions: {target_width} x {total_height}")
+
+
+if __name__ == "__main__":
+    main()
+
+
+[Tool result] Write
+
+assistant:
+[Tool call] Shell
+  command: cd C:\Users\Stark8964911\.claude\commands && python -c "from PIL import Image; print('Pillow OK')"
+  description: Check if Pillow is installed
+
+[Tool result] Shell
+
+assistant:
+[Tool call] Shell
+  command: cd C:\Users\Stark8964911\.claude\commands; python -c "from PIL import Image; print('Pillow OK')"
+  description: Check Pillow in PowerShell
+
+[Tool result] Shell
+
+assistant:
+[Tool call] Shell
+  command: py -c "from PIL import Image; print('Pillow OK')"
+  description: Check Python via py launcher
+[Tool call] Shell
+  command: where.exe python python3 py 2>$null
+  description: Find Python executable
+
+[Tool result] Shell
+
+[Tool result] Shell
+
+assistant:
+[Tool call] Shell
+  command: py -m pip install Pillow --quiet
+  description: Install Pillow for image processing
+
+[Tool result] Shell
+
+assistant:
+[Tool call] Shell
+  command: py C:\Users\Stark8964911\.claude\commands\merge_images.py
+  description: Run merge script
+
+[Tool result] Shell
+
+assistant:
+[Tool call] TodoWrite
+  todos: [{"id":"1","content":"Create Python script to merge img_163710 into img_163721 collage","status":"completed"},{"id":"2","content":"Update ask_通用问题.md to mark task complete and move to history","status":"cancelled"}]
+  merge: true
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_163721.png
+
+[Tool result] TodoWrite
+
+[Tool result] Read
+
+assistant:
+合并已完成，执行情况如下。
+
+## 执行结果
+
+**操作**：将 `img_163710.png` 合并进 `img_163721.png` 的拼贴图。
+
+**实现方式**：
+1. 使用 Pillow 编写了 `commands/merge_images.py` 脚本。
+2. 将 `img_163710.png` 按 `img_163721.png` 的宽度等比缩放。
+3. 将缩放后的图片拼接在原 4 张照片下方，形成 5 图垂直拼贴。
+4. 输出覆盖保存为 `img_163721.png`。
+
+**结果**：
+- 合并后尺寸：1536 × 5868 像素  
+- 当前 `img_163721.png` 包含 5 张照片，最下方为原 `img_163710.png` 内容（含底部文字说明）
+
+---
+
+## 下一步建议
+
+1. **确认结果**：在本地打开 `img_163721.png`，检查拼贴顺序与显示效果，如需调整（如位置、顺序）可说明。
+2. **更新通用问题文档**：在 `ask_通用问题.md` 中将该需求移到「历史需求参考」，并标注为已完成。
+3. **清理临时脚本**：若不再需要，可删除 `commands/merge_images.py`；若以后还要合并其他图片，可保留并复用。

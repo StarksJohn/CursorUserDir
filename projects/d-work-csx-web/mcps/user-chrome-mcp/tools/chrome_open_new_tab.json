@@ -1,0 +1,13 @@
+{
+  "name": "chrome_open_new_tab",
+  "description": "Open a new tab in Chrome, optionally with a URL",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "url": {
+        "type": "string",
+        "description": "Optional URL to open in the new tab"
+      }
+    }
+  }
+}

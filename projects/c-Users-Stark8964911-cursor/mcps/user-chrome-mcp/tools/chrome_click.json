@@ -1,0 +1,16 @@
+{
+  "name": "chrome_click",
+  "description": "Click on an element using a CSS selector",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "selector": {
+        "type": "string",
+        "description": "CSS selector for the element to click"
+      }
+    },
+    "required": [
+      "selector"
+    ]
+  }
+}

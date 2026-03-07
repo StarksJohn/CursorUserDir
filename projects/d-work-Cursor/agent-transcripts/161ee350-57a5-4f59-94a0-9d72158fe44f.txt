@@ -1,0 +1,127 @@
+user:
+<cursor_commands>
+
+--- Cursor Command: ask_cursor ---
+---
+description: "ultrathink 超深度思考模式 - cursor模块"
+---
+
+## 执行步骤
+
+1. 读取 ask.md Template 获取执行规范
+   - Windows: `C:\Users\Stark8964911\.claude\ask\ask.md`
+   - Mac: `/Users/stark/.claude/ask/ask.md`
+   - 包含: ultrathink思考模式、文件保护规则、其他全局规范
+
+2. 处理以下模块需求
+
+---
+
+# Cursor IDE
+
+## 配置信息
+- 配置目录: `C:\Users\Stark8964911\AppData\Roaming\Cursor`
+- 项目类型: React Native, React, Vue, iOS, Android, 微信小程序
+
+## 当前活跃需求
+- 我当前是cursor pro+ 计划的用户
+  - cursor里的 `composer-1.5`模型和 `Claude Sonnet 4.5(Thinking)`模型对比
+<!-- - 把以上问题的题目你的解答用中文更新到`C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor_使用指南与Token优化.md` -->
+
+
+--- End Command ---
+</cursor_commands>
+<user_query>
+
+/ask_cursor 
+</user_query>
+
+assistant:
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\ask\ask.md
+
+[Tool result] Read
+
+assistant:
+[Tool call] WebSearch
+  search_term: Cursor composer-1.5 model 2025
+  explanation: Search for latest information about Cursor's composer-1.5 model
+[Tool call] WebSearch
+  search_term: Claude Sonnet 4.5 Thinking model 2025
+  explanation: Search for latest information about Claude Sonnet 4.5 Thinking model
+
+[Tool result] WebSearch
+
+[Tool result] WebSearch
+
+assistant:
+[Tool call] mcp_web_fetch
+  url: https://cursor.com/blog/composer-1-5
+[Tool call] WebSearch
+  search_term: Cursor Composer 1.5 vs Claude Sonnet 4.5 coding benchmark Terminal-Bench
+  explanation: Get more detailed benchmark and comparison information
+
+[Tool result] mcp_web_fetch
+
+[Tool result] WebSearch
+
+assistant:
+根据当前公开信息，对 **Cursor Composer 1.5** 与 **Claude Sonnet 4.5 (Thinking)** 的对比整理如下：
+
+---
+
+## 一、定位与设计
+
+| 维度 | Composer 1.5 | Claude Sonnet 4.5 (Thinking) |
+|------|--------------|------------------------------|
+| **开发方** | Cursor（专注 IDE 内编码） | Anthropic（通用模型） |
+| **目标** | 为日常交互式编程、重构等场景优化 | 通用能力 + 长任务推理 |
+| **发布时间** | 2026 年 2 月 | 2025 年 9 月 |
+
+---
+
+## 二、技术与能力
+
+### Composer 1.5
+
+- **自适应推理**：按问题难度调节“思考深度”——简单任务快速响应，复杂任务做更深入推理
+- **自总结能力**：上下文接近用尽时能压缩、总结，支持长时间多轮任务
+- **强化学习训练**：相比 Composer 1，RL 训练量约 20x，后训练算力超过预训练
+- **编码导向**：针对代码库理解、终端操作、IDE 集成等做专项优化
+
+### Claude Sonnet 4.5 (Thinking)
+
+- **扩展推理模式**：对复杂任务可长时间“深度思考”
+- **通用能力突出**：文档、表格、演示、网页应用等
+- **长任务能力**：可保持专注超过 30 小时的多步骤任务
+- **多模态**：支持文本、代码、图像
+
+---
+
+## 三、Agent 式编码 benchmark
+
+在 **Terminal-Bench 2.0**（终端 + 编码 Agent 场景）中，公开数据大致为：
+
+| 模型 | Terminal-Bench 2.0 得分 | 说明 |
+|------|------------------------|------|
+| **Composer 1.5** | 约 47.9% | 当前公开结果中较高 |
+| **Claude Sonnet 4.5** | 约 41.6% | 通用模型中的较强表现 |
+
+Composer 1.5 在该 benchmark 上领先约 6 个百分点。
+
+---
+
+## 四、在 Cursor 中的使用感受
+
+| 维度 | Composer 1.5 | Claude Sonnet 4.5 (Thinking) |
+|------|--------------|------------------------------|
+| **编码 Agent** | 为 Cursor 环境优化，Agent 表现更好 | 通用推理强，但非专门为 IDE 场景优化 |
+| **响应节奏** | 简单任务更快，复杂任务再深入思考 | 普遍偏重“深度思考”，整体更慢 |
+| **上下文与长任务** | 自总结可在长对话中继续推理 | 扩展推理时间更长，适合单次大任务 |
+| **Token 使用** | 历史数据中 Composer 1 约为 Claude 4.5 一半 | 思考模式会显著增加 Token 消耗 |
+
+---
+
+## 五、使用建议
+
+1. **日常编码、小重构、快速迭代**：优先用 **Composer 1.5**，更贴合 Cursor 使用

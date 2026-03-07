@@ -1,0 +1,193 @@
+user:
+<cursor_commands>
+
+--- Cursor Command: ask_cursor ---
+---
+description: "ultrathink 超深度思考模式 - cursor模块"
+---
+
+## 执行步骤
+
+1. 读取 ask.md Template 获取执行规范
+   - Windows: `C:\Users\Stark8964911\.claude\ask\ask.md`
+   - Mac: `/Users/stark/.claude/ask/ask.md`
+   - 包含: ultrathink思考模式、文件保护规则、其他全局规范
+
+2. 处理以下模块需求
+
+---
+
+# Cursor IDE
+
+## 配置信息
+- 配置目录: `C:\Users\Stark8964911\AppData\Roaming\Cursor`
+- 项目类型: React Native, React, Vue, iOS, Android, 微信小程序
+
+## 当前活跃需求
+<!-- - 我当前是cursor pro+ 计划的用户 -->
+  <!-- - 进行cursor里的 `composer-1.5`模型和 `Claude Sonnet 4.5(Thinking)`模型在2026年的对比 -->
+<!-- - 把以上问题的题目你的解答用中文更新到`C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor_使用指南与Token优化.md` -->
+- 在 https://cursor.com/cn/dashboard?tab=usage 页面,如图![img_153932.png](img_153932.png)![img_153943.png](img_153943.png),我今天使用了这么多token; 在https://cursor.com/cn/dashboard?tab=billing  页面, 如图![img_154025.png](img_154025.png), Usage 是 0.7% 是什么意思? 我目前订阅的是 `2026年2月24日 - 2027年2月24日`这个年度的`Cursor Pro Plus`计划,但没付款![img_155045.png](img_155045.png)![img_155055.png](img_155055.png), `0.7%`是`2026年2月24日 - 2026年3月24日`已经使用了`0.7%`的token额度的意思吗?  根据 以上信息, 帮我计算出,如果我付款 `2026年2月24日 - 2027年2月24日`这个年度的`Cursor Pro Plus`计划,我每个月大概能最多使用多少token?因为我之前付款订阅过1个月的`Cursor Pro Plus`计划,花了60美金, 能使用到100美金的token额度,大概使用了1亿token; 如果我付款了`2026年2月24日 - 2027年2月24日`这个年度的`Cursor Pro Plus`计划,当月的token用完了, 怎么办? 把你以上的回答用中文总结更新到`C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus-Annual-Plan-Analysis.md`,并把这个文件名和内容改成中文
+- 当前win11系统安装了cursor IDE, 这个cursor 的全局配置是不是在 `C:\Users\Stark8964911\AppData\Roaming\Cursor`目录下? 为什么我用 cursor IDE 打开 `C:\Users\Stark8964911\AppData\Roaming\Cursor` 目录, 一直是![img_154734.png](img_154734.png)状态?是不是这个目录文件太多? 怎么 优化 cursor 的全局配置,避免cursor打开大文件目录时卡死? 
+
+
+--- End Command ---
+</cursor_commands>
+<user_query>
+/ask_cursor 
+</user_query>
+
+assistant:
+[Thinking] The user is using the `/ask_cursor` command. I need to read the ask.md template first as instructed.
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\ask\ask.md
+
+[Tool result] Read
+
+assistant:
+[Thinking] Now I need to look at the images referenced in the user query. The images are:
+- img_153932.png
+- img_153943.png
+- img_154025.png
+- img_155045.png
+- img_155055.png
+- img_154734.png
+
+I need to find these images. According to the ask.md, if I can't find images, I should look in `C:\Users\Stark8964911\.claude\commands` directory. But since the cursor command is being used, these images might be in the cursor commands directory or near the command file.
+
+Let me check what the user is asking:
+
+
+The user seems to be asking about Cursor token usage and billing, specifically what 0.7% usage means, how token calculations work for the Pro Plus annual plan, and why the global config directory is slow to open. I should locate those images first to understand the context better.
+现在让我查看用户提到的图片，以便准确理解问题内容。
+[Tool call] Glob
+  glob_pattern: img_15*.png
+  target_directory: C:\Users\Stark8964911\.claude\commands
+
+[Tool result] Glob
+
+assistant:
+[Tool call] Shell
+  command: Get-ChildItem "C:\Users\Stark8964911\.claude" -Recurse -Filter "img_15*.png" | Select-Object FullName
+  description: Search for images in .claude directory
+[Tool call] Shell
+  command: Get-ChildItem "C:\Users\Stark8964911\.cursor" -Recurse -Filter "img_15*.png" -ErrorAction SilentlyContinue | Select-Object FullName
+  description: Search for images in .cursor directory
+
+[Tool result] Shell
+
+[Tool result] Shell
+
+assistant:
+[Thinking] The images are not found. Let me check the cursor command directory for these images.
+[Tool call] Shell
+  command: Get-ChildItem "C:\Users\Stark8964911\AppData\Roaming\Cursor" -Filter "img_15*.png" -ErrorAction SilentlyContinue | Select-Object FullName
+  description: Search for images in Cursor AppData directory
+[Tool call] Shell
+  command: Get-ChildItem "C:\Users\Stark8964911\.cursor\rules" -ErrorAction SilentlyContinue | Select-Object Name
+  description: List cursor rules directory
+
+[Tool result] Shell
+
+[Tool result] Shell
+
+assistant:
+[Thinking] I can't find the images. Let me try to look for the cursor command files to understand the structure better.
+[Tool call] Shell
+  command: Get-ChildItem "C:\Users\Stark8964911\.cursor" -Recurse -ErrorAction SilentlyContinue | Where-Object {$_.Name -like "*.png"} | Select-Object FullName
+  description: Find all PNG images in cursor directory
+
+[Tool result] Shell
+
+assistant:
+[Thinking] These are just extension icons, not the user's images. I need to find where the cursor commands are stored. The command file is using images, they should be in the same directory as the command file.
+
+Let me look for cursor command files to understand where the ask_cursor command is located.
+[Tool call] Shell
+  command: Get-ChildItem "C:\Users\Stark8964911\.cursor" -Filter "*.md" -ErrorAction SilentlyContinue | Select-Object FullName, Name
+  description: Find markdown files in .cursor directory
+
+[Tool result] Shell
+
+assistant:
+[Tool call] Shell
+  command: Get-ChildItem "C:\Users\Stark8964911\AppData\Roaming\Cursor\User\globalStorage" -ErrorAction SilentlyContinue | Select-Object Name, LastWriteTime | Sort-Object LastWriteTime -Descending | Select-Object -First 20
+  description: Check Cursor global storage directory
+[Tool call] Shell
+  command: Get-ChildItem "D:\work\RN\csx-mobile-upgrade\.cursor" -Filter "img_15*.png" -ErrorAction SilentlyContinue | Select-Object FullName
+  description: Search for images in project cursor directory
+
+[Tool result] Shell
+
+[Tool result] Shell
+
+assistant:
+[Thinking] I can't find the images. Let me look for the cursor command file location since the `/ask_cursor` command defines where these images should be.
+
+The command file says "在 https://cursor.com/cn/dashboard?tab=usage 页面,如图![img_153932.png](img_153932.png)" - these images should be in the same directory as the command file.
+
+Let me find where the cursor custom commands are stored.
+[Tool call] Shell
+  command: Get-ChildItem "C:\Users\Stark8964911\AppData\Roaming\Cursor\User" -ErrorAction SilentlyContinue | Select-Object Name
+  description: List Cursor User config directory
+[Tool call] Shell
+  command: Get-ChildItem "D:\work\RN\csx-mobile-upgrade\.cursor" -Recurse -Filter "*.png" -ErrorAction SilentlyContinue | Select-Object Name
+  description: Search for PNG images in project .cursor dir
+
+[Tool result] Shell
+
+[Tool result] Shell
+
+assistant:
+[Thinking] I cannot find the images. The images referenced in the cursor command (img_153932.png, img_153943.png, img_154025.png, img_155045.png, img_155055.png, img_154734.png) are not accessible to me. I'll have to answer the questions based on the text content alone, using my knowledge about Cursor Pro Plus plans and billing.
+
+Let me analyze what the user is asking based on the text:
+
+1. **Usage page (img_153932.png, img_153943.png)**: Shows token usage for today on the usage tab
+
+2. **Billing page (img_154025.png)**: Shows "Usage is 0.7%"
+   - The user is on a Cursor Pro Plus annual plan running from February 24, 2026 to February 24, 2027, but hasn't completed payment yet
+   - The 0.7% usage likely refers to tokens consumed in the current billing month (February 24 to March 24, 2026) relative to the monthly token quota
+   - Based on typical Pro Plus pricing, an annual plan would provide roughly 100 million tokens per month, so 0.7% would mean about 700,000 tokens used so far
+
+There's also a separate issue with the Cursor config directory at `C:\Users\Stark8964911\AppData\Roaming\Cursor` being slow to access in the IDE, which might need optimization through caching or moving to a faster storage location. The usage percentage is tracking how much of the monthly credit allocation has been spent so far in the billing cycle. For the annual plan calculation, the user's experience of paying $60 monthly with $100 in token credit suggests they might be on a higher tier plan like Cursor Business rather than the standard Pro tier, which would give them roughly 100 million tokens per month. So the token cost works out to about $1 per million tokens. For the annual plan, I'm not certain of Cursor's exact Pro Plus pricing in 2026, but based on what I know, the standard Pro plan is $20/month or $192/year, while the user's $60/month subscription suggests either a regional pricing variation, a custom enterprise deal, or possibly a higher tier plan I'm not fully familiar with.
+
+Looking at how this breaks down, the $60 monthly cost likely combines the base subscription with usage overages—so maybe $20 for the plan itself plus $40 in additional fast request charges, which would align with the $100 token equivalent they mentioned. When those monthly fast requests get exhausted, users can either switch to slower requests, purchase more fast requests on demand, or adjust their usage settings.
+
+On the Cursor config directory issue, the slowness happens because that folder accumulates extensions, settings, logs, and workspace data that can balloon to several gigabytes. The IDE actively indexes and monitors these files, which tanks performance. The fix is straightforward—avoid opening that directory in Cursor itself and instead use the file explorer, or configure Cursor to exclude it from file watching and indexing.
+
+For the remaining solutions, I should move the extension cache and logs elsewhere, then set up periodic cleanup of the logs directory to keep things lean.
+
+Now I'm looking at the billing situation the user mentioned—they subscribed to annual Cursor Pro Plus starting February 24, 2026, but haven't actually paid yet. They're asking whether that 0.7% figure represents their token usage for the current billing cycle. I'll need to clarify the billing status and what that percentage actually means based on how Cursor's usage tracking works, then prepare the markdown file they requested with all the answers. I'm realizing I should look up the current Cursor Pro Plus pricing to give accurate information rather than relying on assumptions, especially since the user asked for today's latest information.
+图片在本地找不到，让我联网查询最新的 Cursor 定价信息来回答问题。
+[Tool call] WebSearch
+  search_term: Cursor Pro Plus annual plan pricing 2026 token limit monthly
+  explanation: 查询2026年Cursor Pro Plus年度计划的最新定价和token限额信息
+[Tool call] WebSearch
+  search_term: Cursor IDE billing usage percentage meaning 0.7% spending limit 2026
+  explanation: 查询Cursor账单页面Usage百分比含义
+
+[Tool result] WebSearch
+
+[Tool result] WebSearch
+
+assistant:
+[Tool call] WebFetch
+  url: https://www.cursor.com/pricing
+[Tool call] WebFetch
+  url: https://cursor.com/docs/account/billing
+
+[Tool result] WebFetch
+
+[Tool result] WebFetch
+
+assistant:
+[Tool call] WebFetch
+  url: https://checkthat.ai/brands/cursor/pricing
+[Tool call] WebSearch
+  search_term: Cursor Pro Plus credit system how many credits per month 2025 2026 token calculation
+  explanation: 查询Cursor Pro Plus每月包含多少credits及token换算
+
+[Tool result] WebFetch
+
+[Tool result] WebSearch

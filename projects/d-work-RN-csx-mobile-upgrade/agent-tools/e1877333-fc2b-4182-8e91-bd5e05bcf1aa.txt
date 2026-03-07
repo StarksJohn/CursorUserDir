@@ -1,0 +1,842 @@
+info A dev server is already running for this project on port 8081.
+info Installing the app...
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.13/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :gradle-plugin:settings-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:settings-plugin:pluginDescriptors UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:processResources UP-TO-DATE
+> Task :gradle-plugin:shared:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:shared:compileJava NO-SOURCE
+> Task :gradle-plugin:shared:processResources NO-SOURCE
+> Task :gradle-plugin:shared:classes UP-TO-DATE
+> Task :gradle-plugin:shared:jar UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:compileJava NO-SOURCE
+> Task :gradle-plugin:settings-plugin:classes UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:jar UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:react-native-gradle-plugin:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:compileJava NO-SOURCE
+> Task :gradle-plugin:react-native-gradle-plugin:pluginDescriptors UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:processResources UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:classes UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:jar UP-TO-DATE
+
+> Configure project :app
+useNewCruncher has been deprecated. It will be removed in a future version of the gradle plugin. New cruncher is now always enabled.
+--W- Build Environment: AGConnect plugin version is: 1.9.1.301, Gradle version is: 8.13, Android Plugin version is: 8.7.3
+--I- there's no config file
+--W- The variant: debug, There's no json file
+--I- there's no config file
+--W- The variant: release, There's no json file
+
+> Configure project :react-native-firebase_app
+:react-native-firebase_app package.json found at D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\app\package.json
+:react-native-firebase_app:firebase.bom using default value: 33.5.1
+:react-native-firebase_app:play.play-services-auth using default value: 21.2.0
+:react-native-firebase_app package.json found at D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\app\package.json
+:react-native-firebase_app:version set from package.json: 21.6.1 (21,6,1 - 21006001)
+:react-native-firebase_app:android.compileSdk using custom value: 36
+:react-native-firebase_app:android.targetSdk using custom value: 36
+:react-native-firebase_app:android.minSdk using custom value: 24
+:react-native-firebase_app:reactNativeAndroidDir D:\work\RN\csx-mobile-upgrade\node_modules\react-native
+
+> Configure project :react-native-firebase_messaging
+:react-native-firebase_messaging package.json found at D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\messaging\package.json
+:react-native-firebase_app package.json found at D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\app\package.json
+:react-native-firebase_messaging:firebase.bom using default value: 33.5.1
+:react-native-firebase_messaging package.json found at D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\messaging\package.json
+:react-native-firebase_messaging:version set from package.json: 21.6.1 (21,6,1 - 21006001)
+:react-native-firebase_messaging:android.compileSdk using custom value: 36
+:react-native-firebase_messaging:android.targetSdk using custom value: 36
+:react-native-firebase_messaging:android.minSdk using custom value: 24
+:react-native-firebase_messaging:reactNativeAndroidDir D:\work\RN\csx-mobile-upgrade\node_modules\react-native
+
+> Configure project :react-native-reanimated
+Android gradle plugin: 8.11.0
+Gradle: 8.13
+
+> Configure project :react-native-vision-camera
+[VisionCamera] Thank you for using VisionCamera ??
+[VisionCamera] If you enjoy using VisionCamera, please consider sponsoring this project: https://github.com/sponsors/mrousavy
+[VisionCamera] node_modules found at D:\work\RN\csx-mobile-upgrade\node_modules
+[VisionCamera] VisionCamera_enableFrameProcessors is set to false!
+[VisionCamera] react-native-worklets-core not found, Frame Processors are disabled!
+[VisionCamera] VisionCamera_enableCodeScanner is set to true!
+WARNING: The specified Android SDK Build Tools version (31.0.0) is ignored, as it is below the minimum supported version (35.0.0) for Android Gradle Plugin 8.11.0.
+Android SDK Build Tools 35.0.0 will be used.
+To suppress this warning, remove "buildToolsVersion '31.0.0'" from your build.gradle file, as each version of the Android Gradle Plugin now has a default version of the build tools.
+
+> Task :react-native-calendar-events:preBuild UP-TO-DATE
+> Task :react-native-fs:preBuild UP-TO-DATE
+> Task :react-native-encrypted-storage:preBuild UP-TO-DATE
+> Task :react-native-file-viewer:preBuild UP-TO-DATE
+> Task :react-native-fingerprint-scanner:preBuild UP-TO-DATE
+> Task :react-native-device-info:preBuild UP-TO-DATE
+> Task :react-native-app-auth:preBuild UP-TO-DATE
+> Task :react-native-html-to-pdf:preBuild UP-TO-DATE
+> Task :react-native-calendar-events:preDebugBuild UP-TO-DATE
+> Task :react-native-encrypted-storage:preDebugBuild UP-TO-DATE
+> Task :react-native-app-auth:preDebugBuild UP-TO-DATE
+> Task :react-native-file-viewer:preDebugBuild UP-TO-DATE
+> Task :react-native-device-info:preDebugBuild UP-TO-DATE
+> Task :react-native-fingerprint-scanner:preDebugBuild UP-TO-DATE
+> Task :react-native-firebase_messaging:preBuild UP-TO-DATE
+> Task :react-native-version-check:preBuild UP-TO-DATE
+> Task :react-native-firebase_app:preBuild UP-TO-DATE
+> Task :react-native-fs:preDebugBuild UP-TO-DATE
+> Task :react-native-firebase_messaging:preDebugBuild UP-TO-DATE
+> Task :react-native-firebase_app:preDebugBuild UP-TO-DATE
+> Task :react-native-reanimated:assertMinimalReactNativeVersionTask SKIPPED
+> Task :react-native-calendar-events:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-fingerprint-scanner:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-app-auth:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-encrypted-storage:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-firebase_messaging:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-file-viewer:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-device-info:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-fs:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-firebase_app:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-version-check:preDebugBuild UP-TO-DATE
+> Task :react-native-html-to-pdf:preDebugBuild UP-TO-DATE
+> Task :hmscore_react-native-hms-push:preBuild UP-TO-DATE
+> Task :react-native-device-info:generateDebugResValues UP-TO-DATE
+> Task :react-native-file-viewer:generateDebugResValues UP-TO-DATE
+> Task :react-native-calendar-events:generateDebugResValues UP-TO-DATE
+> Task :react-native-version-check:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-app-auth:generateDebugResValues UP-TO-DATE
+> Task :react-native-encrypted-storage:generateDebugResValues UP-TO-DATE
+> Task :react-native-fingerprint-scanner:generateDebugResValues UP-TO-DATE
+> Task :react-native-html-to-pdf:writeDebugAarMetadata UP-TO-DATE
+> Task :hmscore_react-native-hms-push:preDebugBuild UP-TO-DATE
+> Task :react-native-firebase_app:generateDebugResValues UP-TO-DATE
+> Task :react-native-calendar-events:generateDebugResources UP-TO-DATE
+> Task :react-native-device-info:generateDebugResources UP-TO-DATE
+> Task :react-native-firebase_messaging:generateDebugResValues UP-TO-DATE
+> Task :hmscore_react-native-hms-push:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-fs:generateDebugResValues UP-TO-DATE
+> Task :react-native-file-viewer:generateDebugResources UP-TO-DATE
+> Task :react-native-firebase_app:generateDebugResources UP-TO-DATE
+> Task :react-native-app-auth:generateDebugResources UP-TO-DATE
+> Task :react-native-fingerprint-scanner:generateDebugResources UP-TO-DATE
+> Task :react-native-encrypted-storage:generateDebugResources UP-TO-DATE
+> Task :hmscore_react-native-hms-push:generateDebugResValues UP-TO-DATE
+> Task :react-native-firebase_messaging:generateDebugResources UP-TO-DATE
+> Task :react-native-fs:generateDebugResources UP-TO-DATE
+> Task :hmscore_react-native-hms-push:generateDebugResources UP-TO-DATE
+> Task :react-native-html-to-pdf:generateDebugResValues UP-TO-DATE
+> Task :react-native-version-check:generateDebugResValues UP-TO-DATE
+> Task :react-native-html-to-pdf:generateDebugResources UP-TO-DATE
+> Task :react-native-calendar-events:packageDebugResources UP-TO-DATE
+> Task :react-native-app-auth:packageDebugResources UP-TO-DATE
+> Task :react-native-device-info:packageDebugResources UP-TO-DATE
+> Task :react-native-fingerprint-scanner:packageDebugResources UP-TO-DATE
+> Task :react-native-encrypted-storage:packageDebugResources UP-TO-DATE
+> Task :react-native-file-viewer:packageDebugResources UP-TO-DATE
+> Task :react-native-fs:packageDebugResources UP-TO-DATE
+> Task :react-native-version-check:generateDebugResources UP-TO-DATE
+> Task :react-native-app-auth:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-calendar-events:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-encrypted-storage:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-device-info:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-file-viewer:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-html-to-pdf:packageDebugResources UP-TO-DATE
+> Task :react-native-version-check:packageDebugResources UP-TO-DATE
+> Task :react-native-firebase_messaging:packageDebugResources UP-TO-DATE
+> Task :react-native-fs:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-fingerprint-scanner:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-firebase_messaging:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-file-viewer:processDebugManifest UP-TO-DATE
+> Task :react-native-app-auth:processDebugManifest UP-TO-DATE
+> Task :react-native-device-info:processDebugManifest UP-TO-DATE
+> Task :react-native-encrypted-storage:processDebugManifest UP-TO-DATE
+> Task :react-native-calendar-events:processDebugManifest UP-TO-DATE
+> Task :react-native-html-to-pdf:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-version-check:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-fs:processDebugManifest UP-TO-DATE
+> Task :react-native-firebase_app:packageDebugResources UP-TO-DATE
+> Task :hmscore_react-native-hms-push:packageDebugResources UP-TO-DATE
+> Task :react-native-fingerprint-scanner:processDebugManifest UP-TO-DATE
+> Task :react-native-firebase_messaging:processDebugManifest UP-TO-DATE
+> Task :react-native-app-auth:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-calendar-events:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-device-info:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-encrypted-storage:compileDebugLibraryResources UP-TO-DATE
+> Task :hmscore_react-native-hms-push:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-fingerprint-scanner:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-firebase_app:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-file-viewer:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-version-check:processDebugManifest UP-TO-DATE
+> Task :react-native-html-to-pdf:processDebugManifest UP-TO-DATE
+> Task :react-native-firebase_messaging:compileDebugLibraryResources UP-TO-DATE
+> Task :hmscore_react-native-hms-push:processDebugManifest UP-TO-DATE
+> Task :hmscore_react-native-hms-push:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-fs:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-firebase_app:processDebugManifest UP-TO-DATE
+> Task :react-native-firebase_app:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-firebase_messaging:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-app-auth:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-calendar-events:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-encrypted-storage:parseDebugLocalResources UP-TO-DATE
+> Task :hmscore_react-native-hms-push:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-fs:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-file-viewer:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-firebase_app:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-fingerprint-scanner:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-device-info:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-permissions:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-reanimated:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-blob-util:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-share:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-community_blur:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :sentry_react-native:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-agora:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-documents_picker:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-safe-area-context:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-localize:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-clipboard_clipboard:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-gesture-handler:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-image-picker:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-pdf:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-sound:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-webview:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-async-storage_async-storage:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-picker_picker:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :react-native-firebase_app:generateDebugRFile UP-TO-DATE
+> Task :react-native-fs:generateDebugRFile UP-TO-DATE
+> Task :react-native-app-auth:generateDebugRFile UP-TO-DATE
+> Task :hmscore_react-native-hms-push:generateDebugRFile UP-TO-DATE
+> Task :react-native-device-info:generateDebugRFile UP-TO-DATE
+> Task :react-native-blob-util:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-blob-util:preBuild UP-TO-DATE
+> Task :react-native-permissions:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-blob-util:preDebugBuild UP-TO-DATE
+> Task :react-native-version-check:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-html-to-pdf:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-permissions:preBuild UP-TO-DATE
+> Task :react-native-permissions:preDebugBuild UP-TO-DATE
+> Task :react-native-fingerprint-scanner:generateDebugRFile UP-TO-DATE
+> Task :react-native-file-viewer:generateDebugRFile UP-TO-DATE
+> Task :app:generateAutolinkingNewArchitectureFiles UP-TO-DATE
+> Task :react-native-encrypted-storage:generateDebugRFile UP-TO-DATE
+> Task :react-native-permissions:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-blob-util:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-screens:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-permissions:generateDebugResValues UP-TO-DATE
+> Task :react-native-reanimated:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-share:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-share:preBuild UP-TO-DATE
+> Task :react-native-community_blur:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-pdf:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-share:preDebugBuild UP-TO-DATE
+> Task :react-native-community_blur:preBuild UP-TO-DATE
+> Task :react-native-pdf:preBuild UP-TO-DATE
+> Task :react-native-pdf:preDebugBuild UP-TO-DATE
+> Task :react-native-community_blur:preDebugBuild UP-TO-DATE
+> Task :sentry_react-native:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-image-picker:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :sentry_react-native:preBuild UP-TO-DATE
+> Task :react-native-documents_picker:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :sentry_react-native:preDebugBuild UP-TO-DATE
+> Task :react-native-image-picker:preBuild UP-TO-DATE
+> Task :react-native-image-picker:preDebugBuild UP-TO-DATE
+> Task :react-native-localize:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-clipboard_clipboard:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-async-storage_async-storage:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-gesture-handler:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-sound:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-picker_picker:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-app-auth:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-version-check:parseDebugLocalResources UP-TO-DATE
+> Task :hmscore_react-native-hms-push:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-file-viewer:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-fingerprint-scanner:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-device-info:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-encrypted-storage:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-svg:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-blob-util:generateDebugResValues UP-TO-DATE
+> Task :react-native-html-to-pdf:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-calendar-events:generateDebugRFile UP-TO-DATE
+> Task :react-native-firebase_messaging:generateDebugRFile UP-TO-DATE
+> Task :react-native-documents_picker:preBuild UP-TO-DATE
+> Task :react-native-permissions:generateDebugResources UP-TO-DATE
+> Task :react-native-documents_picker:preDebugBuild UP-TO-DATE
+> Task :react-native-agora:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-community_blur:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-agora:preBuild UP-TO-DATE
+> Task :sentry_react-native:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-image-picker:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-agora:preDebugBuild UP-TO-DATE
+> Task :react-native-pdf:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-documents_picker:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-calendar-events:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-safe-area-context:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-share:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-picker_picker:preBuild UP-TO-DATE
+> Task :react-native-async-storage_async-storage:preBuild UP-TO-DATE
+> Task :react-native-async-storage_async-storage:preDebugBuild UP-TO-DATE
+> Task :react-native-gesture-handler:preBuild UP-TO-DATE
+> Task :react-native-gesture-handler:preDebugBuild UP-TO-DATE
+> Task :react-native-clipboard_clipboard:preBuild UP-TO-DATE
+> Task :react-native-sound:preBuild UP-TO-DATE
+> Task :react-native-safe-area-context:preBuild UP-TO-DATE
+> Task :react-native-safe-area-context:preDebugBuild UP-TO-DATE
+> Task :react-native-localize:preBuild UP-TO-DATE
+> Task :react-native-localize:preDebugBuild UP-TO-DATE
+> Task :react-native-sound:preDebugBuild UP-TO-DATE
+> Task :react-native-picker_picker:preDebugBuild UP-TO-DATE
+> Task :react-native-clipboard_clipboard:preDebugBuild UP-TO-DATE
+> Task :react-native-documents_picker:generateDebugResValues UP-TO-DATE
+> Task :react-native-app-auth:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-pdf:generateDebugResValues UP-TO-DATE
+> Task :react-native-async-storage_async-storage:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-image-picker:generateDebugResValues UP-TO-DATE
+> Task :sentry_react-native:generateDebugResValues UP-TO-DATE
+> Task :react-native-share:generateDebugResValues UP-TO-DATE
+> Task :react-native-html-to-pdf:generateDebugRFile UP-TO-DATE
+> Task :hmscore_react-native-hms-push:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-screens:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-device-info:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-screens:preBuild UP-TO-DATE
+> Task :react-native-screens:preDebugBuild UP-TO-DATE
+> Task :react-native-safe-area-context:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-community_blur:generateDebugResValues UP-TO-DATE
+> Task :react-native-agora:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-sound:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-picker_picker:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-clipboard_clipboard:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-calendar-events:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-gesture-handler:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-async-storage_async-storage:generateDebugResValues UP-TO-DATE
+> Task :react-native-localize:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-encrypted-storage:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-documents_picker:generateDebugResources UP-TO-DATE
+> Task :react-native-file-viewer:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-pdf:generateDebugResources UP-TO-DATE
+> Task :react-native-share:generateDebugResources UP-TO-DATE
+> Task :react-native-fingerprint-scanner:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-reanimated:prepareReanimatedHeadersForPrefabs UP-TO-DATE
+> Task :sentry_react-native:generateDebugResources UP-TO-DATE
+> Task :react-native-agora:generateDebugResValues UP-TO-DATE
+> Task :react-native-firebase_messaging:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-clipboard_clipboard:generateDebugResValues UP-TO-DATE
+> Task :react-native-image-picker:generateDebugResources UP-TO-DATE
+> Task :react-native-screens:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-gesture-handler:generateDebugResValues UP-TO-DATE
+> Task :react-native-firebase_app:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-version-check:generateDebugRFile UP-TO-DATE
+> Task :react-native-safe-area-context:generateDebugResValues UP-TO-DATE
+> Task :react-native-sound:generateDebugResValues UP-TO-DATE
+> Task :react-native-community_blur:generateDebugResources UP-TO-DATE
+> Task :react-native-async-storage_async-storage:generateDebugResources UP-TO-DATE
+> Task :react-native-localize:generateDebugResValues UP-TO-DATE
+> Task :react-native-permissions:packageDebugResources UP-TO-DATE
+> Task :react-native-clipboard_clipboard:generateDebugResources UP-TO-DATE
+> Task :react-native-firebase_messaging:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-screens:generateDebugResValues UP-TO-DATE
+> Task :react-native-localize:generateDebugResources UP-TO-DATE
+> Task :react-native-gesture-handler:generateDebugResources UP-TO-DATE
+> Task :react-native-safe-area-context:generateDebugResources UP-TO-DATE
+> Task :react-native-agora:generateDebugResources UP-TO-DATE
+> Task :react-native-firebase_app:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-permissions:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-html-to-pdf:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-fs:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-agora:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-fs:javaPreCompileDebug UP-TO-DATE
+> Task :sentry_react-native:packageDebugResources UP-TO-DATE
+> Task :react-native-sound:generateDebugResources UP-TO-DATE
+> Task :react-native-html-to-pdf:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-gesture-handler:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-documents_picker:packageDebugResources UP-TO-DATE
+> Task :react-native-localize:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-safe-area-context:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-svg:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-svg:preBuild UP-TO-DATE
+> Task :react-native-sound:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-svg:preDebugBuild UP-TO-DATE
+> Task :react-native-permissions:processDebugManifest UP-TO-DATE
+> Task :react-native-image-picker:packageDebugResources UP-TO-DATE
+> Task :sentry_react-native:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-documents_picker:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-permissions:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-async-storage_async-storage:packageDebugResources UP-TO-DATE
+> Task :react-native-community_blur:packageDebugResources UP-TO-DATE
+> Task :react-native-pdf:packageDebugResources UP-TO-DATE
+> Task :react-native-share:packageDebugResources UP-TO-DATE
+> Task :react-native-agora:processDebugManifest UP-TO-DATE
+> Task :react-native-clipboard_clipboard:packageDebugResources UP-TO-DATE
+> Task :react-native-permissions:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-async-storage_async-storage:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-image-picker:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-screens:generateDebugResources UP-TO-DATE
+> Task :react-native-blob-util:generateDebugResources UP-TO-DATE
+> Task :react-native-picker_picker:generateDebugResValues UP-TO-DATE
+> Task :react-native-pdf:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-reanimated:prepareWorkletsHeadersForPrefabs UP-TO-DATE
+> Task :react-native-reanimated:preBuild UP-TO-DATE
+> Task :react-native-reanimated:preDebugBuild UP-TO-DATE
+> Task :react-native-safe-area-context:processDebugManifest UP-TO-DATE
+> Task :react-native-localize:packageDebugResources UP-TO-DATE
+> Task :react-native-webview:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :sentry_react-native:processDebugManifest UP-TO-DATE
+> Task :react-native-webview:preBuild UP-TO-DATE
+> Task :react-native-webview:preDebugBuild UP-TO-DATE
+> Task :react-native-reanimated:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-community_blur:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-share:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-clipboard_clipboard:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-permissions:generateDebugRFile UP-TO-DATE
+> Task :react-native-permissions:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :react-native-reanimated:generateDebugResValues UP-TO-DATE
+> Task :react-native-agora:packageDebugResources UP-TO-DATE
+> Task :react-native-picker_picker:generateDebugResources UP-TO-DATE
+> Task :react-native-webview:writeDebugAarMetadata UP-TO-DATE
+> Task :sentry_react-native:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-async-storage_async-storage:processDebugManifest UP-TO-DATE
+> Task :react-native-sound:packageDebugResources UP-TO-DATE
+> Task :react-native-pdf:processDebugManifest UP-TO-DATE
+> Task :react-native-documents_picker:processDebugManifest UP-TO-DATE
+> Task :react-native-localize:processDebugManifest UP-TO-DATE
+> Task :react-native-blob-util:packageDebugResources UP-TO-DATE
+> Task :react-native-image-picker:processDebugManifest UP-TO-DATE
+> Task :react-native-webview:generateDebugResValues UP-TO-DATE
+> Task :react-native-permissions:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-image-picker:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-blob-util:extractDeepLinksDebug UP-TO-DATE
+> Task :sentry_react-native:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-webview:generateDebugResources UP-TO-DATE
+> Task :react-native-agora:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-reanimated:generateDebugResources UP-TO-DATE
+> Task :react-native-sound:processDebugManifest UP-TO-DATE
+> Task :react-native-documents_picker:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-pdf:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-community_blur:processDebugManifest UP-TO-DATE
+> Task :react-native-vision-camera:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-community_blur:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-safe-area-context:packageDebugResources UP-TO-DATE
+> Task :react-native-screens:packageDebugResources UP-TO-DATE
+> Task :react-native-pdf:parseDebugLocalResources UP-TO-DATE
+> Task :sentry_react-native:generateDebugRFile UP-TO-DATE
+> Task :app:generateAutolinkingPackageList UP-TO-DATE
+> Task :react-native-community_blur:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-safe-area-context:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-localize:parseDebugLocalResources UP-TO-DATE
+> Task :app:generateCodegenSchemaFromJavaScript SKIPPED
+> Task :app:generateCodegenArtifactsFromSchema SKIPPED
+> Task :react-native-vision-camera:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :app:generateReactNativeEntryPoint UP-TO-DATE
+> Task :react-native-sound:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-documents_picker:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-image-picker:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-agora:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-picker_picker:packageDebugResources UP-TO-DATE
+> Task :react-native-async-storage_async-storage:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-localize:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-screens:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-version-check:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-sound:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-reanimated:packageDebugResources UP-TO-DATE
+> Task :react-native-version-check:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-async-storage_async-storage:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-blob-util:processDebugManifest UP-TO-DATE
+> Task :react-native-webview:packageDebugResources UP-TO-DATE
+> Task :react-native-reanimated:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-safe-area-context:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-localize:generateDebugRFile UP-TO-DATE
+> Task :react-native-agora:generateDebugRFile UP-TO-DATE
+> Task :react-native-webview:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-picker_picker:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-blob-util:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-sound:generateDebugRFile UP-TO-DATE
+> Task :react-native-community_blur:generateDebugRFile UP-TO-DATE
+> Task :react-native-sound:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :react-native-documents_picker:generateDebugRFile UP-TO-DATE
+> Task :react-native-documents_picker:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :react-native-agora:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-sound:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-webview:processDebugManifest UP-TO-DATE
+> Task :react-native-picker_picker:processDebugManifest UP-TO-DATE
+> Task :react-native-community_blur:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-localize:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-blob-util:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-image-picker:generateDebugRFile UP-TO-DATE
+> Task :react-native-safe-area-context:generateDebugRFile UP-TO-DATE
+> Task :react-native-async-storage_async-storage:generateDebugRFile UP-TO-DATE
+> Task :react-native-documents_picker:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-agora:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-localize:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-webview:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-community_blur:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-safe-area-context:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :react-native-picker_picker:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-image-picker:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-async-storage_async-storage:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-picker_picker:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-webview:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-blob-util:generateDebugRFile UP-TO-DATE
+> Task :react-native-safe-area-context:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-image-picker:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-blob-util:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-async-storage_async-storage:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-webview:generateDebugRFile UP-TO-DATE
+> Task :react-native-picker_picker:generateDebugRFile UP-TO-DATE
+> Task :react-native-webview:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :react-native-picker_picker:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-clipboard_clipboard:processDebugManifest UP-TO-DATE
+> Task :react-native-screens:processDebugManifest UP-TO-DATE
+> Task :react-native-gesture-handler:packageDebugResources UP-TO-DATE
+> Task :react-native-svg:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-share:processDebugManifest UP-TO-DATE
+> Task :react-native-reanimated:processDebugManifest UP-TO-DATE
+> Task :react-native-picker_picker:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-webview:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-clipboard_clipboard:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-blob-util:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-pdf:generateDebugRFile UP-TO-DATE
+> Task :react-native-gesture-handler:processDebugManifest UP-TO-DATE
+> Task :react-native-svg:generateDebugResValues UP-TO-DATE
+> Task :react-native-reanimated:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-share:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-screens:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-reanimated:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-vision-camera:prepareHeaders UP-TO-DATE
+> Task :react-native-clipboard_clipboard:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-svg:generateDebugResources UP-TO-DATE
+> Task :react-native-share:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-gesture-handler:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-pdf:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-screens:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-reanimated:generateDebugRFile UP-TO-DATE
+> Task :react-native-clipboard_clipboard:generateDebugRFile UP-TO-DATE
+> Task :react-native-reanimated:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-reanimated:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-reanimated:packageNdkLibs NO-SOURCE
+> Task :react-native-clipboard_clipboard:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-gesture-handler:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-pdf:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-clipboard_clipboard:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-share:generateDebugRFile UP-TO-DATE
+> Task :react-native-gesture-handler:generateDebugRFile UP-TO-DATE
+> Task :react-native-gesture-handler:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :react-native-share:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-share:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-vision-camera:preBuild UP-TO-DATE
+> Task :react-native-vision-camera:preDebugBuild UP-TO-DATE
+> Task :react-native-vision-camera:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-svg:packageDebugResources UP-TO-DATE
+> Task :react-native-vision-camera:generateDebugResValues UP-TO-DATE
+> Task :react-native-vision-camera:generateDebugResources UP-TO-DATE
+> Task :react-native-svg:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-gesture-handler:generateDebugBuildConfig UP-TO-DATE
+> Task :app:processDebugGoogleServices
+> Task :app:preBuild UP-TO-DATE
+> Task :react-native-gesture-handler:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-vision-camera:packageDebugResources UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :react-native-screens:generateDebugRFile UP-TO-DATE
+> Task :react-native-vision-camera:extractDeepLinksDebug UP-TO-DATE
+> Task :sentry_react-native:generateDebugBuildConfig UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-svg:processDebugManifest UP-TO-DATE
+> Task :react-native-vision-camera:processDebugManifest UP-TO-DATE
+> Task :react-native-vision-camera:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-svg:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-screens:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :react-native-vision-camera:parseDebugLocalResources UP-TO-DATE
+> Task :sentry_react-native:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-svg:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-svg:generateDebugRFile UP-TO-DATE
+> Task :react-native-vision-camera:generateDebugRFile UP-TO-DATE
+> Task :react-native-vision-camera:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :react-native-screens:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-vision-camera:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-svg:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-svg:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-clipboard_clipboard:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-localize:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-community_blur:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-svg:compileDebugJavaWithJavac UP-TO-DATE
+> Task :sentry_react-native:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-async-storage_async-storage:compileDebugJavaWithJavac UP-TO-DATE
+> Task :sentry_react-native:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :react-native-firebase_messaging:mergeDebugShaders UP-TO-DATE
+> Task :react-native-firebase_messaging:compileDebugShaders NO-SOURCE
+> Task :react-native-firebase_messaging:generateDebugAssets UP-TO-DATE
+> Task :react-native-firebase_messaging:mergeDebugAssets UP-TO-DATE
+> Task :react-native-gesture-handler:mergeDebugShaders UP-TO-DATE
+> Task :react-native-gesture-handler:compileDebugShaders NO-SOURCE
+> Task :react-native-gesture-handler:generateDebugAssets UP-TO-DATE
+> Task :react-native-gesture-handler:mergeDebugAssets UP-TO-DATE
+> Task :sentry_react-native:mergeDebugShaders UP-TO-DATE
+> Task :sentry_react-native:compileDebugShaders NO-SOURCE
+> Task :sentry_react-native:generateDebugAssets UP-TO-DATE
+> Task :sentry_react-native:mergeDebugAssets UP-TO-DATE
+> Task :sentry_react-native:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :react-native-image-picker:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-clipboard_clipboard:bundleLibCompileToJarDebug
+> Task :react-native-localize:bundleLibCompileToJarDebug
+> Task :react-native-community_blur:bundleLibCompileToJarDebug
+> Task :react-native-community_blur:mergeDebugShaders UP-TO-DATE
+> Task :react-native-community_blur:compileDebugShaders NO-SOURCE
+> Task :react-native-community_blur:generateDebugAssets UP-TO-DATE
+> Task :react-native-image-picker:mergeDebugShaders
+> Task :react-native-image-picker:compileDebugShaders NO-SOURCE
+> Task :react-native-image-picker:generateDebugAssets UP-TO-DATE
+> Task :react-native-image-picker:bundleLibCompileToJarDebug
+> Task :react-native-async-storage_async-storage:bundleLibCompileToJarDebug
+> Task :react-native-svg:mergeDebugShaders
+> Task :react-native-svg:compileDebugShaders NO-SOURCE
+> Task :react-native-svg:generateDebugAssets UP-TO-DATE
+> Task :react-native-localize:mergeDebugShaders
+> Task :react-native-localize:compileDebugShaders NO-SOURCE
+> Task :react-native-localize:generateDebugAssets UP-TO-DATE
+> Task :react-native-localize:mergeDebugAssets
+> Task :react-native-svg:bundleLibCompileToJarDebug
+> Task :react-native-firebase_messaging:processDebugJavaRes NO-SOURCE
+> Task :react-native-localize:processDebugJavaRes NO-SOURCE
+> Task :sentry_react-native:processDebugJavaRes NO-SOURCE
+> Task :sentry_react-native:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-clipboard_clipboard:mergeDebugShaders
+> Task :react-native-clipboard_clipboard:compileDebugShaders NO-SOURCE
+> Task :react-native-clipboard_clipboard:generateDebugAssets UP-TO-DATE
+> Task :react-native-clipboard_clipboard:mergeDebugAssets
+> Task :react-native-clipboard_clipboard:processDebugJavaRes NO-SOURCE
+> Task :react-native-clipboard_clipboard:bundleLibRuntimeToJarDebug
+> Task :react-native-agora:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-agora:bundleLibCompileToJarDebug
+> Task :react-native-share:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-fingerprint-scanner:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-fingerprint-scanner:bundleLibCompileToJarDebug
+> Task :react-native-localize:bundleLibRuntimeToJarDebug
+> Task :react-native-agora:mergeDebugShaders
+> Task :react-native-agora:compileDebugShaders NO-SOURCE
+> Task :react-native-blob-util:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-agora:generateDebugAssets UP-TO-DATE
+> Task :react-native-picker_picker:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-image-picker:mergeDebugAssets
+> Task :react-native-blob-util:bundleLibCompileToJarDebug
+> Task :react-native-picker_picker:mergeDebugShaders
+> Task :react-native-picker_picker:compileDebugShaders NO-SOURCE
+> Task :react-native-picker_picker:generateDebugAssets UP-TO-DATE
+> Task :react-native-share:bundleLibCompileToJarDebug
+> Task :react-native-app-auth:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-app-auth:bundleLibCompileToJarDebug
+> Task :react-native-firebase_app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-version-check:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-fs:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-svg:mergeDebugAssets
+> Task :react-native-firebase_app:bundleLibCompileToJarDebug
+> Task :react-native-fs:mergeDebugShaders
+> Task :react-native-fs:compileDebugShaders NO-SOURCE
+> Task :react-native-fs:generateDebugAssets UP-TO-DATE
+> Task :react-native-fs:bundleLibCompileToJarDebug
+> Task :react-native-pdf:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-version-check:mergeDebugShaders
+> Task :react-native-firebase_app:mergeDebugShaders
+> Task :react-native-clipboard_clipboard:bundleLibRuntimeToDirDebug
+> Task :react-native-firebase_app:compileDebugShaders NO-SOURCE
+> Task :react-native-firebase_app:generateDebugAssets UP-TO-DATE
+> Task :react-native-firebase_app:mergeDebugAssets
+> Task :react-native-version-check:compileDebugShaders NO-SOURCE
+> Task :react-native-version-check:generateDebugAssets UP-TO-DATE
+> Task :react-native-device-info:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-image-picker:bundleLibRuntimeToJarDebug
+> Task :react-native-calendar-events:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-fs:mergeDebugAssets
+> Task :react-native-app-auth:mergeDebugShaders
+> Task :react-native-app-auth:compileDebugShaders NO-SOURCE
+> Task :react-native-app-auth:generateDebugAssets UP-TO-DATE
+> Task :react-native-agora:mergeDebugAssets
+> Task :react-native-device-info:mergeDebugShaders
+> Task :react-native-pdf:bundleLibCompileToJarDebug
+> Task :react-native-device-info:compileDebugShaders NO-SOURCE
+> Task :react-native-device-info:generateDebugAssets UP-TO-DATE
+> Task :react-native-fingerprint-scanner:mergeDebugShaders
+> Task :react-native-fingerprint-scanner:compileDebugShaders NO-SOURCE
+> Task :react-native-fingerprint-scanner:generateDebugAssets UP-TO-DATE
+> Task :react-native-version-check:mergeDebugAssets
+> Task :react-native-fingerprint-scanner:mergeDebugAssets
+> Task :react-native-firebase_app:bundleLibRuntimeToJarDebug
+> Task :react-native-agora:bundleLibRuntimeToJarDebug
+> Task :react-native-pdf:mergeDebugShaders
+> Task :react-native-file-viewer:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-device-info:mergeDebugAssets
+> Task :react-native-picker_picker:mergeDebugAssets
+> Task :react-native-async-storage_async-storage:mergeDebugShaders
+> Task :react-native-pdf:compileDebugShaders NO-SOURCE
+> Task :react-native-pdf:generateDebugAssets UP-TO-DATE
+> Task :hmscore_react-native-hms-push:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-async-storage_async-storage:compileDebugShaders NO-SOURCE
+> Task :react-native-async-storage_async-storage:generateDebugAssets UP-TO-DATE
+> Task :react-native-pdf:mergeDebugAssets
+> Task :hmscore_react-native-hms-push:mergeDebugShaders UP-TO-DATE
+> Task :hmscore_react-native-hms-push:compileDebugShaders NO-SOURCE
+> Task :hmscore_react-native-hms-push:generateDebugAssets UP-TO-DATE
+> Task :react-native-reanimated:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-reanimated:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :react-native-calendar-events:mergeDebugShaders
+> Task :react-native-blob-util:mergeDebugShaders
+> Task :react-native-blob-util:compileDebugShaders NO-SOURCE
+> Task :react-native-blob-util:generateDebugAssets UP-TO-DATE
+> Task :react-native-encrypted-storage:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-calendar-events:compileDebugShaders NO-SOURCE
+> Task :react-native-calendar-events:generateDebugAssets UP-TO-DATE
+> Task :react-native-app-auth:mergeDebugAssets
+> Task :react-native-reanimated:mergeDebugShaders UP-TO-DATE
+> Task :react-native-reanimated:compileDebugShaders NO-SOURCE
+> Task :hmscore_react-native-hms-push:mergeDebugAssets
+> Task :react-native-reanimated:generateDebugAssets UP-TO-DATE
+> Task :react-native-picker_picker:bundleLibCompileToJarDebug
+> Task :react-native-reanimated:mergeDebugAssets UP-TO-DATE
+> Task :react-native-encrypted-storage:mergeDebugShaders
+> Task :react-native-encrypted-storage:compileDebugShaders NO-SOURCE
+> Task :react-native-encrypted-storage:generateDebugAssets UP-TO-DATE
+> Task :react-native-fs:bundleLibRuntimeToJarDebug
+> Task :react-native-version-check:bundleLibCompileToJarDebug
+> Task :react-native-app-auth:bundleLibRuntimeToJarDebug
+> Task :react-native-blob-util:mergeDebugAssets
+> Task :react-native-calendar-events:mergeDebugAssets
+> Task :react-native-webview:compileDebugKotlin UP-TO-DATE
+> Task :react-native-webview:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-encrypted-storage:mergeDebugAssets
+> Task :react-native-encrypted-storage:bundleLibRuntimeToJarDebug
+> Task :react-native-device-info:bundleLibCompileToJarDebug
+> Task :react-native-calendar-events:bundleLibCompileToJarDebug
+> Task :react-native-fingerprint-scanner:bundleLibRuntimeToJarDebug
+> Task :react-native-picker_picker:bundleLibRuntimeToJarDebug
+> Task :react-native-html-to-pdf:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-file-viewer:mergeDebugShaders
+> Task :react-native-file-viewer:compileDebugShaders NO-SOURCE
+> Task :react-native-file-viewer:generateDebugAssets UP-TO-DATE
+> Task :react-native-share:mergeDebugShaders
+> Task :react-native-share:compileDebugShaders NO-SOURCE
+> Task :react-native-share:generateDebugAssets UP-TO-DATE
+> Task :react-native-blob-util:bundleLibRuntimeToJarDebug
+> Task :hmscore_react-native-hms-push:bundleLibCompileToJarDebug
+> Task :react-native-html-to-pdf:mergeDebugShaders
+> Task :react-native-share:mergeDebugAssets
+> Task :react-native-file-viewer:mergeDebugAssets
+> Task :react-native-html-to-pdf:compileDebugShaders NO-SOURCE
+> Task :react-native-html-to-pdf:generateDebugAssets UP-TO-DATE
+> Task :react-native-device-info:bundleLibRuntimeToJarDebug
+> Task :react-native-safe-area-context:compileDebugKotlin UP-TO-DATE
+> Task :react-native-safe-area-context:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-html-to-pdf:mergeDebugAssets
+> Task :react-native-async-storage_async-storage:mergeDebugAssets
+> Task :react-native-community_blur:mergeDebugAssets
+> Task :react-native-html-to-pdf:bundleLibRuntimeToJarDebug
+> Task :react-native-encrypted-storage:bundleLibCompileToJarDebug
+> Task :react-native-reanimated:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :hmscore_react-native-hms-push:bundleLibRuntimeToJarDebug
+> Task :react-native-html-to-pdf:bundleLibCompileToJarDebug
+> Task :react-native-permissions:compileDebugKotlin UP-TO-DATE
+> Task :react-native-file-viewer:bundleLibRuntimeToJarDebug
+> Task :react-native-permissions:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-calendar-events:bundleLibRuntimeToJarDebug
+> Task :react-native-share:bundleLibRuntimeToJarDebug
+> Task :react-native-svg:bundleLibRuntimeToJarDebug
+> Task :react-native-file-viewer:bundleLibCompileToJarDebug
+> Task :react-native-async-storage_async-storage:bundleLibRuntimeToJarDebug
+> Task :react-native-version-check:bundleLibRuntimeToJarDebug
+> Task :react-native-sound:compileDebugKotlin UP-TO-DATE
+> Task :react-native-pdf:bundleLibRuntimeToJarDebug
+> Task :react-native-sound:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-community_blur:bundleLibRuntimeToJarDebug
+> Task :react-native-documents_picker:compileDebugKotlin UP-TO-DATE
+> Task :react-native-documents_picker:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-vision-camera:compileDebugKotlin UP-TO-DATE
+> Task :react-native-vision-camera:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-screens:compileDebugKotlin UP-TO-DATE
+> Task :react-native-screens:javaPreCompileDebug UP-TO-DATE
+
+> Task :react-native-firebase_messaging:compileDebugJavaWithJavac
+
+> Task :app:checkDebugAarMetadata
+> Task :react-native-app-auth:processDebugJavaRes NO-SOURCE
+> Task :hmscore_react-native-hms-push:processDebugJavaRes NO-SOURCE
+> Task :react-native-calendar-events:processDebugJavaRes NO-SOURCE
+> Task :react-native-community_blur:processDebugJavaRes NO-SOURCE
+> Task :react-native-agora:processDebugJavaRes NO-SOURCE
+> Task :react-native-picker_picker:processDebugJavaRes NO-SOURCE
+> Task :react-native-encrypted-storage:processDebugJavaRes NO-SOURCE
+> Task :react-native-svg:processDebugJavaRes NO-SOURCE
+> Task :react-native-image-picker:processDebugJavaRes NO-SOURCE
+> Task :react-native-async-storage_async-storage:processDebugJavaRes NO-SOURCE
+> Task :react-native-file-viewer:processDebugJavaRes NO-SOURCE
+> Task :react-native-blob-util:processDebugJavaRes NO-SOURCE
+> Task :react-native-fingerprint-scanner:processDebugJavaRes NO-SOURCE
+> Task :react-native-device-info:processDebugJavaRes NO-SOURCE
+> Task :react-native-version-check:processDebugJavaRes NO-SOURCE
+> Task :react-native-share:processDebugJavaRes NO-SOURCE
+> Task :react-native-pdf:processDebugJavaRes NO-SOURCE
+> Task :react-native-reanimated:processDebugJavaRes NO-SOURCE
+> Task :react-native-fs:processDebugJavaRes NO-SOURCE
+> Task :react-native-html-to-pdf:processDebugJavaRes NO-SOURCE
+> Task :react-native-firebase_app:processDebugJavaRes NO-SOURCE
+> Task :react-native-encrypted-storage:bundleLibRuntimeToDirDebug
+
+> Task :react-native-webview:compileDebugJavaWithJavac
+
+> Task :react-native-html-to-pdf:bundleLibRuntimeToDirDebug
+> Task :react-native-agora:bundleLibRuntimeToDirDebug
+> Task :react-native-picker_picker:bundleLibRuntimeToDirDebug
+> Task :react-native-app-auth:bundleLibRuntimeToDirDebug
+> Task :react-native-firebase_app:bundleLibRuntimeToDirDebug
+> Task :react-native-fs:bundleLibRuntimeToDirDebug
+> Task :app:checkDebugAarMetadata FAILED
+> Task :react-native-localize:bundleLibRuntimeToDirDebug
+> Task :react-native-fingerprint-scanner:bundleLibRuntimeToDirDebug
+> Task :react-native-async-storage_async-storage:bundleLibRuntimeToDirDebug
+> Task :react-native-blob-util:bundleLibRuntimeToDirDebug
+> Task :react-native-community_blur:bundleLibRuntimeToDirDebug
+> Task :hmscore_react-native-hms-push:bundleLibRuntimeToDirDebug
+> Task :react-native-device-info:bundleLibRuntimeToDirDebug
+> Task :react-native-file-viewer:bundleLibRuntimeToDirDebug
+> Task :react-native-pdf:bundleLibRuntimeToDirDebug
+> Task :react-native-image-picker:bundleLibRuntimeToDirDebug
+> Task :react-native-calendar-events:bundleLibRuntimeToDirDebug
+> Task :react-native-sound:compileDebugJavaWithJavac
+> Task :react-native-safe-area-context:compileDebugJavaWithJavac
+> Task :react-native-documents_picker:compileDebugJavaWithJavac
+> Task :react-native-permissions:compileDebugJavaWithJavac
+> Task :react-native-vision-camera:compileDebugJavaWithJavac
+> Task :react-native-screens:compileDebugJavaWithJavac
+> Task :react-native-gesture-handler:compileDebugKotlin
+
+[Incubating] Problems report is available at: file:///D:/work/RN/csx-mobile-upgrade/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+584 actionable tasks: 116 executed, 468 up-to-date
+
+info 💡 Tip: Make sure that you have set up your development environment correctly, by running npx react-native doctor. To read more about doctor command visit: https://github.com/react-native-community/cli/blob/main/packages/cli-doctor/README.md#doctor 
+
+ע: ĳЩ�����ļ�ʹ�û򸲸����ѹ�ʱ�� API��
+ע: �й���ϸ��Ϣ, ��ʹ�� -Xlint:deprecation ���±��롣
+ע: ĳЩ�����ļ�ʹ�û򸲸����ѹ�ʱ�� API��
+ע: �й���ϸ��Ϣ, ��ʹ�� -Xlint:deprecation ���±��롣
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:checkDebugAarMetadata'.
+> A build operation failed.
+      Could not read workspace metadata from C:\Users\Stark8964911\.gradle\caches\8.13\transforms\8717950264d8f8b636f65c985cbf87a0\metadata.bin
+   > Could not read workspace metadata from C:\Users\Stark8964911\.gradle\caches\8.13\transforms\8717950264d8f8b636f65c985cbf87a0\metadata.bin
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 4m 10s
+info Run CLI with --verbose flag for more details.
+error Failed to install the app. Command failed with exit code 1: gradlew.bat app:installDebug -PreactNativeDevServerPort=8081
+ע: ĳЩ�����ļ�ʹ�û򸲸����ѹ�ʱ�� API�� ע: �й���ϸ��Ϣ, ��ʹ�� -Xlint:deprecation ���±��롣 ע: ĳЩ�����ļ�ʹ�û򸲸����ѹ�ʱ�� API�� ע: �й���ϸ��Ϣ, ��ʹ�� -Xlint:deprecation ���±��롣 FAILURE: Build failed with an exception. * What went wrong: Execution failed for task ':app:checkDebugAarMetadata'. > A build operation failed. Could not read workspace metadata from C:\Users\Stark8964911\.gradle\caches\8.13\transforms\8717950264d8f8b636f65c985cbf87a0\metadata.bin > Could not read workspace metadata from C:\Users\Stark8964911\.gradle\caches\8.13\transforms\8717950264d8f8b636f65c985cbf87a0\metadata.bin * Try: > Run with --stacktrace option to get the stack trace. > Run with --info or --debug option to get more log output. > Run with --scan to get full insights. > Get more help at https://help.gradle.org. BUILD FAILED in 4m 10s.

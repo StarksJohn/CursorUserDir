@@ -1,0 +1,22 @@
+{
+  "name": "new_page",
+  "description": "Creates a new page",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "url": {
+        "type": "string",
+        "description": "URL to load in a new page."
+      },
+      "timeout": {
+        "type": "integer",
+        "description": "Maximum wait time in milliseconds. If set to 0, the default timeout will be used."
+      }
+    },
+    "required": [
+      "url"
+    ],
+    "additionalProperties": false,
+    "$schema": "http://json-schema.org/draft-07/schema#"
+  }
+}

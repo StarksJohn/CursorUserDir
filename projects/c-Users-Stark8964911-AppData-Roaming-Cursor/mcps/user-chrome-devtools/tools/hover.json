@@ -1,0 +1,18 @@
+{
+  "name": "hover",
+  "description": "Hover over the provided element",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "uid": {
+        "type": "string",
+        "description": "The uid of an element on the page from the page content snapshot"
+      }
+    },
+    "required": [
+      "uid"
+    ],
+    "additionalProperties": false,
+    "$schema": "http://json-schema.org/draft-07/schema#"
+  }
+}

@@ -1,0 +1,811 @@
+info A dev server is already running for this project on port 8081.
+info Installing the app...
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.13/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :gradle-plugin:shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:settings-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:settings-plugin:pluginDescriptors UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:processResources UP-TO-DATE
+> Task :gradle-plugin:shared:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:shared:compileJava NO-SOURCE
+> Task :gradle-plugin:shared:processResources NO-SOURCE
+> Task :gradle-plugin:shared:classes UP-TO-DATE
+> Task :gradle-plugin:shared:jar UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:compileJava NO-SOURCE
+> Task :gradle-plugin:settings-plugin:classes UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:jar UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:react-native-gradle-plugin:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:compileJava NO-SOURCE
+> Task :gradle-plugin:react-native-gradle-plugin:pluginDescriptors UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:processResources UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:classes UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:jar UP-TO-DATE
+
+> Configure project :app
+useNewCruncher has been deprecated. It will be removed in a future version of the gradle plugin. New cruncher is now always enabled.
+--W- Build Environment: AGConnect plugin version is: 1.9.1.301, Gradle version is: 8.13, Android Plugin version is: 8.7.3
+--I- there's no config file
+--W- The variant: debug, There's no json file
+--I- there's no config file
+--W- The variant: release, There's no json file
+
+> Configure project :react-native-firebase_app
+:react-native-firebase_app package.json found at D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\app\package.json
+:react-native-firebase_app:firebase.bom using default value: 33.5.1
+:react-native-firebase_app:play.play-services-auth using default value: 21.2.0
+:react-native-firebase_app package.json found at D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\app\package.json
+:react-native-firebase_app:version set from package.json: 21.6.1 (21,6,1 - 21006001)
+:react-native-firebase_app:android.compileSdk using custom value: 36
+:react-native-firebase_app:android.targetSdk using custom value: 36
+:react-native-firebase_app:android.minSdk using custom value: 24
+:react-native-firebase_app:reactNativeAndroidDir D:\work\RN\csx-mobile-upgrade\node_modules\react-native
+
+> Configure project :react-native-firebase_messaging
+:react-native-firebase_messaging package.json found at D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\messaging\package.json
+:react-native-firebase_app package.json found at D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\app\package.json
+:react-native-firebase_messaging:firebase.bom using default value: 33.5.1
+:react-native-firebase_messaging package.json found at D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\messaging\package.json
+:react-native-firebase_messaging:version set from package.json: 21.6.1 (21,6,1 - 21006001)
+:react-native-firebase_messaging:android.compileSdk using custom value: 36
+:react-native-firebase_messaging:android.targetSdk using custom value: 36
+:react-native-firebase_messaging:android.minSdk using custom value: 24
+:react-native-firebase_messaging:reactNativeAndroidDir D:\work\RN\csx-mobile-upgrade\node_modules\react-native
+
+> Configure project :react-native-reanimated
+Android gradle plugin: 8.11.0
+Gradle: 8.13
+
+> Configure project :react-native-vision-camera
+[VisionCamera] Thank you for using VisionCamera ??
+[VisionCamera] If you enjoy using VisionCamera, please consider sponsoring this project: https://github.com/sponsors/mrousavy
+[VisionCamera] node_modules found at D:\work\RN\csx-mobile-upgrade\node_modules
+[VisionCamera] VisionCamera_enableFrameProcessors is set to false!
+[VisionCamera] react-native-worklets-core not found, Frame Processors are disabled!
+[VisionCamera] VisionCamera_enableCodeScanner is set to true!
+WARNING: The specified Android SDK Build Tools version (31.0.0) is ignored, as it is below the minimum supported version (35.0.0) for Android Gradle Plugin 8.11.0.
+Android SDK Build Tools 35.0.0 will be used.
+To suppress this warning, remove "buildToolsVersion '31.0.0'" from your build.gradle file, as each version of the Android Gradle Plugin now has a default version of the build tools.
+
+> Task :react-native-firebase_messaging:preBuild UP-TO-DATE
+> Task :react-native-html-to-pdf:preBuild UP-TO-DATE
+> Task :react-native-fs:preBuild UP-TO-DATE
+> Task :react-native-firebase_app:preBuild UP-TO-DATE
+> Task :react-native-firebase_messaging:preDebugBuild UP-TO-DATE
+> Task :react-native-firebase_app:preDebugBuild UP-TO-DATE
+> Task :react-native-calendar-events:preBuild UP-TO-DATE
+> Task :react-native-app-auth:preBuild UP-TO-DATE
+> Task :react-native-device-info:preBuild UP-TO-DATE
+> Task :react-native-reanimated:assertMinimalReactNativeVersionTask SKIPPED
+> Task :react-native-fingerprint-scanner:preBuild UP-TO-DATE
+> Task :react-native-file-viewer:preBuild UP-TO-DATE
+> Task :hmscore_react-native-hms-push:preBuild UP-TO-DATE
+> Task :react-native-app-auth:preDebugBuild UP-TO-DATE
+> Task :react-native-file-viewer:preDebugBuild UP-TO-DATE
+> Task :react-native-device-info:preDebugBuild UP-TO-DATE
+> Task :react-native-calendar-events:preDebugBuild UP-TO-DATE
+> Task :react-native-version-check:preBuild UP-TO-DATE
+> Task :react-native-fingerprint-scanner:preDebugBuild UP-TO-DATE
+> Task :react-native-fs:preDebugBuild UP-TO-DATE
+> Task :hmscore_react-native-hms-push:preDebugBuild UP-TO-DATE
+> Task :react-native-encrypted-storage:preBuild UP-TO-DATE
+> Task :react-native-encrypted-storage:preDebugBuild UP-TO-DATE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :react-native-reanimated:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :sentry_react-native:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-reanimated:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :sentry_react-native:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :sentry_react-native:preBuild UP-TO-DATE
+> Task :react-native-reanimated:prepareReanimatedHeadersForPrefabs UP-TO-DATE
+> Task :react-native-reanimated:prepareWorkletsHeadersForPrefabs UP-TO-DATE
+> Task :react-native-reanimated:preBuild UP-TO-DATE
+> Task :react-native-html-to-pdf:preDebugBuild UP-TO-DATE
+> Task :app:generateAutolinkingNewArchitectureFiles
+> Task :react-native-app-auth:writeDebugAarMetadata
+> Task :react-native-calendar-events:writeDebugAarMetadata
+> Task :react-native-reanimated:preDebugBuild UP-TO-DATE
+> Task :react-native-version-check:preDebugBuild UP-TO-DATE
+> Task :react-native-firebase_app:writeDebugAarMetadata
+> Task :react-native-fs:writeDebugAarMetadata
+> Task :react-native-file-viewer:writeDebugAarMetadata
+> Task :hmscore_react-native-hms-push:writeDebugAarMetadata
+> Task :react-native-device-info:writeDebugAarMetadata
+> Task :sentry_react-native:preDebugBuild UP-TO-DATE
+> Task :react-native-encrypted-storage:writeDebugAarMetadata
+> Task :react-native-fingerprint-scanner:writeDebugAarMetadata
+> Task :react-native-reanimated:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-firebase_messaging:writeDebugAarMetadata
+> Task :react-native-html-to-pdf:writeDebugAarMetadata
+> Task :app:generateAutolinkingPackageList
+> Task :app:generateCodegenSchemaFromJavaScript SKIPPED
+> Task :app:generateCodegenArtifactsFromSchema SKIPPED
+> Task :sentry_react-native:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-version-check:writeDebugAarMetadata
+> Task :react-native-encrypted-storage:generateDebugResValues
+> Task :react-native-device-info:generateDebugResValues
+> Task :react-native-fingerprint-scanner:generateDebugResValues
+> Task :react-native-file-viewer:generateDebugResValues
+> Task :react-native-calendar-events:generateDebugResValues
+> Task :hmscore_react-native-hms-push:generateDebugResValues
+> Task :react-native-firebase_app:generateDebugResValues
+> Task :react-native-firebase_messaging:generateDebugResValues
+> Task :react-native-app-auth:generateDebugResValues
+> Task :react-native-fs:generateDebugResValues
+> Task :react-native-html-to-pdf:generateDebugResValues
+> Task :react-native-device-info:generateDebugResources
+> Task :react-native-encrypted-storage:generateDebugResources
+> Task :react-native-fingerprint-scanner:generateDebugResources
+> Task :react-native-firebase_app:generateDebugResources
+> Task :react-native-file-viewer:generateDebugResources
+> Task :react-native-app-auth:generateDebugResources
+> Task :react-native-firebase_messaging:generateDebugResources
+> Task :hmscore_react-native-hms-push:generateDebugResources
+> Task :react-native-calendar-events:generateDebugResources
+> Task :react-native-fs:generateDebugResources
+> Task :react-native-html-to-pdf:generateDebugResources
+> Task :sentry_react-native:generateDebugResValues UP-TO-DATE
+> Task :react-native-reanimated:generateDebugResValues UP-TO-DATE
+> Task :react-native-version-check:generateDebugResValues
+> Task :react-native-reanimated:generateDebugResources UP-TO-DATE
+> Task :sentry_react-native:generateDebugResources UP-TO-DATE
+> Task :react-native-version-check:generateDebugResources
+> Task :app:generateReactNativeEntryPoint
+> Task :react-native-fs:extractDeepLinksDebug
+> Task :hmscore_react-native-hms-push:extractDeepLinksDebug
+> Task :react-native-calendar-events:extractDeepLinksDebug
+> Task :app:processDebugGoogleServices
+> Task :react-native-reanimated:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-reanimated:processDebugManifest UP-TO-DATE
+> Task :sentry_react-native:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-version-check:extractDeepLinksDebug
+> Task :sentry_react-native:processDebugManifest UP-TO-DATE
+> Task :hmscore_react-native-hms-push:generateDebugBuildConfig
+> Task :react-native-async-storage_async-storage:generateCodegenSchemaFromJavaScript
+> Task :react-native-webview:generateCodegenSchemaFromJavaScript
+> Task :hmscore_react-native-hms-push:javaPreCompileDebug
+> Task :react-native-calendar-events:generateDebugBuildConfig
+> Task :react-native-calendar-events:javaPreCompileDebug
+> Task :react-native-sound:generateCodegenSchemaFromJavaScript
+> Task :react-native-fs:generateDebugBuildConfig
+> Task :react-native-fs:javaPreCompileDebug
+
+> Task :react-native-vision-camera:generateCodegenSchemaFromJavaScript
+
+> Task :react-native-safe-area-context:generateCodegenSchemaFromJavaScript
+> Task :react-native-reanimated:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-reanimated:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-reanimated:packageNdkLibs NO-SOURCE
+> Task :react-native-version-check:generateDebugBuildConfig
+> Task :react-native-picker_picker:generateCodegenSchemaFromJavaScript
+> Task :react-native-svg:generateCodegenSchemaFromJavaScript
+> Task :react-native-version-check:javaPreCompileDebug
+> Task :sentry_react-native:generateDebugBuildConfig UP-TO-DATE
+> Task :sentry_react-native:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-agora:generateCodegenSchemaFromJavaScript
+> Task :react-native-encrypted-storage:packageDebugResources
+> Task :react-native-device-info:packageDebugResources
+> Task :react-native-app-auth:packageDebugResources
+> Task :react-native-fingerprint-scanner:packageDebugResources
+> Task :react-native-firebase_app:packageDebugResources
+> Task :sentry_react-native:packageDebugResources UP-TO-DATE
+> Task :react-native-reanimated:packageDebugResources UP-TO-DATE
+> Task :react-native-html-to-pdf:packageDebugResources
+> Task :react-native-app-auth:extractDeepLinksDebug
+> Task :react-native-calendar-events:packageDebugResources
+> Task :react-native-encrypted-storage:extractDeepLinksDebug
+> Task :react-native-version-check:packageDebugResources
+> Task :react-native-fs:packageDebugResources
+> Task :react-native-device-info:extractDeepLinksDebug
+> Task :react-native-html-to-pdf:extractDeepLinksDebug
+> Task :react-native-fingerprint-scanner:extractDeepLinksDebug
+> Task :react-native-firebase_app:extractDeepLinksDebug
+> Task :react-native-documents_picker:generateCodegenSchemaFromJavaScript
+> Task :react-native-community_blur:generateCodegenSchemaFromJavaScript
+> Task :hmscore_react-native-hms-push:mergeDebugShaders
+> Task :react-native-screens:generateCodegenSchemaFromJavaScript
+> Task :hmscore_react-native-hms-push:packageDebugResources
+> Task :react-native-permissions:generateCodegenSchemaFromJavaScript
+> Task :react-native-share:generateCodegenSchemaFromJavaScript
+> Task :react-native-gesture-handler:generateCodegenSchemaFromJavaScript
+> Task :hmscore_react-native-hms-push:compileDebugLibraryResources
+> Task :react-native-file-viewer:packageDebugResources
+> Task :react-native-firebase_messaging:packageDebugResources
+> Task :react-native-firebase_messaging:extractDeepLinksDebug
+> Task :react-native-file-viewer:extractDeepLinksDebug
+
+> Task :react-native-version-check:processDebugManifest
+package="io.xogus.reactnative.versioncheck" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-version-check\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="io.xogus.reactnative.versioncheck" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-version-check\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-html-to-pdf:processDebugManifest
+package="com.christopherdro.htmltopdf" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-html-to-pdf\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.christopherdro.htmltopdf" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-html-to-pdf\android\src\main\AndroidManifest.xml.
+
+> Task :hmscore_react-native-hms-push:processDebugManifest
+package="com.huawei.hms.rn.push" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\@hmscore\react-native-hms-push\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.huawei.hms.rn.push" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\@hmscore\react-native-hms-push\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-calendar-events:processDebugManifest
+package="com.calendarevents" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-calendar-events\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.calendarevents" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-calendar-events\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-device-info:processDebugManifest
+package="com.learnium.RNDeviceInfo" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-device-info\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.learnium.RNDeviceInfo" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-device-info\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-app-auth:processDebugManifest
+package="com.rnappauth" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-app-auth\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.rnappauth" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-app-auth\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-fs:processDebugManifest
+package="com.rnfs" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-fs\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.rnfs" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-fs\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-encrypted-storage:processDebugManifest
+package="com.emeraldsanto.encryptedstorage" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-encrypted-storage\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.emeraldsanto.encryptedstorage" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-encrypted-storage\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-fingerprint-scanner:processDebugManifest
+package="com.hieuvp.fingerprint" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-fingerprint-scanner\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.hieuvp.fingerprint" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-fingerprint-scanner\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-firebase_app:processDebugManifest
+package="io.invertase.firebase" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\app\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="io.invertase.firebase" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\app\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-calendar-events:compileDebugLibraryResources
+
+> Task :react-native-file-viewer:processDebugManifest
+package="com.vinzscam.reactnativefileviewer" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-file-viewer\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.vinzscam.reactnativefileviewer" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-file-viewer\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-firebase_messaging:processDebugManifest
+package="io.invertase.firebase.messaging" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\messaging\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="io.invertase.firebase.messaging" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\messaging\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-fingerprint-scanner:compileDebugLibraryResources
+> Task :react-native-app-auth:compileDebugLibraryResources
+> Task :react-native-fs:compileDebugLibraryResources
+> Task :react-native-reanimated:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-device-info:compileDebugLibraryResources
+> Task :react-native-firebase_messaging:compileDebugLibraryResources
+> Task :react-native-encrypted-storage:compileDebugLibraryResources
+> Task :react-native-firebase_app:compileDebugLibraryResources
+> Task :react-native-html-to-pdf:compileDebugLibraryResources
+> Task :react-native-reanimated:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-localize:generateCodegenSchemaFromJavaScript
+> Task :react-native-reanimated:generateDebugRFile UP-TO-DATE
+> Task :react-native-pdf:generateCodegenSchemaFromJavaScript
+> Task :react-native-image-picker:generateCodegenSchemaFromJavaScript
+> Task :react-native-version-check:compileDebugLibraryResources
+> Task :react-native-blob-util:generateCodegenSchemaFromJavaScript
+> Task :hmscore_react-native-hms-push:parseDebugLocalResources
+> Task :react-native-encrypted-storage:parseDebugLocalResources
+> Task :react-native-app-auth:parseDebugLocalResources
+> Task :react-native-clipboard_clipboard:generateCodegenSchemaFromJavaScript
+> Task :react-native-version-check:parseDebugLocalResources
+> Task :react-native-device-info:parseDebugLocalResources
+> Task :react-native-html-to-pdf:parseDebugLocalResources
+> Task :react-native-file-viewer:parseDebugLocalResources
+> Task :react-native-fingerprint-scanner:parseDebugLocalResources
+> Task :react-native-calendar-events:parseDebugLocalResources
+> Task :react-native-fs:parseDebugLocalResources
+> Task :react-native-firebase_app:parseDebugLocalResources
+> Task :react-native-firebase_messaging:parseDebugLocalResources
+> Task :react-native-async-storage_async-storage:generateCodegenArtifactsFromSchema
+> Task :react-native-async-storage_async-storage:preBuild
+> Task :react-native-async-storage_async-storage:preDebugBuild
+> Task :react-native-async-storage_async-storage:writeDebugAarMetadata
+> Task :react-native-async-storage_async-storage:generateDebugResValues
+> Task :react-native-async-storage_async-storage:generateDebugResources
+> Task :react-native-sound:generateCodegenArtifactsFromSchema
+> Task :react-native-sound:preBuild
+> Task :react-native-sound:preDebugBuild
+> Task :react-native-async-storage_async-storage:packageDebugResources
+> Task :react-native-sound:writeDebugAarMetadata
+> Task :react-native-sound:generateDebugResValues
+> Task :react-native-async-storage_async-storage:extractDeepLinksDebug
+> Task :react-native-sound:generateDebugResources
+> Task :react-native-webview:generateCodegenArtifactsFromSchema
+> Task :react-native-webview:preBuild
+> Task :react-native-webview:preDebugBuild
+
+> Task :react-native-async-storage_async-storage:processDebugManifest
+package="com.reactnativecommunity.asyncstorage" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-async-storage\async-storage\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.reactnativecommunity.asyncstorage" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-async-storage\async-storage\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-webview:writeDebugAarMetadata
+> Task :react-native-webview:generateDebugResValues
+> Task :react-native-async-storage_async-storage:compileDebugLibraryResources
+> Task :react-native-picker_picker:generateCodegenArtifactsFromSchema
+> Task :react-native-picker_picker:preBuild
+> Task :react-native-picker_picker:preDebugBuild
+> Task :react-native-webview:generateDebugResources
+> Task :react-native-sound:packageDebugResources
+> Task :react-native-safe-area-context:generateCodegenArtifactsFromSchema
+> Task :react-native-safe-area-context:preBuild
+> Task :react-native-vision-camera:generateCodegenArtifactsFromSchema
+> Task :react-native-safe-area-context:preDebugBuild
+> Task :react-native-picker_picker:writeDebugAarMetadata
+> Task :react-native-sound:extractDeepLinksDebug
+> Task :react-native-safe-area-context:writeDebugAarMetadata
+> Task :react-native-async-storage_async-storage:parseDebugLocalResources
+> Task :react-native-picker_picker:generateDebugResValues
+> Task :react-native-safe-area-context:generateDebugResValues
+> Task :react-native-file-viewer:generateDebugRFile
+> Task :react-native-encrypted-storage:generateDebugRFile
+> Task :react-native-version-check:generateDebugRFile
+> Task :react-native-app-auth:generateDebugRFile
+> Task :react-native-fs:generateDebugRFile
+> Task :react-native-firebase_app:generateDebugRFile
+> Task :react-native-calendar-events:generateDebugRFile
+> Task :hmscore_react-native-hms-push:generateDebugRFile
+> Task :react-native-firebase_messaging:generateDebugRFile
+> Task :react-native-fingerprint-scanner:generateDebugRFile
+> Task :react-native-device-info:generateDebugRFile
+> Task :react-native-safe-area-context:generateDebugResources
+> Task :sentry_react-native:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-html-to-pdf:generateDebugRFile
+> Task :react-native-picker_picker:generateDebugResources
+> Task :react-native-app-auth:generateDebugBuildConfig
+> Task :react-native-webview:packageDebugResources
+> Task :sentry_react-native:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-encrypted-storage:generateDebugBuildConfig
+> Task :react-native-fingerprint-scanner:generateDebugBuildConfig
+> Task :react-native-file-viewer:generateDebugBuildConfig
+> Task :react-native-device-info:generateDebugBuildConfig
+> Task :react-native-sound:compileDebugLibraryResources
+> Task :sentry_react-native:generateDebugRFile UP-TO-DATE
+> Task :react-native-webview:extractDeepLinksDebug
+> Task :react-native-permissions:generateCodegenArtifactsFromSchema
+> Task :react-native-firebase_app:generateDebugBuildConfig
+> Task :react-native-permissions:preBuild
+> Task :react-native-sound:processDebugManifest
+> Task :react-native-firebase_messaging:generateDebugBuildConfig
+> Task :react-native-permissions:preDebugBuild
+> Task :react-native-async-storage_async-storage:generateDebugBuildConfig
+> Task :react-native-async-storage_async-storage:generateDebugRFile
+> Task :react-native-agora:generateCodegenArtifactsFromSchema
+> Task :react-native-agora:preBuild
+> Task :react-native-agora:preDebugBuild
+> Task :react-native-file-viewer:javaPreCompileDebug
+> Task :react-native-encrypted-storage:javaPreCompileDebug
+> Task :react-native-device-info:javaPreCompileDebug
+> Task :react-native-app-auth:javaPreCompileDebug
+> Task :react-native-firebase_app:javaPreCompileDebug
+> Task :react-native-permissions:writeDebugAarMetadata
+> Task :react-native-firebase_messaging:javaPreCompileDebug
+> Task :react-native-html-to-pdf:generateDebugBuildConfig
+> Task :react-native-fingerprint-scanner:javaPreCompileDebug
+> Task :react-native-sound:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :react-native-permissions:generateDebugResValues
+> Task :react-native-agora:generateDebugResValues
+> Task :react-native-safe-area-context:packageDebugResources
+> Task :react-native-permissions:generateDebugResources
+> Task :react-native-safe-area-context:extractDeepLinksDebug
+> Task :react-native-picker_picker:packageDebugResources
+> Task :react-native-agora:generateDebugResources
+> Task :react-native-svg:generateCodegenArtifactsFromSchema
+> Task :react-native-svg:preBuild
+> Task :react-native-svg:preDebugBuild
+> Task :react-native-picker_picker:extractDeepLinksDebug
+> Task :react-native-permissions:packageDebugResources
+
+> Task :react-native-safe-area-context:processDebugManifest
+package="com.th3rdwave.safeareacontext" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-safe-area-context\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.th3rdwave.safeareacontext" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-safe-area-context\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-agora:packageDebugResources
+> Task :react-native-permissions:extractDeepLinksDebug
+> Task :react-native-svg:generateDebugResValues
+> Task :react-native-agora:extractDeepLinksDebug
+> Task :react-native-documents_picker:generateCodegenArtifactsFromSchema
+> Task :react-native-documents_picker:preBuild
+> Task :react-native-documents_picker:preDebugBuild
+> Task :react-native-community_blur:generateCodegenArtifactsFromSchema
+> Task :react-native-community_blur:preBuild
+> Task :react-native-svg:generateDebugResources
+> Task :react-native-community_blur:preDebugBuild
+> Task :react-native-svg:packageDebugResources
+> Task :react-native-documents_picker:generateDebugResValues
+> Task :react-native-gesture-handler:generateCodegenArtifactsFromSchema
+> Task :react-native-gesture-handler:preBuild
+> Task :react-native-documents_picker:generateDebugResources
+> Task :react-native-gesture-handler:preDebugBuild
+> Task :react-native-community_blur:generateDebugResValues
+> Task :react-native-community_blur:generateDebugResources
+> Task :react-native-share:generateCodegenArtifactsFromSchema
+> Task :react-native-share:preBuild
+> Task :react-native-screens:generateCodegenArtifactsFromSchema
+> Task :react-native-community_blur:packageDebugResources
+> Task :react-native-vision-camera:prepareHeaders
+> Task :react-native-vision-camera:preBuild
+> Task :react-native-vision-camera:preDebugBuild
+> Task :react-native-screens:preBuild
+> Task :react-native-share:preDebugBuild
+> Task :react-native-screens:preDebugBuild
+> Task :react-native-documents_picker:packageDebugResources
+> Task :react-native-gesture-handler:generateDebugResValues
+> Task :react-native-image-picker:generateCodegenArtifactsFromSchema
+> Task :react-native-image-picker:preBuild
+> Task :react-native-gesture-handler:generateDebugResources
+> Task :react-native-image-picker:preDebugBuild
+> Task :react-native-localize:generateCodegenArtifactsFromSchema
+> Task :react-native-localize:preBuild
+> Task :react-native-localize:preDebugBuild
+> Task :react-native-gesture-handler:packageDebugResources
+> Task :react-native-image-picker:generateDebugResValues
+> Task :react-native-pdf:generateCodegenArtifactsFromSchema
+> Task :react-native-pdf:preBuild
+> Task :react-native-pdf:preDebugBuild
+> Task :react-native-image-picker:generateDebugResources
+> Task :react-native-blob-util:generateCodegenArtifactsFromSchema
+> Task :react-native-blob-util:preBuild
+> Task :react-native-blob-util:preDebugBuild
+> Task :react-native-image-picker:packageDebugResources
+> Task :react-native-blob-util:generateDebugResValues
+> Task :react-native-clipboard_clipboard:generateCodegenArtifactsFromSchema
+> Task :react-native-clipboard_clipboard:preBuild
+> Task :app:preBuild
+> Task :app:preDebugBuild
+> Task :app:generateDebugBuildConfig
+> Task :react-native-clipboard_clipboard:preDebugBuild
+> Task :app:generateDebugResValues
+> Task :react-native-blob-util:generateDebugResources
+> Task :react-native-blob-util:packageDebugResources
+> Task :react-native-clipboard_clipboard:generateDebugResValues
+> Task :react-native-clipboard_clipboard:generateDebugResources
+> Task :react-native-clipboard_clipboard:packageDebugResources
+> Task :react-native-localize:generateDebugResValues
+> Task :react-native-localize:generateDebugResources
+> Task :react-native-localize:packageDebugResources
+> Task :react-native-pdf:generateDebugResValues
+> Task :react-native-pdf:generateDebugResources
+> Task :react-native-pdf:packageDebugResources
+> Task :react-native-screens:generateDebugResValues
+> Task :react-native-screens:generateDebugResources
+> Task :react-native-screens:packageDebugResources
+> Task :react-native-share:generateDebugResValues
+> Task :react-native-share:generateDebugResources
+> Task :react-native-share:packageDebugResources
+> Task :react-native-vision-camera:generateDebugResValues
+> Task :react-native-vision-camera:generateDebugResources
+> Task :react-native-vision-camera:packageDebugResources
+> Task :react-native-gesture-handler:writeDebugAarMetadata
+> Task :react-native-blob-util:extractDeepLinksDebug
+> Task :react-native-localize:writeDebugAarMetadata
+> Task :react-native-clipboard_clipboard:extractDeepLinksDebug
+> Task :react-native-clipboard_clipboard:writeDebugAarMetadata
+> Task :react-native-community_blur:extractDeepLinksDebug
+> Task :react-native-screens:writeDebugAarMetadata
+> Task :react-native-documents_picker:extractDeepLinksDebug
+> Task :react-native-file-viewer:compileDebugLibraryResources
+> Task :react-native-agora:processDebugManifest
+> Task :react-native-gesture-handler:extractDeepLinksDebug
+> Task :react-native-sound:parseDebugLocalResources
+> Task :react-native-image-picker:extractDeepLinksDebug
+> Task :react-native-localize:extractDeepLinksDebug
+> Task :react-native-agora:writeDebugAarMetadata
+> Task :react-native-localize:processDebugManifest
+> Task :react-native-pdf:extractDeepLinksDebug
+> Task :react-native-screens:extractDeepLinksDebug
+
+> Task :react-native-image-picker:processDebugManifest
+package="com.imagepicker" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-image-picker\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.imagepicker" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-image-picker\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-share:extractDeepLinksDebug
+> Task :react-native-screens:processDebugManifest
+> Task :react-native-svg:extractDeepLinksDebug
+
+> Task :react-native-pdf:processDebugManifest
+package="org.wonday.pdf" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-pdf\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="org.wonday.pdf" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-pdf\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-vision-camera:extractDeepLinksDebug
+> Task :react-native-clipboard_clipboard:processDebugManifest
+> Task :react-native-documents_picker:processDebugManifest
+> Task :react-native-pdf:writeDebugAarMetadata
+> Task :react-native-webview:processDebugManifest
+
+> Task :react-native-share:processDebugManifest
+package="cl.json" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-share\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="cl.json" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-share\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-clipboard_clipboard:compileDebugLibraryResources
+> Task :react-native-vision-camera:processDebugManifest
+> Task :react-native-blob-util:parseDebugLocalResources
+> Task :react-native-vision-camera:writeDebugAarMetadata
+> Task :react-native-svg:writeDebugAarMetadata
+> Task :react-native-agora:parseDebugLocalResources
+
+> Task :react-native-blob-util:processDebugManifest
+package="com.ReactNativeBlobUtil" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-blob-util\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.ReactNativeBlobUtil" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\react-native-blob-util\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-agora:generateDebugRFile
+> Task :react-native-blob-util:writeDebugAarMetadata
+> Task :react-native-permissions:processDebugManifest
+> Task :react-native-community_blur:parseDebugLocalResources
+> Task :react-native-community_blur:writeDebugAarMetadata
+> Task :react-native-documents_picker:compileDebugLibraryResources
+> Task :react-native-documents_picker:parseDebugLocalResources
+> Task :react-native-localize:compileDebugLibraryResources
+> Task :react-native-documents_picker:generateDebugRFile
+> Task :react-native-community_blur:generateDebugRFile
+> Task :react-native-pdf:compileDebugLibraryResources
+> Task :react-native-documents_picker:writeDebugAarMetadata
+> Task :react-native-async-storage_async-storage:javaPreCompileDebug
+> Task :react-native-image-picker:compileDebugLibraryResources
+> Task :react-native-clipboard_clipboard:parseDebugLocalResources
+> Task :react-native-localize:parseDebugLocalResources
+
+> Task :react-native-community_blur:processDebugManifest
+package="com.reactnativecommunity.blurview" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-community\blur\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.reactnativecommunity.blurview" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-community\blur\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-permissions:compileDebugLibraryResources
+> Task :react-native-pdf:parseDebugLocalResources
+> Task :react-native-safe-area-context:parseDebugLocalResources
+> Task :react-native-gesture-handler:parseDebugLocalResources
+> Task :react-native-pdf:generateDebugRFile
+> Task :react-native-blob-util:generateDebugRFile
+> Task :react-native-calendar-events:compileDebugJavaWithJavac FAILED
+> Task :react-native-safe-area-context:compileDebugLibraryResources
+> Task :react-native-clipboard_clipboard:generateDebugRFile
+> Task :react-native-picker_picker:parseDebugLocalResources
+> Task :react-native-screens:parseDebugLocalResources
+> Task :react-native-share:parseDebugLocalResources
+> Task :react-native-html-to-pdf:javaPreCompileDebug
+> Task :react-native-gesture-handler:generateDebugRFile
+
+> Task :react-native-picker_picker:processDebugManifest
+package="com.reactnativecommunity.picker" found in source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-picker\picker\android\src\main\AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.reactnativecommunity.picker" from the source AndroidManifest.xml: D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-picker\picker\android\src\main\AndroidManifest.xml.
+
+> Task :react-native-picker_picker:compileDebugLibraryResources
+> Task :react-native-firebase_app:compileDebugJavaWithJavac FAILED
+> Task :react-native-gesture-handler:compileDebugLibraryResources
+> Task :react-native-encrypted-storage:compileDebugJavaWithJavac FAILED
+> Task :react-native-community_blur:compileDebugLibraryResources
+> Task :react-native-localize:generateDebugRFile
+> Task :react-native-sound:generateDebugRFile
+> Task :react-native-share:generateDebugRFile
+> Task :react-native-screens:generateDebugRFile
+> Task :react-native-svg:processDebugManifest
+> Task :react-native-safe-area-context:generateDebugRFile
+> Task :react-native-share:compileDebugLibraryResources
+> Task :react-native-blob-util:compileDebugLibraryResources
+> Task :react-native-fs:compileDebugJavaWithJavac FAILED
+> Task :react-native-file-viewer:compileDebugJavaWithJavac FAILED
+> Task :react-native-permissions:parseDebugLocalResources
+> Task :react-native-picker_picker:generateDebugRFile
+> Task :react-native-device-info:compileDebugJavaWithJavac FAILED
+> Task :react-native-fingerprint-scanner:compileDebugJavaWithJavac FAILED
+> Task :react-native-share:writeDebugAarMetadata
+> Task :react-native-image-picker:parseDebugLocalResources
+> Task :react-native-image-picker:writeDebugAarMetadata
+> Task :react-native-gesture-handler:processDebugManifest
+> Task :react-native-app-auth:compileDebugJavaWithJavac FAILED
+> Task :hmscore_react-native-hms-push:compileDebugJavaWithJavac FAILED
+> Task :react-native-agora:compileDebugLibraryResources
+> Task :react-native-screens:compileDebugLibraryResources
+> Task :react-native-reanimated:compileDebugJavaWithJavac FAILED
+> Task :app:mapDebugSourceSetPaths FAILED
+
+[Incubating] Problems report is available at: file:///D:/work/RN/csx-mobile-upgrade/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+389 actionable tasks: 351 executed, 38 up-to-date
+
+info 💡 Tip: Make sure that you have set up your development environment correctly, by running npx react-native doctor. To read more about doctor command visit: https://github.com/react-native-community/cli/blob/main/packages/cli-doctor/README.md#doctor 
+
+No modules to process in combine-js-to-schema-cli. If this is unexpected, please check if you set up your NativeComponent correctly. See combine-js-to-schema.js for how codegen finds modules.
+
+FAILURE: Build completed with 11 failures.
+
+1: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':react-native-calendar-events:compileDebugJavaWithJavac'.
+> Could not resolve all files for configuration ':react-native-calendar-events:debugCompileClasspath'.
+   > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}.
+      > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar.
+         > Java heap space
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+2: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':react-native-firebase_app:compileDebugJavaWithJavac'.
+> Could not resolve all files for configuration ':react-native-firebase_app:debugCompileClasspath'.
+   > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}.
+      > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar.
+         > Java heap space
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+3: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':react-native-encrypted-storage:compileDebugJavaWithJavac'.
+> Could not resolve all files for configuration ':react-native-encrypted-storage:debugCompileClasspath'.
+   > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}.
+      > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar.
+         > Java heap space
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+4: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':react-native-file-viewer:compileDebugJavaWithJavac'.
+> Could not resolve all files for configuration ':react-native-file-viewer:debugCompileClasspath'.
+   > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}.
+      > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar.
+         > Java heap space
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+5: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':react-native-fs:compileDebugJavaWithJavac'.
+> Could not resolve all files for configuration ':react-native-fs:debugCompileClasspath'.
+   > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}.
+      > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar.
+         > Java heap space
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+6: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':react-native-fingerprint-scanner:compileDebugJavaWithJavac'.
+> Could not resolve all files for configuration ':react-native-fingerprint-scanner:debugCompileClasspath'.
+   > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}.
+      > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar.
+         > Java heap space
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+7: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':react-native-device-info:compileDebugJavaWithJavac'.
+> Could not resolve all files for configuration ':react-native-device-info:debugCompileClasspath'.
+   > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}.
+      > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar.
+         > Java heap space
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+8: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':react-native-app-auth:compileDebugJavaWithJavac'.
+> Could not resolve all files for configuration ':react-native-app-auth:debugCompileClasspath'.
+   > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}.
+      > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar.
+         > Java heap space
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+9: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':hmscore_react-native-hms-push:compileDebugJavaWithJavac'.
+> Could not resolve all files for configuration ':hmscore_react-native-hms-push:debugCompileClasspath'.
+   > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}.
+      > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar.
+         > Java heap space
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+10: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':react-native-reanimated:compileDebugJavaWithJavac'.
+> Could not resolve all files for configuration ':react-native-reanimated:debugCompileClasspath'.
+   > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}.
+      > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar.
+         > Java heap space
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+11: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':app:mapDebugSourceSetPaths'.
+> Could not resolve all files for configuration ':app:debugRuntimeClasspath'.
+   > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-res, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-runtime}.
+      > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar.
+         > Java heap space
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+BUILD FAILED in 28s
+info Run CLI with --verbose flag for more details.
+error Failed to install the app. Command failed with exit code 1: gradlew.bat app:installDebug -PreactNativeDevServerPort=8081
+No modules to process in combine-js-to-schema-cli. If this is unexpected, please check if you set up your NativeComponent correctly. See combine-js-to-schema.js for how codegen finds modules. FAILURE: Build completed with 11 failures. 1: Task failed with an exception. ----------- * What went wrong: Execution failed for task ':react-native-calendar-events:compileDebugJavaWithJavac'. > Could not resolve all files for configuration ':react-native-calendar-events:debugCompileClasspath'. > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}. > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar. > Java heap space * Try: > Run with --stacktrace option to get the stack trace. > Run with --info or --debug option to get more log output. > Run with --scan to get full insights. > Get more help at https://help.gradle.org. ============================================================================== 2: Task failed with an exception. ----------- * What went wrong: Execution failed for task ':react-native-firebase_app:compileDebugJavaWithJavac'. > Could not resolve all files for configuration ':react-native-firebase_app:debugCompileClasspath'. > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}. > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar. > Java heap space * Try: > Run with --stacktrace option to get the stack trace. > Run with --info or --debug option to get more log output. > Run with --scan to get full insights. > Get more help at https://help.gradle.org. ============================================================================== 3: Task failed with an exception. ----------- * What went wrong: Execution failed for task ':react-native-encrypted-storage:compileDebugJavaWithJavac'. > Could not resolve all files for configuration ':react-native-encrypted-storage:debugCompileClasspath'. > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}. > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar. > Java heap space * Try: > Run with --stacktrace option to get the stack trace. > Run with --info or --debug option to get more log output. > Run with --scan to get full insights. > Get more help at https://help.gradle.org. ============================================================================== 4: Task failed with an exception. ----------- * What went wrong: Execution failed for task ':react-native-file-viewer:compileDebugJavaWithJavac'. > Could not resolve all files for configuration ':react-native-file-viewer:debugCompileClasspath'. > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}. > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar. > Java heap space * Try: > Run with --stacktrace option to get the stack trace. > Run with --info or --debug option to get more log output. > Run with --scan to get full insights. > Get more help at https://help.gradle.org. ============================================================================== 5: Task failed with an exception. ----------- * What went wrong: Execution failed for task ':react-native-fs:compileDebugJavaWithJavac'. > Could not resolve all files for configuration ':react-native-fs:debugCompileClasspath'. > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}. > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar. > Java heap space * Try: > Run with --stacktrace option to get the stack trace. > Run with --info or --debug option to get more log output. > Run with --scan to get full insights. > Get more help at https://help.gradle.org. ============================================================================== 6: Task failed with an exception. ----------- * What went wrong: Execution failed for task ':react-native-fingerprint-scanner:compileDebugJavaWithJavac'. > Could not resolve all files for configuration ':react-native-fingerprint-scanner:debugCompileClasspath'. > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}. > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar. > Java heap space * Try: > Run with --stacktrace option to get the stack trace. > Run with --info or --debug option to get more log output. > Run with --scan to get full insights. > Get more help at https://help.gradle.org. ============================================================================== 7: Task failed with an exception. ----------- * What went wrong: Execution failed for task ':react-native-device-info:compileDebugJavaWithJavac'. > Could not resolve all files for configuration ':react-native-device-info:debugCompileClasspath'. > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}. > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar. > Java heap space * Try: > Run with --stacktrace option to get the stack trace. > Run with --info or --debug option to get more log output. > Run with --scan to get full insights. > Get more help at https://help.gradle.org. ============================================================================== 8: Task failed with an exception. ----------- * What went wrong: Execution failed for task ':react-native-app-auth:compileDebugJavaWithJavac'. > Could not resolve all files for configuration ':react-native-app-auth:debugCompileClasspath'. > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}. > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar. > Java heap space * Try: > Run with --stacktrace option to get the stack trace. > Run with --info or --debug option to get more log output. > Run with --scan to get full insights. > Get more help at https://help.gradle.org. ============================================================================== 9: Task failed with an exception. ----------- * What went wrong: Execution failed for task ':hmscore_react-native-hms-push:compileDebugJavaWithJavac'. > Could not resolve all files for configuration ':hmscore_react-native-hms-push:debugCompileClasspath'. > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}. > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar. > Java heap space * Try: > Run with --stacktrace option to get the stack trace. > Run with --info or --debug option to get more log output. > Run with --scan to get full insights. > Get more help at https://help.gradle.org. ============================================================================== 10: Task failed with an exception. ----------- * What went wrong: Execution failed for task ':react-native-reanimated:compileDebugJavaWithJavac'. > Could not resolve all files for configuration ':react-native-reanimated:debugCompileClasspath'. > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-classes-jar, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-api}. > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar. > Java heap space * Try: > Run with --stacktrace option to get the stack trace. > Run with --info or --debug option to get more log output. > Run with --scan to get full insights. > Get more help at https://help.gradle.org. ============================================================================== 11: Task failed with an exception. ----------- * What went wrong: Execution failed for task ':app:mapDebugSourceSetPaths'. > Could not resolve all files for configuration ':app:debugRuntimeClasspath'. > Failed to transform react-android-0.81.0-debug.aar (com.facebook.react:react-android:0.81.0) to match attributes {artifactType=android-res, com.android.build.api.attributes.BuildTypeAttr=debug, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.libraryelements=aar, org.gradle.status=release, org.gradle.usage=java-runtime}. > Execution failed for JetifyTransform: C:\Users\Stark8964911\.gradle\caches\modules-2\files-2.1\com.facebook.react\react-android\0.81.0\e01a64296bafdc69f3e17820a7a155c2eb1ff28a\react-android-0.81.0-debug.aar. > Java heap space * Try: > Run with --stacktrace option to get the stack trace. > Run with --info or --debug option to get more log output. > Run with --scan to get full insights. > Get more help at https://help.gradle.org. ============================================================================== BUILD FAILED in 28s.

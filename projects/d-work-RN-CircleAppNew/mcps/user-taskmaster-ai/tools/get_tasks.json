@@ -1,0 +1,26 @@
+{
+  "name": "get_tasks",
+  "description": "Get all tasks from Task Master, optionally filtering by status and including subtasks.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "projectRoot": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      },
+      "withSubtasks": {
+        "type": "boolean"
+      },
+      "tag": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "projectRoot"
+    ],
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "additionalProperties": false
+  }
+}

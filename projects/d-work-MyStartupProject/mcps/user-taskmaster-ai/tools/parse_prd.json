@@ -1,0 +1,42 @@
+{
+  "name": "parse_prd",
+  "description": "Parse a Product Requirements Document (PRD) text file to automatically generate initial tasks. Reinitializing the project is not necessary to run this tool. It is recommended to run parse-prd after initializing the project and creating/importing a prd.txt file in the project root's .taskmaster/docs directory.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "default": ".taskmaster/docs/prd.txt",
+        "type": "string"
+      },
+      "projectRoot": {
+        "type": "string"
+      },
+      "tag": {
+        "type": "string"
+      },
+      "output": {
+        "type": "string"
+      },
+      "numTasks": {
+        "type": "string"
+      },
+      "force": {
+        "default": false,
+        "type": "boolean"
+      },
+      "research": {
+        "type": "boolean"
+      },
+      "append": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "input",
+      "projectRoot",
+      "force"
+    ],
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "additionalProperties": false
+  }
+}

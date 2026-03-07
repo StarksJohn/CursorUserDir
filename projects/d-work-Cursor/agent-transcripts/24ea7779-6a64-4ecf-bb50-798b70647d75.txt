@@ -1,0 +1,578 @@
+user:
+<cursor_commands>
+
+--- Cursor Command: ask_cursor ---
+---
+description: "ultrathink 超深度思考模式 - cursor模块"
+---
+
+## 执行步骤
+
+1. 读取 ask.md Template 获取执行规范
+   - Windows: `C:\Users\Stark8964911\.claude\ask\ask.md`
+   - Mac: `/Users/stark/.claude/ask/ask.md`
+   - 包含: ultrathink思考模式、文件保护规则、其他全局规范
+
+2. 处理以下模块需求
+
+---
+
+# Cursor IDE
+
+## 配置信息
+- win11全局配置目录: `C:\Users\Stark8964911\AppData\Roaming\Cursor`
+- 提问目录: `D:\work\Cursor`
+- 项目类型: React Native, React, Vue, iOS, Android, 微信小程序
+
+## 当前活跃需求
+<!-- - 我当前是cursor pro+ 计划的用户 -->
+  <!-- - 进行cursor里的 `composer-1.5`模型和 `Claude Sonnet 4.5(Thinking)`模型在2026年的对比 -->
+<!-- - 把以上问题的题目你的解答用中文更新到`C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor_使用指南与Token优化.md` -->
+- 在 `https://cursor.com/cn/dashboard?tab=usage` 页面,如图![img_161427.png](img_161427.png)![img_161457.png](img_161457.png),我今天使用了价值`1.42`美元的token; 在 `https://cursor.com/cn/dashboard?tab=billing`  页面, 如图 ![img_161216.png](img_161216.png), Usage 是 `1.1%` 是什么意思? 我目前订阅的是 `2026年2月24日 - 2027年2月24日`这个年度的`Cursor Pro Plus`计划,但没付款![img_155045.png](img_155045.png)![img_155055.png](img_155055.png), `1.1%`是`2026年2月24日 - 2026年3月24日`已经使用了`1.1%`的token额度的意思吗?  根据 以上信息, 帮我计算出,如果我付款 `2026年2月24日 - 2027年2月24日`这个年度的`Cursor Pro Plus`计划,我每个月大概能最多使用多少美金的token用量?因为我之前付款订阅过1个月的`Cursor Pro Plus`计划,花了60美金, 能使用`claude-4.6-sonnet-medium-thinking`这种高级模型到110美金的token额度,大概使用了1亿token,当时用满后, 只能继续免费用 `composer-1.5`模型; 如果我付款了`2026年2月24日 - 2027年2月24日`这个年度的`Cursor Pro Plus`计划,如果当月的token用完了, 怎么办?当月内能否继续免费使用![img_160616.png](img_160616.png)模型?因为我在`https://cursor.com/cn/dashboard?tab=usage`页面看到如图![img_161117.png](img_161117.png),今日已经使用了`composer-1.5`模型,但是在`https://cursor.com/cn/dashboard?tab=billing`页面看到如图![img_161216.png](img_161216.png),`2026年2月24日 - 2026年3月24日`这个月度周期内,没有把 `composer-1.5`模型的token消耗计算到这个周期内; 把你的回答用中文总结更新到`C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md`
+
+
+--- End Command ---
+</cursor_commands>
+<user_query>
+
+/ask_cursor 
+</user_query>
+
+assistant:
+执行 ask_cursor 命令：正在读取 ask.md 模板，随后处理 Cursor IDE 相关需求。
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\ask\ask.md
+[Tool call] Read
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md
+[Tool call] Glob
+  target_directory: D:\work\Cursor
+  glob_pattern: *.png
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] Glob
+
+assistant:
+查找图片并检索最新的 Cursor Pro Plus 定价信息。
+[Tool call] mcp_filesystem_list_directory
+  path: C:\Users\Stark8964911\.claude\commands
+[Tool call] WebSearch
+  search_term: Cursor Pro Plus 2026 pricing $70 API usage monthly limit token
+  explanation: 查询 Cursor Pro Plus 2026 年最新定价与 token 额度信息以验证分析
+[Tool call] Read
+  path: D:\work\Cursor\img_161427.png
+[Tool call] Read
+  path: D:\work\Cursor\img_161457.png
+
+[Tool result] mcp_filesystem_list_directory
+
+[Tool result] WebSearch
+
+[Tool result] Read
+
+[Tool result] Read
+
+assistant:
+正在读取图片以核对分析准确性：
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_161427.png
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_161457.png
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_161216.png
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_161117.png
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_160616.png
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_155045.png
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_155055.png
+[Tool call] mcp_fetch_imageFetch
+  url: https://cursor.com/docs/account/pricing
+  text: {"maxLength":15000}
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] mcp_fetch_imageFetch
+
+assistant:
+已理解截图与文档。正在更新分析文档：补充 Usage 与 Billing 的差异说明、今日 $1.42 vs API $1.25 的区别，并澄清 composer-1.5 在用完 API 后仍可免费使用。
+[Tool call] StrReplace
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md
+  old_string: # Cursor Pro Plus 年度计划分析
+
+> 更新日期：2026年2月24日
+> 账号：stark19852020@gmail.com
+
+---
+
+## 一、当前账单状态
+
+| 项目 | 内容 |
+|---|---|
+| 订阅计划 | Cursor Pro Plus 年度 |
+| 计费周期 | 2026年2月24日 - 2027年2月24日 |
+| 年度费用 | **US$573.97**（账单状态：**开启/未付款**） |
+| 月均费用 | $573.97 ÷ 12 ≈ **US$47.83/月** |
+| 支付状态 | 需点击"支付应付金额"按钮完成付款 |
+
+---
+
+## 二、1.1% 的含义
+
+在 **2026年2月24日 - 2026年3月24日** 这个月度计费周期内，高级 API 模型已消耗了月度包含额度的 **1.1%**：
+
+| 模型 | 消耗 Token | 占月度额度 |
+|---|---|---|
+| claude-4.6-sonnet-medium-thinking | 88.4万 tokens | 1.0% |
+| claude-4.6-opus-high-thinking | 11万 tokens | 0.1% |
+| **API 合计** | **99.4万 tokens** | **1.1%** |
+| Auto + Composer（composer-1.5）| 0（不计入此额度）| 0.0% |
+
+**结论：是的，1.1% 就是当月已使用包含 API token 额度的百分比。**
+  new_string: # Cursor Pro Plus 年度计划分析
+
+> 更新日期：2026年2月24日
+> 账号：stark19852020@gmail.com
+
+---
+
+## 一、当前账单状态
+
+| 项目 | 内容 |
+|---|---|
+| 订阅计划 | Cursor Pro Plus 年度 |
+| 计费周期 | 2026年2月24日 - 2027年2月24日 |
+| 年度费用 | **US$573.97**（账单状态：**开启/未付款**） |
+| 月均费用 | $573.97 ÷ 12 ≈ **US$47.83/月** |
+| 支付状态 | 需点击"支付应付金额"按钮完成付款 |
+
+---
+
+## 二、1.1% 的含义
+
+在 **2026年2月24日 - 2026年3月24日** 这个月度计费周期内，高级 API 模型已消耗了月度包含额度的 **1.1%**：
+
+| 模型 | 消耗 Token | 占月度额度 |
+|---|---|---|
+| claude-4.6-sonnet-medium-thinking | 88.4万 tokens | 1.0% |
+| claude-4.6-opus-high-thinking | 11万 tokens | 0.1% |
+| **API 合计** | **99.4万 tokens** | **1.1%** |
+| Auto + Composer（composer-1.5）| 0（不计入此额度）| 0.0% |
+
+**结论：是的，1.1% 就是「2026年2月24日 - 2026年3月24日」这个月度周期内，已使用高级 API token 额度占当月包含额度的百分比。**
+
+**注意：** 今日（2月24日）Usage 页面显示总消耗 US$1.42，其中：
+- **API 部分**（计入 1.1%）：$1.11（sonnet）+ $0.14（opus）= **US$1.25**
+- **composer-1.5**：US$0.17，**不计入** Billing 的 Usage 百分比
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] StrReplace
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md
+  old_string: ## 四、composer-1.5 为何不计入 Billing 中的 Usage 百分比
+
+**原因：** composer-1.5 属于 **Auto + Composer** 类别，有独立的使用额度，不来自 $70 API agent usage 预算。
+
+- Usage 页面显示 composer-1.5 的 Cost 列为 **"Included"**（包含在内）
+- Billing 页面 "Auto + Composer" 行显示 **0 tokens / 0.0%**
+
+这说明 Cursor 对 composer-1.5 的 token 消耗采用完全独立的计量体系，不与高级 API 模型共享月度 $70 额度。**因此 composer-1.5 的使用不会"消耗"你的月度 API 百分比。**
+  new_string: ## 四、composer-1.5 为何不计入 Billing 中的 Usage 百分比
+
+**原因：** composer-1.5 属于 **Auto + Composer** 类别，有独立的使用额度，不来自 $70 API agent usage 预算。
+
+- Usage 页面：composer-1.5 会显示当日花费（如 US$0.17）和 Cost 列为 **"Included"**，用于参考其「等价价值」
+- Billing 页面：Included Usage 表格中 "Auto + Composer" 行显示 **0 tokens / 0.0%**
+
+**为何会出现这种差异？**
+
+- **Usage 页面**：按「模型维度」展示所有模型的使用量和等价金额，用于整体查看
+- **Billing 页面**：只统计计入 **$70 API agent usage** 预算的模型，composer-1.5 使用的是另一套「Auto + Composer」额度池
+
+因此 Cursor 对 composer-1.5 采用**独立计量体系**，不与高级 API 共享月度 $70 额度。**composer-1.5 的使用不会消耗你的月度 API 百分比，Billing 中 1.1% 仅反映 claude-sonnet/opus 的消耗。**
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] StrReplace
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md
+  old_string: ## 五、月度 token 用完后的处理方式
+
+当月度 API 额度（约 $110~$115）耗尽后：
+
+| 模型类型 | 用完后是否可用 | 说明 |
+|---|---|---|
+| claude-4.6-sonnet-medium-thinking | 需额外付费 | 触发 On-Demand 按需计费 |
+| claude-4.6-opus-high-thinking | 需额外付费 | 触发 On-Demand 按需计费 |
+| **composer-1.5** | **可继续免费使用** | 不来自 API 额度，独立提供 |
+
+### On-Demand 按需计费规则
+
+- 费率与 Included 用量**相同**（不涨价，不降质）
+- 需要在账户中预存信用额度（Credit）才能使用
+- 在编辑器中会有用量超限提醒
+- 超出后可选择：①升级更高计划 ②开启按需付费继续使用
+
+### 实际建议
+
+如果当月额度用完但仍需使用高级模型，可直接切换到 **composer-1.5** 继续工作，因为它有独立的免费额度且功能强大（200k context window）。
+  new_string: ## 五、月度 token 用完后的处理方式
+
+**回答：当月内若高级 API token 用完后，可继续免费使用 composer-1.5。**
+
+当月度 API 额度（约 $110~$115）耗尽后：
+
+| 模型类型 | 用完后是否可用 | 说明 |
+|---|---|---|
+| claude-4.6-sonnet-medium-thinking | 需额外付费 | 触发 On-Demand 按需计费 |
+| claude-4.6-opus-high-thinking | 需额外付费 | 触发 On-Demand 按需计费 |
+| **composer-1.5** | **可继续免费使用** | 属于 Auto + Composer 独立额度，与 API 无关 |
+
+### 为何 composer-1.5 能继续免费用？
+
+composer-1.5 使用 **Auto + Composer** 专用额度，与高级 API（sonnet/opus）的 $70+ bonus 额度完全分离。因此当月 API 用完后，composer-1.5 仍可在当月内继续免费使用，直到其自身额度用尽（Cursor 通常给予「 generous 」额度）。
+
+### On-Demand 按需计费规则（仅针对高级 API）
+
+- 费率与 Included 用量**相同**（不涨价，不降质）
+- 需要在账户中预存信用额度（Credit）才能使用
+- 在编辑器中会有用量超限提醒
+- 超出后可选择：①升级更高计划 ②开启按需付费继续使用高级模型
+
+### 实际建议
+
+如果当月高级 API 额度用完但仍需编码辅助，**直接切换到 composer-1.5** 即可继续工作，无需额外付费。该模型有 200k context window，适合大部分日常编码场景。
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] StrReplace
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md
+  old_string: ## 八、总结
+
+- **1.1%** = 本月度周期内高级 API 模型已消耗月度包含额度的 1.1%（约 US$1.25 价值）
+- **月度有效额度**：官方保证 **US$70**，实际（含bonus）约 **US$110~$115**
+- **用完后**：composer-1.5 **可继续免费使用**，高级 API 模型需按需付费或等下个月
+- **年度计划**：$47.83/月，比月度省约 20%，token 额度相同
+- **现在**：需要尽快完成 US$573.97 年度账单的付款
+  new_string: ## 八、总结
+
+| 问题 | 答案 |
+|---|---|
+| 1.1% 代表什么？ | 2026-02-24 至 2026-03-24 周期内，高级 API（sonnet + opus）已用掉月度额度的 1.1%，约 US$1.25 |
+| 每月最多能用多少？ | 官方保证 **US$70**，实际含 bonus 约 **US$110~$115**（约 8000万~1亿 tokens） |
+| 当月 API 用完后怎么办？ | composer-1.5 **可继续免费使用**；高级模型需 On-Demand 付费或等下月重置 |
+| 为何 Usage 有 composer-1.5 但 Billing 为 0%？ | Usage 按模型展示等价花费；Billing 的 % 只统计 $70 API 额度，composer-1.5 用独立池 |
+| 年度计划值得吗？ | 年付 $573.97 ≈ $47.83/月，比月付 $60 省约 20%，API 额度相同 |
+
+**当前待办：** 访问 [Billing 页面](https://cursor.com/cn/dashboard?tab=billing)，完成 US$573.97 年度账单付款（状态：开启/未付款）。
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] StrReplace
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md
+  old_string: | 年度费用 | **US$573.97**（账单状态：**开启/未付款**） |
+  new_string: | 年度费用 | **US$573.97**（发票金额；订阅页显示 $576/年，可能为含税或地区价差） |
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] StrReplace
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md
+  old_string: | 年度费用 | **US$573.97**（发票金额；订阅页显示 $576/年，可能为含税或地区价差） |
+  new_string: | 年度费用 | **US$573.97**（账单状态：**开启/未付款**） |
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] Read
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md
+
+[Tool result] Read
+
+assistant:
+已按 ask.md 规范完成分析，并更新 `Cursor-Pro-Plus年度计划分析.md`。核心结论如下。
+
+---
+
+## 一、1.1% 的含义
+
+**是的。** 1.1% 表示在 **2026 年 2 月 24 日 – 2026 年 3 月 24 日** 这一计费周期内，高级 API 模型（claude-sonnet / opus）已用掉当月包含额度的 1.1%，对应约 **US$1.25**。
+
+今天 Usage 页面显示的 US$1.42 中：
+- **计入 1.1% 的只有 API 部分**：$1.11（sonnet）+ $0.14（opus）= **US$1.25**
+- **composer-1.5 的 $0.17 不计入** Billing 页面的 Usage 百分比
+
+---
+
+## 二、每月大致可用 token 金额
+
+| 类型 | 额度 |
+|---|---|
+| 官方保证 API 额度 | **US$70/月** |
+| 实际有效额度（含 bonus）| **约 US$110–$115/月** |
+| 约 token 数量 | **约 8000 万–1 亿 tokens/月** |
+
+推算依据：US$1.25 ÷ 1.1% ≈ US$113.6，和你之前月付 $60 时用满约 $110 的经验一致。
+
+---
+
+## 三、当月 token 用完后怎么办
+
+**可以。** 当月高级 API 额度用完后，**仍可继续免费使用 composer-1.5**。
+
+- **composer-1.5**：属于 Auto + Composer 独立额度，与 $70 API 额度分离，当月内可继续免费使用
+- **sonnet / opus**：需开启 On-Demand 按需付费，或等下个月额度重置
+
+---
+
+## 四、Usage 有 composer-1.5，Billing 为什么是 0%？
+
+- **Usage 页面**：按「模型」展示所有模型的等价花费（包括 composer-1.5 的 $0.17）
+- **Billing 的 Included Usage**：只统计 $70 API 预算下的模型，composer-1.5 用另一套 Auto + Composer 池，因此显示为 0 tokens / 0.0%
+
+---
+
+## 五、下一步
+
+如需继续使用年度计划，请到 [Billing 页面](https://cursor.com/cn/dashboard?tab=billing) 完成 **US$573.97** 的付款。  
+完整分析已写入并更新：`C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md`。
+
+user:
+<cursor_commands>
+
+--- Cursor Command: ask_cursor ---
+---
+description: "ultrathink 超深度思考模式 - cursor模块"
+---
+
+## 执行步骤
+
+1. 读取 ask.md Template 获取执行规范
+   - Windows: `C:\Users\Stark8964911\.claude\ask\ask.md`
+   - Mac: `/Users/stark/.claude/ask/ask.md`
+   - 包含: ultrathink思考模式、文件保护规则、其他全局规范
+
+2. 处理以下模块需求
+
+---
+
+# Cursor IDE
+
+## 配置信息
+- win11全局配置目录: `C:\Users\Stark8964911\AppData\Roaming\Cursor`
+- 提问目录: `D:\work\Cursor`
+- 项目类型: React Native, React, Vue, iOS, Android, 微信小程序
+
+## 当前活跃需求
+<!-- - 我当前是cursor pro+ 计划的用户 -->
+  <!-- - 进行cursor里的 `composer-1.5`模型和 `Claude Sonnet 4.5(Thinking)`模型在2026年的对比 -->
+<!-- - 把以上问题的题目你的解答用中文更新到`C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor_使用指南与Token优化.md` -->
+- 在 `https://cursor.com/cn/dashboard?tab=usage` 页面,如图![img_161427.png](img_161427.png)![img_161457.png](img_161457.png),我今天使用了价值`1.42`美元的token; 在 `https://cursor.com/cn/dashboard?tab=billing`  页面, 如图 ![img_161216.png](img_161216.png), Usage 是 `1.1%` 是什么意思? 我目前订阅的是 `2026年2月24日 - 2027年2月24日`这个年度的`Cursor Pro Plus`计划,但没付款![img_155045.png](img_155045.png)![img_155055.png](img_155055.png), `1.1%`是`2026年2月24日 - 2026年3月24日`已经使用了`1.1%`的token额度的意思吗?  根据 以上信息, 帮我计算出,如果我付款 `2026年2月24日 - 2027年2月24日`这个年度的`Cursor Pro Plus`计划,我每个月大概能最多使用多少美金的token用量?因为我之前付款订阅过1个月的`Cursor Pro Plus`计划,花了60美金, 能使用`claude-4.6-sonnet-medium-thinking`这种高级模型到110美金的token额度,大概使用了1亿token,当时用满后, 只能继续免费用 `composer-1.5`模型; 如果我付款了`2026年2月24日 - 2027年2月24日`这个年度的`Cursor Pro Plus`计划,如果当月的token用完了, 怎么办?当月内能否继续免费使用![img_160616.png](img_160616.png)模型?因为我在`https://cursor.com/cn/dashboard?tab=usage`页面看到如图![img_161117.png](img_161117.png),今日已经使用了`composer-1.5`模型,但是在`https://cursor.com/cn/dashboard?tab=billing`页面看到如图![img_161216.png](img_161216.png),`2026年2月24日 - 2026年3月24日`这个月度周期内,没有把 `composer-1.5`模型的token消耗计算到这个周期内; 
+  - 如图![img_163706.png](img_163706.png),今日使用了0.35美金的`composer-1.5`模型,如图![img_163750.png](img_163750.png),在`Auto + Composer`右边显示了`0.1%`,是不是意味着在`2026年2月24日 - 2026年3月24日`这个周期内,已经使用了`0.1%`的`composer-1.5`模型的额度?帮我反推`composer-1.5`模型每月能使用多少美金的token额度
+  - 把你的回答用中文总结更新到`C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md`
+
+
+--- End Command ---
+</cursor_commands>
+<user_query>
+
+/ask_cursor 
+</user_query>
+
+assistant:
+执行 ask_cursor 命令，正在读取 ask.md 模板并查看相关图片。
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\ask\ask.md
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_163706.png
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_163750.png
+[Tool call] Read
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] Read
+
+assistant:
+确认：img_163750 显示 Auto + Composer 为 0.1%；img_163706 显示 composer-1.5 今日消耗 US$0.35。正在更新文档并加入 composer-1.5 月度额度反推。
+[Tool call] StrReplace
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md
+  old_string: ## 四、composer-1.5 为何不计入 Billing 中的 Usage 百分比
+
+**原因：** composer-1.5 属于 **Auto + Composer** 类别，有独立的使用额度，不来自 $70 API agent usage 预算。
+
+- Usage 页面：composer-1.5 会显示当日花费（如 US$0.17）和 Cost 列为 **"Included"**，用于参考其「等价价值」
+- Billing 页面：Included Usage 表格中 "Auto + Composer" 行显示 **0 tokens / 0.0%**
+
+**为何会出现这种差异？**
+
+- **Usage 页面**：按「模型维度」展示所有模型的使用量和等价金额，用于整体查看
+- **Billing 页面**：只统计计入 **$70 API agent usage** 预算的模型，composer-1.5 使用的是另一套「Auto + Composer」额度池
+
+因此 Cursor 对 composer-1.5 采用**独立计量体系**，不与高级 API 共享月度 $70 额度。**composer-1.5 的使用不会消耗你的月度 API 百分比，Billing 中 1.1% 仅反映 claude-sonnet/opus 的消耗。**
+  new_string: ## 四、Auto + Composer（composer-1.5）的 Usage 百分比与额度
+
+### 0.1% 的含义
+
+**是的。** Billing 页面 "Auto + Composer" 右侧显示的 **0.1%** 表示：在 **2026年2月24日 - 2026年3月24日** 这个周期内，已使用了 composer-1.5 模型月度额度的 **0.1%**。
+
+- composer-1.5 属于 **Auto + Composer** 类别，有**独立于 API 的额度池**
+- Billing 的 "Auto + Composer" 行会单独显示其 Usage 百分比（如 0.1%）
+- Tokens 列可能显示 0，但 Cursor 按「等价金额」计算 Usage %，与 Usage 页面的 $ 显示一致
+
+### composer-1.5 月度额度反推
+
+| 数据来源 | 数值 |
+|---|---|
+| 今日 composer-1.5 消耗（Usage 页面）| **US$0.35** |
+| Billing Auto + Composer Usage | **0.1%** |
+| 反推月度额度 | $0.35 ÷ 0.1% = **US$350/月** |
+
+**结论：composer-1.5 每月约有 US$350 的 token 等价额度**（按 Cursor 内部计价折算）。该额度与高级 API（$70+ bonus）完全分离，互不影响。
+
+### Usage 与 API 的区别
+
+- **API 行**：claude-sonnet、claude-opus 等，共享约 $110~$115/月的 API 额度
+- **Auto + Composer 行**：composer-1.5 专用，约 **$350/月** 的独立额度
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] StrReplace
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md
+  old_string: ### 综合结论
+
+| 类型 | 额度 |
+|---|---|
+| 官方保证 API 额度 | **US$70/月** |
+| 实际有效额度（含 bonus）| **约 US$110~$115/月** |
+| 约等于 token 数量 | **约 8000万~1亿 tokens/月** |
+| Auto + Composer（composer-1.5）| **独立免费额度，不占用上述额度** |
+  new_string: ### 综合结论
+
+| 类型 | 额度 |
+|---|---|
+| 官方保证 API 额度 | **US$70/月** |
+| 实际有效额度（含 bonus）| **约 US$110~$115/月** |
+| 约等于 token 数量 | **约 8000万~1亿 tokens/月** |
+| Auto + Composer（composer-1.5）| **约 US$350/月**（独立额度，反推自 $0.35=0.1%） |
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] StrReplace
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md
+  old_string: ### 为何 composer-1.5 能继续免费用？
+
+composer-1.5 使用 **Auto + Composer** 专用额度，与高级 API（sonnet/opus）的 $70+ bonus 额度完全分离。因此当月 API 用完后，composer-1.5 仍可在当月内继续免费使用，直到其自身额度用尽（Cursor 通常给予「 generous 」额度）。
+  new_string: ### 为何 composer-1.5 能继续免费用？
+
+composer-1.5 使用 **Auto + Composer** 专用额度（约 $350/月），与高级 API 完全分离。因此当月 **API 用完后**，composer-1.5 仍可在当月内继续免费使用；若 composer-1.5 自身额度也用尽，则需 On-Demand 或等下月重置。
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] StrReplace
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md
+  old_string: ## 八、总结
+
+| 问题 | 答案 |
+|---|---|
+| 1.1% 代表什么？ | 2026-02-24 至 2026-03-24 周期内，高级 API（sonnet + opus）已用掉月度额度的 1.1%，约 US$1.25 |
+| 每月最多能用多少？ | 官方保证 **US$70**，实际含 bonus 约 **US$110~$115**（约 8000万~1亿 tokens） |
+| 当月 API 用完后怎么办？ | composer-1.5 **可继续免费使用**；高级模型需 On-Demand 付费或等下月重置 |
+| 为何 Usage 有 composer-1.5 但 Billing 为 0%？ | Usage 按模型展示等价花费；Billing 的 % 只统计 $70 API 额度，composer-1.5 用独立池 |
+| 年度计划值得吗？ | 年付 $573.97 ≈ $47.83/月，比月付 $60 省约 20%，API 额度相同 |
+
+**当前待办：** 访问 [Billing 页面](https://cursor.com/cn/dashboard?tab=billing)，完成 US$573.97 年度账单付款（状态：开启/未付款）。
+  new_string: ## 八、总结
+
+| 问题 | 答案 |
+|---|---|
+| API 的 1.7% 代表什么？ | 2026-02-24 至 2026-03-24 周期内，高级 API（sonnet + opus）已用掉月度额度的百分比（约 US$1.89） |
+| Auto + Composer 的 0.1% 代表什么？ | 同一周期内，composer-1.5 已用掉其月度额度的 **0.1%**（今日 US$0.35） |
+| 每月 API 最多能用多少？ | 官方保证 **US$70**，实际含 bonus 约 **US$110~$115**（约 8000万~1亿 tokens） |
+| 每月 composer-1.5 最多能用多少？ | **约 US$350/月**（反推：$0.35 ÷ 0.1% = $350） |
+| 当月 API 用完后怎么办？ | composer-1.5 **可继续免费使用**（有独立 $350 额度）；高级模型需 On-Demand 付费或等下月 |
+| 年度计划值得吗？ | 年付 $573.97 ≈ $47.83/月，比月付 $60 省约 20%，API 与 composer 额度相同 |
+
+**当前待办：** 访问 [Billing 页面](https://cursor.com/cn/dashboard?tab=billing)，完成 US$573.97 年度账单付款（状态：开启/未付款）。
+
+[Tool result] StrReplace
+
+assistant:
+[Tool call] Read
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md
+  offset: 1
+  limit: 100
+
+[Tool result] Read
+
+assistant:
+[Tool call] StrReplace
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md
+  old_string: **注意：** 今日（2月24日）Usage 页面显示总消耗 US$1.42，其中：
+- **API 部分**（计入 1.1%）：$1.11（sonnet）+ $0.14（opus）= **US$1.25**
+- **composer-1.5**：US$0.17，**不计入** Billing 的 Usage 百分比
+  new_string: **注意：** Usage 页面总消耗含 API 与 composer-1.5；Billing 中 **API** 与 **Auto + Composer** 分开展示百分比，各有独立额度池。
+
+[Tool result] StrReplace
+
+assistant:
+已完成对 `Cursor-Pro-Plus年度计划分析.md` 的更新，核心结论如下：
+
+---
+
+## 1. Auto + Composer 的 0.1% 代表什么？
+
+**是的。** Billing 页面中 "Auto + Composer" 右侧的 **0.1%** 表示：在 2026-02-24 至 2026-03-24 的计费周期内，你已用掉 composer-1.5 当月额度的 **0.1%**。
+
+---
+
+## 2. composer-1.5 每月可用额度反推
+
+| 数据 | 数值 |
+|---|---|
+| 今日 composer-1.5 消耗（Usage 页面） | **US$0.35** |
+| Billing "Auto + Composer" Usage | **0.1%** |
+| 反推月度额度 | $0.35 ÷ 0.1% = **US$350/月** |
+
+**结论：composer-1.5 每月约有 US$350 的 token 等价额度**（按 Cursor 内部计价）。
+
+---
+
+## 3. 文档更新要点
+
+- 第四章改为「Auto + Composer（composer-1.5）的 Usage 百分比与额度」
+- 增加 0.1% 的含义说明
+- 增加 composer-1.5 月度额度反推表
+- 综合结论表补充 composer-1.5 约 $350/月
+- 总结表加入「Auto + Composer 0.1%」和「composer-1.5 每月约 $350」两行
+
+---
+
+**下一步建议：** 可通过后续几天的使用再验证，看 0.1% 与 $0.35 的关系是否稳定，从而确认 $350/月 的估算是否可靠。

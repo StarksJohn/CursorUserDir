@@ -1,0 +1,384 @@
+user:
+<cursor_commands>
+
+--- Cursor Command: ask_cursor ---
+---
+description: "ultrathink 超深度思考模式 - cursor模块"
+---
+
+## 执行步骤
+
+1. 读取 ask.md Template 获取执行规范
+   - Windows: `C:\Users\Stark8964911\.claude\ask\ask.md`
+   - Mac: `/Users/stark/.claude/ask/ask.md`
+   - 包含: ultrathink思考模式、文件保护规则、其他全局规范
+
+2. 处理以下模块需求
+
+---
+
+# Cursor IDE
+
+## 配置信息
+- win11全局配置目录: `C:\Users\Stark8964911\AppData\Roaming\Cursor`
+- 项目类型: React Native, React, Vue, iOS, Android, 微信小程序
+
+## 当前活跃需求
+<!-- - 我当前是cursor pro+ 计划的用户 -->
+  <!-- - 进行cursor里的 `composer-1.5`模型和 `Claude Sonnet 4.5(Thinking)`模型在2026年的对比 -->
+<!-- - 把以上问题的题目你的解答用中文更新到`C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor_使用指南与Token优化.md` -->
+- 在 https://cursor.com/cn/dashboard?tab=usage 页面,如图![img_153932.png](img_153932.png)![img_153943.png](img_153943.png),我今天使用了这么多token; 在https://cursor.com/cn/dashboard?tab=billing  页面, 如图![img_154025.png](img_154025.png), Usage 是 0.7% 是什么意思? 我目前订阅的是 `2026年2月24日 - 2027年2月24日`这个年度的`Cursor Pro Plus`计划,但没付款![img_155045.png](img_155045.png)![img_155055.png](img_155055.png), `0.7%`是`2026年2月24日 - 2026年3月24日`已经使用了`0.7%`的token额度的意思吗?  根据 以上信息, 帮我计算出,如果我付款 `2026年2月24日 - 2027年2月24日`这个年度的`Cursor Pro Plus`计划,我每个月大概能最多使用多少token?因为我之前付款订阅过1个月的`Cursor Pro Plus`计划,花了60美金, 能使用到100美金的token额度,大概使用了1亿token; 如果我付款了`2026年2月24日 - 2027年2月24日`这个年度的`Cursor Pro Plus`计划,当月的token用完了, 怎么办? 把你以上的回答用中文总结更新到`C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus-Annual-Plan-Analysis.md`,并把这个文件名和内容改成中文
+- 当前win11系统安装了cursor IDE, 这个cursor 的全局配置是不是在 `C:\Users\Stark8964911\AppData\Roaming\Cursor`目录下? 为什么我用 cursor IDE 打开 `C:\Users\Stark8964911\AppData\Roaming\Cursor` 目录, 一直是![img_154734.png](img_154734.png)状态?是不是这个目录文件太多? 怎么 优化 cursor 的全局配置,避免cursor打开大文件目录时卡死? 
+
+
+--- End Command ---
+</cursor_commands>
+<user_query>
+
+/ask_cursor 
+</user_query>
+
+assistant:
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\ask\ask.md
+[Tool call] Read
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus-Annual-Plan-Analysis.md
+[Tool call] mcp_filesystem_list_directory
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] mcp_filesystem_list_directory
+
+assistant:
+[Tool call] WebSearch
+  search_term: Cursor Pro Plus token limit 2026 monthly quota annual plan
+  explanation: 查询 Cursor Pro Plus 2026 年最新的 token 额度和计费信息
+[Tool call] mcp_filesystem_list_directory_with_sizes
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor
+  sortBy: size
+[Tool call] Glob
+  target_directory: C:\Users\Stark8964911\.claude\commands
+  glob_pattern: **/img_153*.png
+[Tool call] Glob
+  target_directory: C:\Users\Stark8964911\.claude\commands
+  glob_pattern: **/img_154*.png
+[Tool call] Glob
+  target_directory: C:\Users\Stark8964911\.claude\commands
+  glob_pattern: **/img_155*.png
+
+[Tool result] WebSearch
+
+[Tool result] mcp_filesystem_list_directory_with_sizes
+
+[Tool result] Glob
+
+[Tool result] Glob
+
+[Tool result] Glob
+
+assistant:
+[Tool call] mcp_fetch_imageFetch
+  url: https://cursor.com/cn/dashboard?tab=usage
+  images: false
+  text: {"maxLength":5000}
+[Tool call] Read
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor_Win11_Global_Config_Guide.md
+[Tool call] mcp_filesystem_directory_tree
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor
+  excludePatterns: ["node_modules",".git"]
+
+[Tool result] mcp_fetch_imageFetch
+
+[Tool result] Read
+
+[Tool result] mcp_filesystem_directory_tree
+
+assistant:
+[Tool call] mcp_context7_resolve-library-id
+  query: Cursor IDE
+  libraryName: cursor
+[Tool call] Read
+  path: C:\Users\Stark8964911\.cursor\projects\d-work-RN-csx-mobile-upgrade\agent-tools\8cdb690f-e60e-42ae-a9c6-7d00dfa58012.txt
+  limit: 200
+[Tool call] Glob
+  target_directory: C:\Users\Stark8964911\.claude
+  glob_pattern: **/*.png
+
+[Tool result] mcp_context7_resolve-library-id
+
+[Tool result] Read
+
+[Tool result] Glob
+
+assistant:
+[Tool call] mcp_context7_query-docs
+  libraryId: /websites/cursor
+  query: Pro Plus plan token limit usage billing monthly quota
+[Tool call] mcp_filesystem_list_directory
+  path: C:\Users\Stark8964911\.claude\commands
+[Tool call] mcp_filesystem_list_directory
+  path: C:\Users\Stark8964911\.claude
+
+[Tool result] mcp_context7_query-docs
+
+[Tool result] mcp_filesystem_list_directory
+
+[Tool result] mcp_filesystem_list_directory
+
+assistant:
+正在查看相关截图以获取准确数据。
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_153932.png
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_153943.png
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_154025.png
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_154734.png
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_155045.png
+[Tool call] Read
+  path: C:\Users\Stark8964911\.claude\commands\img_155055.png
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] Read
+
+[Tool result] Read
+
+assistant:
+正在创建中文分析文档并写入内容：
+[Tool call] TodoWrite
+  todos: [{"id":"1","content":"Create Chinese analysis doc for Cursor Pro Plus annual plan","status":"in_progress"},{"id":"2","content":"Rename file to Chinese and update content","status":"pending"},{"id":"3","content":"Document Cursor config directory loading issue and optimizations","status":"pending"}]
+  merge: false
+[Tool call] mcp_fetch_imageFetch
+  url: https://cursor.com/docs/account/pricing
+  enableFetchImages: false
+
+[Tool result] TodoWrite
+
+[Tool result] mcp_fetch_imageFetch
+
+assistant:
+[Tool call] Write
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md
+  contents: # Cursor Pro Plus 年度计划分析
+
+> 更新日期：2026-02-24  
+> 账户：stark19852020@gmail.com  
+> 计划：Cursor Pro Plus（年度）  
+> 价格：576 美元/年（48 美元/月）
+
+---
+
+## 一、0.7% 是什么意思？
+
+Billing 页面上的 **0.7%** 表示：
+
+- 在当前账单周期（**2026/02/24 - 2026/03/24**）内，你已经使用了当月包含的 Token 额度的 **0.7%**
+- 这是**当月额度**的 0.7%，不是全年总额的 0.7%
+- 每月会重置，从 0% 重新开始计算
+
+---
+
+## 二、每月 Token 额度估算
+
+### 依据你的实际使用数据
+
+| 项目           | 数值                          |
+|----------------|-------------------------------|
+| 今日 API 消耗  | 44.4 万 tokens（0.7%）        |
+| 其中 sonnet 模型 | 33.4 万 tokens（0.6%）       |
+| 其中 opus 模型  | 11 万 tokens（0.1%）         |
+| **估算月度额度** | 444,000 ÷ 0.007 ≈ **6,343 万 (约 6,400 万)** |
+
+### 与你之前的月度 Pro+ 对比
+
+| 项目           | 月度 Pro+（60 美元/月） | 年度 Pro+（48 美元/月） |
+|----------------|------------------------|-------------------------|
+| 月费           | $60                    | $48                     |
+| 年费           | $720                   | $576                    |
+| 你之前月用约   | ~1 亿 tokens           | 估算 ~6,400 万 tokens   |
+| 年度节省       | -                      | $144                    |
+
+> **说明**：月度 Pro+ 的 Token 额度可能高于年度 Pro+ 的月度分配。年度计划省钱，但每月可用的 Token 可能略少。  
+> 以上额度是依据 0.7% 使用比例反推的，实际以 Cursor 官方为准。
+
+### Cursor 官方 Pro+ 说明（2026 年）
+
+根据 Cursor 文档：
+
+- Pro Plus 包含 **$70/月** 的 API agent 用量，外加 Auto 和 Composer 用量
+- 不同模型价格不同，你选的模型会直接影响可用的 Token 数量
+
+---
+
+## 三、月度 Token 用完后会怎样？
+
+### 方式一：开启按需用量（On-Demand Usage）
+
+- 在 Billing 页面**开启 On-Demand Usage** 后，超出包含额度会按 API 价格额外计费
+- 可在编辑器内继续使用，不会中断
+- 额外费用会出现在「On-Demand Usage」中
+
+### 方式二：不开启按需用量
+
+- 当 On-Demand Usage 为**关闭**时，达到 100% 月度额度后：
+  - 可能被**限流**或暂时无法使用高级模型
+  - 可能降级到较慢/较小的模型
+  - 直到下个账单周期重置额度
+
+### 建议
+
+1. 定期查看：https://cursor.com/cn/dashboard?tab=usage  
+2. 如不希望意外扣费，可保持 On-Demand Usage **关闭**  
+3. 快接近额度时，可少用高消耗模型（如 thinking 模型）
+
+---
+
+## 四、当前发票与订阅状态
+
+| 日期        | 金额     | 状态     | 说明             |
+|-------------|----------|----------|------------------|
+| 2026-02-24  | $573.97  | **未付** | Cursor Pro Plus 年度 |
+| 2026-01-25  | $60.00   | 已付     | 月度 Pro+        |
+
+### 重要说明
+
+- 当前订阅处于**宽限期**（尚未完成支付）
+- 宽限期结束后若仍未付，服务可能被暂停
+- 如需取消或作废当前发票，可联系：**support@cursor.com**
+
+---
+
+## 五、Win11 Cursor 全局配置目录相关问题
+
+### 全局配置位置
+
+- Win11 下，Cursor 的全局配置主要在：`C:\Users\Stark8964911\AppData\Roaming\Cursor`
+- 该目录包含：settings.json、缓存、扩展、日志等大量文件
+
+### 为什么用 Cursor 打开该目录会卡住/黑屏？
+
+1. **文件数量多**：  
+   - 目录树显示约 **55,000+ 文件**（含 CachedData、extensions 等子目录）  
+   - Cursor 基于 VSCode，打开时会索引、扫描所有文件，体量过大会导致加载缓慢甚至卡死  
+
+2. **缓存与索引开销大**：  
+   - 目录内有 Cache、CachedData、GPUCache 等  
+   - 编辑器和扩展会尝试读取并索引这些文件，加重负担  
+
+3. **工作区加载超时**：  
+   - 大工作区会触发大量文件系统操作和语言服务/扩展的初始化  
+   - 容易出现长时间黑屏、无响应
+
+### 优化建议
+
+1. **改用「文件」打开而不是作为工作区**  
+   - 需要浏览该目录时，用 **Windows 文件资源管理器**  
+   - 或在 Cursor 中用「文件 > 打开文件」打开单个文件，而不是「打开文件夹」  
+
+2. **只打开必要的子目录**  
+   - 例如只打开 `User` 目录编辑 `settings.json`  
+   - 路径：`C:\Users\Stark8964911\AppData\Roaming\Cursor\User`  
+
+3. **在 .cursorignore 中排除大目录（若作为项目使用）**  
+   - 若必须把该目录作为项目打开，可在项目根目录添加 `.cursorignore`  
+   - 排除：`Cache`、`CachedData`、`GPUCache`、`blob_storage` 等大目录  
+
+4. **定期清理缓存**  
+   - 可关闭 Cursor 后，手动删除 `Cache`、`CachedData`、`Code Cache` 等目录  
+   - 下次启动时会重新生成，可能会加快打开速度  
+
+5. **用脚本/命令行编辑**  
+   - 修改 `settings.json` 等配置时，可用 PowerShell 或记事本直接编辑，避免通过 Cursor 打开整个目录  
+
+---
+
+## 六、要点总结
+
+1. **0.7% = 当月使用比例**，不是全年  
+2. **月度 Token 估算约 6,400 万**（基于 0.7% 反推）  
+3. **额度按月重置**，未用完的不会结转到下月  
+4. **On-Demand Usage** 决定：超限后是按量付费还是被限流  
+5. 年度计划比月付便宜约 **$144/年**  
+6. Cursor 配置目录文件过多，**不建议用 Cursor 作为工作区打开整个目录**；建议只打开 `User` 子目录或单独用资源管理器查看  
+
+---
+
+*本文档基于 2026-02-24 的实际使用与截图数据整理。*
+
+
+[Tool result] Write
+
+assistant:
+[Tool call] Delete
+  path: C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus-Annual-Plan-Analysis.md
+[Tool call] TodoWrite
+  todos: [{"id":"1","content":"Create Chinese analysis doc for Cursor Pro Plus annual plan","status":"completed"},{"id":"2","content":"Rename file to Chinese and update content","status":"completed"},{"id":"3","content":"Document Cursor config directory loading issue and optimizations","status":"completed"}]
+  merge: true
+
+[Tool result] Delete
+
+[Tool result] TodoWrite
+
+assistant:
+已按 ask.md 规范完成处理，摘要如下：
+
+---
+
+## 完成情况概览
+
+### 1. Token 与 0.7% 说明
+
+- **0.7%** 表示：在当前账单周期（2026/02/24 - 2026/03/24）内，当月包含额度的 **0.7%** 已被使用。
+- 不是全年总 Quota 的 0.7%，而是**当月额度**的 0.7%。
+- 每月会重置，从 0% 重新计算。
+
+### 2. 月度 Token 估算
+
+- 当前数据：44.4 万 tokens ≈ 0.7%。
+- 反推月度额度：444,000 ÷ 0.007 ≈ **约 6,343 万 tokens/月**。
+- 之前月付 Pro+（$60）：你大约用过 ~1 亿 tokens/月；年度 Pro+（$48）的月度额度可能略低。
+
+### 3. 月度 Token 用完后
+
+- **开启 On-Demand Usage**：超出部分按 API 价格计费，可继续正常使用。
+- **不开启**：可能被限流或暂时无法使用高级模型，直到下个账单周期重置。
+
+### 4. 配置目录卡住 / 黑屏原因与优化
+
+**原因：**
+
+- `C:\Users\Stark8964911\AppData\Roaming\Cursor` 下文件数约 **55,000+**，包含大量缓存、扩展和索引文件。
+- Cursor 会索引整个工作区，文件量过大易导致加载缓慢或卡死。
+
+**建议：**
+
+1. 用 **Windows 文件资源管理器** 查看和操作配置目录。
+2. 只打开 `User` 子目录修改 `settings.json`：`C:\Users\Stark8964911\AppData\Roaming\Cursor\User`。
+3. 避免用 Cursor 作为工作区打开整个 AppData\Roaming\Cursor 目录。
+4. 可定期清理 `Cache`、`CachedData` 等缓存目录。
+
+### 5. 文档更新
+
+- 已生成并保存中文分析文档：`Cursor-Pro-Plus年度计划分析.md`
+- 路径：`C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor-Pro-Plus年度计划分析.md`
+- 原英文文档 `Cursor-Pro-Plus-Annual-Plan-Analysis.md` 已删除。
+
+---
+
+## 下一步建议
+
+1. **配置修改**：用 `code` 或记事本打开 `Cursor\User\settings.json`，而不是用 Cursor 打开整个配置目录。
+2. **监控用量**：定期查看 [Usage 页面](https://cursor.com/cn/dashboard?tab=usage)。
+3. **按需开通**：如经常超出月度额度，可考虑开启 On-Demand Usage 并设置月度支出上限。
