@@ -1,6 +1,6 @@
 # Cursor User Dir
 
-仓库: https://github.com/StarksJohn/CursorUserDir
+远程git仓库: https://github.com/StarksJohn/CursorUserDir
 
 Cursor 用户级命令、技能、MCP 主目录:
 - Win11: `C:\Users\Stark8964911\.cursor`
