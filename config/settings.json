@@ -143,14 +143,12 @@
     "search.showLineNumbers":  true,
     "search.exclude":  {
                            "**/.gradle":  true,
-                           "**/android":  true,
                            "**/.cache":  true,
                            "**/build":  true,
                            "**/node_modules":  true,
                            "**/.vscode":  false,
                            "**/Pods":  true,
                            "**/.git":  true,
-                           "**/ios":  true,
                            "**/temp":  true,
                            "**/dist":  true,
                            "**/tmp":  true,
@@ -159,8 +157,12 @@
                            "**/coverage":  true,
                            "**/*.log":  true,
                            "**/*.tsbuildinfo":  true,
+                           "**/ios/Pods":  true,
+                           "**/ios/build":  true,
+                           "**/ios/DerivedData":  true,
                            "**/android/build":  true,
-                           "**/ios/build":  true
+                           "**/android/.gradle":  true,
+                           "**/android/app/build":  true
                        },
     "search.include":  {
                            "**/*.{js,jsx,ts,tsx}":  true,
@@ -187,8 +189,6 @@
                                 "--smart-case",
                                 "--follow",
                                 "--glob=!**/node_modules/**",
-                                "--glob=!**/ios/**",
-                                "--glob=!**/android/**",
                                 "--glob=!**/.git/**",
                                 "--glob=!**/build/**",
                                 "--glob=!**/dist/**",
@@ -200,7 +200,13 @@
                                 "--glob=!**/Pods/**",
                                 "--glob=!**/.gradle/**",
                                 "--glob=!**/DerivedData/**",
-                                "--glob=!**/*.tsbuildinfo"
+                                "--glob=!**/*.tsbuildinfo",
+                                "--glob=!**/ios/Pods/**",
+                                "--glob=!**/ios/build/**",
+                                "--glob=!**/ios/DerivedData/**",
+                                "--glob=!**/android/build/**",
+                                "--glob=!**/android/.gradle/**",
+                                "--glob=!**/android/app/build/**"
                             ],
     "files.associations":  {
                                "*.json":  "jsonc",
