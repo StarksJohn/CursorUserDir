@@ -1,0 +1,1229 @@
+diff --git a/README.md b/README.md
+index 11744d26..1a843749 100644
+--- a/README.md
++++ b/README.md
+@@ -298,6 +298,8 @@ For instance, `1.1.8-stark-dev` branch: used for my development work on version
+             了，等於直接打包成"類 release"狀態 ;再
+             `npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/` ,
+             再 `npx react-native run-android`
++      4. `Error: useRootView must be used within a RootViewProvider`:
++         1. 注释掉报错页面的 <RNAutoPositionedPopup> 和 import,再 reload
+    8. 看 debug 日誌:
+       1. In Chrome's DevTools, check the `console.log` output.
+       2. Open `chrome://inspect` in the Chrome browser.
+diff --git a/src/api/api-types.ts b/src/api/api-types.ts
+index 2619738d..4a507fb6 100644
+--- a/src/api/api-types.ts
++++ b/src/api/api-types.ts
+@@ -135,6 +135,8 @@ export interface List_doctor_medical_terms {
+   group: any;
+   code: any;
+   term: string;
++  selected: boolean;
++  title: string;
+ }
+ 
+ export interface PatientQueryItems {
+diff --git a/src/api/api.ts b/src/api/api.ts
+index 1283e2db..1e53740f 100644
+--- a/src/api/api.ts
++++ b/src/api/api.ts
+@@ -82,6 +82,7 @@ const processResponse = async (response: Response, dispatch?: any) => {
+     console.log('api processResponse 401 global.navigation=', global.navigation);
+     const curAccount = await storage.getItem(storage.csxMobileCachekeys.curAccount, true);
+     console.log('api processResponse 401 curAccount=', curAccount);
++    
+     //进登录页面
+     routes.reset(global.navigation, routes.LoginPage.routeName, {
+       pageData: {
+diff --git a/src/pages/AllergyPage/AllergyPage.tsx b/src/pages/AllergyPage/AllergyPage.tsx
+index 7d487436..f511320e 100644
+--- a/src/pages/AllergyPage/AllergyPage.tsx
++++ b/src/pages/AllergyPage/AllergyPage.tsx
+@@ -197,6 +197,8 @@ const AllergyPage: React.FC<Props> = (props: Props, parentRef) => {
+     disableDelete: false,
+     singleSelectedItem: null,
+     isSelected: false as boolean,
++    Drug_allergy_disabled: false as boolean,
++    Non_drug_allergy_disabled:false as boolean,
+   });
+   const language = useLanguage();
+   const refCsxFlatList = useRef();
+@@ -325,6 +327,12 @@ const AllergyPage: React.FC<Props> = (props: Props, parentRef) => {
+     );
+   }, [state.allergicReaction, state.ListHeaderRow0Selected]);
+   const renderListHeaderComponent = useCallback(() => {
++    console.log('AllergyPage renderListHeaderComponent=', {
++      'state.ListHeaderRow0Selected': state.ListHeaderRow0Selected,
++      'state.Non_drug_allergy_disabled': state.Non_drug_allergy_disabled,
++      'state.Drug_allergy_disabled': state.Drug_allergy_disabled,
++      'refCsxFlatList.current?.getItems()': refCsxFlatList.current?.getItems()
++    });
+     switch (state.topBarListIndex) {
+       // 藥物過敏
+       case 0:
+@@ -684,7 +692,7 @@ const AllergyPage: React.FC<Props> = (props: Props, parentRef) => {
+               {/* 編輯 */}
+               <TouchableOpacity
+                 disabled={
+-                  /*state.isEditing ||*/ state.ListHeaderRow0Selected || refCsxFlatList.current?.getItems().length === 0
++                  /*state.isEditing ||*/ state.ListHeaderRow0Selected || state.Drug_allergy_disabled
+                 }
+                 style={styles.ListHeaderSectionBt}
+                 onPress={() => {
+@@ -729,7 +737,7 @@ const AllergyPage: React.FC<Props> = (props: Props, parentRef) => {
+                   style={[
+                     styles.ListHeaderSectionBtTxt,
+                     // state.isEditing ||
+-                    state.ListHeaderRow0Selected || refCsxFlatList.current?.getItems().length === 0
++                    state.ListHeaderRow0Selected || state.Drug_allergy_disabled
+                       ? {
+                         color: uiTheme.colors.$disabledBtnText,
+                       }
+@@ -957,8 +965,9 @@ const AllergyPage: React.FC<Props> = (props: Props, parentRef) => {
+             <View style={styles.ListHeaderSection}>
+               <Text style={styles.ListHeaderSectionTitle}>{global.i18n.t('Non_drug_allergy_records')}</Text>
+               <TouchableOpacity
++                //https://app.clickup.com/t/8553538/TECH-8071
+                 disabled={
+-                  /*state.isEditing ||*/ state.ListHeaderRow0Selected || refCsxFlatList.current?.getItems().length === 0
++                  /*state.isEditing ||*/ /*state.ListHeaderRow0Selected || refCsxFlatList.current?.getItems().length === 0*/ state.Non_drug_allergy_disabled
+                 }
+                 style={styles.ListHeaderSectionBt}
+                 onPress={() => {
+@@ -1003,7 +1012,8 @@ const AllergyPage: React.FC<Props> = (props: Props, parentRef) => {
+                   style={[
+                     styles.ListHeaderSectionBtTxt,
+                     // state.isEditing ||
+-                    state.ListHeaderRow0Selected || refCsxFlatList.current?.getItems().length === 0
++                    // state.ListHeaderRow0Selected || refCsxFlatList.current?.getItems().length === 0
++                    state.Non_drug_allergy_disabled
+                       ? {
+                         color: uiTheme.colors.$disabledBtnText,
+                       }
+@@ -1139,7 +1149,7 @@ const AllergyPage: React.FC<Props> = (props: Props, parentRef) => {
+     state.selectedListHeaderModal1,
+     pageData,
+     mode,
+-    uiTheme,
++    uiTheme, state.Non_drug_allergy_disabled, state.Drug_allergy_disabled
+   ]);
+   const renderList = useCallback(() => {
+     const str =
+@@ -1183,6 +1193,8 @@ const AllergyPage: React.FC<Props> = (props: Props, parentRef) => {
+     mode,
+     language,
+     uiTheme,
++    state.Non_drug_allergy_disabled,
++    state.Drug_allergy_disabled
+   ]);
+   const renderItem = useCallback(
+     ({
+@@ -1379,7 +1391,14 @@ const AllergyPage: React.FC<Props> = (props: Props, parentRef) => {
+           patientId: pageData.patients.patientId,
+           typeOfAllergen: 'Drug',
+         });
+-        if (data) {
++        console.log('AllergyPage fetchingList Drug data=', data);
++        if (data && data.length > 0) {
++          setState((prevState) => {
++            return {
++              ...prevState,
++              Drug_allergy_disabled: false,
++            };
++          });
+           return Promise.resolve({
+             items: data,
+             pageIndex,
+@@ -1388,6 +1407,12 @@ const AllergyPage: React.FC<Props> = (props: Props, parentRef) => {
+             needLoadMore: false,
+           });
+         }
++        setState((prevState) => {
++          return {
++            ...prevState,
++            Drug_allergy_disabled: true,
++          };
++        });
+         return Promise.resolve(null);
+       } else if (topBarListIndex.current === 1) {
+         const [err, data] = await tool.to(
+@@ -1398,7 +1423,14 @@ const AllergyPage: React.FC<Props> = (props: Props, parentRef) => {
+             // keyWord: ''
+           })
+         );
+-        if (data) {
++        console.log('AllergyPage fetchingList Non-Drug data=', data);
++        if (data && data.length > 0) {
++          setState((prevState) => {
++            return {
++              ...prevState,
++              Non_drug_allergy_disabled: false,
++            };
++          });
+           return {
+             items: data,
+             pageIndex,
+@@ -1406,6 +1438,12 @@ const AllergyPage: React.FC<Props> = (props: Props, parentRef) => {
+             totalPage: 0,
+           };
+         }
++        setState((prevState) => {
++          return {
++            ...prevState,
++            Non_drug_allergy_disabled: true,
++          };
++        });
+         return null;
+       } else if (topBarListIndex.current === 2) {
+         const [err, data] = await tool.to(
+diff --git a/src/pages/BillingRecordsPage/BillingRecordsPage.tsx b/src/pages/BillingRecordsPage/BillingRecordsPage.tsx
+index d2350878..059dbf79 100644
+--- a/src/pages/BillingRecordsPage/BillingRecordsPage.tsx
++++ b/src/pages/BillingRecordsPage/BillingRecordsPage.tsx
+@@ -153,10 +153,12 @@ const BillingRecordsPage: React.FC<pageProps> = (props: pageProps, billingRef) =
+               <CsxMobileHeader title={global.i18n.t('BillingRecords')} navigation={navigation}
+                                onLeftPress={() => {
+                                  // routes.goBack(navigation);
++                                 console.log('BillingRecordsPage.tsx onLeftPress navigation=', navigation);
+                                  emitEvent(globalEventName.refreshDiagnosisPage, '1')
+-                                 routes.navigate(navigation, routes.DiagnosisPage.routeName, {
+-                                   pageData: {}
+-                                 })
++                                //  routes.navigate(navigation, routes.DiagnosisPage.routeName, {
++                                //    pageData: {}
++                                //  })
++                                 navigationRef?.goBack()
+                                }}
+               />
+               <View style={styles.patientNameRow}>
+diff --git a/src/pages/CreateConsultationPage/CreateConsultationPage.tsx b/src/pages/CreateConsultationPage/CreateConsultationPage.tsx
+index d4bf1b2d..f9a92414 100644
+--- a/src/pages/CreateConsultationPage/CreateConsultationPage.tsx
++++ b/src/pages/CreateConsultationPage/CreateConsultationPage.tsx
+@@ -315,15 +315,15 @@ interface StateProps {
+   }[]; // Specify more precise type if possible
+   showUsagelistModal: boolean;
+   showFrequencylistModal: boolean;
+-  OtherSignsModalList: {
+-    "id": string,
+-    "category": string,
+-    "group": string | null,
+-    "code": string | null,
+-    "term": string,
+-    "selected": boolean,
+-    "label": string
+-  }[]; // Specify more precise type if possible
++  // OtherSignsModalList: {
++  //   "id": string,
++  //   "category": string,
++  //   "group": string | null,
++  //   "code": string | null,
++  //   "term": string,
++  //   "selected": boolean,
++  //   "label": string
++  // }[]; // Specify more precise type if possible
+   showDayslistModal: boolean;
+   showRemarksModal: boolean;
+   DiagnosisModalList: SelectListItem[];//診斷 彈框列表
+@@ -333,26 +333,26 @@ interface StateProps {
+   MedicalProceduresModalList: SelectListItem[];
+   showBarModal: boolean;
+   showUnitModal: boolean;
+-  follow_upModalList: {
+-    "id": string,
+-    "category": string,
+-    "group": string | null,
+-    "code": string | null,
+-    "term": string,
+-    "selected": boolean,
+-    "label": string
+-  }[]; // Specify more precise type if possible
++  // follow_upModalList: {
++  //   "id": string,
++  //   "category": string,
++  //   "group": string | null,
++  //   "code": string | null,
++  //   "term": string,
++  //   "selected": boolean,
++  //   "label": string
++  // }[]; // Specify more precise type if possible
+   // follow_upSelectedList: string[]; // Specify more precise type if possible
+   followUpInputText: string;
+-  OthersModalList: {
+-    "id": string,
+-    "category": string,
+-    "group": string | null,
+-    "code": string | null,
+-    "term": string,
+-    "selected": boolean,
+-    "label": string
+-  }[];
++  // OthersModalList: {
++  //   "id": string,
++  //   "category": string,
++  //   "group": string | null,
++  //   "code": string | null,
++  //   "term": string,
++  //   "selected": boolean,
++  //   "label": string
++  // }[];
+   // OthersSelectedList: any[];
+   otherInputText: string;
+   discomfortBtList: DiscomfortButton[];
+@@ -992,15 +992,16 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+     dateString_prescription: pageData.date ? moment(pageData.date, "DD/MM/YYYY").format('YYYY-MM-DD') : moment(new Date()).format('YYYY-MM-DD'),
+     showdiscomfortModal: false, showComplete_diagnosisModal: false,
+     discomfortModalList: [], showUsagelistModal: false, showFrequencylistModal: false,
+-    OtherSignsModalList: [], showDayslistModal: false, showRemarksModal: false,
++    // OtherSignsModalList: [],
++    showDayslistModal: false, showRemarksModal: false,
+     DiagnosisModalList: [],
+     //藥物彈框選中後調 get_drugbook_masters_by_names 接口返回的數據
+     get_drugbook_masters_by_names: null,
+     showVolumeModal: false,
+     MedicalProceduresModalList: [], showBarModal: false, showUnitModal: false,
+-    follow_upModalList: [],//跟進 弹框列表
++    // follow_upModalList: [],//跟進 弹框列表
+     // follow_upSelectedList: [],//跟進 已选数据列表
+-    OthersModalList: [],
++    // OthersModalList: [],
+     // OthersSelectedList: [],//其它 已选数据列表
+     // //前端写死,選中就自動填寫到症狀裡面
+     discomfortBtList: [{title: global.i18n.t('headache'), selected: false}, {title: global.i18n.t('fever'), selected: false}, {
+@@ -1374,164 +1375,109 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+         //     })
+         //   }
+         // }
+-        //其它徵兆 列表
+-        {
+-          const [err, data] = await tool.to(list_doctor_medical_terms({
+-            pageIndex: 0, pageSize: 100, doctorId: pageData.patients.doctorId, category: 'Findings'
+-          }))
+-          console.log('CreateConsultationPage.tsx 其它徵兆 list_doctor_medical_terms data=', data)
+-          if (data) {
+-            setState((prevState) => {
+-              return {
+-                ...prevState, OtherSignsModalList: data.items.map(
+-                  (item, index, array) => {
+-                    return {...item, selected: false, label: item.term+(item.code||'')}
+-                  }
+-                )
+-              }
+-            })
+-          }
+-        }
+ 
+         //診斷 列表
+-        {
+-          //获取HKCTT诊断编码
+-          if (_get_consultation_setting?.enableDiagnosisCodeSystem) {
+-            const [err, data] = await tool.to(list_hkctt_dxpx_terms({
+-              pageIndex: 0,
+-              pageSize: 200,
+-              IsGetDiagnosis: true,
+-              birthday: moment(new Date(pageData.patients.birthDate)).format('DD/MM/YYYY'),
+-              gender: pageData.patients.gender,
+-            }))
+-            console.log('CreateConsultationPage.tsx 診斷 list_hkctt_dxpx_terms data=', data)
+-            if (data) {
+-              if (pageData.consultationData?.medical?.diagnosisJson) {
+-                const diagnosisJson = JSON.parse(pageData.consultationData.medical?.diagnosisJson)
+-                ref_diagnosis_valueAsJson.current = diagnosisJson.diagnosis
+-                console.log('CreateConsultationPage.tsx 診斷 ref_diagnosis_valueAsJson.current=', ref_diagnosis_valueAsJson.current)
+-              }
+-              setState((prevState) => {
+-                return {
+-                  ...prevState, DiagnosisModalList: data.items.map(
+-                    (item, index, array) => {
+-                      // AA [4545 / D61.9]
+-                      let label = ''
+-                      if (item.coding.length >= 2) {
+-                        label = `${item.display} [${item.coding[0].code} / ${item.coding[1].code}]`
+-                      } else if (item.coding.length === 1) {
+-                        label = `${item.display} [${item.coding[0].code}]`
+-                      }
+-                      return {...item, selected: false, title: label, id: index.toString()}
+-                    }
+-                  )
+-                }
+-              })
+-            }
+-          } else {
+-            const [err, data] = await tool.to(list_doctor_medical_terms({
+-              pageIndex: 0, pageSize: 100, doctorId: pageData.patients.doctorId, category: 'Diagnosis'
+-            }))
+-            console.log('CreateConsultationPage.tsx 診斷 list_doctor_medical_terms data=', data)
+-            if (data) {
+-              setState((prevState) => {
+-                return {
+-                  ...prevState, DiagnosisModalList: data.items.map(
+-                    (item, index, array) => {
+-                      return {...item, selected: false, label: item.term}
+-                    }
+-                  )
+-                }
+-              })
+-            }
+-          }
+-        }
++        // {
++        //   //获取HKCTT诊断编码
++        //   if (_get_consultation_setting?.enableDiagnosisCodeSystem) {
++        //     const [err, data] = await tool.to(list_hkctt_dxpx_terms({
++        //       pageIndex: 0,
++        //       pageSize: 200,
++        //       IsGetDiagnosis: true,
++        //       birthday: moment(new Date(pageData.patients.birthDate)).format('DD/MM/YYYY'),
++        //       gender: pageData.patients.gender,
++        //     }))
++        //     console.log('CreateConsultationPage.tsx 診斷 list_hkctt_dxpx_terms data=', data)
++        //     if (data) {
++        //       if (pageData.consultationData?.medical?.diagnosisJson) {
++        //         const diagnosisJson = JSON.parse(pageData.consultationData.medical?.diagnosisJson)
++        //         ref_diagnosis_valueAsJson.current = diagnosisJson.diagnosis
++        //         console.log('CreateConsultationPage.tsx 診斷 ref_diagnosis_valueAsJson.current=', ref_diagnosis_valueAsJson.current)
++        //       }
++        //       setState((prevState) => {
++        //         return {
++        //           ...prevState, DiagnosisModalList: data.items.map(
++        //             (item, index, array) => {
++        //               // AA [4545 / D61.9]
++        //               let label = ''
++        //               if (item.coding.length >= 2) {
++        //                 label = `${item.display} [${item.coding[0].code} / ${item.coding[1].code}]`
++        //               } else if (item.coding.length === 1) {
++        //                 label = `${item.display} [${item.coding[0].code}]`
++        //               }
++        //               return {...item, selected: false, title: label, id: index.toString()}
++        //             }
++        //           )
++        //         }
++        //       })
++        //     }
++        //   } else {
++        //     const [err, data] = await tool.to(list_doctor_medical_terms({
++        //       pageIndex: 0, pageSize: 100, doctorId: pageData.patients.doctorId, category: 'Diagnosis'
++        //     }))
++        //     console.log('CreateConsultationPage.tsx 診斷 list_doctor_medical_terms data=', data)
++        //     if (data) {
++        //       setState((prevState) => {
++        //         return {
++        //           ...prevState, DiagnosisModalList: data.items.map(
++        //             (item, index, array) => {
++        //               return {...item, selected: false, label: item.term}
++        //             }
++        //           )
++        //         }
++        //       })
++        //     }
++        //   }
++        // }
+ 
+         //醫療程序 列表
+-        {
+-          if (_get_consultation_setting?.enableMedicalProcCodeSystem) {
+-            const [err, data] = await tool.to(list_hkctt_dxpx_terms({
+-              pageIndex: 0,
+-              pageSize: 200,
+-              IsGetDiagnosis: false,
+-              birthday: moment(new Date(pageData.patients.birthDate)).format('DD/MM/YYYY'),
+-              gender: pageData.patients.gender
+-            }))
+-            console.log('CreateConsultationPage.tsx 醫療程序 list_hkctt_dxpx_terms data=', data)
+-            console.log('CreateConsultationPage.tsx 醫療程序 pageData.consultationData=', pageData.consultationData)
+-            if (data) {
+-              if (pageData.consultationData?.medical?.procedureJson) {
+-                const procedureJson = JSON.parse(pageData.consultationData.medical?.procedureJson)
+-                ref_MedicalProcedures_valueAsJson.current = procedureJson.procedures
+-                console.log('CreateConsultationPage.tsx 醫療程序 ref_MedicalProcedures_valueAsJson.current=', ref_MedicalProcedures_valueAsJson.current)
+-              }
+-              setState((prevState) => {
+-                return {
+-                  ...prevState, MedicalProceduresModalList: data.items.map(
+-                    (item, index, array) => {
+-                      // display [HKCTT]
+-                      let label = `${item.display} [${item.coding[0].code}]`
+-                      return {...item, selected: false, title: label, id: index.toString()}
+-                    }
+-                  )
+-                }
+-              })
+-            }
+-          } else {
+-            const [err, data] = await tool.to(list_doctor_medical_terms({
+-              pageIndex: 0, pageSize: 100, doctorId: pageData.patients.doctorId, category: 'MedicalProcedure'
+-            }))
+-            console.log('CreateConsultationPage.tsx 醫療程序 list_doctor_medical_terms data=', data)
+-            if (data) {
+-              setState((prevState) => {
+-                return {
+-                  ...prevState, MedicalProceduresModalList: data.items.map(
+-                    (item, index, array) => {
+-                      return {...item, selected: false, label: item.term}
+-                    }
+-                  )
+-                }
+-              })
+-            }
+-          }
+-        }
+-
+-        //跟進 列表
+-        {
+-          const [err, data] = await tool.to(list_doctor_medical_terms({
+-            pageIndex: 0, pageSize: 100, doctorId: pageData.patients.doctorId, category: 'Action'
+-          }))
+-          console.log('CreateConsultationPage.tsx 跟進 list_doctor_medical_terms data=', data)
+-          if (data) {
+-            setState((prevState) => {
+-              return {
+-                ...prevState, follow_upModalList: data.items.map(
+-                  (item, index, array) => {
+-                    return {...item, selected: false, label: item.term}
+-                  }
+-                )
+-              }
+-            })
+-          }
+-        }
+-        //其它 列表
+-        {
+-          const [err, data] = await tool.to(list_doctor_medical_terms({
+-            pageIndex: 0, pageSize: 100, doctorId: pageData.patients.doctorId, category: 'Others'
+-          }))
+-          console.log('CreateConsultationPage.tsx 其它 list_doctor_medical_terms data=', data)
+-          if (data) {
+-            setState((prevState) => {
+-              return {
+-                ...prevState, OthersModalList: data.items.map(
+-                  (item, index, array) => {
+-                    return {...item, selected: false, label: item.term+(item.code||'')}
+-                  }
+-                )
+-              }
+-            })
+-          }
+-        }
++        // {
++        //   if (_get_consultation_setting?.enableMedicalProcCodeSystem) {
++        //     const [err, data] = await tool.to(list_hkctt_dxpx_terms({
++        //       pageIndex: 0,
++        //       pageSize: 200,
++        //       IsGetDiagnosis: false,
++        //       birthday: moment(new Date(pageData.patients.birthDate)).format('DD/MM/YYYY'),
++        //       gender: pageData.patients.gender
++        //     }))
++        //     console.log('CreateConsultationPage.tsx 醫療程序 list_hkctt_dxpx_terms data=', data)
++        //     console.log('CreateConsultationPage.tsx 醫療程序 pageData.consultationData=', pageData.consultationData)
++        //     if (data) {
++        //       if (pageData.consultationData?.medical?.procedureJson) {
++        //         const procedureJson = JSON.parse(pageData.consultationData.medical?.procedureJson)
++        //         ref_MedicalProcedures_valueAsJson.current = procedureJson.procedures
++        //         console.log('CreateConsultationPage.tsx 醫療程序 ref_MedicalProcedures_valueAsJson.current=', ref_MedicalProcedures_valueAsJson.current)
++        //       }
++        //       setState((prevState) => {
++        //         return {
++        //           ...prevState, MedicalProceduresModalList: data.items.map(
++        //             (item, index, array) => {
++        //               // display [HKCTT]
++        //               let label = `${item.display} [${item.coding[0].code}]`
++        //               return {...item, selected: false, title: label, id: index.toString()}
++        //             }
++        //           )
++        //         }
++        //       })
++        //     }
++        //   } else {
++        //     const [err, data] = await tool.to(list_doctor_medical_terms({
++        //       pageIndex: 0, pageSize: 100, doctorId: pageData.patients.doctorId, category: 'MedicalProcedure'
++        //     }))
++        //     console.log('CreateConsultationPage.tsx 醫療程序 list_doctor_medical_terms data=', data)
++        //     if (data) {
++        //       setState((prevState) => {
++        //         return {
++        //           ...prevState, MedicalProceduresModalList: data.items.map(
++        //             (item, index, array) => {
++        //               return {...item, selected: false, label: item.term}
++        //             }
++        //           )
++        //         }
++        //       })
++        //     }
++        //   }
++        // }
+       })();
+       console.log(`CreateConsultationPage componentDidMount,pageData.date=`, pageData.date)
+       //componentWillUnmount
+@@ -3931,34 +3877,17 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+                   try {
+                     console.log('CreateConsultationPage.tsx 不適徵兆 fetchData pageData=', pageData);
+                     const [err, data] = await tool.to(list_doctor_medical_terms({
+-                      pageIndex: 0, pageSize: 100, doctorId: pageData.patients.doctorId, category: 'Complaint'
++                      pageIndex: 0, pageSize: 10000, doctorId: pageData.patients.doctorId, category: 'Complaint'
+                     }))
+                     console.log('CreateConsultationPage.tsx 不適徵兆 fetchData data=', data)
+                     if (data && data.items && data.items.length > 0) {
+-                      // setState((prevState) => {
+-                      //   return {
+-                      //     ...prevState, discomfortModalList: data.items.map(
+-                      //       (item, index, array) => {
+-                      //         return { ...item, selected: false, label: item.term }
+-                      //       }
+-                      //     )
+-                      //   }
+-                      // })
+                       return {
+-                        items: data.items.map((_item, index, array): {
+-                          _item: {
+-                            "id": string,
+-                            "category": string,
+-                            "group": string | null,
+-                            "code": string | null,
+-                            "term": string,
+-                            "selected": boolean,
+-                            "label": string
+-                          }
++                        items: data.items.map((item: List_doctor_medical_terms, index: number, array: List_doctor_medical_terms[]): {
+                         } => {
+                           return {
+-                            ..._item,
+-                            title: _item.term+(_item.code||''),selected: false, label: _item.term
++                            ...item,
++                            title: item.term + (item.code || ''),
++                            selected: false,
+                           };
+                         }) || [],
+                         pageIndex: pageIndex,
+@@ -4069,30 +3998,33 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+                     pageSize: number;
+                   }): Promise<AutoPositionedPopupData | null> => {
+                     try {
+-                      if (!state.OtherSignsModalList) {
+-                        return Promise.resolve(null);
++                      const [err, data] = await tool.to(list_doctor_medical_terms({
++                        pageIndex: 0, pageSize: 10000, doctorId: pageData.patients.doctorId, category: 'Findings'
++                      }))
++                      console.log('CreateConsultationPage.tsx 其它徵兆 list_doctor_medical_terms data=', data)
++                      if (data) {
++                        // setState((prevState) => {
++                        //   return {
++                        //     ...prevState, OtherSignsModalList: data.items.map(
++                        //       (item, index, array) => {
++                        //         return { ...item, selected: false, label: item.term + (item.code || '') }
++                        //       }
++                        //     )
++                        //   }
++                        // })
++                        return {
++                          items: data.items.map((item: List_doctor_medical_terms, index: number, array: List_doctor_medical_terms[]): {
++                          } => {
++                            return {
++                              ...item,
++                              title: item.term + (item.code || ''),
++                              selected: false,
++                            };
++                          }) || [],
++                          pageIndex: pageIndex,
++                          needLoadMore: false,
++                        } as AutoPositionedPopupData;
+                       }
+-                      console.log('CreateConsultationPage.tsx Other_signs fetchData state.OtherSignsModalList=', state.OtherSignsModalList);
+-                      return {
+-                        items: state.OtherSignsModalList.map((_item, index, array): {
+-                          _item: {
+-                            "id": string,
+-                            "category": string,
+-                            "group": string | null,
+-                            "code": string | null,
+-                            "term": string,
+-                            "selected": boolean,
+-                            "label": string
+-                          }
+-                        } => {
+-                          return {
+-                            ..._item,
+-                            title: _item.label,
+-                          };
+-                        }) || [],
+-                        pageIndex: pageIndex,
+-                        needLoadMore: false,
+-                      } as AutoPositionedPopupData;
+                     } catch (e) {
+                     }
+                     return Promise.resolve(null);
+@@ -4319,29 +4251,33 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+                     pageSize: number;
+                   }): Promise<AutoPositionedPopupData | null> => {
+                     try {
+-                      if (!state.follow_upModalList) {
+-                        return Promise.resolve(null);
++                      const [err, data] = await tool.to(list_doctor_medical_terms({
++                        pageIndex: 0, pageSize: 10000, doctorId: pageData.patients.doctorId, category: 'Action'
++                      }))
++                      console.log('CreateConsultationPage.tsx 跟進 list_doctor_medical_terms data=', data)
++                      if (data) {
++                        // setState((prevState) => {
++                        //   return {
++                        //     ...prevState, follow_upModalList: data.items.map(
++                        //       (item, index, array) => {
++                        //         return { ...item, selected: false, label: item.term }
++                        //       }
++                        //     )
++                        //   }
++                        // })
++                        return {
++                          items: data.items.map((item: List_doctor_medical_terms, index: number, array: List_doctor_medical_terms[]): {
++                          } => {
++                            return {
++                              ...item,
++                              title: item.term,
++                              selected: false
++                            };
++                          }) || [],
++                          pageIndex: pageIndex,
++                          needLoadMore: false,
++                        } as AutoPositionedPopupData;
+                       }
+-                      return {
+-                        items: state.follow_upModalList.map((_item, index, array): {
+-                          _item: {
+-                            "id": string,
+-                            "category": string,
+-                            "group": string | null,
+-                            "code": string | null,
+-                            "term": string,
+-                            "selected": boolean,
+-                            "label": string
+-                          }
+-                        } => {
+-                          return {
+-                            ..._item,
+-                            title: _item.label,
+-                          };
+-                        }) || [],
+-                        pageIndex: pageIndex,
+-                        needLoadMore: false,
+-                      } as AutoPositionedPopupData;
+                     } catch (e) {
+                     }
+                     return Promise.resolve(null);
+@@ -4433,29 +4369,33 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+                     pageSize: number;
+                   }): Promise<AutoPositionedPopupData | null> => {
+                     try {
+-                      if (!state.OthersModalList) {
+-                        return Promise.resolve(null);
++                      const [err, data] = await tool.to(list_doctor_medical_terms({
++                        pageIndex: 0, pageSize: 10000, doctorId: pageData.patients.doctorId, category: 'Others'
++                      }))
++                      console.log('CreateConsultationPage.tsx 其它 list_doctor_medical_terms data=', data)
++                      if (data) {
++                        // setState((prevState) => {
++                        //   return {
++                        //     ...prevState, OthersModalList: data.items.map(
++                        //       (item, index, array) => {
++                        //         return { ...item, selected: false, label: item.term + (item.code || '') }
++                        //       }
++                        //     )
++                        //   }
++                        // })
++                        return {
++                          items: data.items.map((item: List_doctor_medical_terms, index: number, array: List_doctor_medical_terms[]): {
++                          } => {
++                            return {
++                              ...item,
++                              title: (item.term + (item.code || '')),
++                              selected: item.selected,
++                            };
++                          }) || [],
++                          pageIndex: pageIndex,
++                          needLoadMore: false,
++                        } as AutoPositionedPopupData;
+                       }
+-                      return {
+-                        items: state.OthersModalList.map((_item, index, array): {
+-                          _item: {
+-                            "id": string,
+-                            "category": string,
+-                            "group": string | null,
+-                            "code": string | null,
+-                            "term": string,
+-                            "selected": boolean,
+-                            "label": string
+-                          }
+-                        } => {
+-                          return {
+-                            ..._item,
+-                            title: _item.label,
+-                          };
+-                        }) || [],
+-                        pageIndex: pageIndex,
+-                        needLoadMore: false,
+-                      } as AutoPositionedPopupData;
+                     } catch (e) {
+                     }
+                     return Promise.resolve(null);
+@@ -4517,7 +4457,7 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+         </>
+       )
+     },
+-    [state.discomfortBtList, state.discomfortInputText, state.diagnosisInputText, state.followUpInputText, state.medicalProceduresInputText, state.otherInputText, state.otherSignsInputText, state.dateString, state.showDateModal, state.showdiscomfortModal, state.showOtherSignsModal, state.medicalProceduresSelectList, state.diagnosisSelectList, state.type, state.MedicalProceduresModalList, state.diagnosisSel, state.medicalprocedureSel, state.get_consultation_setting, pageData, state.selectedDiagnosis, state.selectedMedicalProcedures,/* state.discomfortModalList, */state.barIndex, state.GetLatestMedicalRecord, state.GetLatestPrescription, uiTheme, state.follow_upModalList,mode],
++    [state.discomfortBtList, state.discomfortInputText, state.diagnosisInputText, state.followUpInputText, state.medicalProceduresInputText, state.otherInputText, state.otherSignsInputText, state.dateString, state.showDateModal, state.showdiscomfortModal, state.showOtherSignsModal, state.medicalProceduresSelectList, state.diagnosisSelectList, state.type, state.MedicalProceduresModalList, state.diagnosisSel, state.medicalprocedureSel, state.get_consultation_setting, pageData, state.selectedDiagnosis, state.selectedMedicalProcedures,/* state.discomfortModalList, */state.barIndex, state.GetLatestMedicalRecord, state.GetLatestPrescription, uiTheme, mode, pageData.patients.doctorId],
+   );
+ 
+   // 新增藥方 card
+@@ -4811,31 +4751,6 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+             <>
+               <View style={[styles.usageRow]}>
+                 {/*用法*/}
+-                {/*<AutoDropdownRow tag={global.i18n.t('usage')} updateState={updateState} inputStyle={{backgroundColor: 'transparent'}}*/}
+-                {/*                 selectedItem={state.usage} forceRemoveAllRootViewOnItemSelected={true}*/}
+-                {/*                 fetchData={async ({pageIndex, pageSize}: { pageIndex: number; pageSize: number }): Promise<Data | null> => {*/}
+-                {/*                   try {*/}
+-                {/*                     const data: SelectedItem[] = await _get_setting_data_model_list(0, '', 10000, 'Dosage')*/}
+-                {/*                     console.log('_get_setting_data_model_list data=', data)*/}
+-                {/*                     if (data) {*/}
+-                {/*                       return Promise.resolve({*/}
+-                {/*                         items: data, needLoadMore: false, pageIndex: 0,*/}
+-                {/*                         totalCount: 0,*/}
+-                {/*                         totalPage: 0,*/}
+-                {/*                       })*/}
+-                {/*                     }*/}
+-                {/*                   } catch (e) {*/}
+-                {/*                   }*/}
+-                {/*                   return Promise.resolve(null)*/}
+-                {/*                 }} onItemSelected={(item: SelectedItem) => {*/}
+-                {/*  console.log('CreateConsultationPage.tsx onItemSelected=', item)*/}
+-                {/*  ref_quantity.current = null*/}
+-                {/*  setState(prevState => {*/}
+-                {/*    return {*/}
+-                {/*      ...prevState, usage: item,*/}
+-                {/*    }*/}
+-                {/*  })*/}
+-                {/*}}></AutoDropdownRow>*/}
+                 {
+                   <RNAutoPositionedPopup
+                     key={i18n.t('usage')}
+@@ -4892,32 +4807,9 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+                       //   }, 250);
+                       // }
+                     }}
+-                  ></RNAutoPositionedPopup>}
+-                {/*<AutoDropdownRow tag={global.i18n.t('frequency')} selectedItem={state.frequency} inputStyle={{backgroundColor: 'transparent'}} updateState={updateState}*/}
+-                {/*                 forceRemoveAllRootViewOnItemSelected={true}*/}
+-                {/*                 fetchData={async ({pageIndex, pageSize}: { pageIndex: number; pageSize: number }): Promise<Data | null> => {*/}
+-                {/*                   try {*/}
+-                {/*                     const data: SelectedItem[] = await _get_setting_data_model_list(0, '', 10000, 'Frequency')*/}
+-                {/*                     console.log('次數 _get_setting_data_model_list data=', data)*/}
+-                {/*                     if (data) {*/}
+-                {/*                       return Promise.resolve({*/}
+-                {/*                         items: data, needLoadMore: false, pageIndex: 0,*/}
+-                {/*                         totalCount: 0,*/}
+-                {/*                         totalPage: 0,*/}
+-                {/*                       })*/}
+-                {/*                     }*/}
+-                {/*                   } catch (e) {*/}
+-                {/*                   }*/}
+-                {/*                   return Promise.resolve(null)*/}
+-                {/*                 }} onItemSelected={(item: SelectedItem) => {*/}
+-                {/*  console.log('CreateConsultationPage.tsx onItemSelected=', item)*/}
+-                {/*  ref_quantity.current = null*/}
+-                {/*  setState(prevState => {*/}
+-                {/*    return {*/}
+-                {/*      ...prevState, frequency: item,*/}
+-                {/*    }*/}
+-                {/*  })*/}
+-                {/*}}></AutoDropdownRow>*/}
++                  ></RNAutoPositionedPopup>
++                }
++                
+                 <RNAutoPositionedPopup
+                   key={i18n.t('frequency')}
+                   ref={ref_frequency}
+@@ -4980,31 +4872,6 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+             <>
+               <View style={[styles.usageRow]}>
+                 {/*日數*/}
+-                {/*<AutoDropdownRow tag={global.i18n.t('days')} selectedItem={state.days} inputStyle={{backgroundColor: 'transparent'}} updateState={updateState}*/}
+-                {/*                 forceRemoveAllRootViewOnItemSelected={true}*/}
+-                {/*                 fetchData={async ({pageIndex, pageSize}: { pageIndex: number; pageSize: number }): Promise<Data | null> => {*/}
+-                {/*                   try {*/}
+-                {/*                     const data: SelectedItem[] = await _get_setting_data_model_list(0, '', 10000, 'Day')*/}
+-                {/*                     console.log(global.i18n.t('days'), ' _get_setting_data_model_list data=', data)*/}
+-                {/*                     if (data) {*/}
+-                {/*                       return Promise.resolve({*/}
+-                {/*                         items: data.sort((a, b) => a.code - b.code), needLoadMore: false, pageIndex: 0,*/}
+-                {/*                         totalCount: 0,*/}
+-                {/*                         totalPage: 0,*/}
+-                {/*                       })*/}
+-                {/*                     }*/}
+-                {/*                   } catch (e) {*/}
+-                {/*                   }*/}
+-                {/*                   return Promise.resolve(null)*/}
+-                {/*                 }} onItemSelected={(item: SelectedItem) => {*/}
+-                {/*  console.log('CreateConsultationPage.tsx onItemSelected=', item)*/}
+-                {/*  ref_quantity.current = null*/}
+-                {/*  setState(prevState => {*/}
+-                {/*    return {*/}
+-                {/*      ...prevState, days: item,*/}
+-                {/*    }*/}
+-                {/*  })*/}
+-                {/*}}></AutoDropdownRow>*/}
+                 <RNAutoPositionedPopup
+                   key={i18n.t('days')}
+                   // ref={ref_frequency}
+@@ -5151,30 +5018,6 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+             {state.potion === 0 ? <>
+               <View style={[styles.usageRow]}>
+                 {/*容量*/}
+-                {/*<AutoDropdownRow tag={global.i18n.t('volume')} selectedItem={state.volume} inputStyle={{backgroundColor: 'transparent'}} updateState={updateState}*/}
+-                {/*                 forceRemoveAllRootViewOnItemSelected={true}*/}
+-                {/*                 fetchData={async ({pageIndex, pageSize}: { pageIndex: number; pageSize: number }): Promise<Data | null> => {*/}
+-                {/*                   try {*/}
+-                {/*                     const data: SelectedItem[] = await _get_setting_data_model_list(0, '', 10000, 'Volume')*/}
+-                {/*                     console.log(global.i18n.t('volume'), ' _get_setting_data_model_list data=', data)*/}
+-                {/*                     if (data) {*/}
+-                {/*                       return Promise.resolve({*/}
+-                {/*                         items: data, needLoadMore: false, pageIndex: 0,*/}
+-                {/*                         totalCount: 0,*/}
+-                {/*                         totalPage: 0,*/}
+-                {/*                       })*/}
+-                {/*                     }*/}
+-                {/*                   } catch (e) {*/}
+-                {/*                   }*/}
+-                {/*                   return Promise.resolve(null)*/}
+-                {/*                 }} onItemSelected={(item: SelectedItem) => {*/}
+-                {/*  console.log('CreateConsultationPage.tsx onItemSelected=', item)*/}
+-                {/*  setState(prevState => {*/}
+-                {/*    return {*/}
+-                {/*      ...prevState, volume: item,*/}
+-                {/*    }*/}
+-                {/*  })*/}
+-                {/*}}></AutoDropdownRow>*/}
+                 <RNAutoPositionedPopup
+                   key={i18n.t('volume')}
+                   // ref={ref_frequency}
+@@ -5231,30 +5074,6 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+                   }}
+                 ></RNAutoPositionedPopup>
+                 {/*格數*/}
+-                {/*<AutoDropdownRow tag={global.i18n.t('LatticeNum')} selectedItem={state.bar} inputStyle={{backgroundColor: 'transparent'}} updateState={updateState}*/}
+-                {/*                 forceRemoveAllRootViewOnItemSelected={true}*/}
+-                {/*                 fetchData={async ({pageIndex, pageSize}: { pageIndex: number; pageSize: number }): Promise<Data | null> => {*/}
+-                {/*                   try {*/}
+-                {/*                     const data: SelectedItem[] = await _get_setting_data_model_list(0, '', 10000, 'Bar')*/}
+-                {/*                     console.log(global.i18n.t('LatticeNum'), ' _get_setting_data_model_list data=', data)*/}
+-                {/*                     if (data) {*/}
+-                {/*                       return Promise.resolve({*/}
+-                {/*                         items: data, needLoadMore: false, pageIndex: 0,*/}
+-                {/*                         totalCount: 0,*/}
+-                {/*                         totalPage: 0,*/}
+-                {/*                       })*/}
+-                {/*                     }*/}
+-                {/*                   } catch (e) {*/}
+-                {/*                   }*/}
+-                {/*                   return Promise.resolve(null)*/}
+-                {/*                 }} onItemSelected={(item: SelectedItem) => {*/}
+-                {/*  console.log('CreateConsultationPage.tsx onItemSelected=', item)*/}
+-                {/*  setState(prevState => {*/}
+-                {/*    return {*/}
+-                {/*      ...prevState, bar: item,*/}
+-                {/*    }*/}
+-                {/*  })*/}
+-                {/*}}></AutoDropdownRow>*/}
+                 <RNAutoPositionedPopup
+                   key={i18n.t('LatticeNum')}
+                   // ref={ref_frequency}
+@@ -5313,32 +5132,6 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+               </View>
+             </> : null}
+             {/*單位*/}
+-            {/*<View style={[styles.usageRow]}>*/}
+-            {/*  <AutoDropdownRow tag={global.i18n.t('unit')} updateState={updateState} inputStyle={{backgroundColor: 'transparent'}} selectedItem={state.unit}*/}
+-            {/*                   forceRemoveAllRootViewOnItemSelected={true}*/}
+-            {/*                   fetchData={async ({pageIndex, pageSize}: { pageIndex: number; pageSize: number }): Promise<Data | null> => {*/}
+-            {/*                     try {*/}
+-            {/*                       const data: SelectedItem[] = await _get_setting_data_model_list(0, '', 10000, 'Unit')*/}
+-            {/*                       console.log('_get_setting_data_model_list data=', data)*/}
+-            {/*                       if (data) {*/}
+-            {/*                         return Promise.resolve({*/}
+-            {/*                           items: data, needLoadMore: false, pageIndex: 0,*/}
+-            {/*                           totalCount: 0,*/}
+-            {/*                           totalPage: 0,*/}
+-            {/*                         })*/}
+-            {/*                       }*/}
+-            {/*                     } catch (e) {*/}
+-            {/*                     }*/}
+-            {/*                     return Promise.resolve(null)*/}
+-            {/*                   }} onItemSelected={(item: SelectedItem) => {*/}
+-            {/*    console.log('CreateConsultationPage.tsx onItemSelected=', item)*/}
+-            {/*    setState(prevState => {*/}
+-            {/*      return {*/}
+-            {/*        ...prevState, unit: item,*/}
+-            {/*      }*/}
+-            {/*    })*/}
+-            {/*  }}></AutoDropdownRow>*/}
+-            {/*</View>*/}
+             <RNAutoPositionedPopup
+               key={i18n.t('unit')}
+               // ref={ref_frequency}
+@@ -5418,68 +5211,6 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+               <View style={styles.scrollViewRow}>
+                 <Text style={styles.scrollViewRowText}>{global.i18n.t('Medication_notes')} </Text>
+               </View>
+-              {/*<View style={styles.usageRow}>*/}
+-              {/*  <AutoDropdownRow ref={ref_medicationNotes} tag={global.i18n.t('Medication_notes')} inputStyle={{backgroundColor: 'transparent'}} updateState={updateState}*/}
+-              {/*                   textAlign={'left'} selectedItem={state.selectedMedicationNotes*/}
+-              {/*  } forceRemoveAllRootViewOnItemSelected={true}*/}
+-              {/*                   fetchData={async ({pageIndex, pageSize}: { pageIndex: number; pageSize: number }): Promise<Data | null> => {*/}
+-              {/*                     try {*/}
+-              {/*                       const data: SelectedItem[] = await _get_setting_data_model_list(0, '', 10000, 'IntakeInstruction')*/}
+-              {/*                       console.log('_get_setting_data_model_list data=', data)*/}
+-              {/*                       if (data) {*/}
+-              {/*                         return Promise.resolve({*/}
+-              {/*                           items: data, needLoadMore: false, pageIndex: 0,*/}
+-              {/*                           totalCount: 0,*/}
+-              {/*                           totalPage: 0,*/}
+-              {/*                         })*/}
+-              {/*                       }*/}
+-              {/*                     } catch (e) {*/}
+-              {/*                     }*/}
+-              {/*                     return Promise.resolve(null)*/}
+-              {/*                   }} onItemSelected={(item: SelectedItem) => {//*/}
+-              {/*    console.log('CreateConsultationPage.tsx onItemSelected=', item)*/}
+-              {/*    setState((prevState) => {*/}
+-              {/*      return {*/}
+-              {/*        ...prevState, //medicationNotes: item.description?.en,*/}
+-              {/*        selectedMedicationNotes: item*/}
+-              {/*      }*/}
+-              {/*    })*/}
+-              {/*  }} onSubmitEditing={(e: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {*/}
+-              {/*    console.log('CreateConsultationPage.tsx onSubmitEditing e.nativeEvent.text=', e.nativeEvent?.text);*/}
+-              {/*    if (e.nativeEvent?.text) {*/}
+-              {/*      const _medicationNotesModalList = state.medicationNotesModalList*/}
+-              {/*      if (_medicationNotesModalList.indexOf(e.nativeEvent.text) === -1) {*/}
+-              {/*        _medicationNotesModalList.push(e.nativeEvent.text)*/}
+-              {/*      }*/}
+-              {/*      setState((prevState) => {*/}
+-              {/*        return {*/}
+-              {/*          ...prevState, medicationNotesModalList: _medicationNotesModalList, medicationNotes: '', selectedMedicationNotes: undefined*/}
+-              {/*        }*/}
+-              {/*      })*/}
+-              {/*      ref_medicationNotes.current?.clearSelectedItem()*/}
+-              {/*    }*/}
+-              {/*  }}></AutoDropdownRow>*/}
+-              {/*  <TouchableOpacity disabled={!state.selectedMedicationNotes}*/}
+-              {/*                    style={[styles.medicationNotesInputRowAddBt, (!state.selectedMedicationNotes && {backgroundColor: uiTheme.colors.$disabledBtn})]}*/}
+-              {/*                    onPress={() => {*/}
+-              {/*                      if (!state.selectedMedicationNotes) {*/}
+-              {/*                        return*/}
+-              {/*                      }*/}
+-              {/*                      const _medicationNotesModalList = state.medicationNotesModalList*/}
+-              {/*                      if (state.selectedMedicationNotes?.description?.en && _medicationNotesModalList.indexOf(state.selectedMedicationNotes?.description?.en) === -1) {*/}
+-              {/*                        _medicationNotesModalList.push(state.selectedMedicationNotes?.description?.en)*/}
+-              {/*                      }*/}
+-              {/*                      setState((prevState) => {*/}
+-              {/*                        return {*/}
+-              {/*                          ...prevState, medicationNotesModalList: _medicationNotesModalList, medicationNotes: '', selectedMedicationNotes: undefined*/}
+-              {/*                        }*/}
+-              {/*                      })*/}
+-              {/*                      console.log('ref_medicationNotes.current=', ref_medicationNotes.current)*/}
+-              {/*                      ref_medicationNotes.current?.clearSelectedItem()*/}
+-              {/*                    }}>*/}
+-              {/*    <Text style={[styles.medicationNotesInputRowAddBtText, (!state.selectedMedicationNotes && {color: uiTheme.colors.$disabledBtnText})]}>+ {global.i18n.t('join')}</Text>*/}
+-              {/*  </TouchableOpacity>*/}
+-              {/*</View>*/}
+               {
+                 <RNAutoPositionedPopup
+                   ref={ref_medicationNotes}
+@@ -5547,7 +5278,8 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+                       }, 250);
+                     }
+                   }}
+-                ></RNAutoPositionedPopup>}
++                ></RNAutoPositionedPopup>
++              }
+               {/*服用備註 已选择列表*/}
+               {(<View style={styles.medicationNotesSelectedList}>
+                 {
+@@ -5578,65 +5310,6 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+               <View style={styles.scrollViewRow}>
+                 <Text style={styles.scrollViewRowText}>{global.i18n.t('Caution')}</Text>
+               </View>
+-              {/*<View style={styles.usageRow}>*/}
+-              {/*  <AutoDropdownRow ref={ref_remarks} tag={global.i18n.t('Caution')} updateState={updateState} textAlign={'left'} inputStyle={{backgroundColor: 'transparent'}}*/}
+-              {/*                   selectedItem={state.selectedRemarks*/}
+-              {/*                   } forceRemoveAllRootViewOnItemSelected={true}*/}
+-              {/*                   fetchData={async ({pageIndex, pageSize}: { pageIndex: number; pageSize: number }): Promise<Data | null> => {*/}
+-              {/*                     try {*/}
+-              {/*                       const data: SelectedItem[] = await _get_setting_data_model_list(0, '', 10000, 'Caution')*/}
+-              {/*                       console.log('_get_setting_data_model_list data=', data)*/}
+-              {/*                       if (data) {*/}
+-              {/*                         return Promise.resolve({*/}
+-              {/*                           items: data, needLoadMore: false, pageIndex: 0,*/}
+-              {/*                           totalCount: 0,*/}
+-              {/*                           totalPage: 0,*/}
+-              {/*                         })*/}
+-              {/*                       }*/}
+-              {/*                     } catch (e) {*/}
+-              {/*                     }*/}
+-              {/*                     return Promise.resolve(null)*/}
+-              {/*                   }} onItemSelected={(item: SelectedItem) => {*/}
+-              {/*    console.log('CreateConsultationPage.tsx onItemSelected=', item)*/}
+-              {/*    setState((prevState) => {*/}
+-              {/*      return {*/}
+-              {/*        ...prevState, selectedRemarks: item//remarks: item.description?.en*/}
+-              {/*      }*/}
+-              {/*    })*/}
+-              {/*  }} onSubmitEditing={(e: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {*/}
+-              {/*    console.log('CreateConsultationPage.tsx onSubmitEditing e.nativeEvent.text=', e.nativeEvent?.text);*/}
+-              {/*    if (e.nativeEvent?.text) {*/}
+-              {/*      const _medicationNotesModalList = state.cautionRemarks*/}
+-              {/*      if (_medicationNotesModalList.indexOf(e.nativeEvent.text) === -1) {*/}
+-              {/*        _medicationNotesModalList.push(e.nativeEvent.text)*/}
+-              {/*      }*/}
+-              {/*      setState((prevState) => {*/}
+-              {/*        return {*/}
+-              {/*          ...prevState, cautionRemarks: _medicationNotesModalList, remarks: '', selectedRemarks: undefined*/}
+-              {/*        }*/}
+-              {/*      })*/}
+-              {/*      ref_remarks.current?.clearSelectedItem()*/}
+-              {/*    }*/}
+-              {/*  }}></AutoDropdownRow>*/}
+-              {/*  <TouchableOpacity disabled={!state.selectedRemarks} style={[styles.medicationNotesInputRowAddBt, (!state.selectedRemarks && {backgroundColor: uiTheme.colors.$disabledBtn})]}*/}
+-              {/*                    onPress={() => {*/}
+-              {/*                      if (!state.selectedRemarks) {*/}
+-              {/*                        return*/}
+-              {/*                      }*/}
+-              {/*                      const _medicationNotesModalList = state.cautionRemarks*/}
+-              {/*                      if (state.selectedRemarks.description?.en && _medicationNotesModalList.indexOf(state.selectedRemarks.description?.en) === -1) {*/}
+-              {/*                        _medicationNotesModalList.push(state.selectedRemarks.description?.en)*/}
+-              {/*                      }*/}
+-              {/*                      setState((prevState) => {*/}
+-              {/*                        return {*/}
+-              {/*                          ...prevState, cautionRemarks: _medicationNotesModalList, remarks: '', selectedRemarks: undefined*/}
+-              {/*                        }*/}
+-              {/*                      })*/}
+-              {/*                      ref_remarks.current?.clearSelectedItem()*/}
+-              {/*                    }}>*/}
+-              {/*    <Text style={[styles.medicationNotesInputRowAddBtText, (!state.selectedRemarks && {color: uiTheme.colors.$disabledBtnText})]}>+ {global.i18n.t('join')}</Text>*/}
+-              {/*  </TouchableOpacity>*/}
+-              {/*</View>*/}
+               <RNAutoPositionedPopup
+                 key={i18n.t('Caution')}
+                 ref={ref_remarks}
+diff --git a/src/pages/MsgDetailPage/MsgDetailPage.tsx b/src/pages/MsgDetailPage/MsgDetailPage.tsx
+index fbadc4bb..30ce66fb 100644
+--- a/src/pages/MsgDetailPage/MsgDetailPage.tsx
++++ b/src/pages/MsgDetailPage/MsgDetailPage.tsx
+@@ -47,7 +47,7 @@ interface Props extends pageProps {
+ interface pageDataProps {
+     id: string;
+     messagesIcon: Function;
+-    aaa: Function;
++    index: number;
+ }
+ 
+ /**
+@@ -113,7 +113,7 @@ const MsgDetailPage: React.FC<Props> = (props: Props, parentRef) => {
+             sentTime: string,
+             isRead: boolean
+         },
+-        index: undefined as unknown as number
++        index: pageData?.index|| 0 as number
+     })
+     const { setLoading } = useLoading();
+     const refCsxFlatList = useRef();
+@@ -283,6 +283,10 @@ const MsgDetailPage: React.FC<Props> = (props: Props, parentRef) => {
+                                         <TouchableOpacity disabled={state.index === pageData.list.length - 1}
+                                             style={[styles.Next_btn, (state.index === pageData.list.length - 1 ? { backgroundColor: 'rgba(118, 118, 128, 0.12)' } : null)]}
+                                             onPress={() => {
++                                                console.log('MsgDetailPage Next_btn =', {
++                                                    'pageData.list': pageData.list,
++                                                    'state.index': state.index,
++                                                });
+                                                 _messages_get(pageData.list[state.index + 1].id)
+                                                 setState((prevState) => {
+                                                     return {
+diff --git a/src/pages/WelcomePage/WelcomePage.tsx b/src/pages/WelcomePage/WelcomePage.tsx
+index 99028abc..d3b4cdd8 100644
+--- a/src/pages/WelcomePage/WelcomePage.tsx
++++ b/src/pages/WelcomePage/WelcomePage.tsx
+@@ -194,7 +194,7 @@ const WelcomePage: React.FC<pageProps> = (props: pageProps) => {
+                                 const now = new Date();
+                                 // 比较时间
+                                 if (now > tokenExpireOnDate) {
+-                                    console.log("home.tsx componentDidMount tokenExpireOn 过期,重新登录");
++                                    console.log("WelcomePage.tsx componentDidMount tokenExpireOn 过期,重新登录");
+                                     //进登录页面
+                                     routes.reset(navigation, routes.LoginPage.routeName, {
+                                         pageData: {
+diff --git a/src/useHooks/usePeriodicTask.ts b/src/useHooks/usePeriodicTask.ts
+index 4e18a464..bafd3fdd 100644
+--- a/src/useHooks/usePeriodicTask.ts
++++ b/src/useHooks/usePeriodicTask.ts
+@@ -8,6 +8,7 @@ import {waitingListItem} from "tools/AllInterface.ts";
+ import {getCurrentRoute, getCurrentRouteName, getNavigationState, isNavigationReady} from "tools/navigationService";
+ import { useGlobalEventEmitter, useGlobalEventListener, globalEventName } from "tools/useGlobalEventEmitter";
+ import { useDispatch } from 'react-redux';
++import { useAccount } from 'useHooks/useAccount';
+ 
+ /**
+  * Custom hook that executes a task every 30 seconds after app startup
+@@ -24,6 +25,7 @@ export const usePeriodicTask = () => {
+   // 添加延迟执行的引用
+   const delayedExecutionRef = useRef<NodeJS.Timeout | null>(null);
+   const dispatch = useDispatch();
++  const curAccount = useAccount();
+ 
+   // 监听用户点击"稍后"的事件
+   useGlobalEventListener(globalEventName.videoCallLater, useCallback(() => {
+@@ -80,21 +82,31 @@ export const usePeriodicTask = () => {
+     };
+   }, [isAppReady]);
+ 
+-  // Start periodic task execution after app is ready
++  // Start periodic task execution after app is ready and user is logged in;
++  // stop when user logs out (curAccount becomes undefined).
+   useEffect(() => {
+-    console.log('usePeriodicTask isAppReady=', isAppReady);
+-    if (isAppReady) {
+-      if (intervalRef.current) {
+-        clearInterval(intervalRef.current);
+-      }
++    console.log('usePeriodicTask isAppReady=', isAppReady, ' curAccount=', curAccount);
++
++    // Always clear the existing interval first to avoid duplicates
++    if (intervalRef.current) {
++      clearInterval(intervalRef.current);
++      intervalRef.current = null;
++    }
+ 
+-      // Execute the custom task immediately when app becomes ready
++    if (isAppReady && curAccount) {
++      // Execute immediately when app becomes ready or user re-logs in
+       executeCustomTask().then();
+ 
+       // Set up interval to execute task every 30 seconds
+       intervalRef.current = setInterval(() => {
+         executeCustomTask().then();
+       }, 30000);
++    } else if (!curAccount) {
++      // User logged out — also cancel any pending delayed execution
++      if (delayedExecutionRef.current) {
++        clearTimeout(delayedExecutionRef.current);
++        delayedExecutionRef.current = null;
++      }
+     }
+ 
+     return () => {
+@@ -103,7 +115,7 @@ export const usePeriodicTask = () => {
+         intervalRef.current = null;
+       }
+     };
+-  }, [isAppReady]);
++  }, [isAppReady, curAccount]);
+ 
+   useEffect(() => {
+     console.log('usePeriodicTask useEffect global.curClinicData=', global.curClinicData);
