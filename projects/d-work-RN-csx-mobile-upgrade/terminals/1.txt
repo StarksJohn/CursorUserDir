@@ -1,9 +1,17 @@
 ---
-pid: 41272
+pid: 32416
 cwd: |
   D:\work\RN\csx-mobile-upgrade
 active_command: npx react-native run-android
+last_command: npm install -g figma-to-rn-toolkit
+last_exit_code: 0
 ---
+PS D:\work\RN\csx-mobile-upgrade> npm install -g figma-to-rn-toolkit
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+
+added 340 packages in 1m
 PS D:\work\RN\csx-mobile-upgrade> npx react-native run-android
 info Installing the app...
 To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.13/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
@@ -61,12 +69,13 @@ Installed on 1 device.
 
 Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
 
-You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.                         
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
 
 For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 1m 28s
-761 actionable tasks: 13 executed, 748 up-to-date
+BUILD SUCCESSFUL in 1m 8s
+761 actionable tasks: 13 executed, 748 up-to-date                                                                                                                 
 info Connecting to the development server...
+8081
 info Starting the app on "4ae24c72"...
 Starting: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.csx.mobile.app/.MainActivity }
