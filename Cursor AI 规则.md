@@ -19,16 +19,21 @@
 - 复杂任务之前先制定任务执行的计划清单: 当前目标、需要读取的文件、预期产出、是否需要修改文件、研究代码、提澄清问题、生成可审计划，自身再次确认无误后再执行
 
 ### 3. 路径、图片与隐藏目录
-- 已知绝对路径: 直接用 `ReadFile`, 禁止先用 `Glob`
-- 已知文档路径: 默认按“同目录”拼接引用文件/图片的绝对路径, 再 `ReadFile`
-- 若当前问题加载的 `.md` 文件在 Win11 的 `C:\Users\Stark8964911\.claude\commands` 目录, 则对 `![img_xxx.png](img_xxx.png)` 这类引用, 必须先按同目录拼接精确路径, 优先尝试 `C:\Users\Stark8964911\.claude\commands\img_xxx.png`
-- 若当前问题加载的 `.md` 文件在 Mac 的 `/Users/stark/.claude/commands` 目录, 则对 `![img_xxx.png](img_xxx.png)` 这类引用, 必须先按同目录拼接精确路径, 优先尝试 `/Users/stark/.claude/commands/img_xxx.png`
-- 只有路径未知时, 才用 `rg`/`Glob` 搜索
-- 对 `![img_xxx.png](img_xxx.png)` 这类引用, 必须先准确看图再回答
-- 对 `~/.claude/commands`、`~/.claude/ask`、`~/.cursor/commands` 及其 Windows 对应隐藏目录, 不能仅凭 `Glob` 为空就断言文件不存在
-- 必须明确区分: “搜索未命中” 和 “按精确路径读取失败”
-- 图片处理结果必须按以下顺序与措辞汇报: 先说明“精确路径存在”还是“按精确路径读取失败”; 只有在精确路径未知或精确路径读取失败后, 才补充说明是否“搜索未命中”
-- 禁止把“还未按同目录尝试精确路径读取”说成“图片不存在”; 禁止把“搜索未命中”说成“精确路径不存在”
+**核心原则: `![img_xxx.png](img_xxx.png)` 始终与引用它的 .md 文件同目录**
+- 已知绝对路径: 直接用 ReadFile, 禁止先用 Glob
+- 遇到 `![img_xxx.png](img_xxx.png)` 时, 按以下顺序解析, 命中即停:
+  1. 确定引用该图片的 .md 文件路径 (如 Cursor Command、Skill、Ask 等加载的源文件)
+  2. 取该 .md 文件的所在目录, 拼接图片文件名, 直接 ReadFile
+  3. 若步骤 1 无法确定源 .md 路径, 按以下默认目录依次尝试:
+     - WIN: `C:\Users\Stark8964911\.claude\commands\img_xxx.png`
+     - MAC: `/Users/stark/.claude/commands/img_xxx.png`
+  4. 仅当以上全部读取失败后, 才用 rg/Glob 搜索
+- 对以下隐藏目录, 不能仅凭 Glob 为空就断言文件不存在:
+  - WIN: `C:\Users\Stark8964911\.claude\commands`、`C:\Users\Stark8964911\.claude\ask`、`C:\Users\Stark8964911\.cursor\skills`、`C:\Users\Stark8964911\.cursor\commands`
+  - MAC: `/Users/stark/.claude/commands`、`/Users/stark/.claude/ask`、`/Users/stark/.cursor/skills`、`/Users/stark/.cursor/commands`
+- 必须明确区分: "搜索未命中" 和 "按精确路径读取失败"
+- 图片处理结果汇报顺序: 先说明"精确路径存在"还是"按精确路径读取失败"; 只有精确路径未知或读取失败后, 才补充"搜索未命中"
+- 禁止把"还未尝试精确路径读取"说成"图片不存在"; 禁止把"搜索未命中"说成"精确路径不存在"
 
 ### 4. 工具优先级
 - `Read/Edit/Write > rg/Glob > Task > MCP`
@@ -36,6 +41,11 @@
 - `rg/Glob` 只用于未知路径的文本/文件定位
 - Bash 只用于非文件操作
 - MCP 仅在基础工具无法满足需求时使用, 不为展示能力而使用
+- 对"读取某个网页/URL页面内容"这类明确浏览器页面读取需求, 若当前环境已配置 `chrome-devtools --autoConnect`, 则主动使用 `chrome-devtools`; 不要求用户每次显式说出 `请用 chrome-devtools`
+- 对上述网页读取需求, 必须先判断当前环境是否已配置且已连通 `chrome-devtools --autoConnect`: 至少检查 MCP 配置文件中是否存在 `chrome-devtools-mcp@latest` 与 `--autoConnect`
+  - WIN: `C:\Users\Stark8964911\.cursor\mcp.json`
+  - MAC: `/Users/stark/.cursor/mcp.json`
+  并在需要时进一步验证是否能列出当前 Chrome 页面; 只有配置存在且链路可用时, 才直接读取页面
 
 ### 5. 上下文与 Token
 - 调用昂贵模型前用 `@文件` 指定必要文件, 避免自动加载无关内容
@@ -62,12 +72,21 @@
 - 修改完成后由用户手动测试, 不主动运行项目
 - Git 使用 Conventional Commits, 增量提交, 永不 `--no-verify`, 提交说明“为什么”
 
-### 8. 四模型最强编程策略
-- `Composer 1.5`: 日常编码、多文件实现、持续迭代
+### 8. 五模型最强编程策略
+- `Composer 2 Fast`: 日常编码主力、多文件实现、持续迭代、多步 agent 任务
+- `Composer 2`: 与 Fast 同智力, 更强调 cost per token, 适合长会话
 - `GPT-5.4`: 最复杂编程问题、模糊需求、跨模块排障, 追求能力上限时优先
 - `Sonnet 4.6`: 文档问答、中等复杂修改、成本敏感任务
 - `Opus 4.6`: 架构设计、安全审查、关键高价值复杂问题
 - 无论使用哪个模型, 都优先: 精确上下文、最少必要文件、明确预期产出、先方案后实现、最后给验证方式/风险/下一步
+
+### 9. Skill 执行规范
+- 每个 Skill 激活时: 先确认目标与涉及文件范围, 只加载必要上下文
+- 涉及项目代码的 Skill 需确认 `.cursor/rules/project-context.mdc` 存在
+- 复杂 Skill(多文件/架构决策)先给方案, 确认后再实现
+- 完成后: 简要说明变更内容, 给出验证方式或下一步建议
+- 涉及文档更新时, 明确更新了哪个文件及哪些章节
+- 涉及配置变更时, 提醒需要的重启或验证动作
 
 ## 二、可选扩展规则(按任务触发, 但同样常驻)
 
@@ -75,6 +94,34 @@
 - 原则: 先用基础工具; 只有基础工具不能高效完成时再用 MCP
 - `context7`: 查最新官方文档/示例; 已知 API 或常见问题时不用
 - `chrome-devtools`/`playwright`/`puppeteer`: 必须做浏览器自动化或页面验证时再用
+- 当用户明确要求"读取某个网页/URL页面内容"、"读取当前已打开页面"、"总结某个 dashboard / billing / usage / spending 页面"时, 默认优先用 `chrome-devtools`
+- 用户若只写 `读取 https://xxx 页面内容`, 视为已授权主动使用 `chrome-devtools`, 不再额外追问是否要用该工具
+- 若页面已登录, 读取登录态下的真实页面内容; 若页面未登录或发生重定向, 则读取当前实际可见内容, 并明确说明读取到的是登录页、授权页或重定向后的页面, 不得伪称已读取到目标业务页面
+- 若检测到当前环境未配置或未连通 `chrome-devtools --autoConnect`, 不要只说"未配置"; 必须直接反馈最小配置步骤, 让提问者无需再去其他文档查:
+- Cursor 侧: 打开 MCP 配置文件
+  - WIN: `C:\Users\Stark8964911\.cursor\mcp.json`
+  - MAC: `/Users/stark/.cursor/mcp.json`
+- Cursor 侧: 确保存在 `chrome-devtools` 配置; `command` 按系统区分
+  - WIN:
+    ```json
+    "chrome-devtools": {
+      "command": "D:\\work\\node\\npx.cmd",
+      "args": ["-y", "chrome-devtools-mcp@latest", "--autoConnect"]
+    }
+    ```
+  - MAC:
+    ```json
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest", "--autoConnect"]
+    }
+    ```
+- Cursor 侧: 修改后重启 Cursor
+- Chrome 侧: 正常打开 Chrome, 进入已登录目标网站
+- Chrome 侧: 打开 `chrome://inspect/#remote-debugging`, 勾选 `Allow remote debugging for this browser instance`
+- Chrome 侧: 等待页面从 `starting...` 变成 `Server running at: 127.0.0.1:9222`
+- 使用时: 首次连接若弹出授权框, 手动点击 `Allow / 允许`
+- 反馈时必须明确缺的是哪一步: `mcp.json` 未配置 / Cursor 未重启 / Chrome 未开启授权 / 服务仍停在 `starting...` / Chrome 未点允许
 - `filesystem`: 适合 3+ 文件批量操作; 单文件操作优先基础工具
 - `sequential-thinking`: 仅极复杂多步推理时使用
 - `memory`: 仅大型项目长期知识管理时使用

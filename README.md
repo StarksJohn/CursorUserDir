@@ -9,6 +9,7 @@ Cursor 用户级命令、技能、MCP 主目录:
 ## 模型对比:
 - GPT-5.4-thinking: 
   - 修改 "`D:\work\RN\csx-mobile-upgrade\src\useHooks\usePeriodicTask.ts` 的![img_160040.png](img_160040.png) 这段代码的逻辑, 也就是 每隔30秒执行 executeCustomTask() 函数,但是 退出登录后, 这个逻辑没有取消,需要你修改" 这个问题, 直接把 `D:\work\RN\csx-mobile-upgrade\src\useHooks\usePeriodicTask.ts`干成 死循环了
+    - 但是 解决了 `有没有什么MCP或者工具可以让 cursor使用的 模型访问到 已经登录过的网页? 这样我就不用每次先截图再提问了` 这个问题,sonnet-4.6 一开始没解决
 
 ## 跨机器同步
 
