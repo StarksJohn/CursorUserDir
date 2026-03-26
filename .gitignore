@@ -8,7 +8,9 @@ projects/*/*
 # MCP tool descriptors, resources, prompts
 !projects/*/mcps/
 !projects/*/mcps/**
-# Agent transcripts: keep local only (often contain secrets / tool output; do not push)
+# Agent transcripts for citation
+!projects/*/agent-transcripts/
+!projects/*/agent-transcripts/**
 # Terminal output files
 !projects/*/terminals/
 !projects/*/terminals/**
