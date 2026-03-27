@@ -1,0 +1,47 @@
+---
+pid: 41460
+cwd: "C:\\Users\\Stark8964911\\.cursor"
+command: "git push origin main"
+started_at: 2026-03-27T12:32:44.039Z
+running_for_ms: 35025    
+---
+remote: error: GH013: Repository rule violations found for refs/heads/main.        
+remote: 
+remote: - GITHUB PUSH PROTECTION        
+remote:   —————————————————————————————————————————        
+remote:     Resolve the following violations before pushing again        
+remote: 
+remote:     - Push cannot contain secrets        
+remote: 
+remote:             
+remote:      (?) Learn how to resolve a blocked push        
+remote:      https://docs.github.com/code-security/secret-scanning/working-with-secret-scanning-and-push-protection/working-with-push-protection-from-the-command-line#resolving-a-blocked-push        
+remote:             
+remote:             
+remote:       —— Figma Personal Access Token ———————————————————————        
+remote:        locations:        
+remote:          - commit: 6cab9dfff0599f27976582d800aa188b51cdd440        
+remote:            path: projects/d-work-RN-figma-to-rn-toolkit/agent-transcripts/b1d43203-3a88-41e1-812f-2e9ef34cfec9/b1d43203-3a88-41e1-812f-2e9ef34cfec9.jsonl:12        
+remote:          - commit: 6cab9dfff0599f27976582d800aa188b51cdd440        
+remote:            path: projects/d-work-RN-figma-to-rn-toolkit/agent-transcripts/b1d43203-3a88-41e1-812f-2e9ef34cfec9/b1d43203-3a88-41e1-812f-2e9ef34cfec9.jsonl:15        
+remote:          - commit: 6cab9dfff0599f27976582d800aa188b51cdd440        
+remote:            path: projects/d-work-RN-figma-to-rn-toolkit/agent-transcripts/b1d43203-3a88-41e1-812f-2e9ef34cfec9/b1d43203-3a88-41e1-812f-2e9ef34cfec9.jsonl:15        
+remote:          - commit: 6cab9dfff0599f27976582d800aa188b51cdd440        
+remote:            path: projects/d-work-RN-figma-to-rn-toolkit/agent-transcripts/b1d43203-3a88-41e1-812f-2e9ef34cfec9/b1d43203-3a88-41e1-812f-2e9ef34cfec9.jsonl:16        
+remote:          - commit: 6cab9dfff0599f27976582d800aa188b51cdd440        
+remote:            path: projects/d-work-RN-figma-to-rn-toolkit/agent-transcripts/b1d43203-3a88-41e1-812f-2e9ef34cfec9/b1d43203-3a88-41e1-812f-2e9ef34cfec9.jsonl:16        
+remote:             
+remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        
+remote:        https://github.com/StarksJohn/CursorUserDir/security/secret-scanning/unblock-secret/3BWpReGNZvhfUihYsHTGUnPQHyS        
+remote:             
+remote: 
+remote: 
+To https://github.com/StarksJohn/CursorUserDir
+ ! [remote rejected] main -> main (push declined due to repository rule violations)
+error: failed to push some refs to 'https://github.com/StarksJohn/CursorUserDir'
+
+---
+exit_code: 1
+elapsed_ms: 37615
+ended_at: 2026-03-27T12:33:21.654Z
+---
