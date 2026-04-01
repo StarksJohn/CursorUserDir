@@ -28,6 +28,10 @@
               "type": "string",
               "description": "Exact target field reference from the page snapshot"
             },
+            "selector": {
+              "description": "CSS or role selector for the field element, when \"ref\" is not available. Either \"selector\" or \"ref\" is required.",
+              "type": "string"
+            },
             "value": {
               "type": "string",
               "description": "Value to fill in the field. If the field is a checkbox, the value should be `true` or `false`. If the field is a combobox, the value should be the text of the option."

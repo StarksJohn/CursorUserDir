@@ -17,10 +17,12 @@
 - 处理编程问题优先遵循: 明确目标 -> 收集最小必要上下文 -> 给出分步方案 -> 实现/结论 -> 验证与风险
 - 调用昂贵模型前, 先明确: 目标、涉及文件、约束、可接受方案范围
 - 复杂任务之前先制定任务执行的计划清单: 当前目标、需要读取的文件、预期产出、是否需要修改文件、研究代码、提澄清问题、生成可审计划，自身再次确认无误后再执行
+- 首轮强制检查: 若当前消息、手动附加的 skill、ask、command、rule、或它们的内联正文里出现图片引用 / 附图 / 截图路径, 必须先完成这些图片的精确路径读取或明确读取失败, 再进入推理、回答、审查或改代码; 不得先按文字大意执行
 
 ### 3. 路径、图片与隐藏目录
 **核心原则: `![img_xxx.png](img_xxx.png)` 始终与引用它的 .md 文件同目录**
 - 已知绝对路径: 直接用 ReadFile, 禁止先用 Glob
+- 若图片引用来自手动附加 skill、ask、command、rule, 或这些文件的内联全文, 视为"引用源 .md 路径已知"; 必须直接以该源文件所在目录拼接图片名做精确路径读取, 不得因为正文已摘录到消息里就跳过读图
 - 遇到 `![img_xxx.png](img_xxx.png)` 时, 按以下顺序解析, 命中即停:
   1. 确定引用该图片的 .md 文件路径 (如 Cursor Command、Skill、Ask 等加载的源文件)
   2. 取该 .md 文件的所在目录, 拼接图片文件名, 直接 ReadFile
@@ -28,12 +30,15 @@
      - WIN: `C:\Users\Stark8964911\.claude\commands\img_xxx.png`
      - MAC: `/Users/stark/.claude/commands/img_xxx.png`
   4. 仅当以上全部读取失败后, 才用 rg/Glob 搜索
+- 若同一轮出现多张被当前任务直接引用的图片, 默认先批量读取全部相关图片, 再给结论; 不得只读其中一张就对设备、页面、状态或上下文下判断
+- 对"图片里可能包含设备型号、页面状态、报错文案、配置值、按钮位置、截图证据"这类场景, 图片读取属于任务必要上下文, 不属于"非必要引入图片"
 - 对以下隐藏目录, 不能仅凭 Glob 为空就断言文件不存在:
   - WIN: `C:\Users\Stark8964911\.claude\commands`、`C:\Users\Stark8964911\.claude\ask`、`C:\Users\Stark8964911\.cursor\skills`、`C:\Users\Stark8964911\.cursor\commands`
   - MAC: `/Users/stark/.claude/commands`、`/Users/stark/.claude/ask`、`/Users/stark/.cursor/skills`、`/Users/stark/.cursor/commands`
 - 必须明确区分: "搜索未命中" 和 "按精确路径读取失败"
 - 图片处理结果汇报顺序: 先说明"精确路径存在"还是"按精确路径读取失败"; 只有精确路径未知或读取失败后, 才补充"搜索未命中"
 - 禁止把"还未尝试精确路径读取"说成"图片不存在"; 禁止把"搜索未命中"说成"精确路径不存在"
+- 禁止用"我已经看了文字描述 / skill 摘要 / 用户大意"替代图片读取; 只要规则要求先读图, 就必须先读图后再推理
 
 ### 4. 工具优先级
 - `Read/Edit/Write > rg/Glob > Task > MCP`
@@ -55,7 +60,7 @@
 - 主动监控上下文: 超过 50% 优先开新 Chat(等效 `/compact`); 超过 80% 优先改为文档沉淀或新 Chat
 - 路径未知时用 `rg/Glob`, 路径已知时直接 `Read`
 - 已知 ask/command/skill/rule/project-context 精确路径时, 直接 `ReadFile`, 不先搜索
-- 非必要不主动引入图片; 图片成本高时优先文字描述或精确文件引用
+- 非必要不主动引入图片; 但只要当前消息、手动附加 skill、ask、command、rule 或相关文档里已经明确引用了图片, 就必须按必要上下文处理, 不得再以"图片成本高"为由跳过
 - 单次对话内优先批量完成相关操作, 减少重复加载上下文
 - 简单补全优先 Tab, 少用 Chat
 
@@ -167,9 +172,12 @@
 - TypeScript: `interface` 优先, 禁 `any`, 类型明确, 常量优先集中管理; 适合时使用 `enum` 管理常量
 - React/React Native: 函数组件 + Hooks, 复杂逻辑抽 Hook, 必要时用 `memo/useMemo/useCallback`
 - React Native: 优先 `StyleSheet.create()`, 注意 `Platform.OS`, 警惕内存泄漏; 涉及图片与键盘体验时优先检查 `FastImage`、`KeyboardAvoidingView`
+- 第三方库 / SDK / 原生桥接 API: 生成或修改代码前, 必须先核对当前要使用的字段、方法、参数、返回值在类型定义或官方文档中的平台说明; 尤其关注 `iOS ONLY`、`ANDROID ONLY`、`platform specific`、`deprecated`、`experimental` 等标记
+- React Native 跨平台代码: 禁止在共享逻辑里直接使用第三方库中标记为 `iOS ONLY` / `ANDROID ONLY` 的字段、方法或参数, 除非已经显式做 `Platform.OS` 分支, 并为另一端提供等价字段、fallback、降级方案或明确说明该端不可用
 - Vue: Vue3 用 Composition API, Vue2 用 mixins, `v-for` 必须有 `key`
 - Node.js: `dotenv` 配置, 中间件顺序正确, 参数验证, RESTful, 统一错误处理; 适合时使用 Winston 日志与连接池
 - 跨平台: 公共逻辑抽离, 统一 API/时间处理, 警惕内存泄漏; 优先 `dayjs` 处理时间, `axios` 统一 API
+- 跨平台字段选择: 优先使用双端公共字段; 不得因为同一个 TypeScript interface 中存在某字段, 就默认该字段在所有平台都可用; 若官方声明存在平台差异, 先调整数据设计, 再写实现
 - 性能: 合适时优先 `Map/Set` 替代数组查找, `WeakMap/WeakSet` 管理弱引用场景
 - 大数据集或长列表场景: 优先分页、虚拟滚动、懒加载
 - 安全通信默认优先 `HTTPS`; 涉及权限时必须考虑身份验证与授权
