@@ -166,4 +166,59 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
       - 组件放在 src/pages/paymentPage/ 目录
       - 组件名为 PaymentPage -->
 - 执行 `npx react-native run-android`,把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上
-  - 进入`D:\work\RN\csx-mobile-upgrade\src\pages\EditHealthDataPage\EditHealthDataPage.tsx`页面, 点击 `renderAddHealthDataCard`函数里绘制的任意 <AddHealthDataCardRow>组件, 键盘弹起后, 获取了焦点的输入框没有上移,导致 键盘挡住了显示在页面底部的输入框
+  - 进入`D:\work\RN\csx-mobile-upgrade\src\pages\EditHealthDataPage\EditHealthDataPage.tsx`页面, 填写了
+![img_142833.png](img_142833.png) 这3个选项后, 点击右上角的 加入按钮, 执行了656行的API, 请求了`https://api-cs-mobile-dev.heals.asia/api/csx/consultation/add-patient-health-data` , header 传 {
+
+    "Content-Type": "application/json",
+
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiNzQ4OTU1NS00MDYzLTQ0NjMtODBmNy00MGMyODkyODk4YTQiLCJhbXIiOiJwd2QiLCJpbnN0YWxsYXRpb25JZCI6InBvYy5kZW1vLmNsaW5pY3NvbHV0aW9uLmhrIiwidXNlcm5hbWUiOiJIZWFscyIsInVzZXJpZCI6Ijg0MjlhMDg5LWY0Y2MtNDIzZC04OGZjLWMzNzUwYTBhMWMwMiIsImV4cCI6MTc3NTI4MjU5MCwiaXNzIjoiSGVhbHMiLCJhdWQiOiJodHRwOi8vY3N4LWFwaS1kZXYuaGVhbHNoZWFsdGhjYXJlLmNvbS8ifQ.RqV1UI24voim76IYqWfTCYKnWznA2nYbSsbcGV0jeLA",
+
+    "Cookie": "",
+
+    "session-clinicId": "b1e774a3-9986-4417-d8ba-08ddcfe6546f",
+
+    "Cache-Control": "no-cache",
+
+    "Accept-Language": "zh-Hant"
+
+}
+
+
+
+body 传 {
+
+    "patientId": "0496d535-1021-430e-af79-42bccb812bfc",
+
+    "clinicId": "b1e774a3-9986-4417-d8ba-08ddcfe6546f",
+
+    "doctorId": "87afbc3d-d4bc-4a2f-a790-b93252dc77df",
+
+    "date": "2026-04-03",
+
+    "healthData": {
+
+        "Height": 1,
+
+        "Head": 2.3,
+
+        "LastMenstrualPeriod": 3
+
+    }
+
+}
+
+
+
+返回 {
+
+    "success": false,
+
+    "status": null,
+
+    "code": 500,
+
+    "message": "Newtonsoft.Json.JsonReaderException: Unexpected character encountered while parsing value: 3. Path 'LastMenstrualPeriod', line 1, position 46.\r\n   at Newtonsoft.Json.JsonTextReader.ReadStringValue(ReadType readType)\r\n   at Newtonsoft.Json.JsonTextReader.ReadAsDateTime()\r\n   at Newtonsoft.Json.JsonReader.ReadForType(JsonContract contract, Boolean hasConverter)\r\n   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.PopulateObject(Object newObject, JsonReader reader, JsonObjectContract contract, JsonProperty member, String id)\r\n   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateObject(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)\r\n   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateValueInternal(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)\r\n   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)\r\n   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)\r\n   at Newtonsoft.Json.JsonConvert.DeserializeObject(String value, Type type, JsonSerializerSettings settings)\r\n   at Newtonsoft.Json.JsonConvert.DeserializeObject[T](String value, JsonSerializerSettings settings)\r\n   at CSX.Api.Services.ehr.EventHandler.Handler.Consultations.AddPatientHealthDataEventHanlder.Handle(AddPatientHealthDataEvent event) in D:\\CsxRelease\\csx-api\\CSX.Api\\Services\\ehr\\EventHandler\\Handler\\Consultations\\AddPatientHealthDataEventHanlder.cs:line 44\r\n   at CSX.Api.Services.ehr.EventHandler.RequestProcesser.ProcessRequest(List`1 requests) in D:\\CsxRelease\\csx-api\\CSX.Api\\Services\\ehr\\EventHandler\\RequestProcesser.cs:line 93",
+
+    "data": null
+
+}

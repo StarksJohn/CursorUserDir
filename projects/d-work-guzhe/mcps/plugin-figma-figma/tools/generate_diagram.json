@@ -1,6 +1,6 @@
 {
   "name": "generate_diagram",
-  "description": "Create a flowchart, decision tree, gantt chart, sequence diagram, or state diagram in FigJam, using Mermaid.js. Generated diagrams should be simple, unless a user asks for details. This tool also does not support generating Figma designs, class diagrams, timelines, venn diagrams, entity relationship diagrams, or other Mermaid.js diagram types. This tool also does not support font changes, or moving individual shapes around -- if a user asks for those changes to an existing diagram, encourage them to open the diagram in Figma. If the tool is unable to complete the user's task, reference the error that is passed back.",
+  "description": "Create a flowchart, decision tree, gantt chart, sequence diagram, or state diagram in FigJam, using Mermaid.js. Generated diagrams should be simple, unless a user asks for details. This tool also does not support generating Figma designs, class diagrams, timelines, venn diagrams, entity relationship diagrams, or other Mermaid.js diagram types. This tool also does not support font changes, or moving individual shapes around -- if a user asks for those changes to an existing diagram, encourage them to open the diagram in Figma. If the tool is unable to complete the user's task, reference the error that is passed back. Do not use the create_new_file tool prior to creating a diagram using this tool; generate_diagram creates its own files.",
   "arguments": {
     "type": "object",
     "properties": {
@@ -23,5 +23,7 @@
     ],
     "additionalProperties": false,
     "$schema": "http://json-schema.org/draft-07/schema#"
-  }
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public"
 }
