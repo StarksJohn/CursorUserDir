@@ -74,7 +74,7 @@ git pull
 
 ## mcp.json（跨 Win / Mac）
 
-本仓库中的 **`mcp.json`** 使用 **`npx`** 启动各 MCP（请在两端安装 Node 并将 **`npx`** 加入 **PATH**；若你过去依赖固定路径如 `D:\work\node\npx.cmd`，请改为使用 PATH 中的 Node，或在**不提交**的本地副本中改 `command`）。**Win11** 下把目录加入 **用户 PATH**、设置 **`HOME=%USERPROFILE%`** 的逐步操作见 **`Cursor_使用指南与Token优化.md` §2.1a 问题 11**（对照 **`img_164352.png`**）。
+本仓库中的 **`mcp.json`** 使用 **`npx`** 启动各 MCP（请在两端安装 Node 并将 **`npx`** 加入 **PATH**；若你过去依赖固定路径如 `D:\work\node\npx.cmd`，请改为使用 PATH 中的 Node，或在**不提交**的本地副本中改 `command`）。**Win11** 下把目录加入 **用户 PATH**、设置 **`HOME=%USERPROFILE%`** 的逐步操作见 **`Cursor_使用指南与Token优化.md` §2.1a 问题 11**（对照 **`img_164352.png`**）。在 **PowerShell** 里验证请用 **`where.exe npx`**，不要用 **`where npx`**（见 **问题 12**）。
 
 - **`filesystem`**：唯一根目录为 **`${env:HOME}`**。macOS 默认有 `HOME`。**Windows** 若启动报错，请设置用户环境变量 **`HOME`**，值为你的用户目录（与 **`USERPROFILE`** 相同即可，例如 `C:\Users\Stark8964911`）。需要额外盘符（如原 `D:\work`）时，可在本机向 `args` 中追加路径或改用 Cursor 支持的 **`${env:…}`** 变量（勿提交密钥）。
 - **`github`**：`GITHUB_PERSONAL_ACCESS_TOKEN` 从环境变量注入，**勿**把 token 明文写进仓库。
