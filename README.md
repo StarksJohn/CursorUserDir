@@ -70,6 +70,17 @@ git pull
 | Cursor 配置 | `%APPDATA%\Cursor\User\` | `~/Library/Application Support/Cursor/User/` |
 | 扩展 | `%USERPROFILE%\.cursor\extensions\` | `~/.cursor/extensions/` |
 | AHK 脚本 | `%APPDATA%\...\Startup\SwapCtrlAlt.ahk` | (仅 Windows) |
+| MCP 全局配置 | `~/.cursor/mcp.json` | 同左 |
+
+## mcp.json（跨 Win / Mac）
+
+本仓库中的 **`mcp.json`** 使用 **`npx`** 启动各 MCP（请在两端安装 Node 并将 **`npx`** 加入 **PATH**；若你过去依赖固定路径如 `D:\work\node\npx.cmd`，请改为使用 PATH 中的 Node，或在**不提交**的本地副本中改 `command`）。
+
+- **`filesystem`**：唯一根目录为 **`${env:HOME}`**。macOS 默认有 `HOME`。**Windows** 若启动报错，请设置用户环境变量 **`HOME`**，值为你的用户目录（与 **`USERPROFILE`** 相同即可，例如 `C:\Users\Stark8964911`）。需要额外盘符（如原 `D:\work`）时，可在本机向 `args` 中追加路径或改用 Cursor 支持的 **`${env:…}`** 变量（勿提交密钥）。
+- **`github`**：`GITHUB_PERSONAL_ACCESS_TOKEN` 从环境变量注入，**勿**把 token 明文写进仓库。
+- **`playwright`**：已去掉固定的 Windows 浏览器缓存路径，由 Playwright 在各平台使用默认缓存目录。
+
+修改 **`mcp.json` 后请重启 Cursor**。
 
 ## 说明
 
