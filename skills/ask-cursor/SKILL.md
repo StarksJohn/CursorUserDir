@@ -9,23 +9,14 @@ description: 迁移并执行 ask_cursor 工作流，处理 Cursor IDE 配置优�
 
 把旧的 `claude code` `ask_cursor` 工作流，收敛成一个可在 Cursor 中稳定复用的个人 Skill。
 
-## 通用执行规范
-
-<!-- Skill 执行规范已合并到 User Rules（`Cursor AI 规则.md` 第 9 条），每个会话自动生效，无需单独加载。 -->
 
 ## 配置信息
-- Windows11系统全局配置数据目录(User 设置、工作区存储、UI 状态等，类似 VS Code):`C:\Users\Stark8964911\AppData\Roaming\Cursor`
+- Windows11系统全局配置数据目录(User 设置、工作区存储、UI 状态等，类似 VS Code):
+  - win:`C:\Users\Stark8964911\AppData\Roaming\Cursor`
+  - mac:`~/Library/Application Support/Cursor`
 - Cursor 用户级命令、技能、MCP 主目录: `C:\Users\Stark8964911\.cursor`（Win11）或 `~/.cursor`（Mac）: 
 - cursor提问目录: `C:\Users\Stark8964911\.cursor`（Win11）或 `~/.cursor`（Mac）
 - cursor 常打开的项目类型: React Native, React, Vue, iOS, Android, 微信小程序
-
-## 默认迁移策略
-
-- 常驻偏好放 `User Rules`
-- 项目长期规则放 `.cursor/rules/*.mdc`
-- 按需多步流程放 `~/.cursor/skills/`
-- 显式 slash 命令兼容入口放 `~/.cursor/commands/`
-- 本地 MCP 配置放 `~/.cursor/mcp.json`
 
 ## 当前 ask_cursor 场景的推荐主入口
 
@@ -37,8 +28,17 @@ description: 迁移并执行 ask_cursor 工作流，处理 Cursor IDE 配置优�
 ## 当前活跃需求
 <!-- - 我当前是`cursor Pro+ Annual $48/mo.` 计划的用户, 目前有如图![img_010515.png](img_010515.png)![img_011234.png](img_011234.png) 2个计费池,一个是使用高级API的计费池,一个是`Auto + Composer`的计费池, 每月24日15:00点重置 -->
 - 当前Win11系统已经安装了`cursor IDE`
-  - 刚刚cursor 更新到了最新版本, 给我说下这次更新新增了哪些功能?
+  <!-- - 刚刚cursor 更新到了最新版本, 给我说下这次更新新增了哪些功能? -->
   <!-- - 我需要最大化发挥出 ![img_182707.png](img_182707.png) 这几个模型解决编码和架构问题的能力, 还需要进行哪些全局配置优化或者创建哪些 skills 或者 Subagents? -->
   <!-- - 我想在每次cursor 执行完毕任务后, 用户可以选择点击 一个按钮,然后 cursor 把 任务内容朗读出来
     - 我在 cursor 的扩展里没找到 **Read Aloud**、**Speech** -->
-  - 把以上问题你的解答总结更新到 `C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor_使用指南与Token优化.md`
+- 我的 `MacBook Pro` 电脑也下载安装了cursor,已经有了 ![img_150716.png](img_150716.png) 目录
+  - 当前win11系统的 `C:\Users\Stark8964911\AppData\Roaming\Cursor` ,目录对应 `MacBook Pro` 的什么目录?
+    - 你说的 `/Users/你的短用户名/Library/Application Support/Cursor` 目录是不是 如图  ![img_152133.png](img_152133.png) 这个目录? 如果是, 我是不是可以直接把 当前win11系统的 `C:\Users\Stark8964911\AppData\Roaming\Cursor`目录同步到 `MacBook Pro`的 ![img_152133.png](img_152133.png) 这个目录
+      - 你借鉴 `C:\Users\Stark8964911\AppData\Roaming\Cursor`和 `~/Library/Application Support/Cursor`目录 的同步方式,修改 "C:\Users\Stark8964911\.cursor\.gitignore", 让 `C:\Users\Stark8964911\.cursor`这个本地git仓库也只追踪可移植到 `MacBook Pro` 系统的 `~/.cursor` 目录里的文件和子目录, 然后 push 到 远程仓库
+        - 我需要 `C:\Users\Stark8964911\.cursor\mcp.json` 也跨机版本化,你能否修改 `C:\Users\Stark8964911\.cursor\mcp.json`,让 这个文件同时支持win11系统和`MacBook Pro`,然后 添加到git追踪里,然后push到 远程仓库
+          - 修改 `C:\Users\Stark8964911\.cursor\mcp.json`后, 你检查下 当前win11系统的 cursor 的 所有MCP是否还能正常使用,当前win11系统的 cursor 的其它所有功能是否还能正常使用;如果都没问题,把  `C:\Users\Stark8964911\.cursor`这个本地git仓库的修改 push 到远程仓库,保证 我接下来在 `MacBook Pro` 系统的 `~/.cursor` 目录里 `git clone`这个仓库后,只能下载下来可移植的文件和目录
+            - 根据 ![img_170847.png](img_170847.png),我看到 ![img_170940.png](img_170940.png)![img_171010.png](img_171010.png)
+            - 为什么 "C:\Users\Stark8964911\.cursor\plugins"` 目录不能移植到 `MacBook Pro`?
+  <!-- - 当前win11系统的 `C:\Users\Stark8964911\.cursor` 目录 是不是对应  ![img_150716.png](img_150716.png) 目录? -->
+- 把以上问题你的解答总结更新到 `C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor_使用指南与Token优化.md`
