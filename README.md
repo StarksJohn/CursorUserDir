@@ -13,13 +13,13 @@ Cursor 用户级命令、技能、MCP 主目录:
 
 ## 跨机器同步
 
-在 Mac 上 `git pull` 即可将 Win11 的配置同步到 Mac。
+在 Mac 的 `~/.cursor` 目录内 `git pull` 即可同步本仓库。**进 Git 的只有可移植目录**（见根目录 `.gitignore`）：`skills/`、`commands/`、`rules/`、`plans/`、`subagents/`、`config/`、`skills-cursor/`，以及 `README.md`、`sync-cursor-config.ps1` 等根文件。**`projects/`、`plugins/` 缓存不入库**（路径随机器变、体积大）；两端 Cursor 会在本地各自生成。
 
 ## 目录结构
 
 ```
 ~/.cursor  (或 C:\Users\Stark8964911\.cursor)
-├── config/                     # Cursor 全局配置备份
+├── config/                     # Cursor 全局配置备份（入 Git）
 │   ├── settings.json          # 全局设置
 │   ├── keybindings.json       # 快捷键
 │   ├── .prettierrc            # Prettier 配置
@@ -31,7 +31,8 @@ Cursor 用户级命令、技能、MCP 主目录:
 ├── skills-cursor/             # 内置技能
 ├── skills/                    # 个人技能
 ├── rules/                     # 用户规则
-└── projects/                  # 项目级数据
+├── projects/                  # 项目级数据（本地-only，不进本仓库）
+└── plugins/                   # 扩展/插件缓存（本地-only，不进本仓库）
 ```
 
 ## 使用方式
