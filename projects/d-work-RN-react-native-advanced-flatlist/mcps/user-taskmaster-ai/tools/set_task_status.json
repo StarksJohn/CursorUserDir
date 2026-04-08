@@ -1,0 +1,38 @@
+{
+  "name": "set_task_status",
+  "description": "Set the status of one or more tasks or subtasks.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "minLength": 1
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "in-progress",
+          "done",
+          "deferred",
+          "cancelled",
+          "blocked",
+          "review"
+        ]
+      },
+      "projectRoot": {
+        "type": "string"
+      },
+      "tag": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "id",
+      "status",
+      "projectRoot"
+    ],
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "additionalProperties": false
+  }
+}

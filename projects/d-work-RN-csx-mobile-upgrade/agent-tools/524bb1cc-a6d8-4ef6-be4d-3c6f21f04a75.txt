@@ -1,0 +1,1430 @@
+diff --git a/src/api/api.ts b/src/api/api.ts
+index 7ecbd0fe..887e8ea1 100644
+--- a/src/api/api.ts
++++ b/src/api/api.ts
+@@ -3112,6 +3112,37 @@ export const calendar_v1_schedules = async (p) => {
+   }
+ };
+ 
++export const calendar_v1_delete_schedules = async (p: {
++  contains: string[],
++  all: boolean
++}): Promise<boolean> => {
++  try {
++    const url = constant.API_BASE_URL + '/calendar/v1/delete-schedules';
++    console.log('api calendar_v1_delete_schedules url=', url);
++    const body = { ...p };
++    console.log('api calendar_v1_delete_schedules body=', body);
++    // 将参数转换为URL的查询字符串
++    let response = await fetch(url, {
++      method: 'POST', // 指定请求方法
++      headers: headers(),
++      body: JSON.stringify(body),
++    });
++    console.log('calendar_v1_delete_schedules response=', response);
++    if (!response.ok) {
++      return Promise.resolve(false);
++    }
++    let json = await response.json();
++    console.log('calendar_v1_delete_schedules json=', json);
++    if (json.code === 0 || json.code === 200) {
++      return Promise.resolve(true);
++    }
++    return Promise.resolve(false);
++  } catch (error) {
++    console.error('calendar_v1_delete_schedules error=', error);
++    return Promise.resolve(false);
++  }
++};
++
+ export const complete_consultation = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/encounter/complete-consultation';
+diff --git a/src/i18n/locale/en.ts b/src/i18n/locale/en.ts
+index 33eda0de..b7a59c5f 100644
+--- a/src/i18n/locale/en.ts
++++ b/src/i18n/locale/en.ts
+@@ -931,6 +931,12 @@ const en = {
+   'delete_confirm': 'Confirm Delete',
+   'delete_success': 'Successfully removed {{removedCount}} schedule(s) from your calendar.',
+   'delete_failed': 'Failed to delete some schedules. Please try again.',
++  'calendarSyncFailed': 'Sync failed, {{failed}}/{{total}} events failed to add, please try again later.',
++  'delete_server_failed': 'Server deletion failed, please try again.',
++  'delete_partial_success': 'Partially deleted successfully',
++  'delete_partial_success_detail': 'Successfully deleted {{success}} schedules, {{failed}} schedules failed to delete, please go to system calendar to delete manually.',
++  'delete_all_failed_manual': 'All schedules failed to delete, please go to system calendar to delete manually.',
++  'delete_expired_failed_manual': 'Expired schedules failed to delete, please go to system calendar to delete manually.',
+   'eHealth eHR No': 'eHealth eHR No',
+   'be_unbind_trusted_device': 'The current account has been unbound by the administrator',
+   'source': 'Source',
+diff --git a/src/i18n/locale/jp.ts b/src/i18n/locale/jp.ts
+index 0f92744e..18af0155 100644
+--- a/src/i18n/locale/jp.ts
++++ b/src/i18n/locale/jp.ts
+@@ -922,6 +922,12 @@ const jp = {
+   'delete_confirm': '削除を確認',
+   'delete_success': 'カレンダーから{{removedCount}}個のスケジュールが削除されました。',
+   'delete_failed': 'スケジュールの一部削除に失敗しました。再試行してください。',
++  'calendarSyncFailed': '同期に失敗しました。{{failed}}/{{total}}件のイベントを追加できませんでした。後でもう一度お試しください。',
++  'delete_server_failed': 'サーバーの削除に失敗しました。もう一度お試しください。',
++  'delete_partial_success': '一部削除完了',
++  'delete_partial_success_detail': '{{success}}件のスケジュールを削除しましたが、{{failed}}件の削除に失敗しました。システムカレンダーから手動で削除してください。',
++  'delete_all_failed_manual': 'すべてのスケジュールの削除に失敗しました。システムカレンダーから手動で削除してください。',
++  'delete_expired_failed_manual': '期限切れのスケジュールの削除に失敗しました。システムカレンダーから手動で削除してください。',
+   'eHealth eHR No': 'eHealth eHR 番号',
+   'be_unbind_trusted_device': '現在のアカウントは管理者によってバインド解除���れました',
+   'source': 'ソース',
+diff --git a/src/i18n/locale/ph.ts b/src/i18n/locale/ph.ts
+index 1f0d636a..ad843a9e 100644
+--- a/src/i18n/locale/ph.ts
++++ b/src/i18n/locale/ph.ts
+@@ -935,6 +935,12 @@ export default {
+   'delete_confirm': 'Kumpirmahin ang Pagtanggal',
+   'delete_success': 'May tagumpay na inalis ang {{removedCount}} schedules mula sa iyong kalendaryo.',
+   'delete_failed': 'Nabigo ang partial schedule deletion, mangyaring subukan muli.',
++  'calendarSyncFailed': 'Nabigo ang pag-sync, {{failed}}/{{total}} mga kaganapan ang nabigong idagdag, mangyaring subukan muli sa ibang pagkakataon.',
++  'delete_server_failed': 'Nabigo ang pagtanggal sa server, mangyaring subukan muli.',
++  'delete_partial_success': 'Bahagyang matagumpay na tinanggal',
++  'delete_partial_success_detail': 'Matagumpay na tinanggal ang {{success}} mga iskedyul, {{failed}} mga iskedyul ang nabigong tanggalin, mangyaring pumunta sa system calendar upang tanggalin nang manu-mano.',
++  'delete_all_failed_manual': 'Lahat ng mga iskedyul ay nabigong tanggalin, mangyaring pumunta sa system calendar upang tanggalin nang manu-mano.',
++  'delete_expired_failed_manual': 'Ang mga expired na iskedyul ay nabigong tanggalin, mangyaring pumunta sa system calendar upang tanggalin nang manu-mano.',
+   'eHealth eHR No': 'eHealth eHR Number',
+   'be_unbind_trusted_device': 'Ang kasalukuyang account ay na-unbind na ng administrator',
+   'source': 'Source',
+diff --git a/src/i18n/locale/th.ts b/src/i18n/locale/th.ts
+index 71f9f7a1..66b1b31a 100644
+--- a/src/i18n/locale/th.ts
++++ b/src/i18n/locale/th.ts
+@@ -916,6 +916,12 @@ export default {
+   'delete_confirm': 'ยืนยันการลบ',
+   'delete_success': 'ลบกำหนดการ {{removedCount}} ออกจากปฏิทินของคุณเรียบร้อยแล้ว',
+   'delete_failed': 'การลบกำหนดการบางส่วนล้มเหลว โปรดลองอีกครั้ง',
++  'calendarSyncFailed': 'การซิงค์ล้มเหลว มีเหตุการณ์ {{failed}}/{{total}} รายการที่เพิ่มไม่ได้ กรุณาลองใหม่อีกครั้งในภายหลัง',
++  'delete_server_failed': 'การลบจากเซิร์ฟเวอร์ล้มเหลว กรุณาลองใหม่อีกครั้ง',
++  'delete_partial_success': 'ลบบางส่วนสำเร็จ',
++  'delete_partial_success_detail': 'ลบกำหนดการสำเร็จ {{success}} รายการ ลบล้มเหลว {{failed}} รายการ กรุณาไปที่ปฏิทินของระบบเพื่อลบด้วยตนเอง',
++  'delete_all_failed_manual': 'การลบกำหนดการทั้งหมดล้มเหลว กรุณาไปที่ปฏิทินของระบบเพื่อลบด้วยตนเอง',
++  'delete_expired_failed_manual': 'การลบกำหนดการที่หมดอายุแล้วล้มเหลว กรุณาไปที่ปฏิทินของระบบเพื่อลบด้วยตนเอง',
+   'eHealth eHR No': 'หมายเลข eHealth eHR',
+   'be_unbind_trusted_device': 'บัญชีปัจจุบันถูกยกเลิกการเชื่อมโยงโดยผู้ดูแลระบบ',
+   'source': 'แหล่งข้อมูล',
+diff --git a/src/i18n/locale/vn.ts b/src/i18n/locale/vn.ts
+index e9560c4c..72c26011 100644
+--- a/src/i18n/locale/vn.ts
++++ b/src/i18n/locale/vn.ts
+@@ -920,6 +920,12 @@ export default {
+   'delete_confirm': 'Xác nhận xóa',
+   'delete_success': '{{removedCount}} lịch biểu đã được xóa thành công khỏi lịch của bạn.',
+   'delete_failed': 'Xóa một phần lịch trình không thành công, vui lòng thử lại.',
++  'calendarSyncFailed': 'Đồng bộ thất bại, {{failed}}/{{total}} sự kiện không thể thêm, vui lòng thử lại sau.',
++  'delete_server_failed': 'Xóa trên máy chủ thất bại, vui lòng thử lại.',
++  'delete_partial_success': 'Xóa một phần thành công',
++  'delete_partial_success_detail': 'Đã xóa thành công {{success}} lịch biểu, {{failed}} lịch biểu không thể xóa, vui lòng vào lịch hệ thống để xóa thủ công.',
++  'delete_all_failed_manual': 'Tất cả lịch biểu không thể xóa, vui lòng vào lịch hệ thống để xóa thủ công.',
++  'delete_expired_failed_manual': 'Lịch biểu hết hạn không thể xóa, vui lòng vào lịch hệ thống để xóa thủ công.',
+   'eHealth eHR No': 'Số eHealth eHR',
+   'be_unbind_trusted_device': 'Tài khoản hiện tại đã bị quản trị viên hủy liên kết',
+   'source': 'Nguồn',
+diff --git a/src/i18n/locale/zh.ts b/src/i18n/locale/zh.ts
+index 4dcfcb2b..0bd76cfe 100644
+--- a/src/i18n/locale/zh.ts
++++ b/src/i18n/locale/zh.ts
+@@ -912,6 +912,12 @@ const zh = {
+   'delete_confirm': '确认删除',
+   'delete_success': '成功从您的日历中移除了 {{removedCount}} 个日程。',
+   'delete_failed': '部分日程删除失败，请重试。',
++  'calendarSyncFailed': '同步失败，{{failed}}/{{total}} 个日程添加失败，请稍后重试。',
++  'delete_server_failed': '服务端删除失败，请重试。',
++  'delete_partial_success': '部分删除成功',
++  'delete_partial_success_detail': '成功删除 {{success}} 个日程，{{failed}} 个日程删除失败，请前往系统日历手动删除。',
++  'delete_all_failed_manual': '所有日程删除失败，请前往系统日历手动删除。',
++  'delete_expired_failed_manual': '过期日程删除失败，请前往系统日历手动删除。',
+   'eHealth eHR No': '电子健康记录编号',
+   'be_unbind_trusted_device': '当前账户已被管理员解绑',
+   'source': '来源',
+diff --git a/src/i18n/locale/zh_tw.ts b/src/i18n/locale/zh_tw.ts
+index 4cebb85e..1d93a573 100644
+--- a/src/i18n/locale/zh_tw.ts
++++ b/src/i18n/locale/zh_tw.ts
+@@ -910,6 +910,12 @@ const zh_tw = {
+   'delete_confirm': '確認刪除',
+   'delete_success': '成功從您的日曆中移除了 {{removedCount}} 個日程。',
+   'delete_failed': '部分日程刪除失敗，請重試。',
++  'calendarSyncFailed': '同步失敗，{{failed}}/{{total}} 個日程添加失敗，請稍後重試。',
++  'delete_server_failed': '服務端刪除失敗，請重試。',
++  'delete_partial_success': '部分刪除成功',
++  'delete_partial_success_detail': '成功刪除 {{success}} 個日程，{{failed}} 個日程刪除失敗，請前往系統日曆手動刪除。',
++  'delete_all_failed_manual': '所有日程刪除失敗，請前往系統日曆手動刪除。',
++  'delete_expired_failed_manual': '過期日程刪除失敗，請前往系統日曆手動刪除。',
+   'eHealth eHR No': '電子健康紀錄編號',
+   'be_unbind_trusted_device': '當前賬戶已被管理員解綁',
+   'source': '來源',
+diff --git a/src/pages/AccountSecurityPage/AccountSecurityPage.tsx b/src/pages/AccountSecurityPage/AccountSecurityPage.tsx
+index 69fe5af9..184ad836 100644
+--- a/src/pages/AccountSecurityPage/AccountSecurityPage.tsx
++++ b/src/pages/AccountSecurityPage/AccountSecurityPage.tsx
+@@ -40,6 +40,7 @@ import { useLoading } from "components/LoadingModal/LoadingContext.tsx";
+ import { open_biometrics_auth_data } from 'api/api-types';
+ import { Account } from '../../actions/csxSetAccountActions';
+ import { useCalendarEvents } from "useHooks/useCalendarEvents";
++import { useAppState } from "useHooks/useAppState";
+ 
+ interface Props extends pageProps {
+ }
+@@ -83,6 +84,32 @@ const AccountSecurityPage: React.FC<Props> = (props: Props, parentRef) => {
+   console.log('AccountSecurityPage curAccount=', curAccount);
+   
+   const { checkPermission, checkPermissionSilent, requestPermission, alertUserAboutPermissions, permissionStatus, checkingPermission } = useCalendarEvents();
++  const { appState } = useAppState();
++
++  // 监听 permissionStatus 变化
++  useEffect(() => {
++    console.log('AccountSecurityPage permissionStatus=', permissionStatus)
++    setState((prevState) => {
++      return {
++        ...prevState, isEnabledCalendar: permissionStatus === 'authorized'
++      }
++    })
++  }, [permissionStatus]);
++
++  // 监听应用状态变化，当从后台切回前台时重新检查权限
++  useEffect(() => {
++    console.log('AccountSecurityPage appState 更新为:', appState)
++    if (appState === 'active') {
++      const checkCalendarPermission = async () => {
++        const hasPermission = await checkPermission();
++        setState(prevState => ({
++          ...prevState,
++          isEnabledCalendar: hasPermission
++        }));
++      };
++      checkCalendarPermission();
++    }
++  }, [appState]);
+ 
+   useEffect(() => {
+     const checkCalendarPermission = async () => {
+diff --git a/src/pages/AddAppointment/AddAppointment.tsx b/src/pages/AddAppointment/AddAppointment.tsx
+index 16fe6a96..2d8e3fb1 100644
+--- a/src/pages/AddAppointment/AddAppointment.tsx
++++ b/src/pages/AddAppointment/AddAppointment.tsx
+@@ -444,7 +444,6 @@ const AddAppointment: React.FC<pageProps> = (props: pageProps, parentRef) => {
+             if (data) {
+               emitEvent(globalEventName.changehomeType, state.orderType);
+               emitEvent(globalEventName.changeCurSelectDay);
+-              await syncEvents();
+               routes.navigate(navigation, routes.AppointmentListPage.routeName, {});
+             }
+           } else if (state.isAddWaitingType) {
+@@ -499,7 +498,6 @@ const AddAppointment: React.FC<pageProps> = (props: pageProps, parentRef) => {
+             setLoading(false);
+             if (data) {
+               emitEvent(globalEventName.refreshHomeAppointmentlist, '1');
+-              await syncEvents();
+               routes.navigate(navigation, routes.AppointmentListPage.routeName, {});
+             }
+           }
+@@ -1185,6 +1183,15 @@ const AddAppointment: React.FC<pageProps> = (props: pageProps, parentRef) => {
+                 title={state.pageType === 0 ? global.i18n.t('NewAddition') : global.i18n.t('edit')}
+                 navigation={navigation}
+                 rightBt={renderRightBt()}
++                onLeftPress={() => {
++                  // 将syncEvents放在这里，而不是每次预约后都立即同步，避免快速预约导致服务端无法及时返回数据
++                  // 如果用户在此页面预约后没有点击返回按钮（杀掉App）触发syncEvents，进入首页时会主动触发syncEvents
++                  // 触发同步，立即返回
++                  syncEvents().catch(error => {
++                    console.error('Background sync failed:', error);
++                  });
++                  navigationRef?.goBack();
++                }}
+               />
+               {renderTopBar(theme)}
+               {!state.isEditWaitingType && (
+diff --git a/src/pages/ManageCalendarPage/ManageCalendarPage.styles.ts b/src/pages/ManageCalendarPage/ManageCalendarPage.styles.ts
+index 0b287532..2f07d9b1 100644
+--- a/src/pages/ManageCalendarPage/ManageCalendarPage.styles.ts
++++ b/src/pages/ManageCalendarPage/ManageCalendarPage.styles.ts
+@@ -16,9 +16,12 @@ export default EStyleSheet.create({
+     alignItems: 'center',
+   },
+   deleteText: {
+-    color: '$grayText',
++    color: '$disabledBtnText',
+     fontSize: '15rem',
+   },
++  enabledBtn: {
++    color: '$grayText',
++  },
+   exBtnText: {
+     fontSize: '13rem',
+     color: '$grayText',
+diff --git a/src/pages/ManageCalendarPage/ManageCalendarPage.tsx b/src/pages/ManageCalendarPage/ManageCalendarPage.tsx
+index 6c5a5fdd..3fc18557 100644
+--- a/src/pages/ManageCalendarPage/ManageCalendarPage.tsx
++++ b/src/pages/ManageCalendarPage/ManageCalendarPage.tsx
+@@ -1,11 +1,11 @@
+-import React, { useEffect, useRef, useState, useMemo, memo, useCallback, forwardRef } from 'react'
++import React, { useEffect, useState, memo, useCallback, forwardRef } from 'react'
+ import {
+   View,
+   Text,
+   TouchableOpacity,
+   FlatList,
+   Dimensions,
+-  Platform,
++  Platform
+ } from 'react-native'
+ import { pageProps } from 'csxRoutes/csxRouter'
+ import { SafeView } from 'components'
+@@ -14,10 +14,11 @@ import CsxMobileHeader from "components/csxMobileHeader/CsxMobileHeader";
+ import { ThemeContext } from "components/theme/theme-context";
+ import type { Theme } from "types/Theme";
+ import { useCalendarEvents } from 'useHooks/useCalendarEvents';
+-import { useAccount } from 'useHooks/useAccount';
+ import commonModalStyle from "components/commonModal/CommonModal.styles";
+ import CommonModal from "components/commonModal/CommonModal";
+-import { useCommonAlertModal } from 'components/CommonAlertModal/CommonAlertModalContext';
++import { useAppState } from "useHooks/useAppState";
++import { CALENDAR_FUNCTION_START, CALENDAR_FETCH_YEARS_FORWARD } from 'useHooks/useCalendarEvents';
++import { useLoading } from 'components/LoadingModal/LoadingContext.tsx';
+ 
+ const { width } = Dimensions.get('window');
+ 
+@@ -31,28 +32,24 @@ const { width } = Dimensions.get('window');
+ const ManageCalendarPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+   const { navigation } = props
+   const {
+-    syncEvents,
+     fetchCalendarEvents,
+     removeAllEvents,
+     removeExpiredEvents,
+-    checkPermission,
+     currentUserId,
++    alertUserAboutPermissions,
++    permissionStatus,
++    checkPermission
+   } = useCalendarEvents();
+ 
+   const [events, setEvents] = useState<any[]>([]);
+-  const [loading, setLoading] = useState(false);
+-  // const curAccount = useAccount(); // 使用 useAccount 获取当前账户信息
+-  // const userId = curAccount && `${curAccount?.username}-${curAccount?.InstallationID}`; // 组合用户名和安装ID作为用户标识
++  const { setLoading } = useLoading();
++
+   const [groupedEvents, setGroupedEvents] = useState<{ [date: string]: any[] }>({});
+   const [expandedDates, setExpandedDates] = useState<{ [date: string]: boolean }>({});
+ 
+   const [showDeleteModal, setShowDeleteModal] = useState(false);
+-
+-  const {
+-    setShowCommonAlertModal,
+-    setCommonAlertModalTitle,
+-    setCommonAlertModalCancelTxt,
+-  } = useCommonAlertModal();
++  const [isEnabledCalendar, setIsEnabledCalendar] = useState(false);
++  const { appState } = useAppState();
+ 
+   const groupEventsByDate = useCallback((eventList: any[]) => {
+     const groups: { [date: string]: any[] } = {};
+@@ -66,6 +63,12 @@ const ManageCalendarPage: React.FC<pageProps> = (props: pageProps, parentRef) =>
+     return groups;
+   }, []);
+ 
++  const getSortedDates = useCallback((groupedEvents: { [date: string]: any[] }) => {
++    return Object.keys(groupedEvents).sort((a, b) => {
++      return new Date(a).getTime() - new Date(b).getTime();
++    });
++  }, []);
++
+   const toggleDateGroup = useCallback((date: string) => {
+     setExpandedDates(prev => {
+       if (prev[date]) {
+@@ -77,12 +80,14 @@ const ManageCalendarPage: React.FC<pageProps> = (props: pageProps, parentRef) =>
+ 
+   const loadEvents = useCallback(async () => {
+     setLoading(true);
++
+     try {
+-      const startDate = new Date();
+-      startDate.setFullYear(startDate.getFullYear() - 2);
++      const startDate = CALENDAR_FUNCTION_START;
++      // const startDate = new Date();
++      // startDate.setFullYear(startDate.getFullYear() - 2);
+ 
+       const endDate = new Date();
+-      endDate.setMonth(endDate.getMonth() + 1);
++      endDate.setFullYear(endDate.getFullYear() + CALENDAR_FETCH_YEARS_FORWARD); // 获取未来2年的事件
+ 
+       const calendarEvents = await fetchCalendarEvents(startDate, endDate);
+       const grouped = groupEventsByDate(calendarEvents);
+@@ -98,37 +103,23 @@ const ManageCalendarPage: React.FC<pageProps> = (props: pageProps, parentRef) =>
+   const handleRemoveAll = async () => {
+     setShowDeleteModal(false);
+ 
+-    const success = await removeAllEvents();
++    const success = await removeAllEvents(events);
+     if (success) {
+       setEvents([]);
+-      loadEvents();
+-
+-      await new Promise(resolve => setTimeout(resolve, 500));
+-      loadEvents();
+-    } else {
+-      setTimeout(() => {
+-        setCommonAlertModalTitle(global.i18n.t('delete_failed'));
+-        setCommonAlertModalCancelTxt(global.i18n.t('confirm'));
+-        setShowCommonAlertModal(true);
+-      }, Platform.OS === 'ios' ? 1000 : 0);
++      setTimeout(async () => {
++        await loadEvents();
++      }, Platform.OS === 'ios' ? 500 : 0);
+     }
+   };
+ 
+   const handleRemoveExpired = async () => {
+     setShowDeleteModal(false);
+ 
+-    const success = await removeExpiredEvents();
++    const success = await removeExpiredEvents(events);
+     if (success) {
+-      loadEvents();
+-
+-      await new Promise(resolve => setTimeout(resolve, 500));
+-      loadEvents();
+-    } else {
+-      setTimeout(() => {
+-        setCommonAlertModalTitle(global.i18n.t('delete_failed'));
+-        setCommonAlertModalCancelTxt(global.i18n.t('confirm'));
+-        setShowCommonAlertModal(true);
+-      }, Platform.OS === 'ios' ? 1000 : 0);
++      setTimeout(async () => {
++        await loadEvents();
++      }, Platform.OS === 'ios' ? 500 : 0);
+     }
+   };
+ 
+@@ -143,19 +134,52 @@ const ManageCalendarPage: React.FC<pageProps> = (props: pageProps, parentRef) =>
+     setShowDeleteModal(false);
+   }, []);
+ 
+-  const renderRightBt = useCallback(
+-    () => {
+-      return Object.keys(groupedEvents).length > 0 && (
+-        <TouchableOpacity
+-          style={styles.deleteBtn}
+-          onPress={() => setShowDeleteModal(true)}
+-        >
+-          <Text style={styles.deleteText}>{global.i18n.t('Delete')}</Text>
+-        </TouchableOpacity>
+-      )
+-    },
+-    [Object.keys(groupedEvents).length],
+-  );
++  // 监听 permissionStatus 变化
++  useEffect(() => {
++    console.log('AccountSecurityPage permissionStatus=', permissionStatus)
++    setIsEnabledCalendar(permissionStatus === 'authorized');
++  }, [permissionStatus]);
++
++  // 监听应用状态变化，当从后台切回前台时重新检查权限
++  useEffect(() => {
++    console.log('AccountSecurityPage appState 更新为:', appState)
++    if (appState === 'active') {
++      const checkCalendarPermission = async () => {
++        const hasPermission = await checkPermission();
++        setIsEnabledCalendar(hasPermission);
++      };
++      checkCalendarPermission();
++    }
++  }, [appState]);
++
++  useEffect(() => {
++    const checkCalendarPermission = async () => {
++      const hasPermission = await checkPermission();
++      setIsEnabledCalendar(hasPermission);
++    };
++    checkCalendarPermission();
++  }, []);
++
++  const handleDeleteButtonPress = useCallback(() => {
++    if (isEnabledCalendar) {
++      setShowDeleteModal(true);
++    } else {
++      alertUserAboutPermissions();
++    }
++  }, [isEnabledCalendar, alertUserAboutPermissions]);
++
++  const renderRightBt = useCallback(() => {
++    const hasEvent = events.length > 0;
++    return (
++      <TouchableOpacity
++        style={styles.deleteBtn}
++        disabled={!hasEvent}
++        onPress={handleDeleteButtonPress}
++      >
++        <Text style={[styles.deleteText, hasEvent && styles.enabledBtn]}>{global.i18n.t('Delete')}</Text>
++      </TouchableOpacity>
++    )
++  }, [events.length, handleDeleteButtonPress]);
+ 
+   return (
+     <ThemeContext.Consumer>
+@@ -174,7 +198,7 @@ const ManageCalendarPage: React.FC<pageProps> = (props: pageProps, parentRef) =>
+               <FlatList
+                 style={{ flex: 1 }}
+                 contentContainerStyle={{ paddingBottom: 20 }}
+-                data={Object.keys(groupedEvents)}
++                data={getSortedDates(groupedEvents)}
+                 keyExtractor={(date) => date}
+                 ListEmptyComponent={() => (
+                   <View style={{ padding: 20, alignItems: 'center' }}>
+diff --git a/src/useHooks/useCalendarEvents.tsx b/src/useHooks/useCalendarEvents.tsx
+index 1b1033f9..fce5e4a8 100644
+--- a/src/useHooks/useCalendarEvents.tsx
++++ b/src/useHooks/useCalendarEvents.tsx
+@@ -1,19 +1,22 @@
+ import { useEffect, useRef, useState, useCallback } from 'react';
+ import {
+-  AppState,
+-  AppStateStatus,
+   Platform,
+   Linking
+ } from 'react-native';
+ import { useCommonAlertModal } from 'components/CommonAlertModal/CommonAlertModalContext';
+-import { useSelector } from 'react-redux';
+ import tool from 'tools/tool';
+ import RNCalendarEvents from 'react-native-calendar-events';
+ import { useLanguage } from 'useHooks/useLanguage';
+-import { calendar_v1_schedules } from "api/api";
++import { calendar_v1_schedules, calendar_v1_delete_schedules } from "api/api";
+ import * as storage from "components/storage/storage";
+ import moment from 'moment';
+ import { useAccount } from 'useHooks/useAccount';
++import { useLoading } from 'components/LoadingModal/LoadingContext.tsx';
++
++const SYNC_TIMER_INTERVAL = 600000; // 定时同步：每 10 分钟同步一次
++const FETCH_SYNC_TIMEOUT = 10000; // fetchCalendarEvents 等待同步的超时时间：10 秒
++export const CALENDAR_FETCH_YEARS_FORWARD = 2; // 默认获取未来 2 年的事件（用于查询操作）
++export const CALENDAR_FUNCTION_START = new Date(2026, 3, 1); // 日历管理功能此时才有，所以只需从此时开始获取事件，减少不必要的事件查询
+ 
+ type CalendarState = {
+   permissionStatus: 'undetermined' | 'authorized' | 'denied' | 'restricted' | null;
+@@ -22,7 +25,6 @@ type CalendarState = {
+   currentUserId: string | null;
+ };
+ 
+-// 定义事件类型
+ type CalendarEventType = {
+   title: {
+     zhHans: string;
+@@ -34,20 +36,45 @@ type CalendarEventType = {
+   id?: string;
+ };
+ 
++type AddEventResult = {
++  event: CalendarEventType;
++  calendarId: string;
++};
++
++type AddEventResults = {
++  success: AddEventResult[];
++  failed: CalendarEventType[];
++};
++
++type CalendarEventReadable = {
++    id: string;
++    title?: string;
++    startDate?: string;
++    endDate?: string;
++    notes?: string;
++    description?: string;
++};
++
++type RemoveEventResults = {
++  successCount: number;
++  failedCount: number;
++  failedEvents: Array<CalendarEventReadable>;
++};
++
+ type CalendarEventHook = {
+   checkPermission: () => Promise<boolean>;
+   /** Check permission silently without triggering system request dialog. Use for app-active sync only. */
+   checkPermissionSilent: () => Promise<void>;
+   requestPermission: () => Promise<boolean>;
+-  addEvent: (events: CalendarEventType[]) => Promise<boolean>;
++  addEvent: (events: CalendarEventType[]) => Promise<AddEventResults>;
+   openSettings: () => void;
+   alertUserAboutPermissions: () => void;
+   permissionStatus: 'undetermined' | 'authorized' | 'denied' | 'restricted' | null;
+   checkingPermission: boolean;
+   syncEvents: () => Promise<void>;
+   fetchCalendarEvents: (startDate?: Date, endDate?: Date) => Promise<any[]>;
+-  removeAllEvents: () => Promise<boolean>;
+-  removeExpiredEvents: () => Promise<boolean>;
++  removeAllEvents: (events?: CalendarEventReadable[]) => Promise<boolean>;
++  removeExpiredEvents: (events?: CalendarEventReadable[]) => Promise<boolean>;
+   currentUserId: string | null;
+ };
+ /**
+@@ -57,7 +84,6 @@ type CalendarEventHook = {
+  * @constructor
+  */
+ export const useCalendarEvents = (): CalendarEventHook => {
+-  // const store = useSelector((state: any) => state);
+   const [state, setState] = useState<CalendarState>({
+     permissionStatus: null,
+     checkingPermission: false,
+@@ -65,11 +91,9 @@ export const useCalendarEvents = (): CalendarEventHook => {
+     currentUserId: null
+   });
+ 
+-  // 添加同步锁，防止并发执行
+-  const syncLock = useRef(false);
+-  const lastSyncTime = useRef<number>(0);
+   const lastSyncPromise = useRef<Promise<void> | null>(null); // 记录最后一次同步的 Promise
+-  const SYNC_INTERVAL = 30000; // 30s内不重复同步
++  const isMountedRef = useRef(false);
++  const syncQueue = useRef<Promise<any>>(Promise.resolve());
+ 
+   const {
+     showCommonAlertModal,
+@@ -80,22 +104,23 @@ export const useCalendarEvents = (): CalendarEventHook => {
+     setCommonAlertModalConfirmTxt,
+     refOnConfirm
+   } = useCommonAlertModal();
++  const { setLoading } = useLoading();
+ 
+-  const appState = useRef(AppState.currentState);
+   const language = useLanguage();
+   const syncInterval = useRef<NodeJS.Timeout | null>(null);
+-  const curAccount = useAccount(); // 使用 useAccount 获取当前账户信息
+-  // const userId = `${curAccount?.username}-${curAccount?.InstallationID}`; // 组合用户名和安装ID作为用户标识
+-
+-  // 获取当前用户ID
+-  // const getCurrentUserId = useCallback(() => {
+-  //     return store?.auth?.userId || store?.user?.id || null;
+-  // }, [store]);
++  const curAccount = useAccount();
+   const getCurrentUserId = useCallback(() => {
+     const id = `${curAccount?.username}-${curAccount?.InstallationID}`;
+     return id || null;
+   }, [curAccount?.username, curAccount?.InstallationID]);
+ 
++  useEffect(() => {
++    isMountedRef.current = true;
++    return () => {
++      isMountedRef.current = false;
++    };
++  }, []);
++
+   // 更新当前用户ID
+   useEffect(() => {
+     const userId = getCurrentUserId();
+@@ -107,165 +132,215 @@ export const useCalendarEvents = (): CalendarEventHook => {
+     }
+   }, [getCurrentUserId, state.currentUserId]);
+ 
+-  // 监听应用状态变化
+-  // useEffect(() => {
+-  //   const handleAppStateChange = (nextAppState: AppStateStatus) => {
+-  //     console.log('useCalendarEvents handleAppStateChange nextAppState=', nextAppState);
+-  //     console.log('useCalendarEvents handleAppStateChange appState.current=', appState.current);
+-  //     if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
+-  //       // 应用从后台回到前台时同步
+-  //       syncEvents();
+-  //     }
+-  //     appState.current = nextAppState;
+-  //   };
+-
+-  //   const subscription = AppState.addEventListener('change', handleAppStateChange);
+-
+-  //   return () => {
+-  //     subscription?.remove();
+-  //   };
+-  // }, []);
++  const checkPermission = async () => {
++    setState(prev => ({ ...prev, checkingPermission: true }));
+ 
+-  // 设置定时同步
+-  useEffect(() => {
+-    // 清除之前的定时器
+-    if (syncInterval.current) {
+-      clearInterval(syncInterval.current);
+-    }
++    try {
++      const status = await RNCalendarEvents.checkPermissions();
++      setState(prev => ({ ...prev, permissionStatus: status }));
+ 
+-    // 设置新的定时器
+-    syncInterval.current = setInterval(syncEvents, 600000); // 10分钟
++      if (status !== 'authorized') {
++        const [err, data] = await tool.to(requestPermission());
++        console.log('useCalendarEvents checkPermission requestPermission data=', data);
++        return !!data;
++      }
+ 
+-    return () => {
+-      if (syncInterval.current) {
+-        clearInterval(syncInterval.current);
++      return true;
++    } finally {
++      setState(prev => ({ ...prev, checkingPermission: false }));
++    }
++  };
++
++  const checkPermissionSilent = async () => {
++    try {
++      const status = await RNCalendarEvents.checkPermissions();
++      setState(prev => ({ ...prev, permissionStatus: status }));
++    } catch {
++      // ignore
++    }
++  };
++  const requestPermission = async () => {
++    const status = await RNCalendarEvents.requestPermissions();
++    setState((prevState) => {
++      return {
++        ...prevState, permissionStatus: status
+       }
+-    };
+-  }, []);
++    })
++    if (status === 'authorized') {
++      syncEvents();
++      return Promise.resolve(true);
++    }
++    return Promise.reject(false);
++  };
+ 
+-  // 用户切换时同步
+-  // useEffect(() => {
+-  //   if (state.currentUserId) {
+-  //     syncEvents();
+-  //   }
+-  // }, [state.currentUserId]);
++  const openSettings = () => {
++    if (Platform.OS === 'ios') {
++      Linking.openURL('app-settings:');
++    } else {
++      Linking.openSettings();
++    }
++  };
++  const alertUserAboutPermissions = () => {
++    setCommonAlertModalTitle(global.i18n.t('Change_calendar_permissions'));
++    setCommonAlertModalContent(global.i18n.t('Change_calendar_permissions1'));
++    setCommonAlertModalConfirmTxt(global.i18n.t('openSettings'));
++    refOnConfirm.current = () => {
++      openSettings();
++    };
++    setCommonAlertModalCancelTxt(global.i18n.t('cancel'));
++    setShowCommonAlertModal(true);
++  };
+ 
+-  // 定义同步事件的函数
+-  const syncEvents = async () => {
++  const syncEvents = useCallback(async () => {
+     const currentUserId = getCurrentUserId();
+     if (!currentUserId) {
+       return;
+     }
+ 
+-    // 防止并发执行
+-    if (syncLock.current) {
+-      console.log('useCalendarEvents syncEvents: already syncing, skip');
+-      return;
+-    }
++    const previousSync = syncQueue.current;
+ 
+-    // 防止频繁同步
+-    const now = Date.now();
+-    if (now - lastSyncTime.current < SYNC_INTERVAL) {
+-      console.log('useCalendarEvents syncEvents: too frequent, skip');
++    const currentSync = (async () => {
++      await previousSync.catch(() => { });
++
++      if (!isMountedRef.current) {
++        console.log('useCalendarEvents syncEvents: component not mounted, skip');
+       return;
+     }
+ 
+-    syncLock.current = true;
+-    lastSyncTime.current = now;
+-
+-    setState(prev => ({ ...prev, syncing: true }));
++    if (isMountedRef.current) {
++      setState(prev => ({ ...prev, syncing: true }));
++    }
+ 
+-    // 创建同步 Promise 并保存引用
+-    const syncPromise = (async () => {
+       try {
+-        // 检查权限
+         const status = await RNCalendarEvents.checkPermissions();
+         if (status === 'authorized') {
+           const lastRequestKey = `${storage.csxMobileCachekeys.lastRequest}_${currentUserId}`;
+           const lastRequest = await storage.getItem(lastRequestKey);
+ 
++          if (lastRequest === undefined || lastRequest === null) {
++            // 当lastRequest不存在时，清空日历
++            await removeAllEventsSilent();
++          }
++
++          const syncTime = moment().toISOString();
+           const [err, data] = await tool.to(calendar_v1_schedules({
+             lastRequest: lastRequest || null,
+           }))
+ 
+-          console.log('useCalendarEvents syncEvents lastRequest=', lastRequest);
+-          if (lastRequest === undefined || lastRequest === null) {
+-            await removeAllEventsSilent(false);
+-          }
+-
+           if (data) {
+-            await tool.to(addEvent(data))
+-            await storage.setItem(lastRequestKey, moment().toISOString())
++            // 当lastRequest存在时，过滤data中已过期的事件
++            const eventsToAdd = lastRequest
++              ? data.filter(item => {
++                const endTime = moment(item.start).add(item.duration, 'minutes');
++                return endTime.isAfter(moment());
++              }) : data;
++
++            console.log('useCalendarEvents syncEvents lastRequest=', lastRequest);
++            console.log('useCalendarEvents syncEvents data length=', data?.length);
++            console.log('useCalendarEvents syncEvents eventsToAdd length=', eventsToAdd?.length);
++
++            if (eventsToAdd.length > 0) {
++              console.log('useCalendarEvents syncEvents eventsToAdd=', eventsToAdd);
++              const addResult = await addEvent(eventsToAdd);
++
++              if (addResult.failed.length === 0 && addResult.success.length > 0) {
++                await storage.setItem(lastRequestKey, syncTime);
++                console.log(`useCalendarEvents Successfully synced ${addResult.success.length} events`);
++              } else if (addResult.failed.length > 0) {
++                console.error(`useCalendarEvents Failed to sync ${addResult.failed.length} events, rolling back`);
++
++                // 添加发生失败时，不更新时间基线，回滚已经添加成功的事件
++                for (const { calendarId } of addResult.success) {
++                  try {
++                    await RNCalendarEvents.removeEvent(calendarId);
++                  } catch (error) {
++                    console.warn(`Failed to rollback event ${calendarId}:`, error);
++                  }
++                }
++
++                // setCommonAlertModalTitle(global.i18n.t('prompt'));
++                // setCommonAlertModalContent(global.i18n.t('calendarSyncFailed', {
++                //   failed: addResult.failed.length,
++                //   total: eventsToAdd.length
++                // }));
++                // setCommonAlertModalConfirmTxt(global.i18n.t('confirm'));
++                // setShowCommonAlertModal(true);
++              } else {
++                // 没有需要添加的事件，也更新时间基线（表示已同步到当前时间点）
++                await storage.setItem(lastRequestKey, syncTime);
++                console.log('useCalendarEvents No new events to sync');
++              }
++            } else {
++              const newLastRequest = syncTime;
++              await storage.setItem(lastRequestKey, newLastRequest);
++            }
+           }
+         }
+       } catch (error) {
+         console.error('useCalendarEvents Error syncing events:', error);
+       } finally {
+-        syncLock.current = false;
+-        setState(prev => ({ ...prev, syncing: false }));
+-        lastSyncPromise.current = null;
++        if (isMountedRef.current) {
++          setState(prev => ({ ...prev, syncing: false }));
++        }
+       }
+     })();
+ 
+-    lastSyncPromise.current = syncPromise;
+-    return syncPromise;
+-  };
+-  const checkPermission = async () => {
+-    setState(prev => ({ ...prev, checkingPermission: true }));
+-
+-    try {
+-      const status = await RNCalendarEvents.checkPermissions();
++    syncQueue.current = currentSync;
++    return currentSync;
++  }, [getCurrentUserId]);
+ 
+-      console.log('useCalendarEvents checkPermissions status=', status);
++  // 设置定时同步
++  useEffect(() => {
++    // 清除之前的定时器
++    if (syncInterval.current) {
++      clearInterval(syncInterval.current);
++    }
+ 
+-      setState(prev => ({ ...prev, permissionStatus: status }));
++    // 设置新的定时器
++    syncInterval.current = setInterval(syncEvents, SYNC_TIMER_INTERVAL); // 10分钟
+ 
+-      if (status !== 'authorized') {
+-        const [err, data] = await tool.to(requestPermission());
+-        console.log('useCalendarEvents checkPermission requestPermission data=', data);
+-        return !!data;
++    return () => {
++      if (syncInterval.current) {
++        clearInterval(syncInterval.current);
++        syncInterval.current = null;
+       }
++    };
++  }, [syncEvents]);
+ 
+-      return true;
+-    } finally {
+-      setState(prev => ({ ...prev, checkingPermission: false }));
+-    }
+-  };
+-
+-  /** Check only, never show system request dialog. Use when app becomes active to sync UI state. */
+-  const checkPermissionSilent = async () => {
+-    try {
+-      const status = await RNCalendarEvents.checkPermissions();
+-      setState(prev => ({ ...prev, permissionStatus: status }));
+-    } catch {
+-      // ignore
+-    }
+-  };
+-  const requestPermission = async () => {
+-    const status = await RNCalendarEvents.requestPermissions();
+-    console.log('useCalendarEvents requestPermission status=', status)
+-    setState((prevState) => {
+-      return {
+-        ...prevState, permissionStatus: status
+-      }
+-    })
+-    if (status === 'authorized') {
+-      return Promise.resolve(true);
+-    }
+-    return Promise.reject(false);
+-  };
+-  const addEvent = async (events: CalendarEventType[]) => {
++  const addEvent = async (events: CalendarEventType[]): Promise<AddEventResults> => {
+     console.log('useCalendarEvents addEvent language=', language)//zh_tw or zh or en
+     console.log('useCalendarEvents addEvent events=', events)//zh_tw or zh or en
+ 
+     const currentUserId = getCurrentUserId();
++    // 添加用户标识到 notes 字段
++    const notes = currentUserId
++      ? `CSM_user${currentUserId}`
++      : 'CSM';
++    console.log('useCalendarEvents addEvent notes=', notes);
++    const results: AddEventResults = {
++      success: [],
++      failed: []
++    };
+ 
+     for (const event of events) {
++
++      if (!event) {
++        console.warn('useCalendarEvents addEvent: skipping invalid event');
++        results.failed.push(event);
++        continue;
++      }
++
+       const { title, start, duration } = event;
+ 
+       // 计算结束时间
+       const startDate = new Date(start);
++      if (isNaN(startDate.getTime())) {
++        console.error('useCalendarEvents addEvent: invalid start date', start);
++        results.failed.push(event);
++        continue;
++      }
+       const endDate = new Date(startDate.getTime() + duration * 60000);
++
+       // 根据语言选择标题
+       let titleToUse = ''
+       if (language === 'zh') {
+@@ -276,54 +351,53 @@ export const useCalendarEvents = (): CalendarEventHook => {
+         titleToUse = title.en;
+       }
+       try {
+-        // 添加用户标识到 notes 字段
+-        const notes = currentUserId
+-          ? `CSM_user${currentUserId}`
+-          : 'CSM';
+-        console.log('useCalendarEvents addEvent notes=', notes);
++        const eventNotes = Platform.OS === 'ios'
++          ? { notes: notes }
++          : { description: notes };
+ 
+         const saveOptions: Parameters<typeof RNCalendarEvents.saveEvent>[1] = {
+           startDate: startDate.toISOString(),
+           endDate: endDate.toISOString(),
+-          notes: notes,
++          ...eventNotes,
+         };
+-        //https://app.clickup.com/t/8553538/TECH-8087
+-        if (Platform.OS === 'ios' && event.id) {
+-          saveOptions.calendarId = event.id;
+-        }
+-        const [err, data] = await tool.to(RNCalendarEvents.saveEvent(titleToUse, saveOptions))
++        const [err, calendarId] = await tool.to(RNCalendarEvents.saveEvent(titleToUse, saveOptions))
+ 
+         if (err) {
+           console.error(`useCalendarEvents Error adding event ${titleToUse}:`, err);
++          results.failed.push(event);
+         } else {
+-          console.log(`useCalendarEvents saveEvent ${titleToUse} added to calendar.`);
++          console.log(`useCalendarEvents saveEvent ${titleToUse} added to calendar. ID: ${calendarId}`);
++          results.success.push({ event, calendarId });
+         }
+       } catch (error) {
+         console.error(`useCalendarEvents Error adding event ${titleToUse}:`, error);
+-        return false;
++        results.failed.push(event);
+       }
+     }
+-    console.log('useCalendarEvents All events have been processed')
+-    return true;
++    console.log('useCalendarEvents All events processed. Success:', results.success.length, 'Failed:', results.failed.length)
++    return results;
+   };
+ 
+-  // 获取日历事件用于展示
+   const fetchCalendarEvents = async (startDate?: Date, endDate?: Date) => {
+     try {
+-      // 等待当前正在进行的同步完成
++      // 等待当前正在进行的同步完成，但添加超时机制防止长时间阻塞
+       if (lastSyncPromise.current) {
+-        await lastSyncPromise.current;
++        const timeoutMs = FETCH_SYNC_TIMEOUT; // 10 秒超时
++        await Promise.race([
++          lastSyncPromise.current,
++          new Promise((_, reject) =>
++            setTimeout(() => reject(new Error('Waiting for sync timeout')), timeoutMs)
++          )
++        ]);
+       }
+       const status = await RNCalendarEvents.checkPermissions();
+-      // console.log('useCalendarEvents fetchCalendarEvents status=', status);
+       if (status !== 'authorized') {
+         return [];
+       }
+ 
+-      // 默认获取未来30天的事件
++      // 默认获取未来2年的事件
+       const start = startDate || new Date();
+-      const end = endDate || new Date(start.getTime() + 30 * 24 * 60 * 60 * 1000);
+-
++      const end = endDate || new Date(start.setFullYear(start.getFullYear() + CALENDAR_FETCH_YEARS_FORWARD));
+       const events = await RNCalendarEvents.fetchAllEvents(
+         start.toISOString(),
+         end.toISOString()
+@@ -335,7 +409,7 @@ export const useCalendarEvents = (): CalendarEventHook => {
+       console.log('useCalendarEvents fetchCalendarEvents events=', JSON.stringify(events));
+       if (currentUser) {
+         return events.filter(event =>
+-          event.notes?.includes(`CSM_user${currentUser}`)
++          Platform.OS === 'ios' ? event.notes?.includes(`CSM_user${currentUser}`) : event.description?.includes(`CSM_user${currentUser}`)
+         );
+       }
+       return [];
+@@ -345,63 +419,165 @@ export const useCalendarEvents = (): CalendarEventHook => {
+     }
+   };
+ 
+-  const removeAllEventsSilent = async (isShownSuccess: boolean): Promise<boolean> => {
++  const removeAllEventsSilent = async (eventsToRemove?: CalendarEventReadable[]): Promise<RemoveEventResults> => {
+     try {
+       const status = await RNCalendarEvents.checkPermissions();
+       if (status !== 'authorized') {
+-        return false;
++        return { successCount: 0, failedCount: 0, failedEvents: [] };
+       }
+ 
+       const currentUserId = getCurrentUserId();
+       if (!currentUserId) {
+-        return false;
++        return { successCount: 0, failedCount: 0, failedEvents: [] };
+       }
+ 
+-      const startDate = new Date();
+-      startDate.setFullYear(startDate.getFullYear() - 3);
+-      const endDate = new Date();
+-      endDate.setDate(endDate.getDate() + 30);
++      let userEvents = eventsToRemove;
+ 
+-      const events = await RNCalendarEvents.fetchAllEvents(
+-        startDate.toISOString(),
+-        endDate.toISOString()
+-      );
++      // 如果没有传入 events，则从日历中获取
++      if (!userEvents) {
++        const startDate = CALENDAR_FUNCTION_START;
++        const endDate = new Date();
++        endDate.setFullYear(endDate.getFullYear() + CALENDAR_FETCH_YEARS_FORWARD);
+ 
+-      const userEvents = events.filter(event =>
+-        event.notes?.includes(`CSM_user${currentUserId}`)
+-      );
++        userEvents = await fetchCalendarEvents(startDate, endDate);
++      }
++
++      if (userEvents.length === 0) {
++        console.log('No events to remove');
++        return { successCount: 0, failedCount: 0, failedEvents: [] };
++      }
+ 
+-      // 调用删除全部事件的接口
+-      // await deleteAllEvents(allUserEvents);
++      const results: RemoveEventResults = {
++        successCount: 0,
++        failedCount: 0,
++        failedEvents: []
++      };
+ 
+-      let removedCount = 0;
+-      for (const event of userEvents) {
++      const deletePromises = userEvents.map(async (event) => {
+         try {
+           await RNCalendarEvents.removeEvent(event.id);
+-          removedCount++;
++          console.log(`useCalendarEventsremoveAllEventsSilent event.id= ${event.id}`);
++          results.successCount++;
+         } catch (error) {
++          const eventNotes = Platform.OS === 'ios'
++            ? { notes: event.notes }
++            : { description: event.description };
+           console.warn(`Failed to remove event ${event.id}:`, error);
++          results.failedCount++;
++          results.failedEvents.push({
++            id: event.id,
++            title: event.title,
++            startDate: event.startDate,
++            endDate: event.endDate,
++            ...eventNotes
++          });
+         }
++      });
++
++      // 等待所有删除操作完成
++      await Promise.all(deletePromises);
++
++      // iOS 额外等待一段时间确保系统提交删除
++      if (Platform.OS === 'ios') {
++        await new Promise(resolve => setTimeout(resolve, 300));
+       }
+-      console.log(`Successfully removed ${removedCount} events (silent)`);
+-      isShownSuccess && setTimeout(() => {
+-        setCommonAlertModalTitle(global.i18n.t('delete_success', { removedCount }));
+-        setCommonAlertModalCancelTxt(global.i18n.t('confirm'));
+-        setShowCommonAlertModal(true);
+-      }, Platform.OS === 'ios' ? 1000 : 0);
+ 
+-      return true;
++      console.log(`Successfully removed ${results.successCount} events, failed: ${results.failedCount}`);
++      return results;
+     } catch (error) {
+       console.error('Error removing events (silent):', error);
+-      return false;
++      return { successCount: 0, failedCount: 0, failedEvents: [] };
+     }
+   };
+ 
+-  const removeAllEvents = async (): Promise<boolean> => {
++  const removeAllEvents = async (eventsToRemove?: CalendarEventReadable[]): Promise<boolean> => {
+     return new Promise((resolve) => {
+       refOnConfirm.current = async () => {
+-        const result = await removeAllEventsSilent(true);
+-        resolve(result);
++        try {
++          const status = await RNCalendarEvents.checkPermissions();
++          if (status !== 'authorized') {
++            setTimeout(() => {
++              setCommonAlertModalTitle(global.i18n.t('delete_failed'));
++              setCommonAlertModalCancelTxt(global.i18n.t('confirm'));
++              setShowCommonAlertModal(true);
++            }, Platform.OS === 'ios' ? 1000 : 300);
++            resolve(false);
++            return;
++          }
++          const currentUserId = getCurrentUserId();
++          if (!currentUserId) {
++            setTimeout(() => {
++              setCommonAlertModalTitle(global.i18n.t('delete_failed'));
++              setCommonAlertModalCancelTxt(global.i18n.t('confirm'));
++              setShowCommonAlertModal(true);
++            }, Platform.OS === 'ios' ? 1000 : 300);
++            resolve(false);
++            return;
++          }
++
++          setLoading(true);
++
++          const removeResult = await calendar_v1_delete_schedules({
++            contains: [],
++            all: true
++          });
++
++          if (removeResult === false) {
++            // 服务端删除失败，终止流程，本地数据保持不变
++            setTimeout(() => {
++              setCommonAlertModalTitle(global.i18n.t('delete_server_failed'));
++              setCommonAlertModalCancelTxt(global.i18n.t('confirm'));
++              setShowCommonAlertModal(true);
++            }, Platform.OS === 'ios' ? 1000 : 300);
++            setLoading(false);
++            resolve(false);
++            return;
++          }
++
++          const lastRequestKey = `${storage.csxMobileCachekeys.lastRequest}_${currentUserId}`;
++          await storage.setItem(lastRequestKey, null);
++
++          const localResults = await removeAllEventsSilent(eventsToRemove);
++          setLoading(false);
++
++          if (localResults.failedCount === 0 && localResults.successCount >= 0) {
++            setTimeout(() => {
++              setCommonAlertModalTitle(global.i18n.t('delete_success', { removedCount: localResults.successCount }));
++              setCommonAlertModalCancelTxt(global.i18n.t('confirm'));
++              setShowCommonAlertModal(true);
++            }, Platform.OS === 'ios' ? 1000 : 300);
++            resolve(true);
++          } else if (localResults.successCount > 0 && localResults.failedCount > 0) {
++            setTimeout(() => {
++              setCommonAlertModalTitle(global.i18n.t('delete_partial_success'));
++              setCommonAlertModalContent(global.i18n.t('delete_partial_success_detail', {
++                success: localResults.successCount,
++                failed: localResults.failedCount
++              }));
++              setCommonAlertModalCancelTxt(global.i18n.t('confirm'));
++              setShowCommonAlertModal(true);
++            }, Platform.OS === 'ios' ? 1000 : 300);
++            resolve(true);
++          } else if (localResults.failedCount > 0 && localResults.successCount === 0) {
++            setTimeout(() => {
++              setCommonAlertModalTitle(global.i18n.t('prompt'));
++              setCommonAlertModalContent(global.i18n.t('delete_all_failed_manual'));
++              setCommonAlertModalCancelTxt(global.i18n.t('confirm'));
++              setShowCommonAlertModal(true);
++            }, Platform.OS === 'ios' ? 1000 : 300);
++            resolve(false);
++          } else {
++            resolve(true);
++          }
++        } catch (error) {
++          console.error('removeAllEvents error:', error);
++          setTimeout(() => {
++            setCommonAlertModalTitle(global.i18n.t('delete_failed'));
++            setCommonAlertModalCancelTxt(global.i18n.t('confirm'));
++            setShowCommonAlertModal(true);
++          }, Platform.OS === 'ios' ? 1000 : 300);
++          resolve(false);
++        }
+       };
+ 
+       setCommonAlertModalTitle(global.i18n.t('warning'));
+@@ -412,95 +588,130 @@ export const useCalendarEvents = (): CalendarEventHook => {
+     });
+   };
+ 
+-  const removeExpiredEvents = async (): Promise<boolean> => {
+-    try {
+-      const status = await RNCalendarEvents.checkPermissions();
+-      if (status !== 'authorized') {
+-        console.log('Calendar permissions not authorized');
+-        return false;
+-      }
++  const removeExpiredEvents = async (eventsToCheck?: CalendarEventReadable[]): Promise<boolean> => {
++    return new Promise((resolve) => {
++      refOnConfirm.current = async () => {
++        try {
++          const status = await RNCalendarEvents.checkPermissions();
++          if (status !== 'authorized') {
++            setTimeout(() => {
++              setCommonAlertModalTitle(global.i18n.t('delete_failed'));
++              setCommonAlertModalCancelTxt(global.i18n.t('confirm'));
++              setShowCommonAlertModal(true);
++            }, Platform.OS === 'ios' ? 1000 : 300);
++            resolve(false);
++            return;
++          }
+ 
+-      return new Promise((resolve) => {
+-        setCommonAlertModalTitle(global.i18n.t('warning'));
+-        setCommonAlertModalContent(global.i18n.t('delete_expired_only_warning'));
+-        setCommonAlertModalConfirmTxt(global.i18n.t('delete_confirm'));
+-
+-        refOnConfirm.current = async () => {
+-          try {
+-            const currentUserId = getCurrentUserId();
+-            if (!currentUserId) {
+-              console.log('No user logged in');
+-              resolve(false);
+-              return;
+-            }
++          const currentUserId = getCurrentUserId();
++          if (!currentUserId) {
++            setTimeout(() => {
++              setCommonAlertModalTitle(global.i18n.t('delete_failed'));
++              setCommonAlertModalCancelTxt(global.i18n.t('confirm'));
++              setShowCommonAlertModal(true);
++            }, Platform.OS === 'ios' ? 1000 : 300);
++            resolve(false);
++            return;
++          }
++
++          setLoading(true);
++          let events = eventsToCheck;
+ 
+-            const startDate = new Date();
+-            startDate.setFullYear(startDate.getFullYear() - 3);
++          // 如果没有传入 events，则从日历中获取
++          if (!events) {
++            const startDate = CALENDAR_FUNCTION_START;
+             const endDate = new Date();
+ 
+-            const events = await RNCalendarEvents.fetchAllEvents(
++            events = await RNCalendarEvents.fetchAllEvents(
+               startDate.toISOString(),
+               endDate.toISOString()
+             );
++          }
+ 
+-            const now = new Date();
+-            const expiredUserEvents = events.filter(event => {
+-              const isUserEvent = event.notes?.includes(`CSM_user${currentUserId}`);
+-              const isExpired = new Date(event.endDate) < now;
+-              return isUserEvent && isExpired;
+-            });
+-
+-            // 调用删除过期事件的接口
+-            // await deleteExpiredEvents(expiredUserEvents);
+-
+-            let removedCount = 0;
+-            for (const event of expiredUserEvents) {
+-              try {
+-                await RNCalendarEvents.removeEvent(event.id);
+-                removedCount++;
+-              } catch (error) {
+-                console.warn(`Failed to remove expired event ${event.id}:`, error);
+-              }
++          const now = new Date();
++          const expiredUserEvents = events.filter(event => {
++            const isUserEvent = Platform.OS === 'ios'
++              ? event.notes?.includes(`CSM_user${currentUserId}`)
++              : event.description?.includes(`CSM_user${currentUserId}`);
++            const isExpired = new Date(event.endDate) < now;
++            return isUserEvent && isExpired;
++          });
++
++          const results: RemoveEventResults = {
++            successCount: 0,
++            failedCount: 0,
++            failedEvents: []
++          };
++
++          for (const event of expiredUserEvents) {
++            try {
++              await RNCalendarEvents.removeEvent(event.id);
++              results.successCount++;
++            } catch (error) {
++              console.warn(`Failed to remove expired event ${event.id}:`, error);
++              results.failedCount++;
++              const eventNotes = Platform.OS === 'ios'
++                ? { notes: event.notes }
++                : { description: event.description };
++
++              results.failedEvents.push({
++                id: event.id,
++                title: event.title,
++                startDate: event.startDate,
++                endDate: event.endDate,
++                ...eventNotes
++              });
+             }
++          }
+ 
+-            console.log(`Successfully removed ${removedCount} expired events for user ${currentUserId}`);
++          setLoading(false);
++          if (results.failedCount === 0 && results.successCount >= 0) {
++            setTimeout(() => {
++              setCommonAlertModalTitle(global.i18n.t('delete_success', { removedCount: results.successCount }));
++              setCommonAlertModalCancelTxt(global.i18n.t('confirm'));
++              setShowCommonAlertModal(true);
++            }, Platform.OS === 'ios' ? 1000 : 300);
++            resolve(true);
++          } else if (results.successCount > 0 && results.failedCount > 0) {
+             setTimeout(() => {
+-              setCommonAlertModalTitle(global.i18n.t('delete_success', { removedCount }));
++              setCommonAlertModalTitle(global.i18n.t('delete_partial_success'));
++              setCommonAlertModalContent(global.i18n.t('delete_partial_success_detail', {
++                success: results.successCount,
++                failed: results.failedCount
++              }));
+               setCommonAlertModalCancelTxt(global.i18n.t('confirm'));
+               setShowCommonAlertModal(true);
+-            }, Platform.OS === 'ios' ? 1000 : 0);
++            }, Platform.OS === 'ios' ? 1000 : 300);
+             resolve(true);
+-          } catch (error) {
+-            console.error('Error removing expired events:', error);
++          } else if (results.failedCount > 0 && results.successCount === 0) {
++            setTimeout(() => {
++              setCommonAlertModalTitle(global.i18n.t('prompt'));
++              setCommonAlertModalContent(global.i18n.t('delete_expired_failed_manual'));
++              setCommonAlertModalCancelTxt(global.i18n.t('confirm'));
++              setShowCommonAlertModal(true);
++            }, Platform.OS === 'ios' ? 1000 : 300);
+             resolve(false);
++          } else {
++            resolve(true);
+           }
+-        };
+-
+-        setCommonAlertModalCancelTxt(global.i18n.t('cancel'));
+-        setShowCommonAlertModal(true);
+-      });
+-    } catch (error) {
+-      console.error('Error removing expired events:', error);
+-      return false;
+-    }
+-  };
+-  const openSettings = () => {
+-    if (Platform.OS === 'ios') {
+-      Linking.openURL('app-settings:');
+-    } else {
+-      Linking.openSettings();
+-    }
+-  };
+-  const alertUserAboutPermissions = () => {
+-    setCommonAlertModalTitle(global.i18n.t('Change_calendar_permissions'));
+-    setCommonAlertModalContent(global.i18n.t('Change_calendar_permissions1'));
+-    setCommonAlertModalConfirmTxt(global.i18n.t('openSettings'));
+-    refOnConfirm.current = () => {
+-      openSettings();
+-    };
+-    setCommonAlertModalCancelTxt(global.i18n.t('cancel'));
+-    setShowCommonAlertModal(true);
++        } catch (error) {
++          console.error('Error removing expired events:', error);
++          setTimeout(() => {
++            setCommonAlertModalTitle(global.i18n.t('delete_failed'));
++            setCommonAlertModalCancelTxt(global.i18n.t('confirm'));
++            setShowCommonAlertModal(true);
++          }, Platform.OS === 'ios' ? 1000 : 300);
++          resolve(false);
++        }
++      };
++      setCommonAlertModalTitle(global.i18n.t('warning'));
++      setCommonAlertModalContent(global.i18n.t('delete_expired_only_warning'));
++      setCommonAlertModalConfirmTxt(global.i18n.t('delete_confirm'));
++      setCommonAlertModalCancelTxt(global.i18n.t('cancel'));
++      setShowCommonAlertModal(true);
++    });
+   };
++
+   return {
+     checkPermission,
+     checkPermissionSilent,

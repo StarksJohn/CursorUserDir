@@ -165,60 +165,14 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
       - 使用项目一致的样式方案（StyleSheet.create / styled-components 等）
       - 组件放在 src/pages/paymentPage/ 目录
       - 组件名为 PaymentPage -->
-- 执行 `npx react-native run-android`,把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上
-  - 进入`D:\work\RN\csx-mobile-upgrade\src\pages\EditHealthDataPage\EditHealthDataPage.tsx`页面, 填写了
-![img_142833.png](img_142833.png) 这3个选项后, 点击右上角的 加入按钮, 执行了656行的API, 请求了`https://api-cs-mobile-dev.heals.asia/api/csx/consultation/add-patient-health-data` , header 传 {
-
-    "Content-Type": "application/json",
-
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiNzQ4OTU1NS00MDYzLTQ0NjMtODBmNy00MGMyODkyODk4YTQiLCJhbXIiOiJwd2QiLCJpbnN0YWxsYXRpb25JZCI6InBvYy5kZW1vLmNsaW5pY3NvbHV0aW9uLmhrIiwidXNlcm5hbWUiOiJIZWFscyIsInVzZXJpZCI6Ijg0MjlhMDg5LWY0Y2MtNDIzZC04OGZjLWMzNzUwYTBhMWMwMiIsImV4cCI6MTc3NTI4MjU5MCwiaXNzIjoiSGVhbHMiLCJhdWQiOiJodHRwOi8vY3N4LWFwaS1kZXYuaGVhbHNoZWFsdGhjYXJlLmNvbS8ifQ.RqV1UI24voim76IYqWfTCYKnWznA2nYbSsbcGV0jeLA",
-
-    "Cookie": "",
-
-    "session-clinicId": "b1e774a3-9986-4417-d8ba-08ddcfe6546f",
-
-    "Cache-Control": "no-cache",
-
-    "Accept-Language": "zh-Hant"
-
-}
-
-
-
-body 传 {
-
-    "patientId": "0496d535-1021-430e-af79-42bccb812bfc",
-
-    "clinicId": "b1e774a3-9986-4417-d8ba-08ddcfe6546f",
-
-    "doctorId": "87afbc3d-d4bc-4a2f-a790-b93252dc77df",
-
-    "date": "2026-04-03",
-
-    "healthData": {
-
-        "Height": 1,
-
-        "Head": 2.3,
-
-        "LastMenstrualPeriod": 3
-
-    }
-
-}
-
-
-
-返回 {
-
-    "success": false,
-
-    "status": null,
-
-    "code": 500,
-
-    "message": "Newtonsoft.Json.JsonReaderException: Unexpected character encountered while parsing value: 3. Path 'LastMenstrualPeriod', line 1, position 46.\r\n   at Newtonsoft.Json.JsonTextReader.ReadStringValue(ReadType readType)\r\n   at Newtonsoft.Json.JsonTextReader.ReadAsDateTime()\r\n   at Newtonsoft.Json.JsonReader.ReadForType(JsonContract contract, Boolean hasConverter)\r\n   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.PopulateObject(Object newObject, JsonReader reader, JsonObjectContract contract, JsonProperty member, String id)\r\n   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateObject(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)\r\n   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateValueInternal(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)\r\n   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)\r\n   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)\r\n   at Newtonsoft.Json.JsonConvert.DeserializeObject(String value, Type type, JsonSerializerSettings settings)\r\n   at Newtonsoft.Json.JsonConvert.DeserializeObject[T](String value, JsonSerializerSettings settings)\r\n   at CSX.Api.Services.ehr.EventHandler.Handler.Consultations.AddPatientHealthDataEventHanlder.Handle(AddPatientHealthDataEvent event) in D:\\CsxRelease\\csx-api\\CSX.Api\\Services\\ehr\\EventHandler\\Handler\\Consultations\\AddPatientHealthDataEventHanlder.cs:line 44\r\n   at CSX.Api.Services.ehr.EventHandler.RequestProcesser.ProcessRequest(List`1 requests) in D:\\CsxRelease\\csx-api\\CSX.Api\\Services\\ehr\\EventHandler\\RequestProcesser.cs:line 93",
-
-    "data": null
-
-}
+- 执行 `npx react-native run-android`,把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 东八区
+  - 代码执行到 `D:\work\RN\csx-mobile-upgrade\src\pages\HealthDataPage\HealthDataPage.tsx` 的 350 行时, rawCell 此时的值是 "2026-04-11T16:00:00Z" ,357 行计算出来的 cellDisplayText 是 "2026-04-12", 这个 cellDisplayText 的值是当前设备所在时区的时间吗?
+    - 然后代码执行到 `D:\work\RN\csx-mobile-upgrade\src\pages\EditHealthDataPage\EditHealthDataPage.tsx` 的 427 行, 使用 'react-native-calendars' 这个库修改了"2026-04-11T16:00:00Z"这个时间,修改后的 427行是 day  {
+    "year": 2026,
+    "month": 4,
+    "day": 11,
+    "timestamp": 1775865600000,
+    "dateString": "2026-04-11"
+} , 为什么427行计算出来的 dayStringValue 是 `2026-04-11T00:00:00+00:00`,不是 426行 注释里要求的 "2026-04-11T16:00:00Z" 这种格式的时间字符 ? 因为API之前返回的时间字符串是"2026-04-11T16:00:00Z" 这种格式,我在app修改
+时间后, 希望在 回传给 API 时, 这个时间的格式也是 "2026-04-11T16:00:00Z" 这种格式
+    - 我需要让 427行计算出来的 dayStringValue是 世界标准时间

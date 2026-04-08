@@ -32,11 +32,7 @@ description: 迁移并执行 ask_cursor 工作流，处理 Cursor IDE 配置优�
   <!-- - 我需要最大化发挥出 ![img_182707.png](img_182707.png) 这几个模型解决编码和架构问题的能力, 还需要进行哪些全局配置优化或者创建哪些 skills 或者 Subagents? -->
   <!-- - 我想在每次cursor 执行完毕任务后, 用户可以选择点击 一个按钮,然后 cursor 把 任务内容朗读出来
     - 我在 cursor 的扩展里没找到 **Read Aloud**、**Speech** -->
-- 我的 `MacBook Pro` 电脑也下载安装了cursor,已经有了 ![img_150716.png](img_150716.png) 目录
-  - 当前win11系统的 `C:\Users\Stark8964911\AppData\Roaming\Cursor` ,目录对应 `MacBook Pro` 的什么目录?
-    - 你说的 `/Users/你的短用户名/Library/Application Support/Cursor` 目录是不是 如图  ![img_152133.png](img_152133.png) 这个目录? 如果是, 我是不是可以直接把 当前win11系统的 `C:\Users\Stark8964911\AppData\Roaming\Cursor`目录同步到 `MacBook Pro`的 ![img_152133.png](img_152133.png) 这个目录
-      - 你借鉴 `C:\Users\Stark8964911\AppData\Roaming\Cursor`和 `~/Library/Application Support/Cursor`目录 的同步方式,修改 "C:\Users\Stark8964911\.cursor\.gitignore", 让 `C:\Users\Stark8964911\.cursor`这个本地git仓库也只追踪可移植到 `MacBook Pro` 系统的 `~/.cursor` 目录里的文件和子目录, 然后 push 到 远程仓库
-        - 我需要 `C:\Users\Stark8964911\.cursor\mcp.json` 也跨机版本化,你能否修改 `C:\Users\Stark8964911\.cursor\mcp.json`,让 这个文件同时支持win11系统和`MacBook Pro`,然后 添加到git追踪里,然后push到 远程仓库
-          - 如果都没问题,把  `C:\Users\Stark8964911\.cursor`这个本地git仓库的修改 push 到远程仓库,保证 我接下来在 `MacBook Pro` 系统的 `~/.cursor` 目录里 `git clone`这个仓库后,只能下载下来可移植的文件和目录
-  <!-- - 当前win11系统的 `C:\Users\Stark8964911\.cursor` 目录 是不是对应  ![img_150716.png](img_150716.png) 目录? -->
+- 我的 `MacBook Pro` 电脑也下载安装了cursor,已经有了 ![img_150716.png](img_150716.png) `/Users/stark/.cursor`目录
+    - 你借鉴 `C:\Users\Stark8964911\AppData\Roaming\Cursor`和 `~/Library/Application Support/Cursor`目录 的同步方式,修改 "C:\Users\Stark8964911\.cursor\.gitignore", 让 `C:\Users\Stark8964911\.cursor`这个本地git仓库也只追踪可移植到 `MacBook Pro` 系统的 `/Users/stark/.cursor` 目录里的文件和子目录, 然后 push 到 远程仓库
+        - 我接下来应该在 `MacBook Pro` 系统的 `~/.cursor` 目录怎么做?
 - 把以上问题你的解答总结更新到 `C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor_使用指南与Token优化.md`
