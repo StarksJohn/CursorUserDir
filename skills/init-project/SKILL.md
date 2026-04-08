@@ -1,6 +1,6 @@
 ---
 name: init-project
-description: 通过分析工作区为 Cursor 初始化项目上下文，生成 .cursor/rules/project-context.mdc。适用于打开新项目、项目结构重大变更后，或用户调用 /init、@init-project 时。
+description: 通过分析工作区为 Cursor 初始化项目上下文，生成 .cursor/rules/project-context.mdc。适用于打开新项目、项目结构重大变更后，或用户 @init-project、在 Skills 中选择 init-project 时。
 ---
 
 # Init Project - 为 Cursor 初始化项目上下文
