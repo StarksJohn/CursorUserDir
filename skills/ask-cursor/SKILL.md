@@ -34,6 +34,5 @@ description: 迁移并执行 ask_cursor 工作流，处理 Cursor IDE 配置优�
     - 我在 cursor 的扩展里没找到 **Read Aloud**、**Speech** -->
 - 我的 `MacBook Pro` 电脑也下载安装了cursor,已经有了 ![img_150716.png](img_150716.png) `/Users/stark/.cursor`目录
     - 你借鉴 `C:\Users\Stark8964911\AppData\Roaming\Cursor`和 `~/Library/Application Support/Cursor`目录 的同步方式,修改 "C:\Users\Stark8964911\.cursor\.gitignore", 让 `C:\Users\Stark8964911\.cursor`这个本地git仓库也只追踪可移植到 `MacBook Pro` 系统的 `/Users/stark/.cursor` 目录里的文件和子目录, 然后 push 到 远程仓库
-        - 我接下来应该在 `MacBook Pro` 系统的 `~/.cursor` 目录怎么做?
-          - 如图 ![img_183427.png](img_183427.png)：`~/.cursor` 有 `.git` 但未见 `skills/` 等——多半是 **只做了 `git fetch` 未 `pull`/`merge`**，或与 **`origin/main` 未对齐**；远程 **CursorUserDir** 已含可移植路径，Mac 上请 **`git pull origin main`**（详见指南 **§2.1a 问题 15～16**）。**`skills-cursor/`** 与 Git 里的 **`skills/`** 不是同一个目录名。
+    - 目前我已经把 `C:\Users\Stark8964911\AppData\Roaming\Cursor` 下可移植项同步到 `~/Library/Application Support/Cursor`，把 `C:\Users\Stark8964911\.cursor` 可移植项同步到 `/Users/stark/.cursor`；Win 上其余能力哪些常仍未在 Mac 对齐？见指南 **§2.1a 问题 17**。
 - 把以上问题你的解答总结更新到 `C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor_使用指南与Token优化.md`
