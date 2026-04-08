@@ -13,7 +13,7 @@ Cursor 用户级命令、技能、MCP 主目录:
 
 ## 跨机器同步
 
-在 Mac 的 `~/.cursor` 目录内 `git pull` 即可同步本仓库。**进 Git 的只有可移植目录**（见根目录 `.gitignore`）：`skills/`、`commands/`、`rules/`、`plans/`、`subagents/`、`config/`、`skills-cursor/`，以及 `README.md`、`sync-cursor-config.ps1` 等根文件。**`projects/`、`plugins/` 缓存不入库**（路径随机器变、体积大）；两端 Cursor 会在本地各自生成。
+在 Mac 的 `~/.cursor` 目录内用 **`git pull origin main`** 同步本仓库（**仅 `git fetch` 不会更新 Finder 里的工作区文件**，须 `pull` 或 `fetch` 后再 `merge`；见 Roaming 指南 **§2.1a 问题 16**）。**进 Git 的只有可移植目录**（见根目录 `.gitignore`）：`skills/`、`commands/`、`rules/`、`plans/`、`subagents/`、`config/`、`skills-cursor/`，以及 `README.md`、`sync-cursor-config.ps1` 等根文件。**`projects/`、`plugins/` 缓存不入库**（路径随机器变、体积大）；两端 Cursor 会在本地各自生成。
 
 ## 目录结构
 
