@@ -53,7 +53,7 @@
     },
     "github": {
       "command": "npx",
-      "args": ["-y", "@github/github-mcp-server@latest"],
+      "args": ["-y", "@modelcontextprotocol/server-github@latest"],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${env:GITHUB_PERSONAL_ACCESS_TOKEN}"
       }

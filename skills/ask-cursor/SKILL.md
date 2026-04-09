@@ -33,9 +33,11 @@ description: 迁移并执行 ask_cursor 工作流，处理 Cursor IDE 配置优�
   <!-- - 我想在每次cursor 执行完毕任务后, 用户可以选择点击 一个按钮,然后 cursor 把 任务内容朗读出来
     - 我在 cursor 的扩展里没找到 **Read Aloud**、**Speech** -->
 - 当前 `MacBook Pro` 电脑也下载安装了cursor,已经有了  `/Users/stark/.cursor` 和 `~/Library/Application Support/Cursor` 目录
-  - 你帮我解决 `/Users/stark/Library/Application Support/Cursor/Cursor_使用指南与Token优化.md` 里的 ![img_201253.png](img_201253.png)
-    <!-- - 你借鉴 `C:\Users\Stark8964911\AppData\Roaming\Cursor`和 `~/Library/Application Support/Cursor`目录 的同步方式,修改 "C:\Users\Stark8964911\.cursor\.gitignore", 让 `C:\Users\Stark8964911\.cursor`这个本地git仓库也只追踪可移植到 `MacBook Pro` 系统的 `/Users/stark/.cursor` 目录里的文件和子目录, 然后 push 到 远程仓库 -->
-    <!-- - 目前我已经把 `C:\Users\Stark8964911\AppData\Roaming\Cursor` 下可移植项同步到 `~/Library/Application Support/Cursor`，把 `C:\Users\Stark8964911\.cursor` 可移植项同步到 `/Users/stark/.cursor`；Win 上其余能力哪些常仍未在 Mac 对齐？见指南 **§2.1a 问题 17**。 -->
-- 把以上问题你的解答总结更新到 
+  <!-- - 在当前Mac系统里的cursor里使用 `cmd+d` 时, 应该 删除光标选中的 那几行的内容, 目前没有删除; 你的修改不要影响Win11系统的快捷键 -->
+  - 目前我已经把 `C:\Users\Stark8964911\AppData\Roaming\Cursor` 下可移植项同步到 `~/Library/Application Support/Cursor`，把 `C:\Users\Stark8964911\.cursor` 可移植项同步到 `/Users/stark/.cursor`；当前 `MacBook Pro` 电脑里使用的cursor,其能力是不是已经完全和Win11系统里的cursor一样了?
+    - 我需要让 当前 `MacBook Pro` 电脑里使用的cursor达到 和Win11系统里的cursor一样的能力
+    - 当前 `MacBook Pro`电脑里使用的cursor 是否已经发挥出了最大的能力?
+- 把以上你执行过的所有任务的执行结果都总结更新到 
   - win:`C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor_使用指南与Token优化.md`
   - mac : `/Users/stark/Library/Application Support/Cursor/Cursor_使用指南与Token优化.md`
+  - 不要修改 `/Users/stark/.cursor/skills/ask-cursor/SKILL.md`里的 `当前活跃需求`下的内容
