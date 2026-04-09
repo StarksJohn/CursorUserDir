@@ -42,7 +42,7 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
 | 平台 | 路径 |
 |------|------|
 | Windows | `D:\work\RN\csx-mobile-upgrade` |
-| Mac | `~/work/RN/csx-mobile-upgrade`（若实际路径不同，以用户本机为准） |
+| Mac | `/Users/stark/Desktop/work/RN/csx-mobile`（若实际路径不同，以用户本机为准） |
 
 ## 本 skill 文件路径
 
@@ -165,14 +165,5 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
       - 使用项目一致的样式方案（StyleSheet.create / styled-components 等）
       - 组件放在 src/pages/paymentPage/ 目录
       - 组件名为 PaymentPage -->
-- 执行 `npx react-native run-android`,把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 东八区
-  - 代码执行到 `D:\work\RN\csx-mobile-upgrade\src\pages\HealthDataPage\HealthDataPage.tsx` 的 350 行时, rawCell 此时的值是 "2026-04-11T16:00:00Z" ,357 行计算出来的 cellDisplayText 是 "2026-04-12", 这个 cellDisplayText 的值是当前设备所在时区的时间吗?
-    - 然后代码执行到 `D:\work\RN\csx-mobile-upgrade\src\pages\EditHealthDataPage\EditHealthDataPage.tsx` 的 427 行, 使用 'react-native-calendars' 这个库修改了"2026-04-11T16:00:00Z"这个时间,修改后的 427行是 day  {
-    "year": 2026,
-    "month": 4,
-    "day": 11,
-    "timestamp": 1775865600000,
-    "dateString": "2026-04-11"
-} , 为什么427行计算出来的 dayStringValue 是 `2026-04-11T00:00:00+00:00`,不是 426行 注释里要求的 "2026-04-11T16:00:00Z" 这种格式的时间字符 ? 因为API之前返回的时间字符串是"2026-04-11T16:00:00Z" 这种格式,我在app修改
-时间后, 希望在 回传给 API 时, 这个时间的格式也是 "2026-04-11T16:00:00Z" 这种格式
-    - 我需要让 427行计算出来的 dayStringValue是 世界标准时间
+<!-- - 执行 `npx react-native run-android`,把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 东八区 -->
+- 当前电脑需要在 `/Users/stark/Desktop/work/RN/csx-mobile` 目录执行 `npx react-native run-android` 把当前项目的debug模式的app运行到安卓真机,帮我检查当前电脑的 RN 开发的 安卓环境是否 还有需要更新的配置
