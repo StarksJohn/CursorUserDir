@@ -7,6 +7,10 @@
       "filename": {
         "description": "Save snapshot to markdown file instead of returning it in the response.",
         "type": "string"
+      },
+      "depth": {
+        "description": "Limit the depth of the snapshot tree",
+        "type": "number"
       }
     },
     "$schema": "https://json-schema.org/draft/2020-12/schema",
