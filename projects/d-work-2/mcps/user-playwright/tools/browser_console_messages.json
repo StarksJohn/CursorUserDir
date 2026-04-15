@@ -15,6 +15,10 @@
           "debug"
         ]
       },
+      "all": {
+        "description": "Return all console messages since the beginning of the session, not just since the last navigation. Defaults to false.",
+        "type": "boolean"
+      },
       "filename": {
         "description": "Filename to save the console messages to. If not provided, messages are returned as text.",
         "type": "string"

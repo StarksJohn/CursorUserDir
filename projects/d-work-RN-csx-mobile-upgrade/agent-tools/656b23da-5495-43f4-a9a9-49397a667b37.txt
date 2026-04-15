@@ -1,0 +1,2851 @@
+diff --git a/src/api/api-types.ts b/src/api/api-types.ts
+index dc9359c1..a3ef493d 100644
+--- a/src/api/api-types.ts
++++ b/src/api/api-types.ts
+@@ -1,8 +1,8 @@
+ /**
+  * import { } from '@api/api-types.ts';
+  */
+-import {patientDataSetting, prefix, refferal} from "api/api.ts";
+-import { ElectrocardiogramData} from 'services/ecgPdfGenerator';
++import { patientDataSetting, prefix, refferal } from "api/api.ts";
++import { ElectrocardiogramData } from 'services/ecgPdfGenerator';
+ 
+ interface ConsultationQueryPage_Medical {
+   id: string;
+@@ -479,10 +479,10 @@ export interface PatientDataSettingItem {
+   "id": string,
+   "category": string,
+   "item": string,
+-  title?:string
++  title?: string
+ }
+ 
+-export interface RefferalItem  {
++export interface RefferalItem {
+   category: string,
+   value: string
+ }
+@@ -505,7 +505,7 @@ export interface DrugbookMasterSearchListItem {
+   "registrationCode": string,
+   "isInactive": boolean,
+   "isDangerDrug": boolean,
+-  title?:string,
++  title?: string,
+ }
+ 
+ export interface DrugbookMastersByNames {
+@@ -525,18 +525,18 @@ export interface DrugbookMastersByNames {
+   "currentQty": number,
+   "unitCost": number,
+   "unitPrice": number,
+-  "label": string|null,
+-  "group": string|null,
++  "label": string | null,
++  "group": string | null,
+   "inTakeRemarks": string[],
+   "cautionRemarks": string[],
+   "strength": number,
+-  "strengthUnit": any|null,
+-  "unit": any|null,
+-  "dosage": any|null,
+-  "frequency": any|null,
+-  "day": any|null,
++  "strengthUnit": any | null,
++  "unit": any | null,
++  "dosage": any | null,
++  "frequency": any | null,
++  "day": any | null,
+   "totalQty": number,
+-  "isAllergy": any|null
++  "isAllergy": any | null
+ }
+ 
+ export interface open_biometrics_auth_data {
+@@ -593,3 +593,29 @@ export interface health_data_settings_data {
+   items: health_data_settings_data_Item[];
+ }
+ 
++export interface TimeSlot {
++  date: string,
++  startTime: string,
++}
++
++export interface OccupiedTimeSlot {
++  date: string;
++  time: string;
++  startTime: string;
++  endTime: string;
++  consultationInterval: number;
++  appointmentId: string;
++  isPendingProcess: boolean;
++}
++
++export interface OccupiedTimeStatusGroup {
++  status: number;
++  data: OccupiedTimeSlot[];
++}
++
++export interface OccupiedTimeData {
++  alreadyAppointment: OccupiedTimeStatusGroup[];
++  idleAppointment: OccupiedTimeStatusGroup[];
++}
++
++export type OccupiedTimeResponse = OccupiedTimeData[];
+diff --git a/src/api/api.ts b/src/api/api.ts
+index b0132251..d6de542b 100644
+--- a/src/api/api.ts
++++ b/src/api/api.ts
+@@ -4,12 +4,12 @@
+ // import {get, post, put, axiosDelete} from 'axios-tools';
+ // import {tool} from 'starkfrontendtools';
+ import * as storage from 'components/storage/storage';
+-import {constant} from 'constant';
++import { constant } from 'constant';
+ import * as CryptoJS from 'crypto-js';
+-import {routes} from 'csxRoutes';
++import { routes } from 'csxRoutes';
+ import moment from 'moment/moment';
+-import {encryptWithPrivateKey, encryptWithPublicKey, encryptWithPublicKeyPKCS1, generateKeys, getSHA256withRSA} from '/tools/JsrsasignModule';
+-import {captureLoginError, setUserContext, addBreadcrumb} from '../utils/sentry';
++import { encryptWithPrivateKey, encryptWithPublicKey, encryptWithPublicKeyPKCS1, generateKeys, getSHA256withRSA } from '/tools/JsrsasignModule';
++import { captureLoginError, setUserContext, addBreadcrumb } from '../utils/sentry';
+ // import { generateKeys, encryptWithPublicKey, decryptWithPrivateKey } from "/tools/RsaModule";
+ import {
+   ConsultationQueryPage,
+@@ -23,15 +23,17 @@ import {
+   QueryPatientAllergy_item,
+   QueryPatientHealth_Data,
+   QueryPatientImmunisation_item,
+-  get_consultation_setting_Data, List_payor, LoginFromQRCodeData, LoginData, Prefix, PatientDataSettingItem, RefferalItem, CallLogsItem, DrugbookMasterSearchListItem, DrugbookMastersByNames, open_biometrics_auth_data, sign_in_by_biometrics_data, health_data_setting_v1_clinic_get_data, health_data_settings_data
++  get_consultation_setting_Data, List_payor, LoginFromQRCodeData, LoginData, Prefix, PatientDataSettingItem, RefferalItem, CallLogsItem, DrugbookMasterSearchListItem, DrugbookMastersByNames, open_biometrics_auth_data, sign_in_by_biometrics_data, health_data_setting_v1_clinic_get_data, health_data_settings_data,
++  TimeSlot,
++  OccupiedTimeResponse
+ } from '@api/api-types';
+-import {Patient_Query} from 'api/api-types';
+-import {Data} from 'components/CsxFlatList/CsxFlatList';
+-import {Alert, Platform} from 'react-native';
+-import {SickLeaveContent, waitingListItem} from 'tools/AllInterface';
+-import {globalEventName, useGlobalEventEmitter} from 'tools/useGlobalEventEmitter';
++import { Patient_Query } from 'api/api-types';
++import { Data } from 'components/CsxFlatList/CsxFlatList';
++import { Alert, Platform } from 'react-native';
++import { SickLeaveContent, waitingListItem } from 'tools/AllInterface';
++import { globalEventName, useGlobalEventEmitter } from 'tools/useGlobalEventEmitter';
+ import DeviceInfo from "react-native-device-info";
+-import {logUtils} from 'useHooks/useLogStorage/useLogStorage.ts';
++import { logUtils } from 'useHooks/useLogStorage/useLogStorage.ts';
+ import messaging from "@react-native-firebase/messaging";
+ 
+ const emitEvent = useGlobalEventEmitter();
+@@ -50,7 +52,7 @@ const getToken = async () => {
+   console.log('api.ts getToken');
+   const curAccount = await storage.getItem(storage.csxMobileCachekeys.curAccount, true);
+   if (curAccount) {
+-    const {jwtToken, tokenExpireOn} = curAccount
++    const { jwtToken, tokenExpireOn } = curAccount
+     console.log('api getToken jwtToken=', jwtToken);
+     console.log('api getToken tokenExpireOn=', tokenExpireOn);
+     global.token = jwtToken || '';
+@@ -84,7 +86,7 @@ const processResponse = async (response: Response, dispatch?: any) => {
+     console.log('api processResponse 401 global.navigation=', global.navigation);
+     const curAccount = await storage.getItem(storage.csxMobileCachekeys.curAccount, true);
+     console.log('api processResponse 401 curAccount=', curAccount);
+-    
++
+     //进登录页面
+     routes.reset(global.navigation, routes.LoginPage.routeName, {
+       pageData: {
+@@ -166,7 +168,7 @@ export const login = async (
+   try {
+     const url = constant.API_BASE_URL + '/Account/Login';
+     console.log('api login url=', url);
+-    const body = {username: username.trim(), password: password.trim(), installationId: installationId.trim(), ignoreMFA};
++    const body = { username: username.trim(), password: password.trim(), installationId: installationId.trim(), ignoreMFA };
+     storage.setItem(storage.csxMobileCachekeys.TenantID, installationId.trim());
+     console.log('api login body=', body);
+     // Race between fetch and timeout with AbortController
+@@ -208,7 +210,7 @@ export const login = async (
+         username,
+         installationId,
+       });
+-      return Promise.resolve({username, ...json.data});
++      return Promise.resolve({ username, ...json.data });
+     } else {
+       // Login failed with error code
+       const error = new Error(`Login failed: ${JSON.stringify(json) || 'Unknown error'}`);
+@@ -291,7 +293,7 @@ export const PatientQuery = async (pageIndex: number, inputKey: string): Promise
+   try {
+     const url = constant.API_BASE_URL + '/Patient/Query';
+     console.log('api PatientQuery url=', url);
+-    const body = {pageIndex, pageSize: 50, inputKey};
++    const body = { pageIndex, pageSize: 50, inputKey };
+     console.log('api PatientQuery body=', body);
+     //pageIndex是从0开始的,如果你请求的是0,那么返回的就是第一页的数据
+     let response = await fetch(url, {
+@@ -322,7 +324,7 @@ export const DoctorQuery = async (pageIndex: number, code?: string, pageSize?: n
+     const url = constant.API_BASE_URL + '/Doctor/Query';
+     console.log('api DoctorQuery url=', url);
+     //pageIndex是从0开始的,如果你请求的是0,那么返回的就是第一页的数据
+-    const body = JSON.stringify({pageIndex, pageSize: pageSize || 10, code}); // 将JavaScript对象转换为字符串
++    const body = JSON.stringify({ pageIndex, pageSize: pageSize || 10, code }); // 将JavaScript对象转换为字符串
+     console.log('api DoctorQuery body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -376,7 +378,7 @@ export const waitingList = async (
+     console.log('api waitingList url=', url);
+     console.log('api waitingList finished=', finished);
+     //pageIndex是从0开始的,如果你请求的是0,那么返回的就是第一页的数据
+-    const ob = {clinicId, doctorId};
++    const ob = { clinicId, doctorId };
+     if (finished != undefined) {
+       ob['finished'] = finished;
+     }
+@@ -392,7 +394,7 @@ export const waitingList = async (
+     });
+     console.log('api waitingList response=', response);
+     if (!response.ok) {
+-      processResponse(response,dispatch);
++      processResponse(response, dispatch);
+       return null;
+     }
+     let json = await response.json();
+@@ -441,7 +443,7 @@ export const bookedList = async (clinicId: number, doctorId: string, date: Date
+     console.log('api bookedList curDate=', moment(curDate).format('YYYY-MM-DD'));
+     const appointStatus = moment(curDate).format('YYYY-MM-DD') == moment(date).format('YYYY-MM-DD') ? 2 : 4;
+     //pageIndex是从0开始的,如果你请求的是0,那么返回的就是第一页的数据
+-    const body = {clinicId, doctorId, dateTime: moment(date).format('YYYY-MM-DD'), appointStatus}; // 将JavaScript对象转换为字符串
++    const body = { clinicId, doctorId, dateTime: moment(date).format('YYYY-MM-DD'), appointStatus }; // 将JavaScript对象转换为字符串
+     console.log('api bookedList body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -472,7 +474,7 @@ export const ClinicQuery = async (code: string, pageIndex: number, pageSize?: nu
+     const url = constant.API_BASE_URL + '/Clinic/Query';
+     console.log('api ClinicQuery url=', url);
+     //pageIndex是从0开始的,如果你请求的是0,那么返回的就是第一页的数据
+-    const body = JSON.stringify({pageIndex, pageSize: pageSize || 50, code}); // 将JavaScript对象转换为字符串
++    const body = JSON.stringify({ pageIndex, pageSize: pageSize || 50, code }); // 将JavaScript对象转换为字符串
+     console.log('api ClinicQuery body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -507,7 +509,7 @@ export const GetCurrentEncounterOverview = async (clinicId: string, doctorId: st
+   try {
+     const url = constant.API_BASE_URL + '/Encounter/GetCurrentEncounterOverview';
+     console.log('api GetCurrentEncounterOverview url=', url);
+-    const body = {clinicId, doctorId}; // 将JavaScript对象转换为字符串
++    const body = { clinicId, doctorId }; // 将JavaScript对象转换为字符串
+     console.log('api GetCurrentEncounterOverview body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -548,7 +550,7 @@ export const QueryEncounterDateRecord = async (
+   try {
+     const url = constant.API_BASE_URL + '/Encounter/QueryEncounterDateRecord';
+     console.log('api QueryEncounterDateRecord url=', url);
+-    const body = {clinicId, doctorId, startDate, endDate}; // 将JavaScript对象转换为字符串
++    const body = { clinicId, doctorId, startDate, endDate }; // 将JavaScript对象转换为字符串
+     console.log('api QueryEncounterDateRecord body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -679,7 +681,7 @@ export const patient_intial_data = async (language: string): Promise<I_get_patie
+     }
+     const url = constant.API_BASE_URL + '/csx/patient/resource/get-patient-config-data';
+     console.log('api patient_intial_data url=', url);
+-    const body = {language: _language}; // 将JavaScript对象转换为字符串
++    const body = { language: _language }; // 将JavaScript对象转换为字符串
+     console.log('api patient_intial_data body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -705,14 +707,14 @@ export const patient_intial_data = async (language: string): Promise<I_get_patie
+ };
+ 
+ export const patientSeniorQuery = async ({
+-                                           pageIndex,
+-                                           idType,
+-                                           contract,
+-                                           insuranceNo,
+-                                           referral,
+-                                           referralCategory,
+-                                           doctorInCharge,
+-                                         }) => {
++  pageIndex,
++  idType,
++  contract,
++  insuranceNo,
++  referral,
++  referralCategory,
++  doctorInCharge,
++}) => {
+   try {
+     const url = constant.API_BASE_URL + '/Patient/SeniorQuery';
+     console.log('api patientSeniorQuery url=', url);
+@@ -755,14 +757,14 @@ export const patientSeniorQuery = async ({
+  * @param remarks
+  */
+ export const queryEncounterRecord = async ({
+-                                             patientId,
+-                                             remarks,
+-                                             pageIndex,
+-                                             clinicId,
+-                                             doctorId,
+-                                             startDate,
+-                                             endDate,
+-                                           }): Promise<Data | null> => {
++  patientId,
++  remarks,
++  pageIndex,
++  clinicId,
++  doctorId,
++  startDate,
++  endDate,
++}): Promise<Data | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/Patient/QueryEncounterRecord';
+     console.log('api queryEncounterRecord url=', url);
+@@ -986,7 +988,7 @@ export const prefix = async (Gender = ''): Promise<Prefix[] | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/patient/resource/list-prefix';
+     console.log('api prefix url=', url);
+-    const body = {Gender}; // 将JavaScript对象转换为字符串
++    const body = { Gender }; // 将JavaScript对象转换为字符串
+     console.log('api prefix body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -1018,7 +1020,7 @@ export const refferal = async (pageIndex: number, category: string = ''): Promis
+   try {
+     const url = constant.API_BASE_URL + '/csx/patient/resource/list-refferal';
+     console.log('api refferal url=', url);
+-    const body = {pageIndex, pageSize: 50, category, keyWord: ''}; // 将JavaScript对象转换为字符串
++    const body = { pageIndex, pageSize: 50, category, keyWord: '' }; // 将JavaScript对象转换为字符串
+     console.log('api refferal body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -1080,7 +1082,7 @@ export const patientDataSetting = async (
+   try {
+     const url = constant.API_BASE_URL + '/csx/patient/resource/list-patient-setting-data';
+     console.log('api patientDataSetting url=', url);
+-    const body = {pageIndex, pageSize: pageSize || 50, category, keyWord}; // 将JavaScript对象转换为字符串
++    const body = { pageIndex, pageSize: pageSize || 50, category, keyWord }; // 将JavaScript对象转换为字符串
+     console.log('api patientDataSetting body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -1485,7 +1487,7 @@ export const delete_appoint = async (p) => {
+       let json = await response.json();
+       console.log('api delete_appoint json=', json);
+       if (json.code === 0 || json.code === 200 || json.code === 4000034) {
+-        return {...json.data, code: json.code, message: json.message};
++        return { ...json.data, code: json.code, message: json.message };
+       } else {
+         return null;
+       }
+@@ -1777,7 +1779,7 @@ export const upload_patient_files = async (body: FormData, onProgress?: (progres
+     console.log('api upload_patient_files body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+-      headers: {...headers(), 'Content-Type': 'multipart/form-data'},
++      headers: { ...headers(), 'Content-Type': 'multipart/form-data' },
+       body: body,
+     });
+     console.log('api upload_patient_files response=', response);
+@@ -1876,7 +1878,7 @@ export const getClinicById = async (id: string) => {
+  * 获取用户信息
+  * @param id
+  */
+-export const GetUserInfo = async ({installationId}: { installationId: string }) => {
++export const GetUserInfo = async ({ installationId }: { installationId: string }) => {
+   try {
+     const url = constant.API_BASE_URL + '/Account/GetUserInfo';
+     console.log('api GetUserInfo url=', url);
+@@ -1967,7 +1969,7 @@ export const mfa = async (p) => {
+     }
+     //https://app.clickup.com/t/8553538/TECH-6682?comment=90180145828938
+     if (json.message == 'mfa code error') {
+-      processJson({...json, message: 'Verification code error'}, url)
++      processJson({ ...json, message: 'Verification code error' }, url)
+     } else {
+       processJson(json, url)
+     }
+@@ -1982,7 +1984,7 @@ export const messages_paging = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/messages/v1/paging';
+     console.log('api messages_paging url=', url);
+-    const body = {...p, pageSize: p.pageSize || 50, sorts: null}; // 将JavaScript对象转换为字符串
++    const body = { ...p, pageSize: p.pageSize || 50, sorts: null }; // 将JavaScript对象转换为字符串
+     console.log('api messages_paging body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2013,7 +2015,7 @@ export const remove_patient_file = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/consultations/v1/remove-patient-file';
+     console.log('api remove_patient_file url=', url);
+-    const body = {...p}; // 将JavaScript对象转换为字符串
++    const body = { ...p }; // 将JavaScript对象转换为字符串
+     console.log('api remove_patient_file body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2040,7 +2042,7 @@ export const messages_get = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/messages/v1/get';
+     console.log('api messages_get url=', url);
+-    const body = {...p}; // 将JavaScript对象转换为字符串
++    const body = { ...p }; // 将JavaScript对象转换为字符串
+     console.log('api messages_get body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2067,7 +2069,7 @@ export const update_read_state = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/messages/v1/update-read-state';
+     console.log('api update_read_state url=', url);
+-    const body = {...p}; // 将JavaScript对象转换为字符串
++    const body = { ...p }; // 将JavaScript对象转换为字符串
+     console.log('api update_read_state body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2124,8 +2126,8 @@ export const open_biometrics_auth = async (p, username?: string, tenantID?: stri
+     console.log('api open_biometrics_auth authDataKey=', authDataKey);
+     await storage.setItem(publicKeyKey, keys.publicKey);
+     await storage.setItem(privateKeyKey, keys.privateKey);
+-    console.log('api open_biometrics_auth publicKeyKey cache done=', {publicKeyKey,value: keys.publicKey});
+-    console.log('api open_biometrics_auth privateKeyKey cache done=', {privateKeyKey,value: keys.privateKey});
++    console.log('api open_biometrics_auth publicKeyKey cache done=', { publicKeyKey, value: keys.publicKey });
++    console.log('api open_biometrics_auth privateKeyKey cache done=', { privateKeyKey, value: keys.privateKey });
+     const BearerTKey = 'Bearer ' + global.token;
+     console.log('api open_biometrics_auth BearerTKey=', BearerTKey);
+     const md5_signature = CryptoJS.MD5(BearerTKey).toString();
+@@ -2133,7 +2135,7 @@ export const open_biometrics_auth = async (p, username?: string, tenantID?: stri
+     const signature = getSHA256withRSA(md5_signature, keys.privateKey);
+     const url = constant.API_BASE_URL + '/Account/open-biometrics-auth';
+     console.log('api open_biometrics_auth url=', url);
+-    const body = {...p, signature, halg: 'SHA256', publicKey: keys.publicKey}; // 将JavaScript对象转换为字符串
++    const body = { ...p, signature, halg: 'SHA256', publicKey: keys.publicKey }; // 将JavaScript对象转换为字符串
+     console.log('api open_biometrics_auth body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2172,7 +2174,7 @@ export const open_biometrics_auth = async (p, username?: string, tenantID?: stri
+  * }
+  * return: sign_in_by_biometrics_data | null
+  */
+-export const sign_in_by_biometrics = async (p : {
++export const sign_in_by_biometrics = async (p: {
+   biometricsId: string,
+   secret: string,
+   publicKey: string
+@@ -2202,7 +2204,7 @@ export const sign_in_by_biometrics = async (p : {
+     console.log('api sign_in_by_biometrics url=', url);
+     const data = encryptWithPublicKey(p.publicKey, `v1|${p.secret}`);
+     console.log('sign_in_by_biometrics data=', data);
+-    const body = {type: p.type, signature, halg: 'SHA256', biometricsId: p.biometricsId, plainText: BearerTKey, data}; // 将JavaScript对象转换为字符串
++    const body = { type: p.type, signature, halg: 'SHA256', biometricsId: p.biometricsId, plainText: BearerTKey, data }; // 将JavaScript对象转换为字符串
+     console.log('api sign_in_by_biometrics body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2249,7 +2251,7 @@ export const close_biometrics_auth = async (p) => {
+     console.log('api close_biometrics_auth signature=', signature);
+     const url = constant.API_BASE_URL + '/Account/close-biometrics-auth';
+     console.log('api close_biometrics_auth url=', url);
+-    const body = {type: p.type, signature, halg: 'SHA256'}; // 将JavaScript对象转换为字符串
++    const body = { type: p.type, signature, halg: 'SHA256' }; // 将JavaScript对象转换为字符串
+     console.log('api close_biometrics_auth body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2276,7 +2278,7 @@ export const report_inputs = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Overview/report-inputs';
+     console.log('api report_inputs url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api report_inputs body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2307,7 +2309,7 @@ export const income_report = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Overview/income-report';
+     console.log('api income_report url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api income_report body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2338,7 +2340,7 @@ export const transaction_report = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Overview/transaction-report';
+     console.log('api transaction_report url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api transaction_report body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2375,7 +2377,7 @@ export const list_allergic_drugs = async (p: {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/resource/list-allergic-drugs';
+     console.log('api list_allergic_drugs url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api list_allergic_drugs body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2426,7 +2428,7 @@ export const get_all_allergic_reaction_terms = async (p?: any): Promise<Data | n
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/resource/get-all-allergic-reaction-terms';
+     console.log('api get_all_allergic_reaction_terms url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api get_all_allergic_reaction_terms body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2462,7 +2464,7 @@ export const add_patient_allergy = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/add-patient-allergy';
+     console.log('api add_patient_allergy url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api add_patient_allergy body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2494,7 +2496,7 @@ export const update_patient_nkda = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/update-patient-nkda';
+     console.log('api update_patient_nkda url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api update_patient_nkda body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2521,7 +2523,7 @@ export const login_logs = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Account/login-logs';
+     console.log('api login_logs url=', url);
+-    const body = {...p, pageSize: 50};
++    const body = { ...p, pageSize: 50 };
+     console.log('api login_logs body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2557,7 +2559,7 @@ export const save_patient_extend_medical_record = async (p: {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/save-patient-extend-medical-record';
+     console.log('api save_patient_extend_medical_record url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api save_patient_extend_medical_record body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2587,7 +2589,7 @@ export const QueryPatientAllergy = async (p: {
+   try {
+     const url = constant.API_BASE_URL + '/Consultation/QueryPatientAllergy';
+     console.log('api QueryPatientAllergy url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api QueryPatientAllergy body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2614,7 +2616,7 @@ export const delete_patient_allergy = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/delete-patient-allergy';
+     console.log('api delete_patient_allergy url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api delete_patient_allergy body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2641,7 +2643,7 @@ export const call_logs = async (p): Promise<CallLogsItem[] | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/call-logs/v1/list';
+     console.log('api call_logs url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api call_logs body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2668,7 +2670,7 @@ export const list_doctor_medical_terms = async (p): Promise<Data | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/resource/list-doctor-medical-terms';
+     console.log('api list_doctor_medical_terms url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api list_doctor_medical_terms body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2718,7 +2720,7 @@ export const add_medical_record = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/add-medical-record';
+     console.log('api add_medical_record url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api add_medical_record body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2749,7 +2751,7 @@ export const patient_extend_medical_records = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/patient-extend-medical-records/v1/get';
+     console.log('api patient_extend_medical_records url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api patient_extend_medical_records body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2788,7 +2790,7 @@ export const get_consultation_setting = async (p: {}): Promise<get_consultation_
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/resource/get-consultation-setting';
+     console.log('api get_consultation_setting url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api get_consultation_setting body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2819,7 +2821,7 @@ export const list_hkctt_dxpx_terms = async (p): Promise<List_hkctt_dxpx_terms |
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/resource/list-hkctt-dxpx-terms';
+     console.log('api list_hkctt_dxpx_terms url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api list_hkctt_dxpx_terms body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2848,7 +2850,7 @@ export const QueryPatientImmunisation = async (p: {
+   try {
+     const url = constant.API_BASE_URL + '/Consultation/QueryPatientImmunisation';
+     console.log('api QueryPatientImmunisation url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api QueryPatientImmunisation body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2883,7 +2885,7 @@ export const list_hkctt_drug_vaccine_terms = async (p: {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/resource/list-hkctt-drug-vaccine-terms';
+     console.log('api list_hkctt_drug_vaccine_terms url=', url);
+-    const body = {...p, pageSize: p.pageSize || 50};
++    const body = { ...p, pageSize: p.pageSize || 50 };
+     console.log('api list_hkctt_drug_vaccine_terms body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2936,7 +2938,7 @@ export const list_medical_terms = async (p: {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/resource/list-medical-terms';
+     console.log('api list_medical_terms url=', url);
+-    const body = {...p, pageSize: p.pageSize || 100};
++    const body = { ...p, pageSize: p.pageSize || 100 };
+     console.log('api list_medical_terms body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -2994,7 +2996,7 @@ export const add_patient_immunization = async (p: {
+     const url = constant.API_BASE_URL + '/csx/consultation/add-patient-immunization';
+     console.log('api add_patient_immunization url=', url);
+     //https://app.clickup.com/t/8553538/TECH-7056?comment=90180156118745
+-    const body = {...p, dose: p.dose == 0 ? null : p.dose};
++    const body = { ...p, dose: p.dose == 0 ? null : p.dose };
+     console.log('api add_patient_immunization body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3026,7 +3028,7 @@ export const patient_health_v1_get = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/patient/health/v1/get';
+     console.log('api patient_health_v1_get url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api patient_health_v1_get body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3053,7 +3055,7 @@ export const delete_patient_immunization = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/delete-patient-immunization';
+     console.log('api delete_patient_immunization url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api delete_patient_immunization body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3088,7 +3090,7 @@ export const calendar_v1_schedules = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/calendar/v1/list-schedules';
+     console.log('api calendar_v1_schedules url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api calendar_v1_schedules body=', body);
+     // 将参数转换为URL的查询字符串
+     let response = await fetch(url, {
+@@ -3147,7 +3149,7 @@ export const complete_consultation = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/encounter/complete-consultation';
+     console.log('api complete_consultation url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api complete_consultation body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3174,7 +3176,7 @@ export const get_conference_data_by_appointmentid = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/encounter/get-conference-data-by-appointmentid';
+     console.log('api get_conference_data_by_appointmentid url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api get_conference_data_by_appointmentid body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3201,7 +3203,7 @@ export const update_doctor_conference_status = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/encounter/update-doctor-conference-status';
+     console.log('api update_doctor_conference_status url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api update_doctor_conference_status body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3229,7 +3231,7 @@ export const GetLatestMedicalRecord = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Consultation/GetLatestMedicalRecord';
+     console.log('api GetLatestMedicalRecord url=', url);
+-    const params = {...p};
++    const params = { ...p };
+     console.log('api GetLatestMedicalRecord params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+@@ -3268,7 +3270,7 @@ export const GetLatestPrescription = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Consultation/GetLatestPrescription';
+     console.log('api GetLatestPrescription url=', url);
+-    const params = {...p};
++    const params = { ...p };
+     console.log('api GetLatestPrescription params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+@@ -3303,7 +3305,7 @@ export const get_drugbook_master_search_list = async (p): Promise<Data | any> =>
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/get-drugbook-master-search-list';
+     console.log('api get_drugbook_master_search_list url=', url);
+-    const body = {...p, pageSize: p.pageSize || 20};
++    const body = { ...p, pageSize: p.pageSize || 20 };
+     console.log('api get_drugbook_master_search_list body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3355,11 +3357,11 @@ export const add_patient_health_data = async (p: {
+   doctorId: string,
+   date: string,
+   healthData: { [key: string]: string | number | null | undefined },
+-}): Promise<{ id: string }|unknown> => {
++}): Promise<{ id: string } | unknown> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/add-patient-health-data';
+     console.log('api add_patient_health_data url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api add_patient_health_data body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3386,7 +3388,7 @@ export const get_setting_data_model_list = async (p: { pageIndex: number, keyWor
+   try {
+     const url = constant.API_BASE_URL + '/csx/drugbook/get-setting-data-model-list';
+     console.log('api get_setting_data_model_list url=', url);
+-    const body = {...p, pageSize: p.pageSize || 20};
++    const body = { ...p, pageSize: p.pageSize || 20 };
+     console.log('api get_setting_data_model_list body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3428,11 +3430,11 @@ export const get_setting_data_model_list = async (p: { pageIndex: number, keyWor
+   }
+ };
+ 
+-export const QueryPatientHealthData = async (p:{ patientId: string, pageIndex: number, pageSize: number }): Promise<QueryPatientHealth_Data[] | null> => {
++export const QueryPatientHealthData = async (p: { patientId: string, pageIndex: number, pageSize: number }): Promise<QueryPatientHealth_Data[] | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/Consultation/QueryPatientHealthData';
+     console.log('api QueryPatientHealthData url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api QueryPatientHealthData body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3441,7 +3443,7 @@ export const QueryPatientHealthData = async (p:{ patientId: string, pageIndex: n
+     });
+     console.log('api QueryPatientHealthData response=', response);
+     if (!response.ok) {
+-     return Promise.resolve(null);
++      return Promise.resolve(null);
+     }
+     let json = await response.json();
+     console.log('api QueryPatientHealthData json=', json);
+@@ -3459,7 +3461,7 @@ export const delete_patient_health_data = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/delete-patient-health-data';
+     console.log('api delete_patient_health_data url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api delete-patient-health-data body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3487,7 +3489,7 @@ export const get_drugbook_masters_by_names = async (p): Promise<DrugbookMastersB
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/get-drugbook-masters-by-names';
+     console.log('api get_drugbook_masters_by_names url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api get_drugbook_masters_by_names body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3515,11 +3517,11 @@ export const update_patient_health_data = async (p: {
+   clinicId: string,
+   doctorId: string,
+   healthData: QueryPatientHealth_Data,
+-}): Promise<{ id: string }|unknown> => {
++}): Promise<{ id: string } | unknown> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/update-patient-health-data';
+     console.log('api update_patient_health_data url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api update_patient_health_data body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3552,7 +3554,7 @@ export const add_prescription_record = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/add-prescription-record';
+     console.log('api add_prescription_record url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api add_prescription_record body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3580,7 +3582,7 @@ export const reset_password = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Account/reset-password';
+     console.log('api reset_password url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api reset_password body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3610,7 +3612,7 @@ export const get_all_prescription_packages = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/get-all-prescription-packages';
+     console.log('api get_all_prescription_packages url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api get_all_prescription_packages body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3637,7 +3639,7 @@ export const QueryOtherMedicalInfo = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Consultation/QueryOtherMedicalInfo';
+     console.log('api QueryOtherMedicalInfo url=', url);
+-    const params = {...p};
++    const params = { ...p };
+     console.log('api QueryOtherMedicalInfo params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+@@ -3675,7 +3677,7 @@ export const get_package_medicine = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/get-package-medicine';
+     console.log('api get_package_medicine url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api get_package_medicine body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3823,7 +3825,7 @@ export const save_prescription_package = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/save-prescription-package';
+     console.log('api save_prescription_package url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api save_prescription_package body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3850,7 +3852,7 @@ export const scan_qrcode = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/encounter/scan-qrcode';
+     console.log('api scan_qrcode url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api scan_qrcode body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3915,7 +3917,7 @@ export const save_mixture_medicine = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/save-mixture-medicine';
+     console.log('api save_mixture_medicine url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api save_mixture_medicine body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -3950,7 +3952,7 @@ export const GetOptionSetting = async (language: string): Promise<IGetOptionSett
+     } else if (language === 'zh_tw') {
+       _language = 'zh-HK';
+     }
+-    const params = {langEnv: _language};
++    const params = { langEnv: _language };
+     console.log('api GetOptionSetting params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+@@ -3984,7 +3986,7 @@ export const update_medical_record = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/update-medical-record';
+     console.log('api update_medical_record url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api update_medical_record body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4018,7 +4020,7 @@ export const delete_prescription_record = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/delete-prescription-record';
+     console.log('api delete_prescription_record url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api delete_prescription_record body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4045,7 +4047,7 @@ export const delete_medical_record = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/delete-medical-record';
+     console.log('api delete_medical_record url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api delete_medical_record body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4072,7 +4074,7 @@ export const ForgotPasswordValid = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Account/ForgotPasswordValid';
+     console.log('api ForgotPasswordValid url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api ForgotPasswordValid body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4201,7 +4203,7 @@ export const data_record_sharing_list_clinics = async (p): Promise<Data_record_s
+   try {
+     const url = constant.API_BASE_URL + '/ehr/data-record-sharing/v1/list-clinics';
+     console.log('api data_record_sharing_list_clinics url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api data_record_sharing_list_clinics body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4228,7 +4230,7 @@ export const data_record_sharing_histories = async (p): Promise<Data | null> =>
+   try {
+     const url = constant.API_BASE_URL + '/ehr/data-record-sharing/v1/histories';
+     console.log('api data_record_sharing_histories url=', url);
+-    const body = {...p, sorts: null, order: 'ASC'};
++    const body = { ...p, sorts: null, order: 'ASC' };
+     console.log('api data_record_sharing_histories body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4255,7 +4257,7 @@ export const data_record_sharing_details = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/ehr/data-record-sharing/v1/details';
+     console.log('api data_record_sharing_details url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api data_record_sharing_details body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4285,7 +4287,7 @@ export const get_mixture_medicine = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/get-mixture-medicine';
+     console.log('api get_mixture_medicine url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api get_mixture_medicine body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4316,7 +4318,7 @@ export const get_syrup_drug_usage_by_condition = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/get-syrup-drug-usage-by-condition';
+     console.log('api get_syrup_drug_usage_by_condition url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api get_syrup_drug_usage_by_condition body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4347,7 +4349,7 @@ export const add_syrup_drug_usage = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/add-syrup-drug-usage';
+     console.log('api add_syrup_drug_usage url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api add_syrup_drug_usage body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4377,7 +4379,7 @@ export const health_data_settings = async (p: { preset: number }): Promise<healt
+   try {
+     const url = constant.API_BASE_URL + '/health-data/setting/v2/items';
+     console.log('api health_data_settings url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api health_data_settings body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4404,7 +4406,7 @@ export const health_data_setting_v1_clinic_get = async (p: { clinicCode: string
+   try {
+     const url = constant.API_BASE_URL + '/health-data/setting/v2/clinic/get';
+     console.log('api health_data_setting_v1_clinic_get url=', url);
+-    const body = {...p, preset: 2};
++    const body = { ...p, preset: 2 };
+     console.log('api health_data_setting_v1_clinic_get body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4499,7 +4501,7 @@ export const updateConsultation = async (input: string) => {
+   try {
+     const url = constant.API_BASE_HEALS_CORE_URL + '/updateConsultation';
+     console.log('api updateConsultation url=', url);
+-    const body = {input};
++    const body = { input };
+     console.log('api updateConsultation body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4526,7 +4528,7 @@ export const billingsList = async (patientCode: string, pageIndex: number, pageS
+   try {
+     const url = constant.API_BASE_URL + '/billings/v1/list';
+     console.log('api billingsList url=', url);
+-    const body = {patientCode, pageIndex, pageSize};
++    const body = { patientCode, pageIndex, pageSize };
+     console.log('api billingsList body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4576,11 +4578,11 @@ export const billingsList = async (patientCode: string, pageIndex: number, pageS
+  }
+  ]
+  */
+-export const send_bill_to_pay = async ({appointmentId, diagnosisJsonAsString, currencyCode, expenseItems}) => {
++export const send_bill_to_pay = async ({ appointmentId, diagnosisJsonAsString, currencyCode, expenseItems }) => {
+   try {
+     const url = constant.API_BASE_URL + '/Bill/send-bill-to-pay';
+     console.log('api send_bill_to_pay url=', url);
+-    const body = {appointmentId, diagnosisJsonAsString, currencyCode, expenseItems};
++    const body = { appointmentId, diagnosisJsonAsString, currencyCode, expenseItems };
+     console.log('api send_bill_to_pay body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4634,7 +4636,7 @@ export const check_transaction_status = async (ticketId: string) => {
+   try {
+     const url = constant.API_BASE_URL + `/Bill/check-transaction-status`;
+     console.log('api configurations url=', url);
+-    const params = {ticketId};
++    const params = { ticketId };
+     console.log('api check_transaction_status params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+@@ -4668,7 +4670,7 @@ export const get_sent_bill_by_ticketid = async (ticketId: string) => {
+   try {
+     const url = constant.API_BASE_URL + `/Bill/get-sent-bill-by-ticketid`;
+     console.log('api get_sent_bill_by_ticketid url=', url);
+-    const params = {ticketId};
++    const params = { ticketId };
+     console.log('api get_sent_bill_by_ticketid params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+@@ -4702,7 +4704,7 @@ export const finish_queued_appointment = async (appointmentId: string) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/encounter/finish-queued-appointment';
+     console.log('api finish_queued_appointment url=', url);
+-    const body = {id: appointmentId};
++    const body = { id: appointmentId };
+     console.log('api finish_queued_appointment body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4788,7 +4790,7 @@ export const agreements_sign = async (agreementId: string) => {
+   try {
+     const url = constant.API_BASE_URL + '/agreements/v1/sign';
+     console.log('api agreements_sign url=', url);
+-    const body = {agreementId};
++    const body = { agreementId };
+     console.log('api agreements_sign body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4847,7 +4849,7 @@ export const send_otp_for_forgot_password = async (installationId: string, userN
+   try {
+     const url = constant.API_BASE_URL + '/Account/send-otp-for-forgot-password';
+     console.log('api send_otp_for_forgot_password url=', url);
+-    const body = {installationId, userName};
++    const body = { installationId, userName };
+     console.log('api send_otp_for_forgot_password body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4878,7 +4880,7 @@ export const health_questions = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Consultation/GetTicketQuestionnaireResponse';
+     console.log('api health_questions url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api health_questions body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -4997,7 +4999,7 @@ export const add_patient_sickLeave = async (
+     let json = await response.json();
+     console.log('api add_patient_sickLeave json=', json);
+     if (json.code === 0 || json.code === 200) {
+-      return {...json.data, success: true};
++      return { ...json.data, success: true };
+     }
+     return json;
+   } catch (error) {
+@@ -5072,7 +5074,7 @@ export const loginFromQRCodeAsync = async (qrCode: string): Promise<LoginFromQRC
+   try {
+     const url = constant.API_BASE_URL + '/Account/loginFromQRCodeAsync';
+     console.log('api loginFromQRCodeAsync url=', url);
+-    const body = {qrCode};
++    const body = { qrCode };
+     console.log('api loginFromQRCodeAsync body=', body);
+     let response = await fetch(url, {
+       method: 'POST',
+@@ -5110,7 +5112,7 @@ export const SendBindPhoneVerificationCode = async (areaCode: string, phoneNumbe
+     const url = constant.API_BASE_URL + '/Account/SendBindPhoneVerificationCode';
+     logUtils.addLog('info', `api SendBindPhoneVerificationCode url=`, '', url);
+     console.log('api SendBindPhoneVerificationCode url=', url);
+-    const body = {areaCode, phoneNumber};
++    const body = { areaCode, phoneNumber };
+     console.log('api SendBindPhoneVerificationCode body=', body);
+     logUtils.addLog('info', `api SendBindPhoneVerificationCode body=`, '', body);
+     let response = await fetch(url, {
+@@ -5143,7 +5145,7 @@ export const BindPhoneNumber = async (verificationCode: string): Promise<any | n
+   try {
+     const url = constant.API_BASE_URL + '/Account/BindPhoneNumber';
+     console.log('api BindPhoneNumber url=', url);
+-    const body = {verificationCode};
++    const body = { verificationCode };
+     console.log('api BindPhoneNumber body=', body);
+     let response = await fetch(url, {
+       method: 'POST',
+@@ -5243,7 +5245,7 @@ export const trusted_devices_remove = async (p: {
+     //data 使用RSA的公钥对 字符串 `v1|serverSecret|verificationCode` 进行加密,ServerSecret 是confirm接口返回的数据,VerificationCode 是csm会收到的push消息里的数据
+     const data = encryptWithPublicKeyPKCS1(trusted_devices_confirm_api_cache.publicKey, `v1|${trusted_devices_confirm_api_cache.serverSecret}|${p.verificationCode}`);
+     // Add padding parameter to match server-side expectation (default "Pkcs1")
+-    const body = {...p, plainTextForSigning: BearerTKey, signature, data, padding: "Pkcs1"};
++    const body = { ...p, plainTextForSigning: BearerTKey, signature, data, padding: "Pkcs1" };
+     console.log('api trusted_devices_remove body=', body);
+     logUtils.addLog('info', 'api trusted_devices_remove body=', '', body);
+     const _headers = headers()
+@@ -5314,14 +5316,14 @@ export const trusted_devices_reject = async (p: {
+ 
+ 
+ export const trusted_devices_apply = async (p:
+-                                            {
+-                                              "deviceId": string,
+-                                              "deviceModel": string,
+-                                              "deviceOS": string,
+-                                              "deviceFingerprint": string,
+-                                              "publicKey": string,
+-                                              deviceFingerprintPlaintext: string
+-                                            }): Promise<any | null> => {
++  {
++    "deviceId": string,
++    "deviceModel": string,
++    "deviceOS": string,
++    "deviceFingerprint": string,
++    "publicKey": string,
++    deviceFingerprintPlaintext: string
++  }): Promise<any | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/trusted-devices/v1/apply';
+     console.log('api trusted_devices_apply url=', url);
+@@ -5350,12 +5352,12 @@ export const trusted_devices_apply = async (p:
+ };
+ 
+ export const trusted_devices_fingerprint = async (p:
+-                                                  {
+-                                                    "trustedDeviceRequestId": string,
+-                                                    "deviceFingerprint": string,
+-                                                    deviceFingerprintPlaintext: string,
+-                                                    username: string
+-                                                  }): Promise<any | null> => {
++  {
++    "trustedDeviceRequestId": string,
++    "deviceFingerprint": string,
++    deviceFingerprintPlaintext: string,
++    username: string
++  }): Promise<any | null> => {
+   try {
+     const privateKey = await storage.getItem(`${storage.csxMobileCachekeys.trusted_devices_privateKey}|${p.username}`);
+     console.log('api trusted_devices_fingerprint privateKey=', privateKey);
+@@ -5374,7 +5376,7 @@ export const trusted_devices_fingerprint = async (p:
+     //data 使用 confirm接口返回 的publicKey对 字符串 `v1|serverSecret|deviceFingerprint` 进行  (RSA padding: "Pkcs1")加密,ServerSecret 是confirm接口返回的数据
+     const data = encryptWithPublicKeyPKCS1(trusted_devices_confirm_api_cache.publicKey, `v1|${trusted_devices_confirm_api_cache.serverSecret}|${p.deviceFingerprint}`);
+     // Add padding parameter to match server-side expectation (default "Pkcs1")
+-    const body = {...p, plainTextForSigning: BearerTKey, signature, data, padding: "Pkcs1"};
++    const body = { ...p, plainTextForSigning: BearerTKey, signature, data, padding: "Pkcs1" };
+     console.log('api trusted_devices_fingerprint body=', body);
+     logUtils.addLog('info', `api trusted_devices_fingerprint body=`, '', body);
+     let response = await fetch(url, {
+@@ -5436,11 +5438,11 @@ export const QueryPhoneBindStatus = async () => {
+ };
+ 
+ export const trusted_devices_check = async (p:
+-                                            {
+-                                              deviceFingerprintPlaintext: string,
+-                                              "deviceFingerprint": string,
+-                                              deviceId: string,
+-                                            }): Promise<any | null> => {
++  {
++    deviceFingerprintPlaintext: string,
++    "deviceFingerprint": string,
++    deviceId: string,
++  }): Promise<any | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/trusted-devices/v1/check';
+     console.log('api trusted_devices_check url=', url);
+@@ -5497,3 +5499,74 @@ export const getUserPermission = async () => {
+     console.log('api getUserPermission error=', error);
+   }
+ };
++
++export const getOccupiedTime = async (p: {
++  clinicId: string,
++  doctorId: string,
++  appointmentDate: string,
++  year: number,
++  showWeeklyData: boolean,
++}): Promise<OccupiedTimeResponse | null> => {
++  try {
++    const url = constant.API_BASE_URL + '/csx/appointment/occupied_time';
++
++    console.log('api getOccupiedTime url=', url);
++
++    const body = p;
++    let response = await fetch(url, {
++      method: 'POST', // 指定请求方法
++      headers: headers(),
++      body: JSON.stringify(body),
++    });
++    console.log('api getOccupiedTime response=', response);
++    if (!response.ok) {
++      return null;
++    } else {
++      let json = await response.json();
++      console.log('api getOccupiedTime json=', json);
++      if (json.code === 0 || json.code === 200) {
++        return json.data as OccupiedTimeResponse;
++      } else {
++        return null;
++      }
++    }
++  } catch (error) {
++    console.log('api getOccupiedTime error=', error);
++    return null;
++  }
++};
++
++export const accept_or_decline_booking = async (p: {
++  ticketId: string,
++  operation: string,
++  timeSlots: TimeSlot[],
++}): Promise<Array<{ id: string }> | null> => {
++  try {
++    const url = constant.API_BASE_URL + '/csx/appointment/accept_or_decline_booking';
++
++    console.log('api accept_or_decline_booking url=', url);
++
++    const body = p;
++    let response = await fetch(url, {
++      method: 'POST', // 指定请求方法
++      headers: headers(),
++      body: JSON.stringify(body),
++    });
++    console.log('api accept_or_decline_booking response=', response);
++    if (!response.ok) {
++      console.error('api accept_or_decline_booking failed with status:', response.status);
++      return null;
++    } else {
++      let json = await response.json();
++      console.log('api accept_or_decline_booking json=', json);
++      if (json.code === 0 || json.code === 200) {
++        return json.data as Array<{ id: string }> | null;
++      }
++      processJson(json, url);
++      return null;
++    }
++  } catch (error) {
++    console.log('api accept_or_decline_booking error=', error);
++    return null;
++  }
++};
+\ No newline at end of file
+diff --git a/src/components/theme/theme-dark.ts b/src/components/theme/theme-dark.ts
+index d4bdf9f8..9c5be7c7 100644
+--- a/src/components/theme/theme-dark.ts
++++ b/src/components/theme/theme-dark.ts
+@@ -51,6 +51,9 @@ const dark: UITheme = {
+     $leterPageBg: 'rgba(44, 44, 46, 1)',
+     $infoInputColor: 'rgba(235, 235, 245, 0.6)',
+     $calendarBg: '#2C2C2E',
++    $slotCellNormal: 'rgba(255, 255, 255, 0.8)',
++    $slotCellSelected: 'rgba(255, 214, 10, 0.7)',
++    $slotCellNotAvailable: 'rgba(72, 72, 74, 1)',
+   },
+   commonStyles: {
+     pageContainer: {
+diff --git a/src/components/theme/theme-light.ts b/src/components/theme/theme-light.ts
+index 8e799f55..1297a896 100644
+--- a/src/components/theme/theme-light.ts
++++ b/src/components/theme/theme-light.ts
+@@ -51,6 +51,9 @@ const light: UITheme = {
+     $leterPageBg: 'rgba(242, 242, 246, 1)',
+     $infoInputColor: 'rgba(60, 60, 67, 0.6)',
+     $calendarBg: '#f0f0f0',
++    $slotCellNormal: 'rgba(0, 122, 255, 0.1)',
++    $slotCellSelected: 'rgba(255, 204, 0, 0.3)',
++    $slotCellNotAvailable: 'rgba(209, 209, 214, 1)',
+   },
+   commonStyles: {
+     pageContainer: {
+diff --git a/src/csxRoutes/MainStack.tsx b/src/csxRoutes/MainStack.tsx
+index 72871771..23bd1da6 100644
+--- a/src/csxRoutes/MainStack.tsx
++++ b/src/csxRoutes/MainStack.tsx
+@@ -61,6 +61,7 @@ import VerifyAccountPage from 'pages/VerifyAccountPage/VerifyAccountPage'
+ import BindMobileNumberPage from 'pages/BindMobileNumberPage/BindMobileNumberPage'
+ import PDFScreen from 'pages/PDFScreen/PDFScreen'
+ import ManageCalendarPage from 'pages/ManageCalendarPage/ManageCalendarPage'
++import BookingDetailPage from 'pages/BookingDetailPage/BookingDetailPage'
+ 
+ const Stack = createStackNavigator()
+ 
+@@ -582,6 +583,33 @@ const MainStack: React.FC<Props> = (props: Props) => {
+             headerShown: false,
+           }}
+         />
++        {
++          Platform.OS === 'ios' ?
++            <Stack.Group screenOptions={{
++              presentation: 'modal',
++              cardShadowEnabled: false,
++              cardOverlayEnabled: true,
++            }}>
++              <Stack.Screen
++                name={routes.BookingDetailPage.routeName}
++                component={BookingDetailPage}
++                initialParams={{}}
++                options={{
++                  headerShown: false,
++                }}
++              />
++            </Stack.Group>
++            :
++            <Stack.Screen
++              name={routes.BookingDetailPage.routeName}
++              component={BookingDetailPage}
++              initialParams={{}}
++              options={{
++                headerShown: false,
++              }}
++            />
++        }
++
+       </Stack.Navigator>
+     )
+ }
+diff --git a/src/csxRoutes/NavigationContainer.tsx b/src/csxRoutes/NavigationContainer.tsx
+index af024e4c..2fc6c0c0 100644
+--- a/src/csxRoutes/NavigationContainer.tsx
++++ b/src/csxRoutes/NavigationContainer.tsx
+@@ -1,25 +1,25 @@
+ // eslint-disable-next-line no-use-before-define
+ // import {NavigationContainer} from 'csxRoutes'
+-import {NavigationContainer, Theme} from '@react-navigation/native';
+-import type {NavigationState} from '@react-navigation/routers';
+-import {Route} from '@react-navigation/routers/src/types';
+-import {navigationRef} from 'tools/navigationService';
++import { NavigationContainer, Theme } from '@react-navigation/native';
++import type { NavigationState } from '@react-navigation/routers';
++import { Route } from '@react-navigation/routers/src/types';
++import { navigationRef } from 'tools/navigationService';
+ import AgoraShowBt from 'components/AgoraShowBt/AgoraShowBt';
+ import ConfirmDialog from 'components/ConfirmDialog/ConfirmDialog';
+ import LanguageModal from 'components/LanguageModal/LanguageModal'; // 确保正确导入 RouteContext
+ import WhatsappModal from 'components/WhatsappModal/WhatsappModal';
+ import VideoCallInviteModal from 'components/VideoCallInviteModal/VideoCallInviteModal';
+-import {ThemeContext} from 'components/theme/theme-context';
+-import {useThemeProvider} from 'components/theme/theme-provider';
++import { ThemeContext } from 'components/theme/theme-context';
++import { useThemeProvider } from 'components/theme/theme-provider';
+ // Use relative import to avoid circular dependency with csxRoutes/index.ts
+ import routes from './csxRouter';
+-import React, {ReactNode, useState} from 'react';
+-import {useDispatch} from 'react-redux';
+-import {globalEventName, useGlobalEventEmitter} from 'tools/useGlobalEventEmitter';
+-import type {Theme as Theme1} from 'types/Theme';
+-import {useInactivity} from 'useHooks/InactivityContext';
++import React, { ReactNode, useState } from 'react';
++import { useDispatch } from 'react-redux';
++import { globalEventName, useGlobalEventEmitter } from 'tools/useGlobalEventEmitter';
++import type { Theme as Theme1 } from 'types/Theme';
++import { useInactivity } from 'useHooks/InactivityContext';
+ import MainStack from './MainStack';
+-import {RouteContext} from './RouteContext';
++import { RouteContext } from './RouteContext';
+ 
+ /**
+  * PureComponent
+@@ -38,12 +38,12 @@ interface RouteProviderProps extends Props {
+ }
+ 
+ const RouteProvider: React.FC<RouteProviderProps> = (Props, parentRef) => {
+-  const {theme, children} = Props;
++  const { theme, children } = Props;
+   console.log('NavigationContainer.tsx Props=', Props);
+   const [routeState, setRouteState] = useState<Route<string> | null>(null);
+   const emitEvent = useGlobalEventEmitter();
+   const dispatch = useDispatch();
+-  const {isInactive, resetTimer} = useInactivity();
++  const { isInactive, resetTimer } = useInactivity();
+ 
+   //监听路由变化
+   const handleStateChange = (state: NavigationState | undefined) => {
+@@ -124,11 +124,13 @@ const RouteProvider: React.FC<RouteProviderProps> = (Props, parentRef) => {
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.EditHealthDataPage.routeName) {
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
++    } else if (currentRoute.name === routes.BookingDetailPage.routeName) {
++      emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else {
+       emitEvent(globalEventName.disabledPanResponder, '0'); //
+     }
+   };
+-  const {mode, uiTheme, setMode} = useThemeProvider();
++  const { mode, uiTheme, setMode } = useThemeProvider();
+   console.log('NavigationContainer.tsx mode=', mode);
+   return (
+     <ThemeContext.Consumer>
+diff --git a/src/csxRoutes/csxRouter.ts b/src/csxRoutes/csxRouter.ts
+index 01a4953f..82bedb8c 100644
+--- a/src/csxRoutes/csxRouter.ts
++++ b/src/csxRoutes/csxRouter.ts
+@@ -197,7 +197,10 @@ const routeName = {
+     },
+     ManageCalendarPage: {
+         routeName: 'ManageCalendarPage'
+-    }
++    },
++    BookingDetailPage: {
++        routeName: 'BookingDetailPage'
++    },
+ }
+ 
+ //告诉TypeScript你的路由和参数的结构
+diff --git a/src/i18n/locale/en.ts b/src/i18n/locale/en.ts
+index 67f418ef..4ff47d5a 100644
+--- a/src/i18n/locale/en.ts
++++ b/src/i18n/locale/en.ts
+@@ -1,4 +1,4 @@
+-import {LoginFromQRCodeData} from "api/api-types.ts";
++import { LoginFromQRCodeData } from "api/api-types.ts";
+ 
+ const en = {
+   login: 'Login',
+@@ -556,21 +556,21 @@ const en = {
+   'Immune Record': 'Immune Record',
+   add_mobile_phone: '+ Add Mobile Number',
+   add_telephone: '+ Add Telephone',
+-  'Edit Health Data':'Edit Health Data',
++  'Edit Health Data': 'Edit Health Data',
+   later: 'Later',
+   start: 'Start',
+   'First login': 'First login',
+-  'Kind reminder':'Kind reminder',
++  'Kind reminder': 'Kind reminder',
+   'warm_reminder': 'Warm reminder',
+-  'Please scan the QR code via':'Please scan the QR code via the Clinic Solution desktop path:\n' +
++  'Please scan the QR code via': 'Please scan the QR code via the Clinic Solution desktop path:\n' +
+     'Home > Settings > CS Mobile',
+-  'Scan the QR code displayed on CSX to log in':'Scan the QR code displayed on CSX to log in',
+-  'Verify account password':'Verify account password',
+-  'Bind mobile number':'Bind mobile number',
+-  'To log in to CSM for the first time':'To log in to CSM for the first time, you need to verify the CSX account password',
++  'Scan the QR code displayed on CSX to log in': 'Scan the QR code displayed on CSX to log in',
++  'Verify account password': 'Verify account password',
++  'Bind mobile number': 'Bind mobile number',
++  'To log in to CSM for the first time': 'To log in to CSM for the first time, you need to verify the CSX account password',
+   // global.i18n.t('Please enter the password for', { str: (pageData as LoginFromQRCodeData)?.userName })
+-  'Please enter the password for':'Please enter the password for {{str}} to verify your identity',
+-  'Please enter your account password':'Please enter your account password',
++  'Please enter the password for': 'Please enter the password for {{str}} to verify your identity',
++  'Please enter your account password': 'Please enter your account password',
+   'Your CSM account is not currently linked to a mobile number': 'Your CSM account is not currently linked to a mobile number',
+   'Please enter your mobile number and verify the one-time password to bind': 'Please enter your mobile number and verify the one-time password to bind',
+   Please_enter_mobile_number: 'Please enter mobile number',
+@@ -849,7 +849,7 @@ const en = {
+   'no_patient_in_room': 'The patient has not yet entered the online consultation room. Please wait a moment',
+   'comparison': 'Comparison',
+   'oxygenSaturation': 'Oxygen Saturation',
+-  'electrocardiogram':'Electrocardiogram',
++  'electrocardiogram': 'Electrocardiogram',
+   'Birthday': 'Birthday',
+   'Age': 'Age',
+   'Record time': 'Record time',
+@@ -937,6 +937,19 @@ const en = {
+   'delete_partial_success_detail': 'Successfully deleted {{success}} schedules, {{failed}} schedules failed to delete, please go to system calendar to delete manually.',
+   'delete_all_failed_manual': 'All schedules failed to delete, please go to system calendar to delete manually.',
+   'delete_expired_failed_manual': 'Expired schedules failed to delete, please go to system calendar to delete manually.',
++  'reservation_request': 'Reservation Request',
++  'emit': 'Emit',
++  'patient_name': 'Patient Name',
++  'contact_number': 'Contact Number',
++  'not_have': 'Not Have',
++  'mon': 'Mon',
++  'tue': 'Tue',
++  'wed': 'Wed',
++  'thu': 'Thu',
++  'fri': 'Fri',
++  'sat': 'Sat',
++  'sun': 'Sun',
++  'cancel_appointment': 'Cancel Appointment',
+   'eHealth eHR No': 'eHealth eHR No',
+   'be_unbind_trusted_device': 'The current account has been unbound by the administrator',
+   'source': 'Source',
+diff --git a/src/i18n/locale/jp.ts b/src/i18n/locale/jp.ts
+index f57449ba..bf9e7b42 100644
+--- a/src/i18n/locale/jp.ts
++++ b/src/i18n/locale/jp.ts
+@@ -928,6 +928,19 @@ const jp = {
+   'delete_partial_success_detail': '{{success}}件のスケジュールを削除しましたが、{{failed}}件の削除に失敗しました。システムカレンダーから手動で削除してください。',
+   'delete_all_failed_manual': 'すべてのスケジュールの削除に失敗しました。システムカレンダーから手動で削除してください。',
+   'delete_expired_failed_manual': '期限切れのスケジュールの削除に失敗しました。システムカレンダーから手動で削除してください。',
++  'reservation_request': '予約リクエスト',
++  'emit': 'はっせい',
++  'patient_name': '患者の名前',
++  'contact_number': '連絡電話',
++  'not_have': 'ない',
++  'mon': '月',
++  'tue': '火',
++  'wed': '水',
++  'thu': '木',
++  'fri': '金',
++  'sat': '土',
++  'sun': '日',
++  'cancel_appointment': '約束を取り消す',
+   'eHealth eHR No': 'eHealth eHR 番号',
+   'be_unbind_trusted_device': '現在のアカウントは管理者によってバインド解除されました',
+   'source': 'ソース',
+diff --git a/src/i18n/locale/ph.ts b/src/i18n/locale/ph.ts
+index 80787185..71aeb03b 100644
+--- a/src/i18n/locale/ph.ts
++++ b/src/i18n/locale/ph.ts
+@@ -561,20 +561,20 @@ export default {
+   'Immune Record': 'Immune Record',
+   add_mobile_phone: '+ Idagdag ang walang wireless phone',
+   add_telephone: '+ Idagdag ang walang telepono',
+-  'Edit Health Data':'I-edit ang Datos ng Kalusugan',
++  'Edit Health Data': 'I-edit ang Datos ng Kalusugan',
+   later: 'Susunod',
+   start: 'Simulan',
+-  'First login':' Unang pag-login',
+-  'Kind reminder':' Mga pang-aral',
++  'First login': ' Unang pag-login',
++  'Kind reminder': ' Mga pang-aral',
+   'warm_reminder': 'Mga pang-aral',
+-  'Please scan the QR code via':'Mangyaring i-scan ang QR code sa pamamagitan ng Clinic Solution desktop path:\n' +
++  'Please scan the QR code via': 'Mangyaring i-scan ang QR code sa pamamagitan ng Clinic Solution desktop path:\n' +
+     'Home > Settings > CS Mobile',
+-  'Scan the QR code displayed on CSX to log in':'I-scan ang QR code na ipinapakita sa CSX upang mag-login.',
+-  'Verify account password':' Pagpapatunay ng password ng account',
+-  'Bind mobile number':' I-bind ang numero ng mobile phone',
+-  'To log in to CSM for the first time':'Sa unang pag-login sa CSM, kailangan mong i-verify ang password ng CSX account',
+-  'Please enter the password for':'Pakilagay ang password ng {{str}} upang kumpirmahin ang iyong pagkakakilanlan',
+-  'Please enter your account password':'Pakilagay ang iyong password ng account',
++  'Scan the QR code displayed on CSX to log in': 'I-scan ang QR code na ipinapakita sa CSX upang mag-login.',
++  'Verify account password': ' Pagpapatunay ng password ng account',
++  'Bind mobile number': ' I-bind ang numero ng mobile phone',
++  'To log in to CSM for the first time': 'Sa unang pag-login sa CSM, kailangan mong i-verify ang password ng CSX account',
++  'Please enter the password for': 'Pakilagay ang password ng {{str}} upang kumpirmahin ang iyong pagkakakilanlan',
++  'Please enter your account password': 'Pakilagay ang iyong password ng account',
+   'Your CSM account is not currently linked to a mobile number': 'Ang iyong CSM account ay kasalukuyang hindi pa nakakonekta sa numero ng mobile phone',
+   'Please enter your mobile number and verify the one-time password to bind': 'Pakilagay ang iyong numero ng mobile phone at i-verify ang one-time password upang i-bind',
+   Please_enter_mobile_number: 'Pakilagay ang numero ng mobile phone',
+@@ -941,6 +941,19 @@ export default {
+   'delete_partial_success_detail': 'Matagumpay na tinanggal ang {{success}} mga iskedyul, {{failed}} mga iskedyul ang nabigong tanggalin, mangyaring pumunta sa system calendar upang tanggalin nang manu-mano.',
+   'delete_all_failed_manual': 'Lahat ng mga iskedyul ay nabigong tanggalin, mangyaring pumunta sa system calendar upang tanggalin nang manu-mano.',
+   'delete_expired_failed_manual': 'Ang mga expired na iskedyul ay nabigong tanggalin, mangyaring pumunta sa system calendar upang tanggalin nang manu-mano.',
++  'reservation_request': 'Reservation Request',
++  'emit': 'Magpadala',
++  'patient_name': 'Pangalan ng Patient',
++  'contact_number': 'Teleponong numero ng contact',
++  'not_have': 'Walang',
++  'mon': 'Lun‌',
++  'tue': 'Mar‌',
++  'wed': 'Mie‌',
++  'thu': 'Jue‌',
++  'fri': 'Bie‌',
++  'sat': 'Sab‌',
++  'sun': 'Lg',
++  'cancel_appointment': 'Itigil ang Appointment',
+   'eHealth eHR No': 'eHealth eHR Number',
+   'be_unbind_trusted_device': 'Ang kasalukuyang account ay na-unbind na ng administrator',
+   'source': 'Source',
+diff --git a/src/i18n/locale/th.ts b/src/i18n/locale/th.ts
+index b5cab316..f4075aae 100644
+--- a/src/i18n/locale/th.ts
++++ b/src/i18n/locale/th.ts
+@@ -542,20 +542,20 @@ export default {
+   'Immune Record': 'บันทึกการฉีดวัคซีน',
+   add_mobile_phone: '+ เพิ่มโทรศัพท์ไร้สาย',
+   add_telephone: '+ เพิ่มโทรศัพท์',
+-  'Edit Health Data':'แก้ไขข้อมูลสุขภาพ',
++  'Edit Health Data': 'แก้ไขข้อมูลสุขภาพ',
+   later: 'ต่อไป',
+   start: 'เริ่ม',
+-  'First login':'การเข้าสู่ระบบครั้งแรก',
+-  'Kind reminder':'แจ้งเตือนอย่างสุภาพ',
++  'First login': 'การเข้าสู่ระบบครั้งแรก',
++  'Kind reminder': 'แจ้งเตือนอย่างสุภาพ',
+   'warm_reminder': 'แจ้งเตือนรอบค่ะ',
+-  'Please scan the QR code via':'โปรดสแกนคิวอาร์โค้ดผ่านเส้นทางบนคอมพิวเตอร์ของ Clinic Solution:\n' +
++  'Please scan the QR code via': 'โปรดสแกนคิวอาร์โค้ดผ่านเส้นทางบนคอมพิวเตอร์ของ Clinic Solution:\n' +
+     'หน้าแรก > การตั้งค่า > CS Mobile',
+-  'Scan the QR code displayed on CSX to log in':'สแกนคิวอาร์โค้ดที่แสดงบน CSX เพื่อเข้าสู่ระบบ',
+-  'Verify account password':'ยืนยันรหัสผ่านบัญชี',
+-  'Bind mobile number':'เชื่อมโทรศัพท์มือถือ',
+-  'To log in to CSM for the first time':'ในการเข้าสู่ระบบ CSM ครั้งแรก จำเป็นต้องยืนยันรหัสผ่านบัญชี CSX',
+-  'Please enter the password for':'กรุณาใส่รหัสผ่านของ {{str}} เพื่อยืนยันตัวตนของคุณ',
+-  'Please enter your account password':'กรุณาใส่รหัสผ่านบัญชี',
++  'Scan the QR code displayed on CSX to log in': 'สแกนคิวอาร์โค้ดที่แสดงบน CSX เพื่อเข้าสู่ระบบ',
++  'Verify account password': 'ยืนยันรหัสผ่านบัญชี',
++  'Bind mobile number': 'เชื่อมโทรศัพท์มือถือ',
++  'To log in to CSM for the first time': 'ในการเข้าสู่ระบบ CSM ครั้งแรก จำเป็นต้องยืนยันรหัสผ่านบัญชี CSX',
++  'Please enter the password for': 'กรุณาใส่รหัสผ่านของ {{str}} เพื่อยืนยันตัวตนของคุณ',
++  'Please enter your account password': 'กรุณาใส่รหัสผ่านบัญชี',
+   'Your CSM account is not currently linked to a mobile number': 'บัญชี CSM ของคุณยังไม่ได้เชื่อมโยงกับหมายเลขโทรศัพท์มือถือ',
+   'Please enter your mobile number and verify the one-time password to bind': 'กรุณาใส่หมายเลขโทรศัพท์มือถือและยืนยันรหัสผ่านครั้งเดียวเพื่อเชื่อมโยง',
+   Please_enter_mobile_number: 'กรุณาใส่หมายเลขโทรศัพท์มือถือ',
+@@ -922,6 +922,19 @@ export default {
+   'delete_partial_success_detail': 'ลบกำหนดการสำเร็จ {{success}} รายการ ลบล้มเหลว {{failed}} รายการ กรุณาไปที่ปฏิทินของระบบเพื่อลบด้วยตนเอง',
+   'delete_all_failed_manual': 'การลบกำหนดการทั้งหมดล้มเหลว กรุณาไปที่ปฏิทินของระบบเพื่อลบด้วยตนเอง',
+   'delete_expired_failed_manual': 'การลบกำหนดการที่หมดอายุแล้วล้มเหลว กรุณาไปที่ปฏิทินของระบบเพื่อลบด้วยตนเอง',
++  'reservation_request': 'การขอจองนัดหมา���',
++  'emit': 'ออก',
++  'patient_name': 'ชื่อผู้ป่วย',
++  'contact_number': 'เบอร์ติดต่อ',
++  'not_have': 'ไม่มี',
++  'mon': 'จ.‌',
++  'tue': 'อ.‌',
++  'wed': 'พ.',
++  'thu': 'พฤ.‌',
++  'fri': 'ศ.‌',
++  'sat': 'ส.',
++  'sun': 'อา.‌',
++  'cancel_appointment': 'ยกเลิกการนัดหมาย',
+   'eHealth eHR No': 'หมายเลข eHealth eHR',
+   'be_unbind_trusted_device': 'บัญชีปัจจุบันถูกยกเลิกการเชื่อมโยงโดยผู้ดูแลระบบ',
+   'source': 'แหล่งข้อมูล',
+diff --git a/src/i18n/locale/vn.ts b/src/i18n/locale/vn.ts
+index 16c56e15..31585cdf 100644
+--- a/src/i18n/locale/vn.ts
++++ b/src/i18n/locale/vn.ts
+@@ -546,20 +546,20 @@ export default {
+   'Immune Record': 'Hồ sơ tiêm chủng',
+   add_mobile_phone: '+ Thêm điện thoại không dây',
+   add_telephone: '+ Thêm điện thoại bàn',
+-  'Edit Health Data':'Chỉnh sửa dữ liệu sức khỏe',
++  'Edit Health Data': 'Chỉnh sửa dữ liệu sức khỏe',
+   later: 'Sau',
+   start: 'Bắt đầu',
+-  'First login':'Đăng nhập lần đầu',
+-  'Kind reminder':'Lời nhắc nhở thân thiện',
++  'First login': 'Đăng nhập lần đầu',
++  'Kind reminder': 'Lời nhắc nhở thân thiện',
+   'warm_reminder': 'Lời nhắc nhở ấm',
+-  'Please scan the QR code via':'Vui lòng quét mã QR qua đường dẫn trên máy tính của Clinic Solution:\n' +
++  'Please scan the QR code via': 'Vui lòng quét mã QR qua đường dẫn trên máy tính của Clinic Solution:\n' +
+     'Trang chủ > Cài đặt > CS Mobile',
+-  'Scan the QR code displayed on CSX to log in':'Quét mã QR hiển thị trên CSX để đăng nhập.',
+-  'Verify account password':'Xác minh mật khẩu tài khoản',
+-  'Bind mobile number':'Liên kết số điện thoại di động',
+-  'To log in to CSM for the first time':'Khi đăng nhập CSM lần đầu tiên, cần xác thực mật khẩu tài khoản CSX',
+-  'Please enter the password for':'Vui lòng nhập mật khẩu của {{str}} để xác minh danh tính của bạn',
+-  'Please enter your account password':'Vui lòng nhập mật khẩu tài khoản của bạn',
++  'Scan the QR code displayed on CSX to log in': 'Quét mã QR hiển thị trên CSX để đăng nhập.',
++  'Verify account password': 'Xác minh mật khẩu tài khoản',
++  'Bind mobile number': 'Liên kết số điện thoại di động',
++  'To log in to CSM for the first time': 'Khi đăng nhập CSM lần đầu tiên, cần xác thực mật khẩu tài khoản CSX',
++  'Please enter the password for': 'Vui lòng nhập mật khẩu của {{str}} để xác minh danh tính của bạn',
++  'Please enter your account password': 'Vui lòng nhập mật khẩu tài khoản của bạn',
+   'Your CSM account is not currently linked to a mobile number': 'Tài khoản CSM của bạn hiện chưa được liên kết với số điện thoại di động',
+   'Please enter your mobile number and verify the one-time password to bind': 'Vui lòng nhập số điện thoại di động và xác minh mật khẩu một lần để liên kết',
+   Please_enter_mobile_number: 'Vui lòng nhập số điện thoại di động',
+@@ -926,6 +926,19 @@ export default {
+   'delete_partial_success_detail': 'Đã xóa thành công {{success}} lịch biểu, {{failed}} lịch biểu không thể xóa, vui lòng vào lịch hệ thống để xóa thủ công.',
+   'delete_all_failed_manual': 'Tất cả lịch biểu không thể xóa, vui lòng vào lịch hệ thống để xóa thủ công.',
+   'delete_expired_failed_manual': 'Lịch biểu hết hạn không thể xóa, vui lòng vào lịch hệ thống để xóa thủ công.',
++  'reservation_request': 'Yêu cầu đặt lịch',
++  'emit': 'Phát hành',
++  'patient_name': 'Tên bệnh nhân',
++  'contact_number': 'Điện thoại liên lạc',
++  'not_have': 'Không có',
++  'mon': 'TH‌',
++  'tue': 'TB‌',
++  'wed': 'TT‌',
++  'thu': 'TN‌',
++  'fri': 'TS‌',
++  'sat': 'TSB‌',
++  'sun': 'CN‌',
++  'cancel_appointment': 'Hủy cuộc hẹn',
+   'eHealth eHR No': 'Số eHealth eHR',
+   'be_unbind_trusted_device': 'Tài khoản hiện tại đã bị quản trị viên hủy liên kết',
+   'source': 'Nguồn',
+diff --git a/src/i18n/locale/zh.ts b/src/i18n/locale/zh.ts
+index fb21c742..a9c298a4 100644
+--- a/src/i18n/locale/zh.ts
++++ b/src/i18n/locale/zh.ts
+@@ -538,20 +538,20 @@ const zh = {
+   'Immune Record': '免疫记录',
+   add_mobile_phone: '+ 新增无线电话',
+   add_telephone: '+ 新增电话',
+-  'Edit Health Data':'编辑健康数据',
++  'Edit Health Data': '编辑健康数据',
+   later: '稍后',
+   start: '启动',
+-  'First login':'第一次登录',
+-  'Kind reminder':'温馨提示',
++  'First login': '第一次登录',
++  'Kind reminder': '温馨提示',
+   'warm_reminder': '温馨提示',
+-  'Please scan the QR code via':'请通过 Clinic Solution 电脑端路径：\n' +
++  'Please scan the QR code via': '请通过 Clinic Solution 电脑端路径：\n' +
+     '首页 > 设置 > CS Mobile 进行扫描二维码。',
+-  'Scan the QR code displayed on CSX to log in':'扫描 CSX 显示的二维码进行登录。',
+-  'Verify account password':'验证帐户密码',
+-  'Bind mobile number':'绑定手机号码',
+-  'To log in to CSM for the first time':'首次登录 CSM，需验证 CSX 账户的密码',
+-  'Please enter the password for':'请输入 {{str}} 的密码确认身份',
+-  'Please enter your account password':'请输入帐户密码',
++  'Scan the QR code displayed on CSX to log in': '扫描 CSX 显示的二维码进行登录。',
++  'Verify account password': '验证帐户密码',
++  'Bind mobile number': '绑定手机号码',
++  'To log in to CSM for the first time': '首次登录 CSM，需验证 CSX 账户的密码',
++  'Please enter the password for': '请输入 {{str}} 的密码确认身份',
++  'Please enter your account password': '请输入帐户密码',
+   'Your CSM account is not currently linked to a mobile number': '您的 CSM 账户当前未绑定手机号码',
+   'Please enter your mobile number and verify the one-time password to bind': '请输入手机号码，并验证一次性密码后进行绑定',
+   Please_enter_mobile_number: '请输入手机号码',
+@@ -918,6 +918,19 @@ const zh = {
+   'delete_partial_success_detail': '成功删除 {{success}} 个日程，{{failed}} 个日程删除失败，请前往系统日历手动删除。',
+   'delete_all_failed_manual': '所有日程删除失败，请前往系统日历手动删除。',
+   'delete_expired_failed_manual': '过期日程删除失败，请前往系统日历手动删除。',
++  'reservation_request': '预约请求',
++  'emit': '发出',
++  'patient_name': '病人姓名',
++  'contact_number': '联络电话',
++  'not_have': '无',
++  'mon': '周一',
++  'tue': '周二',
++  'wed': '周三',
++  'thu': '周四',
++  'fri': '周五',
++  'sat': '周六',
++  'sun': '周日',
++  'cancel_appointment': '取消预约',
+   'eHealth eHR No': '电子健康记录编号',
+   'be_unbind_trusted_device': '当前账户已被管理员解绑',
+   'source': '来源',
+@@ -939,7 +952,7 @@ const zh = {
+   Systolic: '收缩血压',
+   Diastolic: '舒张血压',
+   Pulse: '脉搏',
+-  Electrocardiogram:'心电图',
++  Electrocardiogram: '心电图',
+   'Pediatric data': '儿科数据',
+   Head: '头围',
+   Arm: '臂围',
+diff --git a/src/i18n/locale/zh_tw.ts b/src/i18n/locale/zh_tw.ts
+index 2f19d93e..f42d83a2 100644
+--- a/src/i18n/locale/zh_tw.ts
++++ b/src/i18n/locale/zh_tw.ts
+@@ -537,19 +537,19 @@ const zh_tw = {
+   'Immune Record': '免疫記錄',
+   add_mobile_phone: '+ 新增無線電話',
+   add_telephone: '+ 新增電話',
+-  'Edit Health Data':'編輯健康數據',
++  'Edit Health Data': '編輯健康數據',
+   later: '稍後',
+   start: '啟動',
+-  'First login':'第一次登錄',
+-  'Kind reminder':'溫馨提示',
++  'First login': '第一次登錄',
++  'Kind reminder': '溫馨提示',
+   'warm_reminder': '溫馨提示',
+-  'Please scan the QR code via':'請通過 Clinic Solution 電腦端路徑：首頁 - 設置 - CS Mobile 進行掃描二維碼',
+-  'Scan the QR code displayed on CSX to log in':'掃描 CSX 顯示的二維碼進行登錄',
+-  'Verify account password':'驗證賬戶密碼',
+-  'Bind mobile number':'綁定手機號碼',
+-  'To log in to CSM for the first time':'首次登錄 CSM，需驗證 CSX 賬戶的密碼',
+-  'Please enter the password for':'請輸入 {{str}}  的密碼確認身分',
+-  'Please enter your account password':'請輸入賬戶密碼',
++  'Please scan the QR code via': '請通過 Clinic Solution 電腦端路徑：首頁 - 設置 - CS Mobile 進行掃描二維碼',
++  'Scan the QR code displayed on CSX to log in': '掃描 CSX 顯示的二維碼進行登錄',
++  'Verify account password': '驗證賬戶密碼',
++  'Bind mobile number': '綁定手機號碼',
++  'To log in to CSM for the first time': '首次登錄 CSM，需驗證 CSX 賬戶的密碼',
++  'Please enter the password for': '請輸入 {{str}}  的密碼確認身分',
++  'Please enter your account password': '請輸入賬戶密碼',
+   'Your CSM account is not currently linked to a mobile number': '您的 CSM 賬戶當前未綁定手機號碼',
+   'Please enter your mobile number and verify the one-time password to bind': '請輸入手機號碼，並驗證一次性密碼後進行綁定',
+   Please_enter_mobile_number: '請輸入手機號碼',
+@@ -916,6 +916,19 @@ const zh_tw = {
+   'delete_partial_success_detail': '成功刪除 {{success}} 個日程，{{failed}} 個日程刪除失敗，請前往系統日曆手動刪除。',
+   'delete_all_failed_manual': '所有日程刪除失敗，請前往系統日曆手動刪除。',
+   'delete_expired_failed_manual': '過期日程刪除失敗，請前往系統日曆手動刪除。',
++  'reservation_request': '預約請求',
++  'emit': '發出',
++  'patient_name': '病人姓名',
++  'contact_number': '聯絡電話',
++  'not_have': '無',
++  'mon': '週一',
++  'tue': '週二',
++  'wed': '週三',
++  'thu': '週四',
++  'fri': '週五',
++  'sat': '週六',
++  'sun': '週日',
++  'cancel_appointment': '取消預約',
+   'eHealth eHR No': '電子健康紀錄編號',
+   'be_unbind_trusted_device': '當前賬戶已被管理員解綁',
+   'source': '來源',
+@@ -958,7 +971,7 @@ const zh_tw = {
+   NumberOfFoetusInObstetricUltrasound: '超音波檢查胎兒數量',
+   FoetalOrderInObstetricUltrasound: '超音波中的胎兒順序',
+   FoetalCrownRumpLength: '胎兒頭臀長(cm)',
+-  FoetalBiparietalDiameter:'胎兒雙頂徑',
++  FoetalBiparietalDiameter: '胎兒雙頂徑',
+   FoetalHeadCircumference: '胎兒頭圍',
+   FoetalAbdominalCircumference: '胎兒腹圍',
+   FoetalFemurLength: '胎兒股骨長',
+diff --git a/src/pages/BookingDetailPage/BookingDetailPage.styles.ts b/src/pages/BookingDetailPage/BookingDetailPage.styles.ts
+new file mode 100644
+index 00000000..a46ccf2d
+--- /dev/null
++++ b/src/pages/BookingDetailPage/BookingDetailPage.styles.ts
+@@ -0,0 +1,285 @@
++import EStyleSheet from 'react-native-extended-stylesheet';
++import { Platform, StyleSheet } from 'react-native';
++import borderStyle from "components/common-styles/borderStyle";
++import pageContainer from 'components/common-styles/pageContainer.style'
++import { border } from 'components/common-styles/divider.style';
++import { extractPaddingValues } from 'react-native-ui-lib/src/commons/modifiers';
++export default EStyleSheet.create({
++    pageContainer,
++    SwitchAccountsDialogbtnText: {
++        fontSize: '17rem',
++        lineHeight: '22rem',
++        fontWeight: '600',
++        color: 'rgba(0, 122, 255, 1)',
++    },
++    SwitchAccountsDialogbtn: {
++        width: '100%',
++        height: '44rem',
++        justifyContent: 'center',
++        alignItems: 'center',
++        ...borderStyle,
++    },
++    SwitchAccountsDialogText1: {
++        fontSize: '13rem',
++        lineHeight: '18rem',
++        fontWeight: '400',
++        color: '$text',
++        marginTop: '2rem',
++        marginBottom: '16rem',
++        width: '238rem',
++        textAlign: 'center'
++    },
++    SwitchAccountsDialogText: {
++        fontSize: '17rem',
++        lineHeight: '22rem',
++        fontWeight: '600',
++        color: '$text',
++        marginTop: '16rem',
++    },
++    SwitchAccountsDialogModal: {
++        width: '270rem',
++        alignItems: 'center',
++        maxHeight: '80%',
++        ...borderStyle,
++    },
++    changeAccount: {
++        marginTop: '16rem',
++        width: '100%',
++        height: '50rem',
++        borderRadius: '12rem',
++        backgroundColor: 'rgba(0, 122, 255, 1)',
++        justifyContent: 'center',
++        alignItems: 'center'
++    },
++    cancelBtnText: {
++        fontSize: '17rem',
++        color: 'rgba(255, 59, 48, 1)',
++        lineHeight: '22rem',
++    },
++    cancelBtn: {
++        height: '50rem',
++        borderRadius: '12rem',
++        backgroundColor: '$background',
++        marginVertical: '16rem',
++        justifyContent: 'center',
++        alignItems: 'center'
++    },
++    grayPageView: {
++        flex: 1,
++        width: '100%',
++        backgroundColor: '$grayBackground',
++        paddingHorizontal: '16rem',
++    },
++    ConfiguredTxt: {
++        fontSize: '15rem',
++        lineHeight: '20rem',
++        fontWeight: '400',
++        color: '$grayText',
++    },
++    header: {
++        backgroundColor: '$grayBackground',
++        paddingHorizontal: '16rem',
++    },
++    languageText: {
++        fontSize: '17rem',
++        lineHeight: '20rem',
++        fontWeight: '400',
++        color: '$grayText',
++        // position: 'absolute',
++        // right: '16rem',
++        // top: '18rem',
++        flex: 1,
++        textAlign: 'right',
++        marginRight: '11rem',
++    },
++    rightArrow: {
++        width: '5rem',
++        height: '10rem',
++    },
++    rightArrowDark: {
++        width: '10rem',
++        height: '20rem',
++    },
++    rowText: {
++        fontSize: '15rem',
++        lineHeight: '20rem',
++        fontWeight: '400',
++        color: '$text',
++    },
++    rowTextBlue: {
++        fontSize: '15rem',
++        lineHeight: '20rem',
++        fontWeight: '400',
++        color: '$blueTxtColor',
++    },
++    row: {
++        width: '100%',
++        height: '54rem',
++        flexDirection: 'row',
++        justifyContent: 'space-between',
++        alignItems: 'center',
++        borderBottomColor: '$dividerBackground',
++        borderBottomStyle: 'solid',
++        borderBottomWidth: '0.5rem',
++    },
++    card: {
++        width: '100%',
++        borderRadius: '12rem',
++        marginTop: '16rem',
++        paddingHorizontal: '16rem',
++        backgroundColor: '$background',
++    },
++    source_image: {
++        width: '16rem',
++        height: '16rem',
++        resizeMode: 'contain',
++        borderRadius: '4rem',
++    },
++    rowVerticalCenter: {
++        flexDirection: 'row',
++        alignItems: 'center',
++    },
++
++    timeRow: {
++        paddingVertical: '11rem',
++        flexDirection: 'row',
++        justifyContent: 'space-between',
++        alignItems: 'center',
++        paddingRight: '12rem',
++        borderBottomColor: '$dividerBackground',
++        borderBottomStyle: 'solid',
++        borderBottomWidth: '0.5rem',
++    },
++    timeSelected: {
++        height: '32rem',
++        backgroundColor: 'rgba(118, 118, 128, 0.08)',
++        paddingHorizontal: '11rem',
++        borderRadius: '6rem',
++        alignItems: 'center',
++        justifyContent: 'center',
++    },
++    timeSelectedText: {
++        fontSize: '15rem',
++        lineHeight: '20rem',
++        fontWeight: '400',
++        color: '$text',
++    },
++    DatePicker: {
++        flex: 0,
++        width: '344rem',
++        // height:'300rem',
++        minHeight: '314rem',
++        marginBottom: '5rem',
++        // ...borderStyle
++    },
++    DatePicker_pad: {
++        width: '100%',
++        minHeight: '314rem',
++        marginBottom: '5rem',
++        ...borderStyle
++    },
++
++    tableHeader: {
++        flexDirection: 'row',
++    },
++    tableRow: {
++        flexDirection: 'row',
++    },
++    headerCell: {
++        paddingVertical: 12,
++    },
++    timeCell: {
++        width: 40,
++        justifyContent: 'center',
++    },
++    dateCell: {
++        flex: 1,
++        justifyContent: 'center',
++        alignItems: 'center',
++        // borderRightWidth: 1,
++        // borderRightColor: '#ddd',
++    },
++    slotCell: {
++        flex: 1,
++        height: 28,
++        justifyContent: 'center',
++        alignItems: 'center',
++    },
++    slotCellView: {
++        width: 24,
++        height: 16,
++        borderRadius: 4,
++        justifyContent: 'center',
++        alignItems: 'center',
++        backgroundColor: '$slotCellNormal'
++    },
++    headerText: {
++        fontSize: '12rem',
++        fontWeight: '400',
++        color: '$text',
++    },
++    timeText: {
++        fontSize: '12rem',
++        color: '$grayText',
++    },
++    slotCellBooked: {
++        backgroundColor: '$slotCellSelected',
++    },
++    slotCellIdle: {
++        backgroundColor: '$slotCellNotAvailable',
++    },
++
++    slotCellSelected: {
++        backgroundColor: 'rgba(0, 122, 255, 1)',
++    },
++    slotCellViewSelected: {
++        backgroundColor: '#007AFF',
++    },
++    selectedSlotsContainer: {
++        marginTop: 16,
++        padding: 12,
++        backgroundColor: '#f5f5f5',
++        borderRadius: 8,
++    },
++    selectedSlotsTitle: {
++        fontSize: 14,
++        fontWeight: '600',
++        marginBottom: 8,
++    },
++    selectedSlotsList: {
++        flexDirection: 'row',
++        flexWrap: 'wrap',
++        gap: 8,
++    },
++    selectedSlotItem: {
++        flexDirection: 'row',
++        alignItems: 'center',
++        backgroundColor: '#fff',
++        paddingHorizontal: 12,
++        paddingVertical: 6,
++        borderRadius: 16,
++        borderWidth: 1,
++        borderColor: '#007AFF',
++    },
++    removeSlotText: {
++        marginLeft: 8,
++        color: '#ff3b30',
++        fontWeight: '600',
++    },
++    rightButton: {
++        height: '100%',
++        flexDirection: 'row',
++        alignItems: 'center',
++    },
++    emitText: {
++        fontWeight: '400',
++        fontSize: '17rem',
++        color: '$grayText'
++    },
++    emitTextClickable: {
++        fontWeight: '600',
++        fontSize: '17rem',
++        color: '#007AFF'
++    },
++
++});
+diff --git a/src/pages/BookingDetailPage/BookingDetailPage.tsx b/src/pages/BookingDetailPage/BookingDetailPage.tsx
+new file mode 100644
+index 00000000..d97a9947
+--- /dev/null
++++ b/src/pages/BookingDetailPage/BookingDetailPage.tsx
+@@ -0,0 +1,544 @@
++import React, { useEffect, useState, useMemo, memo, useCallback, forwardRef } from 'react'
++import {
++  Image,
++  View,
++  Text,
++  TouchableOpacity,
++  ScrollView,
++} from 'react-native'
++import { pageProps } from 'csxRoutes/csxRouter'
++import { SafeView } from 'components'
++import tool from 'tools/tool'
++import styles from "./BookingDetailPage.styles";
++import CsxMobileHeader from "components/csxMobileHeader/CsxMobileHeader";
++import { ThemeContext } from "components/theme/theme-context";
++import type { Theme } from "types/Theme";
++import { getClinicById, getOccupiedTime, accept_or_decline_booking } from "api/api";
++import { useLoading } from "components/LoadingModal/LoadingContext.tsx";
++import moment from "moment/moment";
++import { CheckMark } from 'assets/svg/index';
++import DatePicker from 'components/date-picker/date-picker';
++import type { DateData } from 'react-native-calendars';
++import type { OccupiedTimeResponse } from 'api/api-types';
++
++interface Props extends pageProps {
++}
++
++interface pageDataProps {
++  data: {
++    id: string,
++    type: string,
++    from: string,
++    title: string,
++    content: {
++      ClinicCode: string,
++      ClinicId: string,
++      DoctorName: string,
++      DoctorOName: string,
++      ClinicName: string,
++      ClinicOName: string,
++      DoctorCode: string,
++      DoctorId: string,
++      Payor: {
++        Id: string,
++        Code: string,
++        Name: string,
++        Icon: string | null
++      },
++      Patient: {
++        name: string,
++        gender: string,
++        idNumber: string,
++        memberId: string | null,
++        birthDate: string,
++        idType: string | null,
++        otherIdNumber: string | null,
++        idNumberRegistrationCountry: string,
++        mobile: string | null,
++        homeTel: string | null,
++        officeTel: string | null,
++        fax: string | null,
++        email: string | null,
++        age: string | null,
++      },
++      Id: string,
++      Provider: string,
++      RelatedDocuments: any | null,
++      Status: string,
++      StatusSavedTime: string,
++      TicketId: string | null,
++      TimePreference: string,
++      TimeSlots: string[],
++      VisitType: string,
++    } | string,
++    sentTime: string,
++    isRead: boolean
++  },
++  messagesIcon: string,
++}
++
++const WEEK_DAYS_COUNT = 6;
++const MAX_SELECTED_SLOTS = 3; // 选中（最多3个）
++
++interface StateProps {
++  selectedDate: string;
++  clinicData: {
++    address: string,
++    code: string,
++    enName: string,
++    endAt: number,
++    fax: string,
++    id: string,
++    interval: number,
++    startAt: number,
++    tel: string,
++    zhName: string,
++  },
++  occupiedTimeData: OccupiedTimeResponse;
++  showDatePicker: boolean;
++}
++
++const BookingDetailPage: React.FC<Props> = (props: Props) => {
++  const { navigation, route } = props
++  console.log('AccountSecurityPage props=', props)
++  const { pageData } = route?.params ?? {} as { pageData?: pageDataProps };
++  const { setLoading } = useLoading();
++
++  const [state, setState] = useState<StateProps>({
++    selectedDate: moment().format('DD/MM/YYYY'),
++    clinicData: {
++      address: '',
++      code: '',
++      enName: '',
++      endAt: 0,
++      fax: '',
++      id: '',
++      interval: 0,
++      startAt: 0,
++      tel: '',
++      zhName: '',
++    },
++    occupiedTimeData: [],
++    showDatePicker: false
++  });
++
++  const [selectedSlots, setSelectedSlots] = useState<Array<{
++    date: string;
++    startTime: string;
++  }>>([]);
++
++  const GetClinicById = async () => {
++    const clinicId = pageData?.data?.content?.ClinicId;
++    if (!clinicId) {
++      console.warn('GetClinicById: ClinicId is missing');
++      return;
++    }
++
++    try {
++      const [err, data] = await tool.to(getClinicById(clinicId));
++      if (data) {
++        setState((prevState) => ({
++          ...prevState,
++          clinicData: data
++        }));
++      }
++    } catch (e) {
++      console.error('GetClinicById error:', e);
++    }
++  };
++
++  const GetOccupiedTime = useCallback(async () => {
++    try {
++      const clinicId = pageData?.data?.content?.ClinicId;
++      const doctorId = pageData?.data?.content?.DoctorId;
++
++      if (!clinicId || !doctorId) {
++        console.warn('GetOccupiedTime: ClinicId or DoctorId is missing');
++        return;
++      }
++
++      const [err, data] = await tool.to(getOccupiedTime(
++        {
++          clinicId,
++          doctorId,
++          appointmentDate: state.selectedDate,
++          year: parseInt(state.selectedDate.split('/')[2]),
++          showWeeklyData: true
++        }
++      ));
++
++      if (data) {
++        console.log('getOccupiedTime data=', data);
++        setState((prevState) => ({
++          ...prevState,
++          occupiedTimeData: data || [],
++        }));
++      }
++    } catch (e) {
++      console.error('getOccupiedTime exception:', e);
++    }
++  }, [state.selectedDate, pageData?.data?.content?.ClinicId, pageData?.data?.content?.DoctorId]);
++
++  useEffect(() => {
++    const fetchInitialData = async () => {
++      setLoading(true);
++      try {
++        await GetClinicById();
++      } catch (e) {
++        console.error('获取诊所数据失败:', e);
++      } finally {
++        setLoading(false);
++      }
++    };
++
++    fetchInitialData();
++  }, []);
++
++  useEffect(() => {
++    const fetchOccupiedTime = async () => {
++      setLoading(true);
++      try {
++        await GetOccupiedTime();
++      } catch (e) {
++        console.error('获取占用时间失败:', e);
++      } finally {
++        setLoading(false);
++      }
++    };
++
++    fetchOccupiedTime();
++  }, [GetOccupiedTime]);
++
++  // 星期映射 缩写
++  const weekDayMap = useMemo(() => [
++    global.i18n.t('sun'),
++    global.i18n.t('mon'),
++    global.i18n.t('tue'),
++    global.i18n.t('wed'),
++    global.i18n.t('thu'),
++    global.i18n.t('fri'),
++    global.i18n.t('sat')
++  ], []);
++
++  // 获取周一到周六日期
++  const getWeekDates = useCallback((selectedDate: string) => {
++    const date = moment(selectedDate, 'DD/MM/YYYY');
++    const dayOfWeek = date.day();
++    const monday = date.clone().subtract(dayOfWeek === 0 ? 6 : dayOfWeek - 1, 'days');
++
++    const weekDates = [];
++    for (let i = 0; i < WEEK_DAYS_COUNT; i++) {
++      const currentDate = monday.clone().add(i, 'days');
++      weekDates.push({
++        date: monday.clone().add(i, 'days').format('YYYY-MM-DD'),
++        dayName: weekDayMap[currentDate.day()],
++        dayNum: monday.clone().add(i, 'days').format('DD'),
++      });
++    }
++    return weekDates;
++  }, [weekDayMap]);
++
++  const weekDates = useMemo(() => {
++    return getWeekDates(state.selectedDate);
++  }, [state.selectedDate, getWeekDates]);
++
++  // 将占用数据转换为 Map 便于快速查找
++  const occupiedTimeMap = useMemo(() => {
++    const map = {
++      booked: new Set<string>(), // 已预约：date-time
++      idle: new Set<string>(),   // 不可选：date
++    };
++
++    for (const item of state.occupiedTimeData) {
++      // 处理已预约数据
++      for (const appt of item.alreadyAppointment || []) {
++        for (const slot of appt.data || []) {
++          map.booked.add(`${slot.date}-${slot.time}`);
++        }
++      }
++      // 处理不可选数据
++      for (const appt of item.idleAppointment || []) {
++        for (const slot of appt.data || []) {
++          map.idle.add(slot.date);
++        }
++      }
++    }
++
++    return map;
++  }, [state.occupiedTimeData]);
++
++  // 判断时间槽是否已被预约
++  const isAlreadyBooked = useCallback((date: string, time: string) => {
++    return occupiedTimeMap.booked.has(`${date}-${time}`);
++  }, [occupiedTimeMap]);
++
++  // 判断时间槽是否不可选
++  const isIdleAppointment = useCallback((date: string, time: string) => {
++    return occupiedTimeMap.idle.has(date);
++  }, [occupiedTimeMap]);
++
++  // 生成时间槽
++  const getTimeSlots = useCallback((clinicData: StateProps['clinicData']) => {
++    const slots: string[] = [];
++    const { startAt, endAt, interval } = clinicData;
++
++    if (!startAt || !endAt || !interval) {
++      return slots;
++    }
++
++    for (let hour = startAt; hour < endAt; hour++) {
++      for (let minute = 0; minute < 60; minute += interval) {
++        const h = String(hour).padStart(2, '0');
++        const m = String(minute).padStart(2, '0');
++        slots.push(`${h}:${m}`);
++      }
++    }
++    return slots;
++  }, []);
++
++  const timeSlots = useMemo(() => {
++    return getTimeSlots(state.clinicData);
++  }, [state.clinicData, getTimeSlots]);
++
++  // 处理时间槽点击
++  const handleSlotPress = useCallback((date: string, time: string) => {
++    const slotKey = `${date}-${time}`;
++    const isSelected = selectedSlots.some(
++      slot => `${slot.date}-${slot.startTime}` === slotKey
++    );
++
++    if (isSelected) {
++      // 取消选中
++      setSelectedSlots(prev => prev.filter(
++        slot => `${slot.date}-${slot.startTime}` !== slotKey
++      ));
++    } else {
++      if (selectedSlots.length >= MAX_SELECTED_SLOTS) {
++        return;
++      }
++      setSelectedSlots(prev => [...prev, { date, startTime: time }]);
++    }
++  }, [selectedSlots]);
++
++  // 判断时间槽是否已选中
++  const isSelected = useCallback((date: string, time: string) => {
++    return selectedSlots.some(
++      slot => slot.date === date && slot.startTime === time
++    );
++  }, [selectedSlots]);
++
++  const renderMsgCard = () => {
++    const content = pageData?.data?.content;
++    if (!content || typeof content === 'string') {
++      return null;
++    }
++    return (
++      <View style={styles.card}>
++        <View style={styles.row}>
++          <Text style={styles.rowText} numberOfLines={1}>{global.i18n.t('doctor')}</Text>
++          <Text style={styles.ConfiguredTxt}>{content.DoctorName}</Text>
++        </View>
++        <View style={styles.row}>
++          <Text style={styles.rowText} numberOfLines={1}>{global.i18n.t('patient_name')}</Text>
++          <Text style={styles.ConfiguredTxt}>{content.Patient.name}</Text>
++        </View>
++        <View style={styles.row}>
++          <Text style={styles.rowText} numberOfLines={1}>{global.i18n.t('contact_number')}</Text>
++          <Text style={styles.ConfiguredTxt}>{content.Patient.mobile}</Text>
++        </View>
++        <View style={styles.row}>
++          <Text style={styles.rowText}>
++            {global.i18n.t('source')}
++          </Text>
++          <View style={styles.rowVerticalCenter}>
++            <Image source={pageData?.messagesIcon} style={styles.source_image} />
++            <Text style={styles.ConfiguredTxt}>
++              {"  "}{content.Payor.Name}
++            </Text>
++          </View>
++        </View>
++        <View style={styles.row}>
++          <Text style={styles.rowText} numberOfLines={1}>{global.i18n.t('Time preference')}</Text>
++          <Text style={styles.ConfiguredTxt}>{content.TimePreference}</Text>
++        </View>
++        <TouchableOpacity style={styles.row} onPress={() => {
++          // TODO: 跳转到查看页面，暂无数据信息
++        }}>
++          <Text style={styles.rowText} numberOfLines={1}>{global.i18n.t('Referral letter')}</Text>
++          <Text style={styles.rowTextBlue} numberOfLines={1}>{global.i18n.t('check')}</Text>
++        </TouchableOpacity>
++        <TouchableOpacity style={styles.row} onPress={() => {
++          // TODO: 跳转到查看页面，暂无数据信息
++        }}>
++          <Text style={styles.rowText} numberOfLines={1}>{global.i18n.t('Report')}</Text>
++          <Text style={styles.ConfiguredTxt} numberOfLines={1}>{global.i18n.t('not_have')}</Text>
++        </TouchableOpacity>
++      </View>
++    )
++  }
++  const renderTimeCard = () => {
++    return (
++      <View style={[styles.card, { paddingRight: 0 }]}>
++        {state.clinicData.startAt > 0 && (
++          <View>
++            <View style={styles.timeRow}>
++              <Text style={styles.rowText}>{global.i18n.t('AppointmentTime')}</Text>
++              <TouchableOpacity
++                style={styles.timeSelected}
++                onPress={() => {
++                  setState((preState) => ({
++                    ...preState,
++                    showDatePicker: !preState.showDatePicker,
++                  }));
++                }}
++              >
++                <Text style={[styles.timeSelectedText, state.showDatePicker && { color: '#007AFF' }]}>{state.selectedDate}</Text>
++              </TouchableOpacity>
++            </View>
++
++            {state.showDatePicker && <DatePicker
++              key={0}
++              style={[styles.DatePicker, global.isTablet && styles.DatePicker_pad]}
++              current={moment(state.selectedDate, 'DD/MM/YYYY').format('YYYY-MM-DD')}
++              onDayPress={(day: DateData) => {
++                console.log('AddAppointment.tsx onDateSelect day=', day);
++                setState(prevState => {
++                  return {
++                    ...prevState,
++                    selectedDate: moment(day.dateString, 'YYYY-MM-DD').format('DD/MM/YYYY'),
++                    showDatePicker: false,
++                  };
++                });
++              }}
++            />}
++
++            <View style={styles.tableHeader}>
++              <View style={[styles.timeCell, styles.headerCell]}></View>
++              {weekDates.map((item, index) => (
++                <View key={index} style={[styles.dateCell, styles.headerCell]}>
++                  <Text style={styles.headerText}>{item.dayName}</Text>
++                </View>
++              ))}
++            </View>
++
++            <View>
++              {timeSlots.map((time, timeIndex) => (
++                <View key={timeIndex} style={styles.tableRow}>
++                  <View style={styles.timeCell}>
++                    <Text style={styles.timeText}>{time}</Text>
++                  </View>
++                  {weekDates.map((dateItem, dateIndex) => {
++                    const booked = isAlreadyBooked(dateItem.date, time);
++                    const idle = isIdleAppointment(dateItem.date, time);
++                    const disabled = booked || idle;
++                    const selected = isSelected(dateItem.date, time);
++
++                    return (
++                      <TouchableOpacity
++                        key={dateIndex}
++                        style={styles.slotCell}
++                        disabled={disabled}
++                        activeOpacity={disabled ? 1 : 0.7}
++                        onPress={() => {
++                          if (!disabled) {
++                            handleSlotPress(dateItem.date, time);
++                          }
++                        }}
++                      >
++                        <View style={[
++                          styles.slotCellView,
++                          idle && styles.slotCellIdle,
++                          booked && styles.slotCellBooked,
++                          selected && styles.slotCellSelected,
++                        ]}>
++                          {selected && <CheckMark color={'#FFFFFF'} width={12} height={10} />}
++                        </View>
++                      </TouchableOpacity>
++                    );
++                  })}
++                </View>
++              ))}
++            </View>
++          </View>
++        )}
++      </View>
++    )
++  }
++
++  const renderAcceptButton = useCallback(() => {
++    return (
++      <TouchableOpacity
++        disabled={selectedSlots.length === 0}
++        style={styles.rightButton}
++        onPress={async () => {
++          const ticketId = pageData?.data?.content?.TicketId;
++          if (!ticketId) {
++            console.warn('renderRightBt: TicketId is missing');
++            return;
++          }
++          const data = await accept_or_decline_booking({
++            ticketId,
++            operation: 'accept',
++            timeSlots: selectedSlots,
++          });
++          if (data) {
++            console.log('AddAppointment.tsx accept_or_decline_booking data=', data);
++            navigationRef?.goBack();
++          }
++        }}
++      >
++        <Text style={selectedSlots.length ? styles.emitTextClickable : styles.emitText}>
++          {global.i18n.t('emit')}
++        </Text>
++      </TouchableOpacity>
++    );
++  }, [selectedSlots, pageData?.data?.content?.TicketId]);
++
++  const handleCancelAppointment = useCallback(async () => {
++    const ticketId = pageData?.data?.content?.TicketId;
++    if (!ticketId) {
++      console.warn('handleCancelAppointment: TicketId is missing');
++      return;
++    }
++
++    const data = await accept_or_decline_booking({
++      ticketId,
++      operation: 'decline',
++      timeSlots: [],
++    });
++    if (data) {
++      console.log('AddAppointment.tsx accept_or_decline_booking data=', data);
++      navigationRef?.goBack();
++    }
++  }, [pageData?.data?.content?.TicketId]);
++
++  return (
++    <ThemeContext.Consumer>
++      {(theme: Theme) => {
++        return (
++          <SafeView>
++            <View style={[styles.pageContainer, { paddingHorizontal: 0 }]}>
++              <CsxMobileHeader style={styles.header}
++                title={global.i18n.t('reservation_request')}
++                navigation={navigation}
++                rightBt={renderAcceptButton()}
++                backBtText={global.i18n.t('back')}
++              />
++              <ScrollView style={styles.grayPageView}>
++                {renderMsgCard()}
++                {renderTimeCard()}
++                <TouchableOpacity style={styles.cancelBtn} onPress={handleCancelAppointment}>
++                  <Text style={styles.cancelBtnText} numberOfLines={1}>{global.i18n.t('cancel_appointment')}</Text>
++                </TouchableOpacity>
++              </ScrollView>
++            </View>
++          </SafeView>
++        );
++      }}
++    </ThemeContext.Consumer>
++  )
++}
++const BookingDetailPageComp = memo(forwardRef(BookingDetailPage));
++export default BookingDetailPageComp;
++
++
+diff --git a/src/pages/MsgDetailPage/MsgDetailPage.styles.ts b/src/pages/MsgDetailPage/MsgDetailPage.styles.ts
+index 630099ad..dedaf82d 100644
+--- a/src/pages/MsgDetailPage/MsgDetailPage.styles.ts
++++ b/src/pages/MsgDetailPage/MsgDetailPage.styles.ts
+@@ -11,6 +11,7 @@ export default EStyleSheet.create({
+         height: '16rem',
+         resizeMode: 'contain',
+         borderRadius: '4rem',
++        alignSelf: 'center',
+     },
+     APPOINTMENT_REQUEST_content: {
+         fontSize: '15rem',
+diff --git a/src/pages/MsgDetailPage/MsgDetailPage.tsx b/src/pages/MsgDetailPage/MsgDetailPage.tsx
+index f992ce70..4ce6e859 100644
+--- a/src/pages/MsgDetailPage/MsgDetailPage.tsx
++++ b/src/pages/MsgDetailPage/MsgDetailPage.tsx
+@@ -209,14 +209,23 @@ const MsgDetailPage: React.FC<Props> = (props: Props, parentRef) => {
+                         {i18n.t('doctor')}:  {state.data?.content?.DoctorName} {state.data?.content?.DoctorOName}
+                     </Text>
+                     <Text style={styles.APPOINTMENT_REQUEST_content} numberOfLines={0}>
+-                        {i18n.t('patient1')}:  {state.data?.content?.Patient.name} ({state.data?.content?.Patient.age} , {state.data?.content?.Patient.gender})
++                        {i18n.t('patient_name')}:  {state.data?.content?.Patient.name} ({state.data?.content?.Patient.age} , {state.data?.content?.Patient.gender})
+                     </Text>
+                     <Text style={styles.APPOINTMENT_REQUEST_content} numberOfLines={0}>
+-                        {i18n.t('telephone')}:  {state.data?.content?.Patient.mobile}
+-                    </Text>
+-                    <Text style={styles.APPOINTMENT_REQUEST_content} numberOfLines={0}>
+-                        {i18n.t('source')}:  <Image source={pageData.messagesIcon(state.data.from)} style={styles.source_image} />  {state.data?.content?.Payor.Name}
++                        {i18n.t('contact_number')}:  {state.data?.content?.Patient.mobile}
+                     </Text>
++                    <View style={{ flexDirection: 'row' }}>
++                        <Text style={styles.APPOINTMENT_REQUEST_content}>
++                            {i18n.t('source')}:{"  "}
++                        </Text>
++                        <Image
++                            source={pageData.messagesIcon(state.data.from)}
++                            style={styles.source_image}
++                        />
++                        <Text style={styles.APPOINTMENT_REQUEST_content}>
++                            {"  "}{state.data?.content?.Payor.Name}
++                        </Text>
++                    </View>
+                     <Text style={styles.APPOINTMENT_REQUEST_content} numberOfLines={0}>
+                         {i18n.t('Time preference')}:  {state.data?.content?.TimePreference}
+                     </Text>
+@@ -243,7 +252,17 @@ const MsgDetailPage: React.FC<Props> = (props: Props, parentRef) => {
+                                 backBtText={global.i18n.t('back')}
+                             />
+                             <View style={[styles.pageContainer, { backgroundColor: theme.uiTheme.colors.$grayBackground }]}>
+-                                <View style={styles.card}>
++                                <TouchableOpacity style={styles.card} onPress={() => {
++                                    // 如果是APPOINTMENT_REQUEST类型，则进入eBooking详情页；否则不做任何操作
++                                    if (state.data.type === 'APPOINTMENT_REQUEST') {
++                                        routes.navigate(navigation, routes.BookingDetailPage.routeName, {
++                                            pageData: {
++                                                data: state.data,
++                                                messagesIcon: pageData.messagesIcon(state.data.from)
++                                            },
++                                        });
++                                    }
++                                }}>
+                                     <Image source={pageData.messagesIcon(state.data.from)} style={styles.image} />
+                                     <Text style={styles.title} numberOfLines={1}>{state.data.title}</Text>
+                                     <Text style={styles.time} numberOfLines={1}>
+@@ -277,7 +296,7 @@ const MsgDetailPage: React.FC<Props> = (props: Props, parentRef) => {
+                                             </View> : <></>
+                                             )
+                                     }
+-                                </View>
++                                </TouchableOpacity>
+                                 {!global.isTablet ?
+                                     <>
+                                         <TouchableOpacity disabled={state.index === pageData.list.length - 1}
+diff --git a/src/types/Theme.ts b/src/types/Theme.ts
+index 3cd89a75..18933c60 100644
+--- a/src/types/Theme.ts
++++ b/src/types/Theme.ts
+@@ -44,6 +44,9 @@ type UIThemeCommonColors = {
+     $modalViewBg: string;
+     $leterPageBg: string;
+     $calendarBg: string;
++    $slotCellNormal: string;
++    $slotCellSelected: string;
++    $slotCellNotAvailable: string;
+ };
+ export type UIThemeColorsPaletteColors = {
+     $darkGray: string;
+@@ -80,6 +83,9 @@ export type UIThemeColorsPaletteColors = {
+     $leterPageBg: string;
+     $infoInputColor: string;
+     $calendarBg: string;
++    $slotCellNormal: string;
++    $slotCellSelected: string;
++    $slotCellNotAvailable: string;
+ };
+ export type UIThemeColors = UIThemeCommonColors & UIThemeColorsPaletteColors;
+ export type UIThemeName = 'light' | 'dark';
+diff --git a/src/utils/logger.ts b/src/utils/logger.ts
+new file mode 100644
+index 00000000..47b6c9fa
+--- /dev/null
++++ b/src/utils/logger.ts
+@@ -0,0 +1,97 @@
++// src/utils/logger.ts
++
++// 保存原始的 console 方法
++const originalConsole = {
++  log: console.log,
++  info: console.info,
++  warn: console.warn,
++  error: console.error
++};
++
++class Logger {
++  private static instance: Logger;
++  private enabled: boolean = true;
++
++  private constructor() { }
++
++  static getInstance(): Logger {
++    if (!Logger.instance) {
++      Logger.instance = new Logger();
++    }
++    return Logger.instance;
++  }
++
++  /**
++   * 启用或禁用日志输出
++   * @param enabled 是否启用日志
++   */
++  setEnabled(enabled: boolean): void {
++    this.enabled = enabled;
++  }
++
++  /**
++   * 输出调试日志
++   * @param message 消息
++   * @param optionalParams 可选参数
++   */
++  log(message?: any, ...optionalParams: any[]): void {
++    if (this.enabled) {
++      originalConsole.log(`[LOG] ${new Date().toISOString()}`, message, ...optionalParams);
++    }
++  }
++
++  /**
++   * 输出信息日志
++   * @param message 消息
++   * @param optionalParams 可选参数
++   */
++  info(message?: any, ...optionalParams: any[]): void {
++    if (this.enabled) {
++      originalConsole.info(`[INFO] ${new Date().toISOString()}`, message, ...optionalParams);
++    }
++  }
++
++  /**
++   * 输出警告日志
++   * @param message 消息
++   * @param optionalParams 可选参数
++   */
++  warn(message?: any, ...optionalParams: any[]): void {
++    if (this.enabled) {
++      originalConsole.warn(`[WARN] ${new Date().toISOString()}`, message, ...optionalParams);
++    }
++  }
++
++  /**
++   * 输出错误日志
++   * @param message 消息
++   * @param optionalParams 可选参数
++   */
++  error(message?: any, ...optionalParams: any[]): void {
++    if (this.enabled) {
++      originalConsole.error(`[ERROR] ${new Date().toISOString()}`, message, ...optionalParams);
++    }
++  }
++
++  /**
++   * 输出调试信息（仅在开发环境）
++   * @param message 消息
++   * @param optionalParams 可选参数
++   */
++  debug(message?: any, ...optionalParams: any[]): void {
++    if (this.enabled && __DEV__) {
++      originalConsole.log(`[DEBUG] ${new Date().toISOString()}`, message, ...optionalParams);
++    }
++  }
++}
++
++// 创建全局实例
++const logger = Logger.getInstance();
++
++// 禁用所有 console.log 输出（但不影响我们保存的原始方法）
++console.log = (): void => { };
++console.info = (): void => { };
++console.warn = (): void => { };
++console.error = (): void => { };
++
++export default logger;
+\ No newline at end of file
