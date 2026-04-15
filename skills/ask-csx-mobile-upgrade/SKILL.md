@@ -166,4 +166,7 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
       - 组件放在 src/pages/paymentPage/ 目录
       - 组件名为 PaymentPage -->
 <!-- - 执行 `npx react-native run-android`,把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 东八区 -->
-- 当前电脑需要在 `/Users/stark/Desktop/work/RN/csx-mobile` 目录执行 `npx react-native run-android` 把当前项目的debug模式的app运行到安卓真机,帮我检查当前电脑的 RN 开发的 安卓环境是否 还有需要更新的配置
+- 当前电脑需要在
+  - win: `D:\work\RN\csx-mobile-upgrade` 
+  - mac: `/Users/stark/Desktop/work/RN/csx-mobile`
+  目录执行 `npx react-native run-android` 把当前项目的debug模式的app运行到安卓真机
