@@ -167,5 +167,5 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
       - 组件名为 PaymentPage -->
 <!-- - 执行 `npx react-native run-android`,把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 东八区 -->
 - MAC
-  - 需要你在`/Users/stark/Desktop/work/RN/csx-mobile`目录执行 `react-native run-ios` 把当前项目的debug模式的app运行到IOS最新的模拟器里
+  - 需要你在`/Users/stark/Desktop/work/RN/csx-mobile`目录执行 `react-native run-ios` 把当前项目的debug模式的app运行到如图 ![img_164359.png](img_164359.png)IOS最新的模拟器里
 <!-- - WIN:当前电脑已经在 `/Users/stark/Desktop/work/RN/csx-mobile` 目录执行 `npx react-native run-android` 把当前项目的debug模式的app运行到安卓真机 -->
