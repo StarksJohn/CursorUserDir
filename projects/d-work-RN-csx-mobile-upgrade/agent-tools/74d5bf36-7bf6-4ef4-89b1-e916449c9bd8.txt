@@ -1,0 +1,819 @@
+diff --git a/README.md b/README.md
+index 42700aab..fc68112b 100644
+--- a/README.md
++++ b/README.md
+@@ -248,7 +248,7 @@ For instance, `1.1.8-stark-dev` branch: used for my development work on version
+    5. 注釋 使用 react-native-ui-lib 和 react-native-vision-camera 的 地方
+    6. 注釋 babel.config.js 裡的 react-native-reanimated/plugin
+    7. 如果 debug chrome 卡, 可 開啟 react native debugger ![img.png](ReadME_IMG/img29.png)
+-3. ios: 先在 ios/YouTrackMobile/AppDelegate.mm 里把 192.168.1.6 改成 自己电脑 ip, 再 react-native run-ios --simulator="iPhone 15 Plus"
++3. ios:  `react-native run-ios --simulator="iPhone 16 Pro"`
+    1. ctrl+cmd+z 打开开发者菜单
+    2. Pod 没装 Flipper ,因 这个库都无法在 pod install 时 下载
+    3. Debug 真机: ![img.png](ReadME_IMG/img1.png) , Mac 系统 -隱私與安全性- 仍然允許
+diff --git a/src/api/api.ts b/src/api/api.ts
+index 6b5aaf45..232a0d5c 100644
+--- a/src/api/api.ts
++++ b/src/api/api.ts
+@@ -901,50 +901,45 @@ export const getPatientConsultationStatus = async (patientId: string) => {
+ };
+ 
+ /**
+- * 就診記錄
++ * 诊症记录
+  const data: ConsultationQueryPage|null = await consultationQueryPage(state.patients.patientId || state.patients.id, 0)
+  * @param patientId
+  * @param pageIndex
+  */
+ export const consultationQueryPage = async (
+   patientId: string,
+-  pageIndex: number
++  pageIndex: number,
++  pageSize: number = 10
+ ): Promise<ConsultationQueryPage | null> => {
+   try {
+-    const url = constant.API_BASE_URL + '/Consultation/QueryPage';
++    const url = `${constant.API_BASE_URL}/Consultation/QueryPage`;
+     console.log('api consultationQueryPage url=', url);
+     const body = {
+       patientId: patientId,
+       pageIndex,
+-      pageSize: 10,
++      pageSize,
+     }; // 将JavaScript对象转换为字符串
+     console.log('api consultationQueryPage body=', body);
+-    let response = await fetch(url, {
++    const response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api consultationQueryPage response=', response);
+     if (!response.ok) {
+-      return Promise.resolve(null);
++      return Promise.reject(response);
+     } else {
+-      let json = await response.json();
++      const json = await response.json();
+       console.log('api consultationQueryPage json=', json);
+       if (json.code === 200) {
+-        //判断json.data是数组类型还是对象类型
+-        // if (json.data instanceof Array) {
+-        //     return {
+-        //         items: json.data, totalPage: 0, pageIndex: 0
+-        //     }
+-        // }
+         return Promise.resolve(json.data);
+       } else {
+-        return Promise.resolve(null);
++        return Promise.reject(json);
+       }
+     }
+   } catch (error) {
+     console.error('api consultationQueryPage error=', error);
+-    return Promise.resolve(null);
++    return Promise.reject(error);
+   }
+ };
+ 
+diff --git a/src/components/MedicalRecordsCard/MedicalRecordsCard.tsx b/src/components/MedicalRecordsCard/MedicalRecordsCard.tsx
+index 99fdb30e..65089b28 100644
+--- a/src/components/MedicalRecordsCard/MedicalRecordsCard.tsx
++++ b/src/components/MedicalRecordsCard/MedicalRecordsCard.tsx
+@@ -27,7 +27,7 @@ interface Props extends pageProps {
+   index?: number;
+   enableModifyMedicalNotes?: number | undefined; //同 get-consultation-setting 返回的 enableModifyMedicalNotes
+   onDeleteMedicalRecord?: () => void;
+-  onPress: () => void;
++  onPress?: () => void;
+   canDiagnostics: boolean; //
+   style?: StyleProp<ViewStyle>;
+ }
+diff --git a/src/i18n/locale/zh.ts b/src/i18n/locale/zh.ts
+index 6b47bc8a..f5e94f03 100644
+--- a/src/i18n/locale/zh.ts
++++ b/src/i18n/locale/zh.ts
+@@ -224,7 +224,7 @@ const zh = {
+   other: '其它',
+   other_medical_info: '其他医疗资料',
+   Show_more: '显示更多',
+-  Medical_records: '就诊记录',
++  Medical_records: '诊症记录',
+   medical_record1: '病历',
+   check: '查看',
+   diagnosis1: '诊断',
+diff --git a/src/pages/Diagnosis/DiagnosisPage.tsx b/src/pages/Diagnosis/DiagnosisPage.tsx
+index c3798e91..890bfac0 100644
+--- a/src/pages/Diagnosis/DiagnosisPage.tsx
++++ b/src/pages/Diagnosis/DiagnosisPage.tsx
+@@ -1,4 +1,4 @@
+-import {CallLogsItem, ConsultationQueryPage, ConsultationQueryPage_item} from '@api/api-types.tsx';
++import {CallLogsItem, ConsultationQueryPage, ConsultationQueryPage_item, get_consultation_setting_Data} from '@api/api-types.tsx';
+ import {
+   GetCurrentEncounterOverview,
+   billingsList,
+@@ -6,6 +6,7 @@ import {
+   consultationQueryPage,
+   getPatientConsultationStatus,
+   getPatientDetail,
++  get_consultation_setting,
+   patient_extend_medical_records,
+   patient_health_v1_get,
+   waitingList,
+@@ -82,6 +83,8 @@ interface StateProps {
+   canDiagnostics: boolean; //是否可以診症
+   isToolBarOutOfView: boolean; // 跟踪ToolBar是否完全移出视图
+   currentTab: number;
++  get_consultation_setting: get_consultation_setting_Data | null;
++  consultationQueryPage_items: ConsultationQueryPage_item[] | null;
+ }
+ 
+ interface NavigationBtsProps {
+@@ -109,7 +112,6 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+   const {navigation, scene, route} = props;
+   console.log('DiagnosisPage props=', props);
+   const {pageData} = route?.params ?? ({} as { pageData?: pageDataProps }); //类型断言
+-
+   const scrollViewRef = useRef<ScrollView>(null);
+   const targetToolBarRef = useRef<View>(null); // 监听ToolBar
+   const targetPatientInfoCardRef = useRef<View>(null); // 监听PatientInfoCard
+@@ -174,6 +176,8 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+     canDiagnostics: true,
+     isToolBarOutOfView: false,
+     currentTab: 0,
++    get_consultation_setting: null,
++    consultationQueryPage_items: null,
+   });
+   const {mode, uiTheme, setMode} = useThemeProvider();
+   const styles = useMemo(() => createStyles(), [mode, uiTheme]);
+@@ -681,7 +685,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+       state.patients && (
+         <View style={styles.SectionTitleRow}>
+           <Text style={styles.Medical_records_txt}>{global.i18n.t('Medical_records')}</Text>
+-          <TouchableOpacity
++          {/* <TouchableOpacity
+             style={styles.Show_more_bt}
+             disabled={!state.consultationData}
+             onPress={() => {
+@@ -701,10 +705,10 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+             >
+               {global.i18n.t('more')}
+             </Text>
+-          </TouchableOpacity>
+-          {ArrowRight({
++          </TouchableOpacity> */}
++          {/* {ArrowRight({
+             color: state.consultationData ? uiTheme.colors.$blueTxtColor : uiTheme.colors.$disabledBtnText,
+-          })}
++          })} */}
+         </View>
+       )
+     );
+@@ -1006,75 +1010,101 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+       )
+     );
+   }, [state.patients, styles.patientInfoCard, navigation]);
++  const _consultationQueryPage = useCallback(async () => {
++    if (state.patients) {
++      const fetchData = async () => {
++        const data1: ConsultationQueryPage | null = await consultationQueryPage(
++          state.patients.patientId || state.patients.id,
++          0,
++          9999999
++        );
++        console.log('DiagnosisPage.tsx _consultationQueryPage consultationQueryPage data1=', data1);
++        if (data1 && data1.items.length) {
++          setState((prevState) => {
++            return {
++              ...prevState, consultationData: data1.items[0],
++              consultationQueryPage_items: data1.items,
++            };
++          });
++        } else if ((data1 && data1.items.length === 0) || !data1) {
++          setState((prevState) => {
++            return { ...prevState, consultationData: null, consultationQueryPage_items: null };
++          });
++        }
++      }
++      try {
++        if (!state.get_consultation_setting) {
++          const data: get_consultation_setting_Data | null = await get_consultation_setting({})
++          console.log('DiagnosisPage.tsx _consultationQueryPage get_consultation_setting data=', data);
++          if (data) {
++            setState((prevState) => {
++              return {
++                ...prevState, get_consultation_setting: data
++              }
++            })
++          }
++          await fetchData()
++        } else {
++          await fetchData()
++        }
++      } catch (e) {
++        console.error('DiagnosisPage.tsx _consultationQueryPage error=', e)
++      }
++    } else {
++      setState((prevState) => {
++        return { ...prevState, consultationData: null, consultationQueryPage_items: null };
++      });
++    }
++  }, [state.patients, state.get_consultation_setting]);
+   // 診症記錄 card
+-  const renderMedicalRecordsCard = useCallback(() => {
++  const renderMedicalRecordsCard = useCallback((item: ConsultationQueryPage_item) => {
+     if (!state.patients) {
+       return null;
+     }
+-    return state.consultationData ? (
++    return item &&  (
+       <MedicalRecordsCard
+         style={styles.medicalRecordsCard}
+         canDiagnostics={state.canDiagnostics}
+-        consultationData={state.consultationData}
++        consultationData={item}
+         patients={state.patients}
+-        onPress={() => {
+-          console.log(
+-            'DiagnosisPage.tsx renderMedicalRecordsCard onPress state.consultationData=',
+-            state.consultationData
+-          );
+-          if (!state.canDiagnostics) {
+-            Alert.alert('', global.i18n.t('canDiagnostics'), [{text: global.i18n.t('cancel'), style: 'cancel'}]);
+-            return;
+-          }
+-          if (!state.consultationData.medical) {
+-            Alert.alert(global.i18n.t('prompt'), global.i18n.t('medical_record'), [
+-              {text: global.i18n.t('cancel'), style: 'cancel'},
+-            ]);
+-          } else if (state.consultationData?.clinicId == curClinicData?.id && state.consultationData?.doctorId == curClinicData?.id) {
+-            console.log('renderMedicalRecordsCard onPress routes.CreateConsultationPage.routeName');
+-            routes.navigate(navigation, routes.CreateConsultationPage.routeName, {
+-              pageData: {
+-                patients: state.patients,
+-                type: 1,
+-                consultationData: state.consultationData,
+-                barIndex: 0,
+-                appointmentId: state.patients.id,
+-                from: routes.DiagnosisPage.routeName,
+-              },
+-            });
+-          }
+-        }}
++        // onPress={() => {
++        //   console.log(
++        //     'DiagnosisPage.tsx renderMedicalRecordsCard onPress state.consultationData=',
++        //     state.consultationData
++        //   );
++        //   if (!state.canDiagnostics) {
++        //     Alert.alert('', global.i18n.t('canDiagnostics'), [{text: global.i18n.t('cancel'), style: 'cancel'}]);
++        //     return;
++        //   }
++        //   if (!item.medical) {
++        //     Alert.alert(global.i18n.t('prompt'), global.i18n.t('medical_record'), [
++        //       {text: global.i18n.t('cancel'), style: 'cancel'},
++        //     ]);
++        //   } else if (item.clinicId == curClinicData?.id && item.doctorId == curClinicData?.id) {
++        //     console.log('renderMedicalRecordsCard onPress routes.CreateConsultationPage.routeName');
++        //     routes.navigate(navigation, routes.CreateConsultationPage.routeName, {
++        //       pageData: {
++        //         patients: state.patients,
++        //         type: 1,
++        //         consultationData: state.consultationData,
++        //         barIndex: 0,
++        //         appointmentId: state.patients.id,
++        //         from: routes.DiagnosisPage.routeName,
++        //       },
++        //     });
++        //   }
++        // }}
+         from={routes.DiagnosisPage.routeName}
+         navigation={navigation}
++        enableModifyMedicalNotes={
++          state.get_consultation_setting?.enableModifyMedicalNotes
++        }
++        onDeleteMedicalRecord={async () => {
++          await _consultationQueryPage()
++        }}
+       />
+-    ) : (
+-      // 暫無診症記錄 card
+-      <View style={styles.noConsultationDataCard}>
+-        {/* 暫無診症記錄 txt */}
+-        <Text style={styles.noConsultationDataCardTxt}>{global.i18n.t('No consultation data')}</Text>
+-        {/*新增診症 按鈕*/}
+-        {state.patients && state.canDiagnostics && (
+-          <TouchableOpacity
+-            style={styles.addConsultationBt}
+-              onPress={() => {
+-                console.log('renderMedicalRecordsCard 点击 新增診症');
+-              routes.navigate(navigation, routes.CreateConsultationPage.routeName, {
+-                pageData: {
+-                  patients: state.patients,
+-                  type: 0, //0新增 1編輯
+-                  barIndex: 0,
+-                  appointmentId: state.patients.id,
+-                  from: routes.DiagnosisPage.routeName,
+-                },
+-              });
+-            }}
+-          >
+-            <Text style={styles.addConsultationBtText}>{global.i18n.t('New_diagnosis')}</Text>
+-          </TouchableOpacity>
+-        )}
+-      </View>
+     );
+-  }, [state.consultationData, state.patients, state.canDiagnostics]);
++  }, [state.patients, state.canDiagnostics, state.get_consultation_setting, navigation, _consultationQueryPage, styles.medicalRecordsCard]);
+   //已往病歷 card
+   const renderPastMedicalRecordsCard = useCallback(() => {
+     return (
+@@ -1141,28 +1171,6 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+       ))
+     );
+   }, [state.patients, state.call_logs_list]);
+-  const _consultationQueryPage = useCallback(async () => {
+-    if (state.patients) {
+-      const data: ConsultationQueryPage | null = await consultationQueryPage(
+-        state.patients.patientId || state.patients.id,
+-        0
+-      );
+-      console.log('DiagnosisPage.tsx _consultationQueryPage data=', data);
+-      if (data && data.items.length) {
+-        setState((prevState) => {
+-          return {...prevState, consultationData: data.items[0]};
+-        });
+-      } else if ((data && data.items.length === 0) || !data) {
+-        setState((prevState) => {
+-          return {...prevState, consultationData: null};
+-        });
+-      }
+-    } else {
+-      setState((prevState) => {
+-        return {...prevState, consultationData: null};
+-      });
+-    }
+-  }, [state.patients]);
+   const _call_logs = useCallback(async () => {
+     if (state.patients) {
+       try {
+@@ -1462,7 +1470,6 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+       }, 100);
+     }
+   }, []);
+-
+   // 滚动到指定的容器，确保容器完全显示在顶部且不被遮挡
+   const scrollToContainer = useCallback((containerRef: React.RefObject<View | null>) => {
+     if (containerRef.current && scrollViewRef.current) {
+@@ -1525,7 +1532,6 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+       }, 100);
+     }
+   }, []);
+-
+   // 检查 ToolBar、PatientInfoCard、MedicalRecordsContainer、BillingRecordsContainer 和 PatientHealthInfoContainer 是否完全移出ScrollView顶部的函数（带防抖）
+   const checkElementsScrollVisibility = useCallback(
+     (scrollY: number = 0) => {
+@@ -1880,7 +1886,6 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+     },
+     [scrollTabBarToActiveTab]
+   );
+-
+   // ScrollView滚动事件处理函数
+   const handleScroll = useCallback(
+     (event: any) => {
+@@ -1889,7 +1894,6 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+     },
+     [checkElementsScrollVisibility]
+   );
+-
+   // 组件挂载后进行初始位置检查
+   useEffect(() => {
+     // 延迟检查，确保组件已完全渲染
+@@ -1905,7 +1909,6 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+       }
+     };
+   }, [checkElementsScrollVisibility]);
+-
+   // 监听isToolBarOutOfView变化并触发动画
+   useEffect(() => {
+     if (state.isToolBarOutOfView) {
+@@ -2029,7 +2032,6 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+           isActive: state.currentTab === 4,
+         },
+       ];
+-
+       return (
+         <ScrollView
+           ref={navScrollViewRef}
+@@ -2084,7 +2086,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+             withTabRefs: true,
+             navScrollViewRef: tabBarScrollViewRef,
+             onScroll: (event) => {
+-              tabBarScrollX.current = event.nativeEvent.contentOffset.x;
++              // tabBarScrollX.current = event.nativeEvent.contentOffset.x;
+             },
+             scrollEventThrottle: 16,
+             navScrollViewStyle: [scrollViewStyle.scrollViewStyle, {height: '100%'}],
+@@ -2099,221 +2101,125 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+       )
+     );
+   };
+-
+   /**
+    * 診症記錄 模块
+    * @returns
+    */
+   const renderMedicalRecordsContainer = () => {
+-    return (
+-      <View ref={targetMedicalRecordsContainerRef} style={styles.medicalRecordsContainer}>
++    return state.consultationQueryPage_items && state.consultationQueryPage_items.length > 0 && (
++      <>
+         {renderSectionTitleRow1()}
+-        {state.consultationData && (
+-          <View style={styles.medicalRecordsTextBox}>
+-            {TranslucentClock()}
+-            <Text style={styles.medicalRecordsText}>
+-              {format_XX_XX_XXXX_DateString(state.consultationData.date, formatString)}
+-            </Text>
+-            {/*最後修改記錄*/}
+-            {state.consultationData.medicalLatestUpdateRecord?.latestValue && (
+-              <TouchableOpacity
+-                style={styles.medicalLatestUpdateRecordBt}
+-                onPress={() => {
+-                  setCommonAlertModalTitle(global.i18n.t('Last Modified Record'));
+-                  setCommonAlertModalContent('');
+-                  setTextComponent(
+-                    <View style={styles.medicalLatestUpdateRecord_textComponent}>
+-                      <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
+-                        {global.i18n.t('Last Modified Time')}:
+-                        <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, {fontStyle: 'italic'}]}>
+-                          {' '}
+-                          {/* {moment(state.consultationData?.medicalLatestUpdateRecord?.latestUpdateDateTime)
+-                            .local()
+-                            .format('DD/MM/YYYY HH:mm:ss')} */}
+-                          {moment.parseZone(state.consultationData?.medicalLatestUpdateRecord?.latestUpdateDateTime).format('DD/MM/YYYY HH:mm:ss')} 
+-                        </Text>
+-                      </Text>
+-                      <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
+-                        {global.i18n.t('Last Modified By')}:
+-                        <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, {fontStyle: 'italic'}]}>
+-                          {' '}
+-                          {state.consultationData?.medicalLatestUpdateRecord?.latestUpdateUserName}
+-                        </Text>
+-                      </Text>
+-                      <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
+-                        {global.i18n.t('Last Modified Data')}:
+-                      </Text>
+-                      {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.diagnosis && (
+-                        <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
+-                          {global.i18n.t('diagnosis1')}:
+-                          <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, {fontStyle: 'italic'}]}>
+-                            {' '}
+-                            {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.diagnosis}
+-                          </Text>
+-                        </Text>
+-                      )}
+-                      {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.complaint && (
+-                        <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
+-                          {global.i18n.t('Symptoms_of_discomfort')}:
+-                          <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, {fontStyle: 'italic'}]}>
+-                            {' '}
+-                            {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.complaint}
+-                          </Text>
+-                        </Text>
+-                      )}
+-                      {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.finding && (
+-                        <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
+-                          {global.i18n.t('Other_signs')}:
+-                          <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, {fontStyle: 'italic'}]}>
+-                            {' '}
+-                            {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.finding}
+-                          </Text>
+-                        </Text>
+-                      )}
+-                      {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.procedure && (
+-                        <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
+-                          {global.i18n.t('Medical_procedures')}:
+-                          <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, {fontStyle: 'italic'}]}>
+-                            {' '}
+-                            {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.procedure}
+-                          </Text>
+-                        </Text>
+-                      )}
+-                      {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.action && (
+-                        <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
+-                          {global.i18n.t('follow_up')}:
+-                          <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, {fontStyle: 'italic'}]}>
+-                            {' '}
+-                            {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.action}
+-                          </Text>
+-                        </Text>
+-                      )}
+-                      {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.notes && (
+-                        <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
+-                          {global.i18n.t('other')}:
+-                          <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, {fontStyle: 'italic'}]}>
+-                            {' '}
+-                            {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.notes}
+-                          </Text>
+-                        </Text>
+-                      )}
+-                    </View>
+-                  );
+-                  setCommonAlertModalConfirmTxt(global.i18n.t('confirm'));
+-                  setCommonAlertModalCancelTxt('');
+-                  setShowCommonAlertModal(true);
+-                  setButtonDirection(ButtonDirection.HORIZONTAL);
+-                  refOnConfirm.current = () => {
+-                  };
+-
+-                  // emitEvent(globalEventName.showConfirmDialog, {
+-                  //   title: global.i18n.t('Last Modified Record'),
+-                  //   textComponent: (
+-                  //     <View style={styles.medicalLatestUpdateRecord_textComponent}>
+-                  //       <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
+-                  //         {global.i18n.t('Last Modified Time')}:
+-                  //         <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, {fontStyle: 'italic'}]}>
+-                  //           {' '}
+-                  //         </Text>
+-                  //       </Text>
+-                  //       <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
+-                  //         {global.i18n.t('Last Modified By')}:
+-                  //         <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, {fontStyle: 'italic'}]}>
+-                  //           {' '}
+-                  //           {state.consultationData?.medicalLatestUpdateRecord?.latestUpdateUserName}
+-                  //         </Text>
+-                  //       </Text>
+-                  //       <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
+-                  //         {global.i18n.t('Last Modified Data')}:
+-                  //       </Text>
+-                  //       {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.diagnosis && (
+-                  //         <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
+-                  //           {global.i18n.t('diagnosis1')}:
+-                  //           <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, {fontStyle: 'italic'}]}>
+-                  //             {' '}
+-                  //             {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.diagnosis}
+-                  //           </Text>
+-                  //         </Text>
+-                  //       )}
+-                  //       {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.complaint && (
+-                  //         <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
+-                  //           {global.i18n.t('Symptoms_of_discomfort')}:
+-                  //           <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, {fontStyle: 'italic'}]}>
+-                  //             {' '}
+-                  //             {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.complaint}
+-                  //           </Text>
+-                  //         </Text>
+-                  //       )}
+-                  //       {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.finding && (
+-                  //         <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
+-                  //           {global.i18n.t('Other_signs')}:
+-                  //           <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, {fontStyle: 'italic'}]}>
+-                  //             {' '}
+-                  //             {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.finding}
+-                  //           </Text>
+-                  //         </Text>
+-                  //       )}
+-                  //       {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.procedure && (
+-                  //         <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
+-                  //           {global.i18n.t('Medical_procedures')}:
+-                  //           <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, {fontStyle: 'italic'}]}>
+-                  //             {' '}
+-                  //             {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.procedure}
+-                  //           </Text>
+-                  //         </Text>
+-                  //       )}
+-                  //       {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.action && (
+-                  //         <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
+-                  //           {global.i18n.t('follow_up')}:
+-                  //           <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, {fontStyle: 'italic'}]}>
+-                  //             {' '}
+-                  //             {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.action}
+-                  //           </Text>
+-                  //         </Text>
+-                  //       )}
+-                  //       {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.notes && (
+-                  //         <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
+-                  //           {global.i18n.t('other')}:
+-                  //           <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, {fontStyle: 'italic'}]}>
+-                  //             {' '}
+-                  //             {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.notes}
+-                  //           </Text>
+-                  //         </Text>
+-                  //       )}
+-                  //     </View>
+-                  //   ),
+-                  //   onConfirm: () => {},
+-                  // });
+-                }}
+-              >
+-                <Image source={medicalLatestUpdateRecord_img} style={styles.medicalLatestUpdateRecord_img}></Image>
+-                <Text style={styles.medicalLatestUpdateRecord_Text}>{global.i18n.t('Last Modified Record')}</Text>
+-              </TouchableOpacity>
+-            )}
+-          </View>
+-        )}
+-        {renderMedicalRecordsCard()}
+-        {/*新增診症 按鈕*/}
+-        {state.patients && state.canDiagnostics && state.consultationData && (
+-          <TouchableOpacity
+-            style={styles.addConsultationBt}
+-            onPress={() => {
+-              console.log('renderMedicalRecordsContainer onPress routes.CreateConsultationPage.routeName');
+-              routes.navigate(navigation, routes.CreateConsultationPage.routeName, {
+-                pageData: {
+-                  patients: state.patients,
+-                  type: 0, //0新增 1編輯
+-                  barIndex: 0,
+-                  appointmentId: state.patients.id,
+-                  from: routes.DiagnosisPage.routeName,
+-                },
+-              });
+-            }}
+-          >
+-            <Text style={styles.addConsultationBtText}>{global.i18n.t('New_diagnosis')}</Text>
+-          </TouchableOpacity>
+-        )}
+-      </View>
++        {
++          state.consultationQueryPage_items && state.consultationQueryPage_items.length > 0 ? (
++            state.consultationQueryPage_items.map((item: ConsultationQueryPage_item, index: number) => {
++              return (
++                <View key={item.consultationId} ref={targetMedicalRecordsContainerRef} style={styles.medicalRecordsContainer}>
++                  <View style={styles.medicalRecordsTextBox}>
++                    {TranslucentClock()}
++                    <Text style={styles.medicalRecordsText}>
++                      {format_XX_XX_XXXX_DateString(item.date, formatString)}
++                    </Text>
++                    {item.medicalLatestUpdateRecord?.latestValue && (
++                      <TouchableOpacity
++                        style={styles.medicalLatestUpdateRecordBt}
++                        onPress={() => {
++                          setCommonAlertModalTitle(global.i18n.t('Last Modified Record'));
++                          setCommonAlertModalContent('');
++                          setTextComponent(
++                            <View style={styles.medicalLatestUpdateRecord_textComponent}>
++                              <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
++                                {global.i18n.t('Last Modified Time')}:
++                                <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, { fontStyle: 'italic' }]}>
++                                  {' '}
++                                  {moment.parseZone(state.consultationData?.medicalLatestUpdateRecord?.latestUpdateDateTime).format('DD/MM/YYYY HH:mm:ss')}
++                                </Text>
++                              </Text>
++                              <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
++                                {global.i18n.t('Last Modified By')}:
++                                <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, { fontStyle: 'italic' }]}>
++                                  {' '}
++                                  {state.consultationData?.medicalLatestUpdateRecord?.latestUpdateUserName}
++                                </Text>
++                              </Text>
++                              <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
++                                {global.i18n.t('Last Modified Data')}:
++                              </Text>
++                              {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.diagnosis && (
++                                <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
++                                  {global.i18n.t('diagnosis1')}:
++                                  <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, { fontStyle: 'italic' }]}>
++                                    {' '}
++                                    {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.diagnosis}
++                                  </Text>
++                                </Text>
++                              )}
++                              {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.complaint && (
++                                <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
++                                  {global.i18n.t('Symptoms_of_discomfort')}:
++                                  <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, { fontStyle: 'italic' }]}>
++                                    {' '}
++                                    {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.complaint}
++                                  </Text>
++                                </Text>
++                              )}
++                              {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.finding && (
++                                <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
++                                  {global.i18n.t('Other_signs')}:
++                                  <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, { fontStyle: 'italic' }]}>
++                                    {' '}
++                                    {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.finding}
++                                  </Text>
++                                </Text>
++                              )}
++                              {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.procedure && (
++                                <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
++                                  {global.i18n.t('Medical_procedures')}:
++                                  <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, { fontStyle: 'italic' }]}>
++                                    {' '}
++                                    {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.procedure}
++                                  </Text>
++                                </Text>
++                              )}
++                              {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.action && (
++                                <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
++                                  {global.i18n.t('follow_up')}:
++                                  <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, { fontStyle: 'italic' }]}>
++                                    {' '}
++                                    {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.action}
++                                  </Text>
++                                </Text>
++                              )}
++                              {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.notes && (
++                                <Text style={styles.medicalLatestUpdateRecord_textComponent_text}>
++                                  {global.i18n.t('other')}:
++                                  <Text style={[styles.medicalLatestUpdateRecord_textComponent_text, { fontStyle: 'italic' }]}>
++                                    {' '}
++                                    {state.consultationData?.medicalLatestUpdateRecord?.latestValue?.notes}
++                                  </Text>
++                                </Text>
++                              )}
++                            </View>
++                          );
++                          setCommonAlertModalConfirmTxt(global.i18n.t('confirm'));
++                          setCommonAlertModalCancelTxt('');
++                          setShowCommonAlertModal(true);
++                          setButtonDirection(ButtonDirection.HORIZONTAL);
++                          refOnConfirm.current = () => {
++                          };
++                        }}
++                      >
++                        <Image source={medicalLatestUpdateRecord_img} style={styles.medicalLatestUpdateRecord_img}></Image>
++                        <Text style={styles.medicalLatestUpdateRecord_Text}>{global.i18n.t('Last Modified Record')}</Text>
++                      </TouchableOpacity>
++                    )}
++                  </View>
++                  {renderMedicalRecordsCard(item)}
++                </View>
++              )
++            })
++          ) : null
++        }
++      </>
+     );
+   };
+   /**
+@@ -2343,10 +2249,8 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+       </View>
+     );
+   };
+-
+   // 跟踪 TabBar ScrollView 的当前滚动位置
+   const tabBarScrollX = useRef<number>(0);
+-
+   // 畫 通話記錄 整體模块
+   const renderCallHistoryContainer = () => {
+     return (
+@@ -2365,7 +2269,6 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+       </View>
+     );
+   };
+-
+   const renderThreeBts = () => {
+     console.log('DiagnosisPage.tsx renderThreeBts state.patients=', state.patients);
+     return state.patients && (
+@@ -2425,14 +2328,44 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+                 {renderPatientInfoContainer()}
+                 {/*選擇病人*/}
+                 {/* {renderSelectPaientBt()} */}
++                {/*新增診症 按鈕*/}
++                {state.patients && state.canDiagnostics && state.consultationData && (
++                  <TouchableOpacity
++                    style={styles.addConsultationBt}
++                    onPress={() => {
++                      console.log('renderMedicalRecordsContainer onPress routes.CreateConsultationPage.routeName');
++                      // routes.navigate(navigation, routes.CreateConsultationPage.routeName, {
++                      //   pageData: {
++                      //     patients: state.patients,
++                      //     type: 0, //0新增 1編輯
++                      //     barIndex: 0,
++                      //     appointmentId: state.patients.id,
++                      //     from: routes.DiagnosisPage.routeName,
++                      //   },
++                      // });
++                      navigationRef?.navigate(routes.CreateConsultationPage.routeName, {
++                        pageData: {
++                          patients: state.patients,
++                          type: 0, //0新增 1編輯
++                          barIndex: 0,
++                          appointmentId: state.patients.id,
++                          from: routes.DiagnosisPage.routeName,
++                        },
++                      });
++                    }}
++                  >
++                    <Text style={styles.addConsultationBtText}>{global.i18n.t('New_diagnosis')}</Text>
++                  </TouchableOpacity>
++                )}
+                 {/*診症記錄 模块*/}
+                 {renderMedicalRecordsContainer()}
+                 {/*帳單記錄 模块*/}
+-                {renderBillingRecordsContainer()}
+-                {/*病人健康信息 模块*/}
+-                {renderPatientHealthInfoContainer()}
++                {/* {renderBillingRecordsContainer()} */}
++                {/*病人健康信息 模块 */}
++                {/* https://app.clickup.com/t/8553538/TECH-8063?comment=90180211132684&threadedComment=90180211135153 */}
++                {/* {renderPatientHealthInfoContainer()} */}
+                 {/*通話記錄 模块*/}
+-                {renderCallHistoryContainer()}
++                {/* {renderCallHistoryContainer()} */}
+               </ScrollView>
+               {renderMoreModal()}
+             </View>

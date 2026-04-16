@@ -1,0 +1,53 @@
+---
+pid: 33160
+cwd: "D:\\work\\RN\\csx-mobile-upgrade"
+command: "Set-Location \"D:/work/RN/csx-mobile-upgrade\"; npx tsc --noEmit 2>&1 | Select-Object -First 40"
+started_at: 2026-04-16T11:45:28.310Z
+running_for_ms: 30017    
+---
+src/actions/csxlanguageActions.ts(23,28): error TS7006: Parameter 'day' implicitly has an 'any' type.
+src/actions/csxlanguageActions.ts(39,29): error TS7006: Parameter 'languageCode' implicitly has an 'any' type.
+src/api/api.ts(8,27): error TS7016: Could not find a declaration file for module 'crypto-js'. 'D:/work/RN/csx-mobile-upgrade/node_modules/crypto-js/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/crypto-js` if it exists or add a new declaration (.d.ts) file containing `declare module 'crypto-js';`
+src/api/api.ts(91,37): error TS2345: Argument of type 'string' is not assignable to parameter of type '"AddAppointment"'.
+src/api/api.ts(242,20): error TS2339: Property 'name' does not exist on type '{}'.
+src/api/api.ts(243,23): error TS2339: Property 'message' does not exist on type '{}'.
+src/api/api.ts(244,25): error TS2339: Property 'isTimeout' does not exist on type '{}'.
+src/api/api.ts(245,21): error TS2339: Property 'stack' does not exist on type '{}'.
+src/api/api.ts(248,30): error TS2339: Property 'name' does not exist on type '{}'.
+src/api/api.ts(249,14): error TS2339: Property 'isTimeout' does not exist on type '{}'.
+src/api/api.ts(250,14): error TS2339: Property 'message' does not exist on type '{}'.
+src/api/api.ts(251,14): error TS2339: Property 'name' does not exist on type '{}'.
+src/api/api.ts(258,25): error TS2339: Property 'name' does not exist on type '{}'.
+src/api/api.ts(278,31): error TS2339: Property 'name' does not exist on type '{}'.
+src/api/api.ts(279,29): error TS2339: Property 'name' does not exist on type '{}'.
+src/api/api.ts(280,30): error TS2339: Property 'name' does not exist on type '{}'.
+src/api/api.ts(383,7): error TS7053: Element implicitly has an 'any' type because expression of type '"finished"' can't be used to index type '{ clinicId: string; doctorId: string; }'.
+  Property 'finished' does not exist on type '{ clinicId: string; doctorId: string; }'.
+src/api/api.ts(386,7): error TS7053: Element implicitly has an 'any' type because expression of type '"consulted"' can't be used to index type '{ clinicId: string; doctorId: string; }'.
+  Property 'consulted' does not exist on type '{ clinicId: string; doctorId: string; }'.
+src/api/api.ts(405,75): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/api/api.ts(405,82): error TS7006: Parameter 'arr' implicitly has an 'any' type.
+src/api/api.ts(645,52): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ id: string; showTemporaryData: boolean; }'.
+  No index signature with a parameter of type 'string' was found on type '{ id: string; showTemporaryData: boolean; }'.
+src/api/api.ts(710,44): error TS7031: Binding element 'pageIndex' implicitly has an 'any' type.
+src/api/api.ts(711,44): error TS7031: Binding element 'idType' implicitly has an 'any' type.
+src/api/api.ts(712,44): error TS7031: Binding element 'contract' implicitly has an 'any' type.
+src/api/api.ts(713,44): error TS7031: Binding element 'insuranceNo' implicitly has an 'any' type.
+src/api/api.ts(714,44): error TS7031: Binding element 'referral' implicitly has an 'any' type.
+src/api/api.ts(715,44): error TS7031: Binding element 'referralCategory' implicitly has an 'any' type.
+src/api/api.ts(716,44): error TS7031: Binding element 'doctorInCharge' implicitly has an 'any' type.
+src/api/api.ts(760,46): error TS7031: Binding element 'patientId' implicitly has an 'any' type.
+src/api/api.ts(761,46): error TS7031: Binding element 'remarks' implicitly has an 'any' type.
+src/api/api.ts(762,46): error TS7031: Binding element 'pageIndex' implicitly has an 'any' type.
+src/api/api.ts(763,46): error TS7031: Binding element 'clinicId' implicitly has an 'any' type.
+src/api/api.ts(764,46): error TS7031: Binding element 'doctorId' implicitly has an 'any' type.
+src/api/api.ts(765,46): error TS7031: Binding element 'startDate' implicitly has an 'any' type.
+src/api/api.ts(766,46): error TS7031: Binding element 'endDate' implicitly has an 'any' type.
+src/api/api.ts(805,83): error TS2366: Function lacks ending return statement and return type does not include 'undefined'.
+
+---
+exit_code: 4294967295
+elapsed_ms: 31031
+ended_at: 2026-04-16T11:45:59.341Z
+---
