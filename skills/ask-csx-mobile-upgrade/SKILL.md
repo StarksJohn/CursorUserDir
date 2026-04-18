@@ -166,7 +166,7 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
   
 - MAC
   <!-- - 需要你在`/Users/stark/Desktop/work/RN/csx-mobile`目录执行`yarn start`+ `npx react-native run-ios --simulator "iPhone 17 Pro" --no-packager` 把当前项目的debug模式的app运行到IOS的模拟器里 -->
-  - `/Users/stark/Desktop/work/RN/csx-mobile/src/pages/AppointmentListPage/AppointmentListPage.tsx` 页面 是不是禁用了 IOS 从 屏幕左侧滑动退出页面的手势? 我在 ![img_164135.png](img_164135.png) 如图模拟器里 的这个页面从屏幕左侧 往右无法滑动
   
 - WIN:
-  <!-- - 当前电脑已经在 `/Users/stark/Desktop/work/RN/csx-mobile` 目录执行 `npx react-native run-android` 把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 东八区 -->
+  - 当前电脑已经在 `/Users/stark/Desktop/work/RN/csx-mobile` 目录执行 `npx react-native run-android` 把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区`
+    - `D:\work\RN\csx-mobile-upgrade\src\pages\Diagnosis\DiagnosisPage.tsx`的 renderTabBar 函数绘制的组件在未显示时也会遮挡住 renderSelectPatientBt 函数绘制的组件,帮我解决这个问题
