@@ -171,7 +171,7 @@ description: 作为 CircleApp（CircleAppNew）React Native 仓库的会话入�
 
 ## 当前活跃需求
 
-- **Android / Google Play — 16KB 内存页大小**  
+<!-- - **Android / Google Play — 16KB 内存页大小**  
   - 场景：在 `android` 下构建 **prodRelease** AAB 并上传 Play Console 后出现 **Does not support 16 KB** / 原生库未对齐 16KB 页面等提示。  
     - 之前的具体报错是 Libraries that do not support 16 KB:
       base/lib/arm64-v8a/libHealthyMonitor.so
@@ -269,11 +269,13 @@ description: 作为 CircleApp（CircleAppNew）React Native 仓库的会话入�
   - **本仓库事实源**：优先阅读并维护 `{workspace}/16KB_PAGE_SIZE_SOLUTION_GUIDE.md`（若已存在则以其为流程与结论主文档）。  
   - **可参考先例**：`D:\work\RN\amber-medical-app-rn\16KB_PAGE_SIZE_SOLUTION_GUIDE.md` 中的解决思路（迁移到本仓库时需按当前 Gradle、NDK、依赖版本调整）。  
   - 具体涉及的 `.so` 列表以 **Play 报错或本地分析结果** 为准，不必在 skill 内重复冗长清单。
-  - 我现在需要升级这个 `Linktop SDK` , 是不是在 `https://linktop.com/contact-with-us/`里 发送邮件到 `service@linktop.com`?
-    - 如图![img_180208.png](img_180208.png),但我已经在2026-02-14发过邮件了,为什么他们没回复? 还有没有其它渠道可以联系他们获取最新SDK?
-  - 把你每轮的回答都用最精简的内容更新到 `D:\work\RN\CircleAppNew\16KB_PAGE_SIZE_SOLUTION_GUIDE.md`,保证每次开启新的chat后,都可以借助 这个文档 恢复这个项目的最小必要上下文;不要修改 `C:\Users\Stark8964911\.cursor\skills\ask-CircleAppNew\SKILL.md`的 `当前活跃需求` 里的内容
+  - 把你每轮的回答都用最精简的内容更新到 `D:\work\RN\CircleAppNew\16KB_PAGE_SIZE_SOLUTION_GUIDE.md`,保证每次开启新的chat后,都可以借助 这个文档 恢复这个项目的最小必要上下文;不要修改 `C:\Users\Stark8964911\.cursor\skills\ask-CircleAppNew\SKILL.md`的 `当前活跃需求` 里的内容 -->
+
+<!-- - 在 `D:\work\RN\CircleAppNew` 目录执行
+  - `cd android; .\gradlew assembleRelease`
+    -  `npm run android:dev_win` 把当前项目的debug模式 -->
+  <!-- - 的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区` -->
+
+- 我现在想 构建 这个项目的 prod 环境的 `.aab` 文件 ; 是否需要先 copy `.env.production` to `.env`,再 执行 `./gradlew bundleProdRelease `; 还是直接执行  `./gradlew bundleProdRelease `?
 
 
-<!-- 以下留作短期任务勾选；完成后可清空或改为一句指针到仓库 Issue/文档 -->
-
-- （待补充）

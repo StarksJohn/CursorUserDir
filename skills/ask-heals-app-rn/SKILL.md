@@ -118,4 +118,12 @@ description: Heals React Native 医疗应用（heals-app-rn）的会话入口与
 - 不把其他项目（如 MyStartup、figma-to-rn-toolkit）的假设混入本仓库
 
 ## 当前活跃需求
-- 
+- 当前电脑已经在 `D:\work\RN\heals-app-rn` 目录执行 `npm run android:dev:win` 把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区`
+  - 在 `D:\work\RN\heals-app-rn\src\screens\heals-plan-membership\heals-plan-membership.tsx`执行![img_191608.png](img_191608.png)时, 340行输出 ![img_191746.png](img_191746.png);然后进入 `D:\work\RN\heals-app-rn\src\screens\product-waiting-room\product-waiting-room.tsx`页面,一开始页面加载的URL是 `D:\work\RN\heals-app-rn\src\components\webView-comp\webView-comp.tsx`的34行输出的`https://payment-stg.heals.asia/payment/cf7fa1b9-b036-4ef4-8198-0ab5c8866fc7?lang=en`,页面显示 ![img_192216.png](img_192216.png);然后点击 `Pay Now`按钮后,页面跳转到`D:\work\RN\heals-app-rn\src\components\webView-comp\webView-comp.tsx`的22行输出的 ![img_192518.png](img_192518.png),这个流程没问题;
+  - 但是 在另外一个公司用 原生kotlin写的app里, 也在`https://payment-stg.heals.asia/payment/cf7fa1b9-b036-4ef4-8198-0ab5c8866fc7?lang=en`页面点击`Pay Now`按钮后,则跳转到了![img_193352.png](img_193352.png)这个报错的H5页面,为什么?我们公司的同事说可以添加如下代码解决:
+    - add this in AndroidManifest.xml: <uses-permission android:name="android.permission.INTERNET" />
+    - 他的`sample kotlin code`在`C:\Users\Stark8964911\Downloads\MainActivity.kt`
+    - 你觉得他的这套代码可以解决这个问题吗?
+  - 如图 ![img_193331.png](img_193331.png) ![img_193407.png](img_193407.png)是之前他们讨论的上下文
+  - 你怎么解决这个问题, 是不是 他们的原生安卓app的webview的`http header`没有传referrer, user-agent?还是其它原因?
+  - 
