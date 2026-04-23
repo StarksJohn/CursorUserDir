@@ -15,6 +15,14 @@
       "userIntent": {
         "type": "string",
         "description": "A description of what the user is trying to accomplish with this tool call. Important: Do not add extraneous information other than what the user provides."
+      },
+      "planKey": {
+        "type": "string",
+        "description": "Optional. The team or organization key where the generated diagram file should be saved. The key must start with \"team::\" or \"org::\", but do not use these abbreviations in user-facing messages."
+      },
+      "savePlanKey": {
+        "type": "boolean",
+        "description": "Optional. Indicates whether to use the same plan for future generations. Do not provide this parameter unless the user specifically requests it, and a planKey is also provided."
       }
     },
     "required": [
@@ -25,5 +33,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#"
   },
   "plugin": "figma",
-  "marketplace": "cursor-public"
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
 }
