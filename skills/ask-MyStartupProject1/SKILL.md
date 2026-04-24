@@ -105,8 +105,11 @@ description: 为 D:/work/MyStartupProject1 提供 BMAD 项目总控，覆盖从 
 
 ## 项目当前状态来源
 - 项目当前阶段、候选方向、竞品结论、排除理由、下一步，统一以 `D:/work/MyStartupProject1/项目主档案.md` 为准
+- Story 级进度、Sprint 状态、下一条应处理的 story，统一以 `D:/work/MyStartupProject1/stories/sprint-status.yaml` 为准
 - 本技能不再重复维护会频繁变化的项目事实，只保留 `工作流`、`路由规则`、`输出模板`、`边界`
-- 若新 chat 需要恢复项目上下文，先读 `D:/work/MyStartupProject1/项目主档案.md`，再按本技能继续推进
+- 若新 chat 需要恢复项目上下文，默认读取顺序为：先读 `D:/work/MyStartupProject1/项目主档案.md` 定位大阶段，再读 `D:/work/MyStartupProject1/stories/sprint-status.yaml` 定位单 story 状态，再按本技能继续推进
+- 已进入 `功能开发` 阶段后，`sprint-status.yaml` 的权重高于 `项目主档案.md` 中的阶段描述；两者冲突时，以 `sprint-status.yaml` 中最近一条 `in-progress` 或第一条 `backlog` 为实际下一步
+- `bmad-create-story` 完成后必须把对应 story key 从 `backlog` 更新为 `ready-for-dev`；`bmad-dev-story` / `bmad-agent-dev` 完成后必须把对应 story key 更新为 `code-review` 或 `done`；不允许只改项目主档案.md 不改 `sprint-status.yaml`
 - 每次执行完与本项目有关的任务后，都要把 `本轮任务结论` 用最精简、可恢复上下文的方式更新到 `D:/work/MyStartupProject1/项目主档案.md`
 - 若本轮任务改变了 `当前阶段`、`候选方向`、`主线优先级`、`竞品结论`、`排除理由`、`下一步` 中任一项，默认视为必须回写主文档，不能只留在聊天回复里
 - 每次确认了新的 `整体第一优先总主线` 后，主文档里必须明确写出两类信息：`为什么推荐这个新主线方向`、`这个新主线方向需要做哪些功能`
@@ -209,6 +212,44 @@ description: 为 D:/work/MyStartupProject1 提供 BMAD 项目总控，覆盖从 
 - 未明确 `发布步骤 + 回滚预案` 前，不要把项目视为可上线
 - 若用户在任一阶段提出的新问题 `推翻了当前阶段的关键前提`，必须 `自动回退` 到最近一个仍然有效的上游阶段
 - 回退优先于继续推进；不要为了保持流程向前而忽略新的反例、风险或否定信号
+
+## 单 story 迭代循环（功能开发阶段默认节奏）
+
+一旦项目进入 `功能开发`（即 `sprint-status.yaml` 至少有 1 条 `ready-for-dev`、`in-progress` 或 `code-review`），默认节奏切换为 `单 story 迭代循环`，而不是继续批量生成 story。
+
+### 默认循环
+
+按下面 4 步为一个循环单元，循环到当前 epic 的 story 全部 `done`：
+
+1. `bmad-create-story`：为 `sprint-status.yaml` 中的下一条 `backlog` story 生成规格，状态置为 `ready-for-dev`
+2. `bmad-dev-story` 或 `bmad-agent-dev`：对最新的 `ready-for-dev` story 进行实现，状态置为 `in-progress`；实现完成后置为 `code-review`
+3. `bmad-code-review` 或 `code-review`（轻量，推荐非强制）：对本条 story 的增量做一次审查，状态置为 `done`；若选择跳过，也要在 `sprint-status.yaml` 标注 `done`
+4. 返回第 1 步，处理下一条 `backlog`
+
+### 默认约束
+
+- 默认串行，不批量：一条 story 未落地前，不提前生成后续 story 的规格
+- 新生成 story 的 Dev Notes 必须优先引用已存在的真实代码锚点（例如 `src/app/(marketing)/layout.tsx:12-34`），不得只引用架构文档里的"假设路径"
+- 每次 `create-story` 启动前，先快速扫一遍前一条 story 实际落地了哪些文件与偏差，把"真实代码现状"写进下一条 story 的 Dev Notes
+- 单 story 落地后的 `code-review` 默认只审本条 story 的增量变更，不要求覆盖全仓回归
+- 同一 epic 内的 story 必须按 `sprint-status.yaml` 排序处理，不允许跨 epic 乱序
+
+### 允许批量的例外
+
+仅在以下 3 种情况可以临时切换为「批量生成多条 story」：
+
+1. 有并行开发者，需要同时拿到多条 `ready-for-dev` 的 story backlog
+2. 当前 epic 的不确定性极低（例如纯文档类、纯静态内容类、已有原型代码可直接对照）
+3. 用户明确要求「一次生成多条 story」或「并行推进 story 1.x - 1.y」
+
+除以上 3 种情况外，默认拒绝批量生成；若 agent 不确定，先问一句"是否要切换为批量生成"，再继续。
+
+### 何时跳出循环
+
+- 当前 epic 所有 story 均已 `done`：回到 `bmad-retrospective` 做 epic 复盘，或按 `sprint-status.yaml` 进入下一个 epic 的第一条 story
+- 实现过程中发现 story 拆解不合理：回退到 `需求拆解`，更新 `epics.md` 与 `sprint-status.yaml` 后再继续
+- 实现过程中发现架构决策有误：回退到 `技术方案`，更新 `技术架构详细设计.md` 后再继续
+- 实现过程中发现需求假设被推翻：按本技能的 `自动回退规则` 回到最近仍有效的上游阶段
 
 ## 生命周期状态机
 这是本项目默认采用的 BMAD 生命周期状态机；除非用户明确要求跳步，否则按这个顺序推进。
@@ -367,6 +408,12 @@ description: 为 D:/work/MyStartupProject1 提供 BMAD 项目总控，覆盖从 
 - 未完成 `自动测试 / 回归验证`：不要进入 `正式上线`
 - 未确认 `发布清单 + 回滚预案`：不要执行 `线上发布`
 - 未完成 `上线后跟踪`：不要直接给出 `增长结论`
+
+### code-review 门禁
+- `code-review` 有两种使用场景，不要混用：
+  - `单 story 迭代循环` 中，**推荐（非强制）** 在每条 story 落地后跑一次轻量 `code-review`，只审本条 story 的增量；用户可显式跳过，但必须在 `sprint-status.yaml` 明确把该 story 标为 `done`
+  - `发布准备与上线` 前，**强制**跑一次完整 `code-review`，覆盖发布范围内所有增量，不允许跳过
+- 不要在 story 尚未 `in-progress` 前跑 `code-review`；也不要用发布前的 `code-review` 替代单 story 的轻量审查
 
 ## 自动回退规则
 当用户在某个阶段提出的新信息、质疑或反例，导致当前阶段结论不再成立时，必须自动回退到上一个合适阶段，而不是继续往下推进。
