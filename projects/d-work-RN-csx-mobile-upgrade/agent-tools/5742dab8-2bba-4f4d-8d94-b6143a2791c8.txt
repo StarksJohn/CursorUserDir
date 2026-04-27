@@ -1,0 +1,1524 @@
+diff --git a/src/api/api.ts b/src/api/api.ts
+index c7a2f402..2a888104 100644
+--- a/src/api/api.ts
++++ b/src/api/api.ts
+@@ -28,7 +28,7 @@ import {
+ import {Patient_Query} from 'api/api-types';
+ import {Data} from 'components/CsxFlatList/CsxFlatList';
+ import {Alert, Platform} from 'react-native';
+-import {SickLeaveContent, waitingListItem} from 'tools/AllInterface';
++import {BillingData, SickLeaveContent, waitingListItem} from 'tools/AllInterface';
+ import {globalEventName, useGlobalEventEmitter} from 'tools/useGlobalEventEmitter';
+ import DeviceInfo from "react-native-device-info";
+ import {logUtils} from 'useHooks/useLogStorage/useLogStorage.ts';
+@@ -2803,7 +2803,7 @@ export const get_consultation_setting = async (p: {}): Promise<get_consultation_
+     }
+     return Promise.reject(null);
+   } catch (error) {
+-    console.error('get_consultation_setting error=', error);
++    console.error('api get_consultation_setting error=', error);
+     return Promise.reject(null);
+   }
+ };
+@@ -4519,30 +4519,30 @@ export const updateConsultation = async (input: string) => {
+   }
+ };
+ //帳單記錄
+-export const billingsList = async (patientCode: string, pageIndex: number, pageSize: number) => {
++export const billingsList = async (patientCode: string, pageIndex: number, pageSize: number): Promise<BillingData[] | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/billings/v1/list';
+     console.log('api billingsList url=', url);
+     const body = {patientCode, pageIndex, pageSize};
+     console.log('api billingsList body=', body);
+-    let response = await fetch(url, {
++    const response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+-    console.log('billingsList response=', response);
++    console.log('api billingsList response=', response);
+     if (!response.ok) {
+-      return null;
++      return Promise.reject(null);
+     }
+-    let json = await response.json();
++    const json = await response.json();
+     console.log('api billingsList json=', json);
+     if (json.code === 0 || json.code === 200) {
+-      return json.data;
++      return Promise.resolve(json.data.items as BillingData[]);
+     }
+-    return null;
++    return Promise.reject(null);
+   } catch (error) {
+     console.error('api billingsList error=', error);
+-    return null;
++    return Promise.reject(null);
+   }
+ };
+ /**
+diff --git a/src/components/BillingRecordsCard/BillingRecordsCard.tsx b/src/components/BillingRecordsCard/BillingRecordsCard.tsx
+index a6dfe65a..27223213 100644
+--- a/src/components/BillingRecordsCard/BillingRecordsCard.tsx
++++ b/src/components/BillingRecordsCard/BillingRecordsCard.tsx
+@@ -6,7 +6,7 @@ import {pageProps} from 'csxRoutes/csxRouter';
+ import React, {forwardRef, memo, useEffect, useImperativeHandle, useMemo, useState} from 'react';
+ import {Text, TouchableOpacity, View} from 'react-native';
+ import {useDispatch, useSelector} from 'react-redux';
+-import {BillingData} from 'tools/AllInterface';
++import {AppointmentCard, BillingData, waitingListItem} from 'tools/AllInterface';
+ import tool from 'tools/tool';
+ import {globalEventName, useGlobalEventEmitter} from 'tools/useGlobalEventEmitter';
+ import type {Theme} from 'types/Theme';
+@@ -17,8 +17,8 @@ import {ConsultationQueryPage_item} from "api/api-types.ts";
+ interface Props extends pageProps {
+   billingData: BillingData;
+   index: number;
+-  patients: object;
+-  onPress?: () => {};
++  patients: waitingListItem | AppointmentCard | null;
++  onPress?: () => void;
+   canDiagnostics: boolean; //
+ }
+ 
+diff --git a/src/i18n/locale/en.ts b/src/i18n/locale/en.ts
+index b3a03adf..f711a0d0 100644
+--- a/src/i18n/locale/en.ts
++++ b/src/i18n/locale/en.ts
+@@ -991,5 +991,6 @@ const en = {
+   MedicalRecordSaveSuccess: 'Medical record archiving successful',
+   AddPrescriptionForDiagnosis: 'Do you need to prescribe medication for this diagnosis?',
+   NotNeed: 'Not needed',
++  'No records': 'No records',
+ };
+ export default en;
+diff --git a/src/i18n/locale/jp.ts b/src/i18n/locale/jp.ts
+index 9eae7c34..d9bd4252 100644
+--- a/src/i18n/locale/jp.ts
++++ b/src/i18n/locale/jp.ts
+@@ -982,5 +982,6 @@ const jp = {
+   MedicalRecordSaveSuccess: 'カルテのアーカイブに成功しました',
+   AddPrescriptionForDiagnosis: 'この診察のために処方箋を出す必要があるかどうか?',
+   NotNeed: 'しばらくは必要ない',
++  'No records': '記録はありません',
+ };
+ export default jp; //日語
+diff --git a/src/i18n/locale/ph.ts b/src/i18n/locale/ph.ts
+index 6cec97c1..2e1f6a59 100644
+--- a/src/i18n/locale/ph.ts
++++ b/src/i18n/locale/ph.ts
+@@ -995,5 +995,6 @@ export default {
+   MedicalRecordSaveSuccess: 'Ang pag-archive ng mga medikal na talaan ay matagumpay',
+   AddPrescriptionForDiagnosis: 'Kailangan mo bang isulat ng medikasyon para sa diagnosis na ito?',
+   NotNeed: 'Hindi kailangan sa ngayon',
++  'No records': 'Walang mga rekord',
+ };
+ // 菲律賓語
+diff --git a/src/i18n/locale/th.ts b/src/i18n/locale/th.ts
+index a301eb93..c6898d3d 100644
+--- a/src/i18n/locale/th.ts
++++ b/src/i18n/locale/th.ts
+@@ -976,5 +976,6 @@ export default {
+   MedicalRecordSaveSuccess: 'แฟ้มประวัติทางการแพทย์ที่ประสบความสำเร็จ',
+   AddPrescriptionForDiagnosis: 'ไม่ว่าจะเป็นความจำเป็นในการกำหนดใบสั่งยาสำหรับคลินิกนี้?',
+   NotNeed: 'ไม่จำเป็นในขณะนี้',
++  'No records': 'ไม่มีข้อมูล',
+ };
+ // 泰語
+diff --git a/src/i18n/locale/vn.ts b/src/i18n/locale/vn.ts
+index 0332df40..ef533e1a 100644
+--- a/src/i18n/locale/vn.ts
++++ b/src/i18n/locale/vn.ts
+@@ -980,5 +980,6 @@ export default {
+   MedicalRecordSaveSuccess: 'Hồ sơ bệnh án thành công',
+   AddPrescriptionForDiagnosis: 'Có cần kê đơn cho bệnh này không?',
+   NotNeed: 'Tạm thời không cần',
++  'No records': 'Không có dữ liệu',
+ };
+ // 越南語
+diff --git a/src/i18n/locale/zh.ts b/src/i18n/locale/zh.ts
+index c01be494..c3952c72 100644
+--- a/src/i18n/locale/zh.ts
++++ b/src/i18n/locale/zh.ts
+@@ -972,5 +972,6 @@ const zh = {
+   MedicalRecordSaveSuccess: '病历存档成功',
+   AddPrescriptionForDiagnosis: '是否需要为该诊症开药方?',
+   NotNeed: '暂不需要',
++  'No records': '暂无记录',
+ };
+ export default zh;
+diff --git a/src/i18n/locale/zh_tw.ts b/src/i18n/locale/zh_tw.ts
+index c3f8ab8a..4358b9cb 100644
+--- a/src/i18n/locale/zh_tw.ts
++++ b/src/i18n/locale/zh_tw.ts
+@@ -539,19 +539,19 @@ const zh_tw = {
+   'Immune Record': '免疫記錄',
+   add_mobile_phone: '+ 新增無線電話',
+   add_telephone: '+ 新增電話',
+-  'Edit Health Data':'編輯健康數據',
++  'Edit Health Data': '編輯健康數據',
+   later: '稍後',
+   start: '啟動',
+-  'First login':'第一次登錄',
+-  'Kind reminder':'溫馨提示',
++  'First login': '第一次登錄',
++  'Kind reminder': '溫馨提示',
+   'warm_reminder': '溫馨提示',
+-  'Please scan the QR code via':'請通過 Clinic Solution 電腦端路徑：首頁 - 設置 - CS Mobile 進行掃描二維碼',
+-  'Scan the QR code displayed on CSX to log in':'掃描 CSX 顯示的二維碼進行登錄',
+-  'Verify account password':'驗證賬戶密碼',
+-  'Bind mobile number':'綁定手機號碼',
+-  'To log in to CSM for the first time':'首次登錄 CSM，需驗證 CSX 賬戶的密碼',
+-  'Please enter the password for':'請輸入 {{str}}  的密碼確認身分',
+-  'Please enter your account password':'請輸入賬戶密碼',
++  'Please scan the QR code via': '請通過 Clinic Solution 電腦端路徑：首頁 - 設置 - CS Mobile 進行掃描二維碼',
++  'Scan the QR code displayed on CSX to log in': '掃描 CSX 顯示的二維碼進行登錄',
++  'Verify account password': '驗證賬戶密碼',
++  'Bind mobile number': '綁定手機號碼',
++  'To log in to CSM for the first time': '首次登錄 CSM，需驗證 CSX 賬戶的密碼',
++  'Please enter the password for': '請輸入 {{str}}  的密碼確認身分',
++  'Please enter your account password': '請���入賬戶密碼',
+   'Your CSM account is not currently linked to a mobile number': '您的 CSM 賬戶當前未綁定手機號碼',
+   'Please enter your mobile number and verify the one-time password to bind': '請輸入手機號碼，並驗證一次性密碼後進行綁定',
+   Please_enter_mobile_number: '請輸入手機號碼',
+@@ -961,7 +961,7 @@ const zh_tw = {
+   NumberOfFoetusInObstetricUltrasound: '超音波檢查胎兒數量',
+   FoetalOrderInObstetricUltrasound: '超音波中的胎兒順序',
+   FoetalCrownRumpLength: '胎兒頭臀長',
+-  FoetalBiparietalDiameter:'胎兒雙頂徑',
++  FoetalBiparietalDiameter: '胎兒雙頂徑',
+   FoetalHeadCircumference: '胎兒頭圍',
+   FoetalAbdominalCircumference: '胎兒腹圍',
+   FoetalFemurLength: '胎兒股骨長',
+@@ -970,5 +970,6 @@ const zh_tw = {
+   MedicalRecordSaveSuccess: '病曆存檔成功',
+   AddPrescriptionForDiagnosis: '是否需要爲該診症開藥方?',
+   NotNeed: '暫不需要',
++  'No records': '暫無記錄',
+ };
+ export default zh_tw;
+diff --git a/src/pages/Diagnosis/DiagnosisPage.styles.ts b/src/pages/Diagnosis/DiagnosisPage.styles.ts
+index 582e7256..52102bab 100644
+--- a/src/pages/Diagnosis/DiagnosisPage.styles.ts
++++ b/src/pages/Diagnosis/DiagnosisPage.styles.ts
+@@ -13,6 +13,9 @@ const createStyles = () => {
+   console.log('DiagnosisPage.styles.ts EStyleSheet.value("$background"):', EStyleSheet.value('$background'));
+ 
+   return EStyleSheet.create({
++    loadingBillingRecordsContainerIndicator: {
++      marginTop: '12rem',
++    },
+     openOrCloseBtIcon: {
+       marginLeft: '4rem',
+       marginTop: '4rem',
+@@ -174,11 +177,10 @@ const createStyles = () => {
+       color: '$grayText',
+     },
+     noBillingRecordsCard: {
+-      marginTop: '12rem',
+-      width: '361rem',
+-      height: '68rem',
+-      backgroundColor: $theme === 'light' ? EStyleSheet.value('$background') : EStyleSheet.value('$lightGray'),
+-      borderRadius: '12rem',
++      marginTop: '174rem',
++      width: '100%',
++      backgroundColor: 'transparent',//$theme === 'light' ? EStyleSheet.value('$background') : EStyleSheet.value('$lightGray'),
++      // borderRadius: '12rem',
+       justifyContent: 'center',
+       alignItems: 'center',
+     },
+@@ -360,7 +362,7 @@ const createStyles = () => {
+       ...borderStyle,
+     },
+     selectPaientBtRow: {
+-      marginTop: '8rem',
++      marginTop: '6rem',
+       width: '360rem',
+       height: '36rem',
+       backgroundColor: $theme === 'light' ? EStyleSheet.value('$background') : EStyleSheet.value('$lightGray'),
+diff --git a/src/pages/Diagnosis/DiagnosisPage.tsx b/src/pages/Diagnosis/DiagnosisPage.tsx
+index 1bc3c28b..84b6b27b 100644
+--- a/src/pages/Diagnosis/DiagnosisPage.tsx
++++ b/src/pages/Diagnosis/DiagnosisPage.tsx
+@@ -11,10 +11,10 @@ import {
+   patient_health_v1_get,
+   waitingList,
+ } from 'api/api';
+-import {AlertIcon, ArrowRight, ArrowUpDown, PatientIcon, TranslucentClock,ArrowUp, ArrowDown} from 'assets/svg/index';
+-import {SafeView} from 'components';
++import { AlertIcon, ArrowRight, ArrowUpDown, PatientIcon, TranslucentClock, ArrowUp, ArrowDown, EmptyIcon } from 'assets/svg/index';
++import { SafeView } from 'components';
+ import BillingRecordsCard from 'components/BillingRecordsCard/BillingRecordsCard';
+-import {ButtonDirection, useCommonAlertModal} from 'components/CommonAlertModal/CommonAlertModalContext';
++import { ButtonDirection, useCommonAlertModal } from 'components/CommonAlertModal/CommonAlertModalContext';
+ import Health_information_of_patient_card from 'components/Health_information_of_patient_card/Health_information_of_patient_card';
+ import MedicalRecordsCard from 'components/MedicalRecordsCard/MedicalRecordsCard';
+ import PageMorebtComp from 'components/PageMorebtComp/PageMorebtComp.tsx';
+@@ -22,12 +22,12 @@ import modalStyles from 'components/common-styles/modal.styles';
+ import scrollViewStyle from 'components/common-styles/scrollView.style';
+ import CommonModal from 'components/commonModal/CommonModal';
+ import commonModalStyle from 'components/commonModal/CommonModal.styles';
+-import {ThemeContext} from 'components/theme/theme-context';
+-import {useThemeProvider} from 'components/theme/theme-provider';
+-import {routes} from 'csxRoutes';
+-import {pageProps} from 'csxRoutes/csxRouter';
++import { ThemeContext } from 'components/theme/theme-context';
++import { useThemeProvider } from 'components/theme/theme-provider';
++import { routes } from 'csxRoutes';
++import { pageProps } from 'csxRoutes/csxRouter';
+ import moment from 'moment/moment';
+-import React, {forwardRef, memo, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react';
++import React, { forwardRef, memo, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+ import {
+   Alert,
+   Animated,
+@@ -42,15 +42,15 @@ import {
+   View,
+   ViewStyle, ActivityIndicator
+ } from 'react-native';
+-import {AppointmentCard, BillingData, waitingListItem} from 'tools/AllInterface';
++import { AppointmentCard, BillingData, waitingListItem } from 'tools/AllInterface';
+ import tool from 'tools/tool';
+-import {globalEventName, useGlobalEventEmitter, useGlobalEventListener} from 'tools/useGlobalEventEmitter';
+-import type {Theme} from 'types/Theme';
+-import {useLanguage} from 'useHooks/useLanguage';
+-import {format_XX_XX_XXXX_DateString, useMomentFormatStr} from 'useHooks/useMomentFormatStr';
++import { globalEventName, useGlobalEventEmitter, useGlobalEventListener } from 'tools/useGlobalEventEmitter';
++import type { Theme } from 'types/Theme';
++import { useLanguage } from 'useHooks/useLanguage';
++import { format_XX_XX_XXXX_DateString, useMomentFormatStr } from 'useHooks/useMomentFormatStr';
+ import createStyles from './DiagnosisPage.styles';
+-import { addpatients, scansmall, searchPatients} from '/icon/icon';
+-import {useLoading} from "components/LoadingModal/LoadingContext.tsx";
++import { addpatients, scansmall, searchPatients } from '/icon/icon';
++import { useLoading } from "components/LoadingModal/LoadingContext.tsx";
+ import { useDispatch } from 'react-redux';
+ 
+ interface pageDataProps {
+@@ -79,13 +79,14 @@ interface StateProps {
+   PastMedicalRecordsData: any; // Use `any` or a more specific type if the structure is known
+   MedicationTakenInPastData: any; // Use `any` or a more specific type if the structure is known
+   patient_health_v1_get: any;
+-  billingData: BillingData | null;
++  billingData: BillingData[] | null;
+   canDiagnostics: boolean; //是否可以診症
+   isToolBarOutOfView: boolean; // 跟踪ToolBar是否完全移出视图
+   currentTab: number;
+   get_consultation_setting: get_consultation_setting_Data | null;
+   consultationQueryPage_items: ConsultationQueryPage_item[] | null;
+   loading_consultationQueryList: boolean;
++  loading_billingsList: boolean;
+ }
+ 
+ interface NavigationBtsProps {
+@@ -110,9 +111,9 @@ interface NavigationBtsProps {
+  * @constructor
+  */
+ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+-  const {navigation, scene, route} = props;
++  const { navigation, scene, route } = props;
+   console.log('DiagnosisPage props=', props);
+-  const {pageData} = route?.params ?? ({} as { pageData?: pageDataProps }); //类型断言
++  const { pageData } = route?.params ?? ({} as { pageData?: pageDataProps }); //类型断言
+   const scrollViewRef = useRef<ScrollView>(null);
+   const targetToolBarRef = useRef<View>(null); // 监听ToolBar
+   const targetPatientInfoCardRef = useRef<View>(null); // 监听PatientInfoCard
+@@ -137,14 +138,14 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+     refOnConfirm,
+     setButtonDirection,
+   } = useCommonAlertModal();
+-  const {setLoading} = useLoading();
++  const { setLoading } = useLoading();
+   const fadeAnim = useRef(new Animated.Value(0)).current;
+   const [state, setState] = useState<StateProps>({
+     patients: (pageData?.patients as waitingListItem | AppointmentCard) || null,
+     pendingDiagnosisCount: 0,
+     // consultationData: null,
+     consultationStatusList: [
+-      {existsAllergy: false, disabled: true},
++      { existsAllergy: false, disabled: true },
+       {
+         existsMedicalHistory: false,
+         disabled: true,
+@@ -153,7 +154,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+         existsImmunization: false,
+         disabled: true,
+       },
+-      {existsHealthData: false, disabled: true},
++      { existsHealthData: false, disabled: true },
+       {
+         existsImage: false,
+         disabled: true,
+@@ -175,8 +176,9 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+     get_consultation_setting: null,
+     consultationQueryPage_items: null,
+     loading_consultationQueryList: false,
++    loading_billingsList: false,
+   });
+-  const {mode, uiTheme, setMode} = useThemeProvider();
++  const { mode, uiTheme, setMode } = useThemeProvider();
+   const styles = useMemo(() => createStyles(), [mode, uiTheme]);
+   const language = useLanguage();
+   const emitEvent = useGlobalEventEmitter();
+@@ -215,12 +217,13 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+       }
+       (
+         async () => {
+-          // setState((prevState) => {
+-          //   return {
+-          //     ...prevState,
+-          //     loading_consultationQueryList: true,
+-          //   };
+-          // });
++          setState((prevState) => {
++            return {
++              ...prevState,
++              currentTab: 0,
++              isToolBarOutOfView: false,
++            };
++          });
+           try {
+             setLoading(true);
+             await _consultationQueryPage();
+@@ -245,7 +248,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+         }
+       )()
+     }
+-  }, [state.patients]); 
++  }, [state.patients]);
+   useGlobalEventListener(
+     globalEventName.changePatientInfo,
+     useCallback(
+@@ -324,13 +327,13 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+     useCallback(
+       async (msg: string) => {
+         console.log('DiagnosisPage.tsx 刷新诊症页面=', { msg, 'state.patients': state.patients });
+-        // state.patients && setState((prevState) => {
+-        //   return {
+-        //     ...prevState,
+-        //     loading_consultationQueryList: true,
+-        //     consultationQueryPage_items: null,
+-        //   };
+-        // });
++        state.patients && setState((prevState) => {
++          return {
++            ...prevState,
++            currentTab: 0,
++            isToolBarOutOfView: false,
++          };
++        });
+         // setLoading(true);
+         try {
+           await _consultationQueryPage();
+@@ -463,7 +466,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+     console.log('DiagnosisPage.tsx GetCurrentEncounterOverview data=', data);
+     if (data) {
+       setState((prevState) => {
+-        return {...prevState, pendingDiagnosisCount: data.queueCount};
++        return { ...prevState, pendingDiagnosisCount: data.queueCount };
+       });
+     }
+   };
+@@ -479,7 +482,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+             consultationStatusList: prevState.consultationStatusList.map((item, index, array) => {
+               switch (index) {
+                 case 0:
+-                  return {...item, existsAllergy: data.existsAllergy, disabled: !data.existsAllergy};
++                  return { ...item, existsAllergy: data.existsAllergy, disabled: !data.existsAllergy };
+                 case 1:
+                   return {
+                     ...item,
+@@ -493,7 +496,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+                     disabled: !data.existsImmunization,
+                   };
+                 case 3:
+-                  return {...item, existsHealthData: data.existsHealthData, disabled: !data.existsHealthData};
++                  return { ...item, existsHealthData: data.existsHealthData, disabled: !data.existsHealthData };
+                 case 4:
+                   return {
+                     ...item,
+@@ -501,7 +504,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+                     disabled: !data.existsImage,
+                   };
+                 case 5:
+-                  return {...item, existsOthers: data.existsOthers, disabled: !data.existsOthers};
++                  return { ...item, existsOthers: data.existsOthers, disabled: !data.existsOthers };
+                 default:
+                   return item;
+               }
+@@ -513,7 +516,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+           return {
+             ...prevState,
+             consultationStatusList: [
+-              {existsAllergy: false, disabled: true},
++              { existsAllergy: false, disabled: true },
+               {
+                 existsMedicalHistory: false,
+                 disabled: true,
+@@ -522,7 +525,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+                 existsImmunization: false,
+                 disabled: true,
+               },
+-              {existsHealthData: false, disabled: true},
++              { existsHealthData: false, disabled: true },
+               {
+                 existsImage: false,
+                 disabled: true,
+@@ -540,7 +543,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+         return {
+           ...prevState,
+           consultationStatusList: [
+-            {existsAllergy: false, disabled: true},
++            { existsAllergy: false, disabled: true },
+             {
+               existsMedicalHistory: false,
+               disabled: true,
+@@ -549,7 +552,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+               existsImmunization: false,
+               disabled: true,
+             },
+-            {existsHealthData: false, disabled: true},
++            { existsHealthData: false, disabled: true },
+             {
+               existsImage: false,
+               disabled: true,
+@@ -741,72 +744,90 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+         </View>
+       )
+     );
+-  }, [state.patients, styles.SectionTitleRow,styles.Medical_records_txt]);
++  }, [state.patients, styles.SectionTitleRow, styles.Medical_records_txt]);
+   // 帳單記錄 row
+-  const renderBillingRecordsRow = () => {
+-    return (
+-      state.patients && (
+-        <View style={styles.SectionTitleRow}>
+-          <Text style={styles.Medical_records_txt}>{global.i18n.t('Billing_records')}</Text>
+-          <TouchableOpacity
+-            style={styles.Show_more_bt}
+-            disabled={!state.billingData}
+-            onPress={() => {
+-              routes.navigate(navigation, routes.BillingRecordsPage.routeName, {
+-                pageData: {
+-                  patients: state?.patients,
+-                },
+-              });
+-            }}
+-          >
+-            <Text
+-              style={[
+-                styles.SectionTitleRowRightText,
+-                !state.billingData && {color: uiTheme.colors.$disabledBtnText},
+-              ]}
+-            >
+-              {global.i18n.t('Show_more')}
+-            </Text>
+-          </TouchableOpacity>
+-          {ArrowRight({color: state.billingData ? uiTheme.colors.$blueTxtColor : uiTheme.colors.$disabledBtnText})}
+-        </View>
+-      )
+-    );
+-  };
++  // const renderBillingRecordsRow = () => {
++  //   return (
++  //     state.patients && (
++  //       <View style={styles.SectionTitleRow}>
++  //         <Text style={styles.Medical_records_txt}>{global.i18n.t('Billing_records')}</Text>
++  //         <TouchableOpacity
++  //           style={styles.Show_more_bt}
++  //           disabled={!state.billingData||state.billingData.length===0}
++  //           onPress={() => {
++  //             routes.navigate(navigation, routes.BillingRecordsPage.routeName, {
++  //               pageData: {
++  //                 patients: state?.patients,
++  //               },
++  //             });
++  //           }}
++  //         >
++  //           <Text
++  //             style={[
++  //               styles.SectionTitleRowRightText,
++  //               (!state.billingData||state.billingData.length===0) && {color: uiTheme.colors.$disabledBtnText},
++  //             ]}
++  //           >
++  //             {global.i18n.t('Show_more')}
++  //           </Text>
++  //         </TouchableOpacity>
++  //         {ArrowRight({color: state.billingData&&state.billingData.length>0 ? uiTheme.colors.$blueTxtColor : uiTheme.colors.$disabledBtnText})}
++  //       </View>
++  //     )
++  //   );
++  // };
+   // 帳單記錄 模塊
+   const renderBillingRecordsContainer = () => {
++    console.log('DiagnosisPage.tsx renderBillingRecordsContainer state=', state);
+     return (
+       <View ref={targetBillingRecordsContainerRef} style={styles.medicalRecordsContainer}>
+         {/* 畫 帳單記錄 row */}
+-        {renderBillingRecordsRow()}
+-        {state.patients && state.billingData && (
++        {/* {renderBillingRecordsRow()} */}
++        {state.loading_billingsList && <ActivityIndicator style={styles.loadingBillingRecordsContainerIndicator} size="small" color={uiTheme.colors.$blueTxtColor} />}
++        {state.patients && state.billingData && state.billingData.length > 0 && (
+           <>
+-            <View style={styles.medicalRecordsTextBox}>
+-              {TranslucentClock()}
+-              <Text style={styles.medicalRecordsText}>
+-                {format_XX_XX_XXXX_DateString(state.billingData.date, formatString)}
+-              </Text>
+-            </View>
+-            <BillingRecordsCard
+-              canDiagnostics={state.canDiagnostics}
+-              billingData={state.billingData}
+-              navigation={navigation}
+-              index={0}
+-              patients={state.patients}
+-              onPress={() => {
+-                if (!state.canDiagnostics) {
+-                  Alert.alert('', global.i18n.t('canDiagnostics'), [
+-                    {text: global.i18n.t('cancel'), style: 'cancel'},
+-                  ]);
+-                  return;
+-                }
+-                routes.navigate(navigation, routes.BillingRecordsPage.routeName, {
+-                  pageData: {
+-                    patients: state?.patients,
+-                  },
+-                });
+-              }}
+-            />
++            {state.billingData.map((item: BillingData, index: number, array: BillingData[]) => {
++              return (
++                <View key={index} onLayout={() => {
++                  if (index === array.length - 1 && state.loading_billingsList) {
++                    console.log('DiagnosisPage.tsx renderBillingRecordsContainer onLayout=', { index });
++                    setState((prevState) => {
++                      return {
++                        ...prevState,
++                        loading_billingsList: false,
++                      };
++                    });
++                  }
++                }}>
++                  <View key={index} style={styles.medicalRecordsTextBox}>
++                    {TranslucentClock()}
++                    <Text style={styles.medicalRecordsText}>
++                      {format_XX_XX_XXXX_DateString(item.date, formatString)}
++                    </Text>
++                  </View>
++                  <BillingRecordsCard
++                    canDiagnostics={state.canDiagnostics}
++                    billingData={item}
++                    navigation={navigation}
++                    index={index}
++                    patients={state.patients}
++                  // onPress={() => {
++                  //   if (!state.canDiagnostics) {
++                  //     Alert.alert('', global.i18n.t('canDiagnostics'), [
++                  //       { text: global.i18n.t('cancel'), style: 'cancel' },
++                  //     ]);
++                  //     return;
++                  //   }
++                  //   routes.navigate(navigation, routes.BillingRecordsPage.routeName, {
++                  //     pageData: {
++                  //       patients: state?.patients,
++                  //     },
++                  //   });
++                  // }}
++                  />
++                </View>
++              )
++            })}
+           </>
+         )}
+         {/* 暫無賬單 card */}
+@@ -862,7 +883,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+         <View ref={targetPatientInfoCardRef} style={styles.patientInfoCard}>
+           {/* <Image style={styles.patientInfoCardImg} source={state.patients ? DiagnosisPage0 : DiagnosisPage0} /> */}
+           <View style={styles.patientInfoCardNameRow}>
+-            {PatientIcon({color: PatientIconColor, width: 26, height: 26})}
++            {PatientIcon({ color: PatientIconColor, width: 26, height: 26 })}
+             <View style={styles.patientInfoCardNameRowNameAndGenderRow}>
+               <Text style={styles.patientInfoCardNameRowNameAndGenderRowText}>
+                 {(state.patients && state.patients?.patientName) ||
+@@ -1042,7 +1063,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+   const _consultationQueryPage = useCallback(async () => {
+     console.log('DiagnosisPage.tsx _consultationQueryPage state=', state);
+     if (state.patients) {
+-       setState((prevState) => {
++      setState((prevState) => {
+         return {
+           ...prevState,
+           loading_consultationQueryList: true,
+@@ -1109,9 +1130,9 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+               }
+             })
+           }
+-         await fetchData()
++          await fetchData()
+         } else {
+-         await fetchData()
++          await fetchData()
+         }
+       } catch (e) {
+         console.error('DiagnosisPage.tsx _consultationQueryPage error=', e)
+@@ -1138,7 +1159,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+     if (!state.patients) {
+       return null;
+     }
+-    return item &&  (
++    return item && (
+       <MedicalRecordsCard
+         style={styles.medicalRecordsCard}
+         canDiagnostics={state.canDiagnostics}
+@@ -1285,27 +1306,49 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+   }, [state.patients]);
+   const _billingsList = useCallback(async () => {
+     if (state.patients) {
+-      const [err, data] = await tool.to(billingsList(state.patients.patientCode || state.patients.code, 0, 1));
+-      if (data?.items.length) {
++      try {
+         setState((prevState) => {
+           return {
+             ...prevState,
+-            billingData: data.items[0],
++            loading_billingsList: true,
++            billingData: null,
+           };
+         });
+-      } else {
++        const data: BillingData[] | null = await billingsList(state.patients.patientCode || state.patients.code || '', 0, 999999);
++        console.log('DiagnosisPage.tsx _billingsList data=', data);
++        if (data && data.length > 0) {
++          setState((prevState) => {
++            return {
++              ...prevState,
++              billingData: data,
++            };
++          });
++        } else {
++          setState((prevState) => {
++            return {
++              ...prevState,
++              billingData: null,
++              loading_billingsList: false,
++            };
++          });
++        }
++      } catch (error) {
++        console.error('DiagnosisPage.tsx _billingsList error=', error);
+         setState((prevState) => {
+           return {
+             ...prevState,
+             billingData: null,
++            loading_billingsList: false,
+           };
+         });
+       }
+     } else {
++      console.log('DiagnosisPage.tsx _billingsList state.patients=null');
+       setState((prevState) => {
+         return {
+           ...prevState,
+           billingData: null,
++          loading_billingsList: false,
+         };
+       });
+     }
+@@ -1414,7 +1457,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+         <CommonModal
+           onClose={() => {
+             setState((prevState) => {
+-              return {...prevState, showMoreModal: false};
++              return { ...prevState, showMoreModal: false };
+             });
+           }}
+           modalOverlayStyle={commonModalStyle.modalOverlay}
+@@ -1424,7 +1467,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+               style={[styles.moreModalRow]}
+               onPress={() => {
+                 setState((prevState) => {
+-                  return {...prevState, showMoreModal: false};
++                  return { ...prevState, showMoreModal: false };
+                 });
+                 routes.navigate(navigation, routes.QRCodeScanner.routeName, {});
+               }}
+@@ -1436,7 +1479,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+               style={[styles.moreModalRow]}
+               onPress={() => {
+                 setState((prevState) => {
+-                  return {...prevState, showMoreModal: false};
++                  return { ...prevState, showMoreModal: false };
+                 });
+                 routes.navigate(navigation, routes.SearchPatients.routeName, {
+                   pageData: {
+@@ -1454,7 +1497,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+               style={[styles.moreModalRow, styles.moreModalRow1]}
+               onPress={() => {
+                 setState((prevState) => {
+-                  return {...prevState, showMoreModal: false};
++                  return { ...prevState, showMoreModal: false };
+                 });
+                 routes.navigate(navigation, routes.NewlyAddedPatients.routeName, {
+                   pageData: {
+@@ -1486,21 +1529,23 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+           });
+         }}
+       >
+-        <Text style={[styles.selectPaientBtRowTxt, state.patients && {color: uiTheme.colors.$text}]}>
++        <Text style={[styles.selectPaientBtRowTxt, state.patients && { color: uiTheme.colors.$text }]}>
+           {!state.patients
+             ? global.i18n.t('Please select patients')
+             : state.patients.patientName || `${state.patients.enName},  ${state.patients.zhName}` || '--'}
+         </Text>
+-        {ArrowUpDown({color: uiTheme.colors.$fontSize_15_color})}
++        {ArrowUpDown({ color: uiTheme.colors.$fontSize_15_color })}
+       </TouchableOpacity>
+     );
+   };
+   const renderNoBillingRecordsCard = () => {
++    console.log('DiagnosisPage.tsx renderNoBillingRecordsCard state=', state);
+     return (
+       state.patients &&
+-      !state.billingData && (
++      !state.billingData && !state.loading_billingsList && (
+         <View style={styles.noBillingRecordsCard}>
+-          <Text style={styles.noBillingRecordsCardText}>{global.i18n.t('No billing')}</Text>
++          {EmptyIcon()}
++          <Text style={styles.noBillingRecordsCardText}>{global.i18n.t('No records')}</Text>
+         </View>
+       )
+     );
+@@ -1549,67 +1594,67 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+     }
+   }, []);
+   // 滚动到指定的容器，确保容器完全显示在顶部且不被遮挡
+-  const scrollToContainer = useCallback((containerRef: React.RefObject<View | null>) => {
+-    if (containerRef.current && scrollViewRef.current) {
+-      // 延迟执行，确保 DOM 已更新
+-      setTimeout(() => {
+-        if (containerRef.current && scrollViewRef.current) {
+-          // 测量容器相对于 ScrollView 的位置
+-          containerRef.current.measureLayout(
+-            scrollViewRef.current as any,
+-            (x, y, width, height) => {
+-              console.log('scrollToContainer 测量结果:', {x, y, width, height});
++  // const scrollToContainer = useCallback((containerRef: React.RefObject<View | null>) => {
++  //   if (containerRef.current && scrollViewRef.current) {
++  //     // 延迟执行，确保 DOM 已更新
++  //     setTimeout(() => {
++  //       if (containerRef.current && scrollViewRef.current) {
++  //         // 测量容器相对于 ScrollView 的位置
++  //         containerRef.current.measureLayout(
++  //           scrollViewRef.current as any,
++  //           (x, y, width, height) => {
++  //             console.log('scrollToContainer 测量结果:', {x, y, width, height});
+ 
+-              // 动态计算 headerOffset：测量 currentPatientRowRef 和 tabBarRef 的高度
+-              let headerOffset = 0;
+-              let measuredCount = 0;
+-              const totalMeasurements = 2;
++  //             // 动态计算 headerOffset：测量 currentPatientRowRef 和 tabBarRef 的高度
++  //             let headerOffset = 0;
++  //             let measuredCount = 0;
++  //             const totalMeasurements = 2;
+ 
+-              const checkAllMeasured = () => {
+-                measuredCount++;
+-                if (measuredCount === totalMeasurements) {
+-                  const targetScrollY = Math.max(0, y - headerOffset);
+-                  console.log('scrollToContainer 动态计算的headerOffset:', headerOffset);
+-                  console.log('scrollToContainer 滚动到位置:', targetScrollY);
++  //             const checkAllMeasured = () => {
++  //               measuredCount++;
++  //               if (measuredCount === totalMeasurements) {
++  //                 const targetScrollY = Math.max(0, y - headerOffset);
++  //                 console.log('scrollToContainer 动态计算的headerOffset:', headerOffset);
++  //                 console.log('scrollToContainer 滚动到位置:', targetScrollY);
+ 
+-                  // 滚动到目标位置
+-                  scrollViewRef.current?.scrollTo({
+-                    y: targetScrollY,
+-                    animated: true,
+-                  });
+-                }
+-              };
++  //                 // 滚动到目标位置
++  //                 scrollViewRef.current?.scrollTo({
++  //                   y: targetScrollY,
++  //                   animated: true,
++  //                 });
++  //               }
++  //             };
+ 
+-              // 测量 currentPatientRowRef 高度
+-              if (currentPatientRowRef.current) {
+-                currentPatientRowRef.current.measure((fx, fy, width, height) => {
+-                  headerOffset += height;
+-                  console.log('currentPatientRow 高度:', height);
+-                  checkAllMeasured();
+-                });
+-              } else {
+-                checkAllMeasured();
+-              }
++  //             // 测量 currentPatientRowRef 高度
++  //             if (currentPatientRowRef.current) {
++  //               currentPatientRowRef.current.measure((fx, fy, width, height) => {
++  //                 headerOffset += height;
++  //                 console.log('currentPatientRow 高度:', height);
++  //                 checkAllMeasured();
++  //               });
++  //             } else {
++  //               checkAllMeasured();
++  //             }
+ 
+-              // 测量 tabBarRef 高度
+-              if (tabBarRef.current) {
+-                tabBarRef.current.measure((fx, fy, width, height) => {
+-                  headerOffset += height;
+-                  console.log('tabBar 高度:', height);
+-                  checkAllMeasured();
+-                });
+-              } else {
+-                checkAllMeasured();
+-              }
+-            },
+-            (error) => {
+-              console.error('测量容器位置时出错:', error);
+-            }
+-          );
+-        }
+-      }, 100);
+-    }
+-  }, []);
++  //             // 测量 tabBarRef 高度
++  //             if (tabBarRef.current) {
++  //               tabBarRef.current.measure((fx, fy, width, height) => {
++  //                 headerOffset += height;
++  //                 console.log('tabBar 高度:', height);
++  //                 checkAllMeasured();
++  //               });
++  //             } else {
++  //               checkAllMeasured();
++  //             }
++  //           },
++  //           (error) => {
++  //             console.error('测量容器位置时出错:', error);
++  //           }
++  //         );
++  //       }
++  //     }, 100);
++  //   }
++  // }, []);
+   // 检查 ToolBar、PatientInfoCard、BillingRecordsContainer 和 PatientHealthInfoContainer 是否完全移出ScrollView顶部的函数（带防抖）
+   const checkElementsScrollVisibility = useCallback(
+     (scrollY: number = 0) => {
+@@ -1694,170 +1739,170 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+                       targetBillingRecordsContainerRef.current.measureLayout(
+                         scrollViewRef.current as any,
+                         (x4, y4, width4, height4) => {
+-                                // 计算 BillingRecordsContainer 相对于ScrollView可视区域顶部的位置
+-                                const relativeY4 = y4 - scrollY;
+-                                const billingContainerBottom = relativeY4 + height4;
++                          // 计算 BillingRecordsContainer 相对于ScrollView可视区域顶部的位置
++                          const relativeY4 = y4 - scrollY;
++                          const billingContainerBottom = relativeY4 + height4;
+ 
+-                                console.log(
+-                                  'checkElementsScrollVisibility BillingRecordsContainer scrollY=',
+-                                  scrollY,
+-                                  'y=',
+-                                  y4,
+-                                  'relativeY=',
+-                                  relativeY4,
+-                                  'height=',
+-                                  height4,
+-                                  'billingContainerBottom=',
+-                                  billingContainerBottom
+-                                );
++                          console.log(
++                            'checkElementsScrollVisibility BillingRecordsContainer scrollY=',
++                            scrollY,
++                            'y=',
++                            y4,
++                            'relativeY=',
++                            relativeY4,
++                            'height=',
++                            height4,
++                            'billingContainerBottom=',
++                            billingContainerBottom
++                          );
+ 
+-                                billingRecordsContainerOutOfView = billingContainerBottom <= 60;
++                          billingRecordsContainerOutOfView = billingContainerBottom <= 60;
+ 
+-                                // 检查 PatientHealthInfoContainer
+-                                if (targetPatientHealthInfoContainerRef.current && scrollViewRef.current) {
+-                                  targetPatientHealthInfoContainerRef.current.measureLayout(
+-                                    scrollViewRef.current as any,
+-                                    (x5, y5, width5, height5) => {
+-                                      // 计算 PatientHealthInfoContainer 相对于ScrollView可视区域顶部的位置
+-                                      const relativeY5 = y5 - scrollY;
+-                                      const healthContainerBottom = relativeY5 + height5;
++                          // 检查 PatientHealthInfoContainer
++                          // if (targetPatientHealthInfoContainerRef.current && scrollViewRef.current) {
++                          //   targetPatientHealthInfoContainerRef.current.measureLayout(
++                          //     scrollViewRef.current as any,
++                          //     (x5, y5, width5, height5) => {
++                          //       // 计算 PatientHealthInfoContainer 相对于ScrollView可视区域顶部的位置
++                          //       const relativeY5 = y5 - scrollY;
++                          //       const healthContainerBottom = relativeY5 + height5;
+ 
+-                                      console.log(
+-                                        'checkElementsScrollVisibility PatientHealthInfoContainer scrollY=',
+-                                        scrollY,
+-                                        'y=',
+-                                        y5,
+-                                        'relativeY=',
+-                                        relativeY5,
+-                                        'height=',
+-                                        height5,
+-                                        'healthContainerBottom=',
+-                                        healthContainerBottom
+-                                      );
++                          //       console.log(
++                          //         'checkElementsScrollVisibility PatientHealthInfoContainer scrollY=',
++                          //         scrollY,
++                          //         'y=',
++                          //         y5,
++                          //         'relativeY=',
++                          //         relativeY5,
++                          //         'height=',
++                          //         height5,
++                          //         'healthContainerBottom=',
++                          //         healthContainerBottom
++                          //       );
+ 
+-                                      patientHealthInfoContainerOutOfView = healthContainerBottom <= 60;
++                          //       patientHealthInfoContainerOutOfView = healthContainerBottom <= 60;
+ 
+-                                      // 根据检测结果设置 currentTab（层级检测）
+-                                      if (patientHealthInfoContainerOutOfView) {
+-                                        currentTabToSet = 4; // PatientHealthInfoContainer 移出视图，设置为 Call_log tab
+-                                      } else if (billingRecordsContainerOutOfView) {
+-                                        currentTabToSet = 3; // BillingRecordsContainer 移出视图，设置为 Health_information_of_patient tab
+-                                      } else if (patientInfoCardOutOfView) {
+-                                        currentTabToSet = 1; // PatientInfoCard 移出视图，设置为 Medical_records tab
+-                                      } else {
+-                                        currentTabToSet = 0; // PatientInfoCard 可见，设置为 PatientData tab
+-                                      }
++                          //       // 根据检测结果设置 currentTab（层级检测）
++                          //       if (patientHealthInfoContainerOutOfView) {
++                          //         currentTabToSet = 4; // PatientHealthInfoContainer 移出视图，设置为 Call_log tab
++                          //       } else if (billingRecordsContainerOutOfView) {
++                          //         currentTabToSet = 3; // BillingRecordsContainer 移出视图，设置为 Health_information_of_patient tab
++                          //       } else if (patientInfoCardOutOfView) {
++                          //         currentTabToSet = 1; // PatientInfoCard 移出视图，设置为 Medical_records tab
++                          //       } else {
++                          //         currentTabToSet = 0; // PatientInfoCard 可见，设置为 PatientData tab
++                          //       }
+ 
+-                                      // 只有当状态真正需要改变时才更新
+-                                      setState((prevState) => {
+-                                        if (
+-                                          prevState.isToolBarOutOfView !== toolBarOutOfView ||
+-                                          prevState.currentTab !== currentTabToSet
+-                                        ) {
+-                                          console.log(
+-                                            '状态变化:',
+-                                            toolBarOutOfView ? 'ToolBar已移出' : 'ToolBar可见',
+-                                            patientInfoCardOutOfView ? 'PatientInfoCard已移出' : 'PatientInfoCard可见',
+-                                            billingRecordsContainerOutOfView
+-                                              ? 'BillingRecordsContainer已移出'
+-                                              : 'BillingRecordsContainer可见',
+-                                            patientHealthInfoContainerOutOfView
+-                                              ? 'PatientHealthInfoContainer已移出'
+-                                              : 'PatientHealthInfoContainer可见',
+-                                            'currentTab:',
+-                                            currentTabToSet
+-                                          );
++                          //       // 只有当状态真正需要改变时才更新
++                          //       setState((prevState) => {
++                          //         if (
++                          //           prevState.isToolBarOutOfView !== toolBarOutOfView ||
++                          //           prevState.currentTab !== currentTabToSet
++                          //         ) {
++                          //           console.log(
++                          //             '状态变化:',
++                          //             toolBarOutOfView ? 'ToolBar已移出' : 'ToolBar可见',
++                          //             patientInfoCardOutOfView ? 'PatientInfoCard已移出' : 'PatientInfoCard可见',
++                          //             billingRecordsContainerOutOfView
++                          //               ? 'BillingRecordsContainer已移出'
++                          //               : 'BillingRecordsContainer可见',
++                          //             patientHealthInfoContainerOutOfView
++                          //               ? 'PatientHealthInfoContainer已移出'
++                          //               : 'PatientHealthInfoContainer可见',
++                          //             'currentTab:',
++                          //             currentTabToSet
++                          //           );
+ 
+-                                          // 自动滚动 TabBar 到选中的 tab
+-                                          scrollTabBarToActiveTab(currentTabToSet);
++                          //           // 自动滚动 TabBar 到选中的 tab
++                          //           scrollTabBarToActiveTab(currentTabToSet);
+ 
+-                                          return {
+-                                            ...prevState,
+-                                            isToolBarOutOfView: toolBarOutOfView,
+-                                            currentTab: currentTabToSet,
+-                                          };
+-                                        }
+-                                        return prevState; // 状态没变化，不更新
+-                                      });
+-                                    },
+-                                    (error) => {
+-                                      console.error('测量PatientHealthInfoContainer位置时出错:', error);
+-                                    }
+-                                  );
+-                                } else {
+-                                  // 如果 PatientHealthInfoContainer 不存在，按原逻辑处理
+-                                  if (billingRecordsContainerOutOfView) {
+-                                    currentTabToSet = 3; // BillingRecordsContainer 移出视图，设置为 Health_information_of_patient tab
+-                                  } else if (patientInfoCardOutOfView) {
+-                                    currentTabToSet = 1; // PatientInfoCard 移出视图，设置为 Medical_records tab
+-                                  } else {
+-                                    currentTabToSet = 0; // PatientInfoCard 可见，设置为 PatientData tab
+-                                  }
++                          //           return {
++                          //             ...prevState,
++                          //             isToolBarOutOfView: toolBarOutOfView,
++                          //             currentTab: currentTabToSet,
++                          //           };
++                          //         }
++                          //         return prevState; // 状态没变化，不更新
++                          //       });
++                          //     },
++                          //     (error) => {
++                          //       console.error('测量PatientHealthInfoContainer位置时出错:', error);
++                          //     }
++                          //   );
++                          // } else {
++                          //   // 如果 PatientHealthInfoContainer 不存在，按原逻辑处理
++                          //   if (billingRecordsContainerOutOfView) {
++                          //     currentTabToSet = 3; // BillingRecordsContainer 移出视图，设置为 Health_information_of_patient tab
++                          //   } else if (patientInfoCardOutOfView) {
++                          //     currentTabToSet = 1; // PatientInfoCard 移出视图，设置为 Medical_records tab
++                          //   } else {
++                          //     currentTabToSet = 0; // PatientInfoCard 可见，设置为 PatientData tab
++                          //   }
+ 
+-                                  // 自动滚动 TabBar 到选中的 tab
+-                                  scrollTabBarToActiveTab(currentTabToSet);
++                          //   // 自动滚动 TabBar 到选中的 tab
++                          //   scrollTabBarToActiveTab(currentTabToSet);
+ 
+-                                  setState((prevState) => {
+-                                    if (
+-                                      prevState.isToolBarOutOfView !== toolBarOutOfView ||
+-                                      prevState.currentTab !== currentTabToSet
+-                                    ) {
+-                                      console.log(
+-                                        '状态变化:',
+-                                        toolBarOutOfView ? 'ToolBar已移出' : 'ToolBar可见',
+-                                        patientInfoCardOutOfView ? 'PatientInfoCard已移出' : 'PatientInfoCard可见',
+-                                        billingRecordsContainerOutOfView
+-                                          ? 'BillingRecordsContainer已移出'
+-                                          : 'BillingRecordsContainer可见',
+-                                        'currentTab:',
+-                                        currentTabToSet
+-                                      );
+-                                      return {
+-                                        ...prevState,
+-                                        isToolBarOutOfView: toolBarOutOfView,
+-                                        currentTab: currentTabToSet,
+-                                      };
+-                                    }
+-                                    return prevState; // 状态没变化，不更新
+-                                  });
+-                                }
+-                              },
+-                              (error) => {
+-                                console.error('测量BillingRecordsContainer位置时出错:', error);
+-                              }
+-                            );
+-                          } else {
+-                            // 如果 BillingRecordsContainer 不存在，按原逻辑处理
+-                            if (patientInfoCardOutOfView) {
+-                              currentTabToSet = 1; // PatientInfoCard 移出视图，设置为 Medical_records tab
+-                            } else {
+-                              currentTabToSet = 0; // PatientInfoCard 可见，设置为 PatientData tab
+-                            }
++                          //   setState((prevState) => {
++                          //     if (
++                          //       prevState.isToolBarOutOfView !== toolBarOutOfView ||
++                          //       prevState.currentTab !== currentTabToSet
++                          //     ) {
++                          //       console.log(
++                          //         '状态变化:',
++                          //         toolBarOutOfView ? 'ToolBar已移出' : 'ToolBar可见',
++                          //         patientInfoCardOutOfView ? 'PatientInfoCard已移出' : 'PatientInfoCard可见',
++                          //         billingRecordsContainerOutOfView
++                          //           ? 'BillingRecordsContainer已移出'
++                          //           : 'BillingRecordsContainer可见',
++                          //         'currentTab:',
++                          //         currentTabToSet
++                          //       );
++                          //       return {
++                          //         ...prevState,
++                          //         isToolBarOutOfView: toolBarOutOfView,
++                          //         currentTab: currentTabToSet,
++                          //       };
++                          //     }
++                          //     return prevState; // 状态没变化，不更新
++                          //   });
++                          // }
++                        },
++                        (error) => {
++                          console.error('测量BillingRecordsContainer位置时出错:', error);
++                        }
++                      );
++                    } else {
++                      // 如果 BillingRecordsContainer 不存在，按原逻辑处理
++                      // if (patientInfoCardOutOfView) {
++                      //   currentTabToSet = 1; // PatientInfoCard 移出视图，设置为 Medical_records tab
++                      // } else {
++                      //   currentTabToSet = 0; // PatientInfoCard 可见，设置为 PatientData tab
++                      // }
+ 
+-                            // 自动滚动 TabBar 到选中的 tab
+-                            scrollTabBarToActiveTab(currentTabToSet);
++                      // 自动滚动 TabBar 到选中的 tab
++                      // scrollTabBarToActiveTab(currentTabToSet);
+ 
+-                            setState((prevState) => {
+-                              if (
+-                                prevState.isToolBarOutOfView !== toolBarOutOfView ||
+-                                prevState.currentTab !== currentTabToSet
+-                              ) {
+-                                console.log(
+-                                  '状态变化:',
+-                                  toolBarOutOfView ? 'ToolBar已移出' : 'ToolBar可见',
+-                                  patientInfoCardOutOfView ? 'PatientInfoCard已移出' : 'PatientInfoCard可见',
+-                                  'currentTab:',
+-                                  currentTabToSet
+-                                );
+-                                return {
+-                                  ...prevState,
+-                                  isToolBarOutOfView: toolBarOutOfView,
+-                                  currentTab: currentTabToSet,
+-                                };
+-                              }
+-                              return prevState; // 状态没变化，不更新
+-                            });
+-                          }
++                      setState((prevState) => {
++                        if (
++                          prevState.isToolBarOutOfView !== toolBarOutOfView
++                          // ||prevState.currentTab !== currentTabToSet
++                        ) {
++                          console.log(
++                            '状态变化:',
++                            toolBarOutOfView ? 'ToolBar已移出' : 'ToolBar可见',
++                            patientInfoCardOutOfView ? 'PatientInfoCard已移出' : 'PatientInfoCard可见',
++                            'currentTab:',
++                            currentTabToSet
++                          );
++                          return {
++                            ...prevState,
++                            isToolBarOutOfView: toolBarOutOfView,
++                            // currentTab: currentTabToSet,
++                          };
++                        }
++                        return prevState; // 状态没变化，不更新
++                      });
++                    }
+                   },
+                   (error) => {
+                     console.error('测量PatientInfoCard位置时出错:', error);
+@@ -1871,7 +1916,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+                     return {
+                       ...prevState,
+                       isToolBarOutOfView: toolBarOutOfView,
+-                      currentTab: 0,
++                      // currentTab: 0,
+                     };
+                   }
+                   return prevState; // 状态没变化，不更新
+@@ -1952,7 +1997,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+               {global.i18n.t('Current consultation patients')} :{' '}
+             </Text>
+             <Text
+-              style={[styles.currentPatientRowContentText, {color: uiTheme.colors.$blueTxtColor, fontWeight: '600'}]}
++              style={[styles.currentPatientRowContentText, { color: uiTheme.colors.$blueTxtColor, fontWeight: '600' }]}
+             >
+               {state.patients?.patientName || `${state.patients.enName},  ${state.patients.zhName}` || '--'}
+             </Text>
+@@ -1964,41 +2009,44 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+   const handleThreeBtPress = useCallback(
+     (type: 'home' | 'billing' | 'call_log') => {
+       isManualTabClick.current = true;
+-
++      scrollViewRef.current?.scrollTo({
++        y: 0,
++        animated: false,
++      });
+       if (type === 'home') {
+         setState((prevState) => {
+           return {
+             ...prevState,
+             currentTab: 0,
++            isToolBarOutOfView: false,
+           };
+         });
+-        scrollViewRef.current?.scrollTo({
+-          y: 0,
+-          animated: true,
+-        });
+       } else if (type === 'billing') {
++        console.log('DiagnosisPage.tsx handleThreeBtPress state=', state);
++        (async () => {
++          await _billingsList();
++        })();
+         setState((prevState) => {
+           return {
+             ...prevState,
+-            currentTab: 2,
++            currentTab: 1,
+           };
+         });
+-        scrollToContainer(targetBillingRecordsContainerRef);
++        // scrollToContainer(targetBillingRecordsContainerRef);
+       } else {
+         setState((prevState) => {
+           return {
+             ...prevState,
+-            currentTab: 4,
++            currentTab: 2,
+           };
+         });
+-        scrollToContainer(targetCallHistoryContainerRef);
++        // scrollToContainer(targetCallHistoryContainerRef);
+       }
+-
+       setTimeout(() => {
+         isManualTabClick.current = false;
+       }, 1000);
+     },
+-    [scrollToContainer]
++    [state]
+   );
+   const renderNavigationBts = useCallback(
+     ({
+@@ -2019,19 +2067,19 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+           key: 'home' as const,
+           title: global.i18n.t('Home'),
+           refIndex: 0,
+-          isActive: state.currentTab < 2,
++          isActive: state.currentTab === 0,
+         },
+         {
+           key: 'billing' as const,
+           title: global.i18n.t('Billing_records'),
+-          refIndex: 2,
+-          isActive: state.currentTab >= 2 && state.currentTab < 4,
++          refIndex: 1,
++          isActive: state.currentTab === 1,
+         },
+         {
+           key: 'call_log' as const,
+           title: global.i18n.t('Call_log'),
+-          refIndex: 4,
+-          isActive: state.currentTab === 4,
++          refIndex: 2,
++          isActive: state.currentTab === 2,
+         },
+       ];
+       return (
+@@ -2071,6 +2119,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+     },
+     [handleThreeBtPress, state.currentTab]
+   );
++  //动画悬浮在顶部的的3个tabbar按钮
+   const renderTabBar = () => {
+     return (
+       state.patients && (
+@@ -2092,7 +2141,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+               // tabBarScrollX.current = event.nativeEvent.contentOffset.x;
+             },
+             scrollEventThrottle: 16,
+-            navScrollViewStyle: [scrollViewStyle.scrollViewStyle, {height: '100%'}],
++            navScrollViewStyle: [scrollViewStyle.scrollViewStyle, { height: '100%' }],
+             navScrollViewContentStyle: [scrollViewStyle.contentContainerStyle],
+             containerStyle: styles.statusTagContainer,
+             buttonStyle: styles.statusTagBt,
+@@ -2109,9 +2158,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+    * @returns
+    */
+   const renderMedicalRecordsContainer = () => {
+-    if (state.consultationQueryPage_items && state.consultationQueryPage_items.length > 0) {
+-      console.log('DiagnosisPage renderMedicalRecordsContainer state.consultationQueryPage_items=', state.consultationQueryPage_items);
+-    }
++    console.log('DiagnosisPage renderMedicalRecordsContainer state.consultationQueryPage_items=', state.consultationQueryPage_items);
+     console.log('DiagnosisPage renderMedicalRecordsContainer state.loading_consultationQueryList=', state.loading_consultationQueryList);
+     return (state.consultationQueryPage_items && state.consultationQueryPage_items.length > 0 || state.loading_consultationQueryList) && (
+       <>
+@@ -2120,8 +2167,8 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+         {
+           state.consultationQueryPage_items && state.consultationQueryPage_items.length > 0 ? (
+             state.consultationQueryPage_items.map((item: ConsultationQueryPage_item, index: number) => {
+-              console.log('DiagnosisPage.tsx renderMedicalRecordsContainer=', { index });
+-              if (state.consultationQueryPage_items&&index===state.consultationQueryPage_items.length-1 && state.loading_consultationQueryList) {
++              // console.log('DiagnosisPage.tsx renderMedicalRecordsContainer=', { index });
++              if (state.consultationQueryPage_items && index === state.consultationQueryPage_items.length - 1 && state.loading_consultationQueryList) {
+                 setState((prevState) => {
+                   return {
+                     ...prevState,
+@@ -2141,7 +2188,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+                     </Text>
+                     <TouchableOpacity style={styles.openOrCloseBt} onPress={async () => {
+                       //修改 state.consultationQueryPage_items里被点击的 item.isOpen; 不要用 map, 我需要在找到 item 后直接修改 item.isOpen,然后立马退出循环
+-                      const newItems =  JSON.parse(JSON.stringify(state.consultationQueryPage_items)) as ConsultationQueryPage_item[];
++                      const newItems = JSON.parse(JSON.stringify(state.consultationQueryPage_items)) as ConsultationQueryPage_item[];
+                       for (const item1 of newItems || []) {
+                         if (item1.consultationId === item.consultationId) {
+                           item1.isOpen = !item1.isOpen;
+@@ -2158,10 +2205,10 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+                       <Text style={styles.openOrCloseBtText}>{item.isOpen ? i18n.t('retract') : i18n.t('launch')}</Text>
+                       {item.isOpen ?
+                         <View style={styles.openOrCloseBtIcon}>
+-                        {ArrowUp()}
+-                      </View> : <View style={styles.openOrCloseBtIcon}>
+-                        {ArrowDown({color: uiTheme.colors.$blueTxtColor})}
+-                      </View>}
++                          {ArrowUp()}
++                        </View> : <View style={styles.openOrCloseBtIcon}>
++                          {ArrowDown({ color: uiTheme.colors.$blueTxtColor })}
++                        </View>}
+                     </TouchableOpacity>
+                   </View>
+                   {item.isOpen && renderMedicalRecordsCard(item)}
+@@ -2242,7 +2289,7 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+             <View
+               style={[
+                 styles.pageContainer,
+-                {paddingHorizontal: 0, backgroundColor: theme.uiTheme.colors.$grayBackground},
++                { paddingHorizontal: 0, backgroundColor: theme.uiTheme.colors.$grayBackground },
+               ]}
+             >
+               {renderHeader()}
+@@ -2268,50 +2315,70 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+                 {/*诊症状态*/}
+                 {/* {renderScrollView()} */}
+                 {renderSelectPatientBt()}
+-                <Text style={styles.SelectPatientBtDes}>
+-                  {global.i18n.t(
+-                    'After selecting a patient from the "Waiting / Scheduled" list, consultation can be carried out'
+-                  )}
+-                  。
+-                </Text>
+-                {renderThreeBts()}
+-                {/*病人資料 模块*/}
+-                {renderPatientInfoContainer()}
+-                {/*選擇病人*/}
+-                {/* {renderSelectPaientBt()} */}
+-                {/*新增診症 按鈕*/}
+-                {state.patients && state.canDiagnostics /*&& state.consultationData*/ && (
+-                  <TouchableOpacity
+-                    style={styles.addConsultationBt}
+-                    onPress={() => {
+-                      console.log('renderMedicalRecordsContainer onPress routes.CreateConsultationPage.routeName');
+-                      // routes.navigate(navigation, routes.CreateConsultationPage.routeName, {
+-                      //   pageData: {
+-                      //     patients: state.patients,
+-                      //     type: 0, //0新增 1編輯
+-                      //     barIndex: 0,
+-                      //     appointmentId: state.patients.id,
+-                      //     from: routes.DiagnosisPage.routeName,
+-                      //   },
+-                      // });
+-                      navigationRef?.navigate(routes.CreateConsultationPage.routeName, {
+-                        pageData: {
+-                          patients: state.patients,
+-                          type: 0, //0新增 1編輯
+-                          barIndex: 0,
+-                          appointmentId: state.patients?.id ,
+-                          from: routes.DiagnosisPage.routeName,
+-                        },
+-                      });
+-                    }}
+-                  >
+-                    <Text style={styles.addConsultationBtText}>{global.i18n.t('New_diagnosis')}</Text>
+-                  </TouchableOpacity>
+-                )}
+-                {/*診症記錄 模块*/}
+-                {renderMedicalRecordsContainer()}
++                {/* 首页 模块 */}
++                {
++                  state.currentTab === 0 &&
++                  <>
++                    <Text style={styles.SelectPatientBtDes}>
++                      {global.i18n.t(
++                        'After selecting a patient from the "Waiting / Scheduled" list, consultation can be carried out'
++                      )}
++                      。
++                    </Text>
++                    {renderThreeBts()}
++                    {/*病人資料 模块*/}
++                    {renderPatientInfoContainer()}
++                    {/*選擇病人*/}
++                    {/* {renderSelectPaientBt()} */}
++                    {/*新增診症 按鈕*/}
++                    {
++                      state.patients && state.canDiagnostics /*&& state.consultationData*/ && (
++                        <TouchableOpacity
++                          style={styles.addConsultationBt}
++                          onPress={() => {
++                            console.log('renderMedicalRecordsContainer onPress routes.CreateConsultationPage.routeName');
++                            // routes.navigate(navigation, routes.CreateConsultationPage.routeName, {
++                            //   pageData: {
++                            //     patients: state.patients,
++                            //     type: 0, //0新增 1編輯
++                            //     barIndex: 0,
++                            //     appointmentId: state.patients.id,
++                            //     from: routes.DiagnosisPage.routeName,
++                            //   },
++                            // });
++                            navigationRef?.navigate(routes.CreateConsultationPage.routeName, {
++                              pageData: {
++                                patients: state.patients,
++                                type: 0, //0新增 1編輯
++                                barIndex: 0,
++                                appointmentId: state.patients?.id,
++                                from: routes.DiagnosisPage.routeName,
++                              },
++                            });
++                          }}
++                        >
++                          <Text style={styles.addConsultationBtText}>{global.i18n.t('New_diagnosis')}</Text>
++                        </TouchableOpacity>
++                      )
++                    }
++                    {/*診症記錄 模块*/}
++                    {renderMedicalRecordsContainer()}
++                  </>
++                }
+                 {/*帳單記錄 模块*/}
+-                {/* {renderBillingRecordsContainer()} */}
++                {
++                  state.currentTab === 1 &&
++                  <>
++                    {state.patients && !state.isToolBarOutOfView && <Text style={styles.SelectPatientBtDes}>
++                      {global.i18n.t(
++                        'After selecting a patient from the "Waiting / Scheduled" list, consultation can be carried out'
++                      )}
++                      。
++                    </Text>}
++                    {!state.isToolBarOutOfView && renderThreeBts()}
++                    {renderBillingRecordsContainer()}
++                  </>
++                }
+                 {/*病人健康信息 模块 */}
+                 {/* https://app.clickup.com/t/8553538/TECH-8063?comment=90180211132684&threadedComment=90180211135153 */}
+                 {/* {renderPatientHealthInfoContainer()} */}

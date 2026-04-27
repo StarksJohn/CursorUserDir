@@ -116,9 +116,10 @@ description: >-
 ## 当前活跃需求
 <!-- - 我当前是`cursor Pro+ Annual $48/mo.` 计划的用户, 目前有如图![img_010515.png](img_010515.png)![img_011234.png](img_011234.png) 2个计费池,一个是使用高级API的计费池,一个是`Auto + Composer`的计费池, 每月24日15:00点重置 -->
 - 当前Win11系统已经安装了`cursor IDE`
-  - Win11系统 启动了 如图 ![img_215147.png](img_215147.png) ![img_214913.png](img_214913.png) 的 UU加速器,加速了 cursor, 这样在win11系统里没开VPN时, cursor里也能使用 GPT5.4模型了;现在我想让UU加速器加速 chrome浏览器, 实现在浏览器里可以访问到 `www.google.com`
-- 当前 `MacBook Pro` 电脑也下载安装了cursor,已经有了  `/Users/stark/.cursor` 和 `~/Library/Application Support/Cursor` 目录
-  <!-- - 当前 `MacBook Pro`电脑里使用的cursor 是否已经发挥出了最大的能力? -->
+  - Win11系统 启动了 如图 ![img_215147.png](img_215147.png) ![img_214913.png](img_214913.png)  的 UU加速器,加速了 如图![img_191235.png](img_191235.png)的cursor, 这样在win11系统里没开VPN时, cursor里也能使用 GPT5.5模型了;如图是之前客服的回答![img_203416.png](img_203416.png)![img_203448.png](img_203448.png)
+    - 我想在 cursor 的内置浏览器里 访问 `www.google.com`,或者让 UU加速器 加速 chrome 浏览器, 从而可以在不开VPN 的情况下 在 浏览器里 访问 `www.google.com`; 怎么实现
+<!-- - 当前 `MacBook Pro` 电脑也下载安装了cursor,已经有了  `/Users/stark/.cursor` 和 `~/Library/Application Support/Cursor` 目录
+  - 当前 `MacBook Pro`电脑里使用的cursor 是否已经发挥出了最大的能力? -->
 - 把以上你执行过的所有任务的执行结果都总结更新到
   - win:`C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor_使用指南与Token优化.md`
   - mac : `/Users/stark/Library/Application Support/Cursor/Cursor_使用指南与Token优化.md`
