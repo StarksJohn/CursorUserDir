@@ -169,4 +169,4 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
   
 - WIN:
   - 当前电脑已经在 `/Users/stark/Desktop/work/RN/csx-mobile` 目录执行 `npx react-native run-android` 把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区`
-    - `D:\work\RN\csx-mobile-upgrade\src\pages\Diagnosis\DiagnosisPage.tsx`的![img_113619.png](img_113619.png)能否改成![img_113653.png](img_113653.png)?
+    - `D:\work\RN\csx-mobile-upgrade\src\csxRoutes\MainTabNavigator.tsx`的 314 行的 `形状的半径` 是不是写错了
