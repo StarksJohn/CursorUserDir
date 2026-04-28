@@ -4,17 +4,17 @@
   "arguments": {
     "type": "object",
     "properties": {
-      "function": {
-        "type": "string",
-        "description": "() => { /* code */ } or (element) => { /* code */ } when element is provided"
-      },
       "element": {
         "description": "Human-readable element description used to obtain permission to interact with the element",
         "type": "string"
       },
-      "ref": {
-        "description": "Exact target element reference from the page snapshot",
+      "target": {
+        "description": "Exact target element reference from the page snapshot, or a unique element selector",
         "type": "string"
+      },
+      "function": {
+        "type": "string",
+        "description": "() => { /* code */ } or (element) => { /* code */ } when element is provided"
       },
       "filename": {
         "description": "Filename to save the result to. If not provided, result is returned as text.",
