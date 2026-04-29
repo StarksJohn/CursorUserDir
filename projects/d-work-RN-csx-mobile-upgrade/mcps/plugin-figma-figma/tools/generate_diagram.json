@@ -23,6 +23,14 @@
       "savePlanKey": {
         "type": "boolean",
         "description": "Optional. Indicates whether to use the same plan for future generations. Do not provide this parameter unless the user specifically requests it, and a planKey is also provided."
+      },
+      "useArchitectureLayoutCode": {
+        "type": "string",
+        "description": "Optional. To generate a diagram using the software architecture layout, pass the code from the architecture-diagram-instructions resource. Omit this parameter for standard diagrams."
+      },
+      "fileKey": {
+        "type": "string",
+        "description": "Optional. The key of an existing FigJam file to add the diagram to. Extract from a Figma URL like figma.com/board/{fileKey}/... When provided, the diagram is placed directly in this file instead of creating a new one. The user must have edit access to the file."
       }
     },
     "required": [

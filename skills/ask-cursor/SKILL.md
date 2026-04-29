@@ -116,7 +116,13 @@ description: >-
 ## 当前活跃需求
 <!-- - 我当前是`cursor Pro+ Annual $48/mo.` 计划的用户, 目前有如图![img_010515.png](img_010515.png)![img_011234.png](img_011234.png) 2个计费池,一个是使用高级API的计费池,一个是`Auto + Composer`的计费池, 每月24日15:00点重置 -->
 - 当前Win11系统已经安装了`cursor IDE`
-  - 如图 ![img_215807.png](img_215807.png)![img_215834.png](img_215834.png),目前cursor里的这2个模型哪个更省token,更便宜?
+  - 使用![img_215834.png](img_215834.png)模型时, 执行一个任务消耗了96.8万token,API的Usage上涨了1.4%; 
+  - 使用![img_215807.png](img_215807.png)模型时,执行另一个不一样的任务消耗了1253万token,API的Usage从50.2%上涨到了52.1%,大约上涨了1.9%; 
+  - 再使用![img_215834.png](img_215834.png)模型时, 执行另一个不一样的任务消耗了243.7万token,API的Usage从52.1%上涨到了55.6%,大约上涨了3.5%;  
+  - 再使用![img_215807.png](img_215807.png)模型时, 执行另一个不一样的任务消耗了136.3万token,API的Usage从55.6%上涨到了56.0%,大约上涨了0.4%; 
+  - 再使用![img_215807.png](img_215807.png)模型时, 执行另一个不一样的任务消耗了110.1万token,API的Usage从56.0%上涨到了56.4%,大约上涨了0.4%; 
+  - 再使用![img_215807.png](img_215807.png)模型时, 执行另一个不一样的任务消耗了108.9万token,API的Usage从56.4%上涨到了56.9%,大约上涨了0.3%; 
+  - 综上所述, 这2个模型哪个更省token?
   <!-- - 在cursor内置浏览器里我访问&&登录了 `https://supabase.com`, 怎么让这个内置浏览器 保持所有已经登录过的网站的登录状态,下次我再用 内置浏览器打开 `https://supabase.com` 时, 不想再次登录 -->
 <!-- - 当前 `MacBook Pro` 电脑也下载安装了cursor,已经有了  `/Users/stark/.cursor` 和 `~/Library/Application Support/Cursor` 目录
   - 当前 `MacBook Pro`电脑里使用的cursor 是否已经发挥出了最大的能力? -->

@@ -1,0 +1,155 @@
+---
+pid: 32924
+cwd: "d:\\work\\MyStartupProject1"
+command: "pnpm db:generate; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; pnpm typecheck; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; pnpm lint; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; pnpm test:e2e e2e/auth-shell.spec.ts; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; pnpm test:e2e; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }"
+started_at: 2026-04-29T02:17:17.026Z
+running_for_ms: 440049   
+---
+
+> fracture-recovery-companion@0.1.0 db:generate D:\work\MyStartupProject1
+> prisma generate
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+┌─────────────────────────────────────────────────────────┐
+│  Update available 6.19.3 -> 7.8.0                       │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+
+✔ Generated Prisma Client (v6.19.3) to .\node_modules\.pnpm\@prisma+client@6.19.3_prisma@6.19.3_typescript@5.9.3\node_modules\@prisma\client in 123ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+
+
+> fracture-recovery-companion@0.1.0 typecheck D:\work\MyStartupProject1
+> tsc --noEmit
+
+
+> fracture-recovery-companion@0.1.0 lint D:\work\MyStartupProject1
+> eslint
+
+
+> fracture-recovery-companion@0.1.0 test:e2e D:\work\MyStartupProject1
+> playwright test "e2e/auth-shell.spec.ts"
+
+
+Running 30 tests using 1 worker
+
+(node:44180) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:44180) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [Desktop Chrome] › e2e\auth-shell.spec.ts:76:7 › auth identity shell › sign-in page renders passwordless Magic Link form (4.2s)
+  ok  2 [Desktop Chrome] › e2e\auth-shell.spec.ts:89:7 › auth identity shell › onboarding redirects unauthenticated users to sign-in (6.8s)
+  ok  3 [Desktop Chrome] › e2e\auth-shell.spec.ts:100:7 › auth identity shell › checkout success redirects unauthenticated users to sign-in (4.4s)
+  ok  4 [Desktop Chrome] › e2e\auth-shell.spec.ts:113:7 › auth identity shell › checkout cancelled redirects unauthenticated users to sign-in (3.8s)
+  ok  5 [Desktop Chrome] › e2e\auth-shell.spec.ts:126:7 › auth identity shell › development login opens the eligibility gate (2.7s)
+  ok  6 [Desktop Chrome] › e2e\auth-shell.spec.ts:143:7 › auth identity shell › eligible answers show continuation state (5.2s)
+  ok  7 [Desktop Chrome] › e2e\auth-shell.spec.ts:162:7 › auth identity shell › eligible users can reach Recovery Profile step (4.5s)
+  ok  8 [Desktop Chrome] › e2e\auth-shell.spec.ts:173:7 › auth identity shell › empty eligibility submit shows required answer validation (4.2s)
+  ok  9 [Desktop Chrome] › e2e\auth-shell.spec.ts:202:7 › auth identity shell › changing answers after submit clears stale outcome (4.9s)
+  ok 10 [Desktop Chrome] › e2e\auth-shell.spec.ts:231:7 › auth identity shell › out-of-scope answers stop before profile capture (5.1s)
+  ok 11 [Desktop Chrome] › e2e\auth-shell.spec.ts:264:7 › auth identity shell › red-flag answers show clinician-attention state (4.9s)
+  ok 12 [Desktop Chrome] › e2e\auth-shell.spec.ts:294:7 › auth identity shell › recovery profile validation blocks incomplete submission (5.2s)
+  ok 13 [Desktop Chrome] › e2e\auth-shell.spec.ts:310:7 › auth identity shell › valid recovery profile submission reaches personalized summary (14.0s)
+  ok 14 [Desktop Chrome] › e2e\auth-shell.spec.ts:349:7 › auth identity shell › checkout CTA uses dev fallback and reaches success page (16.0s)
+  ok 15 [Desktop Chrome] › e2e\auth-shell.spec.ts:388:7 › auth identity shell › authenticated users see checkout cancelled recovery paths (5.3s)
+(node:3224) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3224) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 16 [Mobile Chrome] › e2e\auth-shell.spec.ts:76:7 › auth identity shell › sign-in page renders passwordless Magic Link form (1.9s)
+  ok 17 [Mobile Chrome] › e2e\auth-shell.spec.ts:89:7 › auth identity shell › onboarding redirects unauthenticated users to sign-in (2.1s)
+  ok 18 [Mobile Chrome] › e2e\auth-shell.spec.ts:100:7 › auth identity shell › checkout success redirects unauthenticated users to sign-in (1.9s)
+  ok 19 [Mobile Chrome] › e2e\auth-shell.spec.ts:113:7 › auth identity shell › checkout cancelled redirects unauthenticated users to sign-in (1.9s)
+  ok 20 [Mobile Chrome] › e2e\auth-shell.spec.ts:126:7 › auth identity shell › development login opens the eligibility gate (2.3s)
+  ok 21 [Mobile Chrome] › e2e\auth-shell.spec.ts:143:7 › auth identity shell › eligible answers show continuation state (4.9s)
+  ok 22 [Mobile Chrome] › e2e\auth-shell.spec.ts:162:7 › auth identity shell › eligible users can reach Recovery Profile step (4.8s)
+  ok 23 [Mobile Chrome] › e2e\auth-shell.spec.ts:173:7 › auth identity shell › empty eligibility submit shows required answer validation (4.4s)
+  ok 24 [Mobile Chrome] › e2e\auth-shell.spec.ts:202:7 › auth identity shell › changing answers after submit clears stale outcome (4.8s)
+  ok 25 [Mobile Chrome] › e2e\auth-shell.spec.ts:231:7 › auth identity shell › out-of-scope answers stop before profile capture (5.0s)
+  ok 26 [Mobile Chrome] › e2e\auth-shell.spec.ts:264:7 › auth identity shell › red-flag answers show clinician-attention state (4.7s)
+  ok 27 [Mobile Chrome] › e2e\auth-shell.spec.ts:294:7 › auth identity shell › recovery profile validation blocks incomplete submission (5.3s)
+  ok 28 [Mobile Chrome] › e2e\auth-shell.spec.ts:310:7 › auth identity shell › valid recovery profile submission reaches personalized summary (9.7s)
+  ok 29 [Mobile Chrome] › e2e\auth-shell.spec.ts:349:7 › auth identity shell › checkout CTA uses dev fallback and reaches success page (14.6s)
+  ok 30 [Mobile Chrome] › e2e\auth-shell.spec.ts:388:7 › auth identity shell › authenticated users see checkout cancelled recovery paths (3.7s)
+
+  30 passed (3.1m)
+
+> fracture-recovery-companion@0.1.0 test:e2e D:\work\MyStartupProject1
+> playwright test
+
+
+Running 46 tests using 1 worker
+
+(node:42184) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:42184) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [Desktop Chrome] › e2e\auth-shell.spec.ts:76:7 › auth identity shell › sign-in page renders passwordless Magic Link form (3.8s)
+  ok  2 [Desktop Chrome] › e2e\auth-shell.spec.ts:89:7 › auth identity shell › onboarding redirects unauthenticated users to sign-in (5.7s)
+  ok  3 [Desktop Chrome] › e2e\auth-shell.spec.ts:100:7 › auth identity shell › checkout success redirects unauthenticated users to sign-in (3.9s)
+  ok  4 [Desktop Chrome] › e2e\auth-shell.spec.ts:113:7 › auth identity shell › checkout cancelled redirects unauthenticated users to sign-in (3.3s)
+  ok  5 [Desktop Chrome] › e2e\auth-shell.spec.ts:126:7 › auth identity shell › development login opens the eligibility gate (2.5s)
+  ok  6 [Desktop Chrome] › e2e\auth-shell.spec.ts:143:7 › auth identity shell › eligible answers show continuation state (5.0s)
+  ok  7 [Desktop Chrome] › e2e\auth-shell.spec.ts:162:7 › auth identity shell › eligible users can reach Recovery Profile step (5.0s)
+  ok  8 [Desktop Chrome] › e2e\auth-shell.spec.ts:173:7 › auth identity shell › empty eligibility submit shows required answer validation (4.9s)
+  ok  9 [Desktop Chrome] › e2e\auth-shell.spec.ts:202:7 › auth identity shell › changing answers after submit clears stale outcome (4.9s)
+  ok 10 [Desktop Chrome] › e2e\auth-shell.spec.ts:231:7 › auth identity shell › out-of-scope answers stop before profile capture (4.6s)
+  ok 11 [Desktop Chrome] › e2e\auth-shell.spec.ts:264:7 › auth identity shell › red-flag answers show clinician-attention state (4.6s)
+  ok 12 [Desktop Chrome] › e2e\auth-shell.spec.ts:294:7 › auth identity shell › recovery profile validation blocks incomplete submission (4.7s)
+  ok 13 [Desktop Chrome] › e2e\auth-shell.spec.ts:310:7 › auth identity shell › valid recovery profile submission reaches personalized summary (12.8s)
+  ok 14 [Desktop Chrome] › e2e\auth-shell.spec.ts:349:7 › auth identity shell › checkout CTA uses dev fallback and reaches success page (17.0s)
+  ok 15 [Desktop Chrome] › e2e\auth-shell.spec.ts:388:7 › auth identity shell › authenticated users see checkout cancelled recovery paths (3.9s)
+  ok 16 [Desktop Chrome] › e2e\marketing-shell.spec.ts:11:7 › marketing shell › home page renders hero, header, footer (4.1s)
+  ok 17 [Desktop Chrome] › e2e\marketing-shell.spec.ts:83:7 › marketing shell › header exposes get-started CTA and primary nav (2.1s)
+  ok 18 [Desktop Chrome] › e2e\marketing-shell.spec.ts:124:7 › marketing shell › landing safety, FAQ, and footer CTA reduce trust objections (2.3s)
+  ok 19 [Desktop Chrome] › e2e\marketing-shell.spec.ts:191:7 › marketing shell › mobile landing has no horizontal overflow (1.7s)
+  ok 20 [Desktop Chrome] › e2e\marketing-shell.spec.ts:205:7 › marketing shell › public trust article renders SEO content and onboarding CTA (5.1s)
+  ok 21 [Desktop Chrome] › e2e\marketing-shell.spec.ts:229:7 › marketing shell › unknown blog slug renders not-found page (2.0s)
+[WebServer] ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+  ok 22 [Desktop Chrome] › e2e\marketing-shell.spec.ts:238:7 › marketing shell › footer links resolve all 4 legal placeholder pages (17.5s)
+  ok 23 [Desktop Chrome] › e2e\marketing-shell.spec.ts:254:7 › marketing shell › unknown route renders not-found page (4.1s)
+(node:41312) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:41312) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 24 [Mobile Chrome] › e2e\auth-shell.spec.ts:76:7 › auth identity shell › sign-in page renders passwordless Magic Link form (1.8s)
+  ok 25 [Mobile Chrome] › e2e\auth-shell.spec.ts:89:7 › auth identity shell › onboarding redirects unauthenticated users to sign-in (1.9s)
+  ok 26 [Mobile Chrome] › e2e\auth-shell.spec.ts:100:7 › auth identity shell › checkout success redirects unauthenticated users to sign-in (2.0s)
+  ok 27 [Mobile Chrome] › e2e\auth-shell.spec.ts:113:7 › auth identity shell › checkout cancelled redirects unauthenticated users to sign-in (2.0s)
+  ok 28 [Mobile Chrome] › e2e\auth-shell.spec.ts:126:7 › auth identity shell › development login opens the eligibility gate (2.4s)
+  ok 29 [Mobile Chrome] › e2e\auth-shell.spec.ts:143:7 › auth identity shell › eligible answers show continuation state (4.7s)
+  ok 30 [Mobile Chrome] › e2e\auth-shell.spec.ts:162:7 › auth identity shell › eligible users can reach Recovery Profile step (4.8s)
+  ok 31 [Mobile Chrome] › e2e\auth-shell.spec.ts:173:7 › auth identity shell › empty eligibility submit shows required answer validation (4.7s)
+  ok 32 [Mobile Chrome] › e2e\auth-shell.spec.ts:202:7 › auth identity shell › changing answers after submit clears stale outcome (4.8s)
+  ok 33 [Mobile Chrome] › e2e\auth-shell.spec.ts:231:7 › auth identity shell › out-of-scope answers stop before profile capture (5.0s)
+  ok 34 [Mobile Chrome] › e2e\auth-shell.spec.ts:264:7 › auth identity shell › red-flag answers show clinician-attention state (5.0s)
+  ok 35 [Mobile Chrome] › e2e\auth-shell.spec.ts:294:7 › auth identity shell › recovery profile validation blocks incomplete submission (5.0s)
+  ok 36 [Mobile Chrome] › e2e\auth-shell.spec.ts:310:7 › auth identity shell › valid recovery profile submission reaches personalized summary (10.1s)
+  ok 37 [Mobile Chrome] › e2e\auth-shell.spec.ts:349:7 › auth identity shell › checkout CTA uses dev fallback and reaches success page (12.8s)
+  ok 38 [Mobile Chrome] › e2e\auth-shell.spec.ts:388:7 › auth identity shell › authenticated users see checkout cancelled recovery paths (3.2s)
+  ok 39 [Mobile Chrome] › e2e\marketing-shell.spec.ts:11:7 › marketing shell › home page renders hero, header, footer (1.7s)
+  ok 40 [Mobile Chrome] › e2e\marketing-shell.spec.ts:83:7 › marketing shell › header exposes get-started CTA and primary nav (1.8s)
+  ok 41 [Mobile Chrome] › e2e\marketing-shell.spec.ts:124:7 › marketing shell › landing safety, FAQ, and footer CTA reduce trust objections (2.0s)
+  ok 42 [Mobile Chrome] › e2e\marketing-shell.spec.ts:191:7 › marketing shell › mobile landing has no horizontal overflow (1.6s)
+  ok 43 [Mobile Chrome] › e2e\marketing-shell.spec.ts:205:7 › marketing shell › public trust article renders SEO content and onboarding CTA (1.6s)
+  ok 44 [Mobile Chrome] › e2e\marketing-shell.spec.ts:229:7 › marketing shell › unknown blog slug renders not-found page (1.7s)
+  ok 45 [Mobile Chrome] › e2e\marketing-shell.spec.ts:238:7 › marketing shell › footer links resolve all 4 legal placeholder pages (4.9s)
+  ok 46 [Mobile Chrome] › e2e\marketing-shell.spec.ts:254:7 › marketing shell › unknown route renders not-found page (1.5s)
+
+  46 passed (3.9m)
+
+---
+exit_code: 0
+elapsed_ms: 443645
+ended_at: 2026-04-29T02:24:40.671Z
+---
