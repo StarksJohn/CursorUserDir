@@ -122,6 +122,8 @@ description: >-
   - 再使用![img_215807.png](img_215807.png)模型时, 执行另一个不一样的任务消耗了136.3万token,API的Usage从55.6%上涨到了56.0%,大约上涨了0.4%; 
   - 再使用![img_215807.png](img_215807.png)模型时, 执行另一个不一样的任务消耗了110.1万token,API的Usage从56.0%上涨到了56.4%,大约上涨了0.4%; 
   - 再使用![img_215807.png](img_215807.png)模型时, 执行另一个不一样的任务消耗了108.9万token,API的Usage从56.4%上涨到了56.9%,大约上涨了0.3%; 
+  - 再使用![img_215807.png](img_215807.png)模型时, 执行另一个不一样的任务消耗了22.9万token,API的Usage从57.2%上涨到了61.8%,大约上涨了4.6%; 估计是新开chat恢复上下文导致虽然token不多,但是Usage多
+  - 再使用![img_215807.png](img_215807.png)模型时, 执行另一个不一样的任务消耗了22.3万token,API的Usage从61.8%上涨到了62.0%,大约上涨了0.2%;
   - 综上所述, 这2个模型哪个更省token?
   <!-- - 在cursor内置浏览器里我访问&&登录了 `https://supabase.com`, 怎么让这个内置浏览器 保持所有已经登录过的网站的登录状态,下次我再用 内置浏览器打开 `https://supabase.com` 时, 不想再次登录 -->
 <!-- - 当前 `MacBook Pro` 电脑也下载安装了cursor,已经有了  `/Users/stark/.cursor` 和 `~/Library/Application Support/Cursor` 目录
