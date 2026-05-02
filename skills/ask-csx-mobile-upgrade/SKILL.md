@@ -169,4 +169,4 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
   
 - WIN:
   - 当前电脑已经在 `/Users/stark/Desktop/work/RN/csx-mobile` 目录执行 `npx react-native run-android` 把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区`
-    - `D:\work\RN\csx-mobile-upgrade\src\pages\MedicalRecordsPage\MedicalRecordsPage.tsx` 显示的![img_182706.png](img_182706.png),现在要固定悬浮在`D:\work\RN\csx-mobile-upgrade\src\pages\Diagnosis\DiagnosisPage.tsx`页面的右下角如图![img_184148.png](img_184148.png)红框的位置
+    - `D:\work\RN\csx-mobile-upgrade\src\pages\Diagnosis\DiagnosisPage.tsx` 的 `state.currentTab === 0`时,显示了 renderMedicalRecordsContainer 函数里`state.consultationQueryPage_items.map`绘制的列表;当 2454 行的 ScrollView 里的内容滚动到底部, 也就是 renderMedicalRecordsContainer 函数里`state.consultationQueryPage_items.map`绘制的列表里的最后一条数据显示出来时, 需要你判断 state.consultationQueryPage_items_remaining 数组是否有数据,如果有,则 把  state.consultationQueryPage_items_remaining的数据加到 state.consultationQueryPage_items 里, 让renderMedicalRecordsContainer 函数里`state.consultationQueryPage_items.map`绘制的列表里显示所有state.consultationQueryPage_items 数据
