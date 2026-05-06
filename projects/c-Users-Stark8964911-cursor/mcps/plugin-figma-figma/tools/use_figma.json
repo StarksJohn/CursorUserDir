@@ -20,7 +20,7 @@
       },
       "skillNames": {
         "type": "string",
-        "description": "A comma-separated list of Figma skill names being followed, if any (e.g. \"figma-use\", \"figma-use,figma-generate-design\"). Only pass this when explicitly instructed to by skill documentation. Used for logging purposes."
+        "description": "A comma-separated list of Figma skill names being followed, if any (e.g. \"figma-use\", \"figma-use,figma-generate-design\"). Only pass this when explicitly instructed to by skill documentation. Used for logging purposes. If the skill was loaded via a skill-content MCP resource, prefix the skill name with \"resource:\". (e.g. \"resource:figma-use\", \"resource:figma-use,resource:figma-generate-design\")"
       }
     },
     "required": [
