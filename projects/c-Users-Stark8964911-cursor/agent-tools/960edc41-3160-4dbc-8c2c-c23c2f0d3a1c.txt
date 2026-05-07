@@ -1,0 +1,265 @@
+ChatGPT Pricing in 2026: Every Plan, Tier, and Hidden Cost Explained - Fritz ai
+
+I’ve been tracking ChatGPT pricing for three years, and the last 90 days have rewritten the chart. GPT-5.5 launched on April 23, 2026 and is now the top model on Plus, Pro, Business, and Enterprise. ChatGPT Images 2.0 (model ID gpt-image-2) shipped on April 21, replacing GPT Image 1.5 as the default image model. A brand-new $100 Pro tier landed on April 9. Business dropped from $25 to $20 per seat on April 2. And US Free and Go users have been seeing ads below their responses since February 9.
+
+If you read a pricing guide from late 2025, it’s already wrong. There are now seven tiers plus a pay-per-token API, and the gap between them matters more than ever.
+
+Here’s the full lineup at a glance. Free sits at $0 with ads, Go is $8 per month (also with ads in the US), and Plus holds at $20. Pro $100 is the new middle tier launched April 9, and Pro $200 remains the ceiling.
+
+Business runs $20 per seat on annual billing ($25 monthly). Enterprise is custom, typically north of $40 per seat once you hit a 150-seat floor.
+
+This article covers:
+
+- [Contact](https://fritz.ai/contact/)
+- The one-glance master table for all seven tiers
+- Honest takes on each plan grouped by who they fit
+- Current GPT-5.5 API prices and the break-even math against Plus (spoiler: around 1,379 messages a month)
+- How ChatGPT compares to Claude, Gemini, and Grok
+- A decision framework so you pick the tier that actually fits
+
+One thing worth naming up front. Nick Turley, OpenAI’s product head, said pricing will “significantly evolve” as technology changes, and floated the idea of phasing out unlimited plans by comparing them to “unlimited electricity.” Plus has held at $20 for three years while features multiplied. That may not last. If a plan fits your usage today, I’d lock it in before the next price shift.
+
+## ChatGPT Pricing at a Glance: All Seven Tiers in One Table
+
+One table, all seven tiers, priced in USD as of April 27, 2026. The API is billed per token and covered separately later in the article.
+
+| Plan | Price | Top Model | Usage vs Plus | Sora | Ads | Context | Compliance |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Free | $0 | GPT-5.3 Instant | 0.1x (10 msgs / 5 hrs) | No | Yes (US) | ~16K | None |
+| Go | $8/mo | GPT-5.3 Instant (5.5 in Codex) | ~1x (light) | No | Yes (US) | Basic | None |
+| Plus | $20/mo | GPT-5.5 Thinking | 1x (baseline) | 720p, 5 sec | No | ~128K | Opt-out only |
+| Pro $100 | $100/mo | GPT-5.5 Pro | 5x (10x Codex through May 31) | 1080p, 25 sec | No | ~256K | Opt-out only |
+| Pro $200 | $200/mo | GPT-5.5 Pro | 20x | 1080p, 25 sec non-watermarked | No | 1M tokens | Opt-out only |
+| Business | $20/seat annual | GPT-5.5 Thinking | Plus limits + team tools | 720p | No | Extended | SOC 2 Type 2, ISO 27001, training excluded |
+| Enterprise | Custom (~$40-75/seat) | GPT-5.5 Pro | Effectively unlimited | Included | No | Extended | Data residency, RBAC, audit logs |
+
+Three things that tripped me up while building this table, worth calling out:
+
+1. GPT-5.5 launched April 23, 2026 across Plus, Pro, Business, and Enterprise in both ChatGPT and Codex. Free stays on GPT-5.3 Instant. Go gets GPT-5.5 inside Codex with a 400K context window, but not in regular ChatGPT.
+2. ChatGPT Images 2.0 launched April 21, 2026, replacing GPT Image 1.5. Instant Mode is available to everyone including Free. Thinking Mode (with reasoning, web search, and character consistency across up to 8 images) is Plus and above. DALL-E 2 and DALL-E 3 retire May 12, 2026.
+3. Business at $20/seat annual (or $25 monthly) is a drop from $25/$30. The change took effect April 2, 2026 and mostly flew under the radar.
+4. Pro $100 launched April 9, 2026. Its 10x Codex usage is a promotion that expires May 31. After that, it settles to 5x Plus.
+
+If you only read one section of this guide, read the table above and skip to the comparison with Claude and Gemini near the end. Everything in between is me explaining why the cells say what they say.
+
+## Free and Go: The Ad-Supported Tiers
+
+Go is the tier I’d think hardest about. It costs money and still shows ads.
+
+### ChatGPT Free ($0)
+
+Free gets you 10 messages per 5-hour window on GPT-5.3 Instant, then falls back to GPT-5.3 Mini. The context window is roughly 16K tokens, which is fine for single questions and short documents but falls apart on anything book-length.
+
+You do not get Sora, Codex (beyond limited trial), Deep Research, Agent Mode, Tasks, Advanced Voice, or ChatGPT Images 2.0 Thinking Mode. You do get Images 2.0 Instant Mode, which is genuinely good and rolled out to all users on April 22, 2026. US users also see ads as of February 9, 2026, labeled “Sponsored” and placed below responses.
+
+For a casual question-and-answer tool, Free is still genuinely useful. Between 700 and 900 million people use it every week, which is more than any other AI product on the planet. I’d happily recommend Free to a student who just needs homework help or a curious adult who uses ChatGPT a few times a week.
+
+### ChatGPT Go ($8/mo)
+
+Go launched globally on January 15, 2026 across roughly 170 countries. You get 10x more messages than Free, file uploads, image creation, unlimited GPT-5.3 Instant, enhanced memory, and access to Custom GPTs. Go also includes GPT-5.5 inside Codex with a 400K context window, which is a real perk if you write code from the terminal.
+
+You do not get GPT-5.5 in regular ChatGPT, Sora, Agent Mode, Deep Research, Tasks, Advanced Voice, or Images 2.0 Thinking Mode. (Images 2.0 Instant Mode is included, since it’s free for all tiers.) US Go users still see ads, presented as “Sponsored Tips” beneath responses. You can turn off personalization in settings, but you can’t remove the ads themselves.
+
+That’s the awkward part. You’re paying $8 a month, yet you see ads and still miss every feature that makes ChatGPT feel state of the art in 2026. The tl;dv pricing analyst called Go “a trap” and “an uncomfortable middle ground.” I agree, with one caveat: if you live in Codex, the 5.5 access at $8 is a real value.
+
+My rule: if you can afford $8, you can almost certainly afford $20 for Plus. The extra $12 buys you GPT-5.5 Thinking, Sora, full Codex limits, Deep Research, Agent Mode, and zero ads. Go only makes sense if you’re outside the US (no ads rolled out yet there), budget is genuinely tight at $8, or you specifically want Codex access without the rest.
+
+## ChatGPT Plus: The $20 Default That Still Wins
+
+Plus is the tier I tell most people to pick, and I’ll show you why in concrete numbers.
+
+Plus has been $20 a month since ChatGPT first went paid, unchanged for three years while the feature set exploded. At 50 messages a day that works out to around $0.013 per message. No ads, ever.
+
+Here’s the feature list that $20 gets you in April 2026:
+
+- GPT-5.3 Instant: 400 to 2,000 messages per 5-hour window
+- GPT-5.5 Thinking: generous access with Standard and Extended thinking-time toggles
+- Deep Research: 10 runs per month
+- Sora video: 720p clips up to 5 seconds
+- Codex: standard usage baseline for agent coding, with GPT-5.5 inside Codex
+- Agent Mode: approximately 40 tasks per month
+- Image generation: ChatGPT Images 2.0 with Thinking Mode (reasoning, web search, and consistency across up to 8 images per prompt)
+- Advanced Voice Mode with video
+- 60+ app connectors (Google Drive, Slack, GitHub, Salesforce)
+- Custom GPTs, Projects, Memory, Canvas, and Record Mode
+- Context window: roughly 128K tokens (~320 pages)
+
+What Plus does not give you: the GPT-5.5 Pro model (Pro tiers and above), the 1M-token context window in ChatGPT (Pro $200 only), the Light and Heavy thinking-time toggles (Pro only), team admin tools, or training-data exclusion by default. On Plus, conversations may be used to train OpenAI models unless you manually opt out in settings. That matters if you work with confidential material.
+
+The Deep Research cap at 10 per month is a real limit. If you lean heavily on deep analyses, you’ll blow through it in a busy week. Sora on Plus is also “expanded” rather than unlimited, capped at 720p and 5-second clips.
+
+One question I get constantly: is there a free trial? In 2026, there’s no universal Plus trial. The legitimate paths are a referral invite (7 to 14 days), a 14-day onboarding trial on Business, free Plus for US K-12 educators through June 2027, and occasional 7-day mobile app trials for select users.
+
+One Plus user in a neuronad.com write-up tracked their own usage and found they hit Free’s message limit on four of five workdays. Upgrading, they said, “paid for itself in the first week just from the time saved not waiting for rate limits to reset.” That’s the honest Plus pitch. You stop fighting caps.
+
+## Pro $100 vs Pro $200: What Heavy Users Actually Need
+
+On April 9, 2026, OpenAI slotted a brand-new $100 Pro tier between Plus and the existing $200 Pro. Here’s what actually changed, and who should care.
+
+### Pro $100: the new mid-tier
+
+Pro $100 gives you the same model access as Pro $200, including GPT-5.5 Pro, o3-pro reasoning, and unlimited GPT-5.3 Instant and GPT-5.5 Thinking. The headline difference is volume. Pro $100 runs at 5x Plus limits, with a temporary 10x Codex promotion through May 31, 2026.
+
+The timing is not subtle. Anthropic banned third-party agents from Claude Pro and Max on April 4. Five days later, OpenAI launched a tier priced identically to Claude Max 5x.
+
+Sam Altman said on X that Codex limits will reset for every additional million users up to 10 million weekly active users. If you were a displaced Claude Code user, Pro $100 is the landing pad.
+
+### Pro $200: the ceiling
+
+Pro $200 pushes the usage multiplier to 20x Plus and adds a few genuine capability upgrades over Pro $100.
+
+| Feature | Pro $100 | Pro $200 |
+| --- | --- | --- |
+| Price | $100/mo | $200/mo |
+| Models | GPT-5.5 Pro, o3-pro, all frontier | GPT-5.5 Pro, o3-pro, all frontier |
+| Usage vs Plus | 5x (10x Codex promo through May 31) | 20x |
+| Deep Research runs/mo | Elevated | 250 |
+| Sora | 1080p, 25 sec | 1080p, 25 sec, non-watermarked, frame-by-frame edit |
+| Context window | ~256K tokens | 1M tokens (~680 pages) |
+| Thinking-time toggles | Light, Standard, Extended, Heavy | Light, Standard, Extended, Heavy |
+| Annual cost | $1,200 | $2,400 |
+
+### How to decide between them
+
+My rule of thumb. If you hit Plus usage caps more than once a week, Pro $100 is the rational upgrade. If you exhaust Plus daily, need 250 Deep Research runs, or regularly feed the model book-length inputs that demand 1M tokens, go straight to Pro $200. If you’re not sure whether you hit limits daily, you probably don’t need either.
+
+One warning. The 10x Codex usage on Pro $100 is a promotion, not a permanent feature. After May 31, 2026, Codex limits drop to the standard 5x.
+
+The Next Web called the expiry “a real test” of whether early subscribers got real value or feel bait-and-switched. Buy with your eyes open.
+
+## ChatGPT Business and Enterprise: Pricing Changed in April 2026
+
+On April 2, 2026, OpenAI cut Business pricing from $25 to $20 per seat on annual billing. That single change broke the math of giving each team member their own Plus account.
+
+### Business ($20/seat annual, $25 monthly, min 2 seats)
+
+Business was already the natural pick for regulated teams. At $20 per seat, it’s now the default pick for any team of 2 or more. Here’s what it adds over personal Plus:
+
+- Shared team workspace with admin console
+- SAML SSO (no upcharge), MFA enforcement, SCIM user provisioning
+- Conversations contractually excluded from training by default
+- SOC 2 Type 2, ISO/IEC 27001 (certified January 2026), GDPR and CCPA alignment
+- 60+ app integrations
+- Shared Custom GPTs scoped to your org
+- Admin analytics dashboard
+
+### The team-size cost math
+
+| Seats | Individual Plus | Business (annual) | Who wins |
+| --- | --- | --- | --- |
+| 2 | $40/mo | $40/mo | Business (adds compliance for free) |
+| 5 | $100/mo | $100/mo | Business |
+| 10 | $200/mo | $200/mo | Business |
+| 25 | $500/mo | $500/mo | Business |
+| 50 | $1,000/mo | $1,000/mo | Business |
+
+At equal price, Business throws in training-exclusion by default, SAML SSO, SCIM, SOC 2 Type 2, ISO 27001, admin controls, and shared GPTs for zero extra dollars. For any team of 2 or more, that’s the rational pick.
+
+### Enterprise (custom pricing)
+
+Enterprise doesn’t publish pricing. Industry estimates put it at $40 to $75 per seat per month with a roughly 150-seat minimum, which puts the floor around $108K per year. On top of Business, Enterprise adds multi-region data residency (US, Europe, UK, Japan), granular role-based access control, full audit logs, 24/7 SLA-backed support, a dedicated AI advisor, and roughly 2x faster processing.
+
+It also adds ISO 27017, 27018, and 27701, CSA STAR, and GDPR SCCs in the DPA. Real deployments include Klarna (serving 150M users), Asana (reporting roughly one hour saved per person per day), and Boston Children’s Hospital auto-generating patient discharge summaries.
+
+Pick Enterprise if you’re in healthcare, legal, finance, or public sector, if you need data residency in a specific region, or if you’re past ~150 seats. For everyone else, Business does the job.
+
+## OpenAI API Pricing: When It Beats a Subscription
+
+If you write code or run occasional automations, the API is often cheaper than Plus. Here’s the math.
+
+### Current API token prices (April 2026)
+
+| Model | Input / 1M tokens | Output / 1M tokens | Best for |
+| --- | --- | --- | --- |
+| GPT-5.5 | $5.00 | $30.00 | Frontier reasoning and agentic work |
+| GPT-5.5 Pro | $30.00 | $180.00 | Hardest tasks, highest accuracy |
+| GPT-5.4 | $2.50 ($5.00 above 272K) | $15.00 | Cheaper general-purpose alternative |
+| GPT-5.4 mini | $0.25 | $2.00 | Cost-sensitive workloads |
+| GPT-5.4 nano | $0.025 | $0.20 | High-volume simple tasks |
+
+GPT-5.5 went live in the API on April 24, 2026, the day after the ChatGPT rollout. The headline number is that it’s roughly 2x the per-token cost of GPT-5.4 ($5 input vs $2.50, $30 output vs $15). OpenAI argues the model is also more token-efficient, so total spend per task ends up closer to a 20% increase rather than a doubling. Whether that holds depends entirely on your workload, so test before you switch defaults.
+
+A couple of useful perks. Batch API and Flex are 50% off the standard rate if you can wait up to 24 hours. Cached input drops the rate further. Priority processing runs at 2.5x standard for latency-sensitive work. Sora API runs $0.10 per second at 720p, or $0.30 to $0.50 per second on Sora Pro.
+
+### ChatGPT Images 2.0 API pricing
+
+The image API is billed in tokens, not per image. Model ID is`gpt-image-2`, with the snapshot pinned as`gpt-image-2-2026-04-21`. The official API opens to developers in early May 2026, after a brief ChatGPT-only rollout window.
+
+| Token type | Price per 1M tokens |
+| --- | --- |
+| Image input | $8.00 |
+| Image input (cached) | $2.00 |
+| Image output | $30.00 |
+| Text input | $5.00 |
+| Text input (cached) | $1.25 |
+
+For a 1024×1024 generation, OpenAI’s calculator lands around $0.006 at low quality, $0.053 at medium, and $0.211 at high. Edits with reference images add image-input tokens on top, so real costs run higher than the output-only numbers suggest. At 1024×1024 high quality, gpt-image-2 is actually a touch more expensive than GPT Image 1.5 ($0.211 vs $0.133); at portrait sizes like 1024×1536, it’s cheaper. Run your actual prompts through the calculator before assuming parity.
+
+Two things to budget for. Thinking Mode adds reasoning-token overhead that varies with prompt complexity, so a complex layout can quietly cost 3-5x a simple Instant Mode call. And rate limits start tight: 5 images per minute on Tier 1, 20 on Tier 2, climbing to 250 on Tier 5 (which requires $1,000 spent and a 30-day-old account).
+
+One more thing worth flagging. DALL-E 2 and DALL-E 3 retire on May 12, 2026. If you have any production integration on either, migrate to`gpt-image-2` before that date or your calls will start failing.
+
+### Break-even math against Plus
+
+Assume a typical conversational message uses 500 input tokens and 400 output tokens. On GPT-5.5, that’s $0.0025 for input plus $0.012 for output, so about $0.0145 per message.
+
+Divide $20 (Plus) by $0.0145 and you get roughly 1,379 messages per month, or about 46 messages per day. Below that, the API is cheaper. Above that, Plus is the flat-fee winner. The break-even effectively halved when 5.5 doubled the per-token rate, which makes Plus a stronger value than it looked a week ago.
+
+If you can stick with GPT-5.4, the break-even stays at the older 2,759 messages a month (92 a day). And on GPT-5.4 mini, the break-even stretches to tens of thousands of messages, so for most solo users on light work, the API still costs well under $1 a month.
+
+### Who should switch to the API
+
+The API is the right call if you’re building an app or embedding AI into a workflow, if your usage is bursty (heavy one week, zero the next), or if you want to run bulk classification and embeddings on GPT-5.4 nano. Snapchat’s My AI serves 750M monthly active users entirely through the API. None of them have a ChatGPT subscription.
+
+Reality check. The API feels cheaper until you factor in developer time. Plus is $20 and plug-and-play. API is $1 if you already have the dev skills.
+
+That’s the real trade, and the API is not included in any subscription. It’s always a separate line item.
+
+## How ChatGPT Pricing Compares to Claude and Gemini
+
+The three big AI subscriptions have converged to nearly identical prices. The real differences are under the hood.
+
+| Tier | ChatGPT | Claude | Gemini |
+| --- | --- | --- | --- |
+| Free | Free (US ads) | Free (limited) | Free (limited) |
+| Standard | Plus $20/mo | Pro $20/mo | AI Pro $19.99/mo |
+| Mid | Pro $100/mo | Max 5x $100/mo | (none) |
+| Premium | Pro $200/mo | Max 20x $200/mo | AI Ultra $249.99/mo |
+
+Grok sits to the side. Free limited, SuperGrok $30 per month, SuperGrok Heavy $300 per month. A distant fourth for general use, though X Premium+ at $40 bundles Grok with the rest of the X platform.
+
+What each provider actually wins at:
+
+- ChatGPT wins on breadth. Advanced Voice Mode with video, ChatGPT Images 2.0 (which currently leads the Image Arena leaderboard by a wide margin), Sora video, Codex coding agent, Agent Mode, and 60+ app connectors. It’s the best all-rounder and the only one of the three with a real voice product in 2026.
+- Claude wins on context and writing. 1M-token context window on Max (vs ChatGPT Pro’s 256K), strong long-form prose, and a narrow lead on real-world coding benchmarks (Claude Opus 4.7 reports 64.3% on SWE-Bench Pro vs GPT-5.5’s 58.6%, though OpenAI flagged possible memorization on some Anthropic numbers). Downsides: no voice, no image generation, no video, and Anthropic banned third-party agents on Pro/Max on April 4, 2026.
+- Gemini wins on Google ecosystem. Native integration with Gmail, Docs, Drive, Meet, and Calendar. 2TB of Google One storage is included with AI Pro. YouTube Premium ships with AI Ultra. Veo 2/3 for video. If you live in Workspace, Gemini is hard to beat.
+
+My honest take. At $20 a month, the three are close enough that it comes down to ecosystem. Living in Google Workspace? Gemini. Writing-heavy or running huge contexts? Claude.
+
+Want the widest toolset and the best voice, image, and video combo? ChatGPT. At the $100 tier, the ChatGPT Pro vs Claude Max 5x choice is OpenAI’s feature breadth against Anthropic’s context size and coding edge. Try both on a $20 base for a month before you commit to $100.
+
+## ChatGPT Pricing FAQ
+
+### Is ChatGPT free in 2026?
+
+Yes. The Free tier at $0 still exists, with GPT-5.3 access, 10 messages per 5-hour window, and GPT Store access. US Free users have seen ads since February 9, 2026. Sora, Deep Research, Agent Mode, and Advanced Voice require a paid plan, and Codex is limited to a small trial allowance until you upgrade.
+
+### Does ChatGPT have a free trial?
+
+There’s no universal Plus or Pro trial in 2026. Legitimate paths: referral invites give 7 to 14 days of free Plus, Business includes a 14-day onboarding trial, US K-12 educators get Plus free through June 2027, and limited 7-day mobile trials appear for select users.
+
+### What happens when I cancel ChatGPT Plus?
+
+Access stays active until the end of your billing cycle, and your chat history is preserved on Free indefinitely. Custom GPT builder access is lost but returns if you re-subscribe. One refund is possible within 14 days via [[email protected]](https://fritz.ai/cdn-cgi/l/email-protection). Cancel 24+ hours before your next billing date to avoid the next charge.
+
+### What’s the difference between Pro $100 and Pro $200?
+
+Same feature and model access, including GPT-5.5 Pro and o3-pro. The core difference is usage volume. Pro $100 runs at 5x Plus limits (10x Codex promotionally through May 31, 2026). Pro $200 runs at 20x Plus with 250 Deep Research runs a month and a 1M-token context window.
+
+### Should a team of 5 get Plus or Business?
+
+Business, every time. After the April 2, 2026 price change, 5 seats cost $100 a month on either plan. Business adds training-exclusion by default, SAML SSO, SCIM, MFA, SOC 2 Type 2, ISO 27001, and a shared team workspace for zero extra dollars.
+
+### Is the OpenAI API cheaper than a Plus subscription?
+
+For most casual users, yes. GPT-5.5 at $5 input and $30 output per million tokens works out to about $0.0145 per typical message. Plus break-even is around 1,379 messages a month (46 a day). Below that, API wins. Above it, Plus is the flat-fee pick. If you stick with GPT-5.4 the break-even doubles to roughly 2,759 messages a month. API usage is never included in any subscription.

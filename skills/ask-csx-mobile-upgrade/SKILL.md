@@ -163,7 +163,7 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
   
 - WIN:
   - 当前电脑已经在 `/Users/stark/Desktop/work/RN/csx-mobile` 目录执行 `npx react-native run-android` 把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区`
-    - `D:\work\RN\csx-mobile-upgrade\src\csxRoutes\MainTabNavigator.tsx` 的 ![img_105146.png](img_105146.png), 会在 app 从后台切换到前台后执行 try 里的任务;但是在
+  - 把这个项目使用的 `react-native-auto-positioned-popup`库的版本升级到最新
 
 <!-- - figma-to-rn-toolkit 相关:
   - 请根据 `https://www.figma.com/design/Wa0Oa4oeMTy5H2Tk32ooqb/CSM?node-id=17126-28544&m=dev` 这个 Figma URL, 在 `D:\work\RN\csx-mobile-upgrade\src\pages\Diagnosis\DiagnosisPage.tsx`页面 的 2018行 ,根据页面的代码风格和项目结构,设计实现 `React Native` 组件代码
@@ -172,5 +172,10 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
       - 复用项目中已有的公共组件和工具函数
       - 使用项目一致的样式方案（StyleSheet.create / styled-components 等） -->
 
-- react-native-auto-positioned-popup 相关
-  <!-- - `D:\work\RN\csx-mobile-upgrade\src\pages\ImmuneRecordPage\ImmuneRecordPage.tsx`里使用的 -->
+<!-- - react-native-auto-positioned-popup 相关
+  - `D:\work\RN\csx-mobile-upgrade\global.ts`的 `global.$fake`已经设为了 true
+  - `D:\work\RN\csx-mobile-upgrade\src\pages\ImmuneRecordPage\ImmuneRecordPage.tsx`里绘制的![img_141828.png](img_141828.png)组件,显示在![img_142426.png](img_142426.png)的红框处,传入的 `useTextInput`是false, 实际调用的源码是 `D:\work\RN\csx-mobile-upgrade\node_modules\react-native-auto-positioned-popup\src\AutoPositionedPopup.tsx`;
+  - 目前点击 `D:\work\RN\csx-mobile-upgrade\node_modules\react-native-auto-positioned-popup\src\AutoPositionedPopup.tsx` 里 1215行的`TouchableOpacity`后,执行了1219行的`onPress`回调;然后`state.isFocus`变成了true;然后`AutoPositionedPopupList`组件显示在了![img_144138.png](img_144138.png)红框处,也就是显示在了屏幕的中心;
+  - 现在需要你在不改变原有代码逻辑的基础上修改这个逻辑,如果传入的 `internalSearch=true`,则点击后弹出的红框,也就是`AutoPositionedPopupList`组件,固定显示在如图![img_144313.png](img_144313.png)红框处(屏幕顶部导航栏)的下边;
+  - 你只能新增代码,不要修改已有代码
+  - 现在需要给`D:\work\RN\csx-mobile-upgrade\node_modules\react-native-auto-positioned-popup\src\AutoPositionedPopup.tsx`的887行的height的值加一个高度,这个高度用来显示如果原来useTextInput传入true时,显示的`memoizedTextInput`的高度;然后`AutoPositionedPopupList`的顶部需要显示`memoizedTextInput`,也就是把之前useTextInput传入true时显示的`memoizedTextInput`的操作逻辑,改到显示在`AutoPositionedPopupList`的顶部来操作 -->

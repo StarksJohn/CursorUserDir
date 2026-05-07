@@ -17,7 +17,7 @@
         "type": "number"
       },
       "boxes": {
-        "description": "Include each element's bounding box as [box=x,y,width,height] in the snapshot",
+        "description": "Include each element's bounding box as [box=x,y,width,height] in the snapshot. Coordinates are viewport-relative, in CSS pixels (Element.getBoundingClientRect)",
         "type": "boolean"
       }
     },

@@ -1,0 +1,434 @@
+# Commit: npm/documentation@b8298f9
+
+- Repository: npm/documentation | Documentation for the npm registry, website, and command-line interface. | 616 stars | MDX
+
+## [dec 16th]: Doc Changes for 2FA Publishing and Secure By Default (#1790)
+
+- Author: [@shmam](https://github.com/shmam)
+- Committer: [@web-flow](https://github.com/web-flow)
+- Date: 2025-12-10T15:23:17Z
+- SHA: b8298f9f1c98719e66cd3cf8c18fd1fcf04ff47a
+- Changes: +112 -44 (12 files)
+- Verified: yes
+
+## Overview
+
+This is a PR to update the documentation to reflect the following
+changes coming to the npm registry
+
+1. The default package setting for all newly created packages will be
+
+`Require two-factor authentication or a granular access token with
+bypass 2fa enabled`
+
+1. Publishing a package will require the user to have 2fa enabled or use
+
+a granular access token with bypass 2fa enabled.
+
+## Summary of file changes 📖
+
+- Major updates to **Requiring 2FA for package publishing and settings
+
+modification** to highlight that 2FA or gat is required for publishing.
+Package settings options and image is updated.
+
+- Preview:
+
+https://npm-4360decefc-15913497.drafts.github.io/requiring-2fa-for-package-publishing-and-settings-modification
+
+- Adding notice to `npm publish`
+- Preview:
+
+https://npm-4360decefc-15913497.drafts.github.io/cli/v11/commands/npm-publish
+
+- Slight changes to `npm access` to remove option for no 2fa package
+
+setting.
+
+- Preview:
+
+https://npm-4360decefc-15913497.drafts.github.io/cli/v11/commands/npm-access
+
+- Adding a standardized notice to many pages (contributing packages,
+
+organizational settings, about 2 factor authentication)
+
+- Preview:
+
+https://npm-4360decefc-15913497.drafts.github.io/creating-node-js-modules
+
+- Adjusting the wording on **Using private packages in a CI/CD
+
+workflow** to `If trusted publishing is not available for your CI/CD
+provider, you must create a [granular access token with bypass 2FA
+enabled][create-token] on the website. This will allow you to publish in
+your CI/CD workflows even if you have two-factor authentication enabled
+on your account.`
+
+- Preview:
+
+https://npm-4360decefc-15913497.drafts.github.io/using-private-packages-in-a-ci-cd-workflow
+
+---
+
+Co-authored-by: Karen Li <47998177+karenjli@users.noreply.github.com>
+Co-authored-by: Nishant Gupta 
+
+---
+
+## Files Changed
+
+| File | Status | Add | Del |
+| --- | --- | --- | --- |
+| content/cli/v11/commands/npm-access.mdx | modified | +1 | -1 |
+| content/cli/v11/commands/npm-publish.mdx | modified | +11 | -0 |
+| content/getting-started/setting-up-your-npm-user-account/about-two-factor-authentication.mdx | modified | +11 | -0 |
+| content/getting-started/setting-up-your-npm-user-account/configuring-two-factor-authentication.mdx | modified | +12 | -28 |
+| content/integrations/integrating-npm-with-external-services/using-private-packages-in-a-ci-cd-workflow.mdx | modified | +1 | -1 |
+| content/organizations/creating-and-managing-organizations/requiring-two-factor-authentication-in-your-organization.mdx | modified | +11 | -0 |
+| content/packages-and-modules/contributing-packages-to-the-registry/creating-and-publishing-private-packages.mdx | modified | +14 | -0 |
+| content/packages-and-modules/contributing-packages-to-the-registry/creating-and-publishing-scoped-public-packages.mdx | modified | +14 | -0 |
+| content/packages-and-modules/contributing-packages-to-the-registry/creating-and-publishing-unscoped-public-packages.mdx | modified | +14 | -0 |
+| content/packages-and-modules/contributing-packages-to-the-registry/creating-node-js-modules.mdx | modified | +16 | -2 |
+| content/packages-and-modules/securing-your-code/requiring-2fa-for-package-publishing-and-settings-modification.mdx | modified | +7 | -12 |
+| static/packages-and-modules/securing-your-code/2fa-package-setting.png | modified | +0 | -0 |
+
+---
+
+## Diffs
+
+### content/cli/v11/commands/npm-access.mdx
+
+```diff
+@@ -42,7 +42,7 @@ npm access list packages [<user>|<scope>|<scope:team>] [<package>]
+ npm access list collaborators [<package> [<user>]]
+ npm access get status [<package>]
+ npm access set status=public|private [<package>]
+-npm access set mfa=none|publish|automation [<package>]
++npm access set mfa=publish|automation [<package>]
+ npm access grant <read-only|read-write> <scope:team> [<package>]
+ npm access revoke <scope:team> [<package>]
+ ```
+```
+
+### content/cli/v11/commands/npm-publish.mdx
+
+```diff
+@@ -49,6 +49,17 @@ Publishes a package to the registry so that it can be installed by name.
+ 
+ Publish the package in the current directory:
+ 
++<Note variant="warning">
++
++**Important:** Publishing to npm requires either:
++
++- Two-factor authentication (2FA) enabled on your account, OR
++- A granular access token with bypass 2FA enabled
++
++For more information, see the npm documentation on [requiring 2FA for package publishing](/requiring-2fa-for-package-publishing-and-settings-modification).
++
++</Note>
++
+ ```bash
+ npm publish
+ ```
+```
+
+### content/getting-started/setting-up-your-npm-user-account/about-two-factor-authentication.mdx
+
+```diff
+@@ -20,6 +20,17 @@ When you enable 2FA, you will be prompted for a second form of authentication be
+ 
+ </Note>
+ 
++<Note variant="warning">
++
++**Important:** Publishing to npm requires either:
++
++- Two-factor authentication (2FA) enabled on your account, OR
++- A granular access token with bypass 2FA enabled
++
++For more information, see the npm documentation on [requiring 2FA for package publishing](/requiring-2fa-for-package-publishing-and-settings-modification).
++
++</Note>
++
+ ## Two-factor authentication on npm
+ 
+ Two-factor authentication on npm can be enabled for authorization and writes, or authorization only.
+```
+
+### content/getting-started/setting-up-your-npm-user-account/configuring-two-factor-authentication.mdx
+
+```diff
+@@ -6,6 +6,17 @@ import shared from '~/shared.js'
+ 
+ You can enable two-factor authentication (2FA) on your npm user account to protect against unauthorized access to your account and packages using a [security-key][webauthn].
+ 
++<Note variant="warning">
++
++**Important:** Publishing to npm requires either:
++
++- Two-factor authentication (2FA) enabled on your account, OR
++- A granular access token with bypass 2FA enabled
++
++For more information, see the npm documentation on [requiring 2FA for package publishing](/requiring-2fa-for-package-publishing-and-settings-modification).
++
++</Note>
++
+ ## Prerequisites
+ 
+ Before you enable 2FA on your npm user account, you must:
+@@ -54,34 +65,6 @@ For more information on supported 2FA methods, see "[About two-factor authentica
+ 
+ 8. Click **Go back to settings** after confirming that you have saved your codes.
+ 
+-### Disabling 2FA for writes
+-
+-Check the [Authorization and writes][authorization-and-writes] section for more information on different operations that requires 2FA when this mode is enabled.
+-
+-<Note>
+-
+-**Note**: As a recommended setting, 2FA for write operations are _automatically enabled_ when setting up 2FA. The following steps explain how to disable it.
+-
+-</Note>
+-
+-1. <>{shared['user-login'].text}</>
+-
+-   <>{shared['user-login'].image}</>
+-
+-2. <>{shared['account-settings'].text}</>
+-
+-   <>{shared['account-settings'].image}</>
+-
+-3. On the account settings page, under "Two-Factor Authentication", click **Modify 2FA**.
+-
+-   <Screenshot src="/getting-started/setting-up-your-npm-user-account/2fa-modify.png" alt="Screenshot showing Modify 2FA button" />
+-
+-4. From the "Manage Two-Factor Authentication" navigate to "Additional Options" section
+-
+-5. Clear the checkbox for "Require two-factor authentication for write actions" and click "Update Preferences"
+-
+-   <Screenshot src="/getting-started/setting-up-your-npm-user-account/disable-2fa-button.png" alt="Screenshot showing a cleared check box to disable 2fa under Addition options" />
+-
+ ### Disabling 2FA
+ 
+ If you have 2FA enabled, you can remove it from your account settings page.
+@@ -193,6 +176,7 @@ The Twitter or GitHub account is now linked to your npm account. To remove the l
+ [can-i-use]: https://caniuse.com/#search=webauthn
+ [viewing-and-regenerating-recovery-code]: /recovering-your-2fa-enabled-account#viewing-and-regenerating-recovery-code
+ [webauthn]: https://webauthn.guide/
++[creating-token]: /creating-and-viewing-access-tokens
+ [u2f]: https://en.wikipedia.org/wiki/Universal_2nd_Factor
+ [windows-hello]: https://support.microsoft.com/en-us/windows/learn-about-windows-hello-and-set-it-up-dae28983-8242-bb2a-d3d1-87c9d265a5f0
+ [touch-id]: https://support.apple.com/en-gb/HT204587
+```
+
+### content/integrations/integrating-npm-with-external-services/using-private-packages-in-a-ci-cd-workflow.mdx
+
+```diff
+@@ -45,7 +45,7 @@ For more information on creating granular access tokens, including CIDR-whitelis
+ 
+ For publishing packages in continuous deployment environments, we strongly recommend using [trusted publishing](/trusted-publishers) when available, as it provides enhanced security without requiring token management.
+ 
+-If trusted publishing is not available for your CI/CD provider, you can create a [granular access token with bypass 2FA enabled][create-token] on the website. This will allow you to publish even if you have two-factor authentication enabled on your account.
++If trusted publishing is not available for your CI/CD provider, you must create a [granular access token with bypass 2FA enabled][create-token] on the website. This will allow you to publish in your CI/CD workflows even if you have two-factor authentication enabled on your account.
+ 
+ <Note>
+ 
+```
+
+### content/organizations/creating-and-managing-organizations/requiring-two-factor-authentication-in-your-organization.mdx
+
+```diff
+@@ -6,6 +6,17 @@ import shared from '~/shared.js'
+ 
+ Organization owners can require organization members to enable two-factor authentication for their personal accounts, making it harder for malicious actors to access an organization's packages and settings.
+ 
++<Note variant="warning">
++
++**Important:** Publishing to npm requires either:
++
++- Two-factor authentication (2FA) enabled on your account, OR
++- A granular access token with bypass 2FA enabled
++
++For more information, see the npm documentation on [requiring 2FA for package publishing](/requiring-2fa-for-package-publishing-and-settings-modification).
++
++</Note>
++
+ ## About two-factor authentication for organizations
+ 
+ Two-factor authentication (2FA) is an extra layer of security used when logging into websites or apps. You can require all members in your organization to enable two-factor authentication on npm. For more information about two-factor authentication, see ["Configuring two-factor authentication"][configure-2fa].
+```
+
+### content/packages-and-modules/contributing-packages-to-the-registry/creating-and-publishing-private-packages.mdx
+
+```diff
+@@ -81,6 +81,17 @@ npm install my-package
+ 
+ By default, scoped packages are published with private visibility.
+ 
++<Note variant="warning">
++
++**Important:** Publishing to npm requires either:
++
++- Two-factor authentication (2FA) enabled on your account, OR
++- A granular access token with bypass 2FA enabled
++
++For more information, see the npm documentation on [requiring 2FA for package publishing](/requiring-2fa-for-package-publishing-and-settings-modification).
++
++</Note>
++
+ 1. On the command line, navigate to the root directory of your package.
+ 
+    ```
+@@ -109,3 +120,6 @@ For more information on the `publish` command, see the [CLI documentation][cli-p
+ [cli-publish]: /cli/publish
+ [reg-config]: configuring-your-registry-settings-as-an-npm-enterprise-user#using-npmrc-to-manage-multiple-profiles-for-different-registries
+ [pii]: https://en.wikipedia.org/wiki/Personally_identifiable_information
++[config-2fa]: /configuring-two-factor-authentication
++[creating-token]: /creating-and-viewing-access-tokens
++[requiring-2fa]: /requiring-2fa-for-package-publishing-and-settings-modification
+```
+
+### content/packages-and-modules/contributing-packages-to-the-registry/creating-and-publishing-scoped-public-packages.mdx
+
+```diff
+@@ -77,6 +77,17 @@ npm install /path/to/my-test-package
+ 
+ By default, scoped packages are published with private visibility. To publish a scoped package with public visibility, use `npm publish --access public`.
+ 
++<Note variant="warning">
++
++**Important:** Publishing to npm requires either:
++
++- Two-factor authentication (2FA) enabled on your account, OR
++- A granular access token with bypass 2FA enabled
++
++For more information, see the npm documentation on [requiring 2FA for package publishing](/requiring-2fa-for-package-publishing-and-settings-modification).
++
++</Note>
++
+ 1. On the command line, navigate to the root directory of your package.
+ 
+    ```
+@@ -111,3 +122,6 @@ For more information on the `publish` command, see the [CLI documentation][cli-p
+ [cli-publish]: /cli/publish
+ [pii]: https://en.wikipedia.org/wiki/Personally_identifiable_information
+ [provenance-how-to]: /generating-provenance-statements
++[config-2fa]: /configuring-two-factor-authentication
++[creating-token]: /creating-and-viewing-access-tokens
++[requiring-2fa]: /requiring-2fa-for-package-publishing-and-settings-modification
+```
+
+### content/packages-and-modules/contributing-packages-to-the-registry/creating-and-publishing-unscoped-public-packages.mdx
+
+```diff
+@@ -58,6 +58,17 @@ npm install path/to/my-package
+ 
+ ## Publishing unscoped public packages
+ 
++<Note variant="warning">
++
++**Important:** Publishing to npm requires either:
++
++- Two-factor authentication (2FA) enabled on your account, OR
++- A granular access token with bypass 2FA enabled
++
++For more information, see the npm documentation on [requiring 2FA for package publishing](/requiring-2fa-for-package-publishing-and-settings-modification).
++
++</Note>
++
+ 1. On the command line, navigate to the root directory of your package.
+ 
+    ```
+@@ -89,3 +100,6 @@ For more information on the `publish` command, see the [CLI documentation][cli-p
+ [cli-publish]: /cli/publish
+ [pii]: https://en.wikipedia.org/wiki/Personally_identifiable_information
+ [provenance-how-to]: /generating-provenance-statements
++[config-2fa]: /configuring-two-factor-authentication
++[creating-token]: /creating-and-viewing-access-tokens
++[requiring-2fa]: /requiring-2fa-for-package-publishing-and-settings-modification
+```
+
+### content/packages-and-modules/contributing-packages-to-the-registry/creating-node-js-modules.mdx
+
+```diff
+@@ -36,8 +36,20 @@ exports.printMsg = function() {
+ ## Test your module
+ 
+ 1. Publish your package to npm:
+-   - For [private packages][priv-pkg-pub] and [unscoped packages][unscoped-pkg-pub], use `npm publish`.
+-   - For [scoped public packages][scoped-pkg-pub], use `npm publish --access public`
++
++<Note variant="warning">
++
++**Important:** Publishing to npm requires either:
++
++- Two-factor authentication (2FA) enabled on your account, OR
++- A granular access token with bypass 2FA enabled
++
++For more information, see the npm documentation on [requiring 2FA for package publishing](/requiring-2fa-for-package-publishing-and-settings-modification).
++
++</Note>
++
++- For [private packages][priv-pkg-pub] and [unscoped packages][unscoped-pkg-pub], use `npm publish`.
++- For [scoped public packages][scoped-pkg-pub], use `npm publish --access public`
+ 
+ 2. On the command line, create a new test directory outside of your project directory.
+ 
+@@ -73,3 +85,5 @@ exports.printMsg = function() {
+ [priv-pkg-pub]: creating-and-publishing-private-packages#publishing-private-packages
+ [unscoped-pkg-pub]: creating-and-publishing-unscoped-public-packages#publishing-unscoped-public-packages
+ [scoped-pkg-pub]: creating-and-publishing-scoped-public-packages#publishing-scoped-public-packages
++[config-2fa]: /configuring-two-factor-authentication
++[creating-token]: /creating-and-viewing-access-tokens
+```
+
+### content/packages-and-modules/securing-your-code/requiring-2fa-for-package-publishing-and-settings-modification.mdx
+
+```diff
+@@ -4,9 +4,9 @@ title: Requiring 2FA for package publishing and settings modification
+ 
+ import shared from '~/shared.js'
+ 
+-To protect your packages, as a package publisher, you can require everyone who has write access to a package to have two-factor authentication (2FA) enabled. This will require that users provide 2FA credentials in addition to their login token when they publish the package. For more information, see "[Configuring two-factor authentication][config-2fa]".
++All packages now require two-factor authentication (2FA) or a [granular access tokens with bypass 2FA enabled][creating-granular-access-token] for creating and publishing packages.
+ 
+-You may also choose to allow publishing with either two-factor authentication _or_ with [granular access tokens with bypass 2FA enabled][creating-granular-access-token]. This lets you configure tokens in a CI/CD workflow, but requires two-factor authentication from interactive publishes.
++Modifying a package's settings also requires two-factor authentication (2FA).
+ 
+ For CI/CD workflows, consider using [trusted publishing](/trusted-publishers), which provides secure, token-free publishing that automatically enforces strong authentication without requiring manual token management.
+ 
+@@ -21,7 +21,7 @@ For CI/CD workflows, consider using [trusted publishing](/trusted-publishers), w
+ 
+ </Note>
+ 
+-## Configuring two-factor authentication
++## Configuring two-factor authentication on package settings
+ 
+ 1. <>{shared['user-login'].text}</>
+ 
+@@ -34,18 +34,13 @@ For CI/CD workflows, consider using [trusted publishing](/trusted-publishers), w
+    <Screenshot src="/packages-and-modules/securing-your-code/2fa-package-admin.png" alt="Screenshot showing the admin tab on a package page" />
+ 
+ 4. Under "Publishing access", select the requirements to publish a package.
+-   1. **Dont require two-factor authentication**  
+-      With this option, a maintainer can publish a package or change the package settings whether they have two-factor authentication enabled or not. This is the least secure setting.
+-
+-   2. **Require two-factor authentication or granular access tokens**  
+-      With this option, maintainers must have two-factor authentication enabled for their account. If they publish a package interactively, using the `npm publish` command, they will be required to enter 2FA credentials when they perform the publish. However, maintainers may also create a [granular access token with bypass 2FA enabled][creating-granular-access-token] and use that to publish. A second factor is _not_ required when using these specific token types, making them useful for continuous integration and continuous deployment workflows.
+-
+-   3. **Require two-factor authentication and disallow tokens**  
+-      With this option, a maintainer must have two-factor authentication enabled for their account, and they must publish interactively. Maintainers will be required to enter 2FA credentials when they perform the publish. Granular access tokens cannot be used to publish packages, regardless of their bypass 2FA setting.
++   1. **Require two-factor authentication or a granular access token with bypass 2fa enabled** (Default)  
++      This is the default option for all new packages. With this option, maintainers must have two-factor authentication enabled for their account. If they publish a package interactively, using the `npm publish` command, they will be required to respond to a 2FA prompt when they perform the publish. However, maintainers may also create a [granular access token with bypass 2FA enabled][creating-granular-access-token] and use that for a non-interactive publish.
++   2. **Require two-factor authentication and disallow tokens** (Recommended) With this option, a maintainer must have two-factor authentication enabled for their account, and they must publish interactively. Maintainers will be required to respond to a 2FA prompt when they perform the publish. Granular access tokens cannot be used to publish packages, regardless of their bypass 2FA setting.
+ 
+    <Screenshot src="/packages-and-modules/securing-your-code/2fa-package-setting.png" alt="Screenshot showing the require two-factor option for a package" />
+ 
+-5. Click **Update Package Settings**.
++5 . Click **Update Package Settings**.
+ 
+ [config-2fa]: configuring-two-factor-authentication
+ [creating-granular-access-token]: creating-and-viewing-access-tokens#creating-granular-access-tokens-on-the-website
+```

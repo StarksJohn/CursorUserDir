@@ -1,0 +1,54 @@
+---
+pid: 46844
+cwd: "D:\\work\\MyStartupProject1"
+command: "pnpm typecheck; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; pnpm lint; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; pnpm test:e2e e2e/program-entry.spec.ts --project=\"Desktop Chrome\""
+started_at: 2026-05-07T12:04:20.912Z
+running_for_ms: 615785   
+---
+
+> fracture-recovery-companion@0.1.0 typecheck D:\work\MyStartupProject1
+> tsc --noEmit
+
+
+> fracture-recovery-companion@0.1.0 lint D:\work\MyStartupProject1
+> eslint
+
+
+> fracture-recovery-companion@0.1.0 test:e2e D:\work\MyStartupProject1
+> playwright test "e2e/program-entry.spec.ts" "--project=Desktop Chrome"
+
+
+Running 18 tests using 1 worker
+
+(node:37056) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:37056) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [Desktop Chrome] › e2e\program-entry.spec.ts:188:7 › program entry › GET /api/program/current returns 401 for unauthenticated requests (3.3s)
+  ok  2 [Desktop Chrome] › e2e\program-entry.spec.ts:198:7 › program entry › POST /api/program/day/[day]/complete returns 401 for unauthenticated requests (2.6s)
+  ok  3 [Desktop Chrome] › e2e\program-entry.spec.ts:208:7 › program entry › GET /api/program/current returns no_purchase for authenticated users without purchase (25.4s)
+  ok  4 [Desktop Chrome] › e2e\program-entry.spec.ts:228:7 › program entry › paid active program with currentDay > 1 resolves and routes to that day (54.3s)
+  ok  5 [Desktop Chrome] › e2e\program-entry.spec.ts:387:7 › program entry › empty or malformed exercise rows show a safe exercise fallback (31.6s)
+  ok  6 [Desktop Chrome] › e2e\program-entry.spec.ts:440:7 › program entry › current day completion advances progress and is idempotent (39.1s)
+  ok  7 [Desktop Chrome] › e2e\program-entry.spec.ts:507:7 › program entry › day completion rejects future day without mutation (27.4s)
+  ok  8 [Desktop Chrome] › e2e\program-entry.spec.ts:544:7 › program entry › day 14 completion marks program completed (38.2s)
+  ok  9 [Desktop Chrome] › e2e\program-entry.spec.ts:606:7 › program entry › partial exercise day completion requires confirmation before mutation (38.7s)
+  ok 10 [Desktop Chrome] › e2e\program-entry.spec.ts:692:7 › program entry › future day requests redirect back to current day (32.5s)
+  ok 11 [Desktop Chrome] › e2e\program-entry.spec.ts:710:7 › program entry › invalid day param falls back safely without exposing /day/abc (19.0s)
+  ok 12 [Desktop Chrome] › e2e\program-entry.spec.ts:727:7 › program entry › missing current day row returns missing_day_content safely (46.4s)
+  ok 13 [Desktop Chrome] › e2e\program-entry.spec.ts:764:7 › program entry › malformed current day content falls back safely (37.5s)
+  ok 14 [Desktop Chrome] › e2e\program-entry.spec.ts:795:7 › program entry › blank current day title and focus falls back safely (37.0s)
+  ok 15 [Desktop Chrome] › e2e\program-entry.spec.ts:830:7 › program entry › paid purchase without program auto-recovers when profile exists (47.1s)
+  ok 16 [Desktop Chrome] › e2e\program-entry.spec.ts:861:7 › program entry › paid purchase with inactive program restores active program (55.4s)
+  ok 17 [Desktop Chrome] › e2e\program-entry.spec.ts:892:7 › program entry › paid purchase without profile returns safe missing_profile fallback (29.4s)
+  ok 18 [Desktop Chrome] › e2e\program-entry.spec.ts:921:7 › program entry › unauthenticated /progress and /day/[day] redirect to sign-in (6.9s)
+
+  Slow test file: [Desktop Chrome] › e2e\program-entry.spec.ts (9.5m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  18 passed (9.9m)
+
+---
+exit_code: 0
+elapsed_ms: 616378
+ended_at: 2026-05-07T12:14:37.290Z
+---
