@@ -115,8 +115,8 @@ description: >-
 
 ## 当前活跃需求
 - 我当前是`cursor Pro+ Annual $48/mo.` 计划的用户, 目前有如图![img_010515.png](img_010515.png)![img_011234.png](img_011234.png) 2个计费池,一个是使用高级API的计费池,一个是`Auto + Composer`的计费池, 每月24日15:00点重置;API计费池每月大概能用2亿token,105美金额度
-  - 但我亲测每个月2亿token完全不够用;如果我从cursor换成codex,买什么套餐才够用?
 - 当前Win11系统已经安装了`cursor IDE`
+  - 怎么在cursor里使用codex? 我在cursor里配置的 skill 和 MCP 怎么无缝移植到 codex 里直接使用?
   <!-- - 使用![img_215834.png](img_215834.png)模型时, 执行一个任务消耗了762.1万token,API的Usage从3.3%上涨到了10.6%; 
     -  约 104.40 万 / 1%
   - 使用![img_192458.png](img_192458.png)模型时,执行另一个任务消耗了280.9万token,API的Usage从12.1%上涨到了14%; 

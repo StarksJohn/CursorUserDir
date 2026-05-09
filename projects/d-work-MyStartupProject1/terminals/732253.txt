@@ -1,0 +1,72 @@
+---
+pid: 32352
+cwd: "D:\\work\\MyStartupProject1"
+command: "pnpm exec playwright test e2e/program-entry.spec.ts --project=\"Desktop Chrome\" --grep \"chat|provider|quota|danger\""
+started_at: 2026-05-09T13:21:19.994Z
+running_for_ms: 304156   
+---
+
+Running 10 tests using 1 worker
+
+(node:37096) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:37096) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [Desktop Chrome] › e2e\program-entry.spec.ts:298:7 › program entry › authenticated users without purchase cannot open chat shell (45.1s)
+  ok  2 [Desktop Chrome] › e2e\program-entry.spec.ts:315:7 › program entry › paid users can open chat shell and fill suggested prompt only (48.9s)
+  ok  3 [Desktop Chrome] › e2e\program-entry.spec.ts:367:7 › program entry › POST /api/chat rejects invalid requests before persistence (1.2m)
+  x   4 [Desktop Chrome] › e2e\program-entry.spec.ts:410:7 › program entry › paid users can stream a grounded chat answer with citations (1.5m)
+  -   5 [Desktop Chrome] › e2e\program-entry.spec.ts:464:7 › program entry › daily chat quota blocks ordinary chat without creating messages
+  -   6 [Desktop Chrome] › e2e\program-entry.spec.ts:513:7 › program entry › danger escalation still returns after quota is exhausted
+  -   7 [Desktop Chrome] › e2e\program-entry.spec.ts:568:7 › program entry › primary provider failure falls back and persists fallback metadata
+  -   8 [Desktop Chrome] › e2e\program-entry.spec.ts:612:7 › program entry › full provider failure is retryable and does not persist assistant answer
+  -   9 [Desktop Chrome] › e2e\program-entry.spec.ts:660:7 › program entry › danger chat input shows accessible escalation and persists escalated message
+  -  10 [Desktop Chrome] › e2e\program-entry.spec.ts:717:7 › program entry › negated danger terms keep the normal chat path
+
+
+  1) [Desktop Chrome] › e2e\program-entry.spec.ts:410:7 › program entry › paid users can stream a grounded chat answer with citations 
+
+    [31mTest timeout of 90000ms exceeded.[39m
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: getByTestId('chat-citations')
+    Expected substring: [32m"NHS hand therapy finger stiffness guide"[39m
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 30000ms[22m
+    [2m  - waiting for getByTestId('chat-citations')[22m
+
+
+      436 |       { timeout: 30_000 }
+      437 |     );
+    > 438 |     await expect(page.getByTestId("chat-citations")).toContainText(
+          |                                                      ^
+      439 |       "NHS hand therapy finger stiffness guide",
+      440 |       { timeout: 30_000 }
+      441 |     );
+        at D:\work\MyStartupProject1\e2e\program-entry.spec.ts:438:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\program-entry-program-entr-1e9ae--chat-answer-with-citations-Desktop-Chrome\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\program-entry-program-entr-1e9ae--chat-answer-with-citations-Desktop-Chrome\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\program-entry-program-entr-1e9ae--chat-answer-with-citations-Desktop-Chrome\error-context.md
+
+    Error Context: test-results\program-entry-program-entr-1e9ae--chat-answer-with-citations-Desktop-Chrome\error-context.md
+
+  1 failed
+    [Desktop Chrome] › e2e\program-entry.spec.ts:410:7 › program entry › paid users can stream a grounded chat answer with citations 
+  6 did not run
+  3 passed (4.8m)
+
+---
+exit_code: 1
+elapsed_ms: 304358
+ended_at: 2026-05-09T13:26:24.352Z
+---

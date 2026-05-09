@@ -1,0 +1,24 @@
+---
+pid: 43548
+cwd: "C:\\Users\\Stark8964911\\AppData\\Roaming\\Cursor"
+command: "Set-Location \"C:\\Users\\Stark8964911\\AppData\\Roaming\\Cursor\"; git push origin main"
+started_at: 2026-05-09T13:52:57.255Z
+running_for_ms: 290388   
+---
+=== Pre-push Hook ===
+Reminder: If you installed new Cursor extensions,
+please update Cursor_Win11_Global_Config_Guide.md manually.
+
+To list current extensions, run:
+  powershell -Command "Get-ChildItem -Name 'C:\Users\Stark8964911\.cursor\extensions' | Sort-Object"
+=== Pre-push Hook Complete ===
+error: RPC failed; HTTP 408 curl 22 The requested URL returned error: 408
+send-pack: unexpected disconnect while reading sideband packet
+fatal: the remote end hung up unexpectedly
+Everything up-to-date
+
+---
+exit_code: 1
+elapsed_ms: 291726
+ended_at: 2026-05-09T13:57:48.981Z
+---

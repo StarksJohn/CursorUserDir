@@ -1,0 +1,65 @@
+---
+pid: 43232
+cwd: "D:\\work\\MyStartupProject1"
+command: "pnpm exec playwright test e2e/program-entry.spec.ts --project=\"Desktop Chrome\" --grep \"chat|provider|quota|danger\""
+started_at: 2026-05-09T12:44:47.903Z
+running_for_ms: 489380   
+---
+
+Running 10 tests using 1 worker
+
+(node:47748) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:47748) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [Desktop Chrome] › e2e\program-entry.spec.ts:298:7 › program entry › authenticated users without purchase cannot open chat shell (47.9s)
+  ok  2 [Desktop Chrome] › e2e\program-entry.spec.ts:315:7 › program entry › paid users can open chat shell and fill suggested prompt only (45.1s)
+  ok  3 [Desktop Chrome] › e2e\program-entry.spec.ts:367:7 › program entry › POST /api/chat rejects invalid requests before persistence (46.7s)
+  ok  4 [Desktop Chrome] › e2e\program-entry.spec.ts:410:7 › program entry › paid users can stream a grounded chat answer with citations (1.3m)
+  ok  5 [Desktop Chrome] › e2e\program-entry.spec.ts:464:7 › program entry › daily chat quota blocks ordinary chat without creating messages (1.1m)
+  ok  6 [Desktop Chrome] › e2e\program-entry.spec.ts:512:7 › program entry › danger escalation still returns after quota is exhausted (1.2m)
+[WebServer] Primary chat provider failed; trying fallback {
+[WebServer]   provider: 'gemini',
+[WebServer]   error: Error: Forced primary provider failure
+[WebServer]       at generateChatAnswer (src\lib\chat\provider.ts:193:13)
+[WebServer]       at POST (src\app\api\chat\route.ts:173:44)
+[WebServer]     191 |   try {
+[WebServer]     192 |     if (resolvedTestMode === "primary_error") {
+[WebServer]   > 193 |       throw new Error("Forced primary provider failure");
+[WebServer]         |             ^
+[WebServer]     194 |     }
+[WebServer]     195 |
+[WebServer]     196 |     const answer = await generateGeminiAnswer(prompt);
+[WebServer] }
+  x   7 [Desktop Chrome] › e2e\program-entry.spec.ts:567:7 › program entry › primary provider failure falls back and persists fallback metadata (1.6m)
+  -   8 [Desktop Chrome] › e2e\program-entry.spec.ts:637:7 › program entry › full provider failure is retryable and does not persist assistant answer
+  -   9 [Desktop Chrome] › e2e\program-entry.spec.ts:685:7 › program entry › danger chat input shows accessible escalation and persists escalated message
+  -  10 [Desktop Chrome] › e2e\program-entry.spec.ts:742:7 › program entry › negated danger terms keep the normal chat path
+
+
+  1) [Desktop Chrome] › e2e\program-entry.spec.ts:567:7 › program entry › primary provider failure falls back and persists fallback metadata 
+
+    [31mTest timeout of 90000ms exceeded.[39m
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\program-entry-program-entr-f3b27--persists-fallback-metadata-Desktop-Chrome\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\program-entry-program-entr-f3b27--persists-fallback-metadata-Desktop-Chrome\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\program-entry-program-entr-f3b27--persists-fallback-metadata-Desktop-Chrome\error-context.md
+
+    Error Context: test-results\program-entry-program-entr-f3b27--persists-fallback-metadata-Desktop-Chrome\error-context.md
+
+  1 failed
+    [Desktop Chrome] › e2e\program-entry.spec.ts:567:7 › program entry › primary provider failure falls back and persists fallback metadata 
+  3 did not run
+  6 passed (8.0m)
+
+---
+exit_code: 1
+elapsed_ms: 490778
+ended_at: 2026-05-09T12:52:58.681Z
+---

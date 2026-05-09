@@ -1,0 +1,47 @@
+---
+pid: 35340
+cwd: "D:\\work\\MyStartupProject1"
+command: "pnpm exec playwright test e2e/program-entry.spec.ts --project=\"Desktop Chrome\" --grep \"danger chat input|negated danger\""
+started_at: 2026-05-09T13:16:57.255Z
+running_for_ms: 250023   
+---
+
+Running 2 tests using 1 worker
+
+(node:36400) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36400) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] Failed to resolve purchase session state {
+[WebServer]   userId: 'dev-ZGV2LWNoYXQtZGFuZ2VyLTE3',
+[WebServer]   error: Error [PrismaClientInitializationError]: 
+[WebServer]   Invalid `prisma.program.findFirst()` invocation:
+[WebServer]   
+[WebServer]   
+[WebServer]   Can't reach database server at `aws-1-ap-northeast-1.pooler.supabase.com:6543`
+[WebServer]   
+[WebServer]   Please make sure your database server is running at `aws-1-ap-northeast-1.pooler.supabase.com:6543`.
+[WebServer]       at async getActiveProgramForUser (src\lib\program\provisioning-service.ts:128:19)
+[WebServer]       at async Object.jwt (src\lib\auth\options.ts:114:33)
+[WebServer]     126 |   userId: string
+[WebServer]     127 | ): Promise<ActiveProgramSummary | null> {
+[WebServer]   > 128 |   const program = await prisma.program.findFirst({
+[WebServer]         |                   ^
+[WebServer]     129 |     where: {
+[WebServer]     130 |       userId,
+[WebServer]     131 |       status: ProgramStatus.ACTIVE, {
+[WebServer]     clientVersion: '6.19.3',
+[WebServer]     errorCode: undefined,
+[WebServer]     retryable: undefined
+[WebServer]   }
+[WebServer] }
+  ok 1 [Desktop Chrome] › e2e\program-entry.spec.ts:660:7 › program entry › danger chat input shows accessible escalation and persists escalated message (1.9m)
+  ok 2 [Desktop Chrome] › e2e\program-entry.spec.ts:717:7 › program entry › negated danger terms keep the normal chat path (1.7m)
+
+  2 passed (4.0m)
+
+---
+exit_code: 0
+elapsed_ms: 250489
+ended_at: 2026-05-09T13:21:07.744Z
+---

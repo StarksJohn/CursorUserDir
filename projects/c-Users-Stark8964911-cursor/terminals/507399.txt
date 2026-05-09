@@ -1,0 +1,49 @@
+---
+pid: 40908
+cwd: "C:\\Users\\Stark8964911\\AppData\\Roaming\\Cursor"
+command: "git -C \"C:\\Users\\Stark8964911\\AppData\\Roaming\\Cursor\" push origin main 2>&1"
+started_at: 2026-05-09T13:56:36.266Z
+running_for_ms: 595609   
+---
+=== Pre-push Hook ===
+Reminder: If you installed new Cursor extensions,
+please update Cursor_Win11_Global_Config_Guide.md manually.
+
+To list current extensions, run:
+  powershell -Command "Get-ChildItem -Name 'C:\Users\Stark8964911\.cursor\extensions' | Sort-Object"
+=== Pre-push Hook Complete ===
+git : remote: error: Trace: d2d6187c4ec8ba17e50d41cda32c2fb7d8eaad85990c1612533008d8fec1813d        
+����λ�� C:\Users\Stark8964911\AppData\Local\Temp\ps-script-ea0dbc6a-0e30-4ac2-bfd1-69e92e180de6.ps1:93 �ַ�: 1
++ git -C "C:\Users\Stark8964911\AppData\Roaming\Cursor" push origin mai ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (remote: error: ...ec1813d        :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+remote: error: See https://gh.io/lfs for more information.        
+remote: error: File snapshots/codebases/2b2f6950-cd7b-4d97-a70a-812df06c68c3/staging/pack-98de7dffb14ca579e4f84ed9d6e32
+d2759bff459.pack is 146.74 MB; this exceeds GitHub's file size limit of 100.00 MB        
+remote: error: File snapshots/codebases/2b2f6950-cd7b-4d97-a70a-812df06c68c3/staging/pack-278be84c318e19d41d8a12329cb1a
+5f75de6d2af.pack is 147.30 MB; this exceeds GitHub's file size limit of 100.00 MB        
+remote: error: File snapshots/codebases/2b2f6950-cd7b-4d97-a70a-812df06c68c3/staging/pack-8cb4b553b1263e14dc3c74dde318a
+63618a72373.pack is 147.32 MB; this exceeds GitHub's file size limit of 100.00 MB        
+remote: error: File snapshots/codebases/2b2f6950-cd7b-4d97-a70a-812df06c68c3/staging/pack-8f949a6bcb74dd6ee4c282eb614aa
+1be1587bffd.pack is 147.19 MB; this exceeds GitHub's file size limit of 100.00 MB        
+remote: error: File snapshots/codebases/2b2f6950-cd7b-4d97-a70a-812df06c68c3/staging/pack-0a0071a135d96e9e8bcac4b32346d
+db9eba25666.pack is 147.37 MB; this exceeds GitHub's file size limit of 100.00 MB        
+remote: error: File snapshots/codebases/2b2f6950-cd7b-4d97-a70a-812df06c68c3/staging/pack-c0de89900d04949d9f2b078652f2e
+295255cf329.pack is 147.42 MB; this exceeds GitHub's file size limit of 100.00 MB        
+remote: error: File snapshots/codebases/2b2f6950-cd7b-4d97-a70a-812df06c68c3/staging/pack-c78f91e2b69ea31dc03834934d516
+470fa981361.pack is 147.14 MB; this exceeds GitHub's file size limit of 100.00 MB        
+remote: error: File snapshots/codebases/1faad6b3-6a2b-454d-93c9-9f82b9cecf0e/staging/pack-55f9d825a60a38e6db8a995fb94a2
+1f51061a2f3.pack is 142.70 MB; this exceeds GitHub's file size limit of 100.00 MB        
+remote: error: GH001: Large files detected. You may want to try Git Large File Storage - https://git-lfs.github.com.   
+     
+To https://github.com/StarksJohn/Cursor.git
+ ! [remote rejected] main -> main (pre-receive hook declined)
+error: failed to push some refs to 'https://github.com/StarksJohn/Cursor.git'
+
+---
+exit_code: 1
+elapsed_ms: 596780
+ended_at: 2026-05-09T14:06:33.046Z
+---

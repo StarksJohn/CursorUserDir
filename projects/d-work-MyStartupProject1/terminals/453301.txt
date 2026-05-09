@@ -1,0 +1,71 @@
+---
+pid: 9188
+cwd: "D:\\work\\MyStartupProject1"
+command: "pnpm exec playwright test e2e/program-entry.spec.ts --project=\"Desktop Chrome\""
+started_at: 2026-05-09T12:40:37.605Z
+running_for_ms: 225077   
+---
+
+Running 29 tests using 1 worker
+
+(node:10272) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10272) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [Desktop Chrome] › e2e\program-entry.spec.ts:258:7 › program entry › GET /api/program/current returns 401 for unauthenticated requests (3.3s)
+  ok  2 [Desktop Chrome] › e2e\program-entry.spec.ts:268:7 › program entry › POST /api/program/day/[day]/complete returns 401 for unauthenticated requests (2.4s)
+  ok  3 [Desktop Chrome] › e2e\program-entry.spec.ts:278:7 › program entry › GET /api/program/current returns no_purchase for authenticated users without purchase (39.7s)
+  ok  4 [Desktop Chrome] › e2e\program-entry.spec.ts:298:7 › program entry › authenticated users without purchase cannot open chat shell (33.4s)
+  ok  5 [Desktop Chrome] › e2e\program-entry.spec.ts:315:7 › program entry › paid users can open chat shell and fill suggested prompt only (47.4s)
+  x   6 [Desktop Chrome] › e2e\program-entry.spec.ts:367:7 › program entry › POST /api/chat rejects invalid requests before persistence (1.0m)
+  -   7 [Desktop Chrome] › e2e\program-entry.spec.ts:409:7 › program entry › paid users can stream a grounded chat answer with citations
+  -   8 [Desktop Chrome] › e2e\program-entry.spec.ts:463:7 › program entry › daily chat quota blocks ordinary chat without creating messages
+  -   9 [Desktop Chrome] › e2e\program-entry.spec.ts:511:7 › program entry › danger escalation still returns after quota is exhausted
+  -  10 [Desktop Chrome] › e2e\program-entry.spec.ts:566:7 › program entry › primary provider failure falls back and persists fallback metadata
+  -  11 [Desktop Chrome] › e2e\program-entry.spec.ts:636:7 › program entry › full provider failure is retryable and does not persist assistant answer
+  -  12 [Desktop Chrome] › e2e\program-entry.spec.ts:684:7 › program entry › danger chat input shows accessible escalation and persists escalated message
+  -  13 [Desktop Chrome] › e2e\program-entry.spec.ts:741:7 › program entry › negated danger terms keep the normal chat path
+  -  14 [Desktop Chrome] › e2e\program-entry.spec.ts:790:7 › program entry › paid active program with currentDay > 1 resolves and routes to that day
+  -  15 [Desktop Chrome] › e2e\program-entry.spec.ts:956:7 › program entry › empty or malformed exercise rows show a safe exercise fallback
+  -  16 [Desktop Chrome] › e2e\program-entry.spec.ts:1009:7 › program entry › current day completion advances progress and is idempotent
+  -  17 [Desktop Chrome] › e2e\program-entry.spec.ts:1076:7 › program entry › day completion rejects future day without mutation
+  -  18 [Desktop Chrome] › e2e\program-entry.spec.ts:1113:7 › program entry › day 14 completion marks program completed
+  -  19 [Desktop Chrome] › e2e\program-entry.spec.ts:1185:7 › program entry › partial exercise day completion requires confirmation before mutation
+  -  20 [Desktop Chrome] › e2e\program-entry.spec.ts:1271:7 › program entry › future day requests show a locked state without active controls
+  -  21 [Desktop Chrome] › e2e\program-entry.spec.ts:1302:7 › program entry › past completed day renders read-only review content
+  -  22 [Desktop Chrome] › e2e\program-entry.spec.ts:1344:7 › program entry › invalid day param falls back safely without exposing /day/abc
+  -  23 [Desktop Chrome] › e2e\program-entry.spec.ts:1361:7 › program entry › missing current day row returns missing_day_content safely
+  -  24 [Desktop Chrome] › e2e\program-entry.spec.ts:1404:7 › program entry › malformed current day content falls back safely
+  -  25 [Desktop Chrome] › e2e\program-entry.spec.ts:1438:7 › program entry › blank current day title and focus falls back safely
+  -  26 [Desktop Chrome] › e2e\program-entry.spec.ts:1473:7 › program entry › paid purchase without program auto-recovers when profile exists
+  -  27 [Desktop Chrome] › e2e\program-entry.spec.ts:1504:7 › program entry › paid purchase with inactive program restores active program
+  -  28 [Desktop Chrome] › e2e\program-entry.spec.ts:1535:7 › program entry › paid purchase without profile returns safe missing_profile fallback
+  -  29 [Desktop Chrome] › e2e\program-entry.spec.ts:1564:7 › program entry › unauthenticated /progress and /day/[day] redirect to sign-in
+
+
+  1) [Desktop Chrome] › e2e\program-entry.spec.ts:367:7 › program entry › POST /api/chat rejects invalid requests before persistence 
+
+    [31mTest timeout of 60000ms exceeded.[39m
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\program-entry-program-entr-e3235-requests-before-persistence-Desktop-Chrome\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\program-entry-program-entr-e3235-requests-before-persistence-Desktop-Chrome\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\program-entry-program-entr-e3235-requests-before-persistence-Desktop-Chrome\error-context.md
+
+    Error Context: test-results\program-entry-program-entr-e3235-requests-before-persistence-Desktop-Chrome\error-context.md
+
+  1 failed
+    [Desktop Chrome] › e2e\program-entry.spec.ts:367:7 › program entry › POST /api/chat rejects invalid requests before persistence 
+  23 did not run
+  5 passed (3.6m)
+
+---
+exit_code: 1
+elapsed_ms: 228237
+ended_at: 2026-05-09T12:44:25.842Z
+---
