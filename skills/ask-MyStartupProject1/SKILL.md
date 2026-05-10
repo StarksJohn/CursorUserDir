@@ -23,6 +23,16 @@ description: 为 D:/work/MyStartupProject1 提供 BMAD 项目总控，覆盖从 
 
 激活后，默认先恢复本技能中的稳定规则，再读取项目主文档，判断当前处于哪个阶段、下一步该走哪个 BMAD 工作流。
 
+## Cursor / Codex 与 BMAD 子技能：`ReadFile` 与 `@`
+
+- **路径（对照 Codex）**：`C:\Users\Stark8964911\.codex\skills\MyStartupProject1\SKILL.md`（口令 **`/MyStartupProject1`**，`~/.codex/AGENTS.md`）；与本文分别维护，阶段与工作流应对齐。
+- **不要默认**当前会话已像「勾选多个 Agent Skills」一样，**静默载入**每一份 `bmad-*.md`。下文路由里的 `bmad-agent-*`、`bmad-*` 表示应采样的角色或工作流，**不等于**上下文里已有对应 SKILL 全文。
+- **执行任意 `bmad-<identifier>`（含 Cursor 内 Codex 插件）**：当本步须按该工作流产出或严格遵循其专项步骤，在动手前必须 **`ReadFile`** 本机：**macOS/Linux** 为 `~/.cursor/skills/<bmad-identifier>/SKILL.md`（或 `/Users/<用户名>/.cursor/skills/<bmad-identifier>/SKILL.md`）；**Windows** 为 `%USERPROFILE%\.cursor\skills\<bmad-identifier>\SKILL.md`（示例：`C:\Users\Stark8964911\.cursor\skills\...`）。标识与路由/文档中的 **`bmad-...`** 全文一致。并继续读取该 SKILL 指向的 **`workflow.md`** 等同目录文件。Codex 侧强制约定见 **`~/.codex/AGENTS.md`**「BMAD 工作流与 `.cursor/skills` 磁盘路径」。
+- **Cursor Agent**：仍可通过选用 Skills 或 **`@`** 附加；若未选用且将按完整工作流执行，**代理仍应主动 `ReadFile`** 上述固定路径（若客户端允许访问用户目录）。
+- **仅泛泛对齐阶段/门禁**时：可先只依赖本总控与项目文档；**一旦进入执行该项 `bmad-*` 工作流**，必须先完成 **`ReadFile`**（或用户 **`@`** 等价内容）。
+- **`@` 兜底**：磁盘读取不可用时，请用户 **`@`** 附上对应 `SKILL.md`（及 **`workflow.md`** 等）。
+- 子 SKILL 与本总控若有冲突：**以已成功载入的子 SKILL 专项规则为准**，并简短说明与本总控的差异或取舍。
+
 ## 核心原则
 - 先判断 `做不做`，再讨论 `怎么做`
 - 先判断 `用户类型是否匹配当前偏好`，再讨论 `需求强弱`
