@@ -32,6 +32,10 @@ description: 为 D:/work/MyStartupProject1 提供 BMAD 项目总控，覆盖从 
 - **仅泛泛对齐阶段/门禁**时：可先只依赖本总控与项目文档；**一旦进入执行该项 `bmad-*` 工作流**，必须先完成 **`ReadFile`**（或用户 **`@`** 等价内容）。
 - **`@` 兜底**：磁盘读取不可用时，请用户 **`@`** 附上对应 `SKILL.md`（及 **`workflow.md`** 等）。
 - 子 SKILL 与本总控若有冲突：**以已成功载入的子 SKILL 专项规则为准**，并简短说明与本总控的差异或取舍。
+- **本项目 BMAD 执行前硬门禁**：进入 `bmad-create-story`、`bmad-dev-story`、`bmad-code-review`、`bmad-agent-*`、`bmad-qa-*` 等任一专项工作流前，先读取 `%USERPROFILE%\.cursor\skills\<bmad-identifier>\SKILL.md`，再读取该文件要求的 `workflow.md` / `checklist.md` / `reference.md`。这条规则同样适用于“下一步”由 `项目主档案.md`、`stories/sprint-status.yaml` 或上轮结论推导出来，而不是用户本轮显式输入 `bmad-*` 的情况。
+- **进入单 story 循环时的最小自检**：开始 `bmad-dev-story` 之前，必须已在本轮读取 `bmad-dev-story/SKILL.md`、其 `workflow.md`，以及存在且用于 DoD 的 `checklist.md`；随后再读目标 story 全文、`stories/sprint-status.yaml`、项目主档案和必要代码。未完成这些读取时，不得直接把 story 从 `ready-for-dev` 推进到实现。
+- **状态词冲突处理**：若通用 BMAD 子 SKILL 写 `review`，而本项目 `stories/sprint-status.yaml` 定义使用 `code-review`，以本项目状态机为准；但需要在 Dev Agent Record 或最终说明中标注这是项目约定差异。
+- **任务结束上下文汇报**：完成任何任务后，最终回复必须列出 `当前 chat 上下文已加载的关键文件` 与 `执行当前任务过程中新增读取/加载的文件`；只列实际参与判断、修改或验证的文件，若无新增则写 `无新增`。
 
 ## 核心原则
 - 先判断 `做不做`，再讨论 `怎么做`
@@ -555,6 +559,6 @@ description: 为 D:/work/MyStartupProject1 提供 BMAD 项目总控，覆盖从 
 - 历史背景、当前商业判断、候选方向、排除理由、竞品结论、下一步，一律维护在 `D:/work/MyStartupProject1/项目主档案.md`
 - 若这些事实与本技能旧内容冲突，以项目主文档为准
 
-## 最新待继续问题
+## 最新待继续问题(不要修改这部分的子内容)
 - 根据 `D:\work\MyStartupProject1` 目录下的`D:\work\MyStartupProject1\项目主档案.md`文档恢复这个项目的上下文, 继续执行下一步的任务
-<!-- - 把你每轮的回答都用最精简的内容更新到 `D:\work\MyStartupProject1\项目主档案.md`,保证每次开启新的chat后,都可以借助`D:\work\MyStartupProject1\项目主档案.md` 恢复这个项目的最小必要上下文;然后精简优化 `D:\work\MyStartupProject1\项目主档案.md`,并记录已经排除过的项目方向和排除原因;不要修改 `C:\Users\Stark8964911\.cursor\skills\ask-MyStartupProject1\SKILL.md`的 `最新待继续问题` 里的内容 -->
+<!-- - 上一轮任务是在cursor的codex插件的输入框里输入了`/MyStartupProject1 `![img_001223.png](img_001223.png)触发的, 任务触发后,你先后加载了哪些文件? 按 `bmad-dev-story 进入 Story 7.1` 之前,你是否已经把 "C:\Users\Stark8964911\.cursor\skills\bmad-dev-story\SKILL.md" 这个skill 的内容加载到了上下文, 是否根据这个skill的 要求来执行了任务 ? -->

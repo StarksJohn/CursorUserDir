@@ -107,6 +107,19 @@
 - 涉及文档更新时, 明确更新了哪个文件及哪些章节
 - 涉及配置变更时, 提醒需要的重启或验证动作
 
+#### BMAD 工作流与 `.cursor/skills` 磁盘路径
+- 当用户消息、上轮结论、项目文档、ask/command/skill 或当前“下一步”明确指向某个 `bmad-*` 工作流，且本轮将按该工作流执行、产出模板、改代码、改 story 或推进 sprint 状态时，必须先读取本机对应 skill：Windows 使用 `%USERPROFILE%\.cursor\skills\<bmad-identifier>\SKILL.md`，macOS/Linux 使用 `~/.cursor/skills/<bmad-identifier>/SKILL.md`。
+- `<bmad-identifier>` 必须与文案中的 `bmad-...` 完整一致，例如 `bmad-dev-story`、`bmad-code-review`、`bmad-create-story`、`bmad-agent-dev`。
+- 读完 `SKILL.md` 后，继续读取该文件要求或同目录惯例中的 `workflow.md`、`checklist.md`、`reference.md` 等附属文件；如果 `SKILL.md` 只写了 `Follow the instructions in ./workflow.md`，必须立刻读取 `workflow.md`。
+- 执行前必须能说明本轮已加载哪些 BMAD 文件；未读取前不得只凭路由名、历史经验、摘要或项目总控继续执行。
+- 若磁盘读取失败，请用户用 `@` 附上对应 `SKILL.md` 及其依赖文件，或确认本机 `.cursor/skills/<bmad-identifier>/` 已安装且目录名完全一致。
+- 若 BMAD 通用模板状态词与项目状态机冲突，先遵循项目内最新状态定义，并在产出中说明取舍。
+
+#### 任务结束上下文汇报
+- 任何任务执行完后，最终回复必须说明两类文件清单：`当前 chat 上下文已加载的关键文件` 与 `执行当前任务过程中新增读取/加载的文件`。
+- 清单只列对任务判断、修改或验证有实际影响的文件；用户附图、截图或内联附件若参与判断，也要说明来源。若某类文件没有新增读取，明确写 `无新增`。
+- 若文件很多，按用途分组并优先列绝对路径或项目相对路径；不要把无关搜索结果、命令输出或未实际读取的路径写入清单。
+
 ### 11. 通用 Skill 设计与维护规范
 - 通用 Skill 只放跨项目、可长期复用的工作流、判断规则、模板与边界; 不写一次性任务、临时结论、当前会话指令
 - 项目专属事实、产品假设、路线图、文档落点等内容, 优先放项目 Skill 或 `.cursor/rules/project-context.mdc`, 不放全局通用 Skill

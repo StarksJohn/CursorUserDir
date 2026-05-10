@@ -123,4 +123,4 @@ description: >-
 
 ## 当前活跃需求(不要修改这部分的子内容)
 - 当前系统的Cursor 月额度不足时,我会在 Cursor 内建的 Codex 扩展中![img_193723.png](img_193723.png)![img_193802.png](img_193802.png) 继续对话；Codex 扩展中的模型行为以 **`~/.codex/AGENTS.md`** 为准——即用户目录下 Codex 配置树中的全局规则（**Windows**：`%USERPROFILE%\.codex\AGENTS.md`；**macOS**：`/Users/<用户名>/.codex/AGENTS.md`，见上文路径表）。Codex 侧无 Composer 命令列表属产品差异。
-- 如图![img_002255.png](img_002255.png),`codex settings`里的所有配置,对应哪个文件?目前的这些配置是否还有优化的地方,可以在优化后, 更强大的发挥cursor的codex插件使用AI大模型时调用全局规则,skill或者MCP的能力
+- 如图![img_002255.png](img_002255.png),时`codex settings`里的General配置,目前这些配置是否还有优化的地方,可以在优化后, 更强大的发挥cursor的codex插件使用AI大模型时调用全局规则,skill或者MCP的能力
