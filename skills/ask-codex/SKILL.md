@@ -123,7 +123,7 @@ description: >-
 
 ## 当前活跃需求(不要修改这部分的子内容)
 - 当前系统的Cursor 月额度不足时,我会在 Cursor 内建的 Codex 扩展中![img_193723.png](img_193723.png)![img_193802.png](img_193802.png) 继续对话；Codex 扩展中的模型行为以 **`~/.codex/AGENTS.md`** 为准——即用户目录下 Codex 配置树中的全局规则（**Windows**：`%USERPROFILE%\.codex\AGENTS.md`；**macOS**：`/Users/<用户名>/.codex/AGENTS.md`，见上文路径表）。Codex 侧无 Composer 命令列表属产品差异。
-- 如图![img_002255.png](img_002255.png),时`codex settings`里的General配置,目前这些配置是否还有优化的地方,可以在优化后, 更强大的发挥cursor的codex插件使用AI大模型时调用全局规则,skill或者MCP的能力
+- 如图![img_193546.png](img_193546.png)是`codex settings`里的`Configuration`配置,目前这些配置是否还有优化的地方?如果是,直接帮我优化,达到在优化后, 更强大的发挥出cursor的codex插件在使用AI大模型时调用全局规则,skill或者MCP的能力
 <!-- - Cursor 与 Codex 使用方式的对齐问题
   -根据`C:\Users\Stark8964911\.cursor\skills\ask-MyStartupProject1\SKILL.md`和 `C:\Users\Stark8964911\.cursor\skills\ask-MyStartupProject1\reference.md`,借鉴`C:\Users\Stark8964911\.codex\skills\codex\SKILL.md`,在codex侧生成对应的name为`MyStartupProject1`的skill文件,当我在cursor的codex插件的输入框里输入`/MyStartupProject1`时,保证任务执行的文件顺序和任务的功能完整性和在cursor的输入框里执行`/ask-MyStartupProject1`任务的流程一致
   -之前我执行 当前项目的下一步任务,是在 cursor 的输入框里输入图1 的 `/ask-MyStartupProject1` 来启动的;现在 在 cursor的 codexIDE的输入框里,输入`/MyStartupProject1`,如图2,来同样启动当前项目的下一步任务, 此时任务的执行流程和执行效果是否和在 cursor 的输入框里输入图1 的 `/ask-MyStartupProject1` 一样?  -->
