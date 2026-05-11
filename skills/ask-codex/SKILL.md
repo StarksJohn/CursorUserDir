@@ -127,5 +127,5 @@ description: >-
   - 根据我的技术栈:我是居住在中国大陆且没有公司的独立开发者，前端经验丰富，覆盖 React、React Native、Vue 2、Vue 3、TypeScript、JavaScript、HTML、CSS、小程序、Flutter、iOS、Android; 我应该安装哪些插件?
   - 目前这些配置是否还有优化的地方?如果是,直接帮我优化,已达到在优化后可以更强大的发挥出cursor的codex插件在使用AI大模型时调用全局规则,skill或者MCP的能力
 <!-- - Cursor 与 Codex 使用方式的对齐问题
-  -根据`C:\Users\Stark8964911\.cursor\skills\ask-MyStartupProject1\SKILL.md`和 `C:\Users\Stark8964911\.cursor\skills\ask-MyStartupProject1\reference.md`,借鉴`C:\Users\Stark8964911\.codex\skills\codex\SKILL.md`,在codex侧生成对应的name为`MyStartupProject1`的skill文件,当我在cursor的codex插件的输入框里输入`/MyStartupProject1`时,保证任务执行的文件顺序和任务的功能完整性和在cursor的输入框里执行`/ask-MyStartupProject1`任务的流程一致
+  -根据`C:\Users\Stark8964911\.cursor\skills\ask-MyStartupProject1\SKILL.md`和 `C:\Users\Stark8964911\.cursor\skills\ask-MyStartupProject1\reference.md`,借鉴`C:\Users\Stark8964911\.codex\skills\codex\SKILL.md`,在codex侧生成对应的name为`MyStartupProject1`的skill文件,当我在cursor的codex插件的输入框里输入`/MyStartupProject1`时,保证任务的执行流程和文件的加载顺序以及任务的执行效果和在cursor的输入框里执行`/ask-MyStartupProject1`任务时一致
   -之前我执行 当前项目的下一步任务,是在 cursor 的输入框里输入图1 的 `/ask-MyStartupProject1` 来启动的;现在 在 cursor的 codexIDE的输入框里,输入`/MyStartupProject1`,如图2,来同样启动当前项目的下一步任务, 此时任务的执行流程和执行效果是否和在 cursor 的输入框里输入图1 的 `/ask-MyStartupProject1` 一样?  -->

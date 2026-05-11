@@ -156,14 +156,13 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
 - 除非用户明确要求，默认不替用户运行应用或真机测试
 - 不以陈旧笔记覆盖当前仓库文件
 
-## 当前活跃需求
+## 当前活跃需求(不要修改这部分的子内容)
   
 - MAC
   <!-- - 需要你在`/Users/stark/Desktop/work/RN/csx-mobile`目录执行`yarn start`+ `npx react-native run-ios --simulator "iPhone 17 Pro" --no-packager` 把当前项目的debug模式的app运行到IOS的模拟器里 -->
   
 - WIN:
   - 当前电脑已经在 `/Users/stark/Desktop/work/RN/csx-mobile` 目录执行 `npx react-native run-android` 把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区`
-  - 把这个项目使用的 `react-native-auto-positioned-popup`库的版本升级到最新
 
 <!-- - figma-to-rn-toolkit 相关:
   - 请根据 `https://www.figma.com/design/Wa0Oa4oeMTy5H2Tk32ooqb/CSM?node-id=17126-28544&m=dev` 这个 Figma URL, 在 `D:\work\RN\csx-mobile-upgrade\src\pages\Diagnosis\DiagnosisPage.tsx`页面 的 2018行 ,根据页面的代码风格和项目结构,设计实现 `React Native` 组件代码

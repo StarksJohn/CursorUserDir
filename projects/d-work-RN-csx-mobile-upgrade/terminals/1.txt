@@ -1,0 +1,78 @@
+---
+pid: 2976
+cwd: |
+  D:\work\RN\csx-mobile-upgrade
+---
+PS D:\work\RN\csx-mobile-upgrade> npx react-native run-android
+* daemon not running; starting now at tcp:5037
+* daemon started successfully
+info Installing the app...
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.13/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :app
+--W- Build Environment: AGConnect plugin version is: 1.9.1.301, Gradle version is: 8.13, Android Plugin version is: 8.7.3
+--I- there's no config file
+--W- The variant: debug, There's no json file
+--I- there's no config file
+--W- The variant: release, There's no json file
+
+> Configure project :react-native-firebase_app
+:react-native-firebase_app package.json found at D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\app\package.json
+:react-native-firebase_app:firebase.bom using default value: 33.5.1
+:react-native-firebase_app:play.play-services-auth using default value: 21.2.0
+:react-native-firebase_app package.json found at D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\app\package.json
+:react-native-firebase_app:version set from package.json: 21.6.1 (21,6,1 - 21006001)
+:react-native-firebase_app:android.compileSdk using custom value: 36
+:react-native-firebase_app:android.targetSdk using custom value: 36
+:react-native-firebase_app:android.minSdk using custom value: 24
+:react-native-firebase_app:reactNativeAndroidDir D:\work\RN\csx-mobile-upgrade\node_modules\react-native
+
+> Configure project :react-native-firebase_messaging
+:react-native-firebase_messaging package.json found at D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\messaging\package.json
+:react-native-firebase_app package.json found at D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\app\package.json
+:react-native-firebase_messaging:firebase.bom using default value: 33.5.1
+:react-native-firebase_messaging package.json found at D:\work\RN\csx-mobile-upgrade\node_modules\@react-native-firebase\messaging\package.json
+:react-native-firebase_messaging:version set from package.json: 21.6.1 (21,6,1 - 21006001)
+:react-native-firebase_messaging:android.compileSdk using custom value: 36
+:react-native-firebase_messaging:android.targetSdk using custom value: 36
+:react-native-firebase_messaging:android.minSdk using custom value: 24
+:react-native-firebase_messaging:reactNativeAndroidDir D:\work\RN\csx-mobile-upgrade\node_modules\react-native
+
+> Configure project :react-native-reanimated
+Android gradle plugin: 8.11.0
+Gradle: 8.13
+
+> Configure project :react-native-vision-camera
+[VisionCamera] Thank you for using VisionCamera ??
+[VisionCamera] If you enjoy using VisionCamera, please consider sponsoring this project: https://github.com/sponsors/mrousavy
+[VisionCamera] node_modules found at D:\work\RN\csx-mobile-upgrade\node_modules
+[VisionCamera] VisionCamera_enableFrameProcessors is set to false!
+[VisionCamera] react-native-worklets-core not found, Frame Processors are disabled!
+[VisionCamera] VisionCamera_enableCodeScanner is set to true!
+WARNING: The specified Android SDK Build Tools version (31.0.0) is ignored, as it is below the minimum supported version (35.0.0) for Android Gradle Plugin 8.11.0.
+Android SDK Build Tools 35.0.0 will be used.
+To suppress this warning, remove "buildToolsVersion '31.0.0'" from your build.gradle file, as each version of the Android Gradle Plugin now has a default version of the build tools.
+
+> Task :app:installDebug
+Installing APK 'app-arm64-v8a-debug.apk' on 'PJJ110 - 16' for :app:debug
+Installed on 1 device.
+
+[Incubating] Problems report is available at: file:///D:/work/RN/csx-mobile-upgrade/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 15s
+761 actionable tasks: 13 executed, 748 up-to-date
+    info Connecting to the development server...
+8081
+info Starting the app on "4ae24c72"...
+Starting: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.csx.mobile.app/.MainActivity }
+PS D:\work\RN\csx-mobile-upgrade> 
+ *  History restored 
+
+PS D:\work\RN\csx-mobile-upgrade>
