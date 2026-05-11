@@ -128,4 +128,3 @@ description: >-
   - win:`C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor_使用指南与Token优化.md`
   - mac : `/Users/stark/Library/Application Support/Cursor/Cursor_使用指南与Token优化.md`
 - 不要修改 `/Users/stark/.cursor/skills/ask-cursor/SKILL.md`里的 `当前活跃需求`下的内容
-<!-- -根据`C:\Users\Stark8964911\.cursor\skills\ask-MyStartupProject1\SKILL.md`和 `C:\Users\Stark8964911\.cursor\skills\ask-MyStartupProject1\reference.md`,借鉴`C:\Users\Stark8964911\.codex\skills\codex\SKILL.md`,在codex侧生成对应的name为`MyStartupProject1`的skill文件,当我在cursor的codex插件的输入框里输入`/MyStartupProject1`时,保证任务执行的文件顺序和任务的功能完整性和在cursor的输入框里执行`/ask-MyStartupProject1`任务的流程一致 -->
