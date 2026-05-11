@@ -16,7 +16,7 @@ description: 为 D:/work/MyStartupProject1 提供 BMAD 项目总控，覆盖从 
 
 ## 何时使用
 在以下场景默认优先使用本技能：
-- 新 chat 里用 `/ask-MyStartupProject1` 恢复项目上下文
+- 新 chat：**Cursor** 输入 **`/ask-MyStartupProject1`**；**Codex** 输入 **`/MyStartupProject1`**（见 `~/.codex/skills/MyStartupProject1/SKILL.md`），两者读完本节后下文规则相同
 - 用户问 `这个方向值不值得做`
 - 用户问 `下一步该用哪个 BMAD 角色`
 - 用户要推进 `竞品分析`、`Product Brief`、`MVP`、`路线图`、`架构`、`开发`、`测试`、`上线` 或 `迭代`
@@ -29,7 +29,7 @@ description: 为 D:/work/MyStartupProject1 提供 BMAD 项目总控，覆盖从 
 - **不要默认**当前会话已像「勾选多个 Agent Skills」一样，**静默载入**每一份 `bmad-*.md`。下文路由里的 `bmad-agent-*`、`bmad-*` 表示应采样的角色或工作流，**不等于**上下文里已有对应 SKILL 全文。
 - **执行任意 `bmad-<identifier>`（含 Cursor 内 Codex 插件）**：当本步须按该工作流产出或严格遵循其专项步骤，在动手前必须 **`ReadFile`** 本机：**macOS/Linux** 为 `~/.cursor/skills/<bmad-identifier>/SKILL.md`（或 `/Users/<用户名>/.cursor/skills/<bmad-identifier>/SKILL.md`）；**Windows** 为 `%USERPROFILE%\.cursor\skills\<bmad-identifier>\SKILL.md`（示例：`C:\Users\Stark8964911\.cursor\skills\...`）。标识与路由/文档中的 **`bmad-...`** 全文一致。并继续读取该 SKILL 指向的 **`workflow.md`** 等同目录文件。Codex 侧强制约定见 **`~/.codex/AGENTS.md`**「BMAD 工作流与 `.cursor/skills` 磁盘路径」。
 - **Cursor Agent**：仍可通过选用 Skills 或 **`@`** 附加；若未选用且将按完整工作流执行，**代理仍应主动 `ReadFile`** 上述固定路径（若客户端允许访问用户目录）。
-- **仅泛泛对齐阶段/门禁**时：可先只依赖本总控与项目文档；**一旦进入执行该项 `bmad-*` 工作流**，必须先完成 **`ReadFile`**（或用户 **`@`** 等价内容）。
+- **仅泛泛对齐阶段/门禁**、尚未进入「按该 `bmad-*` 的完整步骤产出」时：可先只依赖本总控与项目文档；**一旦进入执行该项工作流**，必须先完成 **`ReadFile`**（或用户 **`@`** 等价内容）。
 - **`@` 兜底**：磁盘读取不可用时，请用户 **`@`** 附上对应 `SKILL.md`（及 **`workflow.md`** 等）。
 - 子 SKILL 与本总控若有冲突：**以已成功载入的子 SKILL 专项规则为准**，并简短说明与本总控的差异或取舍。
 - **本项目 BMAD 执行前硬门禁**：进入 `bmad-create-story`、`bmad-dev-story`、`bmad-code-review`、`bmad-agent-*`、`bmad-qa-*` 等任一专项工作流前，先读取 `%USERPROFILE%\.cursor\skills\<bmad-identifier>\SKILL.md`，再读取该文件要求的 `workflow.md` / `checklist.md` / `reference.md`。这条规则同样适用于“下一步”由 `项目主档案.md`、`stories/sprint-status.yaml` 或上轮结论推导出来，而不是用户本轮显式输入 `bmad-*` 的情况。
@@ -126,6 +126,7 @@ description: 为 D:/work/MyStartupProject1 提供 BMAD 项目总控，覆盖从 
 - `bmad-create-story` 完成后必须把对应 story key 从 `backlog` 更新为 `ready-for-dev`；`bmad-dev-story` / `bmad-agent-dev` 完成后必须把对应 story key 更新为 `code-review` 或 `done`；不允许只改项目主档案.md 不改 `sprint-status.yaml`
 - 每次执行完与本项目有关的任务后，都要把 `本轮任务结论` 用最精简、可恢复上下文的方式更新到 `D:/work/MyStartupProject1/项目主档案.md`
 - 若本轮任务改变了 `当前阶段`、`候选方向`、`主线优先级`、`竞品结论`、`排除理由`、`下一步` 中任一项，默认视为必须回写主文档，不能只留在聊天回复里
+- 若本轮任务改变了 `下一步`，必须同时更新主文档底部固定块 `## 下一步` 下的 `当前建议下一步`、`目标阶段`、`进入条件是否满足`、`本轮最小恢复结论`；不能只更新文档顶部的 `当前阶段` 或在正文新增一条历史结论。
 - 每次确认了新的 `整体第一优先总主线` 后，主文档里必须明确写出两类信息：`为什么推荐这个新主线方向`、`这个新主线方向需要做哪些功能`
 - 这里的 `需要做哪些功能` 默认至少写到 `首版核心功能清单` 粒度，避免新 chat 里只看到方向名，却不知道推荐依据和 MVP 轮廓
 - 每次确认了新的 `整体第一优先总主线` 后，主文档默认必须使用统一模板记录，字段顺序固定为：`主线名`、`推荐理由`、`首版功能`、`不做什么`、`下一步验证`
@@ -139,7 +140,7 @@ description: 为 D:/work/MyStartupProject1 提供 BMAD 项目总控，覆盖从 
 - 项目根目录：`D:/work/MyStartupProject1`
 - 当前策略笔记：`D:/work/MyStartupProject1/项目主档案.md`
 - 真实案例素材：`D:/work/guzhe/left_middle_finger_treatment_plan.md`
-- 详细命名规范与产出模板：`C:/Users/Stark8964911/.cursor/skills/ask-MyStartupProject1/reference.md`
+- 详细命名规范与产出模板：`C:/Users/Stark8964911/.cursor/skills/ask-MyStartupProject1/reference.md`（与 Codex 侧 `MyStartupProject1/reference.md` 同源副本）
 
 除非用户明确要求对比，否则不要引入无关旧项目。
 
@@ -493,6 +494,7 @@ description: 为 D:/work/MyStartupProject1 提供 BMAD 项目总控，覆盖从 
 - 项目当前状态优先更新 `D:/work/MyStartupProject1/项目主档案.md`
 - 只要本轮任务产出了新的 `方向判断`、`排除结论`、`竞品结论`、`阶段切换`、`下一步`，默认就要更新 `D:/work/MyStartupProject1/项目主档案.md`
 - 更新主文档时，默认至少同步这 6 类信息：`当前阶段`、`本轮最小恢复结论`、`当前主线判断`、`备选或排除方向`、`排除原因`、`下一步`
+- 当同步 `下一步` 时，必须优先更新主文档底部 `## 下一步` 固定块，让新 chat 只读文件尾部也能恢复正确入口；若顶部 `当前阶段` 与底部 `## 下一步` 冲突，以 `stories/sprint-status.yaml` 为准并立即修正文档。
 - 若本轮确认了新的 `整体第一优先总主线`，更新主文档时必须额外同步这 2 类信息：`推荐这个新主线的核心原因`、`这个新主线的首版核心功能清单`
 - 对 `推荐原因` 的期望：至少覆盖 `用户规模 / 付费触发 / 频次 / 可持续性 / 首发终端可行性` 中最关键的几个判断
 - 对 `功能清单` 的期望：优先写 `用户真正愿意买单的核心功能`，不要写泛泛的大而全模块名
