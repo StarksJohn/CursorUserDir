@@ -53,6 +53,17 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
 | Windows | `C:\Users\Stark8964911\.cursor\skills\ask-csx-mobile-upgrade\SKILL.md` |
 | Mac | `~/.cursor/skills/ask-csx-mobile-upgrade/SKILL.md`（等价于 `/Users/<你的用户名>/.cursor/skills/ask-csx-mobile-upgrade/SKILL.md`） |
 
+## Codex 对照文件路径
+
+| 平台 | 路径 |
+|------|------|
+| Windows | `C:\Users\Stark8964911\.codex\skills\csx-mobile-upgrade\SKILL.md` |
+| Mac | `/Users/<你的用户名>/.codex/skills/csx-mobile-upgrade/SKILL.md` |
+
+## 图片资源路径
+
+本文中的 `![img_xxx.png](img_xxx.png)` 视为与本文件同目录：Windows 为 `C:\Users\Stark8964911\.cursor\skills\ask-csx-mobile-upgrade\`；Mac 为 `~/.cursor/skills/ask-csx-mobile-upgrade/`（等价于 `/Users/<你的用户名>/.cursor/skills/ask-csx-mobile-upgrade/`）。
+
 ## 稳定项目事实（摘要）
 
 本节仅作**记忆锚点**；**以仓库内规则与源码为准**。
