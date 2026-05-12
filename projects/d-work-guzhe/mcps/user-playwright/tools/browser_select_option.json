@@ -8,9 +8,9 @@
         "description": "Human-readable element description used to obtain permission to interact with the element",
         "type": "string"
       },
-      "ref": {
+      "target": {
         "type": "string",
-        "description": "Exact target element reference from the page snapshot"
+        "description": "Exact target element reference from the page snapshot, or a unique element selector"
       },
       "values": {
         "type": "array",
@@ -21,7 +21,7 @@
       }
     },
     "required": [
-      "ref",
+      "target",
       "values"
     ],
     "$schema": "https://json-schema.org/draft/2020-12/schema",

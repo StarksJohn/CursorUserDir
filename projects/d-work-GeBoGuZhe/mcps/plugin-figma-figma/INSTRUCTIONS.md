@@ -18,7 +18,7 @@ Extract fileKey and nodeId from Figma URLs:
 - figma.com/design/:fileKey/:fileName?node-id=:nodeId → convert "-" to ":" in nodeId
 - figma.com/design/:fileKey/branch/:branchKey/:fileName → use branchKey as fileKey
 - figma.com/make/:makeFileKey/:makeFileName → use makeFileKey
-- figma.com/board/:fileKey/:fileName → FigJam file, use get_figjam
+- figma.com/board/:fileKey/:fileName?node-id=:nodeId → FigJam file, use get_figjam; pass the original board URL as figjamUrl when available
 
 DESIGN-TO-CODE WORKFLOW:
 
@@ -37,3 +37,18 @@ The response varies based on the user's Figma setup:
   use the screenshot
 
 Check the target project for existing components, layout patterns,and tokens that match the design intent. Reuse what the project already has instead of generating new code from scratch.
+
+WRITING DESIGNS INTO FIGMA:
+
+IMPORTANT: If the /figma-use skill is available, load it before calling use_figma.
+
+For web apps, the best approach is to use BOTH tools in parallel:
+1. Run generate_figma_design to capture a pixel-perfect screenshot of the web app page.
+2. At the same time, use use_figma with search_design_system to build the screen from design system component instances.
+3. Once both complete, refine the use_figma output to match the pixel-perfect layout from generate_figma_design.
+4. Delete the generate_figma_design output — it was used as a layout reference only.
+
+This produces a screen with proper design system components AND pixel-perfect layout accuracy.
+
+For non-web apps (e.g. iOS, Android), use use_figma with search_design_system.
+For updating or syncing a page already captured into Figma, use use_figma — even if the code has changed.

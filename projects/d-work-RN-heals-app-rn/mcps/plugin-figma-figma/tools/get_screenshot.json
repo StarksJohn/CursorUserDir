@@ -12,6 +12,10 @@
       "fileKey": {
         "type": "string",
         "description": "The key of the Figma file to use. If the URL is provided, extract the file key from the URL. The given URL must be in the format https://figma.com/design/:fileKey/:fileName?node-id=:int1-:int2. The extracted fileKey would be `:fileKey`."
+      },
+      "contentsOnly": {
+        "type": "boolean",
+        "description": "When true, renders the node in isolation — floating/overlapping content (e.g. connectors parented to the page that visually sit above a section) is excluded. Defaults to false so screenshots match what the user sees on the canvas. Only set to true if the caller specifically needs the isolated render."
       }
     },
     "required": [
@@ -20,5 +24,9 @@
     ],
     "additionalProperties": false,
     "$schema": "http://json-schema.org/draft-07/schema#"
-  }
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
 }

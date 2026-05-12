@@ -1,6 +1,6 @@
 {
   "name": "generate_figma_design",
-  "description": "Capture, import, or convert a web page (by URL) or HTML into a Figma design. Use this tool when the user wants to send, import, capture, screenshot, or push a webpage to Figma. Works with both local dev servers (localhost) and external websites. For LOCAL projects: explore the user's codebase to identify the page, dev server command, and URL before calling. For EXTERNAL URLs (not localhost): use Playwright MCP to capture — do NOT use 'open' with hash fragments on external sites. Call this tool without outputMode first to get detailed capture instructions and choose output mode. After capture, poll with captureId every 5 seconds (up to 10 times) until status is 'completed'. Each capture ID is single-use.",
+  "description": "Capture, import, or convert a web page (by URL) or HTML into a Figma design. Use this tool when the user wants to send, import, capture, screenshot, or push a webpage to Figma. Works with both local dev servers (localhost) and external websites. For LOCAL projects: explore the user's codebase to identify the page, dev server command, and URL before calling. For EXTERNAL URLs (not localhost): use Playwright MCP to capture — do NOT use 'open' with hash fragments on external sites. Call this tool without outputMode first to get detailed capture instructions and choose output mode. After capture, poll with captureId every 5 seconds (up to 10 times) until status is 'completed'. Each capture ID is single-use.\n\nUSING generate_figma_design WITH use_figma:\n- For web apps, use BOTH tools in parallel: run this tool (generate_figma_design) to capture a pixel-perfect layout, and use use_figma with search_design_system to build the screen from design system components.\n- Once both complete, refine the use_figma output to match the pixel-perfect layout from this tool's capture, then delete this tool's output (it was used as a layout reference only).\n- For non-web apps (e.g. iOS), use use_figma only.\n- For updating/syncing a page already in Figma, use use_figma only.",
   "arguments": {
     "type": "object",
     "properties": {
@@ -36,5 +36,9 @@
     },
     "additionalProperties": false,
     "$schema": "http://json-schema.org/draft-07/schema#"
-  }
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
 }

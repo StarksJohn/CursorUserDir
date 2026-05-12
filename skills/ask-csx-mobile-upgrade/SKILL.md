@@ -1,6 +1,6 @@
 ---
 name: ask-csx-mobile-upgrade
-description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复项目上下文、收敛需求、按最小上下文读代码，并将任务路由到 RN、TypeScript、Figma、代码审查等专项 skills。适用于用户提及 csx-mobile、CS Mobile、csx-mobile-upgrade、`/ask-csx-mobile-upgrade`，工作区为 `D:/work/RN/csx-mobile-upgrade`，或需要导航、API、i18n、推送、原生构建、健康数据、RN 实现等本仓库级引导时。
+description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复项目上下文、收敛需求、按最小上下文读代码，并将任务路由到 RN、TypeScript、Figma、代码审查等专项 skills。适用于用户提及 csx-mobile、CS Mobile、csx-mobile-upgrade、`/ask-csx-mobile-upgrade`，工作区为 Windows `D:/work/RN/csx-mobile-upgrade` 或 Mac `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`，或需要导航、API、i18n、推送、原生构建、健康数据、RN 实现等本仓库级引导时。
 ---
 
 # ask-csx-mobile-upgrade
@@ -37,19 +37,32 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
 4. 给出可执行的下一步，或调用对应专项 skill。
 5. 需要长期保留的结论优先写入项目文档或规则，而非仅留在对话里。
 
+`{workspace}` 按当前系统取值：Windows 默认为 `D:\work\RN\csx-mobile-upgrade`；Mac 默认为 `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`（若实际路径不同，以用户本机为准）。
+
 ## 工作区路径
 
 | 平台 | 路径 |
 |------|------|
 | Windows | `D:\work\RN\csx-mobile-upgrade` |
-| Mac | `/Users/stark/Desktop/work/RN/csx-mobile`（若实际路径不同，以用户本机为准） |
+| Mac | `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`（若实际路径不同，以用户本机为准） |
 
 ## 本 skill 文件路径
 
 | 平台 | 路径 |
 |------|------|
 | Windows | `C:\Users\Stark8964911\.cursor\skills\ask-csx-mobile-upgrade\SKILL.md` |
-| Mac | `~/.cursor/skills/ask-csx-mobile-upgrade/SKILL.md` |
+| Mac | `~/.cursor/skills/ask-csx-mobile-upgrade/SKILL.md`（等价于 `/Users/<你的用户名>/.cursor/skills/ask-csx-mobile-upgrade/SKILL.md`） |
+
+## Codex 对照文件路径
+
+| 平台 | 路径 |
+|------|------|
+| Windows | `C:\Users\Stark8964911\.codex\skills\csx-mobile-upgrade\SKILL.md` |
+| Mac | `/Users/<你的用户名>/.codex/skills/csx-mobile-upgrade/SKILL.md` |
+
+## 图片资源路径
+
+本文中的 `![img_xxx.png](img_xxx.png)` 视为与本文件同目录：Windows 为 `C:\Users\Stark8964911\.cursor\skills\ask-csx-mobile-upgrade\`；Mac 为 `~/.cursor/skills/ask-csx-mobile-upgrade/`（等价于 `/Users/<你的用户名>/.cursor/skills/ask-csx-mobile-upgrade/`）。
 
 ## 稳定项目事实（摘要）
 
@@ -89,7 +102,7 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
 
 ## 路由规则（关联 skills）
 
-按任务类型选择专项能力（名称与 `~/.cursor/skills` 下目录一致）：
+按任务类型选择专项能力（名称与本机 Cursor skill 目录一致：Windows 为 `%USERPROFILE%\.cursor\skills`，Mac 为 `~/.cursor/skills`）：
 
 ### 规则缺失或过期
 
@@ -156,17 +169,27 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
 - 除非用户明确要求，默认不替用户运行应用或真机测试
 - 不以陈旧笔记覆盖当前仓库文件
 
-## 当前活跃需求
-- figma-to-rn-toolkit 相关:
-  <!-- - 请根据 `https://www.figma.com/design/Wa0Oa4oeMTy5H2Tk32ooqb/CSM?node-id=17126-28544&m=dev` 这个 Figma URL, 在 `D:\work\RN\csx-mobile-upgrade\src\pages\Diagnosis\DiagnosisPage.tsx`页面 的 2018行 ,根据页面的代码风格和项目结构,设计实现 `React Native` 组件代码
+## 当前活跃需求(不要修改这部分的子内容)
+
+路径对照：Windows 项目根为 `D:\work\RN\csx-mobile-upgrade`；Mac 项目根为 `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`。下方涉及项目内文件时，Windows 与 Mac 仅根目录不同，后续相对路径保持一致。
+  
+- MAC
+  <!-- - 需要你在 Mac 项目根 `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`（例如 `/Users/stark/Desktop/work/RN/csx-mobile`）目录执行`yarn start`+ `npx react-native run-ios --simulator "iPhone 17 Pro" --no-packager` 把当前项目的debug模式的app运行到IOS的模拟器里 -->
+  
+- WIN:
+  - 当前电脑已经在 Windows 项目根 `D:\work\RN\csx-mobile-upgrade`（Mac 对照：`/Users/<你的用户名>/Desktop/work/RN/csx-mobile`）目录执行 `npx react-native run-android` 把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区`
+
+<!-- - figma-to-rn-toolkit 相关:
+  - 请根据 `https://www.figma.com/design/Wa0Oa4oeMTy5H2Tk32ooqb/CSM?node-id=17126-28544&m=dev` 这个 Figma URL, 在 Windows `D:\work\RN\csx-mobile-upgrade\src\pages\Diagnosis\DiagnosisPage.tsx` / Mac `/Users/<你的用户名>/Desktop/work/RN/csx-mobile/src/pages/Diagnosis/DiagnosisPage.tsx` 页面 的 2018行 ,根据页面的代码风格和项目结构,设计实现 `React Native` 组件代码
     - 要求：
       - 匹配当前项目的代码风格（命名规范、目录组织、import 顺序等）
       - 复用项目中已有的公共组件和工具函数
       - 使用项目一致的样式方案（StyleSheet.create / styled-components 等） -->
-  
-- MAC
-  <!-- - 需要你在`/Users/stark/Desktop/work/RN/csx-mobile`目录执行`yarn start`+ `npx react-native run-ios --simulator "iPhone 17 Pro" --no-packager` 把当前项目的debug模式的app运行到IOS的模拟器里 -->
-  - `/Users/stark/Desktop/work/RN/csx-mobile/src/pages/AppointmentListPage/AppointmentListPage.tsx` 页面 是不是禁用了 IOS 从 屏幕左侧滑动退出页面的手势? 我在 ![img_164135.png](img_164135.png) 如图模拟器里 的这个页面从屏幕左侧 往右无法滑动
-  
-- WIN:
-  <!-- - 当前电脑已经在 `/Users/stark/Desktop/work/RN/csx-mobile` 目录执行 `npx react-native run-android` 把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 东八区 -->
+
+<!-- - react-native-auto-positioned-popup 相关
+  - Windows `D:\work\RN\csx-mobile-upgrade\global.ts` / Mac `/Users/<你的用户名>/Desktop/work/RN/csx-mobile/global.ts` 的 `global.$fake`已经设为了 true
+  - Windows `D:\work\RN\csx-mobile-upgrade\src\pages\ImmuneRecordPage\ImmuneRecordPage.tsx` / Mac `/Users/<你的用户名>/Desktop/work/RN/csx-mobile/src/pages/ImmuneRecordPage/ImmuneRecordPage.tsx` 里绘制的![img_141828.png](img_141828.png)组件,显示在![img_142426.png](img_142426.png)的红框处,传入的 `useTextInput`是false, 实际调用的源码是 Windows `D:\work\RN\csx-mobile-upgrade\node_modules\react-native-auto-positioned-popup\src\AutoPositionedPopup.tsx` / Mac `/Users/<你的用户名>/Desktop/work/RN/csx-mobile/node_modules/react-native-auto-positioned-popup/src/AutoPositionedPopup.tsx`;
+  - 目前点击 Windows `D:\work\RN\csx-mobile-upgrade\node_modules\react-native-auto-positioned-popup\src\AutoPositionedPopup.tsx` / Mac `/Users/<你的用户名>/Desktop/work/RN/csx-mobile/node_modules/react-native-auto-positioned-popup/src/AutoPositionedPopup.tsx` 里 1215行的`TouchableOpacity`后,执行了1219行的`onPress`回调;然后`state.isFocus`变成了true;然后`AutoPositionedPopupList`组件显示在了![img_144138.png](img_144138.png)红框处,也就是显示在了屏幕的中心;
+  - 现在需要你在不改变原有代码逻辑的基础上修改这个逻辑,如果传入的 `internalSearch=true`,则点击后弹出的红框,也就是`AutoPositionedPopupList`组件,固定显示在如图![img_144313.png](img_144313.png)红框处(屏幕顶部导航栏)的下边;
+  - 你只能新增代码,不要修改已有代码
+  - 现在需要给 Windows `D:\work\RN\csx-mobile-upgrade\node_modules\react-native-auto-positioned-popup\src\AutoPositionedPopup.tsx` / Mac `/Users/<你的用户名>/Desktop/work/RN/csx-mobile/node_modules/react-native-auto-positioned-popup/src/AutoPositionedPopup.tsx` 的887行的height的值加一个高度,这个高度用来显示如果原来useTextInput传入true时,显示的`memoizedTextInput`的高度;然后`AutoPositionedPopupList`的顶部需要显示`memoizedTextInput`,也就是把之前useTextInput传入true时显示的`memoizedTextInput`的操作逻辑,改到显示在`AutoPositionedPopupList`的顶部来操作 -->

@@ -15,6 +15,10 @@
       "ref": {
         "description": "Exact target element reference from the page snapshot",
         "type": "string"
+      },
+      "filename": {
+        "description": "Filename to save the result to. If not provided, result is returned as text.",
+        "type": "string"
       }
     },
     "required": [

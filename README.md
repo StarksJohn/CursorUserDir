@@ -1,4 +1,5 @@
 # Cursor User Dir
+每月24日15:00点重置
 
 远程git仓库: https://github.com/StarksJohn/CursorUserDir
 

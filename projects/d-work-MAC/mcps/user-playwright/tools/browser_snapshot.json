@@ -4,6 +4,10 @@
   "arguments": {
     "type": "object",
     "properties": {
+      "target": {
+        "description": "Exact target element reference from the page snapshot, or a unique element selector",
+        "type": "string"
+      },
       "filename": {
         "description": "Save snapshot to markdown file instead of returning it in the response.",
         "type": "string"
@@ -11,6 +15,10 @@
       "depth": {
         "description": "Limit the depth of the snapshot tree",
         "type": "number"
+      },
+      "boxes": {
+        "description": "Include each element's bounding box as [box=x,y,width,height] in the snapshot",
+        "type": "boolean"
       }
     },
     "$schema": "https://json-schema.org/draft/2020-12/schema",

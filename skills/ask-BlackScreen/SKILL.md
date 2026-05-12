@@ -101,12 +101,9 @@ BlackScreen 任务默认 **不** 调用 `init-project`，除非用户要在该�
 - 不要修改 当前文件里的 `当前活跃需求`下的内容
 
 ## 当前活跃需求
-- 当前Win11系统经常黑屏重启，黑屏时如图 ![img_200825.png](img_200825.png) ,提示 `Your device ran into a problem and needs to restart,0% complete;  Stop code: MEMORY MAANAGEMENT (0x1A)`;你帮我彻底解决Win11系统的这个问题;
+- 当前Win11系统经常黑屏重启，黑屏时如图 ![img_200825.png](img_200825.png) ,提示 `Your device ran into a problem and needs to restart,0% complete;  Stop code: MEMORY MAANAGEMENT (0x1A)`;
 <!-- - 当前电脑刚刚又因为玩<战锤40K 星际战士2> 游戏而黑屏重启了, 现在你帮我查看下日志, 判断重启原因, 帮我解决重启问题,但要避免系统重装,C盘不要抹除 -->
-  - 之前把 PROCTHROTTLEMAX 设置成 98 之后, 我玩了几次 <战锤40K 星际战士2>, 游戏只是卡顿, 没有导致Windows系统黑屏重启,现在我改成了 100
-  - 我当前电脑状态,在不再黑屏的情况下,性能是不是已经拉到了最大?
-  - 刚才我的电脑又因为启动了 <战锤40K 星际战士2> 游戏,黑屏重启了, 你看下系统日志,分析原因,怎么解决?
-    - 你 先把 PROCTHROTTLEMAX 从 100 回退到 99 ,然后我再启动游戏测试 是否黑屏重启
+  - 刚才我的电脑又因为启动了 <战锤40K 星际战士2> 游戏,黑屏重启了, 你看下系统日志,分析原因,帮我解决
 - 把以上你执行过的所有任务的执行结果都总结更新到 
   - win:`D:\work\BlackScreen\win11黑屏解决方案.md`
   - mac : 

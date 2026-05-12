@@ -11,19 +11,14 @@
       "args": {
         "type": "array",
         "items": {
-          "type": "object",
-          "properties": {
-            "uid": {
-              "type": "string",
-              "description": "The uid of an element on the page from the page content snapshot"
-            }
-          },
-          "required": [
-            "uid"
-          ],
-          "additionalProperties": false
+          "type": "string",
+          "description": "The uid of an element on the page from the page content snapshot"
         },
         "description": "An optional list of arguments to pass to the function."
+      },
+      "dialogAction": {
+        "type": "string",
+        "description": "Handle dialogs while execution. \"accept\", \"dismiss\", or string for response of window.prompt. Defaults to accept."
       }
     },
     "required": [
