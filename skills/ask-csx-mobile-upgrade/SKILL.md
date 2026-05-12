@@ -174,10 +174,11 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
 路径对照：Windows 项目根为 `D:\work\RN\csx-mobile-upgrade`；Mac 项目根为 `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`。下方涉及项目内文件时，Windows 与 Mac 仅根目录不同，后续相对路径保持一致。
   
 - MAC
-  <!-- - 需要你在 Mac 项目根 `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`（例如 `/Users/stark/Desktop/work/RN/csx-mobile`）目录执行`yarn start`+ `npx react-native run-ios --simulator "iPhone 17 Pro" --no-packager` 把当前项目的debug模式的app运行到IOS的模拟器里 -->
+  - 需要你在 Mac 项目根 `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`（例如 `/Users/stark/Desktop/work/RN/csx-mobile`）目录执行一条命令,把当前项目的debug模式的ipa运行到真机上
+    <!-- `yarn start`+ `npx react-native run-ios --simulator "iPhone 17 Pro" --no-packager` 把当前项目的debug模式的app运行到IOS的模拟器里 -->
   
 - WIN:
-  - 当前电脑已经在 Windows 项目根 `D:\work\RN\csx-mobile-upgrade`（Mac 对照：`/Users/<你的用户名>/Desktop/work/RN/csx-mobile`）目录执行 `npx react-native run-android` 把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区`
+  <!-- - 当前电脑已经在 Windows 项目根 `D:\work\RN\csx-mobile-upgrade`（Mac 对照：`/Users/<你的用户名>/Desktop/work/RN/csx-mobile`）目录执行 `npx react-native run-android` 把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区` -->
 
 <!-- - figma-to-rn-toolkit 相关:
   - 请根据 `https://www.figma.com/design/Wa0Oa4oeMTy5H2Tk32ooqb/CSM?node-id=17126-28544&m=dev` 这个 Figma URL, 在 Windows `D:\work\RN\csx-mobile-upgrade\src\pages\Diagnosis\DiagnosisPage.tsx` / Mac `/Users/<你的用户名>/Desktop/work/RN/csx-mobile/src/pages/Diagnosis/DiagnosisPage.tsx` 页面 的 2018行 ,根据页面的代码风格和项目结构,设计实现 `React Native` 组件代码
