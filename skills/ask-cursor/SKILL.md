@@ -113,7 +113,7 @@ description: >-
 - 不把 **Claude Code 或其它工具链迁移** 当作本 skill 的默认主任务；仅当用户明确要做「从 X 到 Cursor 的对照表」时，再**按需、分步**回答。
 - 不在本 skill 中维护易过期的**个人订阅状态、账单截图结论**；需要时以用户当次提供的信息与官方页为准。
 
-## 当前活跃需求
+## 当前活跃需求(不要修改这部分的子内容)
 - 我当前是`cursor Pro+ Annual $48/mo.` 计划的用户, 目前有如图![img_010515.png](img_010515.png)![img_011234.png](img_011234.png) 2个计费池,一个是使用高级API的计费池,一个是`Auto + Composer`的计费池, 每月24日15:00点重置;API计费池每月大概能用2亿token,105美金额度
 <!-- - 当前Win11系统已经安装了`cursor IDE`
   - 但是`Pro+`每个月的额度不够用;我已经买了codex plus 账号;你觉得我应该在cursor里使用codex插件![img_223216.png](img_223216.png),还是 codex cli? 怎么可以把cursor里配置的 skill 和 MCP 无缝的同步到 codex 里直接使用?保证以后当cursor有余额时,优先继续用cursor;cursor的余额用完后,可以继续用codex,并且在使用codex时,保证也可以用和cursor一样的MCP和skill
@@ -124,7 +124,6 @@ description: >-
   - ![img_192458.png](img_192458.png)在cursor内置浏览器里我访问&&登录了 `https://supabase.com`, 怎么让这个内置浏览器 保持所有已经登录过的网站的登录状态,下次我再用 内置浏览器打开 `https://supabase.com` 时, 不想再次登录 -->
 - 当前 `MacBook Pro` 电脑也下载安装了cursor,已经有了  `/Users/stark/.cursor` 和 `~/Library/Application Support/Cursor` 目录
   - 当前 `MacBook Pro`电脑里使用的cursor 是否已经发挥出了最大的能力?
-  - 帮我在 `~/Library/Application Support/Cursor` pull 远程仓库的代码
 - 把以上你执行过的所有任务的执行结果都总结更新到
   - win:`C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor_使用指南与Token优化.md`
   - mac : `/Users/stark/Library/Application Support/Cursor/Cursor_使用指南与Token优化.md`
