@@ -1,6 +1,6 @@
 {
   "name": "fill_form",
-  "description": "Fill out multiple form elements at once",
+  "description": "Fill out multiple form elements (inputs, selects, checkboxes, radios) at once. ALWAYS prefer this tool over multiple individual 'fill' or 'click' calls when interacting with forms. It is significantly faster, more reliable, and reduces turn count. Example: Fill username, password, and check \"Remember Me\" in one call.",
   "arguments": {
     "type": "object",
     "properties": {
@@ -15,7 +15,7 @@
             },
             "value": {
               "type": "string",
-              "description": "Value for the element"
+              "description": "Value for the element. \"true\" or \"false\" for checkboxes and toggles, \"true\" for radio buttons."
             }
           },
           "required": [

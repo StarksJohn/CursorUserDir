@@ -5,27 +5,25 @@
     "type": "object",
     "properties": {
       "startElement": {
-        "type": "string",
-        "description": "Human-readable source element description used to obtain the permission to interact with the element"
+        "description": "Human-readable source element description used to obtain the permission to interact with the element",
+        "type": "string"
       },
-      "startRef": {
+      "startTarget": {
         "type": "string",
-        "description": "Exact source element reference from the page snapshot"
+        "description": "Exact target element reference from the page snapshot, or a unique element selector"
       },
       "endElement": {
-        "type": "string",
-        "description": "Human-readable target element description used to obtain the permission to interact with the element"
+        "description": "Human-readable target element description used to obtain the permission to interact with the element",
+        "type": "string"
       },
-      "endRef": {
+      "endTarget": {
         "type": "string",
-        "description": "Exact target element reference from the page snapshot"
+        "description": "Exact target element reference from the page snapshot, or a unique element selector"
       }
     },
     "required": [
-      "startElement",
-      "startRef",
-      "endElement",
-      "endRef"
+      "startTarget",
+      "endTarget"
     ],
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "additionalProperties": false
