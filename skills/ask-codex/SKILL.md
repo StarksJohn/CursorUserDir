@@ -43,11 +43,11 @@ description: >-
 
 ## 新会话必读顺序（恢复上下文）
 
-1. **`context.md`**：**Windows** `%USERPROFILE%\.codex\context.md`（本机示例：`C:\Users\Stark8964911\.codex\context.md`）；**macOS** `/Users/<你的用户名>/.codex/context.md`  
-   - 若文件为空或仅有说明头：在答复中注明「暂无历史归档」，不虚构过往任务。  
-   - 若已有条目：**先概括**与用户当前问题最相关的近期条目，再展开新工作。  
+1. **`context.md`**：**Windows** `%USERPROFILE%\.codex\context.md`（本机示例：`C:\Users\Stark8964911\.codex\context.md`）；**macOS** `/Users/<你的用户名>/.codex/context.md`
+   - 若文件为空或仅有说明头：在答复中注明「暂无历史归档」，不虚构过往任务。
+   - 若已有条目：**先概括**与用户当前问题最相关的近期条目，再展开新工作。
    - 文件变长时：优先阅读**底部最近若干条**（本 skill 约定新条目追加在旧条目之后，最新在文件尾部）。
-2. **`{workspace}/.cursor/rules/project-context.mdc`**（若存在）  
+2. **`{workspace}/.cursor/rules/project-context.mdc`**（若存在）
    - 技术栈、目录、约定、长期决策；与 `context.md` 冲突时以**仓库内最新文件**为准。
 3. 与用户任务直接相关的 **`README*`**、**`package.json`**、少量源码文件（**不要**默认通读全仓）。
 
@@ -58,14 +58,23 @@ description: >-
 | 3 | 根目录 `README*`、`package.json` 等 | 环境与依赖锚点 |
 | 4 | 任务直接相关的源码/配置 | 实现与排障 |
 
+## 子 skill / 子任务上下文完整性门禁
+
+当用户在输入框或本文件 **「当前活跃需求」** 中提出任务时，先以本轮目标为准建立最小上下文清单，再执行实现或结论。每次入口 skill 又指向其它 skill、ask、command、BMAD 工作流或子任务时，必须做以下检查：
+
+1. **先判定是否已读**：确认当前 chat 上下文里是否已经实际读取了对应 `SKILL.md`、`workflow.md`、`checklist.md`、`reference.md`、项目文档、同目录图片或其它被该子任务明确依赖的文件。
+2. **缺什么补什么**：若缺失，按当前系统路径精确读取后再执行；不能只凭历史摘要、路径名、会话记忆或用户转述继续。
+3. **按平台取路径**：Codex 用户目录统一写作 **Windows** `%USERPROFILE%\.codex` / **macOS** `/Users/<你的用户名>/.codex`（本机 macOS 示例：`/Users/stark/.codex`）；Cursor skills 统一写作 **Windows** `%USERPROFILE%\.cursor\skills` / **macOS** `/Users/<你的用户名>/.cursor/skills`。
+4. **记录加载事实**：最终回复必须列出「当前 chat 已加载的关键文件」与「本轮新增读取/加载的文件」，只列对判断、修改或验证有实际影响的文件。
+
 ## 工作区与本 skill 路径
 
 | 用途 | Windows | macOS（示例） |
 |------|---------|----------------|
-| 工作区根 | `C:\Users\Stark8964911\.codex` | `~/.codex`（以本机为准；与 Codex 用户目录一致） |
-| 会话归档文件 | `C:\Users\Stark8964911\.codex\context.md` | `~/.codex/context.md` |
-| 本 skill 文件 | `C:\Users\Stark8964911\.cursor\skills\ask-codex\SKILL.md` | `~/.cursor/skills/ask-codex/SKILL.md` |
-| Codex 对口 skill（分别维护） | `C:\Users\Stark8964911\.codex\skills\codex\SKILL.md` | `~/.codex/skills/codex/SKILL.md` |
+| 工作区根 | `%USERPROFILE%\.codex`（本机示例：`C:\Users\Stark8964911\.codex`） | `/Users/<你的用户名>/.codex`（本机示例：`/Users/stark/.codex`；也可写作 `~/.codex`） |
+| 会话归档文件 | `%USERPROFILE%\.codex\context.md`（本机示例：`C:\Users\Stark8964911\.codex\context.md`） | `/Users/<你的用户名>/.codex/context.md`（本机示例：`/Users/stark/.codex/context.md`） |
+| 本 skill 文件 | `%USERPROFILE%\.cursor\skills\ask-codex\SKILL.md`（本机示例：`C:\Users\Stark8964911\.cursor\skills\ask-codex\SKILL.md`） | `/Users/<你的用户名>/.cursor/skills/ask-codex/SKILL.md`（本机示例：`/Users/stark/.cursor/skills/ask-codex/SKILL.md`） |
+| Codex 对口 skill（分别维护） | `%USERPROFILE%\.codex\skills\codex\SKILL.md`（本机示例：`C:\Users\Stark8964911\.codex\skills\codex\SKILL.md`） | `/Users/<你的用户名>/.codex/skills/codex/SKILL.md`（本机示例：`/Users/stark/.codex/skills/codex/SKILL.md`） |
 | **`AGENTS.md`（Codex / Cursor 内 Codex 插件）** | `%USERPROFILE%\.codex\AGENTS.md`（本机示例：`C:\Users\Stark8964911\.codex\AGENTS.md`） | `~/.codex/AGENTS.md`（绝对路径形如 `/Users/<用户名>/.codex/AGENTS.md`） |
 
 ### Cursor / Codex 用户目录分工
@@ -80,7 +89,7 @@ description: >-
 
 在**本轮对话**中，只要同时满足：
 
-1. 用户通过本 skill 或明确在 Codex 用户目录工作区上下文中推进任务（**Windows** `%USERPROFILE%\.codex` / **macOS** `/Users/<你的用户名>/.codex`），且  
+1. 用户通过本 skill 或明确在 Codex 用户目录工作区上下文中推进任务（**Windows** `%USERPROFILE%\.codex` / **macOS** `/Users/<你的用户名>/.codex`），且
 2. 该任务已达到**可交付、可复述的结束点**（完成实现、明确拒绝、或形成书面结论），
 
 则必须在结束回复**之前**，将以下内容**追加**到 **Windows** `%USERPROFILE%\.codex\context.md` / **macOS** `/Users/<你的用户名>/.codex/context.md`：
@@ -103,8 +112,8 @@ description: >-
 
 ```
 
-- **时间**：以用户消息中的 **Today's date** 或本机当日日期为准（**2026** 年起）。  
-- **排序**：默认**新条目在旧条目之后**（文件顶部可保留简短《文件说明》，不动历史条目正文）。  
+- **时间**：以用户消息中的 **Today's date** 或本机当日日期为准（**2026** 年起）。
+- **排序**：默认**新条目在旧条目之后**（文件顶部可保留简短《文件说明》，不动历史条目正文）。
 - **冲突处理**：若需更正历史结论，**新起一条**说明「更正：……」，避免静默删改旧条目。
 
 ## 路由规则（关联 skills）
