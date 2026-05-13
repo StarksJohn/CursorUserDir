@@ -29,11 +29,12 @@ description: 为项目根目录（Windows `D:/work/MyStartupProject1`；macOS `/
 - **项目根目录**：**Windows** `D:/work/MyStartupProject1`；**macOS** `/Users/stark/Desktop/work/MyStartupProject1`。下文 `<项目根目录>` 均指当前系统对应路径。
 - **不要默认**当前会话已像「勾选多个 Agent Skills」一样，**静默载入**每一份 `bmad-*.md`。下文路由里的 `bmad-agent-*`、`bmad-*` 表示应采样的角色或工作流，**不等于**上下文里已有对应 SKILL 全文。
 - **执行任意 `bmad-<identifier>`（含 Cursor 内 Codex 插件）**：当本步须按该工作流产出或严格遵循其专项步骤，在动手前必须 **`ReadFile`** 本机：**macOS/Linux** 为 `~/.cursor/skills/<bmad-identifier>/SKILL.md`（或 `/Users/<用户名>/.cursor/skills/<bmad-identifier>/SKILL.md`）；**Windows** 为 `%USERPROFILE%\.cursor\skills\<bmad-identifier>\SKILL.md`（示例：`C:\Users\Stark8964911\.cursor\skills\...`）。标识与路由/文档中的 **`bmad-...`** 全文一致。并继续读取该 SKILL 指向的 **`workflow.md`** 等同目录文件。Codex 侧强制约定见 **`~/.codex/AGENTS.md`**「BMAD 工作流与 `.cursor/skills` 磁盘路径」。
+- **先做当前 chat 上下文自检**：准备执行任意 `bmad-<identifier>` 前，先判断当前 chat 是否已经**实际读取并保留在上下文中**该 `SKILL.md`，以及该 SKILL 明确要求的 `workflow.md` / `checklist.md` / `reference.md`。若已在当前 chat 成功读取且仍适用于本步，可直接沿用；若未读取、无法确认、只见路由名/摘要/历史结论，必须立即按上条路径补读后再执行。**磁盘上文件存在，不等于当前 chat 已加载。**
 - **Cursor Agent**：仍可通过选用 Skills 或 **`@`** 附加；若未选用且将按完整工作流执行，**代理仍应主动 `ReadFile`** 上述固定路径（若客户端允许访问用户目录）。
 - **仅泛泛对齐阶段/门禁**、尚未进入「按该 `bmad-*` 的完整步骤产出」时：可先只依赖本总控与项目文档；**一旦进入执行该项工作流**，必须先完成 **`ReadFile`**（或用户 **`@`** 等价内容）。
 - **`@` 兜底**：磁盘读取不可用时，请用户 **`@`** 附上对应 `SKILL.md`（及 **`workflow.md`** 等）。
 - 子 SKILL 与本总控若有冲突：**以已成功载入的子 SKILL 专项规则为准**，并简短说明与本总控的差异或取舍。
-- **本项目 BMAD 执行前硬门禁**：进入 `bmad-create-story`、`bmad-dev-story`、`bmad-code-review`、`bmad-agent-*`、`bmad-qa-*` 等任一专项工作流前，先读取 `%USERPROFILE%\.cursor\skills\<bmad-identifier>\SKILL.md`，再读取该文件要求的 `workflow.md` / `checklist.md` / `reference.md`。这条规则同样适用于“下一步”由 `项目主档案.md`、`stories/sprint-status.yaml` 或上轮结论推导出来，而不是用户本轮显式输入 `bmad-*` 的情况。
+- **本项目 BMAD 执行前硬门禁**：进入 `bmad-create-story`、`bmad-dev-story`、`bmad-code-review`、`bmad-agent-*`、`bmad-qa-*` 等任一专项工作流前，先按当前系统读取对应子 skill：**macOS/Linux** `~/.cursor/skills/<bmad-identifier>/SKILL.md`；**Windows** `%USERPROFILE%\.cursor\skills\<bmad-identifier>\SKILL.md`。再读取该文件要求的 `workflow.md` / `checklist.md` / `reference.md`。这条规则同样适用于“下一步”由 `项目主档案.md`、`stories/sprint-status.yaml` 或上轮结论推导出来，而不是用户本轮显式输入 `bmad-*` 的情况。
 - **进入单 story 循环时的最小自检**：开始 `bmad-dev-story` 之前，必须已在本轮读取 `bmad-dev-story/SKILL.md`、其 `workflow.md`，以及存在且用于 DoD 的 `checklist.md`；随后再读目标 story 全文、`stories/sprint-status.yaml`、项目主档案和必要代码。未完成这些读取时，不得直接把 story 从 `ready-for-dev` 推进到实现。
 - **状态词冲突处理**：若通用 BMAD 子 SKILL 写 `review`，而本项目 `stories/sprint-status.yaml` 定义使用 `code-review`，以本项目状态机为准；但需要在 Dev Agent Record 或最终说明中标注这是项目约定差异。
 - **任务结束上下文汇报**：完成任何任务后，最终回复必须列出 `当前 chat 上下文已加载的关键文件` 与 `执行当前任务过程中新增读取/加载的文件`；只列实际参与判断、修改或验证的文件，若无新增则写 `无新增`。
