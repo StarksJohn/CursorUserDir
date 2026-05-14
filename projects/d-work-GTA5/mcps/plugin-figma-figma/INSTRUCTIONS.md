@@ -8,7 +8,7 @@ Capabilities:
 
 
 WHEN TO USE THESE TOOLS:
-- The user shares a Figma URL (figma.com/design/..., figma.com/board/..., figma.com/make/...)
+- The user shares a Figma URL (figma.com/design/..., figma.com/board/..., figma.com/slides/..., figma.com/make/...)
 - The user references a Figma file or asks about a Figma design
 - The user wants to capture a web page into Figma
 - The user wants to create a diagram in FigJam
@@ -19,6 +19,7 @@ Extract fileKey and nodeId from Figma URLs:
 - figma.com/design/:fileKey/branch/:branchKey/:fileName → use branchKey as fileKey
 - figma.com/make/:makeFileKey/:makeFileName → use makeFileKey
 - figma.com/board/:fileKey/:fileName?node-id=:nodeId → FigJam file, use get_figjam; pass the original board URL as figjamUrl when available
+- figma.com/slides/:fileKey/:fileName?node-id=:nodeId → Figma Slides file
 
 DESIGN-TO-CODE WORKFLOW:
 
