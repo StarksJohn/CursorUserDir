@@ -1,0 +1,21 @@
+---
+pid: 19283
+cwd: "/Users/stark/.cursor"
+command: "git config --global http.https://github.com.proxy \"\" && GIT_TRACE_CURL=1 git ls-remote https://github.com/StarksJohn/CursorUserDir.git HEAD 2>&1 | head -8"
+started_at: 2026-05-14T11:29:19.151Z
+running_for_ms: 90073    
+---
+19:29:22.714184 http.c:845              == Info: Uses proxy env variable no_proxy == 'localhost,127.0.0.1,::1,*.local,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16'
+19:29:22.714675 http.c:845              == Info: Couldn't find host github.com in the .netrc file; using defaults
+19:29:22.967388 http.c:845              == Info: Host github.com:443 was resolved.
+19:29:22.967405 http.c:845              == Info: IPv6: (none)
+19:29:22.967409 http.c:845              == Info: IPv4: 140.82.116.4
+19:29:22.967445 http.c:845              == Info:   Trying 140.82.116.4:443...
+19:29:23.183508 http.c:845              == Info: Connected to github.com (140.82.116.4) port 443
+19:29:23.183596 http.c:845              == Info: ALPN: curl offers http/1.1
+
+---
+exit_code: 128
+elapsed_ms: 94251
+ended_at: 2026-05-14T11:30:53.402Z
+---
