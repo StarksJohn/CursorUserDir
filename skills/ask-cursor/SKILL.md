@@ -116,7 +116,6 @@ description: >-
 ## 当前活跃需求(不要修改这部分的子内容)
 - 我当前是`cursor Pro+ Annual $48/mo.` 计划的用户, 目前有如图![img_010515.png](img_010515.png)![img_011234.png](img_011234.png) 2个计费池,一个是使用高级API的计费池,一个是`Auto + Composer`的计费池, 每月24日15:00点重置;API计费池每月大概能用2亿token,105美金额度
 - 当前Win11系统已经安装了`cursor IDE`
-  - 怎么把 所有已安装的cursor插件 移植到 Mac系统的 cursor里?
   <!-- - 但是`Pro+`每个月的额度不够用;我已经买了codex plus 账号;你觉得我应该在cursor里使用codex插件![img_223216.png](img_223216.png),还是 codex cli? 怎么可以把cursor里配置的 skill 和 MCP 无缝的同步到 codex 里直接使用?保证以后当cursor有余额时,优先继续用cursor;cursor的余额用完后,可以继续用codex,并且在使用codex时,保证也可以用和cursor一样的MCP和skill -->
   <!-- - 使用![img_215834.png](img_215834.png)模型时, 执行一个任务消耗了762.1万token,API的Usage从3.3%上涨到了10.6%; 
     -  约 104.40 万 / 1%

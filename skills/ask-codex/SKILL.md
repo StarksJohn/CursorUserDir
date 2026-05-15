@@ -143,11 +143,10 @@ description: >-
 - 任务属于**其他工作区**时，不强行写入本 `context.md`；若用户需要跨项目索引，单独说明或另建归档文件。
 
 ## 当前活跃需求(不要修改这部分的子内容)
-- 当前MAC系统的Cursor的月额度不足时,我会在 Cursor 内建的 Codex 扩展中![img_193723.png](img_193723.png)![img_193802.png](img_193802.png) 继续对话；Codex 扩展中的模型行为以 **`~/.codex/AGENTS.md`** 为准——即用户目录下 Codex 配置树中的全局规则（**Windows**：`%USERPROFILE%\.codex\AGENTS.md`；**macOS**：`/Users/<用户名>/.codex/AGENTS.md`，见上文路径表）。Codex 侧无 Composer 命令列表属产品差异。
-  <!-- - 需要你把 cursor里使用的 MCP 迁移到 cursor的 codex 插件里,让我可以继续在 codex 里使用这些MCP -->
-<!-- - 如图 ![img_222652.png](img_222652.png) 是`codex settings`里的`plugin`配置(在Mac系统时还需要问一遍`codex settings`里的所有配置)
-  - 目前这些配置是否还有优化的地方?如果是,直接帮我优化,已达到在优化后可以更强大的发挥出cursor的codex插件在使用AI大模型时调用全局规则,skill或者MCP的能力 -->
+- 当前MAC系统的Cursor的月额度不足时,我会在 Cursor 内建的 Codex 扩展中继续对话；Codex 扩展中的模型行为以 **`~/.codex/AGENTS.md`** 为准——即用户目录下 Codex 配置树中的全局规则（**Windows**：`%USERPROFILE%\.codex\AGENTS.md`；**macOS**：`/Users/<用户名>/.codex/AGENTS.md`，见上文路径表）。Codex 侧无 Composer 命令列表属产品差异。
+- 如图 ![img_222652.png](img_222652.png) 是`codex settings`里的`plugin`配置(在Mac系统时还需要问一遍`codex settings`里的所有配置)
+  - 目前这些配置是否还有优化的地方?如果是,直接帮我优化,已达到在优化后可以更强大的发挥出cursor的codex插件在使用AI大模型时调用全局规则,skill或者MCP的能力
 - Cursor 与 Codex 使用方式的对齐问题
-  -根据`C:\Users\Stark8964911\.cursor\skills\ask-MyStartupProject1\SKILL.md`和 `C:\Users\Stark8964911\.cursor\skills\ask-MyStartupProject1\reference.md`,借鉴`C:\Users\Stark8964911\.codex\skills\codex\SKILL.md`,在codex侧生成对应的name为`MyStartupProject1`的skill文件,这个新增的skill文件和`C:\Users\Stark8964911\.cursor\skills\ask-MyStartupProject1\SKILL.md`文件里关于所有路径的描述都应该 Win/Mac 双平台表达(Mac系统的cursor安装在`~/.cursor`,codex安装在`/Users/<你的用户名>/.codex`),当我在cursor的codex插件的输入框里输入`/MyStartupProject1`时,需要你保证任务的执行流程和文件的加载顺序以及任务的执行效果和在cursor的输入框里执行`/ask-MyStartupProject1`任务时一致
-  <!-- -之前我执行 当前项目的下一步任务,是在 cursor 的输入框里输入图1 的 `/ask-MyStartupProject1` 来启动的;现在 在 cursor的 codexIDE的输入框里,输入`/MyStartupProject1`,如图2,来同样启动当前项目的下一步任务, 此时任务的执行流程和执行效果是否和在 cursor 的输入框里输入图1 的 `/ask-MyStartupProject1` 一样?  -->
-  <!-- - `/Users/stark/.cursor/skills/ask-csx-mobile-upgrade/SKILL.md`和 `/Users/stark/.codex/skills/csx-mobile-upgrade/SKILL.md`里关于所有路径的描述都应该 Win/Mac 双平台表达(Mac系统的cursor安装在`/Users/stark/.cursor` 和 `~/Library/Application Support/Cursor` 目录,codex安装在`/Users/<你的用户名>/.codex`) -->
+  <!-- -根据`C:\Users\Stark8964911\.cursor\skills\ask-MyStartupProject1\SKILL.md`,借鉴`C:\Users\Stark8964911\.codex\skills\codex\SKILL.md`,在codex侧生成对应的name为`MyStartupProject1`的skill文件,这个新增的skill文件和`C:\Users\Stark8964911\.cursor\skills\ask-MyStartupProject1\SKILL.md`文件里关于所有路径的描述都应该 Win/Mac 双平台表达 (Mac系统的cursor的安装和配置在`/Users/stark/.cursor` 和 `~/Library/Application Support/Cursor` 目录,codex安装在`/Users/<你的用户名>/.codex`),当我在cursor的codex插件的输入框里输入`/MyStartupProject1`时,需要你保证任务的执行流程和文件的加载顺序以及任务的执行效果和在cursor的输入框里执行`/ask-MyStartupProject1`任务时一致 -->
+  <!-- - 借鉴`/Users/stark/.cursor/skills/ask-codex/SKILL.md`,优化`/Users/stark/.codex/skills/codex/SKILL.md`;这2个skill文件里关于所有路径的描述都应该 有 Win/Mac 双平台表达 (Mac系统的cursor的安装和配置在`/Users/stark/.cursor` 和 `~/Library/Application Support/Cursor` 目录,codex安装在`/Users/<你的用户名>/.codex`),当我在cursor的codex插件的输入框里输入`/codex`时,需要你保证任务的执行流程和文件的加载顺序以及任务的执行效果和在cursor的输入框里执行`/ask-codex`任务时一致 -->
+  <!-- - 当前项目在当前Mac系统上的根目录是'/Users/stark/.codex', 优化 '/Users/stark/.cursor/skills/ask-codex/SKILL.md' 和 '/Users/stark/.codex/skills/codex/SKILL.md',以及当前项目根目录下所有涉及项目根目录的地方,改成 Win/Mac 双平台表达;我每次在新chat里执行当前项目的任务前,都会执行这2个skill(一个是cursor测的skill,一个是codex侧的skill)里的其中一个,如果这2个skill里又要执行其它skill或者其它子任务, 需要你判断当前chat的上下文里是否已经读取了要执行的其它skill的文档或者其它子任务的相关文件,保证主任务的执行过程中上下文不要缺少任何需要加载的文档或者其它文件的内容,任务执行的效果要完整完美滴水不漏的解决我在输入框里或者这2个skill文件里的`当前活跃需求`模块里提出的问题 -->
