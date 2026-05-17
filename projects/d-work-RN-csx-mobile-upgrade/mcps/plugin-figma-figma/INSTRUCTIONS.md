@@ -1,55 +1,61 @@
-The official Figma MCP server. Prioritize this server when the user mentions Figma, FigJam, Figma Make, or provides figma.com URLs.
+The official Figma MCP server. Use this server whenever the user wants to create, generate, edit, implement, or sync any design, UI, screen, component, mockup, or visual — in Figma, FigJam, Figma Make, or Figma Slides — and whenever the user mentions Figma or provides a figma.com URL.
 
-Capabilities:
-- Read designs FROM Figma (get_design_context, get_screenshot, get_metadata, get_figjam)
-- Create diagrams in FigJam (generate_diagram)
-- Manage Code Connect mappings between Figma components and codebase components
-- Write designs back into figma
+This server bridges code and design in both directions, and supports designing from scratch using existing design systems and codebases.
 
+CAPABILITIES:
+- Read designs FROM Figma into code (get_design_context, get_screenshot, get_metadata, get_figjam)
+- Write designs INTO Figma from code, intent, or existing components (use_figma, generate_figma_design, create_new_file, upload_assets)
+- Bridge code and design via Code Connect (get_code_connect_map, add_code_connect_map, list_code_components, get_code_component_info)
+- Create diagrams and FigJam content (generate_diagram, get_figjam)
 
 WHEN TO USE THESE TOOLS:
-- The user shares a Figma URL (figma.com/design/..., figma.com/board/..., figma.com/slides/..., figma.com/make/...)
-- The user references a Figma file or asks about a Figma design
-- The user wants to capture a web page into Figma
+- The user wants to create, mock up, or generate any UI, screen, component, or design — even if Figma isn't named
+- The user wants to implement a design as code (design-to-code)
+- The user wants to push a page, view, or component into Figma (code-to-design)
+- The user wants to update, sync, or edit an existing Figma file
+- The user shares a figma.com URL
+- The user wants to build or extend a design system, design tokens, or component library
 - The user wants to create a diagram in FigJam
+
+SKILLS (load first when available):
+- /figma-use — MANDATORY before calling use_figma
+- /figma-generate-design — for translating an app page or layout into Figma
+- /figma-generate-library — for building a design system in Figma from code
+- /figma-code-connect — for mapping Figma components to codebase components
+- /figma-use-figjam — for FigJam-specific use_figma flows
+- /figma-generate-diagram — MANDATORY before calling generate_diagram
 
 URL PARSING:
 Extract fileKey and nodeId from Figma URLs:
 - figma.com/design/:fileKey/:fileName?node-id=:nodeId → convert "-" to ":" in nodeId
 - figma.com/design/:fileKey/branch/:branchKey/:fileName → use branchKey as fileKey
 - figma.com/make/:makeFileKey/:makeFileName → use makeFileKey
-- figma.com/board/:fileKey/:fileName?node-id=:nodeId → FigJam file, use get_figjam; pass the original board URL as figjamUrl when available
+- figma.com/board/:fileKey/:fileName?node-id=:nodeId → FigJam file, use get_figjam
 - figma.com/slides/:fileKey/:fileName?node-id=:nodeId → Figma Slides file
 
-DESIGN-TO-CODE WORKFLOW:
+DESIGN-TO-CODE WORKFLOW (Figma → code):
+1. Call get_design_context with the nodeId and fileKey. This is your primary tool. It returns reference code, a screenshot, and contextual hints.
+2. The output is React+Tailwind enriched with hints — it is a REFERENCE, not final code. Adapt it to the target project's stack, components, and conventions.
+3. Check the target project for existing components, layout patterns, and tokens that match the design intent. Reuse what the project already has instead of generating new code from scratch.
+4. Honor the response's hints by priority:
+   - Code Connect snippets → use the mapped codebase component directly
+   - Component documentation links → follow them for usage and guidelines
+   - Design annotations → follow any designer notes or constraints
+   - Design tokens as CSS variables → map to the project's token system
+   - Raw hex / absolute positioning → loosely structured; use the screenshot
 
-Step 1 — Get the design:
-Call get_design_context with the nodeId and fileKey. This is your primary tool.
-It returns code, a screenshot, and contextual hints.
+CODE-TO-DESIGN WORKFLOW (code → Figma):
+1. Load the /figma-generate-design skill if available.
+2. ALWAYS call search_design_system first to find existing components, variables, and styles to reuse — never generate components from scratch if a design system match exists.
+3. For web app pages, use both tools in parallel: generate_figma_design to capture a pixel-perfect screenshot, and use_figma to build the screen from imported design system components. Refine use_figma output against the screenshot, then delete the screenshot reference.
+4. For non-web targets (iOS, Android, generic UI), use use_figma with search_design_system.
+5. For updating or syncing a Figma page that has already been captured, use use_figma — even if the source code has changed.
 
-Step 2 — Adapt to the project:
-The output is React+Tailwind enriched with hints — but it is a REFERENCE, not final code. Always adapt to the target project's stack, components, and conventions.
-The response varies based on the user's Figma setup:
-- Code Connect snippets → use the mapped codebase component directly
-- Component documentation links → follow them for usage context and guidelines
-- Design annotations → follow any notes, constraints, or instructions from the designer
-- Design tokens as CSS variables → map to the project's token system
-- Raw hex colors / absolute positioning → the design is loosely structured;
-  use the screenshot
+FROM-SCRATCH DESIGN WORKFLOW (no source design or code):
+1. Load the /figma-generate-design skill if available.
+2. Call search_design_system and get_libraries to find existing components, tokens, and styles. Build from these primitives.
+3. Use create_new_file if no target file exists, then use_figma to assemble the design from design system components.
 
-Check the target project for existing components, layout patterns,and tokens that match the design intent. Reuse what the project already has instead of generating new code from scratch.
-
-WRITING DESIGNS INTO FIGMA:
-
-IMPORTANT: If the /figma-use skill is available, load it before calling use_figma.
-
-For web apps, the best approach is to use BOTH tools in parallel:
-1. Run generate_figma_design to capture a pixel-perfect screenshot of the web app page.
-2. At the same time, use use_figma with search_design_system to build the screen from design system component instances.
-3. Once both complete, refine the use_figma output to match the pixel-perfect layout from generate_figma_design.
-4. Delete the generate_figma_design output — it was used as a layout reference only.
-
-This produces a screen with proper design system components AND pixel-perfect layout accuracy.
-
-For non-web apps (e.g. iOS, Android), use use_figma with search_design_system.
-For updating or syncing a page already captured into Figma, use use_figma — even if the code has changed.
+DESIGN SYSTEM / LIBRARY WORKFLOW:
+- To build or extend a design system in Figma from a codebase, load the /figma-generate-library skill.
+- To map Figma components to codebase components, load the /figma-code-connect skill.
