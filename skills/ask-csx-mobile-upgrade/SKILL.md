@@ -184,7 +184,7 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
 路径对照：Windows 项目根为 `D:\work\RN\csx-mobile-upgrade`；Mac 项目根为 `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`。下方涉及项目内文件时，Windows 与 Mac 仅根目录不同，后续相对路径保持一致。
   
 - MAC
-  - 需要你在 Mac 系统的项目目录 `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`（例如 `/Users/stark/Desktop/work/RN/csx-mobile`）目录执行一条命令,把当前项目的debug模式的apk运行到如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区`真机上
+  <!-- - 需要你在 Mac 系统的项目目录 `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`（例如 `/Users/stark/Desktop/work/RN/csx-mobile`）目录执行一条命令,把当前项目的debug模式的apk运行到如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区`真机上 -->
     <!-- `yarn start`+ `npx react-native run-ios --simulator "iPhone 17 Pro" --no-packager` 把当前项目的debug模式的app运行到IOS的模拟器里 -->
   
 - WIN:
