@@ -6,8 +6,8 @@
     "properties": {
       "nodeId": {
         "type": "string",
-        "pattern": "^$|^(?:-?\\d+[:-]-?\\d+)$",
-        "description": "The ID of the node in the FigJam board, eg. \"123:456\" or \"123-456\". If a URL is provided, extract the node id from the FigJam board URL, e.g. for https://figma.com/board/:fileKey/:fileName?node-id=1-2 the extracted nodeId would be `1:2`."
+        "pattern": "^\\d+[:-]\\d+$",
+        "description": "The ID of the node in the FigJam board, eg. \"123:456\" or \"123-456\". If a URL is provided, extract the node id from the FigJam board URL, e.g. for https://figma.com/board/:fileKey/:fileName?node-id=1-2 the extracted nodeId would be `1:2`. Do not pass an empty string — if you have no node id, omit the `nodeId` field entirely."
       },
       "fileKey": {
         "type": "string",

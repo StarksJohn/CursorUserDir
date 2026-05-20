@@ -1,6 +1,6 @@
 {
   "name": "fill",
-  "description": "Type text into a input, text area or select an option from a <select> element.",
+  "description": "Type text into an input, text area or select an option from a <select> element.",
   "arguments": {
     "type": "object",
     "properties": {
@@ -10,7 +10,7 @@
       },
       "value": {
         "type": "string",
-        "description": "The value to fill in"
+        "description": "The value to fill in. \"true\" or \"false\" for checkboxes and toggles, \"true\" for radio buttons."
       },
       "includeSnapshot": {
         "type": "boolean",
@@ -21,7 +21,7 @@
       "uid",
       "value"
     ],
-    "additionalProperties": false,
+    "additionalProperties": true,
     "$schema": "http://json-schema.org/draft-07/schema#"
   }
 }

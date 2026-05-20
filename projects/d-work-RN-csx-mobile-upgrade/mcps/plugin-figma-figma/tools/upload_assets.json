@@ -17,7 +17,7 @@
       },
       "nodeId": {
         "type": "string",
-        "pattern": "^$|^(?:-?\\d+[:-]-?\\d+)$",
+        "pattern": "^\\d+[:-]\\d+$",
         "description": "Optional. If provided, sets the uploaded asset as a fill on this existing node. Can only be used when count is 1."
       },
       "scaleMode": {

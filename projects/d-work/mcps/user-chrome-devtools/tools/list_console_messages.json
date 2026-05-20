@@ -7,7 +7,7 @@
       "pageSize": {
         "type": "integer",
         "exclusiveMinimum": 0,
-        "description": "Maximum number of messages to return. When omitted, returns all requests."
+        "description": "Maximum number of messages to return. When omitted, returns all messages."
       },
       "pageIdx": {
         "type": "integer",
@@ -49,7 +49,7 @@
         "description": "Set to true to return the preserved messages over the last 3 navigations."
       }
     },
-    "additionalProperties": false,
+    "additionalProperties": true,
     "$schema": "http://json-schema.org/draft-07/schema#"
   }
 }
