@@ -65,14 +65,14 @@ description: 为项目根目录（Windows `D:/work/MyStartupProject1`；macOS `/
 
 ## 稳定背景
 除非用户明确修改，否则默认以下背景：
-- 用户为居住在中国大陆且没有公司的独立开发者，前端经验丰富，覆盖 React、React Native、Vue 2、Vue 3、TypeScript、JavaScript、HTML、CSS、小程序、Flutter、iOS、Android
+- 用户为居住在中国大陆且没有公司的独立开发者，前端经验丰富，覆盖 React、React Native、Vue 2、Vue 3、TypeScript、JavaScript、HTML、CSS、小程序、Flutter、iOS、Android ;但无后端经验
 - 希望产品能同时获得美元与人民币收入
 - 偏好前期成本低、建设周期短、需求面大、留存扎实、付费转化健康，并具备被动收入潜力
 - 当前默认 `优先 B2C`，即优先考虑 `个人用户自己会直接付费` 的方向，而不是先做 `企业/商家/admin` 侧工具
 - 对 `B2B`、`商家工具`、`企业管理后台`、`SaaS`、`机构侧` 方向，默认仅作为备选；除非用户明确要求，否则不应作为当前整体第一优先总主线
 - 当前阶段多为调研、想法验证、产品定义与规划，而非立即写代码
 - 默认回复语言为简体中文
-- 涉及代码时，代码注释保持英文
+- 涉及代码时，代码注释保持中文,并且站在无后端经验的视角来添加注释
 
 ## 用户类型优先级
 
