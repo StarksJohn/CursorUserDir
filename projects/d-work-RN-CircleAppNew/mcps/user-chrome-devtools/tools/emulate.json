@@ -23,7 +23,7 @@
       },
       "geolocation": {
         "type": "string",
-        "description": "Geolocation (`<latitude>x<longitude>`) to emulate. Latitude between -90 and 90. Longitude between -180 and 180. Omit to clear the geolocation override."
+        "description": "Geolocation (`<latitude>,<longitude>`) to emulate. Latitude between -90 and 90. Longitude between -180 and 180. Omit to clear the geolocation override."
       },
       "userAgent": {
         "type": "string",
@@ -43,7 +43,7 @@
         "description": "Emulate device viewports '<width>x<height>x<devicePixelRatio>[,mobile][,touch][,landscape]'. 'touch' and 'mobile' to emulate mobile devices. 'landscape' to emulate landscape mode."
       }
     },
-    "additionalProperties": false,
+    "additionalProperties": true,
     "$schema": "http://json-schema.org/draft-07/schema#"
   }
 }

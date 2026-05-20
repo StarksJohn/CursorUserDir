@@ -8,13 +8,13 @@
         "description": "Human-readable element description used to obtain permission to interact with the element",
         "type": "string"
       },
-      "ref": {
+      "target": {
         "type": "string",
-        "description": "Exact target element reference from the page snapshot"
+        "description": "Exact target element reference from the page snapshot, or a unique element selector"
       }
     },
     "required": [
-      "ref"
+      "target"
     ],
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "additionalProperties": false

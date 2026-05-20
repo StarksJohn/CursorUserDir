@@ -1,6 +1,136 @@
 ---
-pid: 6760
+pid: 31688
 cwd: |
-  D:\work\RN\CircleAppNew
+  D:\work\RN\CircleAppNew\android
+last_command: cd android; .\gradlew assembleProdRelease
+last_exit_code: 0
 ---
-PS D:\work\RN\CircleAppNew>
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :react-native-firebase_app
+:react-native-firebase_app package.json found at D:\work\RN\CircleAppNew\node_modules\@react-native-firebase\app\package.json
+:react-native-firebase_app:firebase.bom using default value: 33.12.0
+:react-native-firebase_app:play.play-services-auth using default value: 21.3.0
+:react-native-firebase_app package.json found at D:\work\RN\CircleAppNew\node_modules\@react-native-firebase\app\package.json
+:react-native-firebase_app:version set from package.json: 21.14.0 (21,14,0 - 21014000)
+:react-native-firebase_app:android.compileSdk using custom value: 36
+:react-native-firebase_app:android.targetSdk using custom value: 36
+:react-native-firebase_app:android.minSdk using custom value: 24
+:react-native-firebase_app:reactNativeAndroidDir D:\work\RN\CircleAppNew\node_modules\react-native
+
+> Configure project :react-native-firebase_messaging
+:react-native-firebase_messaging package.json found at D:\work\RN\CircleAppNew\node_modules\@react-native-firebase\messaging\package.json
+:react-native-firebase_app package.json found at D:\work\RN\CircleAppNew\node_modules\@react-native-firebase\app\package.json
+:react-native-firebase_messaging:firebase.bom using default value: 33.12.0
+:react-native-firebase_messaging package.json found at D:\work\RN\CircleAppNew\node_modules\@react-native-firebase\messaging\package.json
+:react-native-firebase_messaging:version set from package.json: 21.14.0 (21,14,0 - 21014000)
+:react-native-firebase_messaging:android.compileSdk using custom value: 36
+:react-native-firebase_messaging:android.targetSdk using custom value: 36
+:react-native-firebase_messaging:android.minSdk using custom value: 24
+:react-native-firebase_messaging:reactNativeAndroidDir D:\work\RN\CircleAppNew\node_modules\react-native
+
+> Configure project :react-native-reanimated
+Android gradle plugin: 8.11.0
+Gradle: 8.13
+WARNING: The specified Android SDK Build Tools version (33.0.0) is ignored, as it is below the minimum supported version (35.0.0) for Android Gradle Plugin 8.11.0.
+Android SDK Build Tools 35.0.0 will be used.
+To suppress this warning, remove "buildToolsVersion '33.0.0'" from your build.gradle file, as each version of the Android Gradle Plugin now has a default versionof the build tools.
+
+> Task :app:createBundleProdReleaseJsAndAssets
+
+                        鈻掆枓鈻撯枔鈻撯枔鈻掆枓
+                     鈻掆枔鈻撯枔鈻掆枓鈻戔枒鈻掆枓鈻撯枔鈻撯枓
+                  鈻掆枔鈻撯枔鈻撯枒鈻戔枒鈻掆枓鈻掆枓鈻戔枒鈻戔枔鈻撯枔鈻撯枓
+                 鈻撯枔鈻掆枓鈻掆枔鈻撯枔鈻撯枔鈻撯枔鈻撯枔鈻撯枔鈻撯枓鈻掆枓鈻撯枔
+                 鈻撯枔鈻戔枒鈻戔枒鈻戔枓鈻撯枔鈻撯枔鈻撯枔鈻掆枒鈻戔枒鈻戔枒鈻撯枔
+                 鈻撯枔鈻戔枒鈻撯枔鈻掆枒鈻戔枒鈻掆枓鈻戔枒鈻戔枓鈻撯枓鈻戔枒鈻撯枔
+                 鈻撯枔鈻戔枒鈻撯枔鈻撯枔鈻撯枓鈻掆枓鈻掆枔鈻撯枔鈻撯枓鈻戔枒鈻撯枔
+                 鈻撯枔鈻戔枒鈻撯枔鈻撯枔鈻撯枔鈻撯枔鈻撯枔鈻撯枔鈻撯枓鈻戔枒鈻撯枔
+                 鈻撯枔鈻掆枒鈻戔枓鈻掆枔鈻撯枔鈻撯枔鈻撯枔鈻撯枓鈻戔枒鈻戔枓鈻撯枔
+                  鈻掆枔鈻撯枔鈻掆枒鈻戔枒鈻掆枔鈻撯枓鈻戔枒鈻戔枓鈻撯枔鈻撯枓
+                     鈻掆枔鈻撯枔鈻掆枒鈻戔枒鈻戔枓鈻撯枔鈻撯枓
+                        鈻掆枓鈻撯枔鈻撯枔鈻掆枓
+
+
+ WARN  the transform cache was reset.
+                Welcome to Metro v0.83.3
+              Fast - Scalable - Integrated
+
+
+info Bundle Debug ID: 3e4d719a-67e9-4054-924f-0e6066c6e739
+LOG:Writing bundle output to: android\app\build\generated\assets\createBundleProdReleaseJsAndAssets\index.android.bundle
+LOG:Writing sourcemap output to: android\app\build\intermediates\sourcemaps\react\prodRelease\index.android.bundle.packager.map
+LOG:Done writing bundle output
+LOG:Done writing sourcemap output
+Copying 82 asset files
+Done copying assets
+
+> Task :app:createBundleProdReleaseJsAndAssets_SentryUpload_com.circleapp.cdv@1.0.2+11_11
+Copy `debugId` from packager source map to Hermes source map...                                                                                                   
+Done.
+Check generated source map for Debug ID: 3e4d719a-67e9-4054-924f-0e6066c6e739                                                                                     
+
+Sentry Source Maps upload will include the release name and dist.                                                                                                 
+Sentry-CLI arguments: [D:\work\RN\CircleAppNew\node_modules\@sentry\cli\bin\sentry-cli, react-native, gradle, --bundle, D:\work\RN\CircleAppNew\android\app\build\generated\assets\createBundleProdReleaseJsAndAssets\index.android.bundle, --sourcemap, D:\work\RN\CircleAppNew\android\app\build\generated\sourcemaps\react\prodRelease\index.android.bundle.map, --release, com.circleapp.cdv@1.0.2+11, --dist, 11]
+  INFO    2026-05-19 09:16:47.866612200 +08:00 Loaded file referenced by SENTRY_PROPERTIES (D:\work\RN\CircleAppNew/android/sentry.properties)
+  WARN    2026-05-19 09:16:47.868286700 +08:00 Using https://sentry.io (embedded in token) rather than manually-configured URL https://sentry.io/. To use https://sentry.io/, please provide an  auth token for https://sentry.io/.
+Processing react-native sourcemaps for Sentry upload.
+> Analyzing 2 sources
+> Rewriting sources
+> Adding source map references
+Uploading sourcemaps for release com.circleapp.cdv@1.0.2+11 distribution 11
+> Bundled 2 files for upload
+> Bundle ID: 84c6df44-76f2-53be-985c-2f43f255980a
+> Uploaded files to Sentry
+> File upload complete (processing pending on server)
+> Organization: heals-healthcare-limited
+> Projects: heals-app
+> Release: com.circleapp.cdv@1.0.2+11
+> Dist: 11                                                                                                                                                        
+> Upload type: artifact bundle                                                                                                                                    
+
+Source Map Upload Report
+  Scripts                                                                                                                                                         
+    ~/index.android.bundle (sourcemap at index.android.bundle.map, debug id 3e4d719a-67e9-4054-924f-0e6066c6e739)
+  Source Maps
+    ~/index.android.bundle.map (debug id 3e4d719a-67e9-4054-924f-0e6066c6e739)
+
+> Task :app:processProdReleaseMainManifest
+[io.agora.rtc:full-sdk:4.5.2] C:\Users\Stark8964911\.gradle\caches\8.13\transforms\9fda0b1962b4b20fb4b01d17a931a9c4\transformed\full-sdk-4.5.2\AndroidManifest.xml Warning:
+        Namespace 'io.agora.rtc' is used in multiple modules and/or libraries: io.agora.rtc:full-sdk:4.5.2, io.agora.rtc:iris-rtc:4.5.2-build.1, io.agora.rtc:full-rtc-basic:4.5.2, io.agora.rtc:ains:4.5.2, io.agora.rtc:ains-ll:4.5.2, io.agora.rtc:audio-beauty:4.5.2, io.agora.rtc:clear-vision:4.5.2, io.agora.rtc:full-content-inspect:4.5.2, io.agora.rtc:screen-capture:4.5.2, io.agora.rtc:full-virtual-background:4.5.2, io.agora.rtc:spatial-audio:4.5.2, io.agora.rtc:aiaec:4.5.2, io.agora.rtc:aiaec-ll:4.5.2, io.agora.rtc:full-vqa:4.5.2, io.agora.rtc:full-face-detect:4.5.2, io.agora.rtc:full-face-capture:4.5.2, io.agora.rtc:full-voice-drive:4.5.2, io.agora.rtc:full-video-codec-enc:4.5.2, io.agora.rtc:full-video-codec-dec:4.5.2, io.agora.rtc:full-video-av1-codec-enc:4.5.2, io.agora.rtc:full-video-av1-codec-dec:4.5.2, io.agora.infra:aosl:1.2.13.1. Please ensure that all modules and libraries have a unique namespace. For more information, See https://developer.android.com/studio/build/configure-app-module#set-namespace
+D:\work\RN\CircleAppNew\android\app\src\main\AndroidManifest.xml:34:5-38 Warning:
+        android:extractNativeLibs should not be specified in this source AndroidManifest.xml file. See https://d.android.com/guide/topics/manifest/application-element#extractNativeLibs for more information.
+The AGP Upgrade Assistant can remove the attribute from the AndroidManifest.xml file and update the build file accordingly. See https://d.android.com/studio/build/agp-upgrade-assistant for more information.
+
+> Task :app:createBundleProdReleaseJsAndAssets_SentryCollectModules_com.circleapp.cdv@1.0.2+11_11
+Sentry Logger [info]: Reading source map from D:\work\RN\CircleAppNew\android\app\build\generated\sourcemaps\react\prodRelease\index.android.bundle.map
+Sentry Logger [info]: Saving modules to D:\work\RN\CircleAppNew/android/app/src/main/assets/modules.json
+Sentry Logger [info]: Resolving modules from paths D:\work\RN\CircleAppNew/node_modules
+Sentry Logger [info]: Modules collected and saved to: D:\work\RN\CircleAppNew/android/app/src/main/assets/modules.json
+
+> Task :app:compileProdReleaseKotlin
+w: file:///D:/work/RN/CircleAppNew/android/app/src/main/java/com/circleapp/cdv/MainApplication.kt:7:8 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+w: file:///D:/work/RN/CircleAppNew/android/app/src/main/java/com/circleapp/cdv/MainApplication.kt:18:16 This declaration overrides a deprecated member but is notmarked as deprecated itself. Add the '@Deprecated' annotation or suppress the diagnostic.
+w: file:///D:/work/RN/CircleAppNew/android/app/src/main/java/com/circleapp/cdv/MainApplication.kt:18:33 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+
+> Task :app:lintVitalReportProdRelease
+Lint found no errors or warnings                                                                                                                                  
+
+88 errors/warnings were listed in the baseline file (D:\work\RN\CircleAppNew\android\app\lint-baseline.xml) but not found in the project; perhaps they have been fixed?
+
+Note: The baseline was created using a different target/variant than it was checked against.
+Creation variant: lint
+Current variant: lintVitalRelease
+
+[Incubating] Problems report is available at: file:///D:/work/RN/CircleAppNew/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 7m 42s
+1610 actionable tasks: 32 executed, 1578 up-to-date
+
+PS D:\work\RN\CircleAppNew\android> 
