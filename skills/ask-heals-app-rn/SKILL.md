@@ -199,4 +199,3 @@ description: >-
 ## 当前活跃需求(不要修改这部分的子内容)
 - WIN:
   - 当前电脑已经在 Windows 项目根 目录`D:\work\RN\heals-app-rn`执行了 `npm run android:dev:win` 把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区`
-    - 帮我封装一个工具模块, 判断如果真机安装了 `Google map` ,直接跳转到 `Google map`. 而不是先跳转到 浏览器
