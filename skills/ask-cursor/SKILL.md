@@ -122,7 +122,8 @@ description: >-
   - 使用![img_192458.png](img_192458.png)模型时,执行另一个任务消耗了280.9万token,API的Usage从12.1%上涨到了14%; 
     - 每 1% ≈ 102 万 token
   - ![img_192458.png](img_192458.png)在cursor内置浏览器里我访问&&登录了 `https://supabase.com`, 怎么让这个内置浏览器 保持所有已经登录过的网站的登录状态,下次我再用 内置浏览器打开 `https://supabase.com` 时, 不想再次登录 -->
-<!-- - 当前 `MacBook Pro` 电脑也下载安装了cursor,已经有了  `/Users/stark/.cursor` 和 `~/Library/Application Support/Cursor` 目录 -->
+<!-- - 当前 `MacBook Pro` 电脑也下载安装了cursor,已经有了  `/Users/stark/.cursor` 和 `~/Library/Application Support/Cursor` 目录
+  - 当前mac系统的 cursor 的eslint 是否已经全局打开? 是否用cursor打开任何项目后,都已经使用了 eslint  ? -->
 - 把以上你执行过的所有任务的执行结果都总结更新到
   - win:`C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor_使用指南与Token优化.md`
   - mac : `/Users/stark/Library/Application Support/Cursor/Cursor_使用指南与Token优化.md`

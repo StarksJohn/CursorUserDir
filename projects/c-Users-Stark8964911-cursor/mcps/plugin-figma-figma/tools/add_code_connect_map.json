@@ -6,8 +6,8 @@
     "properties": {
       "nodeId": {
         "type": "string",
-        "pattern": "^$|^(?:-?\\d+[:-]-?\\d+)$",
-        "description": "The ID of the node in the Figma document, eg. \"123:456\" or \"123-456\". This should be a valid node ID in the Figma document."
+        "pattern": "^\\d+[:-]\\d+$",
+        "description": "The ID of the node in the Figma document, eg. \"123:456\" or \"123-456\". This should be a valid node ID in the Figma document. Do not pass an empty string — if you have no node id, omit the `nodeId` field entirely."
       },
       "fileKey": {
         "type": "string",
