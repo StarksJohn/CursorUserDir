@@ -17,13 +17,13 @@ WHEN TO USE THESE TOOLS:
 - The user wants to build or extend a design system, design tokens, or component library
 - The user wants to create a diagram in FigJam
 
-SKILLS (load first when available):
-- /figma-use — MANDATORY before calling use_figma
-- /figma-generate-design — for translating an app page or layout into Figma
-- /figma-generate-library — for building a design system in Figma from code
-- /figma-code-connect — for mapping Figma components to codebase components
-- /figma-use-figjam — for FigJam-specific use_figma flows
-- /figma-generate-diagram — MANDATORY before calling generate_diagram
+SKILLS (Prefer the skills shipped with the Figma plugin on the agent being used. If no Figma plugin is installed, use the skills served by the Figma MCP resource):
+- /figma-use — MANDATORY before calling use_figma; fallback: skill://figma/figma-use/SKILL.md
+- /figma-generate-design — for translating an app page or layout into Figma; fallback: skill://figma/figma-generate-design/SKILL.md
+- /figma-generate-library — for building a design system in Figma from code; fallback: skill://figma/figma-generate-library/SKILL.md
+- /figma-code-connect — for mapping Figma components to codebase components; fallback: skill://figma/figma-code-connect/SKILL.md
+- /figma-use-figjam — for FigJam-specific use_figma flows; fallback: skill://figma/figma-use-figjam/SKILL.md
+- /figma-generate-diagram — MANDATORY before calling generate_diagram; fallback: skill://figma/figma-generate-diagram/SKILL.md
 
 URL PARSING:
 Extract fileKey and nodeId from Figma URLs:
