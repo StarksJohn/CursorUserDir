@@ -18,7 +18,9 @@
       },
       "planKey": {
         "type": "string",
-        "description": "Optional. The team or organization key where the generated diagram file should be saved. The key must start with \"team::\" or \"org::\", but do not use these abbreviations in user-facing messages."
+        "minLength": 1,
+        "pattern": "^(team|organization)::\\d+$",
+        "description": "The team or organization key (e.g. \"team::1234567890\" or \"organization::1234567890\"). Use the `key` field verbatim from one of the user's plans. If the user has more than one plan, ask which one to use before calling."
       },
       "savePlanKey": {
         "type": "boolean",

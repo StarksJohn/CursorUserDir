@@ -101,9 +101,11 @@ BlackScreen 任务默认 **不** 调用 `init-project`，除非用户要在该�
 - 不要修改 当前文件里的 `当前活跃需求`下的内容
 
 ## 当前活跃需求
-- 当前Win11系统经常黑屏重启，黑屏时如图 ![img_200825.png](img_200825.png) ,提示 `Your device ran into a problem and needs to restart,0% complete;  Stop code: MEMORY MAANAGEMENT (0x1A)`;
+- 当前Win11系统之前因为经常玩<战锤40K 星际战士2> 游戏导致黑屏重启，黑屏时如图 ![img_200825.png](img_200825.png) ,提示 `Your device ran into a problem and needs to restart,0% complete;  Stop code: MEMORY MAANAGEMENT (0x1A)`;
+  - 现在这个游戏更新了,感觉游戏优化了CPU, 没有以前那么卡了, 把 `D:\work\BlackScreen\win11黑屏解决方案.md`里你之前的优化改回来,比如把 PROCTHROTTLEMAX 改回 100,不禁用 Turbo Boost,不停止 XTU 服务等, 让电脑变回最高性能, 我想测下还是否会黑屏重启
+  - 刚才又开游戏测了下,又黑屏重启了, 你现在查看下系统日志, 判断重启原因, 帮我再次优化系统状态
 <!-- - 当前电脑刚刚又因为玩<战锤40K 星际战士2> 游戏而黑屏重启了, 现在你帮我查看下日志, 判断重启原因, 帮我解决重启问题,但要避免系统重装,C盘不要抹除 -->
-  - 刚才我的电脑又因为启动了 <战锤40K 星际战士2> 游戏,黑屏重启了, 你看下系统日志,分析原因,帮我解决
+  <!-- - 刚才我的电脑又因为启动了 <战锤40K 星际战士2> 游戏,黑屏重启了, 你看下系统日志,分析原因,帮我解决 -->
 - 把以上你执行过的所有任务的执行结果都总结更新到 
   - win:`D:\work\BlackScreen\win11黑屏解决方案.md`
   - mac : 

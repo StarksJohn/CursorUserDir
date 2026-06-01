@@ -199,3 +199,32 @@ description: >-
 ## 当前活跃需求(不要修改这部分的子内容)
 - WIN:
   - 当前电脑已经在 Windows 项目根 目录`D:\work\RN\heals-app-rn`执行了 `npm run android:dev:win` 把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区`
+  - 在 `D:\work\RN\heals-app-rn\src\screens\login\login-screen\login-screen.tsx`页面,一开始显示![img_185014.png](img_185014.png),点击`renderMobileNumber`函数绘制的输入框后, 键盘弹起, 如图 ![img_185100.png](img_185100.png), 输入框的下半部分内容被遮挡了, 测试用屏幕更小的机型也发现了更明显的这个问题![img_185145.png](img_185145.png),并且提了BUG: `Problem Statement
+The login screen does not properly adapt when the mobile keyboard opens. Important UI elements such as the “Next” button and form content become partially hidden or compressed, creating a poor user experience on mobile devices.
+The current layout also contains excessive vertical spacing, reducing usable screen area during user input.
+Objective
+Improve the login screen responsiveness and keyboard behavior to ensure all interactive elements remain visible, accessible, and user-friendly across different mobile screen sizes.
+Proposed Solution
+Implement a responsive keyboard-aware layout that:
+ Prevents keyboard overlap 
+ Supports vertical scrolling 
+ Keeps focused inputs visible 
+ Improves spacing and content positioning during text input 
+Optimize the screen structure for better mobile usability and accessibility.
+In Scope
+Keyboard no longer overlaps actionable UI elements 
+ “Next” button remains accessible during typing 
+ User can scroll content while keyboard is open 
+ Input field remains visible when focused 
+ Layout adapts properly across device sizes 
+ Screen feels responsive and polished 
+ No UI clipping or overlapping occurs
+
+Out of Scope
+Authentication logic changes 
+ API/backend modifications 
+ OTP flow redesign 
+ Form validation changes 
+ Language selector redesign 
+ Visual branding/logo redesign`; 
+ 帮我解决

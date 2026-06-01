@@ -6,6 +6,7 @@
     "properties": {
       "fileKey": {
         "type": "string",
+        "minLength": 1,
         "description": "The key of the Figma file to use. If the URL is provided, extract the file key from the URL. The given URL must be in the format https://figma.com/design/:fileKey/:fileName?node-id=:int1-:int2. The extracted fileKey would be `:fileKey`."
       },
       "count": {
@@ -13,7 +14,12 @@
         "minimum": 1,
         "maximum": 5,
         "default": 1,
-        "description": "Number of assets to upload (1-5, default 1). Returns that many single-use upload URLs. POST raw asset bytes to each URL with the correct Content-Type header (e.g. image/png, image/jpeg). Each upload URL handles storage, BlobStore commit, and canvas placement automatically."
+        "description": "Number of assets to upload (1-5, default 1). Returns that many single-use upload URLs. POST raw asset bytes to each URL with the correct Content-Type header (e.g. image/png, image/jpeg). By default, each upload URL handles storage, BlobStore commit, and canvas placement automatically."
+      },
+      "batchCommit": {
+        "type": "boolean",
+        "default": false,
+        "description": "Optional. Set to true only if you can call the returned commitUrl exactly once after all uploads complete. When enabled server-side, this commits and places all assets in one file operation. If omitted, each upload URL commits and places its asset automatically."
       },
       "nodeId": {
         "type": "string",
