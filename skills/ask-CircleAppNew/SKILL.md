@@ -15,9 +15,9 @@ description: >-
 | 客户端 | `SKILL.md` | `name` | 口令 |
 |--------|------------|--------|------|
 | Cursor（本文件） | **Windows** `%USERPROFILE%\.cursor\skills\ask-CircleAppNew\SKILL.md`（本机示例：`C:\Users\Stark8964911\.cursor\skills\ask-CircleAppNew\SKILL.md`） / **macOS** `/Users/<你的用户名>/.cursor/skills/ask-CircleAppNew/SKILL.md`（当前 Mac：`/Users/stark/.cursor/skills/ask-CircleAppNew/SKILL.md`） | `ask-CircleAppNew` | `/ask-CircleAppNew` |
-| Codex（如将来新增对口 skill） | **Windows** `%USERPROFILE%\.codex\skills\<name>\SKILL.md` / **macOS** `~/.codex/skills/<name>/SKILL.md` | （待定） | （待定） |
+| Codex（对口入口） | **Windows** `%USERPROFILE%\.codex\skills\CircleAppNew\SKILL.md` / **macOS** `/Users/<你的用户名>/.codex/skills/CircleAppNew/SKILL.md`（当前 Mac：`/Users/stark/.codex/skills/CircleAppNew/SKILL.md`） | `CircleAppNew` | `/CircleAppNew` |
 
-当前仓库若尚未维护独立 Codex skill，以 **Cursor 本文件** 为唯一入口事实源；日后若新增 Codex 侧文件，入口、必读顺序、上下文门禁与路由应对齐本文。
+两份文件分别维护，但入口、必读顺序、上下文门禁、路由规则与任务验收口径必须保持一致。通过 Cursor 输入框执行 `/ask-CircleAppNew`，或在 Codex / Cursor 内 Codex 插件输入 `/CircleAppNew`，应获得同一任务执行效果。
 
 ## 目的
 
@@ -44,9 +44,10 @@ description: >-
 |------|---------|--------|
 | 工作区根（默认） | `D:\work\RN\CircleAppNew` | `/Users/<你的用户名>/Desktop/work/RN/circleapp`（当前 Mac：`/Users/stark/Desktop/work/RN/circleapp`） |
 | 本 skill 文件 | `%USERPROFILE%\.cursor\skills\ask-CircleAppNew\SKILL.md` | `/Users/<你的用户名>/.cursor/skills/ask-CircleAppNew/SKILL.md` |
-| Cursor skills 根 | `%USERPROFILE%\.cursor\skills` | `~/.cursor/skills` |
+| Codex 对照 skill 文件 | `%USERPROFILE%\.codex\skills\CircleAppNew\SKILL.md` | `/Users/<你的用户名>/.codex/skills/CircleAppNew/SKILL.md` |
+| Cursor skills 根 | `%USERPROFILE%\.cursor\skills` | `/Users/<你的用户名>/.cursor/skills`（当前 Mac：`/Users/stark/.cursor/skills`） |
 | Cursor 应用数据 | `%APPDATA%\Cursor` | `~/Library/Application Support/Cursor` |
-| Codex 全局规则 | `%USERPROFILE%\.codex\AGENTS.md` | `~/.codex/AGENTS.md` |
+| Codex 全局规则 | `%USERPROFILE%\.codex\AGENTS.md` | `/Users/<你的用户名>/.codex/AGENTS.md`（当前 Mac：`/Users/stark/.codex/AGENTS.md`） |
 
 若用户明确给出 fork、分支工作区或临时路径，**以用户指定路径为准**；否则按上表定位。
 
@@ -61,13 +62,13 @@ description: >-
 
 | 用途 | Windows | macOS |
 |------|---------|--------|
-| **Cursor**：Agent Skills（含本文件） | `%USERPROFILE%\.cursor\skills\...` | `~/.cursor/skills/...` |
+| **Cursor**：Agent Skills（含本文件） | `%USERPROFILE%\.cursor\skills\...` | `/Users/<你的用户名>/.cursor/skills/...`（当前 Mac：`/Users/stark/.cursor/skills/...`） |
 | **Cursor**：应用用户数据、扩展与部分缓存 | 常见 `%APPDATA%\Cursor\` | `~/Library/Application Support/Cursor/` |
-| **Codex**：`AGENTS.md`、`skills/`、`config.toml` 等 | `%USERPROFILE%\.codex\...` | `~/.codex/...` |
+| **Codex**：`AGENTS.md`、`skills/`、`config.toml` 等 | `%USERPROFILE%\.codex\...` | `/Users/<你的用户名>/.codex/...`（当前 Mac：`/Users/stark/.codex/...`） |
 
 ## 图片资源路径
 
-本文中的 `![img_xxx.png](img_xxx.png)` 视为与本文件同目录：**Windows** `C:\Users\Stark8964911\.cursor\skills\ask-CircleAppNew\`；**macOS** `~/.cursor/skills/ask-CircleAppNew/`。读取图片时须按引用源 `.md` 所在目录精确拼接文件名（见全局 Rules 图片规则）。
+本文中的 `![img_xxx.png](img_xxx.png)` 视为与本文件同目录：**Windows** `C:\Users\Stark8964911\.cursor\skills\ask-CircleAppNew\`；**macOS** `/Users/<你的用户名>/.cursor/skills/ask-CircleAppNew/`（当前 Mac：`/Users/stark/.cursor/skills/ask-CircleAppNew/`）。读取图片时须按引用源 `.md` 所在目录精确拼接文件名（见全局 Rules 图片规则）。
 
 ## 与 Claude Command 的兼容入口（可选）
 
@@ -83,12 +84,13 @@ description: >-
 新 chat 或首次进入本仓库任务时，按以下顺序读取；已在当前 chat **实际 Read 成功**的文件可不重复读，但不能只凭文件名、打开标签页或历史摘要假设已加载。
 
 1. **本 skill**：入口目标、路径规则、路由、**当前活跃需求**（含 `# win` / `# mac` 下未注释条目）。
-2. **项目规则与锚点**（存在则读）
+2. **Codex 对照 skill（存在则读）**：**Windows** `%USERPROFILE%\.codex\skills\CircleAppNew\SKILL.md` / **macOS** `/Users/<你的用户名>/.codex/skills/CircleAppNew/SKILL.md`，用于核对 `/CircleAppNew` 与 `/ask-CircleAppNew` 的必读顺序、上下文门禁与活跃需求解释是否一致。
+3. **项目规则与锚点**（存在则读）
    - `{workspace}/.cursor/rules/project-context.mdc`
    - `{workspace}/.cursorrules`（若存在）
    - `{workspace}/package.json`
    - `{workspace}/README.md`、`{workspace}/CLAUDE.md`（与任务相关时；**版本信息与 `project-context.mdc` / `package.json` 冲突时以后两者及仓库现状为准**）
-3. **任务直接相关文件**：仅与用户问题或「当前活跃需求」对应的 `src/`、`android/`、`ios/`、根目录指南类 `.md` 等。
+4. **任务直接相关文件**：仅与用户问题或「当前活跃需求」对应的 `src/`、`android/`、`ios/`、根目录指南类 `.md` 等。
 
 | 优先级 | 来源 | 用途 |
 |--------|------|------|
@@ -102,9 +104,10 @@ description: >-
 
 设计对齐 `ask-MyStartupProject1` / `ask-heals-app-rn` / `ask-csx-mobile-upgrade`：**磁盘上存在或上轮读过，不等于当前 chat 已加载。**
 
-- **入口恢复自检**：通过 `/ask-CircleAppNew` 进入后，执行任务前须已实际读取本 `SKILL.md`、`{workspace}/package.json`，以及与任务相关的 `{workspace}/.cursor/rules/project-context.mdc` 或确认缺失后的替代来源。用户粘贴片段不能替代对原文件的精确路径读取（除非读取失败且用户已 `@` 全文）。
+- **入口恢复自检**：通过 `/ask-CircleAppNew` 进入后，执行任务前须已实际读取本 `SKILL.md`、Codex 对照 `SKILL.md`（若存在）、`{workspace}/package.json`，以及与任务相关的 `{workspace}/.cursor/rules/project-context.mdc` 或确认缺失后的替代来源。用户粘贴片段不能替代对原文件的精确路径读取（除非读取失败且用户已 `@` 全文）。
+- **双入口一致性自检**：若 `/ask-CircleAppNew` 与 `/CircleAppNew` 的路径表、必读顺序、路由或活跃需求解释出现冲突，以更具体、更新且更贴近当前工作区的条目为准，并在最终回复说明取舍。
 - **任务相关文件自检**：列出本步必须依赖的文件（story / 设计 / API / 目标 screen / Gradle / 环境说明等），逐项判断是否已在当前 chat 读取；未读则先 `ReadFile`。
-- **子 skill 自检**：下一步若执行任意其它 skill（含 `bmad-*`、`react-native-patterns`、`code-review` 等），须判断当前 chat 是否已读取该 skill 的 `SKILL.md` 及其要求的 `workflow.md` / `checklist.md` / `reference.md` 等；缺一则按 **Windows** `%USERPROFILE%\.cursor\skills\<id>\` / **macOS** `~/.cursor/skills/<id>/` 补读后再执行。
+- **子 skill 自检**：下一步若执行任意其它 skill（含 `bmad-*`、`react-native-patterns`、`code-review` 等），须判断当前 chat 是否已读取该 skill 的 `SKILL.md` 及其要求的 `workflow.md` / `checklist.md` / `reference.md` 等；缺一则按 **Windows** `%USERPROFILE%\.cursor\skills\<id>\` / **macOS** `/Users/<你的用户名>/.cursor/skills/<id>/` 补读后再执行。
 - **BMAD 硬门禁**：执行任意 `bmad-<identifier>` 前，必须先 `ReadFile` 对应 `SKILL.md` 及同目录依赖文件（与全局 Rules「BMAD 工作流与 `.cursor/skills` 磁盘路径」一致）。
 - **图片门禁**：任务引用 skill 或文档同目录图片时，先精确路径读图，再推理。
 - **双 skill 待办**：若用户同时挂载或点名多个入口 skill，各文件中「当前活跃需求」未注释项均须纳入本轮完成标准（除非用户明确排除）。
@@ -115,12 +118,28 @@ description: >-
 
 本节为**记忆锚点**；**以仓库内 `project-context.mdc`、源码与 `package.json` 为准**。
 
-- **产品**：由 Heals 系衍生之 React Native 应用；登录注册、资料、用药、健康记录、设备/健康数据（如 Linktop）、Agora、Firebase、Sentry 等。
-- **技术栈**：React Native + TypeScript（strict）、React Navigation v6、Context（如 `AppContext`）、Extended StyleSheet、axios、i18n-js、Hermes 等。
-- **环境**：`react-native-config` + `ENVFILE`；`patch-package` 维护 `patches/`。
-- **原生**：`android/`、`ios/` 多 flavor；发布与签名以团队流程为准。
+- **产品**：CircleApp（`package.json` 中 `name: circleapp`，`v0.0.1`）是 Heals 系衍生的 React Native 医疗健康应用，包含预约、视频问诊、健康监测、Health Pass / profile、用药与患者侧功能。
+- **技术栈**：React `19.1.0` + React Native `0.81.0` + TypeScript strict、React Navigation 6.x、Hermes、`react-native-extended-stylesheet`、axios、`i18n-js`。
+- **状态与架构**：`App.tsx` 组合 Toast / App / Auth / `LinktopHealthProvider` 等根 Provider；全局状态在 `src/store/AppContext.tsx`，通过 Context API 与 `useAppState()` 使用，无 Redux。
+- **环境**：`react-native-config` `1.6.1`（已 patch）+ `ENVFILE=.env.development` / `.env.production`；仓库也存在 `.env.staging`；`package.json` 中 Unix / macOS 与 Windows cmd 脚本分开维护。
+- **原生与构建**：Android Gradle wrapper `8.13`；flavor 为 `dev` / `prod`，dev 使用 `applicationIdSuffix=.dev`；Android `applicationId` / namespace 为 `com.circleapp.cdv`；release ABI 以 `arm64-v8a` 为主并关闭 legacy JNI packaging 以配合 16 KB page size。
+- **集成与补丁**：Firebase app/messaging、Sentry、Agora `react-native-agora` `4.5.3`、Linktop health SDK context（`src/contexts/LinktopHealth/`）；`patch-package` 维护 `react-native-snap-carousel`、`react-native-reanimated`、`react-native-config`、`react-native-document-picker` 等补丁。
+- **文档取舍**：`CLAUDE.md` 可能仍含旧 RN 版本（如 `0.76.3`）；版本与架构事实以 `project-context.mdc`、`package.json`、`android/` 和源码现状为准。
 
 若本 skill 与仓库文件冲突，**以仓库为准**。医疗健康类用户可见文案避免**确诊式**、**替代医嘱式**措辞。
+
+## 常用命令锚点
+
+| 场景 | 命令 |
+|------|------|
+| Metro | `npm run start` |
+| Android dev（Unix / macOS） | `npm run android:dev` |
+| Android prod run（Unix / macOS） | `npm run android:prod` |
+| Android dev（Windows cmd） | `npm run android:dev_win` |
+| Android prod run（Windows cmd） | `npm run android:prod_win` |
+| iOS dev / prod | `npm run ios:dev` / `npm run ios:prod` |
+| Lint / Test | `npm run lint` / `npm run test` |
+| Post-install patches | `npm run postinstall` |
 
 ## 最小上下文来源（按主题）
 
@@ -129,16 +148,20 @@ description: >-
 | 根入口 / Provider | `App.tsx`、`index.js` |
 | 导航与路由名 | `src/navigation/`、`route-names` |
 | API / DTO | `src/api/` |
-| 全局状态 | `src/store/`、`AppContext` |
+| 全局状态 | `src/store/AppContext.tsx`、`useAppState()` |
 | 页面 | `src/screens/` |
 | 组件与样式 | `src/components/`、`src/style/` |
-| i18n | `src/i18n/` |
+| i18n | `src/i18n/`、`src/i18n/locale/` |
 | 常量 | `src/constants/` |
-| 原生构建 / Play | `android/`、`ios/`、`16KB_PAGE_SIZE_SOLUTION_GUIDE.md`（若存在） |
+| 健康设备 / Linktop | `src/contexts/LinktopHealth/`、`doc/` |
+| Deep linking | `src/helper/linking-helper`、`src/utils/links`、`App.tsx` |
+| 缓存 / 持久化 | `src/cache-module/`、`@cache` |
+| 补丁 | `patches/` |
+| 原生构建 / Play / 16 KB | `android/`、`ios/`、`README.md`、`16KB_PAGE_SIZE_SOLUTION_GUIDE.md`（若存在） |
 
 ## 路由规则（关联 skills）
 
-名称与 **Windows** `%USERPROFILE%\.cursor\skills` / **macOS** `~/.cursor/skills` 下目录一致。**路由到某 skill 后，必须按上文「子 skill 自检」补读该 skill 全文及依赖后再执行。**
+名称与 **Windows** `%USERPROFILE%\.cursor\skills` / **macOS** `/Users/<你的用户名>/.cursor/skills` 下目录一致。**路由到某 skill 后，必须按上文「子 skill 自检」补读该 skill 全文及依赖后再执行。**
 
 | 场景 | Skill |
 |------|--------|
@@ -279,18 +302,15 @@ description: >-
   - **本仓库事实源**：优先阅读并维护 `{workspace}/16KB_PAGE_SIZE_SOLUTION_GUIDE.md`（若已存在则以其为流程与结论主文档）。  
   - **可参考先例**：`D:\work\RN\amber-medical-app-rn\16KB_PAGE_SIZE_SOLUTION_GUIDE.md` 中的解决思路（迁移到本仓库时需按当前 Gradle、NDK、依赖版本调整）。  
   - 具体涉及的 `.so` 列表以 **Play 报错或本地分析结果** 为准，不必在 skill 内重复冗长清单。
-  - 把你每轮的回答都用最精简的内容更新到 `D:\work\RN\CircleAppNew\16KB_PAGE_SIZE_SOLUTION_GUIDE.md`,保证每次开启新的chat后,都可以借助 这个文档 恢复这个项目的最小必要上下文;不要修改 `C:\Users\Stark8964911\.cursor\skills\ask-CircleAppNew\SKILL.md`的 `当前活跃需求` 里的内容 -->
+  - 把你每轮的回答都用最精简的内容更新到 `{workspace}/16KB_PAGE_SIZE_SOLUTION_GUIDE.md`（业务仓库根：**Windows** `D:\work\RN\CircleAppNew`；**macOS** `/Users/<你的用户名>/Desktop/work/RN/circleapp`，当前 Mac：`/Users/stark/Desktop/work/RN/circleapp`）,保证每次开启新的chat后,都可以借助 这个文档 恢复这个项目的最小必要上下文;不要修改 **Windows** `%USERPROFILE%\.cursor\skills\ask-CircleAppNew\SKILL.md` / **macOS** `/Users/<你的用户名>/.cursor/skills/ask-CircleAppNew/SKILL.md` 的 `当前活跃需求` 里的内容 -->
 
 # win
-<!-- - 在 `D:\work\RN\CircleAppNew` 目录执行
+<!-- - 在业务仓库根目录执行（**Windows** `D:\work\RN\CircleAppNew`；**macOS** `/Users/<你的用户名>/Desktop/work/RN/circleapp`，当前 Mac：`/Users/stark/Desktop/work/RN/circleapp`）
   - `cd android; .\gradlew assembleRelease`
     -  `npm run android:dev_win` 把当前项目的debug模式 -->
   <!-- - 的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区` -->
 <!-- - 我现在想 构建 这个项目的 prod 环境的 `.aab` 文件 ; 是否需要先 copy `.env.production` to `.env`,再 执行 `./gradlew bundleProdRelease `; 还是直接执行  `./gradlew bundleProdRelease `? -->
 
 # mac
-- 需要你在 Mac 系统的当前项目根目录执行一条命令(`npm run android:dev`),把当前项目dev环境的debug模式的apk运行到如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区`真机上
+  - 需要你在 Mac 系统的当前项目根目录执行一条命令(`npm run android:dev`),把当前项目dev环境的debug模式的apk运行到如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区`真机上
   - 之前在win系统执行的是`npm run android:dev_win`
-
-
-
