@@ -1,0 +1,1768 @@
+diff --git a/src/pages/CreateConsultationPage/CreateConsultationPage.tsx b/src/pages/CreateConsultationPage/CreateConsultationPage.tsx
+index 6025e707..a834f286 100644
+--- a/src/pages/CreateConsultationPage/CreateConsultationPage.tsx
++++ b/src/pages/CreateConsultationPage/CreateConsultationPage.tsx
+@@ -279,416 +279,510 @@ interface UnitInfo {
+   title?: string;
+ }
+ 
+ interface StateProps {
+   cached_expenseItems: any[];
+   WhichPrescriptionList: number;//0:二診藥方列表 1:一診藥方列表
+   appointmentId: string | undefined;
+   type: number; // 0新增 1編輯病歷 2删除藥方記錄
+   GetLatestMedicalRecord: any | null; // Specify more precise type if possible
+   showDrugListModal: boolean;//顯示 新增藥方 的 藥物 彈框
+   GetLatestPrescription: any | null; // Specify more precise type if possible
+   barIndex: number; // 0: New Medical Record, 1: New Prescription
+   showOtherSignsModal: boolean;
+   title: string;
+   showMoreModal: boolean;
+   showDiagnosisModal: boolean;
+   showMedicalProceduresModal: boolean;
+   showDateModal: boolean;
+   get_consultation_setting: get_consultation_setting_Data | null;
+   showfollow_upModal: boolean;
+   showOtherModal: boolean;
+   dateString: string;
+   dateString_prescription: string;
+   showdiscomfortModal: boolean;
+   showComplete_diagnosisModal: boolean;//顯示 提交賬單 彈框
+   showBill_settlementModal: boolean;//顯示 賬單結算 彈框
+   showBillSubmittedModal: boolean;//已提交帳單 彈框
+   discomfortModalList: {
+     "id": string,
+     "category": string,
+     "group": string | null,
+     "code": string | null,
+     "term": string,
+     "selected": boolean,
+     "label": string
+   }[]; // Specify more precise type if possible
+   showUsagelistModal: boolean;
+   showFrequencylistModal: boolean;
+   // OtherSignsModalList: {
+   //   "id": string,
+   //   "category": string,
+   //   "group": string | null,
+   //   "code": string | null,
+   //   "term": string,
+   //   "selected": boolean,
+   //   "label": string
+   // }[]; // Specify more precise type if possible
+   showDayslistModal: boolean;
+   showRemarksModal: boolean;
+   DiagnosisModalList: SelectListItem[];//診斷 彈框列表
+   diagnosisSelectItem: object;
+   get_drugbook_masters_by_names: DrugbookMastersByNames | null; // 藥物名称彈框選中後調 get_drugbook_masters_by_names 接口返回的數據
+   showVolumeModal: boolean;
+   MedicalProceduresModalList: SelectListItem[];
+   showBarModal: boolean;
+   showUnitModal: boolean;
+   // follow_upModalList: {
+   //   "id": string,
+   //   "category": string,
+   //   "group": string | null,
+   //   "code": string | null,
+   //   "term": string,
+   //   "selected": boolean,
+   //   "label": string
+   // }[]; // Specify more precise type if possible
+   // follow_upSelectedList: string[]; // Specify more precise type if possible
+   followUpInputText: string;
+   // OthersModalList: {
+   //   "id": string,
+   //   "category": string,
+   //   "group": string | null,
+   //   "code": string | null,
+   //   "term": string,
+   //   "selected": boolean,
+   //   "label": string
+   // }[];
+   // OthersSelectedList: any[];
+   otherInputText: string;
+   discomfortBtList: DiscomfortButton[];
+   discomfortInputText: string;
+-  diagnosisSel: string;
++  // diagnosisSel: string;
+   diagnosisInputText: string;
+   diagnosisSelectList: string[];//診斷 彈框裡選的數據 和 輸入框 輸入的數據
+   otherSignsInputText: string;
+   medicalProceduresInputText: string;//醫療程序 已輸入的數據
+   medicalProceduresSelectList: string[];//醫療程序 已选数据 和 已輸入的數據
+   medicalprocedureSel: string;
+   medicineSelect: any | null; // Specify more precise type if possible
+   usage: Dosage | null; // Specify more precise type if possible
+   frequency: Frequency | null; // Specify more precise type if possible
+   days: Days | null; // Specify more precise type if possible
+   quantity: number;
+   potion: number; // 藥水: 0是 1否
+   price: number;
+   cost: number;//成本
+   stock: number;
+   volume: Volume | null;//容量
+   bar: Bar | null; // 格数
+   unit: UnitInfo | null; // Specify more precise type if possible
+   medicationNotes: string;//  || 已輸入的 服用備註
+   selectedMedicationNotes?: SelectedItem | RNSelectedItem | undefined;//已選擇的 服用備註
+   remarks: string;//  已輸入的 備註
+   selectedRemarks?: SelectedItem | RNSelectedItem | undefined;//已選擇的 備註
+   selectedDiagnosis?: SelectedItem | RNSelectedItem | undefined;//已選擇的 診斷數據
++  selectedHealing?: SelectedItem | RNSelectedItem | undefined;//已選擇的 治疗数据
+   selectedMedicalProcedures?: SelectedItem | RNSelectedItem | undefined;//已選擇的 醫療程序數據
+   showMedicationNotesModal: boolean;
+   medicationNotesModalList: string[];//服用備註 已選數據列表
+   cautionRemarks: string[];//備註 已選數據列表
+   prescriptionList: PrescriptionListItem[];//新增藥方 | 刪除藥方 列表
+   isEditingPrescriptionList: boolean;
+   selected: boolean;
+   moreModalList: ModalList[];
+   // prescriptionType: string;
+   Consultation_fees: string;//看診費
+   Consultation_feesForShow: string;
+   Medical_expenses: string;//藥費
+   Medical_expensesForShow: string;
+   Express_delivery_fee: string;//快遞費
+   Express_delivery_feeForShow: string;
+   isBillSented: boolean;//是否發送過賬單
+   countTotal: string;//
+   default_currency_code: string;
+   loading: boolean;
+   suggestionsList: [];
+   canDeleteSelected: boolean;
+   hasUnsavedChanges: boolean;
+   consultationId: string | undefined;
++  healingSelectList: string[];
+ }
+ 
+ interface MedicationNotesCustomRowProps {
+   children?: React.ReactNode;
+   selectedMedicationNotes?: SelectedItem | RNSelectedItem | undefined;
+   medicationNotesModalList?: string[];
+   onAddMedicationNote?: (textToAdd: string) => void;
+   clearSelectedItem?: () => void;
+ }
+ 
+ interface DiagnosisCustomRowProps extends RNAutoPositionedPopupCustomRowProps {
+   diagnosisSelectList?: string[];
+   onAddDiagnosis?: (textToAdd: string) => void;
+ }
+ 
++interface HealingCustomRowProps extends RNAutoPositionedPopupCustomRowProps {
++  healingSelectList?: string[];
++  onAddHealing?: (textToAdd: string) => void;
++  clearSelectedItem?: () => void;
++  selectedItem?: SelectedItem | RNSelectedItem | undefined;
++}
+ const MedicationNotesCustomRow: React.FC<MedicationNotesCustomRowProps> = memo(({
+                                                                                   children,
+                                                                                   selectedMedicationNotes,
+                                                                                   medicationNotesModalList,
+                                                                                   onAddMedicationNote,
+                                                                                   clearSelectedItem
+                                                                                 }: MedicationNotesCustomRowProps) => {
+   const {uiTheme} = useThemeProvider();
+   const [searchQuery, setSearchQuery] = useState<string>('');
+   const emitEvent = useGlobalEventEmitter();
+   useGlobalEventListener(
+     AutoPositionedPopupEventNames.searchQueryChange,
+     useCallback(({tag, searchQuery: newQuery}: { tag: string; searchQuery: string }): void => {
+       console.log('MedicationNotesCustomRow searchQueryChange event received=', {tag, searchQuery: newQuery});
+       if (tag === global.i18n.t('Medication_notes')) {
+         setSearchQuery(newQuery);
+       }
+     }, [])
+   );
+   const handleAddPress = useCallback((): void => {
+     console.log('MedicationNotesCustomRow handleAddPress=', {searchQuery, selectedMedicationNotes})
+     if (searchQuery === '' && !selectedMedicationNotes) {
+       return;
+     }
+     // Use searchQuery text if no item selected from dropdown
+     const textToAdd: string | undefined = searchQuery || selectedMedicationNotes?.title;
+     console.log('MedicationNotesCustomRow textToAdd=', textToAdd)
+     if (textToAdd && medicationNotesModalList && medicationNotesModalList.indexOf(textToAdd) === -1) {
+       onAddMedicationNote && onAddMedicationNote(textToAdd);
+       setSearchQuery(''); // Clear local search query after adding
+       clearSelectedItem && clearSelectedItem();
+       emitEvent(AutoPositionedPopupEventNames.searchQueryChange, {
+         tag: global.i18n.t('Medication_notes'),
+         searchQuery: ''
+       })
+     }
+   }, [searchQuery, selectedMedicationNotes, medicationNotesModalList, onAddMedicationNote, clearSelectedItem]);
+   const disabled = useMemo(() => {
+     return searchQuery === '' && !selectedMedicationNotes
+   }, [searchQuery, selectedMedicationNotes]);
+   return (
+     <View style={styles.usageRow}>
+       {children}
+       <TouchableOpacity
+         disabled={disabled}
+         style={[
+           styles.medicationNotesInputRowAddBt,
+           disabled && {backgroundColor: uiTheme.colors.$disabledBtn}
+         ]}
+         onPress={handleAddPress}
+       >
+         <Text style={[
+           styles.medicationNotesInputRowAddBtText,
+           disabled && {color: uiTheme.colors.$disabledBtnText}
+         ]}>
+           + {global.i18n.t('join')}
+         </Text>
+       </TouchableOpacity>
+     </View>
+   );
+ });
+ const MedicationNotesBtChildren: React.FC<MedicationNotesCustomRowProps> = memo(({
+                                                                                    selectedMedicationNotes,
+                                                                                  }: MedicationNotesCustomRowProps) => {
+   const {uiTheme} = useThemeProvider();
+   const [searchQuery, setSearchQuery] = useState<string>('');
+   useGlobalEventListener(
+     AutoPositionedPopupEventNames.searchQueryChange,
+     useCallback(({tag, searchQuery: newQuery}: { tag: string; searchQuery: string }): void => {
+       console.log('MedicationNotesBtChildren searchQueryChange event received=', {tag, searchQuery: newQuery});
+       if (tag === global.i18n.t('Medication_notes')) {
+         setSearchQuery(newQuery);
+       }
+     }, [])
+   );
+   console.log('MedicationNotesBtChildren render=', {
+     selectedMedicationNotes, searchQuery
+   })
+   return (
+     <>
+       <Text
+         style={[styles.selectBtText, ((selectedMedicationNotes || searchQuery) && { color: uiTheme.colors.$text })]}>{searchQuery ? searchQuery : (selectedMedicationNotes ? selectedMedicationNotes.title : global.i18n.t('Please_enter'))}
+       </Text>
+       <ArrowUpDown color={uiTheme.colors.$fontSize_15_color} />
+     </>
+   );
+ });
+ const DiagnosisCustomRow: React.FC<DiagnosisCustomRowProps> = memo(({
+                                                                       children,
+                                                                       selectedItem,
+                                                                       diagnosisSelectList,
+                                                                       onAddDiagnosis,
+                                                                       clearSelectedItem
+                                                                     }: DiagnosisCustomRowProps) => {
+   const {uiTheme} = useThemeProvider();
+   const [searchQuery, setSearchQuery] = useState<string>('');
+   const emitEvent = useGlobalEventEmitter();
+   useGlobalEventListener(
+     AutoPositionedPopupEventNames.searchQueryChange,
+     useCallback(({tag, searchQuery: newQuery}: { tag: string; searchQuery: string }): void => {
+       console.log('DiagnosisCustomRow searchQueryChange event received=', {tag, searchQuery: newQuery});
+       if (tag === global.i18n.t('diagnosis1')) {
+         setSearchQuery(newQuery);
+       }
+     }, [])
+   );
+   const handleAddPress = useCallback((): void => {
+     console.log('DiagnosisCustomRow handleAddPress=', {searchQuery, selectedItem})
+     if (searchQuery === '' && !selectedItem) {
+       return;
+     }
+     const textToAdd: string | undefined = searchQuery || selectedItem?.title;
+     console.log('DiagnosisCustomRow textToAdd=', textToAdd)
+     if (textToAdd && diagnosisSelectList && diagnosisSelectList.indexOf(textToAdd) === -1) {
+       onAddDiagnosis && onAddDiagnosis(textToAdd);
+       setSearchQuery(''); // Clear local search query after adding
+       clearSelectedItem && clearSelectedItem();
+       emitEvent(AutoPositionedPopupEventNames.searchQueryChange, {
+         tag: global.i18n.t('diagnosis1'),
+         searchQuery: ''
+       })
+     }
+   }, [searchQuery, selectedItem, diagnosisSelectList, onAddDiagnosis, clearSelectedItem]);
+   const disabled = useMemo(() => {
+     return searchQuery === '' && !selectedItem
+   }, [searchQuery, selectedItem]);
+   return (
+     <View style={styles.usageRow}>
+       <Text style={[styles.usageRowText, {marginRight: 4}]}>{i18n.t('diagnosis1')}</Text>
+       {children}
+       <TouchableOpacity
+         disabled={disabled}
+         style={[
+           styles.medicationNotesInputRowAddBt,
+           disabled && {backgroundColor: uiTheme.colors.$disabledBtn}
+         ]}
+         onPress={handleAddPress}
+       >
+         <Text style={[
+           styles.medicationNotesInputRowAddBtText,
+           disabled && {color: uiTheme.colors.$disabledBtnText}
+         ]}>
+           + {global.i18n.t('join')}
+         </Text>
+       </TouchableOpacity>
+     </View>
+   );
+ });
++const HealingCustomRow: React.FC<HealingCustomRowProps> = memo(({
++  children,
++  selectedItem,
++  healingSelectList,
++  onAddHealing,
++  clearSelectedItem
++}: HealingCustomRowProps) => {
++  const { uiTheme } = useThemeProvider();
++  const [searchQuery, setSearchQuery] = useState<string>('');
++  const emitEvent = useGlobalEventEmitter();
++  useGlobalEventListener(
++    AutoPositionedPopupEventNames.searchQueryChange,
++    useCallback(({ tag, searchQuery: newQuery }: { tag: string; searchQuery: string }): void => {
++      console.log('HealingCustomRow searchQueryChange event received=', { tag, searchQuery: newQuery });
++      if (tag === global.i18n.t('healing')) {
++        setSearchQuery(newQuery);
++      }
++    }, [])
++  );
++  const handleAddPress = useCallback((): void => {
++    console.log('HealingCustomRow handleAddPress=', { searchQuery, selectedItem })
++    if (searchQuery === '' && !selectedItem) {
++      return;
++    }
++    const textToAdd: string | undefined = searchQuery || selectedItem?.title;
++    console.log('HealingCustomRow textToAdd=', textToAdd)
++    if (textToAdd && healingSelectList && healingSelectList.indexOf(textToAdd) === -1) {
++      onAddHealing && onAddHealing(textToAdd);
++      setSearchQuery(''); // Clear local search query after adding
++      clearSelectedItem && clearSelectedItem();
++      emitEvent(AutoPositionedPopupEventNames.searchQueryChange, {
++        tag: global.i18n.t('healing'),
++        searchQuery: ''
++      })
++    }
++  }, [searchQuery, selectedItem, healingSelectList, onAddHealing, clearSelectedItem, emitEvent]);
++  const disabled = useMemo(() => {
++    return searchQuery === '' && !selectedItem
++  }, [searchQuery, selectedItem]);
++  return (
++    <View style={styles.usageRow}>
++      <Text style={[styles.usageRowText, { marginRight: 8 }]}>{i18n.t('healing')}</Text>
++      {children}
++      <TouchableOpacity
++        disabled={disabled}
++        style={[
++          styles.medicationNotesInputRowAddBt,
++          disabled && { backgroundColor: uiTheme.colors.$disabledBtn }
++        ]}
++        onPress={handleAddPress}
++      >
++        <Text style={[
++          styles.medicationNotesInputRowAddBtText,
++          disabled && { color: uiTheme.colors.$disabledBtnText }
++        ]}>
++          + {global.i18n.t('join')}
++        </Text>
++      </TouchableOpacity>
++    </View>
++  );
++});
+ const DiagnosisBtChildren: React.FC<RNAutoPositionedPopupCustomRowProps> = memo(({
+                                                                                    selectedItem,
+                                                                                  }: RNAutoPositionedPopupCustomRowProps) => {
+   const {uiTheme} = useThemeProvider();
+   const [searchQuery, setSearchQuery] = useState<string>('');
+   useGlobalEventListener(
+     AutoPositionedPopupEventNames.searchQueryChange,
+     useCallback(({tag, searchQuery: newQuery}: { tag: string; searchQuery: string }): void => {
+       console.log('DiagnosisBtChildren searchQueryChange event received=', {tag, searchQuery: newQuery});
+       if (tag === i18n.t('diagnosis1')) {
+         setSearchQuery(newQuery);
+       }
+     }, [])
+   );
+   console.log('DiagnosisBtChildren render=', {
+     selectedItem, searchQuery
+   })
+   return (
+     <>
+       <Text
+         style={[styles.selectBtText, ((selectedItem || searchQuery) && { color: uiTheme.colors.$text }), {textAlign: 'right'}]}>{searchQuery ? searchQuery : (selectedItem ? selectedItem.title : global.i18n.t('Please_enter'))}</Text>
+       <ArrowUpDown color={uiTheme.colors.$fontSize_15_color} />
+     </>
+   );
+ });
++const HealingBtChildren: React.FC<RNAutoPositionedPopupCustomRowProps> = memo(({
++  selectedItem,
++}: RNAutoPositionedPopupCustomRowProps) => {
++  const { uiTheme } = useThemeProvider();
++  const [searchQuery, setSearchQuery] = useState<string>('');
++  useGlobalEventListener(
++    AutoPositionedPopupEventNames.searchQueryChange,
++    useCallback(({ tag, searchQuery: newQuery }: { tag: string; searchQuery: string }): void => {
++      console.log('HealingBtChildren searchQueryChange event received=', { tag, searchQuery: newQuery });
++      if (tag === i18n.t('healing')) {
++        setSearchQuery(newQuery);
++      }
++    }, [])
++  );
++  console.log('HealingBtChildren render=', {
++    selectedItem, searchQuery
++  })
++  return (
++    <>
++      <Text
++        style={[styles.selectBtText, ((selectedItem || searchQuery) && { color: uiTheme.colors.$text }), { textAlign: 'left' }]}>{searchQuery ? searchQuery : (selectedItem ? selectedItem.title : global.i18n.t('Please_enter'))}</Text>
++      <ArrowUpDown color={uiTheme.colors.$fontSize_15_color} />
++    </>
++  );
++});
+ const MedicalProceduresBtChildren: React.FC<RNAutoPositionedPopupCustomRowProps> = memo(({
+                                                                                            selectedItem,
+                                                                                          }: RNAutoPositionedPopupCustomRowProps) => {
+   const {uiTheme} = useThemeProvider();
+   const [searchQuery, setSearchQuery] = useState<string>('');
+   useGlobalEventListener(
+     AutoPositionedPopupEventNames.searchQueryChange,
+     useCallback(({tag, searchQuery: newQuery}: { tag: string; searchQuery: string }): void => {
+       console.log('MedicalProceduresBtChildren searchQueryChange event received=', {tag, searchQuery: newQuery});
+       if (tag === i18n.t('Medical_procedures')) {
+         setSearchQuery(newQuery);
+       }
+     }, [])
+   );
+   console.log('MedicalProceduresBtChildren render=', {
+     selectedItem, searchQuery
+   })
+   return (
+     <>
+       <Text
+-        style={[styles.selectBtText, ((selectedItem || searchQuery) && { color: uiTheme.colors.$text }), {textAlign: 'right'}]}>{searchQuery ? searchQuery : (selectedItem ? selectedItem.title : global.i18n.t('Please_enter'))}</Text>
++        style={[styles.selectBtText, ((selectedItem || searchQuery) && { color: uiTheme.colors.$text }), {textAlign: 'left'}]}>{searchQuery ? searchQuery : (selectedItem ? selectedItem.title : global.i18n.t('Please_enter'))}</Text>
+       <ArrowUpDown color={uiTheme.colors.$fontSize_15_color} />
+     </>
+   );
+ });
+ const CautionBtChildren: React.FC<RNAutoPositionedPopupCustomRowProps> = memo(({
+                                                                                  selectedItem,
+                                                                                }: RNAutoPositionedPopupCustomRowProps) => {
+   const {uiTheme} = useThemeProvider();
+   const [searchQuery, setSearchQuery] = useState<string>('');
+   useGlobalEventListener(
+     AutoPositionedPopupEventNames.searchQueryChange,
+     useCallback(({tag, searchQuery: newQuery}: { tag: string; searchQuery: string }): void => {
+       console.log('CautionBtChildren searchQueryChange event received=', {tag, searchQuery: newQuery});
+       if (tag === i18n.t('Caution')) {
+         setSearchQuery(newQuery);
+       }
+     }, [])
+   );
+   console.log('CautionBtChildren render=', {
+     selectedItem, searchQuery
+   })
+   return (
+     <>
+       <Text
+         style={[styles.selectBtText, ((selectedItem || searchQuery) && {color: uiTheme.colors.$text})]}>{searchQuery ? searchQuery : (selectedItem ? selectedItem.title : global.i18n.t('Please_enter'))}</Text>
+       <ArrowUpDown color={uiTheme.colors.$fontSize_15_color} />
+     </>
+   );
+ });
+ const MedicineBtChildren: React.FC<RNAutoPositionedPopupCustomRowProps> = memo(({
+                                                                                   selectedItem,
+                                                                                 }: RNAutoPositionedPopupCustomRowProps) => {
+   const {uiTheme} = useThemeProvider();
+   const [searchQuery, setSearchQuery] = useState<string>('');
+   useGlobalEventListener(
+     AutoPositionedPopupEventNames.searchQueryChange,
+     useCallback(({tag, searchQuery: newQuery}: { tag: string; searchQuery: string }): void => {
+       console.log('MedicineBtChildren searchQueryChange event received=', {tag, searchQuery: newQuery});
+       if (tag === i18n.t('medicine')) {
+         setSearchQuery(newQuery);
+       }
+     }, [])
+   );
+   console.log('MedicineBtChildren render=', {
+     selectedItem, searchQuery
+   })
+   return (
+     <>
+       <Text
+         style={[styles.selectBtText, ((selectedItem || searchQuery) && {color: uiTheme.colors.$text}), {
+           flex: 1,
+           textAlign: 'right'
+         }]}>{searchQuery ? searchQuery : (selectedItem ? selectedItem.title : global.i18n.t('PleaseSelect'))}</Text>
+       <ArrowUpDown color={uiTheme.colors.$fontSize_15_color} />
+     </>
+   );
+ });
+ const UsageBtChildren: React.FC<RNAutoPositionedPopupCustomRowProps> = memo(({
+                                                                                selectedItem,
+                                                                              }: RNAutoPositionedPopupCustomRowProps) => {
+   const {uiTheme} = useThemeProvider();
+   const [searchQuery, setSearchQuery] = useState<string>('');
+   useGlobalEventListener(
+     AutoPositionedPopupEventNames.searchQueryChange,
+     useCallback(({tag, searchQuery: newQuery}: { tag: string; searchQuery: string }): void => {
+       console.log('UsageBtChildren searchQueryChange event received=', {tag, searchQuery: newQuery});
+       if (tag === i18n.t('usage')) {
+         setSearchQuery(newQuery);
+       }
+     }, [])
+   );
+   console.log('UsageBtChildren render=', {
+     selectedItem, searchQuery
+   })
+   return (
+     <>
+       <Text
+         style={[styles.selectBtText, ((selectedItem || searchQuery) && {color: uiTheme.colors.$text}), {
+           flex: 1,
+           textAlign: 'right'
+@@ -806,345 +900,346 @@ const BarBtChildren: React.FC<RNAutoPositionedPopupCustomRowProps> = memo(({
+       <Text
+         style={[styles.selectBtText, ((selectedItem || searchQuery) && {color: uiTheme.colors.$text}), {
+           flex: 1,
+           textAlign: 'right'
+         }]}>{searchQuery ? searchQuery : (selectedItem ? selectedItem.title : i18n.t('Please_enter'))}
+       </Text>
+       <ArrowUpDown color={uiTheme.colors.$fontSize_15_color} />
+     </>
+   );
+ });
+ const UnitBtChildren: React.FC<RNAutoPositionedPopupCustomRowProps> = memo(({
+                                                                               selectedItem,
+                                                                             }: RNAutoPositionedPopupCustomRowProps) => {
+   const {uiTheme} = useThemeProvider();
+   const [searchQuery, setSearchQuery] = useState<string>('');
+   useGlobalEventListener(
+     AutoPositionedPopupEventNames.searchQueryChange,
+     useCallback(({tag, searchQuery: newQuery}: { tag: string; searchQuery: string }): void => {
+       console.log('UnitBtChildren searchQueryChange event received=', {tag, searchQuery: newQuery});
+       if (tag === i18n.t('unit')) {
+         setSearchQuery(newQuery);
+       }
+     }, [])
+   );
+   console.log('UnitBtChildren render=', {
+     selectedItem, searchQuery
+   })
+   return (
+     <>
+       <Text
+         style={[styles.selectBtText, ((selectedItem || searchQuery) && {color: uiTheme.colors.$text}), {
+           flex: 1,
+           textAlign: 'right'
+         }]}>{searchQuery ? searchQuery : (selectedItem ? selectedItem.title : i18n.t('Please_enter'))}
+       </Text>
+       <ArrowUpDown color={uiTheme.colors.$fontSize_15_color} />
+     </>
+   );
+ });
+ const MedicalProceduresCustomRow: React.FC<RNAutoPositionedPopupCustomRowProps> = memo(({
+                                                                                           children,
+                                                                                           selectedItem,
+                                                                                           selectList,
+                                                                                           onAdded,
+                                                                                           clearSelectedItem
+                                                                                         }: RNAutoPositionedPopupCustomRowProps) => {
+   const {uiTheme} = useThemeProvider();
+   const [searchQuery, setSearchQuery] = useState<string>('');
+   const emitEvent = useGlobalEventEmitter();
+   useGlobalEventListener(
+     AutoPositionedPopupEventNames.searchQueryChange,
+     useCallback(({tag, searchQuery: newQuery}: { tag: string; searchQuery: string }): void => {
+       console.log('MedicalProceduresCustomRow searchQueryChange event received=', {tag, searchQuery: newQuery});
+       if (tag === i18n.t('Medical_procedures')) {
+         setSearchQuery(newQuery);
+       }
+     }, [])
+   );
+   const handleAddPress = useCallback((): void => {
+     console.log('MedicalProceduresCustomRow handleAddPress=', {searchQuery, selectedItem})
+     if (searchQuery === '' && !selectedItem) {
+       return;
+     }
+     const textToAdd: string | undefined = searchQuery || selectedItem?.title;
+     console.log('MedicalProceduresCustomRow textToAdd=', textToAdd)
+     if (textToAdd && selectList && selectList.indexOf(textToAdd) === -1) {
+       onAdded && onAdded(textToAdd);
+       setSearchQuery(''); // Clear local search query after adding
+       clearSelectedItem && clearSelectedItem();
+       emitEvent(AutoPositionedPopupEventNames.searchQueryChange, {
+         tag: i18n.t('Medical_procedures'),
+         searchQuery: ''
+       })
+     }
+   }, [searchQuery, selectedItem, selectList, onAdded, clearSelectedItem]);
+   const disabled = useMemo(() => {
+     return searchQuery === '' && !selectedItem
+   }, [searchQuery, selectedItem]);
+   return (
+     <View style={styles.usageRow}>
+-      <Text style={[styles.usageRowText, {marginRight: 4}]}>{i18n.t('Medical_procedures')}</Text>
++      <Text style={[styles.usageRowText, {marginRight: 8}]}>{i18n.t('Medical_procedures')}</Text>
+       {children}
+       <TouchableOpacity
+         disabled={disabled}
+         style={[
+           styles.medicationNotesInputRowAddBt,
+           disabled && {backgroundColor: uiTheme.colors.$disabledBtn}
+         ]}
+         onPress={handleAddPress}
+       >
+         <Text style={[
+           styles.medicationNotesInputRowAddBtText,
+           disabled && {color: uiTheme.colors.$disabledBtnText}
+         ]}>
+           + {global.i18n.t('join')}
+         </Text>
+       </TouchableOpacity>
+     </View>
+   );
+ });
+ const CautionCustomRow: React.FC<RNAutoPositionedPopupCustomRowProps> = memo(({
+                                                                                 children,
+                                                                                 selectedItem,
+                                                                                 selectList,
+                                                                                 onAdded,
+                                                                                 clearSelectedItem
+                                                                               }: RNAutoPositionedPopupCustomRowProps) => {
+   const {uiTheme} = useThemeProvider();
+   const [searchQuery, setSearchQuery] = useState<string>('');
+   const emitEvent = useGlobalEventEmitter();
+   useGlobalEventListener(
+     AutoPositionedPopupEventNames.searchQueryChange,
+     useCallback(({tag, searchQuery: newQuery}: { tag: string; searchQuery: string }): void => {
+       console.log('CautionCustomRow searchQueryChange event received=', {tag, searchQuery: newQuery});
+       if (tag === i18n.t('Caution')) {
+         setSearchQuery(newQuery);
+       }
+     }, [])
+   );
+   const handleAddPress = useCallback((): void => {
+     console.log('CautionCustomRow handleAddPress=', {searchQuery, selectedItem})
+     if (searchQuery === '' && !selectedItem) {
+       return;
+     }
+     const textToAdd: string | undefined = searchQuery || selectedItem?.title;
+     console.log('CautionCustomRow textToAdd=', textToAdd)
+     if (textToAdd && selectList && selectList.indexOf(textToAdd) === -1) {
+       onAdded && onAdded(textToAdd);
+       setSearchQuery(''); // Clear local search query after adding
+       clearSelectedItem && clearSelectedItem();
+       emitEvent(AutoPositionedPopupEventNames.searchQueryChange, {
+         tag: i18n.t('Caution'),
+         searchQuery: ''
+       })
+     }
+-  }, [searchQuery, selectedItem, selectList, onAdded, clearSelectedItem]);
++  }, [searchQuery, selectedItem, selectList, onAdded, clearSelectedItem, emitEvent]);
+   const disabled = useMemo(() => {
+     return searchQuery === '' && !selectedItem
+   }, [searchQuery, selectedItem]);
+   return (
+     <View style={styles.usageRow}>
+       {/*<Text style={[styles.usageRowText, {marginRight: 4}]}>{i18n.t('Caution')}</Text>*/}
+       {children}
+       <TouchableOpacity
+         disabled={disabled}
+         style={[
+           styles.medicationNotesInputRowAddBt,
+           disabled && {backgroundColor: uiTheme.colors.$disabledBtn}
+         ]}
+         onPress={handleAddPress}
+       >
+         <Text style={[
+           styles.medicationNotesInputRowAddBtText,
+           disabled && {color: uiTheme.colors.$disabledBtnText}
+         ]}>
+           + {global.i18n.t('join')}
+         </Text>
+       </TouchableOpacity>
+     </View>
+   );
+ });
+ const MedicineCustomRow: React.FC<RNAutoPositionedPopupCustomRowProps> = memo(({
+                                                                                  children,
+                                                                                }: RNAutoPositionedPopupCustomRowProps) => {
+   return (
+     <View style={styles.usageRow}>
+       <Text style={[styles.usageRowText, {marginRight: 4}]}>{i18n.t('medicine')}</Text>
+       {children}
+     </View>
+   );
+ });
+ 
+ /**
+  * 新增診症 | 編輯病歷
+  * @param props
+  * @param parentRef
+  * @returns {*}
+  * @constructor
+  */
+ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+   const {navigation, scene, route} = props
+   // console.log('CreateConsultationPage props=', props)
+   // console.log('CreateConsultationPage JSON.stringify(props)=', JSON.stringify(props))
+   const {pageData} = route?.params ?? {} as { pageData?: pageDataProps };//类型断言
+   console.log('CreateConsultationPage pageData=', pageData)
+   const store = useSelector((state: object) => state)
+   const dispatch = useDispatch();
+   const [state, setState] = useState<StateProps>({
+     appointmentId: pageData.appointmentId || undefined, showBill_settlementModal: false,
+     cached_expenseItems: [], selectedMedicationNotes: undefined, selectedRemarks: undefined,
+     type: pageData.type || 0, GetLatestMedicalRecord: null, showDrugListModal: false, GetLatestPrescription: null, selectedDiagnosis: undefined,
+     barIndex: 0/*0:新增病歷 1:新增藥方*/, showOtherSignsModal: false, title: !pageData.consultationId ? global.i18n.t('New_diagnosis') : global.i18n.t('New_prescription_added'),
+     showMoreModal: false, showDiagnosisModal: false, showMedicalProceduresModal: false,
+     showDateModal: false, get_consultation_setting: null, showfollow_upModal: false, showOtherModal: false, selectedMedicalProcedures: undefined,
+     dateString: pageData.date ? moment(pageData.date, "DD/MM/YYYY").format('YYYY-MM-DD') : moment(new Date()).format('YYYY-MM-DD'),
+     //新增藥方 日期
+     dateString_prescription: pageData.date ? moment(pageData.date, "DD/MM/YYYY").format('YYYY-MM-DD') : moment(new Date()).format('YYYY-MM-DD'),
+     showdiscomfortModal: false, showComplete_diagnosisModal: false,
+     discomfortModalList: [], showUsagelistModal: false, showFrequencylistModal: false,
+     // OtherSignsModalList: [],
+     showDayslistModal: false, showRemarksModal: false,
+     DiagnosisModalList: [],
+     //藥物彈框選中後調 get_drugbook_masters_by_names 接口返回的數據
+     get_drugbook_masters_by_names: null,
+     showVolumeModal: false,
+     MedicalProceduresModalList: [], showBarModal: false, showUnitModal: false,
+     // follow_upModalList: [],//跟進 弹框列表
+     // follow_upSelectedList: [],//跟進 已选数据列表
+     // OthersModalList: [],
+     // OthersSelectedList: [],//其它 已选数据列表
+     // //前端写死,選中就自動填寫到症狀裡面
+     discomfortBtList: [{title: global.i18n.t('headache'), selected: false}, {title: global.i18n.t('fever'), selected: false}, {
+       title: global.i18n.t('tosse'),
+       selected: false
+     }],
+     discomfortInputText: '',//不適徵兆
+-    diagnosisSel: '',
++    // diagnosisSel: '',
+     diagnosisInputText: '',//診斷 输入框
+     diagnosisSelectList: [],//診斷 已选数据
+     diagnosisSelectItem: {},//診斷 輸入框 选中的项
+     otherSignsInputText: '',
+     medicalprocedureSel: '',
+     medicalProceduresInputText: '',
+     medicalProceduresSelectList: [],//
+     followUpInputText: '',//跟進 输入框
+     otherInputText: '',
+     medicineSelect: null,
+     usage: null,//用法
+     frequency: null,//次數
+     days: null,//日數
+     quantity: 0,//數量 number
+     potion: 1,//
+     price: 0,//售價
+     cost: 0,//成本
+     stock: 0,//存量
+     volume: null,//容量
+     bar: null,//格數
+     unit: null,//單位
+     medicationNotes: '',//服用備註
+     remarks: '',
+     showMedicationNotesModal: false,
+     medicationNotesModalList: [/*global.i18n.t('After_meals'), global.i18n.t('Before_meals')*/],
+     cautionRemarks: [],//備註 字符串数组
+     // 藥方列表
+     prescriptionList: [],
+     WhichPrescriptionList: 0,
+     isEditingPrescriptionList: false,//编辑药方列表
+     selected: false,
+     moreModalList: [{title: global.i18n.t('Suit'), id: 0}, {title: global.i18n.t('Mixed_medicines'), id: 1}],
+     //药方类型
+     // prescriptionType: '',
+     Consultation_fees: '0.00',//看診費
+     Consultation_feesForShow: '0.00',
+     Medical_expenses: '0.00',
+     Medical_expensesForShow: '0.00',
+     Express_delivery_fee: '0.00',
+     Express_delivery_feeForShow: '0.00',
+     showBillSubmittedModal: false,
+     isBillSented: true, countTotal: '0.00',
+     default_currency_code: 'HKD',
+     loading: false,
+     suggestionsList: [],//搜索結果
+     canDeleteSelected: false,
+     hasUnsavedChanges: false, //是否有未保存的變更
+     consultationId: pageData.consultationId,
++    healingSelectList: [],
+   })
+   const refCsxFlatList = useRef();
+   const ref_SingleSelect = useRef();
+   //診斷 彈框裡選的數據
+   const ref_diagnosis_valueAsJson = useRef([]);
+   //get-consultation-setting.enableMedicalProcCodeSystem = false时传 medicalProceduresSelectList,否则 ref_MedicalProcedures_valueAsJson.current
+   //醫療程序 彈框裡選的數據
+   const ref_MedicalProcedures_valueAsJson = useRef([]);
+   const ref_quantity = useRef(null);
+   const animatedValue = useRef(new Animated.Value(0)).current; // 初始化动画值
+   //监听 state 对象的任何数据变化
+   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+   const refScrollView = useRef();
+   const language = useLanguage();
+   const disable_Save1 = useMemo(() => {
+     // console.log('disable_Save1 state has changed=', state);
+     //編輯病歷時沒有 medical
+     if (state.barIndex === 0 && (state.type === 1 || state.type === 2) && !pageData.consultationData.medical) {
+       return true
+     }
+     //新增藥方 時 藥方列表 為 []
+     // if (state.type === 0 && state.barIndex === 1) {
+     //   return state.prescriptionList.length === 0
+     // }
+     // 新增 | 编辑 病历
+     if (state.barIndex === 0) {
+       return state.diagnosisSelectList.length == 0
+     }
+     //没有编辑药方，药方只能添加和删除
+     return (state.type === 1 || state.type === 2) && state.barIndex === 1
+   }, [state, pageData.consultationData, state.diagnosisSelectList]);
+   const disabled_unit = useMemo(() => {
+     return !state.get_drugbook_masters_by_names || (state.get_drugbook_masters_by_names && (state.get_drugbook_masters_by_names?.unit != undefined && state.get_drugbook_masters_by_names?.unit != null))
+   }, [state.get_drugbook_masters_by_names]);
+   /**
+    * 是否禁用 提交賬單 按鈕
+    if (ticketId is null){
+    if (isConsulted == false) {
+    提交账单”-> 弹窗 ->发送账单至CLinicSolution 启用, “立即开账单”禁用
+    } else {
+    "提交账单" ->弹窗->发送账单至CLinicSolution 禁用，“立即开账单”禁用
+    }
+    } else{
+    if (billed == false){
+    提交账单”-> 弹窗 ->发送账单至CLinicSolution 启用, “立即开账单”启用
+    } else {
+    提交账单”-> 弹窗 ->发送账单至CLinicSolution 禁用, “立即开账单”禁用
+    }
+    }
+    */
+   const disabledSubmit_bills = useMemo(() => {
+     if (pageData.type === 0) { //新增診症|新增藥方 禁用
+       return true
+     }
+     const isConsulted = pageData.patients.consultStatus == 1// 是否已診症
+     // if (ticketId == null && isConsulted == false) OR (ticketId != null && billed == false) : "提交账单” 按钮启用
+     console.log('disabledSubmit_bills isConsulted=', isConsulted);
+     console.log('disabledSubmit_bills pageData.patients.ticketId=', pageData.patients.ticketId);
+     console.log('disabledSubmit_bills state.isBillSented=', state.isBillSented)
+     // const res = (pageData.patients.ticketId == null && !isConsulted) || (pageData.patients.ticketId != null && !state.isBillSented)
+     // console.log('disabledSubmit_bills res=', res);
+     if (!pageData.patients?.ticketId) {
+       if (!isConsulted) {
+         return false
+       } else {
+         return true
+       }
+     } else {
+       if (!state.isBillSented) {
+         return false
+       } else {
+         return true
+       }
+     }
+   }, [state.isBillSented, state.isEditingPrescriptionList, pageData]);
+   /**
+    是否禁用 立即開帳單 按鈕
+    if (ticketId is null){
+    if (isConsulted == false) {
+    提交账单”-> 弹窗 ->发送账单至CLinicSolution 启用, “立即开账单”禁用
+@@ -1456,377 +1551,487 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+         //       setState((prevState) => {
+         //         return {
+         //           ...prevState, MedicalProceduresModalList: data.items.map(
+         //             (item, index, array) => {
+         //               // display [HKCTT]
+         //               let label = `${item.display} [${item.coding[0].code}]`
+         //               return {...item, selected: false, title: label, id: index.toString()}
+         //             }
+         //           )
+         //         }
+         //       })
+         //     }
+         //   } else {
+         //     const [err, data] = await tool.to(list_doctor_medical_terms({
+         //       pageIndex: 0, pageSize: 100, doctorId: pageData.patients.doctorId, category: 'MedicalProcedure'
+         //     }))
+         //     console.log('CreateConsultationPage.tsx 醫療程序 list_doctor_medical_terms data=', data)
+         //     if (data) {
+         //       setState((prevState) => {
+         //         return {
+         //           ...prevState, MedicalProceduresModalList: data.items.map(
+         //             (item, index, array) => {
+         //               return {...item, selected: false, label: item.term}
+         //             }
+         //           )
+         //         }
+         //       })
+         //     }
+         //   }
+         // }
+       })();
+       console.log(`CreateConsultationPage componentDidMount,pageData.date=`, pageData.date)
+       //componentWillUnmount
+       return () => {
+         console.log(`CreateConsultationPage componentWillUnmount`)
+       }
+     }, [])
+   const ref_diagnosis = useRef();
+   const ref_healing = useRef();
+   const ref_medicalprocedure = useRef();
+   const ref_medicine = useRef();
+   ref_usage = useRef();
+   ref_frequency = useRef();
+   ref_medicationNotes = useRef();
+   ref_remarks = useRef();
+   const handleAddMedicationNote = useCallback((textToAdd: string) => {
+     const _medicationNotesModalList = state.medicationNotesModalList;
+     if (textToAdd && _medicationNotesModalList.indexOf(textToAdd) === -1) {
+       _medicationNotesModalList.push(textToAdd);
+     }
+     setState((prevState) => ({
+       ...prevState,
+       medicationNotesModalList: _medicationNotesModalList,
+       medicationNotes: '',
+       selectedMedicationNotes: undefined
+     }));
+   }, [state.medicationNotesModalList]);
+   const handleAddCaution = useCallback((textToAdd: string) => {
+     const selectList = state.cautionRemarks;
+     if (textToAdd && selectList.indexOf(textToAdd) === -1) {
+       selectList.push(textToAdd);
+     }
+     setState((prevState) => ({
+       ...prevState,
+       cautionRemarks: selectList,
+       remarks: '',
+       selectedRemarks: undefined
+     }));
+   }, [state.cautionRemarks]);
+   const handleAddDiagnosis = useCallback((textToAdd: string) => {
+     const _diagnosisSelectList = state.diagnosisSelectList;
+     if (textToAdd && _diagnosisSelectList.indexOf(textToAdd) === -1) {
+       _diagnosisSelectList.push(textToAdd);
+     }
+     setState((prevState) => ({
+       ...prevState,
+       diagnosisSelectList: _diagnosisSelectList,
+       diagnosisSel: '', selectedDiagnosis: undefined
+     }));
+   }, [state.diagnosisSelectList]);
++  const handleAddHealing = useCallback((textToAdd: string) => {
++    const _healingSelectList = state.healingSelectList;
++    if (textToAdd && _healingSelectList.indexOf(textToAdd) === -1) {
++      _healingSelectList.push(textToAdd);
++    }
++    setState((prevState) => ({
++      ...prevState,
++      healingSelectList: _healingSelectList,
++      selectedHealing: undefined
++    }));
++  }, [state.healingSelectList]);
+   const handleAddMedicalProcedures = useCallback((textToAdd: string) => {
+     const selectList = state.medicalProceduresSelectList;
+     if (textToAdd && selectList.indexOf(textToAdd) === -1) {
+       selectList.push(textToAdd);
+     }
+     setState((prevState) => ({
+       ...prevState,
+       medicalProceduresSelectList: selectList,
+       selectedMedicalProcedures: undefined
+     }));
+   }, [state.medicalProceduresSelectList]);
+   const clearMedicationNotesSelectedItem = useCallback(() => {
+     console.log('clearMedicationNotesSelectedItem ref_medicationNotes.current=', ref_medicationNotes.current);
+     ref_medicationNotes.current?.clearSelectedItem();
+   }, []);
+   const clearCautionSelectedItem = useCallback(() => {
+     console.log('clearCautionSelectedItem ref_medicationNotes.current=', ref_remarks.current);
+     ref_remarks.current?.clearSelectedItem();
+   }, []);
+   const clearDiagnosisSelectedItem = useCallback(() => {
+     console.log('clearDiagnosisSelectedItem ref_diagnosis.current=', ref_diagnosis.current);
+     ref_diagnosis.current?.clearSelectedItem();
+   }, []);
++  const clearHealingSelectedItem = useCallback(() => {
++    console.log('clearHealingSelectedItem ref_healing.current=', ref_healing.current);
++    ref_healing.current?.clearSelectedItem();
++  }, []);
+   const clearMedicalProceduresSelectedItem = useCallback(() => {
+     console.log('clearMedicalProceduresSelectedItem ref_medicalprocedure.current=', ref_medicalprocedure.current);
+     ref_medicalprocedure.current?.clearSelectedItem();
+   }, []);
+   const renderMedicationNotesCustomRow = useCallback(({children}: ViewStyle & { children?: React.ReactNode }) => {
+     console.log('CreateConsultationPage Medication_notes CustomRow children=', children);
+     return (
+       <MedicationNotesCustomRow
+         children={children}
+         selectedMedicationNotes={state.selectedMedicationNotes}
+         medicationNotesModalList={state.medicationNotesModalList}
+         onAddMedicationNote={handleAddMedicationNote}
+         clearSelectedItem={clearMedicationNotesSelectedItem}
+       />
+     );
+   }, [state.selectedMedicationNotes, state.medicationNotesModalList, handleAddMedicationNote, clearMedicationNotesSelectedItem]);
+   const renderCautionCustomRow = useCallback(({children}: ViewStyle & { children?: React.ReactNode }) => {
+     return (
+       <CautionCustomRow
+         children={children}
+         selectedItem={state.selectedRemarks}
+         selectList={state.cautionRemarks}
+         onAdded={handleAddCaution}
+         clearSelectedItem={clearCautionSelectedItem}
+       />
+     );
+   }, [state.selectedRemarks, state.cautionRemarks, handleAddCaution, clearCautionSelectedItem]);
+   const renderDiagnosisCustomRow = useCallback(({children}: ViewStyle & { children?: React.ReactNode }) => {
+     return (
+       <DiagnosisCustomRow
+         children={children}
+         selectedItem={state.selectedDiagnosis}
+         diagnosisSelectList={state.diagnosisSelectList}
+         onAddDiagnosis={handleAddDiagnosis}
+         clearSelectedItem={clearDiagnosisSelectedItem}
+       />
+     );
+   }, [state.selectedDiagnosis, state.diagnosisSelectList, handleAddDiagnosis, clearDiagnosisSelectedItem]);
++  const renderHealingCustomRow = useCallback(({children}: ViewStyle & { children?: React.ReactNode }) => {
++    return (
++      <HealingCustomRow
++        children={children}
++        selectedItem={state.selectedHealing}
++        healingSelectList={state.healingSelectList}
++        onAdded={handleAddHealing}
++        clearSelectedItem={clearHealingSelectedItem}
++      />
++    );
++  }, [state.selectedHealing, state.healingSelectList, handleAddHealing, clearHealingSelectedItem]);
++  const renderHealingBtChildren = useCallback(() => {
++    return (
++      <HealingBtChildren
++        selectedItem={state.selectedHealing}
++      />
++    );
++  }, [state.selectedHealing]);
+   const renderMedicationNotesBtChildren = useCallback(() => {
+     console.log('CreateConsultationPage renderMedicationNotesBtChildren=', {'state.selectedMedicationNotes': state.selectedMedicationNotes});
+     return (
+       <MedicationNotesBtChildren
+         selectedMedicationNotes={state.selectedMedicationNotes}
+       />
+     );
+   }, [state.selectedMedicationNotes]);
+   const renderCautionBtChildren = useCallback(() => {
+     return (
+       <CautionBtChildren
+         selectedItem={state.selectedRemarks as RNSelectedItem}
+       />
+     );
+   }, [state.selectedRemarks]);
+   const renderDiagnosisBtChildren = useCallback(() => {
+     return (
+       <DiagnosisBtChildren
+         selectedItem={state.selectedDiagnosis}
+       />
+     );
+   }, [state.selectedDiagnosis]);
+   const renderMedicalProceduresBtChildren = useCallback(() => {
+     return (
+       <MedicalProceduresBtChildren
+         selectedItem={state.selectedMedicalProcedures as RNSelectedItem}
+       />
+     );
+   }, [state.selectedMedicalProcedures]);
+   const renderMedicineBtChildren = useCallback(() => {
+     return (
+       <MedicineBtChildren
+         selectedItem={state.get_drugbook_masters_by_names}
+       />
+     );
+   }, [state.get_drugbook_masters_by_names]);
+   const renderUsageBtChildren = useCallback(() => {
+     return (
+       <UsageBtChildren
+         selectedItem={state.usage}
+       />
+     );
+   }, [state.usage]);
+   const renderFrequencyBtChildren = useCallback(() => {
+     return (
+       <FrequencyBtChildren
+         selectedItem={state.frequency}
+       />
+     );
+   }, [state.frequency]);
+   const renderDaysBtChildren = useCallback(() => {
+     return (
+       <DaysBtChildren
+         selectedItem={state.days}
+       />
+     );
+   }, [state.days]);
+   const renderVolumeBtChildren = useCallback(() => {
+     return (
+       <VolumeBtChildren
+         selectedItem={state.volume}
+       />
+     );
+   }, [state.volume]);
+   const renderBarBtChildren = useCallback(() => {
+     return (
+       <BarBtChildren
+         selectedItem={state.bar}
+       />
+     );
+   }, [state.bar]);
+   const renderUnitBtChildren = useCallback(() => {
+     return (
+       <UnitBtChildren
+         selectedItem={state.unit}
+       />
+     );
+   }, [state.unit]);
+   /**
+    * Fetch diagnosis data based on consultation settings
+    * Extracted to useCallback to resolve closure issue with state.get_consultation_setting
+    */
+   const fetchDiagnosisData = useCallback(async ({
+                                                   pageIndex,
+                                                   pageSize,
+                                                   searchQuery
+                                                 }: {
+     pageIndex: number;
+     pageSize: number;
+     searchQuery?: string
+   }): Promise<AutoPositionedPopupData | null> => {
+     try {
+       console.log('CreateConsultationPage.tsx diagnosis1 fetchData state.get_consultation_setting=', state.get_consultation_setting)
+       if (state.get_consultation_setting?.enableDiagnosisCodeSystem) {
+         console.log('CreateConsultationPage.tsx diagnosis1 fetchData searchQuery=', searchQuery)
+         const data: List_hkctt_dxpx_terms | null = await list_hkctt_dxpx_terms({
+           pageIndex,
+           pageSize,
+           IsGetDiagnosis: true,
+           birthday: moment(new Date(pageData.patients.birthDate)).format('DD/MM/YYYY'),
+           gender: pageData.patients.gender,
+           keyWord: searchQuery
+         })
+         console.log('CreateConsultationPage.tsx diagnosis1 list_hkctt_dxpx_terms data=', data)
+         if (data) {
+           if (pageData.consultationData?.medical?.diagnosisJson) {
+             const diagnosisJson = JSON.parse(pageData.consultationData.medical?.diagnosisJson)
+             ref_diagnosis_valueAsJson.current = diagnosisJson.diagnosis
+             console.log('CreateConsultationPage.tsx diagnosis1 ref_diagnosis_valueAsJson.current=', ref_diagnosis_valueAsJson.current)
+           }
+           return Promise.resolve({
+             items: data.items.map((item: List_hkctt_dxpx_terms_Item, index) => {
+               let title = ''
+               if (item.coding.length >= 2) {
+                 title = `${item.display} [${item.coding[1].code} / ${item.coding[0].code}]`
+               } else if (item.coding.length === 1) {
+                 title = `${item.display} [${item.coding[0].code}]`
+               }
+               return {
+                 ...item,
+                 title,
+                 id: title
+               }
+             }),
+             needLoadMore: data.items.length === pageSize,
+             pageIndex: pageIndex + 1,
+             totalCount: 0,
+             totalPage: 0,
+           })
+         }
+       } else {
+         const data: Data | null = await list_doctor_medical_terms({
+           pageIndex,
+           pageSize,
+           doctorId: pageData.patients.doctorId,
+           category: 'Diagnosis',
+           keyWord: searchQuery
+         })
+         console.log('CreateConsultationPage.tsx diagnosis1 list_doctor_medical_terms data=', data)
+         if (data) {
+           return Promise.resolve({
+             ...data,
+             items: data.items.map((item: List_doctor_medical_terms, index) => {
+               return {
+                 ...item,
+                 title: item.term
+               }
+             }),
+           })
+         }
+       }
+     } catch (e) {
+       console.log('CreateConsultationPage.tsx diagnosis1 fetchData e=', e)
+     }
+     return Promise.resolve(null)
+   }, [state.get_consultation_setting, pageData.patients.birthDate, pageData.patients.gender, pageData.patients.doctorId, pageData.consultationData?.medical?.diagnosisJson]);
++  const fetchHealingData = useCallback(async ({
++    pageIndex,
++    pageSize,
++    searchQuery
++  }: {
++    pageIndex: number;
++    pageSize: number;
++    searchQuery?: string
++  }): Promise<AutoPositionedPopupData | null> => {
++    if (!$fake) {
++      return Promise.resolve(null)
++    }
++    try {
++      console.log('CreateConsultationPage.tsx fetchHealingData state.get_consultation_setting=', state.get_consultation_setting)
++      if (state.get_consultation_setting?.enableDiagnosisCodeSystem) {
++        console.log('CreateConsultationPage.tsx fetchHealingData searchQuery=', searchQuery)
++        const data: List_hkctt_dxpx_terms | null = await list_hkctt_dxpx_terms({
++          pageIndex,
++          pageSize,
++          IsGetDiagnosis: true,
++          birthday: moment(new Date(pageData.patients.birthDate)).format('DD/MM/YYYY'),
++          gender: pageData.patients.gender,
++          keyWord: searchQuery
++        })
++        console.log('CreateConsultationPage.tsx fetchHealingData list_hkctt_dxpx_terms data=', data)
++        if (data) {
++          if (pageData.consultationData?.medical?.diagnosisJson) {
++            const diagnosisJson = JSON.parse(pageData.consultationData.medical?.diagnosisJson)
++            ref_diagnosis_valueAsJson.current = diagnosisJson.diagnosis
++            console.log('CreateConsultationPage.tsx fetchHealingData ref_diagnosis_valueAsJson.current=', ref_diagnosis_valueAsJson.current)
++          }
++          return Promise.resolve({
++            items: data.items.map((item: List_hkctt_dxpx_terms_Item) => {
++              let title = ''
++              if (item.coding.length >= 2) {
++                title = `${item.display} [${item.coding[1].code} / ${item.coding[0].code}]`
++              } else if (item.coding.length === 1) {
++                title = `${item.display} [${item.coding[0].code}]`
++              }
++              return {
++                ...item,
++                title,
++                id: title
++              }
++            }),
++            needLoadMore: data.items.length === pageSize,
++            pageIndex: pageIndex + 1,
++            totalCount: 0,
++            totalPage: 0,
++          })
++        }
++      } else {
++        const data: Data | null = await list_doctor_medical_terms({
++          pageIndex,
++          pageSize,
++          doctorId: pageData.patients.doctorId,
++          category: 'Diagnosis',
++          keyWord: searchQuery
++        })
++        console.log('CreateConsultationPage.tsx fetchHealingData list_doctor_medical_terms data=', data)
++        if (data) {
++          return Promise.resolve({
++            ...data,
++            items: data.items.map((item: List_doctor_medical_terms, index) => {
++              return {
++                ...item,
++                title: item.term
++              }
++            }),
++          })
++        }
++      }
++    } catch (e) {
++      console.log('CreateConsultationPage.tsx fetchHealingData e=', e)
++    }
++    return Promise.resolve(null)
++  }, [state.get_consultation_setting, pageData.patients.birthDate, pageData.patients.gender, pageData.patients.doctorId, pageData.consultationData?.medical?.diagnosisJson]);
+   /**
+    * Fetch medical procedures data based on consultation settings
+    * Extracted to useCallback to resolve closure issue with state.get_consultation_setting
+    */
+   const fetchMedicalProceduresData = useCallback(async ({
+                                                           pageIndex,
+                                                           pageSize,
+                                                           searchQuery
+                                                         }: {
+     pageIndex: number;
+     pageSize: number;
+     searchQuery?: string
+   }): Promise<AutoPositionedPopupData | null> => {
+     try {
+       console.log('CreateConsultationPage.tsx Medical_procedures fetchData state.get_consultation_setting=', state.get_consultation_setting)
+       if (state.get_consultation_setting?.enableMedicalProcCodeSystem) {
+         console.log('CreateConsultationPage.tsx Medical_procedures fetchData searchQuery=', searchQuery)
+         const data: List_hkctt_dxpx_terms | null = await list_hkctt_dxpx_terms({
+           pageIndex,
+           pageSize,
+           IsGetDiagnosis: false,
+           birthday: moment(new Date(pageData.patients.birthDate)).format('DD/MM/YYYY'),
+           gender: pageData.patients.gender,
+           keyWord: searchQuery
+         })
+         console.log('CreateConsultationPage.tsx Medical_procedures list_hkctt_dxpx_terms data=', data)
+         if (data) {
+           if (pageData.consultationData?.medical?.procedureJson) {
+             const procedureJson = JSON.parse(pageData.consultationData.medical?.procedureJson)
+             ref_MedicalProcedures_valueAsJson.current = procedureJson.procedures
+             console.log('CreateConsultationPage.tsx 醫療程序 ref_MedicalProcedures_valueAsJson.current=', ref_MedicalProcedures_valueAsJson.current)
+           }
+           return Promise.resolve({
+             items: data.items.map((item: List_hkctt_dxpx_terms_Item, index) => {
+               let title = ''
+               // if (item.coding.length >= 2) {
+               //   title = `${item.display} [${item.coding[0].code} / ${item.coding[1].code}]`
+               // } else if (item.coding.length === 1) {
+               //   title = `${item.display} [${item.coding[0].code}]`
+               // }
+               //https://app.clickup.com/t/8553538/TECH-7706?comment=90180198632989&threadedComment=90180200043875
+               if (item.coding.length>0) {
+                 title = `${item.display} [${item.coding[0].code}]`
+               }
+               return {
+                 ...item,
+                 title,
+                 id: title
+               }
+             }),
+             needLoadMore: data.items.length === pageSize,
+             pageIndex: pageIndex + 1,
+             totalCount: 0,
+             totalPage: 0,
+           })
+         }
+       } else {
+         const data: Data | null = await list_doctor_medical_terms({
+           pageIndex,
+           pageSize,
+           doctorId: pageData.patients.doctorId,
+           category: 'MedicalProcedure',
+           keyWord: searchQuery
+         })
+         console.log('CreateConsultationPage.tsx Medical_procedures list_doctor_medical_terms data=', data)
+         if (data) {
+           return Promise.resolve({
+             ...data,
+             items: data.items.map((item: List_doctor_medical_terms, index) => {
+               return {
+                 ...item,
+                 title: item.term
+               }
+             }),
+           })
+         }
+       }
+     } catch (e) {
+       console.log('CreateConsultationPage.tsx Medical_procedures fetchData e=', e)
+     }
+@@ -3626,238 +3831,238 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+                   medicalProceduresSelectList: procedureArray.map(item => item.display),
+                   // follow_upSelectedList:
+                   //   state.GetLatestMedicalRecord.action && state.GetLatestMedicalRecord.action.split(',') || [],
+                   followUpInputText: state.GetLatestMedicalRecord.action,
+                   // OthersSelectedList:
+                   //   state.GetLatestMedicalRecord.notes && state.GetLatestMedicalRecord.notes.split(',') || [],
+                   otherInputText: state.GetLatestMedicalRecord.notes
+                 }
+               })
+               if (state.GetLatestMedicalRecord.diagnosisJson) {
+                 const diagnosisJson = JSON.parse(state.GetLatestMedicalRecord.diagnosisJson)
+                 console.log('CreateConsultationPage.tsx renderRightBt diagnosisJson=', diagnosisJson)
+                 ref_diagnosis_valueAsJson.current = diagnosisJson.diagnosis
+               }
+               if (state.GetLatestMedicalRecord.procedureJson) {
+                 const procedureJson = JSON.parse(state.GetLatestMedicalRecord.procedureJson)
+                 console.log('CreateConsultationPage.tsx renderRightBt  procedureJson=', procedureJson)
+                 ref_MedicalProcedures_valueAsJson.current = procedureJson.procedures
+               }
+             } else {//新增藥方
+               const [err, data] = await tool.to(get_drugbook_masters_by_names({
+                 clinicId: pageData.patients.clinicId,
+                 drugNames: [state.GetLatestPrescription.drugName],
+                 checkAllergyWithPatientId: pageData.patients.patientId
+               }))
+               if (data) {
+                 const get_drugbook_masters_by_names = data.find((currentValue, index, arr) => {
+                   return currentValue.drugName === state.GetLatestPrescription.drugName
+                 })
+                 ref_SingleSelect.current.changeSelectedValue(get_drugbook_masters_by_names.isSyrup ? 0 : 1)
+                 let label = ''
+                 if (language === 'en') {
+                   label = get_drugbook_masters_by_names.unit?.description.en
+                 } else {
+                   label = get_drugbook_masters_by_names.unit?.description.zh || get_drugbook_masters_by_names.unit?.description.en
+                 }
+                 ref_quantity.current = null
+                 setState(prevState => {
+                   return {
+                     ...prevState,
+                     showDrugListModal: false,
+                     medicineSelect: state.GetLatestPrescription,
+                     get_drugbook_masters_by_names,
+                     potion: get_drugbook_masters_by_names.isSyrup ? 0 : 1,
+                     stock: get_drugbook_masters_by_names ? get_drugbook_masters_by_names.currentQty : 0,
+                     unit: get_drugbook_masters_by_names.unit ? {
+                       ...get_drugbook_masters_by_names.unit,
+                       label
+                     } : null
+                   }
+                 })
+                 // removeRootView()
+               }
+             }
+           }}>
+             <Text style={[styles.copyBtText, (disabled && { color: uiTheme.colors.$disabledBtnText, })]}>{global.i18n.t('Need to copy the previous medical record')} ? </Text>
+             <View style={styles.copyView}>
+               <Text style={[styles.copyBtText, { textAlign: 'right', marginRight: 4 }, (disabled && { color: uiTheme.colors.$disabledBtnText, })]}>{global.i18n.t('Copy')}</Text>
+               {ArrowRight({ color: !disabled ? '#fff' : uiTheme.colors.$disabledBtnText })}
+             </View>
+           </TouchableOpacity>
+           <View style={styles.newMedicalRecordCard}>
+             {/*日期*/}
+             <>
+               <View style={styles.scrollViewRow}>
+                 <Text style={styles.scrollViewRowText}>{global.i18n.t('date')}</Text>
+                 <TouchableOpacity disabled={state.type !== 0 || pageData.date !== undefined} onPress={() => {
+                   setState((prevState) => {
+                     return {
+                       ...prevState, showDateModal: true
+                     }
+                   })
+                 }} style={styles.dateBt}>
+                   <Text
+                     style={[styles.dateBtText, ((state.type !== 0 || pageData.date !== undefined) ? {color: 'rgba(60, 60, 67, 0.3)'} : null)]}>{moment(state.dateString).locale('en').format('DD MMM[.] YYYY')}</Text>
+                 </TouchableOpacity>
+               </View>
+               <View style={[styles.dividerStyle, styles.divider]} />
+             </>
+             {/* 治疗 */}
+-            {/* {
++            {
+               pageData.patients.isDental && <>
+                 <RNAutoPositionedPopup
+                   key={`healing`}
+                   ref={ref_healing}
+                   tag={i18n.t('healing')}
+                   inputStyle={stableTransparentInputStyle}
+                   forceRemoveAllRootViewOnItemSelected={true}
+                   localSearch={false}
+                   useTextInput={false}
+                   internalSearch={true}
+                   themeMode={mode}
+                   placeholder={i18n.t('Please_enter')}
+-                  selectedItem={state.selectedDiagnosis}
+-                  CustomRow={renderDiagnosisCustomRow}
+-                  AutoPositionedPopupBtnStyle={{ ...styles.selectBt, ...{ justifyContent: 'flex-start' } }}
++                  selectedItem={state.selectedHealing}
++                  CustomRow={renderHealingCustomRow}
++                  AutoPositionedPopupBtnStyle={{ ...styles.selectBt, ...{ justifyContent: 'flex-start'} }}
+                   btwChildren={
+-                    renderDiagnosisBtChildren
++                    renderHealingBtChildren
+                   }
+-                  fetchData={fetchDiagnosisData}
++                  fetchData={fetchHealingData}
+                   onItemSelected={async (item: RNSelectedItem) => {
+                     console.log('onItemSelected=', item)
+                     setState((prevState) => {
+                       return {
+                         ...prevState,
+-                        selectedDiagnosis: item
++                        selectedHealing: item
+                       }
+                     })
+                   }} emptyText={i18n.t('no_data')}
+                   onChangeText={(text: string) => {
+-                    console.log('CreateConsultationPage diagnosis1 onChangeText=', text)
++                    console.log('CreateConsultationPage onChangeText=', text)
+                     // Emit global event with tag and searchQuery
+                     emitEvent(AutoPositionedPopupEventNames.searchQueryChange, {
+-                      tag: global.i18n.t('diagnosis1'),
++                      tag: global.i18n.t('healing'),
+                       searchQuery: text
+                     })
+                   }}
+                   onSubmitEditing={(e: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
+                     console.log('onSubmitEditing e.nativeEvent.text=', e.nativeEvent?.text);
+                     if (e.nativeEvent?.text) {
+                       const searchQuery = e.nativeEvent?.text
+                       setTimeout(() => {
+                         emitEvent(AutoPositionedPopupEventNames.searchQueryChange, {
+-                          tag: global.i18n.t('diagnosis1'),
++                          tag: global.i18n.t('healing'),
+                           searchQuery: searchQuery
+                         })
+                       }, 250);
+                     }
+                   }}
+                 ></RNAutoPositionedPopup>
+                 <View style={styles.SelectedList}>
+                   {state.diagnosisSelectList?.map(
+                     (item, index, array) => {
+                       return <TouchableOpacity key={index} style={styles.SelectItem} onPress={async () => {
+                         const _List = state.diagnosisSelectList
+                         const _i = _List.indexOf(item)
+                         if (_i !== -1) {
+                           _List.splice(_i, 1)
+                         }
+                         setState((prevState) => {
+                           return {
+                             ...prevState, diagnosisSelectList: _List
+                           }
+                         })
+                       }}>
+                         <Text style={styles.SelectItemText}>
+                           {item}
+                         </Text>
+                         <Text style={styles.SelectItemTextX}>
+                           x
+                         </Text>
+                       </TouchableOpacity>
+                     }
+                   )
+                   }
+                 </View>
+               </>
+-            } */}
++            }
+             {/*不適徵兆*/}
+             {
+               !pageData.patients.isDental && <>
+                 <RNAutoPositionedPopup
+                   tag={global.i18n.t('Symptoms_of_discomfort')}
+                   localSearch={false}
+                   useTextInput={false}
+                   themeMode={mode}
+                   selectedItem={{ id: '' }}
+                   CustomRow={
+                     ({ children }: ViewStyle & { children?: React.ReactNode }) => {
+                       return (
+                         <View style={styles.scrollViewRow}>
+                           <Text style={styles.scrollViewRowText}>{global.i18n.t('Symptoms_of_discomfort')}</Text>
+                           {children}
+                         </View>
+                       );
+                     }
+                   }
+                   AutoPositionedPopupBtnStyle={{ ...styles.selectBt, ...{ justifyContent: 'flex-end' } }}
+                   btwChildren={
+                     () => {
+                       return (
+                         <>
+                           <Text style={[styles.selectBtText, { textAlign: 'right' }]}>{global.i18n.t('PleaseSelect')}</Text>
+                           <ArrowUpDown color={uiTheme.colors.$fontSize_15_color} />
+                         </>
+                       );
+                     }
+                   }
+                   fetchData={async ({
+                     pageIndex,
+                     pageSize,
+                   }: {
+                     pageIndex: number;
+                     pageSize: number;
+                   }): Promise<AutoPositionedPopupData | null> => {
+                     try {
+                       console.log('CreateConsultationPage.tsx 不適徵兆 fetchData pageData=', pageData);
+                       const [err, data] = await tool.to(list_doctor_medical_terms({
+                         pageIndex: 0, pageSize: 10000, doctorId: pageData.patients.doctorId, category: 'Complaint'
+                       }))
+                       console.log('CreateConsultationPage.tsx 不適徵兆 fetchData data=', data)
+                       if (data && data.items && data.items.length > 0) {
+                         return {
+                           items: data.items.map((item: List_doctor_medical_terms, index: number, array: List_doctor_medical_terms[]): {
+                           } => {
+                             return {
+                               ...item,
+                               title: item.term + (item.code || ''),
+                               selected: false,
+                             };
+                           }) || [],
+                           pageIndex: pageIndex,
+                           needLoadMore: false,
+                         } as AutoPositionedPopupData;
+                       }
+                       // console.log('CreateConsultationPage.tsx Symptoms_of_discomfort fetchData state.discomfortModalList=', state.discomfortModalList);
+                       return Promise.resolve(null);
+                     } catch (e) {
+                     }
+                     return Promise.resolve(null);
+                   }}
+                   onItemSelected={async (item: RNSelectedItem) => {
+                     console.log('onItemSelected=', item);
+                     setState((prevState) => {
+                       return {
+                         ...prevState,
+                         discomfortInputText: !prevState.discomfortInputText ? `${item.title}` : prevState.discomfortInputText + `,${item.title}`
+                       }
+                     })
+                   }} emptyText={i18n.t('no_data')}
+                 ></RNAutoPositionedPopup>
+                 <View style={[styles.dividerStyle, styles.divider]} />
+                 <View style={styles.discomfortBtRow}>
+                   <Text style={styles.quickly_fill_in_txt}>{global.i18n.t('quickly fill in')}：
+                   </Text>
+                   {state.discomfortBtList.map((item, index) => {
+                     return (
+                       <TouchableOpacity key={index}
+@@ -4329,161 +4534,161 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+                         //       (item, index, array) => {
+                         //         return { ...item, selected: false, label: item.term + (item.code || '') }
+                         //       }
+                         //     )
+                         //   }
+                         // })
+                         return {
+                           items: data.items.map((item: List_doctor_medical_terms, index: number, array: List_doctor_medical_terms[]): {
+                           } => {
+                             return {
+                               ...item,
+                               title: (item.term + (item.code || '')),
+                               selected: item.selected ?? false,
+                             };
+                           }) || [],
+                           pageIndex: pageIndex,
+                           needLoadMore: false,
+                         } as AutoPositionedPopupData;
+                       }
+                     } catch (e) {
+                     }
+                     return Promise.resolve(null);
+                   }}
+                   onItemSelected={async (item: RNSelectedItem) => {
+                     console.log('onItemSelected=', item);
+                     setState((prevState) => {
+                       return {
+                         ...prevState,
+                         // OthersSelectedList: prevState.OthersSelectedList.concat([item.title]),
+                         otherInputText: `${prevState.otherInputText}${prevState.otherInputText ? ',' : ''}${item.title}`,
+                       }
+                     })
+                   }}
+                   emptyText={i18n.t('no_data')}
+                 ></RNAutoPositionedPopup>
+                 <View style={[styles.dividerStyle, styles.divider]} />
+                 <TextInput
+                   style={[textInputStyle.style, styles.otherSignsInput]}
+                   multiline={true}
+                   numberOfLines={4} // 你可以根据需要设置任何行数
+                   onChangeText={(otherInputText) => {
+                     console.log('otherInputText=', otherInputText)
+                     setState((prevState) => {
+                       return {
+                         ...prevState,
+                         otherInputText: otherInputText.replace(/\n/g, '')//去掉换行符
+                       }
+                     })
+                   }}
+                   placeholderTextColor={uiTheme.colors.$placeholderTextColor}
+                   value={state.otherInputText}
+                   placeholder={global.i18n.t('Please_enter')}
+                   returnKeyType="done" // 设置键盘右下角按钮的文本，比如这里是"done"，在iOS上显示为"完成"
+                   onKeyPress={(e) => {
+                     console.log('onKeyPress', e.nativeEvent.key)
+                     // 检查按下的键是否为回车键
+                     if (e.nativeEvent.key === 'Enter') {
+                       // 隐藏键盘
+                       Keyboard.dismiss();
+                     }
+                   }}
+                   onSubmitEditing={() => {
+                     console.log('onSubmitEditing')
+                     // state.otherInputText && setState((prevState) => {
+                     //   return {
+                     //     ...prevState,
+                     //     OthersSelectedList: prevState.OthersSelectedList.concat([prevState.otherInputText]),
+                     //     otherInputText: ''
+                     //   }
+                     // })
+                   }}
+                   onFocus={() => {
+                   }}
+                 />
+               </>
+             }
+           </View>
+         </>
+       )
+     },
+-    [state.discomfortBtList, state.discomfortInputText, state.diagnosisInputText, state.followUpInputText, state.medicalProceduresInputText, state.otherInputText, state.otherSignsInputText, state.dateString, state.showDateModal, state.showdiscomfortModal, state.showOtherSignsModal, state.medicalProceduresSelectList, state.diagnosisSelectList, state.type, state.MedicalProceduresModalList, state.diagnosisSel, state.medicalprocedureSel, state.get_consultation_setting, pageData, state.selectedDiagnosis, state.selectedMedicalProcedures,/* state.discomfortModalList, */state.barIndex, state.GetLatestMedicalRecord, state.GetLatestPrescription, uiTheme, mode, pageData.patients.doctorId],
++    [state.discomfortBtList, state.discomfortInputText, state.diagnosisInputText, state.followUpInputText, state.medicalProceduresInputText, state.otherInputText, state.otherSignsInputText, state.dateString, state.showDateModal, state.showdiscomfortModal, state.showOtherSignsModal, state.medicalProceduresSelectList, state.diagnosisSelectList, state.type, state.MedicalProceduresModalList, state.medicalprocedureSel, state.get_consultation_setting, pageData, state.selectedDiagnosis, state.selectedMedicalProcedures,/* state.discomfortModalList, */state.barIndex, state.GetLatestMedicalRecord, state.GetLatestPrescription, uiTheme, mode, pageData.patients.doctorId, state.selectedHealing, emitEvent ],
+   );
+ 
+   // 新增藥方 card
+   const renderNewPrescriptionCard = useCallback(
+     () => {
+       const disabled = state.type === 1 || (state.barIndex === 0 ? !state.GetLatestMedicalRecord : !state.GetLatestPrescription) || (state.consultationId !== undefined)
+       console.log('CreateConsultationPage renderNewPrescriptionCard')
+       return state.type === 0 && (
+         <>
+           <TouchableOpacity style={[styles.copyBt, (disabled && { backgroundColor: uiTheme.colors.$disabledBtn, })]} disabled={disabled} onPress={async () => {
+             console.log('onRightPress:', state.GetLatestMedicalRecord)
+             let diagnosisArray = [];
+             try {
+               const diagnosisJson = typeof state.GetLatestMedicalRecord.diagnosisJson === 'string'
+                 ? JSON.parse(state.GetLatestMedicalRecord.diagnosisJson) // 如果是字符串，解析为对象
+                 : state.GetLatestMedicalRecord.diagnosisJson; // 如果已经是对象，直接使用
+               diagnosisArray = diagnosisJson?.diagnosis || []; // 获取 diagnosis 数组
+             } catch (error) {
+               console.error('Error parsing diagnosisJson:', error);
+             }
+             let procedureArray = [];
+             try {
+               const procedureJson = typeof state.GetLatestMedicalRecord.procedureJson === 'string'
+                 ? JSON.parse(state.GetLatestMedicalRecord.procedureJson) // 如果是字符串，解析为对象
+                 : state.GetLatestMedicalRecord.procedureJson; // 如果已经是对象，直接使用
+               procedureArray = procedureJson?.procedures || []; // 获取 procedure 数组
+             } catch (error) {
+               console.error('Error parsing diagnosisJson:', error);
+             }
+             if (state.type === 0 && state.barIndex === 0) {//新增病歷
+               setState((prevState) => {
+                 return {
+                   ...prevState,
+                   discomfortInputText: state.GetLatestMedicalRecord.complaint,
+                   otherSignsInputText: state.GetLatestMedicalRecord.finding,
+                   diagnosisInputText: state.GetLatestMedicalRecord.diagnosis,
+                   medicalProceduresInputText: state.GetLatestMedicalRecord.procedure,
+                   // followUpInputText: state.GetLatestMedicalRecord.action,
+                   // otherInputText: state.GetLatestMedicalRecord.notes,
+                   diagnosisSelectList: diagnosisArray.map(item => item.display),
+                   medicalProceduresSelectList: procedureArray.map(item => item.display),
+                   // follow_upSelectedList:
+                   //   state.GetLatestMedicalRecord.action && state.GetLatestMedicalRecord.action.split(',') || [],
+                   followUpInputText: state.GetLatestMedicalRecord.action,
+                   // OthersSelectedList:
+                   //   state.GetLatestMedicalRecord.notes && state.GetLatestMedicalRecord.notes.split(',') || [],
+                   otherInputText: state.GetLatestMedicalRecord.notes
+                 }
+               })
+               if (state.GetLatestMedicalRecord.diagnosisJson) {
+                 const diagnosisJson = JSON.parse(state.GetLatestMedicalRecord.diagnosisJson)
+                 console.log('CreateConsultationPage.tsx renderRightBt diagnosisJson=', diagnosisJson)
+                 ref_diagnosis_valueAsJson.current = diagnosisJson.diagnosis
+               }
+               if (state.GetLatestMedicalRecord.procedureJson) {
+                 const procedureJson = JSON.parse(state.GetLatestMedicalRecord.procedureJson)
+                 console.log('CreateConsultationPage.tsx renderRightBt  procedureJson=', procedureJson)
+                 ref_MedicalProcedures_valueAsJson.current = procedureJson.procedures
+               }
+             } else {//新增藥方
+               const [err, data] = await tool.to(get_drugbook_masters_by_names({
+                 clinicId: pageData.patients.clinicId,
+                 drugNames: [state.GetLatestPrescription.drugName],
+                 checkAllergyWithPatientId: pageData.patients.patientId
+               }))
+               if (data) {
+                 const get_drugbook_masters_by_names = data.find((currentValue, index, arr) => {
+                   return currentValue.drugName === state.GetLatestPrescription.drugName
+                 })
+                 ref_SingleSelect.current.changeSelectedValue(get_drugbook_masters_by_names.isSyrup ? 0 : 1)
+                 let label = ''
+                 if (language === 'en') {
+                   label = get_drugbook_masters_by_names.unit?.description.en
+                 } else {
+                   label = get_drugbook_masters_by_names.unit?.description.zh || get_drugbook_masters_by_names.unit?.description.en
+                 }
+                 ref_quantity.current = null
+                 setState(prevState => {
+                   return {
+                     ...prevState,
