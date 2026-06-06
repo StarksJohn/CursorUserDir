@@ -1,6 +1,6 @@
 {
   "name": "search_design_system",
-  "description": "Search for design system assets (components, variables, and styles) based on a text query. Returns matching assets from all design libraries. Use this when you need to find specific components, variables (e.g. colors, spacing tokens), or styles from design libraries.",
+  "description": "Search for design system assets (components, variables, and styles) based on a text query. Returns matching assets from all design libraries. Use this when you need to find specific components, variables (e.g. colors, spacing tokens), or styles from design libraries.\nResults are stable within a turn — do not re-issue the same arguments, including when the result is empty.",
   "arguments": {
     "type": "object",
     "properties": {
