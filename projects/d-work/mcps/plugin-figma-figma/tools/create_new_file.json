@@ -10,7 +10,9 @@
       },
       "planKey": {
         "type": "string",
-        "description": "The team or organization key where the file should be created. Obtain this from the whoami tool — it is the \"key\" field in each plan."
+        "minLength": 1,
+        "pattern": "^(team|organization)::\\d+$",
+        "description": "The team or organization key (e.g. \"team::1234567890\" or \"organization::1234567890\"). Use the `key` field verbatim from one of the user's plans. If the user has more than one plan, ask which one to use before calling."
       },
       "editorType": {
         "type": "string",

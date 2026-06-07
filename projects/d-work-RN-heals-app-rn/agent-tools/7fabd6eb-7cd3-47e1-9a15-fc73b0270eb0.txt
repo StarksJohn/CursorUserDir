@@ -1,0 +1,2051 @@
+diff --git a/src/screens/home/home-screen/home-screen.tsx b/src/screens/home/home-screen/home-screen.tsx
+index 109902e6..c85f2979 100644
+--- a/src/screens/home/home-screen/home-screen.tsx
++++ b/src/screens/home/home-screen/home-screen.tsx
+@@ -1,1696 +1,1699 @@
+ import React, {
+   useCallback,
+   useEffect,
+   useState,
+   useRef,
+   useMemo,
+ } from 'react';
+ import { useFocusEffect } from '@react-navigation/native';
+ import {
+   Image,
+   ScrollView,
+   TouchableOpacity,
+   View,
+   Animated,
+   RefreshControl,
+   Modal,
+   ActivityIndicator,
+   Linking,
+   Platform,
+   DeviceEventEmitter,
+   TextInput,
+ } from 'react-native';
+ import LinearGradient from 'react-native-linear-gradient';
+ import styles from './home-screen.styles.ts';
+ import { StateProps } from './home-screen.props.ts';
+ import moment from 'moment';
+ import Carousel from 'react-native-reanimated-carousel';
+ import RBSheet from 'react-native-raw-bottom-sheet';
+ import GradientBt from '@components/gradient-bt/gradient-bt.tsx';
+ import AppText from '@components/app-text/app-text';
+ import ShimmerLoadingHomeScreen from '@components/shimmer-loading-home-screen/shimmer-loading-home-screen';
+ import DoctorAvatar from '@components/doctor-avatar/doctor-avatar.tsx';
+ import constants from '@constants';
+ import { useAppState } from '@store/AppContext';
+ import {
+   heals_pass_product_list_Response,
+   i_heals_pass_product_list,
+   Ticket,
+   UserPolicy,
+ } from '@api/api-types.ts';
+ import { User } from '@api/api-types.ts';
+ import { ThemeContext } from '@style/theme/theme-context.tsx';
+ import type { Theme } from '@types/Theme.ts';
+ import { useThemeProvider } from '@style/theme/theme-provider';
+ import assets from '@assets';
+ import {
+   SVGNewUserIcon_1,
+   SVGNewUserIcon_2,
+   SVGNewUserIcon_4,
+   SVGVideoCallGreenIcon,
+   SVGCloseCrossIcon,
+   SVGUnionIcon,
+   SVGDoctorsIcon,
+   SVGTreeIcon,
+   SVGNumberQueuePersonIcon,
+   SVGClockCircleGrey,
+   SVGLockComponent,
+   SVGBigTree,
+   SVGYellowInfoIcon,
+   SVGInfoSmalliIcon,
+   SVGChevronRightGreenIcon,
+-  SVGGlobalMedicalNetworkIcon
++  SVGGlobalMedicalNetworkIcon,
+ } from '../../../assets/svg/index.ts';
+ import CloseFadeGrey from '../../../assets/images/close-fade-grey.svg';
+ import ContactUS from '../../../assets/images/contact-us.svg';
+ import Call from '../../../assets/images/call.svg';
+ import Whatsapp from '../../../assets/images/whatsapp.svg';
+ import scrollViewStyle from '@style/common-styles/scrollView.style.ts';
+ import AvatarComponent from '@components/avatar-component/avatar-component.tsx';
+ import GradientButtonComponent from '@components/gradient-button-component/gradient-button-component.tsx';
+ import dayjs from 'dayjs';
+ import QRCodeBt from '../../../components/QRCodeBt/QRCodeBt.tsx';
+ import { useLoading } from '@components/loading-modal/loading-context.tsx';
+ import DoctorPrescriptionWW from '../home-screen/doctor-prescription-ww/doctor-prescription-ww.tsx';
+ import Config from 'react-native-config';
+ import { useLocationPermissionStatus } from '@hooks/useLocationPermission.ts';
+ 
+ const HomeScreen: React.FC = (props: any) => {
+   const heightAnim = useRef(new Animated.Value(0)).current;
+   const [currentIndex, setCurrentIndex] = useState(0);
+   const [heights, setHeights] = useState([]);
+   const [state, setState] = useState<StateProps>({
+     heals_pass_product_list: [],
+     index_heals_pass_product_list: 0,
+     scrollViewHeight: 0,
+     childHeights: {},
+     original_heals_pass_product_list: [],
+     tickets: [],
+   });
+   const { setLoading } = useLoading();
+   const scrollViewRef = useRef(null);
+   const { set_User, user, position, language, AcceptLanguage } = useAppState();
+   const refGeolocationModal = useRef(null);
+   const { changeStatusBarTextColor, changeStatusBarBackgroundColor } =
+     useThemeProvider();
+   const [refreshing, setRefreshing] = useState<boolean>(false);
+   const [welcomeAlert, setWelcomeAlert] = useState<boolean>(false);
+   const [newComersGuideIndex, setNewComersGuideIndex] = useState<number>(0);
+   const ITEM_WIDTH = 307;
+   const progress = useRef(new Animated.Value(0)).current;
+   const [showPlanDeets, setShowPlanDeets] = useState<boolean>(false);
+   const [selectedPlan, setSelectedPlan] = useState<any>({});
+   const [currentInsuredItem, setCurrentInsuredItem] = useState<any>({});
+   const [userPolicies, setUserPolicies] = useState<any[]>([]);
+   const [currentNewComersPlanHeight, setNewComersPlanHeight] = useState(320);
+   const [planItemHeight, setPlanItemHeight] = useState<any[]>([]);
+   const [userHasPlan, setUserHasPlan] = useState<boolean>(false);
+   const [currentNoPlanIdx, setCurrentNoPlanIdx] = useState<number>(0);
+   const [newComersDoctor, setNewComersDoctor] = useState<{}>({});
+   const [showModalLocDetect, setShowModalLocDetect] = useState<boolean>(false);
+   const [currentCountryName, setCurrentCountryName] = useState<string>('');
+   const [showContactUsModal, setShowContactUsModal] = useState<boolean>(false);
+   const [showInquiryModal, setShowInquiryModal] = useState<boolean>(false);
+   const [showReminderModal, setShowReminderModal] = useState<boolean>(false);
+   const [reminderEmail, setReminderEmail] = useState<string>('');
+   const [showProfileUpdateModal, setShowProfileUpdateModal] =
+     useState<boolean>(false);
+   const [profileUpdateName, setProfileUpdateName] = useState<string>('');
+   const [profileUpdateEmail, setProfileUpdateEmail] = useState<string>('');
+   const [profileUpdateLoading, setProfileUpdateLoading] =
+     useState<boolean>(false);
+   const { isGranted, loading } = useLocationPermissionStatus();
+   const ref_setUserHasPlan = useRef(false);
++  const hasShownWelcomeModal = useRef(false);
+ 
+   // Memoize guide arrays to prevent unnecessary re-renders
+   const newUserGuide = useMemo(
+     () => [
+       {
+         id: 0,
+         title: $i18n.t("Doctors' Access - Worldwide"),
+         description: $i18n.t('You can now access doctors'),
+         isPlan: false,
+         btnLater: $i18n.t('later'),
+         btnBuy: $i18n.t('buynow'),
+       },
+       {
+         id: 1,
+         title: $i18n.t('Choose Your Plan'),
+         description: $i18n.t('We offer several plans'),
+         isPlan: false,
+         btnLater: $i18n.t('later'),
+         btnBuy: $i18n.t('buynow'),
+       },
+       // {
+       //   id: 2,
+       //   title: $i18n.t('how_to_use'),
+       //   description: $i18n.t('the_system_has_detected_that_you_have'),
+       //   isPlan: false,
+       //   btnLater: $i18n.t('later'),
+       //   btnBuy: $i18n.t('buynow'),
+       // },
+       {
+         id: 4,
+         title: $i18n.t('find_plan_for_you'),
+         description: $i18n.t('find_plan_for_you_msg'),
+         isBooking: true,
+         btnLater: $i18n.t('later'),
+         btnBook: $i18n.t('booking_now'),
+       },
+     ],
+-    [],
++    []
+   );
+ 
+   const newUserGuideNoPlan = useMemo(
+     () => [
+       {
+         id: 0,
+         title: $i18n.t("Doctors' Access - Worldwide"),
+         description: $i18n.t('You can now access doctors'),
+         isPlan: false,
+         btnLater: $i18n.t('later'),
+         btnBuy: $i18n.t('buynow'),
+       },
+       {
+         id: 1,
+         title: $i18n.t('Choose Your Plan'),
+         description: $i18n.t('We offer several plans'),
+         isPlan: false,
+         btnLater: $i18n.t('later'),
+         btnBuy: $i18n.t('buynow'),
+       },
+       {
+         id: 4,
+         title: $i18n.t('find_plan_for_you'),
+         description: $i18n.t('find_plan_for_you_msg'),
+         isPlan: false,
+         btnLater: $i18n.t('later'),
+         btnBuy: $i18n.t('buynow'),
+       },
+     ],
+-    [],
++    []
+   );
+   const [activeIndex, setActiveIndex] = useState(0);
+ 
+   // Define onSnap before useEffects that use it
+   const onSnap = useCallback(
+     async (index = 0) => {
+       const denominator = userHasPlan
+         ? newUserGuide.length
+         : newUserGuideNoPlan.length;
+       const percentage = (index + 1) / denominator;
+ 
+       Animated.timing(progress, {
+         toValue: percentage,
+         duration: 250,
+         useNativeDriver: false,
+         isInteraction: false,
+       }).start();
+     },
+-    [userHasPlan, newUserGuide, newUserGuideNoPlan, progress],
++    [userHasPlan, newUserGuide, newUserGuideNoPlan, progress]
+   );
+ 
+   // Update progress bar when userHasPlan is determined
+   useEffect(() => {
+     if (welcomeAlert && newComersGuideIndex === 0) {
+       // Recalculate progress bar when userHasPlan is updated
+       onSnap(0);
+     }
+   }, [userHasPlan, welcomeAlert, newComersGuideIndex, onSnap]);
+ 
+   // Update userHasPlan based on active plans
+   useEffect(() => {
+     if (state.heals_pass_product_list.length === 0) {
+       return;
+     }
+     const listActivePlan = state.heals_pass_product_list.filter(
+-      i => i.isActive === true,
++      (i) => i.isActive === true
+     );
+ 
+     if (listActivePlan && listActivePlan.length > 0) {
+       setUserHasPlan(true);
+     } else {
+       setUserHasPlan(false);
+     }
+     setTimeout(() => {
+       ref_setUserHasPlan.current = true;
+     }, 500);
+   }, [state.heals_pass_product_list]);
+ 
+   // Fetch instant doctor when modal opens and user has a plan
+   useEffect(() => {
+     if (welcomeAlert && userHasPlan) {
+       const listActivePlan = state.heals_pass_product_list.filter(
+-        i => i.isActive === true,
++        (i) => i.isActive === true
+       );
+       if (listActivePlan.length > 0) {
+         const firstPlan = listActivePlan[0];
+         const params = {
+           payorId: firstPlan?.payorId ?? '',
+           planId: firstPlan?.id ?? '',
+           specialty: '',
+           region: firstPlan?.country,
+           page: 1,
+           limit: 1,
+         };
+         getInstantDoctor(params);
+       }
+     }
+   }, [welcomeAlert, userHasPlan, state.heals_pass_product_list]);
+ 
+   const getCurrentLongLat = async () => {
+     const response = await $api.getLocation();
+     const countries = [
+       'Hong Kong',
+       'China',
+       'Malaysia',
+       'Vietnam',
+       'Japan',
+       'Macau',
+       'Indonesia',
+     ];
+     if (response?.success) {
+       if (!countries.includes(response?.data?.country)) {
+         setCurrentCountryName(response?.data?.country);
+         setTimeout(() => {
+           setShowModalLocDetect(true);
+         }, 350);
+       } else if (!userHasPlan && ref_setUserHasPlan.current && !welcomeAlert) {
+         setTimeout(
+           () => {
+             setShowInquiryModal(true);
+           },
+-          Platform.OS === 'ios' ? 1000 : 0,
++          Platform.OS === 'ios' ? 1000 : 0
+         );
+       }
+     }
+   };
+ 
+   useEffect(() => {
+     changeStatusBarTextColor('dark-content');
+     changeStatusBarBackgroundColor('rgba(255, 255, 255, 1)');
+   }, []);
+ 
+   useEffect(() => {
+     const subscription = DeviceEventEmitter.addListener(
+       'showEmailReminderModal',
+       ({ email }) => {
+         setReminderEmail(email);
+         setShowReminderModal(true);
+-      },
++      }
+     );
+     return () => subscription.remove();
+   }, []);
+ 
+   useEffect(() => {
+     const subscription = DeviceEventEmitter.addListener(
+       'showProfileUpdateModal',
+       async () => {
+         try {
+           const userData = await $api.getUser();
+           if (userData) {
+             setProfileUpdateName(userData.name || '');
+             setProfileUpdateEmail(userData.value?.email || '');
+           }
+         } catch (e) {}
+         setShowProfileUpdateModal(true);
+-      },
++      }
+     );
+     return () => subscription.remove();
+   }, []);
+ 
+   const requestPermission = async () => {
+     if (!isGranted) return;
+     if (props?.route?.params?.isExistingUser) return;
+     if (props?.route?.params?.isExistingUser && userHasPlan) return;
+     await getCurrentLongLat();
+   };
+ 
+   const showGeolocationModal = useCallback(async () => {
+     if (position) {
+       try {
+         const b = await $cache.getItem($cacheKeys.hasShownGeolocationModal);
+         if (!b) {
+           refGeolocationModal.current.open();
+         }
+       } catch (e) {}
+     }
+   }, [position]);
+ 
+   useFocusEffect(
+     useCallback(() => {
+       fetchPageData().then().catch();
+       showGeolocationModal().then();
+       return () => {
+         console.log('HomeScreen is unfocused!');
+       };
+-    }, [position]),
++    }, [position])
+   );
+ 
+   const getCardTheme = (
+-    type: string,
++    type: string
+   ): {
+     bgcolor: string;
+     maskcolor: string;
+     bordercolor: string;
+     headerbg?: string;
+   } => {
+     const levelColor = {
+       basic: {
+         bgcolor: '#00AC861A',
+         maskcolor: '#00AC86',
+         bordercolor: '#00AC8666',
+         headerbg: ' bg-gradient-to-r from-[#50B0D2] to-[#4AA55B]',
+       },
+       premium: {
+         bgcolor: '#A476001A',
+         maskcolor: '#A47600',
+         bordercolor: '#A4760066',
+         headerbg: 'bg-[#A4760066]',
+       },
+       global: {
+         bgcolor: '#12355C1A',
+         maskcolor: '#12355C',
+         bordercolor: '#12355C66',
+         headerbg: 'bg-[#12355C66]',
+       },
+       travel: {
+         bgcolor: '#4CA8A21A',
+         maskcolor: '#4CA8A2',
+         bordercolor: '#4CA8A266',
+         headerbg: 'bg-[#4CA8A266]',
+       },
+       china: {
+         bgcolor: '#AD1F001A',
+         maskcolor: '#AD1F00',
+         bordercolor: '#AD1F0066',
+         headerbg: 'bg-[#AD1F0066]',
+       },
+       'white-label': {
+         bgcolor: '#4CA8A21A',
+         maskcolor: '#4CA8A2',
+         bordercolor: '#4CA8A266',
+         headerbg: 'bg-[#4CA8A266]',
+       },
+     };
+     //@ts-ignore
+     return levelColor[type];
+   };
+ 
+   const fetchPageData = async () => {
+     let _user = null as unknown as User;
+     try {
+       const res: User | undefined = await $api.getUser();
+       if (res) {
+         set_User(res);
+         _user = res;
+       }
+     } catch (e) {
+       console.log('HomeScreen getUser error=', e);
+     }
+ 
+     try {
+       const response: heals_pass_product_list_Response =
+         await $api.heals_pass_product_list();
+ 
+       if (response.success) {
+         const addItem = (item: i_heals_pass_product_list) => {
+           let theme = getCardTheme(item?.type);
+           let policies = _user?.policies.find(
+             (policy: UserPolicy, index, arr) => {
+               return policy.planId === item.id;
+-            },
++            }
+           );
+           if (policies) {
+             item.isActive = true;
+           } else {
+             item.isActive = false;
+           }
+           item.theme = theme;
+           return item;
+         };
+ 
+         let list = response.data.filter((plan: i_heals_pass_product_list) => {
+           if (constants.isAXAPlan(plan.id)) {
+             if (
+               !constants.isHpBasicPlan(plan.id) &&
+               (plan.purchasable || plan.isActive)
+             ) {
+               plan = addItem(plan);
+               return true;
+             }
+           } else if (!constants.isHpBasicPlan(plan.id) && plan.purchasable) {
+             plan = addItem(plan);
+             return true;
+           }
+           return false;
+         });
+ 
+         let _index_heals_pass_product_list = list.findIndex(
+-          (plan: i_heals_pass_product_list) => plan.isActive,
++          (plan: i_heals_pass_product_list) => plan.isActive
+         );
+         if (_index_heals_pass_product_list === -1) {
+           _index_heals_pass_product_list = 0;
+         }
+ 
+-        setState(prevState => {
++        setState((prevState) => {
+           return {
+             ...prevState,
+             heals_pass_product_list: list,
+             index_heals_pass_product_list: _index_heals_pass_product_list,
+           };
+         });
+       }
+     } catch (e) {
+       console.log('HomeScreen heals_pass_product_list error=', e);
+     }
+ 
+     try {
+       // const response: Ticket[] | undefined = await $api.ticketList({
+       //   statusGroup: "upcoming",
+       //   limit: 1,
+       //   page: 1,
+       // });
+       const response: Ticket[] = await $api.get_ticket_upcoming();
+       console.log('HomeScreen get_ticket_upcoming response=', response);
+       if (response && response?.length > 0) {
+-        setState(prevState => {
++        setState((prevState) => {
+           return {
+             ...prevState,
+             tickets: response,
+           };
+         });
+       }
+     } catch (e) {
+       console.log('HomeScreen ticket error=', e);
+     }
+ 
+     try {
+       await $api.sponsorship_list();
+     } catch (e) {
+       console.log(`Exception encountered @ getting sponsorship ${e}`);
+     }
+ 
+     try {
+       try {
+         const response = await getUpdatedUserData();
+         if (response) {
+           setUserPolicies(response.policies);
+         }
+       } catch (e) {
+         console.log(`Exception encountered @ getInsuredItem `, e);
+       }
+     } catch (e) {}
+ 
+     const isUserExisting = props?.route?.params?.isExistingUser;
+-    console.log(`isUserExisting: `, isUserExisting)
+-    setTimeout(() => {
+-      setWelcomeAlert(isUserExisting ? false : true);
+-    }, 350);
++    if (!isUserExisting && !hasShownWelcomeModal.current) {
++      hasShownWelcomeModal.current = true;
++      setTimeout(() => {
++        setWelcomeAlert(true);
++      }, 350);
++    }
+   };
+ 
+   const renderAvatarBt = useCallback(() => {
+     return <AvatarComponent user={user} />;
+   }, [user]);
+ 
+   const getUpdatedUserData = async () => {
+     try {
+       const response = await $api.getUser();
+       return response;
+     } catch (e) {
+       console.log(`Exception encountered @ ${e}`);
+       return null;
+     }
+   };
+ 
+   const renderThreeBts = useCallback(() => {
+     return (
+       <View style={styles.threeBtsContainer}>
+         {[
+           {
+             icon: assets.Appointments(),
+             text: constants.i18n.t('appointments'),
+           },
+           {
+             icon: assets.Bills(),
+             text: constants.i18n.t('bills'),
+           },
+           {
+             icon: assets.Visit_a_Clinic(),
+             text: constants.i18n.t('visit_clinic'),
+           },
+         ].map((item, index, array) => {
+           return (
+             <TouchableOpacity
+               key={item.text}
+               style={styles.threeBts}
+               onPress={() => {
+                 if (index === 0) {
+                   $NavigationActions.navigate(
+-                    $routeNames.myAppointmentListScreen,
++                    $routeNames.myAppointmentListScreen
+                   );
+                 } else if (index === 1) {
+                   $NavigationActions.navigate($routeNames.transactionHistory);
+                 } else if (index === 2) {
+                   $NavigationActions.navigate($routeNames.doctorListScreen, {
+                     titleHeader: 'Visit a Clinic',
+                   });
+                 }
+               }}
+             >
+               <View style={styles.threeBtsIconContainer}>
+                 <Image source={item.icon} style={styles.threeBtsIcon} />
+                 <AppText style={styles.threeBtsText}>{item.text}</AppText>
+               </View>
+             </TouchableOpacity>
+           );
+         })}
+       </View>
+     );
+   }, []);
+ 
+   const renderVideoConsultation = useCallback(() => {
+     return (
+       <TouchableOpacity
+         style={styles.videoConsultation}
+         onPress={() => {
+           $NavigationActions.navigate($routeNames.doctorListScreen, {
+             titleHeader: $i18n.t('video_consultation'),
+           });
+         }}
+       >
+         <SVGDoctorsIcon width={32} height={32} />
+         <AppText style={styles.videoConsultationText}>
+           {constants.i18n.t('see_a_doctor')}
+         </AppText>
+       </TouchableOpacity>
+     );
+   }, []);
+ 
+   const renderGlobalMedicalNetwork = () => {
+     return (
+       <TouchableOpacity
+         style={styles.globalMedicalNetworkView}
+         onPress={() => {
+           $NavigationActions.navigate($routeNames.GlobalMedicalNetworkScreen);
+         }}
+       >
+         <AppText style={styles.globalMedicalNetworkText}>
+           {constants.i18n.t('global_medical_network')}
+         </AppText>
+         <SVGGlobalMedicalNetworkIcon width={80} height={50} />
+       </TouchableOpacity>
+-    )
++    );
+   };
+ 
+   const renderTodays_schedule = useCallback(() => {
+     return (
+       <>
+         <AppText style={styles.todays_schedule_text}>
+           {constants.i18n.t('upcoming_schedule')}
+         </AppText>
+         {state.tickets.length === 0 ? (
+           <>
+             <Image
+               source={assets.No_appointments()}
+               style={styles.No_appointments}
+             />
+             <AppText style={styles.No_appointments_text}>
+               {constants.i18n.t('no_appointments_message')}
+             </AppText>
+           </>
+         ) : (
+           <View style={styles.ticketsContainer}>
+             {state.tickets.map((ticket, index) => {
+               let onlyShowViewBt = false;
+               let rBtText = $i18n.t('checkin');
+               //https://app.clickup.com/t/8553538/TECH-7883
+               if (
+                 ticket.visitType === 'REMOTE_VIDEO' &&
+                 ticket.currentPosition <= 3
+               ) {
+                 rBtText = $i18n.t('Start');
+               } else if (
+                 ticket.visitType === 'REMOTE_VIDEO' &&
+                 ticket.currentPosition > 3
+               ) {
+                 onlyShowViewBt = true;
+               }
+ 
+               return (
+                 <View key={ticket.id} style={styles.appointmentCard}>
+                   <View style={styles.doctorSection}>
+                     <DoctorAvatar id={ticket.doctor.id} />
+                     <View style={styles.doctorInfo}>
+                       <View style={styles.doctorNameSection}>
+                         <AppText style={styles.doctorName} numberOfLines={1}>
+                           {ticket.doctor?.name}
+                         </AppText>
+                         <View style={styles.dotContainer}>
+                           <View style={styles.greenDot} />
+                           <AppText style={styles.statusText}>
+                             {ticket.ticketStatus === 'ready'
+                               ? $i18n.t('_appointment')
+                               : $i18n.t('status.queued')}
+                           </AppText>
+                         </View>
+                       </View>
+                     </View>
+                   </View>
+                   <View style={styles.detailsSection}>
+                     <View style={styles.detailRow}>
+                       <AppText style={styles.detailLabel}>
+                         {constants.i18n.t('member')}
+                       </AppText>
+                       <AppText style={styles.detailValue}>
+                         {ticket.patient?.name}
+                       </AppText>
+                     </View>
+                     <View style={styles.detailRow}>
+                       <AppText style={styles.detailLabel}>
+                         {constants.i18n.t('people_ahead_now')}
+                       </AppText>
+                       <AppText style={styles.detailValue}>
+                         {ticket.currentPosition > 0
+                           ? ticket.currentPosition - 1
+                           : 0}
+                       </AppText>
+                     </View>
+                     <View style={styles.detailRow}>
+                       <AppText style={styles.detailLabel}>
+                         {constants.i18n.t('estimated_start_time')}
+                       </AppText>
+                       <AppText style={styles.detailValue}>
+                         {moment(ticket.expectedCallTime).format('HH:mm')}
+                       </AppText>
+                     </View>
+                     <View style={styles.btnContainerViewchecking}>
+                       <TouchableOpacity
+                         style={[
+                           styles.viewBtn,
+                           onlyShowViewBt
+                             ? { width: '100%' }
+                             : { marginRight: 8 },
+                         ]}
+                         onPress={() => {
+                           $NavigationActions.navigate(
+                             $routeNames.myAppointmentScreen,
+                             {
+                               ticketId: ticket.id,
+-                            },
++                            }
+                           );
+                         }}
+                       >
+                         <AppText style={styles.viewBtnText}>
+                           {constants.i18n.t('view')}
+                         </AppText>
+                       </TouchableOpacity>
+                       {!onlyShowViewBt &&
+                         (rBtText === $i18n.t('Start') ? (
+                           <GradientButtonComponent
+                             title={rBtText}
+                             disabled={false}
+                             onPressCallback={() => {
+                               if (rBtText === $i18n.t('Start')) {
+                                 let token = null;
+                                 token = ticket?.consultation?.patientAgoraToken;
+                                 $NavigationActions.navigate(
+                                   $routeNames.teleconsultScreen,
+                                   {
+                                     ticketId: ticket.id,
+                                     appId: token.applicationId,
+                                     uid: token.uid,
+                                     token: token.rtcToken,
+                                     channel: token.channelId,
+-                                  },
++                                  }
+                                 );
+                               } else {
+                               }
+                             }}
+                             activityIndicator={true}
+                             width={'50%'}
+                           />
+                         ) : (
+                           <QRCodeBt
+                             ticket={ticket}
+                             styleProps={{ width: '50%', marginTop: 0 }}
+                             title={$i18n.t('checkin')}
+                           />
+                         ))}
+                     </View>
+                   </View>
+                 </View>
+               );
+             })}
+           </View>
+         )}
+       </>
+     );
+   }, [state.tickets]);
+ 
+   const handleViewMore = async (item: any) => {
+     await getInsuredItem((response: any) => {
+       if (response) {
+         setSelectedPlan(item);
+         setShowPlanDeets(true);
+       }
+     });
+   };
+ 
+   const plansCarousel = ({ item, index }: { item: any; index: number }) => {
+     const filteredPlanInsuredItem = user?.policies.filter(
+-      _item => _item?.planId === item.id,
++      (_item) => _item?.planId === item.id
+     );
+     let expirationDate =
+       filteredPlanInsuredItem && filteredPlanInsuredItem.length > 0
+         ? filteredPlanInsuredItem[0]?.expirationDate
+         : undefined;
+     if (expirationDate) {
+       if (
+         (language === 'zh-Hant' || language === 'zh-Hans') &&
+         expirationDate !== ''
+       ) {
+         const expdate = new Date(expirationDate);
+         expirationDate = new Intl.DateTimeFormat(language, {
+           year: 'numeric',
+           month: 'short',
+           day: 'numeric',
+           timeZone: 'UTC',
+         }).format(expdate);
+       } else {
+         expirationDate = dayjs(expirationDate)
+           .locale(language)
+           .format('DD MMM YYYY');
+       }
+     }
+ 
+     return (
+       <TouchableOpacity
+         style={[
+           styles.product_card,
+           item.isActive && { backgroundColor: item.theme?.bgcolor },
+         ]}
+-        onLayout={event => onLayout(index, event)}
++        onLayout={(event) => onLayout(index, event)}
+         onPress={() => {
+           $NavigationActions.navigate($routeNames.myPlansScreen);
+         }}
+       >
+         {!item.isActive && <View style={[styles.Semicircle]}></View>}
+         <View
+           style={[
+             styles.product_card_line,
+             item.isActive && { borderColor: item.theme?.bordercolor },
+           ]}
+         >
+           <View style={[styles.bigTree]}>
+             <SVGBigTree
+               fill={
+                 !item.isActive ? 'rgb(131, 141, 140)' : 'rgba(164, 118, 0, 1)'
+               }
+             />
+           </View>
+           {item.isActive ? (
+             <TouchableOpacity
+               style={styles.viewButton}
+               onPress={() => {
+                 $NavigationActions.navigate($routeNames.myPlansScreen);
+               }}
+             >
+               <LinearGradient
+                 colors={['#50B0D2', '#4AA55B']}
+                 start={{ x: 0, y: 0 }}
+                 end={{ x: 1, y: 0 }}
+                 locations={[0.0007, 0.9989]}
+                 style={{
+                   borderRadius: 100,
+                 }}
+               >
+                 <AppText style={styles.viewText}>{$i18n.t('view')}</AppText>
+               </LinearGradient>
+             </TouchableOpacity>
+           ) : (
+             <TouchableOpacity
+               style={styles.viewButton}
+               onPress={async () => {
+                 $NavigationActions.navigate($routeNames.healsPlanMembership, {
+                   productId: item.id,
+                 });
+               }}
+             >
+               <LinearGradient
+                 colors={['#50B0D2', '#4AA55B']}
+                 start={{ x: 0, y: 0 }}
+                 end={{ x: 1, y: 0 }}
+                 locations={[0.0007, 0.9989]}
+                 style={{
+                   borderRadius: 100,
+                 }}
+               >
+                 <AppText style={styles.viewText}>{$i18n.t('buy')}</AppText>
+               </LinearGradient>
+             </TouchableOpacity>
+           )}
+           <View style={styles.product_card_row}>
+             <AppText style={styles.product_card_row_txt}>
+               {$i18n.t(item.displayName).includes('missing')
+                 ? item.displayName
+                 : $i18n.t(item.displayName)}
+             </AppText>
+             {!item.isActive && (
+               <SVGLockComponent height={16} width={16} color="#000" />
+             )}
+           </View>
+           <AppText style={styles.expiresOnText}>
+             {filteredPlanInsuredItem &&
+             filteredPlanInsuredItem.length > 0 &&
+             filteredPlanInsuredItem[0]?.expirationDate
+               ? `${$i18n.t('expires_on')} ${expirationDate}`
+               : `HKD $${item.price}`}
+           </AppText>
+           <View style={styles.planDescription}>
+             <AppText
+               style={styles.product_card_sellPoints_row_txt}
+               numberOfLines={1}
+               ellipsizeMode="tail"
+             >
+               {$i18n.t(item.meta?.sellPoints[0]).includes('missing')
+                 ? item.meta?.sellPoints[0]
+                 : $i18n.t(item.meta?.sellPoints[0])}
+             </AppText>
+             {item.meta?.sellPoints?.length > 1 && (
+               <AppText
+                 style={styles.moreText}
+                 onPress={() => handleViewMore(item)}
+               >
+                 {$i18n.t('more')}
+               </AppText>
+             )}
+           </View>
+         </View>
+       </TouchableOpacity>
+     );
+   };
+ 
+   const onLayout = (index, event) => {
+     const { height } = event.nativeEvent.layout;
+     // Round height to avoid floating point precision issues causing infinite re-renders
+     const roundedHeight = Math.round(height);
+ 
+-    setHeights(prev => {
++    setHeights((prev) => {
+       // Only update if height actually changed to prevent infinite re-render loop
+       if (prev[index] === roundedHeight) {
+         return prev; // Return same reference to avoid triggering re-render
+       }
+       const updatedHeights = [...prev];
+       updatedHeights[index] = roundedHeight;
+       return updatedHeights;
+     });
+ 
+     // Set initial height
+     if (index === currentIndex) {
+       heightAnim.setValue(roundedHeight);
+     }
+   };
+ 
+-  const handleSnapToItem = index => {
++  const handleSnapToItem = (index) => {
+     setCurrentIndex(index);
+     Animated.timing(heightAnim, {
+       toValue: heights[index] || 0,
+       duration: 300,
+       useNativeDriver: false,
+     }).start();
+   };
+ 
+   const renderPlanCarousel = () => {
+     return (
+       state.heals_pass_product_list && (
+         <Animated.View
+           style={[styles.carouselContainer, { height: heightAnim }]}
+         >
+           <Carousel
+             height={heights[currentIndex]}
+             loop
+             defaultIndex={state.index_heals_pass_product_list}
+             width={$pageWidth}
+             data={state.heals_pass_product_list}
+             renderItem={plansCarousel}
+-            onSnapToItem={e => {
++            onSnapToItem={(e) => {
+               handleSnapToItem(e);
+               setActiveIndex(e);
+-              setState(prevState => {
++              setState((prevState) => {
+                 return {
+                   ...prevState,
+                   index_heals_pass_product_list: e,
+                 };
+               });
+             }}
+           />
+         </Animated.View>
+       )
+     );
+   };
+ 
+   const renderDotIndicator = useCallback(() => {
+     const total = state.heals_pass_product_list.length;
+     return (
+       <View style={styles.dotContainerPagination}>
+         {Array.from({ length: total }).map((_, index) => (
+           <View
+             key={index}
+             style={[
+               styles.dot,
+               activeIndex === index && { backgroundColor: '#00AC86' },
+             ]}
+           />
+         ))}
+       </View>
+     );
+   }, [
+     activeIndex,
+     state.index_heals_pass_product_list,
+     state.heals_pass_product_list,
+   ]);
+ 
+   const getCountryTranslationKey = (countryName: string) => {
+     if (countryName === undefined) {
+       return '';
+     }
+-    let country = $availableCountries.filter(country => {
++    let country = $availableCountries.filter((country) => {
+       return country.googleValue === countryName;
+     });
+ 
+     return country.length > 0 ? country[0].label : '';
+   };
+ 
+   const renderGeolocationModal = useCallback(() => {
+     return (
+       position && (
+         <RBSheet
+           ref={refGeolocationModal}
+           height={300}
+           closeOnDragDown={true}
+           closeOnPressMask={true}
+           customStyles={{
+             wrapper: {
+               backgroundColor: 'rgba(0, 0, 0, 0.5)', // Overlay background color
+             },
+             container: {
+               borderTopLeftRadius: 20,
+               borderTopRightRadius: 20,
+               paddingHorizontal: 10,
+             },
+             draggableIcon: {
+               backgroundColor: '#000',
+             },
+           }}
+           onClose={async () => {
+             $cache.setItem($cacheKeys.hasShownGeolocationModal, true);
+           }}
+         >
+           <View style={styles.GeolocationModal}>
+             <TouchableOpacity
+               style={styles.closeBt}
+               onPress={async () => {
+                 refGeolocationModal.current.close();
+               }}
+             >
+               <Image source={$assets.closeBtn()} style={styles.closeBtImg} />
+             </TouchableOpacity>
+             <Image source={$assets.postion()} style={styles.postion}></Image>
+             <AppText style={styles.GeolocationModalText}>
+               {$i18n.t('location_modal.welcome_country', {
+                 country: $i18n.t(getCountryTranslationKey(position.country)),
+               })}
+             </AppText>
+             <AppText style={styles.browse_providerText}>
+               {$i18n.t('location_modal.browse_provider')}
+             </AppText>
+             <View style={styles.GeolocationModalRow}>
+               <TouchableOpacity
+                 style={styles.GeolocationModalRowBt}
+                 onPress={() => {
+                   refGeolocationModal.current.close();
+                 }}
+               >
+                 <AppText style={styles.GeolocationModalRowBtText}>
+                   {$i18n.t('cancel')}
+                 </AppText>
+               </TouchableOpacity>
+               <GradientBt
+                 gradientStyle={styles.GeolocationModalRowBt1}
+                 onPress={() => {
+                   refGeolocationModal?.current.close();
+                   $NavigationActions.navigate($routeNames.doctorListScreen, {
+                     titleHeader: 'Visit a Clinic',
+                   });
+                 }}
+               >
+                 <AppText
+                   style={[
+                     styles.GeolocationModalRowBtText,
+                     { color: '#ffffff' },
+                   ]}
+                 >
+                   {$i18n.t('go')}
+                 </AppText>
+               </GradientBt>
+             </View>
+           </View>
+         </RBSheet>
+       )
+     );
+   }, [position]);
+ 
+   const onRefresh = async () => {
+     setRefreshing(true);
+     await fetchPageData();
+     setRefreshing(false);
+   };
+ 
+   const handleLater = () => {
+     setWelcomeAlert(false);
+   };
+ 
+   const onLayoutNewComersGuidePlan = (event, index) => {
+     const { height } = event.nativeEvent.layout;
+     setNewComersPlanHeight(height);
+   };
+ 
+   const renderNewCustomerGuideItem = ({ item, index }) => {
+-    const currItem = userPolicies.filter(i => i.planId === item.id);
++    const currItem = userPolicies.filter((i) => i.planId === item.id);
+     const isoDate = currItem[0]?.expirationDate ?? '';
+     let expirationFormattedDate = dayjs(isoDate)
+       .locale(language)
+       .format('DD MMM YYYY');
+ 
+     if ((language === 'zh-Hant' || language === 'zh-Hans') && isoDate !== '') {
+       const expdate = new Date(isoDate);
+       expirationFormattedDate = new Intl.DateTimeFormat(language, {
+         year: 'numeric',
+         month: 'short',
+         day: 'numeric',
+         timeZone: 'UTC',
+       }).format(expdate);
+     }
+ 
+     return (
+       <ScrollView
+         ref={scrollViewRef}
+         style={scrollViewStyle.scrollViewStyle}
+         contentContainerStyle={[scrollViewStyle.contentContainerStyle]}
+         showsVerticalScrollIndicator={false}
+         alwaysBounceVertical={true}
+       >
+         <View
+-          onLayout={event => onLayoutNewComersGuidePlan(event, index)}
++          onLayout={(event) => onLayoutNewComersGuidePlan(event, index)}
+           style={[
+             {
+               backgroundColor: item?.theme?.bgcolor ?? '#FFFFFF',
+             },
+             styles.planDeetsContainer,
+           ]}
+         >
+           <View
+             style={[
+               {
+                 borderColor: item?.theme?.bordercolor,
+                 opacity: 0.5,
+               },
+               styles.halfCircleContainer,
+             ]}
+           />
+           <View
+             style={[
+               {
+                 borderWidth: 1,
+                 borderColor: item?.theme?.bordercolor,
+               },
+               styles.planInnerContainer,
+             ]}
+           >
+             <AppText style={styles.innerPlanName}>
+               {$i18n.t(item?.name)}
+             </AppText>
+             {item?.isActive ? (
+               <>
+                 {currItem[0]?.expirationDate ? (
+                   <AppText style={styles.expirationDateText}>
+                     {`${$i18n.t('expires_on')} ${expirationFormattedDate}`}
+                   </AppText>
+                 ) : (
+                   <ActivityIndicator size={'small'} />
+                 )}
+                 <View style={styles.treeContainer}>
+                   <SVGUnionIcon
+                     width={48}
+                     height={56}
+                     fill={item?.theme?.bgcolor}
+                   />
+                 </View>
+               </>
+             ) : (
+               <AppText style={styles.expirationDateText}>
+                 {`HKD $`}
+                 {item?.price}
+               </AppText>
+             )}
+             <View
+-              onLayout={event => {
++              onLayout={(event) => {
+                 const { height } = event.nativeEvent.layout;
+                 // Only update if height actually changed to avoid unnecessary re-renders
+-                setPlanItemHeight(prev => {
++                setPlanItemHeight((prev) => {
+                   if (prev[index] === height) {
+                     return prev; // Return same reference to prevent re-render
+                   }
+                   return {
+                     ...prev,
+                     [index]: height,
+                   };
+                 });
+               }}
+               style={[
+                 {
+                   backgroundColor: item?.theme?.bgcolor,
+                 },
+                 styles.planInnerContainer,
+                 styles.planInnerContainerInner,
+               ]}
+             >
+               {item.meta?.sellPoints.map((str, index1, array) => {
+                 return (
+                   <View key={str} style={styles.product_card_sellPoints_row}>
+                     <View style={styles.product_card_sellPoints_row_img}>
+                       <SVGTreeIcon
+                         width={16}
+                         height={17}
+                         fill={item?.theme?.mask}
+                       />
+                     </View>
+                     <AppText style={styles.product_card_sellPoints_row_txt_2}>
+                       {$i18n.t(str.trim(), { defaultValue: str.trim() })}
+                     </AppText>
+                   </View>
+                 );
+               })}
+               <View style={{ paddingBottom: 16 }} />
+             </View>
+           </View>
+         </View>
+       </ScrollView>
+     );
+   };
+ 
+   const renderNewCustomerGuidePlanCarousel = useCallback(
+     (listActivePlan: any[]) => {
+       const carouselHeight = planItemHeight[currentNoPlanIdx]
+         ? planItemHeight[currentNoPlanIdx] + 148
+         : 332;
+       return (
+         <Animated.View style={styles.carouselContainer}>
+           <Carousel
+             height={carouselHeight}
+             loop={false}
+             width={ITEM_WIDTH}
+             data={listActivePlan}
+             renderItem={renderNewCustomerGuideItem}
+-            onSnapToItem={e => {
++            onSnapToItem={(e) => {
+               setCurrentNoPlanIdx(e);
+             }}
+           />
+         </Animated.View>
+       );
+     },
+-    [currentNoPlanIdx, planItemHeight],
++    [currentNoPlanIdx, planItemHeight]
+   );
+ 
+   /**
+    * Plans on new comers without current plans
+    * @param planItems
+    * @returns
+    */
+   const renderNewCustomerGuidePlanChoice = useCallback(
+     (planItems: any[]) => {
+       const carouselHeight = planItemHeight[currentNoPlanIdx]
+         ? planItemHeight[currentNoPlanIdx] + 148
+         : 332;
+ 
+       return (
+         <Animated.View style={[styles.carouselContainerPlan]}>
+           <Carousel
+             height={carouselHeight - 28}
+             loop={false}
+             width={ITEM_WIDTH}
+             data={planItems}
+             renderItem={renderNewCustomerGuideItem}
+-            onSnapToItem={e => {
++            onSnapToItem={(e) => {
+               setCurrentNoPlanIdx(e);
+             }}
+           />
+         </Animated.View>
+       );
+     },
+-    [currentNoPlanIdx, planItemHeight],
++    [currentNoPlanIdx, planItemHeight]
+   );
+ 
+   const getInstantDoctor = async (params: any) => {
+     try {
+       const res = await $api.filterBySpecialty(params);
+       setNewComersDoctor(res.data[0]);
+     } catch (e) {
+       console.log(`Exception encountered here @ `, e);
+     }
+   };
+ 
+   const renderQuickAvailableDoctor = useCallback(
+     (_listActivePlan: any) => {
+       // API call moved to useEffect to avoid calling during render
+       let estimatedAppointment = newComersDoctor?.queueExpectedTime?.split('T');
+       estimatedAppointment =
+         estimatedAppointment?.length > 0
+           ? estimatedAppointment[1]?.split(':')
+           : '--:--'.split(':');
+ 
+       return (
+         <View style={styles.quickDoctorContainer}>
+           <View
+             style={{
+               paddingVertical: 20,
+               flexDirection: 'row',
+               alignItems: 'center',
+               paddingHorizontal: 16,
+             }}
+           >
+             <DoctorAvatar id={newComersDoctor?.doctor?.id} />
+             <View style={{ paddingLeft: 8 }}>
+               <View>
+                 <AppText
+                   size="medium"
+                   style={{
+                     color: '#00AC86',
+                     fontWeight: '700',
+                     lineHeight: 24,
+                     letterSpacing: 0.5,
+                   }}
+                 >
+                   {newComersDoctor?.doctor?.name}
+                 </AppText>
+                 <AppText
+                   size="xsmall"
+                   style={{
+                     color: '#4B6363',
+                     fontWeight: '400',
+                     lineHeight: 24,
+                     letterSpacing: 1,
+                   }}
+                 >
+                   {newComersDoctor?.doctor?.specialties[0]}
+                 </AppText>
+               </View>
+             </View>
+             <View style={{ position: 'absolute', right: 17, top: 28 }}>
+               <SVGVideoCallGreenIcon width={13} height={9} />
+             </View>
+           </View>
+           <View
+             style={{
+               width: '100%',
+               borderBottomWidth: 1,
+               borderBottomColor: '#E1EBEC',
+               borderStyle: 'dashed',
+             }}
+           />
+           <View style={{ paddingTop: 16, paddingLeft: 16, paddingBottom: 12 }}>
+             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+               <SVGNumberQueuePersonIcon />
+               <AppText
+                 size="xsmall"
+                 style={{
+                   fontWeight: '400',
+                   color: '#8D9796',
+                   paddingLeft: 4,
+                 }}
+               >
+                 {$i18n.t('people_ahead_now')}
+               </AppText>
+               <AppText
+                 size="xsmall"
+                 style={{
+                   color: '#0F1617',
+                   fontWeight: '700',
+                   textAlign: 'right',
+                   paddingLeft: 48,
+                 }}
+               >
+                 {newComersDoctor?.queuePosition}
+               </AppText>
+             </View>
+             <View
+               style={{
+                 flexDirection: 'row',
+                 alignItems: 'center',
+                 paddingTop: 12,
+               }}
+             >
+               <SVGClockCircleGrey />
+               <AppText
+                 size="xsmall"
+                 style={{
+                   fontWeight: '400',
+                   color: '#8D9796',
+                   paddingLeft: 4,
+                 }}
+               >
+                 {$i18n.t('estimated_appointment')}
+               </AppText>
+               <AppText
+                 size="xsmall"
+                 style={{
+                   color: '#0F1617',
+                   fontWeight: '700',
+                   textAlign: 'right',
+                   paddingLeft: 52,
+                 }}
+               >
+                 {estimatedAppointment[0]}
+                 {':'}
+                 {estimatedAppointment[1]}
+               </AppText>
+             </View>
+           </View>
+         </View>
+       );
+     },
+-    [newComersDoctor],
++    [newComersDoctor]
+   );
+ 
+   const renderItemNewUser = useCallback(
+     ({ item, index }) => {
+       let listActivePlan = state.heals_pass_product_list.filter(
+-        i => i.isActive === true,
++        (i) => i.isActive === true
+       );
+       let planName = [];
+ 
+       if (listActivePlan && listActivePlan.length > 0) {
+-        listActivePlan.map(i => {
++        listActivePlan.map((i) => {
+           planName.push(i?.displayName);
+         });
+       }
+ 
+       // 根据 userHasPlan 确定使用哪个引导数组
+       const guideData = userHasPlan ? newUserGuide : newUserGuideNoPlan;
+       const totalSteps = guideData.length;
+ 
+       // 计算当前进度百分比 (index 从 0 开始，所以 +1)
+       const progressPercent = (index + 1) / totalSteps;
+ 
+       return (
+         <View style={[styles.indexId3Padding, { overflow: 'hidden' }]}>
+           {item.id === 0 && (
+             <View style={{ alignSelf: 'center' }}>
+               <SVGNewUserIcon_1 width={270} height={150} />
+             </View>
+           )}
+           {item.id === 1 && (
+             <View style={{ alignSelf: 'center' }}>
+               <SVGNewUserIcon_2 width={270} height={150} />
+             </View>
+           )}
+           {item.id === 4 && (
+             <View style={{ alignSelf: 'center' }}>
+               <SVGNewUserIcon_4 width={270} height={150} />
+             </View>
+           )}
+           {/* {item.id === 2 && listActivePlan.length > 0
+           ? (
+               <>{renderNewCustomerGuidePlanCarousel(listActivePlan)}</>
+             )
+           : item.id === 2
+             ? <>{renderNewCustomerGuidePlanChoice(state.heals_pass_product_list)}</>
+             : null
+         } */}
+           {/* {item.id === 4 && (<>{renderQuickAvailableDoctor(listActivePlan[currentIndex])}</>)} */}
+           <View>
+             <AppText style={styles.title}>{item.title}</AppText>
+             <AppText style={styles.subtitle}>{item.description}</AppText>
+           </View>
+           <View style={styles.progressContainerWithPlan}>
+             <Animated.View
+               style={[
+                 styles.progressFill,
+                 {
+                   width: `${progressPercent * 100}%`,
+                 },
+               ]}
+             />
+           </View>
+           {/* {listActivePlan.length === 0 && item.id === 2 && (
+           <View style={styles.btnContainer}>
+             <TouchableOpacity
+               style={styles.lateBtn}
+               onPress={() => handleLater()}
+             >
+             <AppText style={styles.laterBtnText}>
+               {$i18n.t('later')}
+             </AppText>
+             </TouchableOpacity>
+             <TouchableOpacity
+               style={styles.bookBtn}
+               onPress={() => {
+                 setWelcomeAlert(false);
+                  $NavigationActions.navigate($routeNames.myPlansScreen);
+               }}
+             >
+               <AppText style={styles.bookNowText}>
+                 {$i18n.t('buynow')}
+               </AppText>
+             </TouchableOpacity>
+           </View>
+         )} */}
+           {item.id === 4 && (
+             <View style={styles.btnContainer}>
+               {/* <TouchableOpacity
+               style={styles.lateBtn}
+               onPress={() => handleLater()}
+             >
+             <AppText style={styles.laterBtnText}>
+               {$i18n.t('later')}
+             </AppText>
+             </TouchableOpacity> */}
+               <TouchableOpacity
+                 style={styles.bookBtn}
+                 // onPress={() => {
+                 //   setWelcomeAlert(false);
+                 //   $NavigationActions.navigate($routeNames.doctorDetailScreen, {
+                 //     provider: newComersDoctor,
+                 //   });
+                 // }}
+                 onPress={() => handleLater()}
+               >
+                 <AppText style={styles.bookNowText}>
+                   {$i18n.t('go_now')}
+                 </AppText>
+               </TouchableOpacity>
+             </View>
+           )}
+         </View>
+       );
+     },
+     [
+       state.heals_pass_product_list,
+       currentIndex,
+       newComersDoctor,
+       renderNewCustomerGuidePlanCarousel,
+       renderNewCustomerGuidePlanChoice,
+       renderQuickAvailableDoctor,
+       progress,
+       userHasPlan,
+-    ],
++    ]
+   );
+ 
+   // Main Content
+   const renderModalContentNewComersGuide = useCallback(() => {
+     let listActivePlan = state.heals_pass_product_list.filter(
+-      i => i.isActive === true,
++      (i) => i.isActive === true
+     );
+     let userGuideData = newUserGuideNoPlan;
+ 
+     if (listActivePlan && listActivePlan.length > 0) {
+       userGuideData = newUserGuide;
+     }
+ 
+     return (
+       <View style={[styles.innerModalNewUser, { width: ITEM_WIDTH }]}>
+         <TouchableOpacity
+           style={styles.closedIconContainer}
+           onPress={() => {
+             setWelcomeAlert(false);
+             setTimeout(() => {
+               requestPermission();
+             }, 300);
+           }}
+         >
+           <SVGCloseCrossIcon />
+         </TouchableOpacity>
+         <AppText
+           size="xlarge"
+           style={styles.newComersGuideTitle}
+           numberOfLines={1}
+         >
+           {$i18n.t('newcomers_guide')}
+         </AppText>
+         <Animated.View style={styles.carouselContainer}>
+           <ScrollView
+             horizontal
+             pagingEnabled
+             showsHorizontalScrollIndicator={false}
+-            onMomentumScrollEnd={e => {
++            onMomentumScrollEnd={(e) => {
+               const index = Math.round(
+-                e.nativeEvent.contentOffset.x / ITEM_WIDTH,
++                e.nativeEvent.contentOffset.x / ITEM_WIDTH
+               );
+               console.log('onMomentumScrollEnd index=', index);
+               setNewComersGuideIndex(index);
+             }}
+           >
+             {userGuideData.map((item, index) => (
+               <View key={item.id} style={{ width: ITEM_WIDTH }}>
+                 {renderItemNewUser({ item, index })}
+               </View>
+             ))}
+           </ScrollView>
+         </Animated.View>
+       </View>
+     );
+   }, [
+     newComersGuideIndex,
+     currentNewComersPlanHeight,
+     currentNoPlanIdx,
+     planItemHeight,
+     state.heals_pass_product_list,
+     userHasPlan,
+     newComersDoctor,
+     newUserGuide,
+     newUserGuideNoPlan,
+     onSnap,
+     renderItemNewUser,
+   ]);
+ 
+   const renderNewComersGuide = useCallback(() => {
+     return (
+       <Modal
+         animationType="slide"
+         transparent={true}
+         visible={welcomeAlert} // welcomeAlert
+         onRequestClose={() => {
+           setWelcomeAlert(false);
+         }}
+       >
+         <View style={styles.contactUsContainerModal}>
+           <>{renderModalContentNewComersGuide()}</>
+         </View>
+       </Modal>
+     );
+   }, [welcomeAlert, renderModalContentNewComersGuide, requestPermission]);
+ 
+   const getInsuredItem = async (callback: (response: any) => void) => {
+     try {
+       setLoading(true);
+       const response = await getUpdatedUserData();
+       if (response) {
+         const filter = response.policies.filter(
+-          item => item.planId === selectedPlan.id,
++          (item) => item.planId === selectedPlan.id
+         );
+         setCurrentInsuredItem(filter[0]?.insuredItem);
+         callback(true);
+       } else {
+         setCurrentInsuredItem(null);
+       }
+       setLoading(false);
+     } catch (e) {
+       console.log(`Exception encountered @ getInsuredItem `, e);
+       setLoading(false);
+     }
+   };
+ 
+   const renderPlanDeets = useCallback(() => {
+     const filteredPlanInsuredItem = user?.policies.filter(
+-      _item => _item?.planId === selectedPlan.id,
++      (_item) => _item?.planId === selectedPlan.id
+     );
+     let _expirationDate =
+       filteredPlanInsuredItem && filteredPlanInsuredItem.length > 0
+         ? filteredPlanInsuredItem[0]?.expirationDate
+         : '';
+     const isoDate =
+       (currentInsuredItem?.expirationDate || _expirationDate) ?? '';
+     let expirationFormattedDate = dayjs(isoDate)
+       .locale(language)
+       .format('DD MMM YYYY');
+     if ((language === 'zh-Hant' || language === 'zh-Hans') && isoDate !== '') {
+       const expdate = new Date(isoDate);
+       expirationFormattedDate = new Intl.DateTimeFormat(language, {
+         year: 'numeric',
+         month: 'short',
+         day: 'numeric',
+         timeZone: 'UTC',
+       }).format(expdate);
+     }
+     let expirationDate =
+       filteredPlanInsuredItem && filteredPlanInsuredItem.length > 0
+         ? filteredPlanInsuredItem[0]?.expirationDate
+         : undefined;
+     if (expirationDate) {
+       if (
+         (language === 'zh-Hant' || language === 'zh-Hans') &&
+         expirationDate !== ''
+       ) {
+         const expdate = new Date(expirationDate);
+         expirationDate = new Intl.DateTimeFormat(language, {
+           year: 'numeric',
+           month: 'short',
+           day: 'numeric',
+           timeZone: 'UTC',
+         }).format(expdate);
+       } else {
+         expirationDate = dayjs(expirationDate)
+           .locale(language)
+           .format('DD MMM YYYY');
+       }
+     }
+ 
+     return (
+       <Modal
+         animationType="slide"
+         transparent={true}
+         visible={showPlanDeets}
+         onRequestClose={() => setShowPlanDeets(false)}
+       >
+         <View style={styles.contactUsContainerModal}>
+           <View style={styles.doctorDetailsModal}>
+             <TouchableOpacity
+               style={styles.closedIconContainer}
+               onPress={() => setShowPlanDeets(false)}
+             >
+               <SVGCloseCrossIcon />
+             </TouchableOpacity>
+             <AppText style={styles.planNameText}>
+               {$i18n.t(selectedPlan?.name)} {$i18n.t('details')}
+             </AppText>
+             <View
+               style={[
+                 {
+                   backgroundColor: selectedPlan.isActive
+                     ? selectedPlan?.theme?.bgcolor
+                     : '#EDEEF1',
+                 },
+                 styles.planDeetsContainer,
+               ]}
+             >
+               <View
+                 style={[
+                   {
+                     borderColor: selectedPlan.isActive
+                       ? selectedPlan?.theme?.bordercolor
+                       : 'rgba(156, 163, 175, 1)',
+                     opacity: 0.5,
+                   },
+                   styles.halfCircleContainer,
+                 ]}
+@@ -1836,190 +1839,190 @@ const HomeScreen: React.FC = (props: any) => {
+         animationType="slide"
+         transparent={true}
+         visible={showModalLocDetect}
+         onRequestClose={() => setShowModalLocDetect(false)}
+       >
+         <View style={styles.contactUsContainerModal}>
+           <View style={styles.permissionModalView}>
+             <View style={styles.infoContainer}>
+               <SVGYellowInfoIcon />
+               <View style={styles.smallIICon}>
+                 <SVGInfoSmalliIcon />
+               </View>
+             </View>
+             <AppText style={styles.permissionModalTitle}>
+               {`${$i18n.t('detect_loc_in')} 【${currentCountryName}】`}
+             </AppText>
+             <AppText style={styles.permissionDescription}>
+               {$i18n.t('country_not_avl')}
+             </AppText>
+             <View>
+               <TouchableOpacity
+                 style={styles.ViewButton3}
+                 onPress={async () => {
+                   setShowModalLocDetect(false);
+                   setTimeout(() => {
+                     setShowContactUsModal(true);
+                   }, 300);
+                 }}
+               >
+                 <AppText style={styles.ViewButtonText2}>
+                   {$i18n.t('contact_cs')}
+                 </AppText>
+               </TouchableOpacity>
+               <TouchableOpacity
+                 style={[styles.redoLaterBtn, { opacity: 0.5 }]}
+                 onPress={() => {
+                   setShowModalLocDetect(false);
+                 }}
+               >
+                 <AppText style={styles.redoLaterText}>
+                   {$i18n.t('return_home')}
+                 </AppText>
+               </TouchableOpacity>
+             </View>
+           </View>
+         </View>
+       </Modal>
+     );
+   };
+ 
+   const renderContactUsModal = () => {
+     return (
+       <Modal
+         animationType="slide"
+         transparent={true}
+         visible={showContactUsModal}
+         onRequestClose={() => setShowContactUsModal(false)}
+       >
+         <View style={styles.contactModalContainer}>
+           <View style={styles.closedContainer}>
+             <TouchableOpacity
+               onPress={() => setShowContactUsModal(false)}
+               style={styles.closeBtn1}
+             >
+               <CloseFadeGrey width={24} height={24} />
+             </TouchableOpacity>
+             <View style={{ alignSelf: 'center' }}>
+               <ContactUS width={200} height={95} />
+             </View>
+             <AppText style={styles.helpDeskText}>
+               {$i18n.t('medical_helpdesk')}
+             </AppText>
+             <View style={styles.supportMessageContainer}>
+               <AppText style={{ color: 'rgba(75, 99, 99, 1)' }}>
+                 {$i18n.t('support_msg')}
+               </AppText>
+             </View>
+             <TouchableOpacity
+               onPress={() => {
+                 let phoneURL = `tel:+${Config.NEXT_PUBLIC_HELPDESK_NUMBER}`;
+-                Linking.openURL(phoneURL).catch(err =>
++                Linking.openURL(phoneURL).catch((err) =>
+                   console.error(
+                     'Error while trying to make a phone call: ',
+-                    err,
+-                  ),
++                    err
++                  )
+                 );
+               }}
+               style={styles.callContainer}
+             >
+               <Call width={19} height={19} />
+               <AppText style={styles.contactText}>
+                 +
+                 {(Config.NEXT_PUBLIC_HELPDESK_NUMBER || '').replace(
+                   /(\d{3})(\d{4})(\d{4})/,
+-                  '$1 $2 $3',
++                  '$1 $2 $3'
+                 )}
+               </AppText>
+             </TouchableOpacity>
+             <TouchableOpacity
+               onPress={() => {
+                 $openWhatsApp(Config.NEXT_PUBLIC_CONTACT_NUMBER || '');
+               }}
+               style={styles.whatsappContainer}
+             >
+               <Whatsapp width={28} height={28} />
+               <AppText style={styles.contactWhatsappText}>
+                 +
+                 {(Config.NEXT_PUBLIC_CONTACT_NUMBER || '').replace(
+                   /(\d{3})(\d{4})(\d{4})/,
+-                  '$1 $2 $3',
++                  '$1 $2 $3'
+                 )}
+               </AppText>
+             </TouchableOpacity>
+           </View>
+         </View>
+       </Modal>
+     );
+   };
+ 
+   const renderViewAllHealsProducts = () => {
+     return (
+       <TouchableOpacity
+         style={styles.viewAllHealsBtn}
+         onPress={() => {
+           $NavigationActions.navigate($routeNames.PlanListScreen);
+         }}
+       >
+         <AppText style={styles.viewAllHealsProduct}>
+           {$i18n.t('view_heals_prroduct')}
+         </AppText>
+         <SVGChevronRightGreenIcon />
+       </TouchableOpacity>
+     );
+   };
+ 
+   const renderReminderModal = () => {
+     return (
+       <Modal
+         animationType="fade"
+         transparent={true}
+         visible={showReminderModal}
+         onRequestClose={() => setShowReminderModal(false)}
+       >
+         <View style={styles.reminderModalOverlay}>
+           <View style={styles.reminderModalCard}>
+             <AppText style={styles.reminderModalTitle}>
+               {$i18n.t('kindly_reminder')}
+             </AppText>
+             <AppText style={styles.reminderModalDescription}>
+               {$i18n.t('save_email_reminder', { email: reminderEmail })}
+             </AppText>
+             <View style={styles.reminderModalButtonRow}>
+               <TouchableOpacity
+                 style={styles.reminderModalOutlineBtn}
+                 onPress={() => setShowReminderModal(false)}
+               >
+                 <AppText style={styles.reminderModalOutlineBtnText}>
+                   {$i18n.t('do_not_save')}
+                 </AppText>
+               </TouchableOpacity>
+               <TouchableOpacity
+                 style={styles.reminderModalFilledBtn}
+                 onPress={() => setShowReminderModal(false)}
+               >
+                 <AppText style={styles.reminderModalFilledBtnText}>
+                   {$i18n.t('yes')}
+                 </AppText>
+               </TouchableOpacity>
+             </View>
+           </View>
+         </View>
+       </Modal>
+     );
+   };
+ 
+   const renderProfileUpdateModal = () => {
+     return (
+       <Modal
+         animationType="fade"
+         transparent={true}
+         visible={showProfileUpdateModal}
+         onRequestClose={() => setShowProfileUpdateModal(false)}
+       >
+         <View style={styles.reminderModalOverlay}>
+           <View style={styles.reminderModalCard}>
+             <AppText style={styles.reminderModalTitle}>
+               {$i18n.t('update_profile')}
+             </AppText>
+             <AppText style={styles.reminderModalDescription}>
+               {$i18n.t('update_profile_desc')}
+@@ -2046,102 +2049,102 @@ const HomeScreen: React.FC = (props: any) => {
+                 onChangeText={setProfileUpdateEmail}
+                 placeholder={$i18n.t('enter_your_email')}
+                 placeholderTextColor="#A0ACAB"
+                 keyboardType="email-address"
+                 autoCapitalize="none"
+               />
+             </View>
+             <View style={styles.reminderModalButtonRow}>
+               <TouchableOpacity
+                 style={styles.reminderModalOutlineBtn}
+                 onPress={() => setShowProfileUpdateModal(false)}
+               >
+                 <AppText style={styles.reminderModalOutlineBtnText}>
+                   {$i18n.t('skip')}
+                 </AppText>
+               </TouchableOpacity>
+               <TouchableOpacity
+                 style={[
+                   styles.reminderModalFilledBtn,
+                   profileUpdateLoading && { opacity: 0.5 },
+                 ]}
+                 disabled={profileUpdateLoading}
+                 onPress={async () => {
+                   try {
+                     setProfileUpdateLoading(true);
+                     await $api.putUser({
+                       name: profileUpdateName,
+                       email: profileUpdateEmail,
+                     });
+                     setProfileUpdateLoading(false);
+                     setShowProfileUpdateModal(false);
+                   } catch (e) {
+                     setProfileUpdateLoading(false);
+                   }
+                 }}
+               >
+                 {profileUpdateLoading ? (
+                   <ActivityIndicator size="small" color="#FFFFFF" />
+                 ) : (
+                   <AppText style={styles.reminderModalFilledBtnText}>
+                     {$i18n.t('save')}
+                   </AppText>
+                 )}
+               </TouchableOpacity>
+             </View>
+           </View>
+         </View>
+       </Modal>
+     );
+   };
+ 
+   return (
+     <ThemeContext.Consumer>
+       {(theme: Theme) => {
+         return (
+           <View style={styles.pageContainer}>
+             {state.heals_pass_product_list &&
+             state.heals_pass_product_list.length > 0 ? (
+               <ScrollView
+                 ref={scrollViewRef}
+                 style={scrollViewStyle.scrollViewStyle}
+                 contentContainerStyle={[
+                   scrollViewStyle.contentContainerStyle,
+                   { paddingBottom: 16 },
+                 ]}
+                 showsVerticalScrollIndicator={false}
+                 alwaysBounceVertical={true}
+                 refreshControl={
+                   <RefreshControl
+                     refreshing={refreshing}
+                     onRefresh={onRefresh}
+                   />
+                 }
+               >
+                 {renderAvatarBt()}
+                 {renderPlanCarousel()}
+                 {renderDotIndicator()}
+                 {renderVideoConsultation()}
+                 {renderThreeBts()}
+                 <DoctorPrescriptionWW showInquiryModal={showInquiryModal} />
+-                  {renderGlobalMedicalNetwork()}
++                {renderGlobalMedicalNetwork()}
+                 {renderTodays_schedule()}
+                 {renderViewAllHealsProducts()}
+               </ScrollView>
+             ) : (
+               <ShimmerLoadingHomeScreen />
+             )}
+             {renderNewComersGuide()}
+             {renderGeolocationModal()}
+             {renderPlanDeets()}
+             {renderDetectedLocationModal()}
+             {renderContactUsModal()}
+             {renderReminderModal()}
+             {renderProfileUpdateModal()}
+           </View>
+         );
+       }}
+     </ThemeContext.Consumer>
+   );
+ };
+ 
+ export default HomeScreen;
