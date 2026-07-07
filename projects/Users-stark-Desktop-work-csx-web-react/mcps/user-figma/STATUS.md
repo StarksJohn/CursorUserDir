@@ -1,1 +1,1 @@
-The MCP server errored. If this server is important for completing the task, concisely inform the user and ask them to check the MCP status in Cursor Settings; otherwise continue with a different approach.
+The MCP server needs authentication. You must call the `mcp_auth` tool for server "user-figma" through your MCP tool-calling interface using an empty arguments object `{}` soon so the user can access all of the tools this MCP server offers.
