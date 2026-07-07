@@ -41,34 +41,34 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
 
 ## 工作区路径
 
-| 平台 | 路径 |
-|------|------|
-| Windows | `D:\work\RN\csx-mobile-upgrade` |
-| Mac | `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`（若实际路径不同，以用户本机为准） |
+| 平台    | 路径                                                                               |
+| ------- | ---------------------------------------------------------------------------------- |
+| Windows | `D:\work\RN\csx-mobile-upgrade`                                                    |
+| Mac     | `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`（若实际路径不同，以用户本机为准） |
 
 ## 本 skill 文件路径
 
-| 平台 | 路径 |
-|------|------|
-| Windows | `C:\Users\Stark8964911\.cursor\skills\ask-csx-mobile-upgrade\SKILL.md` |
-| Mac | `~/.cursor/skills/ask-csx-mobile-upgrade/SKILL.md`（等价于 `/Users/<你的用户名>/.cursor/skills/ask-csx-mobile-upgrade/SKILL.md`） |
+| 平台    | 路径                                                                                                                              |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Windows | `C:\Users\Stark8964911\.cursor\skills\ask-csx-mobile-upgrade\SKILL.md`                                                            |
+| Mac     | `~/.cursor/skills/ask-csx-mobile-upgrade/SKILL.md`（等价于 `/Users/<你的用户名>/.cursor/skills/ask-csx-mobile-upgrade/SKILL.md`） |
 
 ## Codex 对照文件路径
 
-| 平台 | 路径 |
-|------|------|
-| Windows | `C:\Users\Stark8964911\.codex\skills\csx-mobile-upgrade\SKILL.md` |
-| Mac | `~/.codex/skills/csx-mobile-upgrade/SKILL.md`（等价于 `/Users/<你的用户名>/.codex/skills/csx-mobile-upgrade/SKILL.md`） |
+| 平台    | 路径                                                                                                                    |
+| ------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Windows | `C:\Users\Stark8964911\.codex\skills\csx-mobile-upgrade\SKILL.md`                                                       |
+| Mac     | `~/.codex/skills/csx-mobile-upgrade/SKILL.md`（等价于 `/Users/<你的用户名>/.codex/skills/csx-mobile-upgrade/SKILL.md`） |
 
 ## Cursor / Codex 用户目录分工（Win / Mac）
 
 本 skill 与对照 skill 路径表中的 **Cursor**、**Codex** 为不同产品目录；**Mac** 上 Cursor 常见为两处（分工不同，勿混用）：
 
-| 用途 | Windows | macOS |
-|------|---------|--------|
-| **Cursor**：Agent Skills（`skills/` 树，含本文件） | `%USERPROFILE%\.cursor\skills\...` | `~/.cursor/skills/...`（等价 `/Users/<你的用户名>/.cursor/skills/...`） |
-| **Cursor**：应用用户数据、扩展全局状态、部分缓存（具体以本机为准） | 常见为 `%APPDATA%\Cursor\` | `~/Library/Application Support/Cursor/` |
-| **Codex**：`AGENTS.md`、`skills/`、`config.toml` 等 | `%USERPROFILE%\.codex\...` | `~/.codex/...`（等价 `/Users/<你的用户名>/.codex/...`） |
+| 用途                                                               | Windows                            | macOS                                                                   |
+| ------------------------------------------------------------------ | ---------------------------------- | ----------------------------------------------------------------------- |
+| **Cursor**：Agent Skills（`skills/` 树，含本文件）                 | `%USERPROFILE%\.cursor\skills\...` | `~/.cursor/skills/...`（等价 `/Users/<你的用户名>/.cursor/skills/...`） |
+| **Cursor**：应用用户数据、扩展全局状态、部分缓存（具体以本机为准） | 常见为 `%APPDATA%\Cursor\`         | `~/Library/Application Support/Cursor/`                                 |
+| **Codex**：`AGENTS.md`、`skills/`、`config.toml` 等                | `%USERPROFILE%\.codex\...`         | `~/.codex/...`（等价 `/Users/<你的用户名>/.codex/...`）                 |
 
 ## 图片资源路径
 
@@ -89,24 +89,24 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
 
 ## 最小上下文来源
 
-| 优先级 | 来源 | 用途 |
-|--------|------|------|
-| 1 | `{workspace}/.cursor/rules/project-context.mdc` | 技术栈、脚本、目录、架构、推送与构建要点 |
-| 2 | `{workspace}/README.md` | 环境、内部流程、发布与集成说明 |
-| 3 | `{workspace}/package.json` | scripts、engines、依赖核对 |
-| 4 | 具体代码文件 | 仅与用户任务直接相关的文件 |
+| 优先级 | 来源                                            | 用途                                     |
+| ------ | ----------------------------------------------- | ---------------------------------------- |
+| 1      | `{workspace}/.cursor/rules/project-context.mdc` | 技术栈、脚本、目录、架构、推送与构建要点 |
+| 2      | `{workspace}/README.md`                         | 环境、内部流程、发布与集成说明           |
+| 3      | `{workspace}/package.json`                      | scripts、engines、依赖核对               |
+| 4      | 具体代码文件                                    | 仅与用户任务直接相关的文件               |
 
 按主题的默认切入位置：
 
-| 主题 | 常见位置 |
-|------|----------|
-| 导航 | `src/csxRoutes/`、`src/csxRoutes/csxRouter.ts` |
-| API / DTO | `src/api/`、`src/tools/` |
-| i18n | `src/i18n/`、`src/i18n/locale/` |
-| 推送 | `src/tools/pushManager.ts`、`src/tools/hmsPush.ts`、`src/firebase/` |
-| 健康数据 | `src/pages/HealthDataPage/`、`src/pages/EditHealthDataPage/` 及相关 hooks/services |
-| 通用 UI / 主题 | `src/components/`、`src/components/theme/`、`src/styles/` |
-| 原生构建 | `android/`、`ios/`、`global.ts`、配置文件 |
+| 主题           | 常见位置                                                                           |
+| -------------- | ---------------------------------------------------------------------------------- |
+| 导航           | `src/csxRoutes/`、`src/csxRoutes/csxRouter.ts`                                     |
+| API / DTO      | `src/api/`、`src/tools/`                                                           |
+| i18n           | `src/i18n/`、`src/i18n/locale/`                                                    |
+| 推送           | `src/tools/pushManager.ts`、`src/tools/hmsPush.ts`、`src/firebase/`                |
+| 健康数据       | `src/pages/HealthDataPage/`、`src/pages/EditHealthDataPage/` 及相关 hooks/services |
+| 通用 UI / 主题 | `src/components/`、`src/components/theme/`、`src/styles/`                          |
+| 原生构建       | `android/`、`ios/`、`global.ts`、配置文件                                          |
 
 除非任务确有需要，否则不要扫描整棵 `src/` 目录树。
 
@@ -184,11 +184,11 @@ description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复
 路径对照：Windows 项目根为 `D:\work\RN\csx-mobile-upgrade`；Mac 项目根为 `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`。下方涉及项目内文件时，Windows 与 Mac 仅根目录不同，后续相对路径保持一致。
   
 - MAC
-  <!-- - 需要你在 Mac 系统的项目目录 `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`（例如 `/Users/stark/Desktop/work/RN/csx-mobile`）目录执行一条命令,把当前项目的debug模式的apk运行到如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区`真机上 -->
-    <!-- `yarn start`+ `npx react-native run-ios --simulator "iPhone 17 Pro" --no-packager` 把当前项目的debug模式的app运行到IOS的模拟器里 -->
+  - IOS: 需要你在 Mac 系统的项目目录 `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`（例如 `/Users/stark/Desktop/work/RN/csx-mobile`）目录执行一条命令,构建出当前项目的release模式的ipa运行到如图![img_104505.png](img_104505.png)型号的真机上,真机所在的时区是 `东八区`
+    - 然后告诉我以后执行什么命令
   
 - WIN:
-  - 当前电脑已经在 Windows 项目根 `D:\work\RN\csx-mobile-upgrade`（Mac 对照：`/Users/<你的用户名>/Desktop/work/RN/csx-mobile`）目录执行 `npx react-native run-android` 把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区`
+  <!-- - 当前电脑已经在 Windows 项目根 `D:\work\RN\csx-mobile-upgrade`（Mac 对照：`/Users/<你的用户名>/Desktop/work/RN/csx-mobile`）目录执行 `npx react-native run-android` 把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区` -->
 
 <!-- - figma-to-rn-toolkit 相关:
   - 请根据 `https://www.figma.com/design/Wa0Oa4oeMTy5H2Tk32ooqb/CSM?node-id=17126-28544&m=dev` 这个 Figma URL, 在 Windows `D:\work\RN\csx-mobile-upgrade\src\pages\Diagnosis\DiagnosisPage.tsx` / Mac `/Users/<你的用户名>/Desktop/work/RN/csx-mobile/src/pages/Diagnosis/DiagnosisPage.tsx` 页面 的 2018行 ,根据页面的代码风格和项目结构,设计实现 `React Native` 组件代码

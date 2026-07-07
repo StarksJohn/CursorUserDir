@@ -11,10 +11,10 @@ description: >-
 
 ## 与 Codex 入口的区别（分别维护）
 
-| 客户端 | `SKILL.md` | `name` | 口令 |
-|--------|------------|--------|------|
+| 客户端           | `SKILL.md`                                                                                                                        | `name`      | 口令         |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------------ |
 | Cursor（本文件） | **Windows** `%USERPROFILE%\.cursor\skills\ask-codex\SKILL.md` / **macOS** `/Users/<你的用户名>/.cursor/skills/ask-codex/SKILL.md` | `ask-codex` | `/ask-codex` |
-| Codex（OpenAI） | **Windows** `%USERPROFILE%\.codex\skills\codex\SKILL.md` / **macOS** `/Users/<你的用户名>/.codex/skills/codex/SKILL.md` | `codex` | `/codex` |
+| Codex（OpenAI）  | **Windows** `%USERPROFILE%\.codex\skills\codex\SKILL.md` / **macOS** `/Users/<你的用户名>/.codex/skills/codex/SKILL.md`           | `codex`     | `/codex`     |
 
 两处不要求逐句同步；归档与共读仍以 Codex 用户目录的 **`context.md`** 为准：**Windows** `%USERPROFILE%\.codex\context.md`；**macOS** `/Users/<你的用户名>/.codex/context.md`。
 
@@ -51,12 +51,12 @@ description: >-
    - 技术栈、目录、约定、长期决策；与 `context.md` 冲突时以**仓库内最新文件**为准。
 3. 与用户任务直接相关的 **`README*`**、**`package.json`**、少量源码文件（**不要**默认通读全仓）。
 
-| 优先级 | 来源 | 用途 |
-|--------|------|------|
-| 1 | **Windows** `%USERPROFILE%\.codex\context.md` / **macOS** `/Users/<你的用户名>/.codex/context.md` | 跨 chat 任务摘要、结论、遗留项 |
-| 2 | `{workspace}/.cursor/rules/project-context.mdc` | 项目稳定事实 |
-| 3 | 根目录 `README*`、`package.json` 等 | 环境与依赖锚点 |
-| 4 | 任务直接相关的源码/配置 | 实现与排障 |
+| 优先级 | 来源                                                                                              | 用途                           |
+| ------ | ------------------------------------------------------------------------------------------------- | ------------------------------ |
+| 1      | **Windows** `%USERPROFILE%\.codex\context.md` / **macOS** `/Users/<你的用户名>/.codex/context.md` | 跨 chat 任务摘要、结论、遗留项 |
+| 2      | `{workspace}/.cursor/rules/project-context.mdc`                                                   | 项目稳定事实                   |
+| 3      | 根目录 `README*`、`package.json` 等                                                               | 环境与依赖锚点                 |
+| 4      | 任务直接相关的源码/配置                                                                           | 实现与排障                     |
 
 ## 子 skill / 子任务上下文完整性门禁
 
@@ -69,21 +69,21 @@ description: >-
 
 ## 工作区与本 skill 路径
 
-| 用途 | Windows | macOS（示例） |
-|------|---------|----------------|
-| 工作区根 | `%USERPROFILE%\.codex`（本机示例：`C:\Users\Stark8964911\.codex`） | `/Users/<你的用户名>/.codex`（本机示例：`/Users/stark/.codex`；也可写作 `~/.codex`） |
-| 会话归档文件 | `%USERPROFILE%\.codex\context.md`（本机示例：`C:\Users\Stark8964911\.codex\context.md`） | `/Users/<你的用户名>/.codex/context.md`（本机示例：`/Users/stark/.codex/context.md`） |
-| 本 skill 文件 | `%USERPROFILE%\.cursor\skills\ask-codex\SKILL.md`（本机示例：`C:\Users\Stark8964911\.cursor\skills\ask-codex\SKILL.md`） | `/Users/<你的用户名>/.cursor/skills/ask-codex/SKILL.md`（本机示例：`/Users/stark/.cursor/skills/ask-codex/SKILL.md`） |
-| Codex 对口 skill（分别维护） | `%USERPROFILE%\.codex\skills\codex\SKILL.md`（本机示例：`C:\Users\Stark8964911\.codex\skills\codex\SKILL.md`） | `/Users/<你的用户名>/.codex/skills/codex/SKILL.md`（本机示例：`/Users/stark/.codex/skills/codex/SKILL.md`） |
-| **`AGENTS.md`（Codex / Cursor 内 Codex 插件）** | `%USERPROFILE%\.codex\AGENTS.md`（本机示例：`C:\Users\Stark8964911\.codex\AGENTS.md`） | `~/.codex/AGENTS.md`（绝对路径形如 `/Users/<用户名>/.codex/AGENTS.md`） |
+| 用途                                            | Windows                                                                                                                  | macOS（示例）                                                                                                         |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| 工作区根                                        | `%USERPROFILE%\.codex`（本机示例：`C:\Users\Stark8964911\.codex`）                                                       | `/Users/<你的用户名>/.codex`（本机示例：`/Users/stark/.codex`；也可写作 `~/.codex`）                                  |
+| 会话归档文件                                    | `%USERPROFILE%\.codex\context.md`（本机示例：`C:\Users\Stark8964911\.codex\context.md`）                                 | `/Users/<你的用户名>/.codex/context.md`（本机示例：`/Users/stark/.codex/context.md`）                                 |
+| 本 skill 文件                                   | `%USERPROFILE%\.cursor\skills\ask-codex\SKILL.md`（本机示例：`C:\Users\Stark8964911\.cursor\skills\ask-codex\SKILL.md`） | `/Users/<你的用户名>/.cursor/skills/ask-codex/SKILL.md`（本机示例：`/Users/stark/.cursor/skills/ask-codex/SKILL.md`） |
+| Codex 对口 skill（分别维护）                    | `%USERPROFILE%\.codex\skills\codex\SKILL.md`（本机示例：`C:\Users\Stark8964911\.codex\skills\codex\SKILL.md`）           | `/Users/<你的用户名>/.codex/skills/codex/SKILL.md`（本机示例：`/Users/stark/.codex/skills/codex/SKILL.md`）           |
+| **`AGENTS.md`（Codex / Cursor 内 Codex 插件）** | `%USERPROFILE%\.codex\AGENTS.md`（本机示例：`C:\Users\Stark8964911\.codex\AGENTS.md`）                                   | `~/.codex/AGENTS.md`（绝对路径形如 `/Users/<用户名>/.codex/AGENTS.md`）                                               |
 
 ### Cursor / Codex 用户目录分工
 
-| 类型 | Windows | macOS |
-|------|---------|-------|
-| Cursor Agent Skills | `%USERPROFILE%\.cursor\skills` | `/Users/<你的用户名>/.cursor/skills` |
-| Cursor 应用配置与用户数据 | `%APPDATA%\Cursor` | `~/Library/Application Support/Cursor` |
-| Codex 配置、规则、skills、归档 | `%USERPROFILE%\.codex` | `/Users/<你的用户名>/.codex` |
+| 类型                           | Windows                        | macOS                                  |
+| ------------------------------ | ------------------------------ | -------------------------------------- |
+| Cursor Agent Skills            | `%USERPROFILE%\.cursor\skills` | `/Users/<你的用户名>/.cursor/skills`   |
+| Cursor 应用配置与用户数据      | `%APPDATA%\Cursor`             | `~/Library/Application Support/Cursor` |
+| Codex 配置、规则、skills、归档 | `%USERPROFILE%\.codex`         | `/Users/<你的用户名>/.codex`           |
 
 ## 会话归档（`context.md`）——强制执行
 
@@ -120,15 +120,15 @@ description: >-
 
 按任务类型选用（名称以 **Windows** `%USERPROFILE%\.cursor\skills` / **macOS** `/Users/<你的用户名>/.cursor/skills` 下目录为准）：
 
-| 场景 | 推荐 skill |
-|------|------------|
-| 初次打开仓库、缺少 `project-context.mdc` | `init-project` |
-| TypeScript 类型与接口收紧 | `typescript-strict` |
-| 常规代码审查 | `code-review` |
-| 对抗性 / BMad 审查 | `bmad-code-review` 等 |
-| 架构与设计讨论 | `architecture-review` 或 `bmad-create-architecture` |
-| Cursor 编辑器、MCP、`mcp.json`、设置 | `ask-cursor` 及 `skills-cursor/*` |
-| 中英文案与命名旁注 | `chinese-english-translation` |
+| 场景                                     | 推荐 skill                                          |
+| ---------------------------------------- | --------------------------------------------------- |
+| 初次打开仓库、缺少 `project-context.mdc` | `init-project`                                      |
+| TypeScript 类型与接口收紧                | `typescript-strict`                                 |
+| 常规代码审查                             | `code-review`                                       |
+| 对抗性 / BMad 审查                       | `bmad-code-review` 等                               |
+| 架构与设计讨论                           | `architecture-review` 或 `bmad-create-architecture` |
+| Cursor 编辑器、MCP、`mcp.json`、设置     | `ask-cursor` 及 `skills-cursor/*`                   |
+| 中英文案与命名旁注                       | `chinese-english-translation`                       |
 
 ## 输出约定
 
@@ -147,7 +147,7 @@ description: >-
 - 如图 ![img_222652.png](img_222652.png) 是`codex settings`里的`plugin`配置(在Mac系统时还需要问一遍`codex settings`里的所有配置)
   - 目前这些配置是否还有优化的地方?如果是,直接帮我优化,已达到在优化后可以更强大的发挥出cursor的codex插件在使用AI大模型时调用全局规则,skill或者MCP的能力
 - Cursor 与 Codex 使用方式的对齐问题
-  <!-- - 借鉴 '/Users/stark/.cursor/skills' 里cursor侧的其它skill和 '/Users/stark/.codex/skills' 里codex侧的其它skill ,为当前项目创建cursor侧和codex侧的skill -->
+- <!-- - 借鉴 '/Users/stark/.cursor/skills' 里cursor侧的其它skill和 '/Users/stark/.codex/skills' 里codex侧的其它skill ,为当前项目创建cursor侧和codex侧的skill -->
   <!-- -根据`C:\Users\Stark8964911\.cursor\skills\ask-MyStartupProject1\SKILL.md`,借鉴`C:\Users\Stark8964911\.codex\skills\codex\SKILL.md`,在codex侧生成对应的name为`MyStartupProject1`的skill文件,这个新增的skill文件和`C:\Users\Stark8964911\.cursor\skills\ask-MyStartupProject1\SKILL.md`文件里关于所有路径的描述都应该 Win/Mac 双平台表达 (Mac系统的cursor的安装和配置在`/Users/stark/.cursor` 和 `~/Library/Application Support/Cursor` 目录,codex安装在`/Users/<你的用户名>/.codex`),当我在cursor的codex插件的输入框里输入`/MyStartupProject1`时,需要你保证任务的执行流程和文件的加载顺序以及任务的执行效果和在cursor的输入框里执行`/ask-MyStartupProject1`任务时一致 -->
   <!-- - 借鉴`/Users/stark/.cursor/skills/ask-codex/SKILL.md`,优化`/Users/stark/.codex/skills/codex/SKILL.md`;这2个skill文件里关于所有路径的描述都应该 有 Win/Mac 双平台表达 (Mac系统的cursor的安装和配置在`/Users/stark/.cursor` 和 `~/Library/Application Support/Cursor` 目录,codex安装在`/Users/<你的用户名>/.codex`),当我在cursor的codex插件的输入框里输入`/codex`时,需要你保证任务的执行流程和文件的加载顺序以及任务的执行效果和在cursor的输入框里执行`/ask-codex`任务时一致 -->
   <!-- - 当前项目在当前Mac系统上的根目录是'/Users/stark/.codex', 优化 '/Users/stark/.cursor/skills/ask-codex/SKILL.md' 和 '/Users/stark/.codex/skills/codex/SKILL.md',以及当前项目根目录下所有涉及项目根目录的地方,改成 Win/Mac 双平台表达;我每次在新chat里执行当前项目的任务前,都会执行这2个skill(一个是cursor测的skill,一个是codex侧的skill)里的其中一个,如果这2个skill里又要执行其它skill或者其它子任务, 需要你判断当前chat的上下文里是否已经读取了要执行的其它skill的文档或者其它子任务的相关文件,保证主任务的执行过程中上下文不要缺少任何需要加载的文档或者其它文件的内容,任务执行的效果要完整完美滴水不漏的解决我在输入框里或者这2个skill文件里的`当前活跃需求`模块里提出的问题 -->

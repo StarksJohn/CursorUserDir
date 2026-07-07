@@ -1,0 +1,1554 @@
+Found '/Users/stark/Desktop/work/RN/csx-mobile/.nvmrc' with version <v20.19.4>
+Now using node v20.19.4 (npm v10.8.2)
+yarn run v1.22.22
+$ npx react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios
+
+                        ▒▒▓▓▓▓▒▒
+                     ▒▓▓▓▒▒░░▒▒▓▓▓▒
+                  ▒▓▓▓▓░░░▒▒▒▒░░░▓▓▓▓▒
+                 ▓▓▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▓▓
+                 ▓▓░░░░░▒▓▓▓▓▓▓▒░░░░░▓▓
+                 ▓▓░░▓▓▒░░░▒▒░░░▒▓▒░░▓▓
+                 ▓▓░░▓▓▓▓▓▒▒▒▒▓▓▓▓▒░░▓▓
+                 ▓▓░░▓▓▓▓▓▓▓▓▓▓▓▓▓▒░░▓▓
+                 ▓▓▒░░▒▒▓▓▓▓▓▓▓▓▒░░░▒▓▓
+                  ▒▓▓▓▒░░░▒▓▓▒░░░▒▓▓▓▒
+                     ▒▓▓▓▒░░░░▒▓▓▓▒
+                        ▒▒▓▓▓▓▒▒
+
+
+                Welcome to Metro v0.83.5
+              Fast - Scalable - Integrated
+
+
+transform[stderr]: 
+transform[stderr]: ========================================
+transform[stderr]: [babel.config.js] Loading at: 2026-06-15T07:08:26.564Z
+transform[stderr]: ========================================
+transform[stderr]: [babel.config.js] Calling checkFakeMode...
+transform[stderr]: [babel.config.js] checkFakeMode function called
+transform[stderr]: [babel.config.js] checkFakeMode - fakeMatch: [
+transform[stderr]:   [32m'$fake = false'[39m,
+transform[stderr]:   [32m'false'[39m,
+transform[stderr]:   index: [33m821[39m,
+transform[stderr]:   input: [32m'/**\n'[39m +
+transform[stderr]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'// 设置 全局变量\n'[39m +
+transform[stderr]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stderr]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stderr]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stderr]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stderr]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stderr]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stderr]:     [32m"global.token = '';\n"[39m +
+transform[stderr]:     [32m"global.cookie = '';\n"[39m +
+transform[stderr]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stderr]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stderr]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stderr]:     [32m'global.navigation = null;\n'[39m +
+transform[stderr]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stderr]:     [32m'/**\n'[39m +
+transform[stderr]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stderr]:     [32m'//当前选中的医生\n'[39m +
+transform[stderr]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stderr]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stderr]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stderr]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stderr]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stderr]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stderr]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stderr]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stderr]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stderr]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stderr]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stderr]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stderr]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stderr]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stderr]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stderr]:     [32m'  const now = new Date();\n'[39m +
+transform[stderr]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stderr]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stderr]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stderr]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stderr]:   groups: [90mundefined[39m
+transform[stderr]: ]
+transform[stderr]: [babel.config.js] checkFakeMode result: false
+transform[stdout]: checkFakeMode fakeMatch [
+transform[stdout]:   [32m'$fake = false'[39m,
+transform[stdout]:   [32m'false'[39m,
+transform[stdout]:   index: [33m821[39m,
+transform[stdout]:   input: [32m'/**\n'[39m +
+transform[stdout]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'// 设置 全局变量\n'[39m +
+transform[stdout]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stdout]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stdout]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stdout]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stdout]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stdout]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stdout]:     [32m"global.token = '';\n"[39m +
+transform[stdout]:     [32m"global.cookie = '';\n"[39m +
+transform[stdout]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stdout]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stdout]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stdout]:     [32m'global.navigation = null;\n'[39m +
+transform[stdout]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stdout]:     [32m'/**\n'[39m +
+transform[stdout]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stdout]:     [32m'//当前选中的医生\n'[39m +
+transform[stdout]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stdout]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stdout]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stdout]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stdout]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stdout]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stdout]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stdout]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stdout]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stdout]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stdout]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stdout]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stdout]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stdout]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stdout]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stdout]:     [32m'  const now = new Date();\n'[39m +
+transform[stdout]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stdout]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stdout]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stdout]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stdout]:   groups: [90mundefined[39m
+transform[stdout]: ]
+transform[stdout]: Babel Config - Fake Mode: DISABLED
+transform[stdout]: [DISABLED] Using react-native-auto-positioned-popup COMPILED files (.js)
+transform[stderr]: (node:78924) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+transform[stderr]: (Use `node --trace-warnings ...` to show where the warning was created)
+transform[stderr]: 
+transform[stderr]: ========================================
+transform[stderr]: [babel.config.js] Loading at: 2026-06-15T07:08:29.117Z
+transform[stderr]: ========================================
+transform[stderr]: [babel.config.js] Calling checkFakeMode...
+transform[stderr]: [babel.config.js] checkFakeMode function called
+transform[stderr]: [babel.config.js] checkFakeMode - fakeMatch: [
+transform[stderr]:   [32m'$fake = false'[39m,
+transform[stderr]:   [32m'false'[39m,
+transform[stderr]:   index: [33m821[39m,
+transform[stderr]:   input: [32m'/**\n'[39m +
+transform[stderr]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'// 设置 全局变量\n'[39m +
+transform[stderr]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stderr]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stderr]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stderr]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stderr]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stderr]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stderr]:     [32m"global.token = '';\n"[39m +
+transform[stderr]:     [32m"global.cookie = '';\n"[39m +
+transform[stderr]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stderr]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stderr]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stderr]:     [32m'global.navigation = null;\n'[39m +
+transform[stderr]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stderr]:     [32m'/**\n'[39m +
+transform[stderr]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stderr]:     [32m'//当前选中的医生\n'[39m +
+transform[stderr]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stderr]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stderr]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stderr]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stderr]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stderr]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stderr]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stderr]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stderr]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stderr]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stderr]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stderr]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stderr]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stderr]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stderr]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stderr]:     [32m'  const now = new Date();\n'[39m +
+transform[stderr]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stderr]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stderr]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stderr]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stderr]:   groups: [90mundefined[39m
+transform[stderr]: ]
+transform[stderr]: [babel.config.js] checkFakeMode result: false
+transform[stdout]: checkFakeMode fakeMatch [
+transform[stdout]:   [32m'$fake = false'[39m,
+transform[stdout]:   [32m'false'[39m,
+transform[stdout]:   index: [33m821[39m,
+transform[stdout]:   input: [32m'/**\n'[39m +
+transform[stdout]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'// 设置 全局变量\n'[39m +
+transform[stdout]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stdout]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stdout]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stdout]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stdout]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stdout]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stdout]:     [32m"global.token = '';\n"[39m +
+transform[stdout]:     [32m"global.cookie = '';\n"[39m +
+transform[stdout]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stdout]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stdout]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stdout]:     [32m'global.navigation = null;\n'[39m +
+transform[stdout]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stdout]:     [32m'/**\n'[39m +
+transform[stdout]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stdout]:     [32m'//当前选中的医生\n'[39m +
+transform[stdout]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stdout]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stdout]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stdout]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stdout]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stdout]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stdout]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stdout]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stdout]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stdout]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stdout]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stdout]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stdout]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stdout]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stdout]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stdout]:     [32m'  const now = new Date();\n'[39m +
+transform[stdout]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stdout]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stdout]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stdout]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stdout]:   groups: [90mundefined[39m
+transform[stdout]: ]
+transform[stdout]: Babel Config - Fake Mode: DISABLED
+transform[stdout]: [DISABLED] Using react-native-auto-positioned-popup COMPILED files (.js)
+transform[stderr]: 
+transform[stderr]: ========================================
+transform[stderr]: 
+transform[stderr]: ========================================
+transform[stderr]: [babel.config.js] Loading at: 2026-06-15T07:08:29.128Z
+transform[stderr]: ========================================
+transform[stderr]: [babel.config.js] Calling checkFakeMode...
+transform[stderr]: [babel.config.js] checkFakeMode function called
+transform[stderr]: 
+transform[stderr]: ========================================
+transform[stderr]: [babel.config.js] Loading at: 2026-06-15T07:08:29.130Z
+transform[stderr]: ========================================
+transform[stderr]: [babel.config.js] Calling checkFakeMode...
+transform[stderr]: [babel.config.js] checkFakeMode function called
+transform[stderr]: [babel.config.js] checkFakeMode - fakeMatch: [
+transform[stderr]:   [32m'$fake = false'[39m,
+transform[stderr]:   [32m'false'[39m,
+transform[stderr]:   index: [33m821[39m,
+transform[stderr]:   input: [32m'/**\n'[39m +
+transform[stderr]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'// 设置 全局变量\n'[39m +
+transform[stderr]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stderr]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stderr]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stderr]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stderr]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stderr]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stderr]:     [32m"global.token = '';\n"[39m +
+transform[stderr]:     [32m"global.cookie = '';\n"[39m +
+transform[stderr]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stderr]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stderr]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stderr]:     [32m'global.navigation = null;\n'[39m +
+transform[stderr]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stderr]:     [32m'/**\n'[39m +
+transform[stderr]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stderr]:     [32m'//当前选中的医生\n'[39m +
+transform[stderr]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stderr]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stderr]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stderr]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stderr]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stderr]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stderr]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stderr]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stderr]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stderr]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stderr]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stderr]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stderr]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stderr]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stderr]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stderr]:     [32m'  const now = new Date();\n'[39m +
+transform[stderr]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stderr]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stderr]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stderr]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stderr]:   groups: [90mundefined[39m
+transform[stderr]: ]
+transform[stderr]: [babel.config.js] checkFakeMode result: false
+transform[stderr]: [babel.config.js] Loading at: 2026-06-15T07:08:29.134Z
+transform[stderr]: ========================================
+transform[stderr]: [babel.config.js] Calling checkFakeMode...
+transform[stderr]: [babel.config.js] checkFakeMode function called
+transform[stdout]: checkFakeMode fakeMatch [
+transform[stdout]:   [32m'$fake = false'[39m,
+transform[stdout]:   [32m'false'[39m,
+transform[stdout]:   index: [33m821[39m,
+transform[stdout]:   input: [32m'/**\n'[39m +
+transform[stdout]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'// 设置 全局变量\n'[39m +
+transform[stdout]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stdout]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stdout]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stdout]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stdout]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stdout]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stdout]:     [32m"global.token = '';\n"[39m +
+transform[stdout]:     [32m"global.cookie = '';\n"[39m +
+transform[stdout]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stdout]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stdout]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stdout]:     [32m'global.navigation = null;\n'[39m +
+transform[stdout]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stdout]:     [32m'/**\n'[39m +
+transform[stdout]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stdout]:     [32m'//当前选中的医生\n'[39m +
+transform[stdout]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stdout]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stdout]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stdout]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stdout]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stdout]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stdout]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stdout]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stdout]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stdout]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stdout]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stdout]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stdout]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stdout]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stdout]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stdout]:     [32m'  const now = new Date();\n'[39m +
+transform[stdout]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stdout]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stdout]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stdout]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stdout]:   groups: [90mundefined[39m
+transform[stdout]: ]
+transform[stdout]: Babel Config - Fake Mode: DISABLED
+transform[stdout]: [DISABLED] Using react-native-auto-positioned-popup COMPILED files (.js)
+transform[stderr]: 
+transform[stderr]: ========================================
+transform[stderr]: 
+transform[stderr]: ========================================
+transform[stderr]: [babel.config.js] checkFakeMode - fakeMatch: [
+transform[stderr]:   [32m'$fake = false'[39m,
+transform[stderr]:   [32m'false'[39m,
+transform[stderr]:   index: [33m821[39m,
+transform[stderr]:   input: [32m'/**\n'[39m +
+transform[stderr]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'// 设置 全局变量\n'[39m +
+transform[stderr]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stderr]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stderr]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stderr]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stderr]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stderr]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stderr]:     [32m"global.token = '';\n"[39m +
+transform[stderr]:     [32m"global.cookie = '';\n"[39m +
+transform[stderr]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stderr]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stderr]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stderr]:     [32m'global.navigation = null;\n'[39m +
+transform[stderr]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stderr]:     [32m'/**\n'[39m +
+transform[stderr]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stderr]:     [32m'//当前选中的医生\n'[39m +
+transform[stderr]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stderr]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stderr]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stderr]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stderr]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stderr]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stderr]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stderr]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stderr]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stderr]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stderr]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stderr]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stderr]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stderr]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stderr]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stderr]:     [32m'  const now = new Date();\n'[39m +
+transform[stderr]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stderr]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stderr]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stderr]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stderr]:   groups: [90mundefined[39m
+transform[stderr]: ]
+transform[stderr]: [babel.config.js] checkFakeMode result: false
+transform[stdout]: checkFakeMode fakeMatch [
+transform[stdout]:   [32m'$fake = false'[39m,
+transform[stdout]:   [32m'false'[39m,
+transform[stdout]:   index: [33m821[39m,
+transform[stdout]:   input: [32m'/**\n'[39m +
+transform[stdout]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'// 设置 全局变量\n'[39m +
+transform[stdout]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stdout]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stdout]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stdout]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stdout]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stdout]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stdout]:     [32m"global.token = '';\n"[39m +
+transform[stdout]:     [32m"global.cookie = '';\n"[39m +
+transform[stdout]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stdout]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stdout]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stdout]:     [32m'global.navigation = null;\n'[39m +
+transform[stdout]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stdout]:     [32m'/**\n'[39m +
+transform[stdout]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stdout]:     [32m'//当前选中的医生\n'[39m +
+transform[stdout]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stdout]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stdout]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stdout]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stdout]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stdout]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stdout]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stdout]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stdout]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stdout]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stdout]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stdout]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stdout]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stdout]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stdout]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stdout]:     [32m'  const now = new Date();\n'[39m +
+transform[stdout]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stdout]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stdout]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stdout]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stdout]:   groups: [90mundefined[39m
+transform[stdout]: ]
+transform[stdout]: Babel Config - Fake Mode: DISABLED
+transform[stdout]: [DISABLED] Using react-native-auto-positioned-popup COMPILED files (.js)
+transform[stderr]: [babel.config.js] Loading at: 2026-06-15T07:08:29.139Z
+transform[stderr]: ========================================
+transform[stderr]: [babel.config.js] Calling checkFakeMode...
+transform[stderr]: [babel.config.js] checkFakeMode function called
+transform[stderr]: [babel.config.js] checkFakeMode - fakeMatch: [
+transform[stderr]:   [32m'$fake = false'[39m,
+transform[stderr]:   [32m'false'[39m,
+transform[stderr]:   index: [33m821[39m,
+transform[stderr]:   input: [32m'/**\n'[39m +
+transform[stderr]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'// 设置 全局变量\n'[39m +
+transform[stderr]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stderr]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stderr]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stderr]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stderr]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stderr]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stderr]:     [32m"global.token = '';\n"[39m +
+transform[stderr]:     [32m"global.cookie = '';\n"[39m +
+transform[stderr]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stderr]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stderr]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stderr]:     [32m'global.navigation = null;\n'[39m +
+transform[stderr]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stderr]:     [32m'/**\n'[39m +
+transform[stderr]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stderr]:     [32m'//当前选中的医生\n'[39m +
+transform[stderr]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stderr]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stderr]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stderr]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stderr]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stderr]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stderr]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stderr]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stderr]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stderr]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stderr]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stderr]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stderr]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stderr]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stderr]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stderr]:     [32m'  const now = new Date();\n'[39m +
+transform[stderr]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stderr]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stderr]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stderr]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stderr]:   groups: [90mundefined[39m
+transform[stderr]: ]
+transform[stderr]: [babel.config.js] checkFakeMode result: false
+transform[stderr]: [babel.config.js] checkFakeMode - fakeMatch: [
+transform[stderr]:   [32m'$fake = false'[39m,
+transform[stderr]:   [32m'false'[39m,
+transform[stderr]:   index: [33m821[39m,
+transform[stderr]:   input: [32m'/**\n'[39m +
+transform[stderr]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'// 设置 全局变量\n'[39m +
+transform[stderr]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stderr]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stderr]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stderr]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stderr]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stderr]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stderr]:     [32m"global.token = '';\n"[39m +
+transform[stderr]:     [32m"global.cookie = '';\n"[39m +
+transform[stderr]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stderr]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stderr]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stderr]:     [32m'global.navigation = null;\n'[39m +
+transform[stderr]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stderr]:     [32m'/**\n'[39m +
+transform[stderr]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stderr]:     [32m'//当前选中的医生\n'[39m +
+transform[stderr]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stderr]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stderr]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stderr]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stderr]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stderr]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stderr]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stderr]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stderr]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stderr]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stderr]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stderr]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stderr]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stderr]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stderr]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stderr]:     [32m'  const now = new Date();\n'[39m +
+transform[stderr]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stderr]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stderr]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stderr]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stderr]:   groups: [90mundefined[39m
+transform[stderr]: ]
+transform[stderr]: [babel.config.js] Loading at: 2026-06-15T07:08:29.140Z
+transform[stderr]: ========================================
+transform[stderr]: [babel.config.js] Calling checkFakeMode...
+transform[stderr]: [babel.config.js] checkFakeMode function called
+transform[stderr]: [babel.config.js] checkFakeMode - fakeMatch: [
+transform[stderr]:   [32m'$fake = false'[39m,
+transform[stderr]:   [32m'false'[39m,
+transform[stderr]:   index: [33m821[39m,
+transform[stderr]:   input: [32m'/**\n'[39m +
+transform[stderr]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'// 设置 全局变量\n'[39m +
+transform[stderr]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stderr]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stderr]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stderr]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stderr]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stderr]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stderr]:     [32m"global.token = '';\n"[39m +
+transform[stderr]:     [32m"global.cookie = '';\n"[39m +
+transform[stderr]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stderr]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stderr]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stderr]:     [32m'global.navigation = null;\n'[39m +
+transform[stderr]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stderr]:     [32m'/**\n'[39m +
+transform[stderr]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stderr]:     [32m'//当前选中的医生\n'[39m +
+transform[stderr]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stderr]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stderr]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stderr]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stderr]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stderr]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stderr]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stderr]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stderr]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stderr]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stderr]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stderr]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stderr]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stderr]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stderr]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stderr]:     [32m'  const now = new Date();\n'[39m +
+transform[stderr]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stderr]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stderr]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stderr]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stderr]:   groups: [90mundefined[39m
+transform[stderr]: ]
+transform[stdout]: checkFakeMode fakeMatch [
+transform[stdout]:   [32m'$fake = false'[39m,
+transform[stdout]:   [32m'false'[39m,
+transform[stdout]:   index: [33m821[39m,
+transform[stdout]:   input: [32m'/**\n'[39m +
+transform[stdout]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'// 设置 全局变量\n'[39m +
+transform[stdout]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stdout]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stdout]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stdout]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stdout]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stdout]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stdout]:     [32m"global.token = '';\n"[39m +
+transform[stdout]:     [32m"global.cookie = '';\n"[39m +
+transform[stdout]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stdout]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stdout]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stdout]:     [32m'global.navigation = null;\n'[39m +
+transform[stdout]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stdout]:     [32m'/**\n'[39m +
+transform[stdout]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stdout]:     [32m'//当前选中的医生\n'[39m +
+transform[stdout]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stdout]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stdout]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stdout]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stdout]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stdout]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stdout]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stdout]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stdout]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stdout]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stdout]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stdout]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stdout]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stdout]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stdout]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stdout]:     [32m'  const now = new Date();\n'[39m +
+transform[stdout]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stdout]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stdout]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stdout]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stdout]:   groups: [90mundefined[39m
+transform[stdout]: ]
+transform[stdout]: Babel Config - Fake Mode: DISABLED
+transform[stdout]: [DISABLED] Using react-native-auto-positioned-popup COMPILED files (.js)
+transform[stderr]: 
+transform[stderr]: ========================================
+transform[stderr]: [babel.config.js] Loading at: 2026-06-15T07:08:29.146Z
+transform[stderr]: ========================================
+transform[stderr]: [babel.config.js] Calling checkFakeMode...
+transform[stderr]: [babel.config.js] checkFakeMode function called
+transform[stderr]: [babel.config.js] checkFakeMode - fakeMatch: [
+transform[stderr]:   [32m'$fake = false'[39m,
+transform[stderr]:   [32m'false'[39m,
+transform[stderr]:   index: [33m821[39m,
+transform[stderr]:   input: [32m'/**\n'[39m +
+transform[stderr]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'// 设置 全局变量\n'[39m +
+transform[stderr]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stderr]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stderr]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stderr]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stderr]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stderr]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stderr]:     [32m"global.token = '';\n"[39m +
+transform[stderr]:     [32m"global.cookie = '';\n"[39m +
+transform[stderr]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stderr]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stderr]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stderr]:     [32m'global.navigation = null;\n'[39m +
+transform[stderr]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stderr]:     [32m'/**\n'[39m +
+transform[stderr]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stderr]:     [32m'//当前选中的医生\n'[39m +
+transform[stderr]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stderr]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stderr]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stderr]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stderr]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stderr]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stderr]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stderr]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stderr]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stderr]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stderr]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stderr]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stderr]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stderr]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stderr]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stderr]:     [32m'  const now = new Date();\n'[39m +
+transform[stderr]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stderr]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stderr]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stderr]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stderr]:   groups: [90mundefined[39m
+transform[stderr]: ]
+transform[stderr]: [babel.config.js] checkFakeMode result: false
+transform[stderr]: [babel.config.js] checkFakeMode result: false
+transform[stderr]: [babel.config.js] checkFakeMode result: false
+transform[stdout]: checkFakeMode fakeMatch [
+transform[stdout]:   [32m'$fake = false'[39m,
+transform[stdout]:   [32m'false'[39m,
+transform[stdout]:   index: [33m821[39m,
+transform[stdout]:   input: [32m'/**\n'[39m +
+transform[stdout]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'// 设置 全局变量\n'[39m +
+transform[stdout]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stdout]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stdout]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stdout]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stdout]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stdout]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stdout]:     [32m"global.token = '';\n"[39m +
+transform[stdout]:     [32m"global.cookie = '';\n"[39m +
+transform[stdout]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stdout]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stdout]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stdout]:     [32m'global.navigation = null;\n'[39m +
+transform[stdout]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stdout]:     [32m'/**\n'[39m +
+transform[stdout]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stdout]:     [32m'//当前选中的医生\n'[39m +
+transform[stdout]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stdout]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stdout]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stdout]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stdout]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stdout]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stdout]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stdout]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stdout]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stdout]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stdout]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stdout]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stdout]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stdout]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stdout]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stdout]:     [32m'  const now = new Date();\n'[39m +
+transform[stdout]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stdout]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stdout]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stdout]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stdout]:   groups: [90mundefined[39m
+transform[stdout]: ]
+transform[stdout]: Babel Config - Fake Mode: DISABLED
+transform[stdout]: [DISABLED] Using react-native-auto-positioned-popup COMPILED files (.js)
+transform[stdout]: checkFakeMode fakeMatch [
+transform[stdout]:   [32m'$fake = false'[39m,
+transform[stdout]:   [32m'false'[39m,
+transform[stdout]:   index: [33m821[39m,
+transform[stdout]:   input: [32m'/**\n'[39m +
+transform[stdout]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'// 设置 全局变量\n'[39m +
+transform[stdout]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stdout]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stdout]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stdout]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stdout]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stdout]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stdout]:     [32m"global.token = '';\n"[39m +
+transform[stdout]:     [32m"global.cookie = '';\n"[39m +
+transform[stdout]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stdout]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stdout]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stdout]:     [32m'global.navigation = null;\n'[39m +
+transform[stdout]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stdout]:     [32m'/**\n'[39m +
+transform[stdout]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stdout]:     [32m'//当前选中的医生\n'[39m +
+transform[stdout]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stdout]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stdout]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stdout]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stdout]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stdout]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stdout]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stdout]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stdout]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stdout]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stdout]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stdout]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stdout]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stdout]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stdout]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stdout]:     [32m'  const now = new Date();\n'[39m +
+transform[stdout]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stdout]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stdout]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stdout]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stdout]:   groups: [90mundefined[39m
+transform[stdout]: ]
+transform[stdout]: Babel Config - Fake Mode: DISABLED
+transform[stdout]: [DISABLED] Using react-native-auto-positioned-popup COMPILED files (.js)
+transform[stdout]: checkFakeMode fakeMatch [
+transform[stdout]:   [32m'$fake = false'[39m,
+transform[stdout]:   [32m'false'[39m,
+transform[stdout]:   index: [33m821[39m,
+transform[stdout]:   input: [32m'/**\n'[39m +
+transform[stdout]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'// 设置 全局变量\n'[39m +
+transform[stdout]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stdout]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stdout]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stdout]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stdout]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stdout]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stdout]:     [32m"global.token = '';\n"[39m +
+transform[stdout]:     [32m"global.cookie = '';\n"[39m +
+transform[stdout]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stdout]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stdout]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stdout]:     [32m'global.navigation = null;\n'[39m +
+transform[stdout]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stdout]:     [32m'/**\n'[39m +
+transform[stdout]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stdout]:     [32m'//当前选中的医生\n'[39m +
+transform[stdout]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stdout]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stdout]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stdout]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stdout]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stdout]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stdout]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stdout]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stdout]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stdout]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stdout]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stdout]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stdout]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stdout]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stdout]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stdout]:     [32m'  const now = new Date();\n'[39m +
+transform[stdout]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stdout]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stdout]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stdout]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stdout]:   groups: [90mundefined[39m
+transform[stdout]: ]
+transform[stdout]: Babel Config - Fake Mode: DISABLED
+transform[stdout]: [DISABLED] Using react-native-auto-positioned-popup COMPILED files (.js)
+transform[stderr]: 
+transform[stderr]: ========================================
+transform[stderr]: [babel.config.js] Loading at: 2026-06-15T07:08:29.156Z
+transform[stderr]: ========================================
+transform[stderr]: [babel.config.js] Calling checkFakeMode...
+transform[stderr]: [babel.config.js] checkFakeMode function called
+transform[stderr]: [babel.config.js] checkFakeMode - fakeMatch: [
+transform[stderr]:   [32m'$fake = false'[39m,
+transform[stderr]:   [32m'false'[39m,
+transform[stderr]:   index: [33m821[39m,
+transform[stderr]:   input: [32m'/**\n'[39m +
+transform[stderr]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'// 设置 全局变量\n'[39m +
+transform[stderr]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stderr]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stderr]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stderr]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stderr]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stderr]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stderr]:     [32m"global.token = '';\n"[39m +
+transform[stderr]:     [32m"global.cookie = '';\n"[39m +
+transform[stderr]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stderr]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stderr]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stderr]:     [32m'global.navigation = null;\n'[39m +
+transform[stderr]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stderr]:     [32m'/**\n'[39m +
+transform[stderr]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stderr]:     [32m'//当前选中的医生\n'[39m +
+transform[stderr]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stderr]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stderr]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stderr]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stderr]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stderr]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stderr]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stderr]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stderr]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stderr]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stderr]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stderr]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stderr]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stderr]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stderr]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stderr]:     [32m'  const now = new Date();\n'[39m +
+transform[stderr]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stderr]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stderr]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stderr]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stderr]:   groups: [90mundefined[39m
+transform[stderr]: ]
+transform[stderr]: [babel.config.js] checkFakeMode result: false
+transform[stdout]: checkFakeMode fakeMatch [
+transform[stdout]:   [32m'$fake = false'[39m,
+transform[stdout]:   [32m'false'[39m,
+transform[stdout]:   index: [33m821[39m,
+transform[stdout]:   input: [32m'/**\n'[39m +
+transform[stdout]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'// 设置 全局变量\n'[39m +
+transform[stdout]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stdout]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stdout]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stdout]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stdout]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stdout]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stdout]:     [32m"global.token = '';\n"[39m +
+transform[stdout]:     [32m"global.cookie = '';\n"[39m +
+transform[stdout]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stdout]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stdout]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stdout]:     [32m'global.navigation = null;\n'[39m +
+transform[stdout]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stdout]:     [32m'/**\n'[39m +
+transform[stdout]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stdout]:     [32m'//当前选中的医生\n'[39m +
+transform[stdout]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stdout]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stdout]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stdout]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stdout]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stdout]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stdout]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stdout]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stdout]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stdout]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stdout]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stdout]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stdout]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stdout]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stdout]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stdout]:     [32m'  const now = new Date();\n'[39m +
+transform[stdout]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stdout]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stdout]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stdout]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stdout]:   groups: [90mundefined[39m
+transform[stdout]: ]
+transform[stdout]: Babel Config - Fake Mode: DISABLED
+transform[stdout]: [DISABLED] Using react-native-auto-positioned-popup COMPILED files (.js)
+transform[stderr]: 
+transform[stderr]: ========================================
+transform[stderr]: [babel.config.js] Loading at: 2026-06-15T07:08:29.250Z
+transform[stderr]: ========================================
+transform[stderr]: [babel.config.js] Calling checkFakeMode...
+transform[stderr]: [babel.config.js] checkFakeMode function called
+transform[stderr]: [babel.config.js] checkFakeMode - fakeMatch: [
+transform[stderr]:   [32m'$fake = false'[39m,
+transform[stderr]:   [32m'false'[39m,
+transform[stderr]:   index: [33m821[39m,
+transform[stderr]:   input: [32m'/**\n'[39m +
+transform[stderr]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'// 设置 全局变量\n'[39m +
+transform[stderr]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stderr]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stderr]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stderr]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stderr]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stderr]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stderr]:     [32m'// @ts-ignore\n'[39m +
+transform[stderr]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stderr]:     [32m"global.token = '';\n"[39m +
+transform[stderr]:     [32m"global.cookie = '';\n"[39m +
+transform[stderr]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stderr]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stderr]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stderr]:     [32m'global.navigation = null;\n'[39m +
+transform[stderr]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stderr]:     [32m'/**\n'[39m +
+transform[stderr]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stderr]:     [32m' */\n'[39m +
+transform[stderr]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stderr]:     [32m'//当前选中的医生\n'[39m +
+transform[stderr]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stderr]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stderr]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stderr]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stderr]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stderr]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stderr]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stderr]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stderr]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stderr]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stderr]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stderr]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stderr]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stderr]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stderr]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stderr]:     [32m'  const now = new Date();\n'[39m +
+transform[stderr]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stderr]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stderr]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stderr]:     [32m'};\n'[39m +
+transform[stderr]:     [32m'\n'[39m +
+transform[stderr]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stderr]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stderr]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stderr]:   groups: [90mundefined[39m
+transform[stderr]: ]
+transform[stderr]: [babel.config.js] checkFakeMode result: false
+transform[stdout]: checkFakeMode fakeMatch [
+transform[stdout]:   [32m'$fake = false'[39m,
+transform[stdout]:   [32m'false'[39m,
+transform[stdout]:   index: [33m821[39m,
+transform[stdout]:   input: [32m'/**\n'[39m +
+transform[stdout]:     [32m' * https://juejin.cn/post/6844904071137247240\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'// 设置 全局变量\n'[39m +
+transform[stdout]:     [32m"import i18n from 'i18n/i18n';\n"[39m +
+transform[stdout]:     [32m"import { Keyboard, Platform } from 'react-native';\n"[39m +
+transform[stdout]:     [32m"import DeviceInfo from 'react-native-device-info';\n"[39m +
+transform[stdout]:     [32m"import { CurClinicData, CurDoctorData } from 'tools/AllInterface';\n"[39m +
+transform[stdout]:     [32m"import {List_payor} from 'api/api-types.ts';\n"[39m +
+transform[stdout]:     [32m"import { EdgeInsets } from 'react-native-safe-area-context';\n"[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.ios = Platform.OS === 'ios';\n"[39m +
+transform[stdout]:     [32m'// @ts-ignore\n'[39m +
+transform[stdout]:     [32m"global.android = Platform.OS === 'android';\n"[39m +
+transform[stdout]:     [32m"global.token = '';\n"[39m +
+transform[stdout]:     [32m"global.cookie = '';\n"[39m +
+transform[stdout]:     [32m'// 将 i18n 设置为全局变量\n'[39m +
+transform[stdout]:     [32m'global.i18n = i18n;\n'[39m +
+transform[stdout]:     [32m'global.debugMode = __DEV__;\n'[39m +
+transform[stdout]:     [32m'global.navigation = null;\n'[39m +
+transform[stdout]:     [32m'// 使用類型斷言, 当前选中的诊所\n'[39m +
+transform[stdout]:     [32m'/**\n'[39m +
+transform[stdout]:     [32m' * 在 HomePage的 fetchDefaultClinicData 里初始化\n'[39m +
+transform[stdout]:     [32m' */\n'[39m +
+transform[stdout]:     [32m'(global as any).curClinicData = null as CurClinicData | null;\n'[39m +
+transform[stdout]:     [32m'//当前选中的医生\n'[39m +
+transform[stdout]:     [32m'(global as any).curDoctorData = null as CurDoctorData | null;\n'[39m +
+transform[stdout]:     [32m'global.$fake = false; //是否使用假数据\n'[39m +
+transform[stdout]:     [32m"global.$sentryLog = Platform.OS === 'android' ? true : false; //是否启用Sentry错误监控 iOS未集成，不启用，避免诊所数据页卡死\n"[39m +
+transform[stdout]:     [32m"global.env = 'poc'; //接口环境: poc  | prod\n"[39m +
+transform[stdout]:     [32m'global.isTablet = DeviceInfo.isTablet();\n'[39m +
+transform[stdout]:     [32m'global.waitingListStatus = false; //排隊 列表状态; false 未完成病人 ;true 已完成病人\n'[39m +
+transform[stdout]:     [32m'global.CommonModalChildW = 270; //CommonModal 控件裡的 白色彈框的寬度,和 $modalViewW 一直\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global keyboard dismiss function\n'[39m +
+transform[stdout]:     [32m'global.dismissKeyboard = () => {\n'[39m +
+transform[stdout]:     [32m'  Keyboard.dismiss();\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global navigation functions reference;  eg: navigationRef?.navigate()\n'[39m +
+transform[stdout]:     [32m'(global as any).navigationRef = null;\n'[39m +
+transform[stdout]:     [32m'(global as any).list_payor = null as List_payor[] | null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global MainTabNavigator ref for accessing tab state from anywhere\n'[39m +
+transform[stdout]:     [32m'(global as any).$mainTabNavigatorRef = null;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global SafeAreaInsets for consistent layout across all components\n'[39m +
+transform[stdout]:     [32m'(global as any).safeAreaInsets = {top: 0, bottom: 0, left: 0, right: 0} as EdgeInsets;\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'// Add global session ID for app restart detection and log clearing\n'[39m +
+transform[stdout]:     [32m'// Use hour-based session ID to avoid clearing logs on short restarts\n'[39m +
+transform[stdout]:     [32m'const generateHourlySessionId = (): string => {\n'[39m +
+transform[stdout]:     [32m'  const now = new Date();\n'[39m +
+transform[stdout]:     [32m'  const year = now.getFullYear();\n'[39m +
+transform[stdout]:     [32m"  const month = String(now.getMonth() + 1).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const day = String(now.getDate()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m"  const hour = String(now.getHours()).padStart(2, '0');\n"[39m +
+transform[stdout]:     [32m'  return `${year}${month}${day}${hour}`; // Format: YYYYMMDDHH\n'[39m +
+transform[stdout]:     [32m'};\n'[39m +
+transform[stdout]:     [32m'\n'[39m +
+transform[stdout]:     [32m'(global as any).currentSessionId = generateHourlySessionId();\n'[39m +
+transform[stdout]:     [32m'// Flag to ensure session check happens only once per app launch\n'[39m +
+transform[stdout]:     [32m'(global as any).sessionChecked = false;\n'[39m,
+transform[stdout]:   groups: [90mundefined[39m
+transform[stdout]: ]
+transform[stdout]: Babel Config - Fake Mode: DISABLED
+transform[stdout]: [DISABLED] Using react-native-auto-positioned-popup COMPILED files (.js)
+transform[stderr]: (node:78925) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+transform[stderr]: (Use `node --trace-warnings ...` to show where the warning was created)
+transform[stderr]: (node:78928) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+transform[stderr]: (Use `node --trace-warnings ...` to show where the warning was created)
+transform[stderr]: (node:78927) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+transform[stderr]: (Use `node --trace-warnings ...` to show where the warning was created)
+transform[stderr]: (node:78931) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+transform[stderr]: (Use `node --trace-warnings ...` to show where the warning was created)
+transform[stderr]: (node:78930) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+transform[stderr]: (Use `node --trace-warnings ...` to show where the warning was created)
+transform[stderr]: (node:78932) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+transform[stderr]: (Use `node --trace-warnings ...` to show where the warning was created)
+transform[stderr]: (node:78929) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+transform[stderr]: (Use `node --trace-warnings ...` to show where the warning was created)
+transform[stderr]: (node:78926) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+transform[stderr]: (Use `node --trace-warnings ...` to show where the warning was created)
+transform[stderr]: (node:78934) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+transform[stderr]: (Use `node --trace-warnings ...` to show where the warning was created)
+ WARN  The package /Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender contains an invalid package.json configuration. Consider raising this issue with the package maintainer(s).
+Reason: The resolution for "/Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender/lib/core/platform" defined in "exports" is /Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender/lib/core/platform, however this file does not exist. Falling back to file-based resolution.
+ WARN  The package /Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender contains an invalid package.json configuration. Consider raising this issue with the package maintainer(s).
+Reason: The resolution for "/Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender/lib/zrender" defined in "exports" is /Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender/lib/zrender, however this file does not exist. Falling back to file-based resolution.
+ WARN  The package /Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender contains an invalid package.json configuration. Consider raising this issue with the package maintainer(s).
+Reason: The resolution for "/Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender/lib/svg/helper" defined in "exports" is /Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender/lib/svg/helper, however this file does not exist. Falling back to file-based resolution.
+ WARN  The package /Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender contains an invalid package.json configuration. Consider raising this issue with the package maintainer(s).
+Reason: The resolution for "/Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender/lib/graphic/Path" defined in "exports" is /Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender/lib/graphic/Path, however this file does not exist. Falling back to file-based resolution.
+ WARN  The package /Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender contains an invalid package.json configuration. Consider raising this issue with the package maintainer(s).
+Reason: The resolution for "/Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender/lib/graphic/Image" defined in "exports" is /Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender/lib/graphic/Image, however this file does not exist. Falling back to file-based resolution.
+ WARN  The package /Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender contains an invalid package.json configuration. Consider raising this issue with the package maintainer(s).
+Reason: The resolution for "/Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender/lib/graphic/TSpan" defined in "exports" is /Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender/lib/graphic/TSpan, however this file does not exist. Falling back to file-based resolution.
+ WARN  The package /Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender contains an invalid package.json configuration. Consider raising this issue with the package maintainer(s).
+Reason: The resolution for "/Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender/lib/canvas/dashStyle" defined in "exports" is /Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender/lib/canvas/dashStyle, however this file does not exist. Falling back to file-based resolution.
+ WARN  The package /Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender contains an invalid package.json configuration. Consider raising this issue with the package maintainer(s).
+Reason: The resolution for "/Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender/lib/svg/mapStyleToAttrs" defined in "exports" is /Users/stark/Desktop/work/RN/csx-mobile/node_modules/zrender/lib/svg/mapStyleToAttrs, however this file does not exist. Falling back to file-based resolution.
+LOG:Writing bundle output to: ios/main.jsbundle
+LOG:Done writing bundle output
+Copying 324 asset files
+Done copying assets
+Done in 166.43s.

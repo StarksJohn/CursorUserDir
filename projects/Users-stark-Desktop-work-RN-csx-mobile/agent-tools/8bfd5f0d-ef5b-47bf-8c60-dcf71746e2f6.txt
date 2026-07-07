@@ -1,0 +1,5668 @@
+diff --git a/src/api/api-types.ts b/src/api/api-types.ts
+index e05de282..ce45a0ea 100644
+--- a/src/api/api-types.ts
++++ b/src/api/api-types.ts
+@@ -1,85 +1,85 @@
+ /**
+  * import { } from '@api/api-types.ts';
+  */
+-import {patientDataSetting, prefix, refferal} from "api/api.ts";
+-import { ElectrocardiogramData} from 'services/ecgPdfGenerator';
++import { patientDataSetting, prefix, refferal } from "api/api.ts";
++import { ElectrocardiogramData } from 'services/ecgPdfGenerator';
+ 
+ export interface ConsultationQueryPage_Medical {
+   id: string;
+   diagnosis: string;
+   diagnosisJson: string;
+   procedure: string;
+   procedureJson: string;
+   complaint: string;
+   finding: string;
+   action: string;
+   notes: string;
+   allergen?: string;
+   data?: string;
+   other?: string;
+   doctorRemark?: string;
+   healing?: string;
+ }
+ 
+ interface ConsultationQueryPage_ActiveIngredients {
+   additionalProp1: string;
+   additionalProp2: string;
+   additionalProp3: string;
+ }
+ 
+ interface ConsultationQueryPage_Prescription {
+   prescriptionId: string;
+   drugName: string;
+   dosage: string;
+   frequency: string;
+   day: string;
+   quantity: number;
+   activeIngredients: ConsultationQueryPage_ActiveIngredients;
+ }
+ 
+ interface ConsultationQueryPage_MedicalCertificate {
+   id: string;
+   issueDate: string;
+   startDate: string;
+   endDate: string;
+   startDateDuration: string;
+   endDateDuration: string;
+   noOfDay: number;
+   fileId: string;
+   type: string;
+ }
+ 
+ interface ConsultationQueryPage_ReferralLetter {
+   id: string;
+   issueDate: string;
+   title: string;
+   fileId: string;
+ }
+ 
+ export interface ConsultationQueryPage_medicalLatestUpdateRecord {
+   latestUpdateUserName: string;
+   latestUpdateDateTime: string; //"2025-02-12T05:35:15.574Z",
+   latestValue: ConsultationQueryPage_Medical | null;
+   referenceType?: string;
+ }
+ 
+ export interface ConsultationQueryPage_item {
+   consultationId: string;
+   clinicId: string;
+   clinicCode: string;
+   doctorId: string;
+   doctorCode: string;
+   date: string;
+   medical: ConsultationQueryPage_Medical;
+   prescriptions: ConsultationQueryPage_Prescription[];
+   isReferral: boolean;
+   medicalCertificates: ConsultationQueryPage_MedicalCertificate[];
+   referralLetters: ConsultationQueryPage_ReferralLetter[];
+   medicalLatestUpdateRecord: ConsultationQueryPage_medicalLatestUpdateRecord | null;
+   isOpen?:boolean;
+ }
+ 
+ export interface ConsultationQueryPage {
+   items: ConsultationQueryPage_item[];
+   pageIndex: number;
+   totalCount: number;
+@@ -405,194 +405,226 @@ export interface list_medical_terms_Data {
+ }
+ 
+ export interface get_consultation_setting_Data {
+   enableModifyMedicalNotes: number;// 修改医疗记录设定。修改记录时间 AnyTime = 1, In24Hours = 2 , =2时，只能编辑|删除24小时内的诊症(病历) 或 删除24小时内的药方
+   lockMedicalNotes: boolean;// 是否锁定病例
+   enableDiagnosisCodeSystem: boolean;// 是否启用HKCTT诊断编码
+   enableActionCodeSystem: boolean;// 是否开启Action
+   enableMedicalProcCodeSystem: boolean;// 是否启用HKCTT医疗程序编码
+   enableVaccineCodeSystem: boolean;// 是否启用HKCTT疫苗术语
+ }
+ 
+ export interface List_hkctt_drug_vaccine_terms_Item {
+   id: number;
+   reg_no: string;
+   dh_product_name: string;
+   trade_name: string;
+   title?: string;
+ }
+ 
+ export interface QueryPatientImmunisation_item {
+   id: string;
+   type: number;
+   administrationDate: string;
+   vaccineDescription: string;
+   remarks: string;
+   dose: string;
+ }
+ 
+ export interface List_payor {
+   "id": string,
+   "code": string,
+   "name": string,
+   "icon": string,
+   "currency": string,
+ }
+ 
+ export interface LoginFromQRCodeData {
+   "installationId": string,
+   "userName": string,
+   "jwtToken": string,
+   "tokenExpireOn": string
+ }
+ 
+ export interface LoginData {
+   "jwtToken": string,
+   "needMFA": boolean | null,
+   "tokenExpireOn": string,
+   "username": string,
+   code?: number,
+   message?: string
+ }
+ 
+ export interface Country {
+   "name": string,
+   "dial_code": string,
+   "code": string,
+   "name_zh": string,
+   "name_zh_tw": string,
+   "name_vn": string,
+   "name_th": string,
+   "name_indonesia": string,
+   "name_melayu": string,
+   "name_ph": string
+ }
+ 
+ export interface Prefix {
+   "id": string,
+   "identifier": string,
+   "code": string,
+   "gender": number,
+   "name": {
+     "en": string,
+     "zh": string
+   }
+ }
+ 
+ export interface PatientDataSettingItem {
+   "id": string,
+   "category": string,
+   "item": string,
+-  title?:string
++  title?: string
+ }
+ 
+-export interface RefferalItem  {
++export interface RefferalItem {
+   category: string,
+   value: string
+ }
+ 
+ export interface CallLogsItem {
+   "id": string,
+   "patientCode": string,
+   "clinicCode": string,
+   "doctorCode": string,
+   "type": number,//0: Unknown 1: In 2: Out
+   "date": string,//"28/08/2025"
+   "timestamp": string,//目前返回"2026-04-28T15:13:09.0000000+08:00" ,不是0时区 https://app.clickup.com/t/8553538/TECH-8063?comment=90180214579716&threadedComment=90180214589543; 应该返回 `2026-04-28T07:13:09.000Z`
+   "remarks": string
+ }
+ 
+ export interface DrugbookMasterSearchListItem {
+   "id": string,
+   "drugName": string,
+   "barCode": string,
+   "registrationCode": string,
+   "isInactive": boolean,
+   "isDangerDrug": boolean,
+-  title?:string,
++  title?: string,
+ }
+ 
+ export interface DrugbookMastersByNames {
+   "id": string,
+   "drugName": string,
+   "barCode": string,
+   "registrationCode": string,
+   "activeIngredients": string,
+   "tcmActiveIngredients": string,
+   "isInactive": boolean,
+   "isSyrup": boolean,
+   "isDangerDrug": boolean,
+   "isInjection": boolean,
+   "isDeductOne": boolean,
+   "isSerialNo": boolean,
+   "remarks": string,
+   "currentQty": number,
+   "unitCost": number,
+   "unitPrice": number,
+-  "label": string|null,
+-  "group": string|null,
++  "label": string | null,
++  "group": string | null,
+   "inTakeRemarks": string[],
+   "cautionRemarks": string[],
+   "strength": number,
+-  "strengthUnit": any|null,
+-  "unit": any|null,
+-  "dosage": any|null,
+-  "frequency": any|null,
+-  "day": any|null,
++  "strengthUnit": any | null,
++  "unit": any | null,
++  "dosage": any | null,
++  "frequency": any | null,
++  "day": any | null,
+   "totalQty": number,
+-  "isAllergy": any|null
++  "isAllergy": any | null
+ }
+ 
+ export interface open_biometrics_auth_data {
+   biometricsId: string,
+   secret: string,
+   publicKey: string
+ }
+ 
+ export interface sign_in_by_biometrics_data {
+   jwtToken: string,
+   needMFA: boolean | null,
+   tokenExpireOn: string
+ }
+ 
+ export interface health_data_setting_v1_clinic_get_data {
+   clinicCode: string;
+   preset: number;
+   /**
+    * [
+     "Height",
+     "Weight",
+     "Temperature",
+     "Glucose",
+     "Hba1c",
+     "Cholesterol",
+     "Triglycerides",
+     "Systolic",
+     "Diastolic",
+     "Pulse",
+     "ExpectedDateOfConfinement"
+ ]
+    */
+   visibleHealthDatas: string[];
+ }
+ 
+ export interface health_data_settings_data_Item {
+   id: string;
+   abbreviation: string;
+   en_US: string;//eg : "Height (cm)"
+   zh_HANT: string;//eg: "身高 (cm)"
+   zh_HANS: string;//eg: "身高 (cm)"
+   unit: string;
+   dataType: string;
+   dataFormat: string;
+   editable: boolean;
+   value: string | undefined | null;
+ }
+ 
+ export interface health_data_settings_data {
+   group: number;
+   en_US: string;
+   zh_HANT: string;
+   zh_HANS: string;
+   items: health_data_settings_data_Item[];
+ }
+ 
++export interface TimeSlot {
++  date: string,
++  startTime: string,
++}
++
++export interface OccupiedTimeSlot {
++  date: string;
++  time: string;
++  startTime: string;
++  endTime: string;
++  consultationInterval: number;
++  appointmentId: string;
++  isPendingProcess: boolean;
++}
++
++export interface OccupiedTimeStatusGroup {
++  status: number;
++  data: OccupiedTimeSlot[];
++}
++
++export interface OccupiedTimeData {
++  alreadyAppointment: OccupiedTimeStatusGroup[];
++  idleAppointment: OccupiedTimeStatusGroup[];
++}
++
++export type OccupiedTimeResponse = OccupiedTimeData[];
++
++export interface AcceptOrDeclineBookingItem {
++  id: string;
++}
++
++export type AcceptOrDeclineBookingResponse = AcceptOrDeclineBookingItem[];
+diff --git a/src/api/api.ts b/src/api/api.ts
+index fb3738e4..933a93fa 100644
+--- a/src/api/api.ts
++++ b/src/api/api.ts
+@@ -1,847 +1,850 @@
+ /**
+  * import {  } from "api/api";
+  */
+ // import {get, post, put, axiosDelete} from 'axios-tools';
+ // import {tool} from 'starkfrontendtools';
+ import * as storage from 'components/storage/storage';
+-import {constant} from 'constant';
++import { constant } from 'constant';
+ import * as CryptoJS from 'crypto-js';
+-import {routes} from 'csxRoutes';
++import { routes } from 'csxRoutes';
+ import moment from 'moment/moment';
+-import {encryptWithPrivateKey, encryptWithPublicKey, encryptWithPublicKeyPKCS1, generateKeys, getSHA256withRSA} from '/tools/JsrsasignModule';
+-import {captureLoginError, setUserContext, addBreadcrumb} from '../utils/sentry';
++import { encryptWithPrivateKey, encryptWithPublicKey, encryptWithPublicKeyPKCS1, generateKeys, getSHA256withRSA } from '/tools/JsrsasignModule';
++import { captureLoginError, setUserContext, addBreadcrumb } from '../utils/sentry';
+ // import { generateKeys, encryptWithPublicKey, decryptWithPrivateKey } from "/tools/RsaModule";
+ import {
+   ConsultationQueryPage,
+   ContractFilters,
+   Data_record_sharing_list_clinics,
+   IGetOptionSetting,
+   I_get_patient_config_data,
+   List_hkctt_drug_vaccine_terms_Item,
+   List_hkctt_dxpx_terms,
+   List_medical_terms_Item,
+   QueryPatientAllergy_item,
+   QueryPatientHealth_Data,
+   QueryPatientImmunisation_item,
+-  get_consultation_setting_Data, List_payor, LoginFromQRCodeData, LoginData, Prefix, PatientDataSettingItem, RefferalItem, CallLogsItem, DrugbookMasterSearchListItem, DrugbookMastersByNames, open_biometrics_auth_data, sign_in_by_biometrics_data, health_data_setting_v1_clinic_get_data, health_data_settings_data
++  get_consultation_setting_Data, List_payor, LoginFromQRCodeData, LoginData, Prefix, PatientDataSettingItem, RefferalItem, CallLogsItem, DrugbookMasterSearchListItem, DrugbookMastersByNames, open_biometrics_auth_data, sign_in_by_biometrics_data, health_data_setting_v1_clinic_get_data, health_data_settings_data,
++  TimeSlot,
++  OccupiedTimeResponse,
++  AcceptOrDeclineBookingResponse
+ } from '@api/api-types';
+-import {Patient_Query} from 'api/api-types';
+-import {Data} from 'components/CsxFlatList/CsxFlatList';
+-import {Alert, Platform} from 'react-native';
+-import {BillingData, SickLeaveContent, waitingListItem} from 'tools/AllInterface';
+-import {globalEventName, useGlobalEventEmitter} from 'tools/useGlobalEventEmitter';
++import { Patient_Query } from 'api/api-types';
++import { Data } from 'components/CsxFlatList/CsxFlatList';
++import { Alert, Platform } from 'react-native';
++import { BillingData, SickLeaveContent, waitingListItem } from 'tools/AllInterface';
++import { globalEventName, useGlobalEventEmitter } from 'tools/useGlobalEventEmitter';
+ import DeviceInfo from "react-native-device-info";
+-import {logUtils} from 'useHooks/useLogStorage/useLogStorage.ts';
++import { logUtils } from 'useHooks/useLogStorage/useLogStorage.ts';
+ import messaging from "@react-native-firebase/messaging";
+ import type { Account } from '/actions/csxSetAccountActions';
+ 
+ const emitEvent = useGlobalEventEmitter();
+ 
+ const languageMap = {
+   en: 'en',
+   zh: 'zh-Hans',
+   zh_tw: 'zh-Hant',
+   ph: 'tl',
+   th: 'th',
+   vn: 'vi',
+   jp: 'ja',
+ };
+ 
+ const getToken = async () => {
+   console.log('api.ts getToken');
+   const curAccount = await storage.getItem(storage.csxMobileCachekeys.curAccount, true);
+   if (curAccount) {
+-    const {jwtToken, tokenExpireOn} = curAccount
++    const { jwtToken, tokenExpireOn } = curAccount
+     console.log('api getToken jwtToken=', jwtToken);
+     console.log('api getToken tokenExpireOn=', tokenExpireOn);
+     global.token = jwtToken || '';
+     console.log('api getToken=', global.token);
+   }
+ };
+ getToken();
+ 
+ export const headers = (): Record<string, string> => {
+   // console.log('api headers global.token=', global.token)
+   const curLanguage = global.i18n.locale;
+   const acceptLanguage =
+     languageMap[curLanguage as keyof typeof languageMap] ?? String(curLanguage);
+   const res: Record<string, string> = {
+     'Content-Type': 'application/json',
+     Authorization: global.token ? 'Bearer ' + global.token : '', // 让每个请求携带自定义token
+     Cookie: global.cookie ? String(global.cookie) : '', // MFA登录成功后 global.cookie = ''
+     'session-clinicId': global.curClinicData?.id ?? '',
+     'Cache-Control': 'no-cache', // 這裡的Header是防止某些瀏覽器可能會緩存請求
+     'Accept-Language': acceptLanguage,
+   };
+   console.log('api headers global.curClinicData=', global.curClinicData);
+   console.log('api headers global.curDoctorData=', global.curDoctorData);
+   console.log('api headers res=', res);
+   logUtils.addLog('info', `api headers res=`, '', res);
+   return res;
+ };
+ 
+ const processResponse = async (response: Response, dispatch?: any) => {
+   if (response.status === 401) {
+     //token 過期
+     console.log('api processResponse 401 global.navigation=', global.navigation);
+     const curAccount = await storage.getItem(storage.csxMobileCachekeys.curAccount, true);
+     console.log('api processResponse 401 curAccount=', curAccount);
+-    
++
+     //进登录页面
+     routes.reset(global.navigation, routes.LoginPage.routeName, {
+       pageData: {
+         type: 0,
+         // username: curAccount?.username,https://app.clickup.com/t/8553538/TECH-7706?comment=90180206791302
+       },
+     });
+     await storage.clearCsxMobileStorage(dispatch, curAccount?.username, curAccount?.InstallationID, true);
+   }
+ };
+ 
+ interface JSON {
+   success: boolean;
+   data: null;
+   code: number;
+   message: string;
+ }
+ 
+ 
+ const processJson = (json: JSON, url?: string) => {
+   if (!json.success /*&& global.env === 'poc'*/) {
+     setTimeout(() => {
+       emitEvent(globalEventName.showCommonAlertModal, {
+         commonAlertModalTitle: global.i18n.t('prompt'),
+         commonAlertModalContent: global.i18n.t(json.message),
+       });
+     }, 300);
+   }
+ };
+ 
+ /**
+  * 登錄 (需要开梯子,因为登录成功后要请求 '/notification/v1/push/register-client')
+  google校验器对应的key: 无    |   无   |   GMYTQYTEHFQTQYZQ (可以使用chrome的扩展Authenticator来生成一次性的密码,具体看聊天)
+  dev:  GhostKnowDEV ->  StarkTester/Zc111111 | stark/Abc123456 | Heals/Heals | moon/Moon123456 | mikitest01/114117lingC@ | mikitest/114117lingC@ 
+  POC:  poc.demo.clinicsolution.hk/Heals/Sml23192215 | poc.demo.clinicsolution.hk 1 114117lingC@ | poc.demo.clinicsolution.hk stark Abc123456  | ghostknowdev/Heals/Heals  |  mikitest/114117lingC@
+  | test-tenant.clinicsolution.hk/test/Aa111111/https://test-tenant.clinicsolution.hk/#/login | csx-poc.clinicsolution.hk/Json/Aa123456 | test-tenant.clinicsolution.hk/json/Aa123456 | csx-poc.clinicsolution.hk/amy/Aa123456
+  PROD:  latest.demo.clinicsolution.hk MayLee/MayLee123 | id.hp.clinicsolution.hk Dinda Dinda2024PW | sml.clinicsolution.hk ken Sml23192215  | lesk1056.clinicsolution.hk Heals Sml23192215 |
+  card.townhealthcsx2.com Heals Sml23192215  |  sfsc3051.clinicsolution.hk Heals Sml23192215  |  drwongtingting.dyndns.org Heals Sml23192215 |  latest.demo.clinicsolution.hk miki Miki23192215(Invalid)
+  */
+ export const login = async (
+   installationId: string = 'GhostKnowDEV' /**/,
+   username: string = 'Heals' /**/,
+   password: string = 'Heals', /**/
+   ignoreMFA: boolean = false,
+ ): Promise<LoginData> => {
+   console.log('api login username=', username); //
+   console.log('api login password=', password); //
+   console.log('api login installationId=', installationId); //
+   // Add breadcrumb for login attempt
+   addBreadcrumb('Login attempt started', 'auth', {
+     username,
+     installationId,
+     timestamp: new Date().toISOString(),
+   });
+   // Check for old app data conflict
+   const cachedTenantId = await storage.getItem(storage.csxMobileCachekeys.TenantID);
+   const isOldAppConflict = cachedTenantId && cachedTenantId !== installationId.trim();
+   //
+   // if (isOldAppConflict) {
+   //   console.warn('Detected potential old app conflict, clearing storage');
+   //   await storage.clearCsxMobileStorage();
+   // }
+   // Create AbortController for request cancellation
+   const abortController = new AbortController();
+   const requestStartTime = Date.now();
+   // Create timeout promise with enhanced error info
+   const timeoutPromise = new Promise<never>((_, reject) => {
+     setTimeout(() => {
+       console.log('api login timeoutPromise abortController.abort()')
+       abortController.abort(); // Cancel the fetch request
+       const timeoutError = new Error('api FETCH_TIMEOUT: Login request timeout after 4 seconds');
+       timeoutError.name = 'TimeoutError';
+       (timeoutError as any).isTimeout = true;
+       (timeoutError as any).timeoutDuration = 10000;
+       (timeoutError as any).actualDuration = Date.now() - requestStartTime;
+       reject(timeoutError);
+     }, 10000);
+   });
+   try {
+     const url = constant.API_BASE_URL + '/Account/Login';
+     console.log('api login url=', url);
+-    const body = {username: username.trim(), password: password.trim(), installationId: installationId.trim(), ignoreMFA};
++    const body = { username: username.trim(), password: password.trim(), installationId: installationId.trim(), ignoreMFA };
+     storage.setItem(storage.csxMobileCachekeys.TenantID, installationId.trim());
+     console.log('api login body=', body);
+     // Race between fetch and timeout with AbortController
+     const fetchPromise = new Promise<Response>((resolve, reject) => {
+       {
+         // Normal request
+         fetch(url, {
+           method: 'POST',
+           headers: {
+             'Content-Type': 'application/json',
+           },
+           body: JSON.stringify(body),
+           signal: abortController.signal,
+         })
+           .then(resolve)
+           .catch(reject);
+       }
+     });
+     console.log('Starting Promise.race between fetch and timeout...');
+     let response = await Promise.race([fetchPromise, timeoutPromise]);
+     console.log('api login response=', response);
+     // 获取从服务器响应中的Set-Cookie头部,debugger模式下,在response.headers中没有set-cookie,只能关了debug在终端查看
+     const setCookieHeader = response.headers.get('set-cookie');
+     console.log('api login setCookieHeader=', setCookieHeader);
+     if (setCookieHeader) {
+       // 在这里，你需要自己实现一个函数来保存cookie到某处，例如AsyncStorage
+       // await storage.setItem(storage.csxMobileCachekeys.cookie, setCookieHeader);
+       global.cookie = setCookieHeader; // 关闭chrome 调试 才有cookie
+     }
+     let json = await response.json();
+     console.log('api login json=', json);
+     if (json.code === 200) {
+       // await storage.setItem(storage.csxMobileCachekeys.Login, json.data)
+       global.curClinicData = null;
+       global.curDoctorData = null;
+       // Update Sentry user context on successful login
+       setUserContext(json.data?.username, username, installationId);
+       addBreadcrumb('Login successful', 'auth', {
+         username,
+         installationId,
+       });
+-      return Promise.resolve({username, ...json.data});
++      return Promise.resolve({ username, ...json.data });
+     } else {
+       // Login failed with error code
+       const error = new Error(`Login failed: ${JSON.stringify(json) || 'Unknown error'}`);
+       console.log('api login error=', error);
+       console.log('About to call captureLoginError for login failure...');
+       try {
+         await captureLoginError(error, {
+           username,
+           installationId,
+           apiUrl: url,
+           statusCode: response.status,
+           isOldAppConflict,
+           responseData: json,
+           // Security: Never log actual password, only metadata
+           passwordProvided: !!password,
+           passwordLength: password ? password.length : 0,
+           usernameLength: username ? username.length : 0,
+           installationIdLength: installationId ? installationId.length : 0,
+         });
+         console.log('captureLoginError for login failure completed');
+       } catch (sentryError) {
+         console.error('Error calling captureLoginError for login failure:', sentryError);
+       }
+       return Promise.resolve(json);
+     }
+   } catch (error) {
+     console.log('api /Account/Login error=', error);
+     console.log('api /Account/Login Error details:', {
+       name: error?.name,
+       message: error?.message,
+       isTimeout: error?.isTimeout,
+       stack: error?.stack?.substring(0, 200)
+     });
+     // Enhanced timeout detection
+     const isTimeout = error?.name === 'TimeoutError' ||
+       error?.isTimeout === true ||
+       error?.message?.includes('FETCH_TIMEOUT') ||
+       error?.name === 'AbortError';
+     // Calculate actual request duration
+     const actualDuration = Date.now() - requestStartTime;
+     console.log('Request timing info:', {
+       actualDuration,
+       configuredTimeout: 10000,
+       isTimeout,
+       errorName: error?.name
+     });
+     console.log('About to call captureLoginError...');
+     try {
+       // Enhanced Sentry error reporting with more context
+       await captureLoginError(error, {
+         username,
+         installationId,
+         apiUrl: constant.API_BASE_URL + '/Account/Login',
+         isTimeout,
+         isOldAppConflict,
+         // Security: Never log actual password, only metadata
+         passwordProvided: !!password,
+         passwordLength: password ? password.length : 0,
+         usernameLength: username ? username.length : 0,
+         installationIdLength: installationId ? installationId.length : 0,
+         // Enhanced timeout context
+         timeoutDetails: isTimeout ? {
+           configuredTimeout: 10000,
+           actualDuration,
+           timeoutType: error?.name === 'AbortError' ? 'AbortController' : 'Promise.race',
+           errorName: error?.name,
+           wasAborted: error?.name === 'AbortError'
+         } : undefined,
+       });
+       console.log('captureLoginError completed successfully');
+       console.log('Check your Sentry dashboard: https://stark-ex.sentry.io/issues/');
+     } catch (sentryError) {
+       console.error('Error calling captureLoginError:', sentryError);
+     }
+     return Promise.reject(error);
+   }
+ };
+ 
+ export const PatientQuery = async (pageIndex: number, inputKey: string): Promise<Patient_Query | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/Patient/Query';
+     console.log('api PatientQuery url=', url);
+-    const body = {pageIndex, pageSize: 50, inputKey};
++    const body = { pageIndex, pageSize: 50, inputKey };
+     console.log('api PatientQuery body=', body);
+     //pageIndex是从0开始的,如果你请求的是0,那么返回的就是第一页的数据
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api PatientQuery response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     }
+     let json = await response.json();
+     console.log('api PatientQuery json=', json);
+     if (json.code === 200) {
+       return Promise.resolve(json.data);
+     } else {
+       return Promise.reject(null);
+     }
+     // 处理响应数据
+   } catch (error) {
+     console.error(error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ export const DoctorQuery = async (pageIndex: number, code?: string, pageSize?: number): Promise<Data | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/Doctor/Query';
+     console.log('api DoctorQuery url=', url);
+     //pageIndex是从0开始的,如果你请求的是0,那么返回的就是第一页的数据
+-    const body = JSON.stringify({pageIndex, pageSize: pageSize || 10, code}); // 将JavaScript对象转换为字符串
++    const body = JSON.stringify({ pageIndex, pageSize: pageSize || 10, code }); // 将JavaScript对象转换为字符串
+     console.log('api DoctorQuery body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body,
+     });
+     console.log('api DoctorQuery response=', response);
+     let json = await response.json();
+     console.log('api DoctorQuery json=', json);
+     if (json.code === 200) {
+       return Promise.resolve({
+         ...json.data,
+         needLoadMore: json.data.totalPage > json.data.pageIndex,
+       });
+     } else {
+       return Promise.reject(null);
+     }
+     // 处理响应数据
+   } catch (error) {
+     console.error(error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ /**
+  * 排队列表,获取排队的数据
+  * @param pageIndex :0
+  * @param days : 2024-02-19
+  * finished: null: 完成和未完成的数据 true:已完成的数据 false:未完成的数据
+  * return : [
+  *     {
+  *        source:  CMHK  ,  HSBC ,  Alipay ,  China Life ,  New Start , Watsons  , Blue Cross  , AIA  , CKH  ,  CK Hutchison Holding  ,  Heals
+  *        Patient Portal   ,  HIT  ,  A.S. Watson Group   ,  Hong Kong Medical Internet Technoledge    ,  CHINA LIFE INSURANCE (OVERSEAS) COMPANY LIMITED   ,  HealthEasy Medical Card   ,  HealthEasy    ,  AXA PRIVILEGE   ,  AXA (HK) - APN  ,  AXA (HK) - CR
+  *     }
+  * ]
+  */
+ export const waitingList = async (
+   clinicId: string,
+   doctorId: string,
+   finished?: boolean /*未完成:false 已完成:true*/,
+   consulted?: boolean,
+   dispatch?: any
+ ): Promise<Data | null> => {
+   try {
+     if (!global.token) {
+       console.log('api waitingList global.token=', global.token);
+       console.log('api waitingList return null');
+       return null;
+     }
+     const url = constant.API_BASE_URL + '/Encounter/QueryQueue';
+     console.log('api waitingList url=', url);
+     console.log('api waitingList finished=', finished);
+     //pageIndex是从0开始的,如果你请求的是0,那么返回的就是第一页的数据
+-    const ob = {clinicId, doctorId};
++    const ob = { clinicId, doctorId };
+     if (finished != undefined) {
+       ob['finished'] = finished;
+     }
+     if (consulted != undefined) {
+       ob['consulted'] = consulted;
+     }
+     console.log('api waitingList body=', ob);
+     const body = JSON.stringify(ob); // 将JavaScript对象转换为字符串
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body,
+     });
+     console.log('api waitingList response=', response);
+     if (!response.ok) {
+-      processResponse(response,dispatch);
++      processResponse(response, dispatch);
+       return null;
+     }
+     let json = await response.json();
+     console.log('api waitingList json=', json);
+     if (json.code === 200) {
+       {
+         const emitEvent = useGlobalEventEmitter();
+         const filtered = json.data.filter((currentValue: waitingListItem, index, arr) => {
+           return currentValue.consultStatus == 0;
+         });
+         console.log('api waitingList filtered=', filtered);
+         emitEvent(
+           globalEventName.updateUnfinishedConsultations,
+           filtered.length
+           // 100
+         );
+       }
+       return {
+         items: json.data as waitingListItem[],
+         totalPage: 0,
+         pageIndex: 0,
+         needLoadMore: false,
+       };
+     } else {
+       return null;
+     }
+     // 处理响应数据
+   } catch (error) {
+     console.error(error);
+     return null;
+   }
+ };
+ 
+ /**
+  * @param clinicId
+  * @param doctorId
+  * @param dateTime
+  * appointStatus: 当天日期给2 ;  其他日期给4
+  */
+ export const bookedList = async (clinicId: number, doctorId: string, date: Date /*xxxx-xx-xx*/) => {
+   try {
+     const url = constant.API_BASE_URL + '/Encounter/QueryAppointment';
+     const curDate = new Date();
+     console.log('api bookedList url=', url);
+     console.log('api bookedList date=', moment(date).format('YYYY-MM-DD'));
+     console.log('api bookedList curDate=', moment(curDate).format('YYYY-MM-DD'));
+     const appointStatus = moment(curDate).format('YYYY-MM-DD') == moment(date).format('YYYY-MM-DD') ? 2 : 4;
+     //pageIndex是从0开始的,如果你请求的是0,那么返回的就是第一页的数据
+-    const body = {clinicId, doctorId, dateTime: moment(date).format('YYYY-MM-DD'), appointStatus}; // 将JavaScript对象转换为字符串
++    const body = { clinicId, doctorId, dateTime: moment(date).format('YYYY-MM-DD'), appointStatus }; // 将JavaScript对象转换为字符串
+     console.log('api bookedList body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api bookedList response=', response);
+     let json = await response.json();
+     console.log('api bookedList json=', json);
+     if (json.code === 200) {
+       return json.data;
+     } else {
+       return null;
+     }
+     // 处理响应数据
+   } catch (error) {
+     console.error(error);
+   }
+ };
+ 
+ /**
+  * 诊所列表
+  * @param code: 搜索关键词
+  * @constructor
+  */
+ export const ClinicQuery = async (code: string, pageIndex: number, pageSize?: number): Promise<Data | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/Clinic/Query';
+     console.log('api ClinicQuery url=', url);
+     //pageIndex是从0开始的,如果你请求的是0,那么返回的就是第一页的数据
+-    const body = JSON.stringify({pageIndex, pageSize: pageSize || 50, code}); // 将JavaScript对象转换为字符串
++    const body = JSON.stringify({ pageIndex, pageSize: pageSize || 50, code }); // 将JavaScript对象转换为字符串
+     console.log('api ClinicQuery body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body,
+     });
+     console.log('api ClinicQuery response=', response);
+     let json = await response.json();
+     console.log('api ClinicQuery json=', json);
+     if (json.code === 200) {
+       return Promise.resolve({
+         ...json.data,
+         needLoadMore: json.data.totalPage > json.data.pageIndex,
+       });
+     } else {
+       return Promise.reject(null);
+     }
+     // 处理响应数据
+   } catch (error) {
+     console.error(error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ /**
+  * 查询当天的排队和预约的数量
+  * @param clinicId
+  * @param doctorId
+  * @constructor
+  */
+ export const GetCurrentEncounterOverview = async (clinicId: string, doctorId: string) => {
+   try {
+     const url = constant.API_BASE_URL + '/Encounter/GetCurrentEncounterOverview';
+     console.log('api GetCurrentEncounterOverview url=', url);
+-    const body = {clinicId, doctorId}; // 将JavaScript对象转换为字符串
++    const body = { clinicId, doctorId }; // 将JavaScript对象转换为字符串
+     console.log('api GetCurrentEncounterOverview body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api GetCurrentEncounterOverview response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api GetCurrentEncounterOverview json=', json);
+     if (json.code === 200) {
+       return json.data;
+     } else {
+       return null;
+     }
+     // 处理响应数据
+   } catch (error) {
+     console.error(error);
+   }
+ };
+ 
+ /**
+  *
+  * @param clinicId
+  * @param doctorId
+  * @param startDate xxxx-xx-xx
+  * @param endDate xxxx-xx-xx
+  * @constructor
+  */
+ export const QueryEncounterDateRecord = async (
+   clinicId: string,
+   doctorId: string,
+   startDate: string,
+   endDate: string
+ ) => {
+   try {
+     const url = constant.API_BASE_URL + '/Encounter/QueryEncounterDateRecord';
+     console.log('api QueryEncounterDateRecord url=', url);
+-    const body = {clinicId, doctorId, startDate, endDate}; // 将JavaScript对象转换为字符串
++    const body = { clinicId, doctorId, startDate, endDate }; // 将JavaScript对象转换为字符串
+     console.log('api QueryEncounterDateRecord body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api QueryEncounterDateRecord response=', response);
+     let json = await response.json();
+     console.log('api QueryEncounterDateRecord json=', json);
+     if (json.code === 200) {
+       return json.data;
+     } else {
+       return null;
+     }
+     // 处理响应数据
+   } catch (error) {
+     console.error(error);
+   }
+ };
+ 
+ /**
+  * 新增|修改|查询预约
+  * @param patientId
+  * @param clinicId
+  * @param doctorId
+  * @param consultationIntervalMinutes
+  * @param voucherNo
+  * @param remark
+  * @param appointDate
+  * @param appointTime
+  * @param ticketId
+  * @constructor
+  */
+ export const postAddAppointment = async (
+   patientId: string,
+   clinicId: string,
+   doctorId: string,
+   consultationIntervalMinutes: number,
+   remark: string,
+   appointDate: string,
+   appointTime: string
+ ) => {
+   try {
+     const url = constant.API_BASE_URL + '/Encounter/AddAppointment';
+     console.log('api AddAppointment url=', url);
+     const body = {
+       patientId,
+       clinicId,
+       doctorId,
+       consultationIntervalMinutes,
+       remark,
+       appointDate,
+       appointTime,
+       voucherNo: '',
+       remarksColor: '',
+       ticketId: '',
+     }; // 将JavaScript对象转换为字符串
+     console.log('api AddAppointment body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api AddAppointment response=', response);
+     if (!response.ok) {
+     } else {
+       let json = await response.json();
+       console.log('api AddAppointment json=', json);
+       if (json.code === 200) {
+         return json.data;
+       } else {
+         return null;
+       }
+       // 处理响应数据
+     }
+   } catch (error) {
+     console.error(error);
+   }
+ };
+ 
+ export const getPatientDetail = async (patientId: string /*, showTemporaryData: boolean*/) => {
+   try {
+     const url = constant.API_BASE_URL + '/Patient/Get';
+     console.log('api getPatientDetail url=', url);
+     const params = {
+       id: patientId,
+       showTemporaryData: true /*龙说固定传true*/,
+     };
+     console.log('api getPatientDetail params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+       .map((key) => key + '=' + encodeURIComponent(params[key]))
+       .join('&');
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api getPatientDetail urlWithParams=', urlWithParams);
+     let response = await fetch(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+     });
+     console.log('api getPatientDetail response=', response);
+     if (!response.ok) {
+     } else {
+       let json = await response.json();
+       console.log('api getPatientDetail json=', json);
+       if (json.code === 200) {
+         return json.data;
+       } else {
+         return null;
+       }
+     }
+   } catch (error) {
+     console.log('api getPatientDetail error=', error);
+   }
+ };
+ 
+ /**
+  * 查 （证件类别，介绍人类别，区号列表）
+  */
+ export const patient_intial_data = async (language: string): Promise<I_get_patient_config_data | null> => {
+   try {
+     console.log('api patient_intial_data language=', language);
+     let _language = language;
+     if (language === 'zh') {
+       _language = 'zh-CN';
+     } else if (language === 'zh_tw') {
+       _language = 'zh-HK';
+     }
+     const url = constant.API_BASE_URL + '/csx/patient/resource/get-patient-config-data';
+     console.log('api patient_intial_data url=', url);
+-    const body = {language: _language}; // 将JavaScript对象转换为字符串
++    const body = { language: _language }; // 将JavaScript对象转换为字符串
+     console.log('api patient_intial_data body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api patient_intial_data response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     } else {
+       let json = await response.json();
+       console.log('api patient_intial_data json=', json);
+       if (json.code === 0 || json.code === 200) {
+         return Promise.resolve(json.data);
+       } else {
+         return Promise.reject(null);
+       }
+     }
+   } catch (error) {
+     console.error('api patient_intial_data error=', error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ export const patientSeniorQuery = async ({
+-                                           pageIndex,
+-                                           idType,
+-                                           contract,
+-                                           insuranceNo,
+-                                           referral,
+-                                           referralCategory,
+-                                           doctorInCharge,
+-                                         }) => {
++  pageIndex,
++  idType,
++  contract,
++  insuranceNo,
++  referral,
++  referralCategory,
++  doctorInCharge,
++}) => {
+   try {
+     const url = constant.API_BASE_URL + '/Patient/SeniorQuery';
+     console.log('api patientSeniorQuery url=', url);
+     const body = {
+       pageIndex,
+       idType,
+       contract,
+       insuranceNo,
+       referral,
+       referralCategory,
+       doctorInCharge,
+     }; // 将JavaScript对象转换为字符串
+     console.log('api patientSeniorQuery body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api patientSeniorQuery response=', response);
+     if (!response.ok) {
+     } else {
+       let json = await response.json();
+       console.log('api patientSeniorQuery json=', json);
+       if (json.code === 200) {
+         return Promise.resolve(json.data);
+       } else {
+         return Promise.reject(null);
+       }
+     }
+   } catch (error) {
+     console.error('api patientSeniorQuery error=', error);
+   }
+ };
+ 
+ /**
+  * 预约记录
+  * @param patientId
+  *  startDate: 当天日期 , 如 2024-04-26
+  *  endDate:当天日期的下一天, 如 2024-04-27
+  * @param remarks
+  */
+ export const queryEncounterRecord = async ({
+-                                             patientId,
+-                                             remarks,
+-                                             pageIndex,
+-                                             clinicId,
+-                                             doctorId,
+-                                             startDate,
+-                                             endDate,
+-                                           }): Promise<Data | null> => {
++  patientId,
++  remarks,
++  pageIndex,
++  clinicId,
++  doctorId,
++  startDate,
++  endDate,
++}): Promise<Data | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/Patient/QueryEncounterRecord';
+     console.log('api queryEncounterRecord url=', url);
+     const body = {
+       patientId,
+       remarks,
+       pageSize: 20,
+       pageIndex,
+       clinicId,
+       doctorId,
+       startDate,
+       endDate,
+     }; // 将JavaScript对象转换为字符串
+     console.log('api queryEncounterRecord body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api queryEncounterRecord response=', response);
+     if (!response.ok) {
+     } else {
+       let json = await response.json();
+       console.log('api queryEncounterRecord json=', json);
+       if (json.code === 200) {
+         return Promise.resolve(json.data);
+       } else {
+         return Promise.reject(null);
+       }
+     }
+   } catch (error) {
+     console.error('api queryEncounterRecord error=', error);
+     return Promise.reject(null);
+   }
+   return Promise.reject(null);
+ };
+ 
+ export const queryFutureAppointment = async (patientId: string, remarks: string): Promise<Data | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/Patient/QueryFutureAppointment';
+     console.log('api QueryFutureAppointment url=', url);
+     const body = {
+       patientId,
+       remarks,
+     }; // 将JavaScript对象转换为字符串
+     console.log('api QueryFutureAppointment body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api QueryFutureAppointment response=', response);
+     if (!response.ok) {
+     } else {
+       let json = await response.json();
+       console.log('api QueryFutureAppointment json=', json);
+       if (json.code === 200) {
+         return Promise.resolve(json.data);
+       } else {
+         return Promise.reject(null);
+       }
+     }
+   } catch (error) {
+     console.error('api QueryFutureAppointment error=', error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ export const queryFailAppointment = async (patientId: string, remarks: string): Promise<Data | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/Patient/QueryFailAppointment';
+     console.log('api queryFailAppointment url=', url);
+     const body = {
+       patientId,
+       remarks,
+     }; // 将JavaScript对象转换为字符串
+     console.log('api queryFailAppointment body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+@@ -906,255 +909,255 @@ export const getPatientConsultationStatus = async (patientId: string) => {
+  * @param patientId
+  * @param pageIndex
+  */
+ export const consultationQueryPage = async (
+   patientId: string,
+   pageIndex: number,
+   pageSize: number = 10
+ ): Promise<ConsultationQueryPage | null | Response> => {
+   try {
+     const url = `${constant.API_BASE_URL}/Consultation/QueryPage`;
+     console.log('api consultationQueryPage url=', url);
+     const body = {
+       patientId: patientId,
+       pageIndex,
+       pageSize,
+     }; // 将JavaScript对象转换为字符串
+     console.log('api consultationQueryPage body=', body);
+     const response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api consultationQueryPage response=', response);
+     if (!response.ok) {
+       return Promise.reject(response);
+     } else {
+       const json = await response.json();
+       console.log('api consultationQueryPage json=', json);
+       if (json.code === 200) {
+         return Promise.resolve(json.data);
+       } else {
+         return Promise.reject(json);
+       }
+     }
+   } catch (error) {
+     console.error('api consultationQueryPage error=', error);
+     return Promise.reject(error);
+   }
+ };
+ 
+ export const newPatient = async (
+   clinicCode: string
+ ) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/patient/resource/intial-new-patient';
+     console.log('api newPatient url=', url);
+     const body = {
+       doctorCode: 'ALL',
+       clinicCode: clinicCode
+     }; // 将JavaScript对象转换为字符串
+     console.log('api newPatient body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api newPatient response=', response);
+     if (!response.ok) {
+     } else {
+       let json = await response.json();
+       console.log('api newPatient json=', json);
+       if (json.code === 0 || json.code === 200) {
+         return json.data;
+       } else {
+         return null;
+       }
+     }
+   } catch (error) {
+     console.error('api newPatient error=', error);
+   }
+ };
+ 
+ /**
+  * 根据性别查称呼
+  *  ["F", "M", "Unknown"] or [0, 1, 255]
+  */
+ export const prefix = async (Gender = ''): Promise<Prefix[] | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/patient/resource/list-prefix';
+     console.log('api prefix url=', url);
+-    const body = {Gender}; // 将JavaScript对象转换为字符串
++    const body = { Gender }; // 将JavaScript对象转换为字符串
+     console.log('api prefix body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api prefix response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     } else {
+       let json = await response.json();
+       console.log('api prefix json=', json);
+       if (json.code === 0 || json.code === 200) {
+         return Promise.resolve(json.data);
+       } else {
+         return Promise.reject(null);
+       }
+     }
+   } catch (error) {
+     console.error('api prefix error=', error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ /**
+  * 根据 介绍人类别 查 介绍人
+  */
+ export const refferal = async (pageIndex: number, category: string = ''): Promise<Data | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/patient/resource/list-refferal';
+     console.log('api refferal url=', url);
+-    const body = {pageIndex, pageSize: 50, category, keyWord: ''}; // 将JavaScript对象转换为字符串
++    const body = { pageIndex, pageSize: 50, category, keyWord: '' }; // 将JavaScript对象转换为字符串
+     console.log('api refferal body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api refferal response=', response);
+     if (!response.ok) {
+       return null;
+     } else {
+       let json = await response.json();
+       console.log('api refferal json=', json);
+       if (json.code === 0 || json.code === 200) {
+         if (json.data.pagingInfo) {
+           if (json.data.items.length >= json.data.pagingInfo.pageSize) {
+             //有下页数据
+             const pageIndex = json.data.pagingInfo.pageIndex + 1;
+             return {
+               items: json.data.items as RefferalItem[],
+               totalPage: pageIndex + 1,
+               pageIndex,
+               needLoadMore: true,
+             };
+           } else {
+             const pageIndex = json.data.pagingInfo.pageIndex + 1;
+             return {
+               items: json.data.items as RefferalItem[],
+               totalPage: pageIndex,
+               pageIndex: json.data.pagingInfo.pageIndex,
+               needLoadMore: false,
+             };
+           }
+         } else {
+           return json.data;
+         }
+       } else {
+         return null;
+       }
+     }
+   } catch (error) {
+     console.error('api refferal error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 病人编辑时的下拉列表数据，类别可以对照csx病人基础数据设置
+  * @param pageIndex
+  * @param category
+  * @param keyWord
+  * @param pageSize
+  */
+ export const patientDataSetting = async (
+   pageIndex: number,
+   category: string,
+   keyWord?: string,
+   pageSize?: number
+ ): Promise<Data | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/patient/resource/list-patient-setting-data';
+     console.log('api patientDataSetting url=', url);
+-    const body = {pageIndex, pageSize: pageSize || 50, category, keyWord}; // 将JavaScript对象转换为字符串
++    const body = { pageIndex, pageSize: pageSize || 50, category, keyWord }; // 将JavaScript对象转换为字符串
+     console.log('api patientDataSetting body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api patientDataSetting response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     } else {
+       let json = await response.json();
+       console.log('api patientDataSetting json=', json);
+       if (json.code === 0 || json.code === 200) {
+         if (json.data.pagingInfo) {
+           if (json.data.items.length >= json.data.pagingInfo.pageSize) {
+             //有下页数据
+             const pageIndex = json.data.pagingInfo.pageIndex + 1;
+             return Promise.resolve({
+               items: json.data.items as PatientDataSettingItem[],
+               totalPage: pageIndex + 1,
+               pageIndex,
+               needLoadMore: true,
+             });
+           } else {
+             const pageIndex = json.data.pagingInfo.pageIndex;
+             return Promise.resolve({
+               items: json.data.items as PatientDataSettingItem[],
+               totalPage: pageIndex,
+               pageIndex: json.data.pagingInfo.pageIndex,
+               needLoadMore: false,
+             });
+           }
+         } else {
+           return Promise.resolve(json.data);
+         }
+       } else {
+         return Promise.reject(null);
+       }
+     }
+   } catch (error) {
+     console.error('api patientDataSetting error=', error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ /**
+  * Register push notification client with backend server
+  * Supports both Firebase FCM and Huawei HMS Push
+  * @param token - Push token (FCM or HMS)
+  * @param pushType - Type of push service: 'fcm' or 'hms' (default: 'fcm')
+  */
+ export const register_client = async (token?: string, pushType: 'fcm' | 'hms' = 'fcm') => {
+   try {
+     const url = constant.API_BASE_URL + '/notification/v1/push/register-client';
+     console.log('api register_client url=', url);
+     logUtils.addLog('info', 'api register_client url=', '', url);
+     if (!token) {
+       // Only try to get FCM token if pushType is 'fcm'
+       // HMS tokens should always be passed explicitly
+       if (pushType === 'fcm') {
+         // 当网络访问Google Firebase不畅时，messaging().getToken()会花费数十秒才继续执行，造成登录无反应的现象，影响用户体验
+         // android和iOS都存在此现象
+         // 添加超时机制
+         const tokenPromise = messaging().getToken();
+         const timeoutPromise = new Promise<string>((_, reject) => {
+           setTimeout(() => reject(new Error('FCM token fetch timeout')), 2000); // 2秒超时
+         });
+ 
+         try {
+           token = await Promise.race([tokenPromise, timeoutPromise]);
+         } catch (error) {
+           // 如果获取 token 失败，可以选择跳过或使用默认值
+           return null; // 或者继续执行其他逻辑
+         }
+       } else {
+         console.log('api register_client: HMS token must be provided explicitly');
+         return null;
+       }
+     }
+     const deviceId = await DeviceInfo.getUniqueId();
+@@ -1406,161 +1409,161 @@ export const update_appointment_remark = async (p) => {
+     console.log('api update_appointment_remark url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api update_appointment_remark body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api update_appointment_remark response=', response);
+     if (!response.ok) {
+       return null;
+     } else {
+       let json = await response.json();
+       console.log('api update_appointment_remark json=', json);
+       if (json.code === 0 || json.code === 200) {
+         return json.data;
+       } else {
+         return null;
+       }
+     }
+   } catch (error) {
+     console.error('api update_appointment_remark error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 更新預約
+  */
+ export const update_appoint = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/encounter/update-appoint';
+     console.log('api update_appoint url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api update_appoint body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api update_appoint response=', response);
+     if (!response.ok) {
+       return null;
+     } else {
+       let json = await response.json();
+       console.log('api update_appoint json=', json);
+       if (json.code === 0 || json.code === 200) {
+         return json.data;
+       } else {
+         return null;
+       }
+     }
+   } catch (error) {
+     console.error('api update_appoint error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 删除 预约记录 |排队记录
+  * @param p
+  */
+ export const delete_appoint = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/encounter/delete-appointment';
+     console.log('api delete_appoint url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api delete_appoint body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api delete_appoint response=', response);
+     if (!response.ok) {
+       return null;
+     } else {
+       let json = await response.json();
+       console.log('api delete_appoint json=', json);
+       if (json.code === 0 || json.code === 200 || json.code === 4000034) {
+-        return {...json.data, code: json.code, message: json.message};
++        return { ...json.data, code: json.code, message: json.message };
+       } else {
+         return null;
+       }
+     }
+   } catch (error) {
+     console.error('api delete_appoint error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 获取医生视频token
+  * @param p
+  */
+ export const get_doctor_conference_data = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/encounter/get-doctor-conference-data';
+     console.log('api get_doctor_conference_data url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api get_doctor_conference_data body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api get_doctor_conference_data response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api get_doctor_conference_data json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('api get_appoint_list error=', error);
+     return null;
+   }
+ };
+ 
+ export const confirm_remote_ticket = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/encounter/confirm-remote-ticket';
+     console.log('api confirm_remote_ticket url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api confirm_remote_ticket body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api confirm_remote_ticket response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api confirm_remote_ticket json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('api confirm_remote_ticket error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 签到确认,失败换保险公司重新ec也是调用这个接口
+  * @param p
+  */
+ export const confirm_remote_ticket_option = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/encounter/confirm-remote-ticket-option';
+     console.log('api confirm_remote_ticket_option url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api confirm_remote_ticket_option body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+@@ -1698,3837 +1701,3908 @@ export const contract_details = async (p) => {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('contract_details error=', error);
+     return null;
+   }
+ };
+ 
+ export interface list_patient_file_directories_OriginalItem {
+   id: string;
+   term: string;
+   fileCount: number;
+ }
+ 
+ /**
+  * 病人文件目录
+  * @param p
+  */
+ export const list_patient_file_directories = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/consultations/v1/list-patient-file-directories';
+     console.log('api list_patient_file_directories url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api list_patient_file_directories body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api list_patient_file_directories response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api list_patient_file_directories json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('api list_patient_file_directories error=', error);
+     return null;
+   }
+ };
+ 
+ export const list_patient_files = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/consultations/v1/list-patient-files';
+     console.log('api list_patient_files url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api list_patient_files body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api list_patient_files response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api list_patient_files json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('list_patient_files error=', error);
+     return null;
+   }
+ };
+ 
+ export const upload_patient_files = async (body: FormData, onProgress?: (progress: number) => void) => {
+   try {
+     const url = constant.API_BASE_URL + '/consultations/v1/upload-patient-file';
+     console.log('api upload_patient_files url=', url);
+     console.log('api upload_patient_files body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+-      headers: {...headers(), 'Content-Type': 'multipart/form-data'},
++      headers: { ...headers(), 'Content-Type': 'multipart/form-data' },
+       body: body,
+     });
+     console.log('api upload_patient_files response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api upload_patient_files json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('upload_patient_files error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 医生详情
+  * @param patientId
+  */
+ export const getDoctorById = async (id: string) => {
+   try {
+     const url = constant.API_BASE_URL + '/Doctor/GET/' + id;
+     console.log('api getDoctorById url=', url);
+     const params = {};
+     console.log('api getDoctorById params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+       .map((key) => key + '=' + encodeURIComponent(params[key]))
+       .join('&');
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api getDoctorById urlWithParams=', urlWithParams);
+     let response = await fetch(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+     });
+     console.log('api getDoctorById response=', response);
+     if (!response.ok) {
+       return null;
+     } else {
+       let json = await response.json();
+       console.log('api getDoctorById json=', json);
+       if (json.code === 200) {
+         return json.data;
+       } else {
+         return null;
+       }
+     }
+   } catch (error) {
+     console.log('api getDoctorById error=', error);
+   }
+ };
+ 
+ /**
+  * 诊所详情
+  * @param id
+  */
+ export const getClinicById = async (id: string) => {
+   try {
+     const url = constant.API_BASE_URL + '/Clinic/GET/' + id;
+     console.log('api getClinicById url=', url);
+     const params = {};
+     console.log('api getClinicById params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+       .map((key) => key + '=' + encodeURIComponent(params[key]))
+       .join('&');
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api getClinicById urlWithParams=', urlWithParams);
+     let response = await fetch(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+     });
+     console.log('api getClinicById response=', response);
+     if (!response.ok) {
+       return null;
+     } else {
+       let json = await response.json();
+       console.log('api getClinicById json=', json);
+       if (json.code === 200) {
+         return json.data;
+       } else {
+         return null;
+       }
+     }
+   } catch (error) {
+     console.log('api getClinicById error=', error);
+   }
+ };
+ 
+ /**
+  * 获取用户信息
+  * @param id
+  */
+-export const GetUserInfo = async ({installationId}: { installationId: string }) => {
++export const GetUserInfo = async ({ installationId }: { installationId: string }) => {
+   try {
+     const url = constant.API_BASE_URL + '/Account/GetUserInfo';
+     console.log('api GetUserInfo url=', url);
+     const params = {};
+     console.log('api GetUserInfo params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+       .map((key) => key + '=' + encodeURIComponent(params[key]))
+       .join('&');
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api GetUserInfo urlWithParams=', urlWithParams);
+     // const Cookie = await storage.getItem(storage.csxMobileCachekeys.cookie)
+     // console.log('api GetUserInfo Cookie=', Cookie)
+     let response = await fetch(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       credentials: 'include', // 这个设置是为了在跨域请求时能够包含 cookies，对于同源请求这个设置不是必需的
+       // Cookie
+     });
+     console.log('api GetUserInfo response=', response);
+     if (!response.ok) {
+       return null;
+     } else {
+       let json = await response.json();
+       console.log('api GetUserInfo json=', json);
+       if (json.code === 200) {
+         return json.data;
+       } else {
+         return null;
+       }
+     }
+   } catch (error) {
+     console.log('api GetUserInfo error=', error);
+   }
+ };
+ 
+ export const SendOTPPassword = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Account/SendOTPPassword';
+     console.log('api SendOTPPassword url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api SendOTPPassword body=', body);
+     console.log('api SendOTPPassword headers=', headers());
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+       credentials: 'include', // 对于跨域请求，要求包含 cookies
+     });
+     console.log('api SendOTPPassword response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api SendOTPPassword json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('SendOTPPassword error=', error);
+     return null;
+   }
+ };
+ 
+ export const mfa = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Account/mfa-2';
+     console.log('api mfa url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api mfa body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+       credentials: 'include', // 对于跨域请求，要求包含 cookies
+     });
+     console.log('api mfa response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api mfa json=', json);
+     if (json.code === 0 || json.code === 200) {
+       global.cookie = '';
+       return json.data;
+     }
+     //https://app.clickup.com/t/8553538/TECH-6682?comment=90180145828938
+     if (json.message == 'mfa code error') {
+-      processJson({...json, message: 'Verification code error'}, url)
++      processJson({ ...json, message: 'Verification code error' }, url)
+     } else {
+       processJson(json, url)
+     }
+     return null;
+   } catch (error) {
+     console.error('mfa error=', error);
+     return null;
+   }
+ };
+ 
+ export const messages_paging = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/messages/v1/paging';
+     console.log('api messages_paging url=', url);
+-    const body = {...p, pageSize: p.pageSize || 50, sorts: null}; // 将JavaScript对象转换为字符串
++    const body = { ...p, pageSize: p.pageSize || 50, sorts: null }; // 将JavaScript对象转换为字符串
+     console.log('api messages_paging body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api messages_paging response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api messages_paging json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('messages_paging error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 删除病人文件
+  * @param p
+  */
+ export const remove_patient_file = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/consultations/v1/remove-patient-file';
+     console.log('api remove_patient_file url=', url);
+-    const body = {...p}; // 将JavaScript对象转换为字符串
++    const body = { ...p }; // 将JavaScript对象转换为字符串
+     console.log('api remove_patient_file body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api remove_patient_file response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api remove_patient_file json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.success;
+     }
+     return null;
+   } catch (error) {
+     console.error('remove_patient_file error=', error);
+     return null;
+   }
+ };
+ 
+ export const messages_get = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/messages/v1/get';
+     console.log('api messages_get url=', url);
+-    const body = {...p}; // 将JavaScript对象转换为字符串
++    const body = { ...p }; // 将JavaScript对象转换为字符串
+     console.log('api messages_get body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api messages_get response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api messages_get json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('messages_get error=', error);
+     return null;
+   }
+ };
+ 
+ export const update_read_state = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/messages/v1/update-read-state';
+     console.log('api update_read_state url=', url);
+-    const body = {...p}; // 将JavaScript对象转换为字符串
++    const body = { ...p }; // 将JavaScript对象转换为字符串
+     console.log('api update_read_state body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api update_read_state response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api update_read_state json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('update_read_state error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 开启生物认证 https://zhuanlan.zhihu.com/p/455284997
+  * @param p:{
+  type : 0=Fingerprint, 1=Face
+  signature: MD5加密 http headers 里的 Authorization 的值,再 用RSA私钥签名 第一步的结果
+  halg:SHA256
+  publicKey:
+  }
+  return: {
+     "biometricsId": string,
+     "secret": string,
+     "publicKey": string
+ }
+  */
+ export const open_biometrics_auth = async (p, username?: string, tenantID?: string): Promise<open_biometrics_auth_data | null> => {
+   try {
+     console.log('api open_biometrics_auth p=', p);
+     const keys = generateKeys();
+     console.log('api open_biometrics_auth keys=', keys);
+     // 使用用户维度的缓存键
+     const publicKeyKey = username && tenantID
+       ? storage.getUserStorageKey(storage.csxMobileCachekeys.publicKey, username, tenantID)
+       : storage.csxMobileCachekeys.publicKey;
+     console.log('api open_biometrics_auth publicKeyKey=', publicKeyKey);
+     const privateKeyKey = username && tenantID
+       ? storage.getUserStorageKey(storage.csxMobileCachekeys.privateKey, username, tenantID)
+       : storage.csxMobileCachekeys.privateKey;
+     console.log('api open_biometrics_auth privateKeyKey=', privateKeyKey);
+     const authDataKey = username && tenantID
+       ? storage.getUserStorageKey(storage.csxMobileCachekeys.open_biometrics_auth_data, username, tenantID)
+       : storage.csxMobileCachekeys.open_biometrics_auth_data;
+     console.log('api open_biometrics_auth authDataKey=', authDataKey);
+     await storage.setItem(publicKeyKey, keys.publicKey);
+     await storage.setItem(privateKeyKey, keys.privateKey);
+-    console.log('api open_biometrics_auth publicKeyKey cache done=', {publicKeyKey,value: keys.publicKey});
+-    console.log('api open_biometrics_auth privateKeyKey cache done=', {privateKeyKey,value: keys.privateKey});
++    console.log('api open_biometrics_auth publicKeyKey cache done=', { publicKeyKey, value: keys.publicKey });
++    console.log('api open_biometrics_auth privateKeyKey cache done=', { privateKeyKey, value: keys.privateKey });
+     const BearerTKey = 'Bearer ' + global.token;
+     console.log('api open_biometrics_auth BearerTKey=', BearerTKey);
+     const md5_signature = CryptoJS.MD5(BearerTKey).toString();
+     console.log('api open_biometrics_auth md5_signature=', md5_signature);
+     const signature = getSHA256withRSA(md5_signature, keys.privateKey);
+     const url = constant.API_BASE_URL + '/Account/open-biometrics-auth';
+     console.log('api open_biometrics_auth url=', url);
+-    const body = {...p, signature, halg: 'SHA256', publicKey: keys.publicKey}; // 将JavaScript对象转换为字符串
++    const body = { ...p, signature, halg: 'SHA256', publicKey: keys.publicKey }; // 将JavaScript对象转换为字符串
+     console.log('api open_biometrics_auth body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api open_biometrics_auth response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api open_biometrics_auth json=', json);
+     if (json.code === 0 || json.code === 200) {
+       await storage.setItem(authDataKey, json.data);
+       console.log('api open_biometrics_auth cache authDataKey done=', {
+         authDataKey,
+         data: json.data,
+       });
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('open_biometrics_auth error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 通过生物认证登录
+  * @param p : {
+  * biometricsId: string,
+  * secret: string,
+  * publicKey: string
+  * username: string,
+  * tenantID: string
+  * }
+  * return: sign_in_by_biometrics_data | null
+  */
+-export const sign_in_by_biometrics = async (p : {
++export const sign_in_by_biometrics = async (p: {
+   biometricsId: string,
+   secret: string,
+   publicKey: string
+   username: string,
+   tenantID: string
+ }): Promise<sign_in_by_biometrics_data | null> => {
+   try {
+     console.log('api sign_in_by_biometrics p=', p);
+     // const publicKey = await storage.getItem(storage.csxMobileCachekeys.publicKey);
+     console.log('api sign_in_by_biometrics storage.csxMobileCachekeys.publicKey=', await storage.getItem(storage.csxMobileCachekeys.publicKey));
+     const publicKey = p.username && p.tenantID
+       ? await storage.getItem((storage.getUserStorageKey(storage.csxMobileCachekeys.publicKey, p.username, p.tenantID)))
+       : await storage.getItem(storage.csxMobileCachekeys.publicKey);
+     console.log('api sign_in_by_biometrics publicKey=', publicKey);
+     // const privateKey = await storage.getItem(storage.csxMobileCachekeys.privateKey);
+     console.log('api sign_in_by_biometrics storage.csxMobileCachekeys.privateKey=', await storage.getItem(storage.csxMobileCachekeys.privateKey));
+     const privateKey = p.username && p.tenantID
+       ? await storage.getItem(storage.getUserStorageKey(storage.csxMobileCachekeys.privateKey, p.username, p.tenantID))
+       : await storage.getItem(storage.csxMobileCachekeys.privateKey);
+     console.log('api sign_in_by_biometrics privateKey=', privateKey);
+     const BearerTKey = 'plainText';
+     console.log('sign_in_by_biometrics BearerTKey=', BearerTKey);
+     // let md5_signature = CryptoJS.MD5(BearerTKey).toString();
+     // console.log('sign_in_by_biometrics md5_signature=', md5_signature)
+     const signature = getSHA256withRSA(BearerTKey, privateKey);
+     const url = constant.API_BASE_URL + '/Account/sign-in-by-biometrics';
+     console.log('api sign_in_by_biometrics url=', url);
+     const data = encryptWithPublicKey(p.publicKey, `v1|${p.secret}`);
+     console.log('sign_in_by_biometrics data=', data);
+-    const body = {type: p.type, signature, halg: 'SHA256', biometricsId: p.biometricsId, plainText: BearerTKey, data}; // 将JavaScript对象转换为字符串
++    const body = { type: p.type, signature, halg: 'SHA256', biometricsId: p.biometricsId, plainText: BearerTKey, data }; // 将JavaScript对象转换为字符串
+     console.log('api sign_in_by_biometrics body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api sign_in_by_biometrics response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api sign_in_by_biometrics json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('sign_in_by_biometrics error=', error);
+     return null;
+   }
+ };
+ 
+ export const close_biometrics_auth = async (p) => {
+   try {
+     console.log('api close_biometrics_auth p=', p);
+     // const publicKey = await storage.getItem(storage.csxMobileCachekeys.publicKey);
+     const publicKey = p.username && p.tenantID
+       ? await storage.getItem((storage.getUserStorageKey(storage.csxMobileCachekeys.publicKey, p.username, p.tenantID)))
+       : await storage.getItem(storage.csxMobileCachekeys.publicKey);
+     console.log('api close_biometrics_auth publicKey=', publicKey);
+     // const privateKey = await storage.getItem(storage.csxMobileCachekeys.privateKey);
+     const privateKey = p.username && p.tenantID
+       ? await storage.getItem(storage.getUserStorageKey(storage.csxMobileCachekeys.privateKey, p.username, p.tenantID))
+       : await storage.getItem(storage.csxMobileCachekeys.privateKey);
+     console.log('api close_biometrics_auth privateKey=', privateKey);
+     // const plainText = 'plainText'
+     // console.log('close_biometrics_auth plainText=', plainText)
+     // const signature = getSHA256withRSA(plainText, privateKey)
+     const BearerTKey = 'Bearer ' + global.token;
+     console.log('api close_biometrics_auth BearerTKey=', BearerTKey);
+     let md5_signature = CryptoJS.MD5(BearerTKey).toString();
+     console.log('api close_biometrics_auth md5_signature=', md5_signature);
+     const signature = getSHA256withRSA(md5_signature, privateKey);
+     console.log('api close_biometrics_auth signature=', signature);
+     const url = constant.API_BASE_URL + '/Account/close-biometrics-auth';
+     console.log('api close_biometrics_auth url=', url);
+-    const body = {type: p.type, signature, halg: 'SHA256'}; // 将JavaScript对象转换为字符串
++    const body = { type: p.type, signature, halg: 'SHA256' }; // 将JavaScript对象转换为字符串
+     console.log('api close_biometrics_auth body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api close_biometrics_auth response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api close_biometrics_auth json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data || true;
+     }
+     return null;
+   } catch (error) {
+     console.error('api close_biometrics_auth error=', error);
+     return null;
+   }
+ };
+ 
+ export const report_inputs = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Overview/report-inputs';
+     console.log('api report_inputs url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api report_inputs body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api report_inputs response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api report_inputs json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('report_inputs error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 可以是所有診所+所有醫生的總收入图表数据,也可以是 某個診所的所有醫生的所有收入,也可是某個診所的某個醫生的收入;
+  * @param p
+  */
+ export const income_report = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Overview/income-report';
+     console.log('api income_report url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api income_report body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api income_report response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api income_report json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('income_report error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 交易图表数据
+  * @param p
+  */
+ export const transaction_report = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Overview/transaction-report';
+     console.log('api transaction_report url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api transaction_report body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api transaction_report response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api transaction_report json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('transaction_report error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 过敏药物
+  * @param p
+  */
+ export const list_allergic_drugs = async (p: {
+   pageIndex: number;
+   clinicId: string;
+   category?: string;
+   keyWord: string;
+   pageSize: number;
+ }): Promise<Data | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/resource/list-allergic-drugs';
+     console.log('api list_allergic_drugs url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api list_allergic_drugs body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api list_allergic_drugs response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     }
+     let json = await response.json();
+     console.log('api list_allergic_drugs json=', json);
+     if (json.code === 0 || json.code === 200) {
+       if (json.data.pagingInfo) {
+         if (json.data.items.length >= json.data.pagingInfo.pageSize) {
+           //有下页数据
+           const pageIndex = json.data.pagingInfo.pageIndex + 1;
+           return Promise.resolve({
+             items: json.data.items,
+             totalPage: pageIndex,
+             pageIndex: pageIndex,
+             needLoadMore: true,
+           });
+         } else {
+           const pageIndex = json.data.pagingInfo.pageIndex;
+           return Promise.resolve({
+             items: json.data.items,
+             totalPage: pageIndex,
+             pageIndex: json.data.pagingInfo.pageIndex,
+             needLoadMore: false,
+           });
+         }
+       } else {
+         return Promise.resolve(json.data);
+       }
+     }
+     return Promise.reject(null);
+   } catch (error) {
+     console.error('list_allergic_drugs error=', error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ /**
+  * 过敏反应词汇
+  */
+ export const get_all_allergic_reaction_terms = async (p?: any): Promise<Data | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/resource/get-all-allergic-reaction-terms';
+     console.log('api get_all_allergic_reaction_terms url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api get_all_allergic_reaction_terms body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api get_all_allergic_reaction_terms response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     }
+     let json = await response.json();
+     console.log('api get_all_allergic_reaction_terms json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return Promise.resolve({
+         items: json.data,
+         pageIndex: 0,
+         totalCount: 0,
+         totalPage: 0,
+       });
+     }
+     return Promise.reject(null);
+   } catch (error) {
+     console.error('get_all_allergic_reaction_terms error=', error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ /**
+  * 添加过敏反应
+  * @param p
+  */
+ export const add_patient_allergy = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/add-patient-allergy';
+     console.log('api add_patient_allergy url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api add_patient_allergy body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api add_patient_allergy response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api add_patient_allergy json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     emitEvent(globalEventName.showCommonAlertModal, {
+       commonAlertModalTitle: global.i18n.t('prompt'),
+       commonAlertModalContent: json.message,
+       commonAlertModalCancelTxt: global.i18n.t('cancel'),
+     });
+     return null;
+   } catch (error) {
+     console.error('add_patient_allergy error=', error);
+     return null;
+   }
+ };
+ 
+ export const update_patient_nkda = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/update-patient-nkda';
+     console.log('api update_patient_nkda url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api update_patient_nkda body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api update_patient_nkda response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api update_patient_nkda json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('update_patient_nkda error=', error);
+     return null;
+   }
+ };
+ 
+ export const login_logs = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Account/login-logs';
+     console.log('api login_logs url=', url);
+-    const body = {...p, pageSize: 50};
++    const body = { ...p, pageSize: 50 };
+     console.log('api login_logs body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api login_logs response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api login_logs json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('login_logs error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 保存以往病历
+  * @param p
+  */
+ export const save_patient_extend_medical_record = async (p: {
+   patientId: string;
+   doctorId: string;
+   Type: string;
+   Value: string;
+ }) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/save-patient-extend-medical-record';
+     console.log('api save_patient_extend_medical_record url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api save_patient_extend_medical_record body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api save_patient_extend_medical_record response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api save_patient_extend_medical_record json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('save_patient_extend_medical_record error=', error);
+     return null;
+   }
+ };
+ 
+ export const QueryPatientAllergy = async (p: {
+   patientId: string;
+   typeOfAllergen: string;
+ }): Promise<QueryPatientAllergy_item[] | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/Consultation/QueryPatientAllergy';
+     console.log('api QueryPatientAllergy url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api QueryPatientAllergy body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api QueryPatientAllergy response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     }
+     let json = await response.json();
+     console.log('api QueryPatientAllergy json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return Promise.resolve(json.data);
+     }
+     return Promise.reject(null);
+   } catch (error) {
+     console.error('QueryPatientAllergy error=', error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ export const delete_patient_allergy = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/delete-patient-allergy';
+     console.log('api delete_patient_allergy url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api delete_patient_allergy body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api delete_patient_allergy response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api delete_patient_allergy json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('delete_patient_allergy error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 获取 通话记录 数据
+  * 在CSX造 通话记录 数据 https://teams.microsoft.com/l/message/19:fb435fb1187242449df6f42f1def78db@thread.v2/1777360362600?context=%7B%22contextType%22%3A%22chat%22%7D
+  * @param p 
+  * @returns 
+  */
+-export const call_logs = async (p:{
++export const call_logs = async (p: {
+   clinicCode: string;
+   doctorCode: string;
+   patientCode: string;
+ }): Promise<CallLogsItem[] | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/call-logs/v1/list';
+     console.log('api call_logs url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api call_logs body=', body);
+     const response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api call_logs response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     }
+     const json = await response.json();
+     console.log('api call_logs json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return Promise.resolve(json.data);
+     }
+     return Promise.reject(null);
+   } catch (error) {
+     console.error('call_logs error=', error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ export const list_doctor_medical_terms = async (p): Promise<Data | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/resource/list-doctor-medical-terms';
+     console.log('api list_doctor_medical_terms url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api list_doctor_medical_terms body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api list_doctor_medical_terms response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api list_doctor_medical_terms json=', json);
+     if (json.code === 0 || json.code === 200) {
+       if (json.data.pagingInfo) {
+         if (json.data.items.length >= json.data.pagingInfo.pageSize) {
+           //有下页数据
+           const pageIndex = json.data.pagingInfo.pageIndex + 1;
+           return {
+             items: json.data.items,
+             totalPage: pageIndex + 1,
+             pageIndex,
+           };
+         } else {
+           const pageIndex = json.data.pagingInfo.pageIndex;
+           return {
+             items: json.data.items,
+             totalPage: pageIndex,
+             pageIndex: json.data.pagingInfo.pageIndex,
+           };
+         }
+       } else {
+         return json.data;
+       }
+     }
+     return null;
+   } catch (error) {
+     console.error('list_doctor_medical_terms error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 添加诊疗记录
+  * @param p
+  */
+ export const add_medical_record = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/add-medical-record';
+     console.log('api add_medical_record url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api add_medical_record body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api add_medical_record response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api add_medical_record json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('add_medical_record error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 就診人健康信息
+  * @param p
+  */
+ export const patient_extend_medical_records = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/patient-extend-medical-records/v1/get';
+     console.log('api patient_extend_medical_records url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api patient_extend_medical_records body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api patient_extend_medical_records response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api patient_extend_medical_records json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('patient_extend_medical_records error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 诊症设置
+  * @param p
+  * @return {
+  *          "enableModifyMedicalNotes": 2, // 修改医疗记录设定。修改记录时间 AnyTime = 1, In24Hours = 2 , =2时，只能编辑|删除24小时内的诊症(病历) 或 删除24小时内的药方
+  *         "lockMedicalNotes": false, // 是否锁定病例
+  *         "enableDiagnosisCodeSystem": false, // 是否启用HKCTT诊断编码
+  *         "enableActionCodeSystem": true, // 是否开启Action
+  *         "enableMedicalProcCodeSystem": false, // 是否启用HKCTT医疗程序编码
+  *         "enableVaccineCodeSystem": false // 是否启用HKCTT疫苗术语
+  * }
+  */
+ export const get_consultation_setting = async (p: {}): Promise<get_consultation_setting_Data | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/resource/get-consultation-setting';
+     console.log('api get_consultation_setting url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api get_consultation_setting body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api get_consultation_setting response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     }
+     let json = await response.json();
+     console.log('api get_consultation_setting json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return Promise.resolve(json.data);
+     }
+     return Promise.reject(null);
+   } catch (error) {
+     console.error('api get_consultation_setting error=', error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ /**
+  * 根据 IsGetDiagnosis 参数来    请求  HKCTT醫療程序編碼数据 或 HKCTT诊断編碼数据
+  * @param p
+  */
+ export const list_hkctt_dxpx_terms = async (p): Promise<List_hkctt_dxpx_terms | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/resource/list-hkctt-dxpx-terms';
+     console.log('api list_hkctt_dxpx_terms url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api list_hkctt_dxpx_terms body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api list_hkctt_dxpx_terms response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api list_hkctt_dxpx_terms json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('list_hkctt_dxpx_terms error=', error);
+     return null;
+   }
+ };
+ 
+ export const QueryPatientImmunisation = async (p: {
+   patientId: string;
+ }): Promise<QueryPatientImmunisation_item[] | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/Consultation/QueryPatientImmunisation';
+     console.log('api QueryPatientImmunisation url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api QueryPatientImmunisation body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api QueryPatientImmunisation response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     }
+     let json = await response.json();
+     console.log('api QueryPatientImmunisation json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return Promise.resolve(json.data);
+     }
+     return Promise.reject(null);
+   } catch (error) {
+     console.error('QueryPatientImmunisation error=', error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ /**
+  * HKCTT疫苗术语
+  * @param p
+  */
+ export const list_hkctt_drug_vaccine_terms = async (p: {
+   pageIndex: number;
+   keyWord?: string;
+   pageSize?: number;
+ }): Promise<Data | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/resource/list-hkctt-drug-vaccine-terms';
+     console.log('api list_hkctt_drug_vaccine_terms url=', url);
+-    const body = {...p, pageSize: p.pageSize || 50};
++    const body = { ...p, pageSize: p.pageSize || 50 };
+     console.log('api list_hkctt_drug_vaccine_terms body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api list_hkctt_drug_vaccine_terms response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     }
+     let json = await response.json();
+     console.log('api list_hkctt_drug_vaccine_terms json=', json);
+     if (json.code === 0 || json.code === 200) {
+       if (json.data.pagingInfo) {
+         if (json.data.items.length >= json.data.pagingInfo.pageSize) {
+           //有下页数据
+           const pageIndex = json.data.pagingInfo.pageIndex + 1;
+           return Promise.resolve({
+             items: json.data.items as List_hkctt_drug_vaccine_terms_Item[],
+             totalPage: pageIndex + 1,
+             pageIndex,
+             needLoadMore: true,
+           });
+         } else {
+           const pageIndex = json.data.pagingInfo.pageIndex;
+           return Promise.resolve({
+             items: json.data.items as List_hkctt_drug_vaccine_terms_Item[],
+             totalPage: pageIndex,
+             pageIndex: json.data.pagingInfo.pageIndex,
+             needLoadMore: false,
+           });
+         }
+       } else {
+         return Promise.resolve(json.data);
+       }
+     }
+     return Promise.reject(null);
+   } catch (error) {
+     console.error('list_hkctt_drug_vaccine_terms error=', error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ export const list_medical_terms = async (p: {
+   pageIndex: number;
+   Category: string;
+   keyWord?: string;
+   pageSize?: number;
+ }): Promise<Data | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/resource/list-medical-terms';
+     console.log('api list_medical_terms url=', url);
+-    const body = {...p, pageSize: p.pageSize || 100};
++    const body = { ...p, pageSize: p.pageSize || 100 };
+     console.log('api list_medical_terms body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api list_medical_terms response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     }
+     let json = await response.json();
+     console.log('api list_medical_terms json=', json);
+     if (json.code === 0 || json.code === 200) {
+       if (json.data.pagingInfo) {
+         if (json.data.items.length >= json.data.pagingInfo.pageSize) {
+           //有下页数据
+           const pageIndex = json.data.pagingInfo.pageIndex + 1;
+           return Promise.resolve({
+             items: json.data.items as List_medical_terms_Item[],
+             totalPage: pageIndex + 1,
+             pageIndex,
+             needLoadMore: true,
+           });
+         } else {
+           const pageIndex = json.data.pagingInfo.pageIndex;
+           return Promise.resolve({
+             items: json.data.items as List_medical_terms_Item[],
+             totalPage: pageIndex,
+             pageIndex: json.data.pagingInfo.pageIndex,
+             needLoadMore: false,
+           });
+         }
+       } else {
+         return Promise.resolve(json.data);
+       }
+     }
+     return Promise.reject(null);
+   } catch (error) {
+     console.error('list_medical_terms error=', error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ export const add_patient_immunization = async (p: {
+   appointmentId: string;
+   clinicId: string;
+   doctorId: string;
+   patientId: string;
+   administrationDate: string;
+   vaccine: string;
+   remarks: string;
+   dose: number;
+ }) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/add-patient-immunization';
+     console.log('api add_patient_immunization url=', url);
+     //https://app.clickup.com/t/8553538/TECH-7056?comment=90180156118745
+-    const body = {...p, dose: p.dose == 0 ? null : p.dose};
++    const body = { ...p, dose: p.dose == 0 ? null : p.dose };
+     console.log('api add_patient_immunization body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api add_patient_immunization response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     }
+     let json = await response.json();
+     console.log('api add_patient_immunization json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return Promise.resolve(json.data);
+     }
+     emitEvent(globalEventName.showCommonAlertModal, {
+       commonAlertModalTitle: global.i18n.t('prompt'),
+       commonAlertModalContent: global.i18n.t('create_medical_records'),
+       commonAlertModalCancelTxt: global.i18n.t('cancel'),
+     });
+     return Promise.reject(null);
+   } catch (error) {
+     console.error('add_patient_immunization error=', error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ export const patient_health_v1_get = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/patient/health/v1/get';
+     console.log('api patient_health_v1_get url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api patient_health_v1_get body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api patient_health_v1_get response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api patient_health_v1_get json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('patient_health_v1_get error=', error);
+     return null;
+   }
+ };
+ 
+ export const delete_patient_immunization = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/delete-patient-immunization';
+     console.log('api delete_patient_immunization url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api delete_patient_immunization body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('delete_patient_immunization response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('delete_patient_immunization json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     emitEvent(globalEventName.showCommonAlertModal, {
+       commonAlertModalTitle: global.i18n.t('prompt'),
+       commonAlertModalContent: json.message,
+       commonAlertModalConfirmTxt: '',
+       onConfirm: () => {
+       },
+       commonAlertModalCancelTxt: '',
+     });
+     return null;
+   } catch (error) {
+     console.error('delete_patient_immunization error=', error);
+     return null;
+   }
+ };
+ 
+ export const calendar_v1_schedules = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/calendar/v1/list-schedules';
+     console.log('api calendar_v1_schedules url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api calendar_v1_schedules body=', body);
+     // 将参数转换为URL的查询字符串
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('calendar_v1_schedules response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('calendar_v1_schedules json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('calendar_v1_schedules error=', error);
+     return null;
+   }
+ };
+ 
+ export const calendar_v1_delete_schedules = async (p: {
+   contains: string[],
+   all: boolean
+ }): Promise<boolean> => {
+   try {
+     const url = constant.API_BASE_URL + '/calendar/v1/delete-schedules';
+     console.log('api calendar_v1_delete_schedules url=', url);
+     const body = { ...p };
+     console.log('api calendar_v1_delete_schedules body=', body);
+     // 将参数转换为URL的查询字符串
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('calendar_v1_delete_schedules response=', response);
+     if (!response.ok) {
+       return Promise.resolve(false);
+     }
+     let json = await response.json();
+     console.log('calendar_v1_delete_schedules json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return Promise.resolve(true);
+     }
+     return Promise.resolve(false);
+   } catch (error) {
+     console.error('calendar_v1_delete_schedules error=', error);
+     return Promise.resolve(false);
+   }
+ };
+ 
+ export const complete_consultation = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/encounter/complete-consultation';
+     console.log('api complete_consultation url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api complete_consultation body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('complete_consultation response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('complete_consultation json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('complete_consultation error=', error);
+     return null;
+   }
+ };
+ 
+ export const get_conference_data_by_appointmentid = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/encounter/get-conference-data-by-appointmentid';
+     console.log('api get_conference_data_by_appointmentid url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api get_conference_data_by_appointmentid body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('get_conference_data_by_appointmentid response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('get_conference_data_by_appointmentid json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('get_conference_data_by_appointmentid error=', error);
+     return null;
+   }
+ };
+ 
+ export const update_doctor_conference_status = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/encounter/update-doctor-conference-status';
+     console.log('api update_doctor_conference_status url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api update_doctor_conference_status body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('update_doctor_conference_status response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('update_doctor_conference_status json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('update_doctor_conference_status error=', error);
+     return null;
+   }
+ };
+ 
+ //获取最近病历
+ export const GetLatestMedicalRecord = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Consultation/GetLatestMedicalRecord';
+     console.log('api GetLatestMedicalRecord url=', url);
+-    const params = {...p};
++    const params = { ...p };
+     console.log('api GetLatestMedicalRecord params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+       .map((key) => key + '=' + encodeURIComponent(params[key]))
+       .join('&');
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api GetLatestMedicalRecord urlWithParams=', urlWithParams);
+     let response = await fetch(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+     });
+     console.log('GetLatestMedicalRecord response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('GetLatestMedicalRecord json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('GetLatestMedicalRecord error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 获取最近药方
+  * @param p
+  * @constructor
+  */
+ export const GetLatestPrescription = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Consultation/GetLatestPrescription';
+     console.log('api GetLatestPrescription url=', url);
+-    const params = {...p};
++    const params = { ...p };
+     console.log('api GetLatestPrescription params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+       .map((key) => key + '=' + encodeURIComponent(params[key]))
+       .join('&');
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api GetLatestPrescription urlWithParams=', urlWithParams);
+     let response = await fetch(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+     });
+     console.log('GetLatestPrescription response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('GetLatestPrescription json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('GetLatestPrescription error=', error);
+     return null;
+   }
+ };
+ 
+ //药物列表
+ export const get_drugbook_master_search_list = async (p): Promise<Data | any> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/get-drugbook-master-search-list';
+     console.log('api get_drugbook_master_search_list url=', url);
+-    const body = {...p, pageSize: p.pageSize || 20};
++    const body = { ...p, pageSize: p.pageSize || 20 };
+     console.log('api get_drugbook_master_search_list body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api get_drugbook_master_search_list response=', response);
+     if (!response.ok) {
+       return Promise.reject(response);
+     }
+     let json = await response.json();
+     console.log('api get_drugbook_master_search_list json=', json);
+     if (json.code === 0 || json.code === 200) {
+       if (json.data.pagingInfo) {
+         if (json.data.items.length >= json.data.pagingInfo.pageSize) {
+           //有下页数据
+           const pageIndex = json.data.pagingInfo.pageIndex + 1;
+           return Promise.resolve({
+             items: json.data.items as DrugbookMasterSearchListItem[],
+             totalPage: pageIndex + 1,
+             pageIndex,
+           });
+         } else {
+           const pageIndex = json.data.pagingInfo.pageIndex;
+           return Promise.resolve({
+             items: json.data.items as DrugbookMasterSearchListItem[],
+             totalPage: pageIndex,
+             pageIndex: json.data.pagingInfo.pageIndex,
+           });
+         }
+       } else {
+         return Promise.resolve(json.data);
+       }
+     }
+     return Promise.reject(json);
+     ;
+   } catch (error) {
+     console.error('get_drugbook_master_search_list error=', error);
+     return Promise.reject(error);
+   }
+ };
+ 
+ /**
+  * 添加健康數據 , 對應 AddPatientHealthDataAsync
+  */
+ export const add_patient_health_data = async (p: {
+   patientId: string,
+   clinicId: string,
+   doctorId: string,
+   date: string,
+   healthData: { [key: string]: string | number | null | undefined },
+-}): Promise<{ id: string }|unknown> => {
++}): Promise<{ id: string } | unknown> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/add-patient-health-data';
+     console.log('api add_patient_health_data url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api add_patient_health_data body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('add_patient_health_data response=', response);
+     if (!response.ok) {
+       return Promise.reject(response);
+     }
+     let json = await response.json();
+     console.log('api add_patient_health_data json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return Promise.resolve(json.data);
+     }
+     return Promise.reject(json);
+   } catch (error) {
+     console.error('api add_patient_health_data error=', error);
+     return Promise.reject(error);
+   }
+ };
+ 
+ export const get_setting_data_model_list = async (p: { pageIndex: number, keyWord: string, pageSize: number, type: string }) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/drugbook/get-setting-data-model-list';
+     console.log('api get_setting_data_model_list url=', url);
+-    const body = {...p, pageSize: p.pageSize || 20};
++    const body = { ...p, pageSize: p.pageSize || 20 };
+     console.log('api get_setting_data_model_list body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api get_setting_data_model_list response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api get_setting_data_model_list json=', json);
+     if (json.code === 0 || json.code === 200) {
+       if (json.data.pagingInfo) {
+         if (json.data.items.length >= json.data.pagingInfo.pageSize) {
+           //有下页数据
+           const pageIndex = json.data.pagingInfo.pageIndex + 1;
+           return {
+             items: json.data.items,
+             totalPage: pageIndex + 1,
+             pageIndex,
+           };
+         } else {
+           const pageIndex = json.data.pagingInfo.pageIndex;
+           return {
+             items: json.data.items,
+             totalPage: pageIndex,
+             pageIndex: json.data.pagingInfo.pageIndex,
+           };
+         }
+       } else {
+         return json.data;
+       }
+     }
+     return null;
+   } catch (error) {
+     console.error('get_setting_data_model_list error=', error);
+     return null;
+   }
+ };
+ 
+-export const QueryPatientHealthData = async (p:{ patientId: string, pageIndex: number, pageSize: number }): Promise<QueryPatientHealth_Data[] | null> => {
++export const QueryPatientHealthData = async (p: { patientId: string, pageIndex: number, pageSize: number }): Promise<QueryPatientHealth_Data[] | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/Consultation/QueryPatientHealthData';
+     console.log('api QueryPatientHealthData url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api QueryPatientHealthData body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api QueryPatientHealthData response=', response);
+     if (!response.ok) {
+-     return Promise.resolve(null);
++      return Promise.resolve(null);
+     }
+     let json = await response.json();
+     console.log('api QueryPatientHealthData json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return Promise.resolve(json.data);
+     }
+     return Promise.resolve(null);
+   } catch (error) {
+     console.error('api QueryPatientHealthData error=', error);
+     return Promise.resolve(null);
+   }
+ };
+ 
+ export const delete_patient_health_data = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/delete-patient-health-data';
+     console.log('api delete_patient_health_data url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api delete-patient-health-data body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('delete_patient_health_data response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('delete_patient_health_data json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('delete_patient_health_data error=', error);
+     return null;
+   }
+ };
+ 
+ //药物详情 ,同 csx 的 api/DrugBook/GetDrugBookMasterModelByDrugId  接口
+ export const get_drugbook_masters_by_names = async (p): Promise<DrugbookMastersByNames[] | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/get-drugbook-masters-by-names';
+     console.log('api get_drugbook_masters_by_names url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api get_drugbook_masters_by_names body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api get_drugbook_masters_by_names response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api get_drugbook_masters_by_names json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('get_drugbook_masters_by_names error=', error);
+     return null;
+   }
+ };
+ 
+ export const update_patient_health_data = async (p: {
+   id: string,
+   clinicId: string,
+   doctorId: string,
+   healthData: QueryPatientHealth_Data,
+-}): Promise<{ id: string }|unknown> => {
++}): Promise<{ id: string } | unknown> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/update-patient-health-data';
+     console.log('api update_patient_health_data url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api update_patient_health_data body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api update_patient_health_data response=', response);
+     if (!response.ok) {
+       return Promise.reject(response);
+     }
+     let json = await response.json();
+     console.log('api update_patient_health_data json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return Promise.resolve(json.data);
+     }
+     return Promise.reject(json);
+   } catch (error) {
+     console.error('api update_patient_health_data error=', error);
+     return Promise.reject(error);
+   }
+ };
+ 
+ /**
+  * 新增藥方
+  * @param p :{
+  * savePrescriptionDate: 只能傳病人預約的日期 ,DD/MM/YYYY
+  * }
+  */
+ export const add_prescription_record = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/add-prescription-record';
+     console.log('api add_prescription_record url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api add_prescription_record body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('add_prescription_record response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('add_prescription_record json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     processJson(json, url);
+     return null;
+   } catch (error) {
+     console.error('add_prescription_record error=', error);
+     return null;
+   }
+ };
+ 
+ export const reset_password = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Account/reset-password';
+     console.log('api reset_password url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api reset_password body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('reset_password response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('reset_password json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data || true;
+     }
+     return null;
+   } catch (error) {
+     console.error('reset_password error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 套装 |  混合药 搜索
+  */
+ export const get_all_prescription_packages = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/get-all-prescription-packages';
+     console.log('api get_all_prescription_packages url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api get_all_prescription_packages body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api get_all_prescription_packages response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api get_all_prescription_packages json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data || true;
+     }
+     return null;
+   } catch (error) {
+     console.error('get_all_prescription_packages error=', error);
+     return null;
+   }
+ };
+ 
+ export const QueryOtherMedicalInfo = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Consultation/QueryOtherMedicalInfo';
+     console.log('api QueryOtherMedicalInfo url=', url);
+-    const params = {...p};
++    const params = { ...p };
+     console.log('api QueryOtherMedicalInfo params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+       .map((key) => key + '=' + encodeURIComponent(params[key]))
+       .join('&');
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api QueryOtherMedicalInfo urlWithParams=', urlWithParams);
+     let response = await fetch(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+     });
+     console.log('api QueryOtherMedicalInfo response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api QueryOtherMedicalInfo json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('QueryOtherMedicalInfo error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 套装裡的藥物列表 ,對應 csx 的 GetPackageMedicineListByPIdAsync
+  * @param p
+  */
+ export const get_package_medicine = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/get-package-medicine';
+     console.log('api get_package_medicine url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api get_package_medicine body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('get_package_medicine response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('get_package_medicine json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data || true;
+     }
+     return null;
+   } catch (error) {
+     console.error('get_package_medicine error=', error);
+     return null;
+   }
+ };
+ 
+ //
+ /**
+  * 套装 新增 | 存储 ,
+  * 更新時對應csx的 UpdatePrescriptionPackageAsync ,傳
+ 
+  * 新增套裝時對應 AddPrescriptionPackageAsync ,傳
+  * {
+  *   "doctorGuid": "e6a18451-1b68-4e8e-89ad-ff23291790a2",
+  *   "packageName": "11111111111111111111",
+  *   "addPrescriptionPackageAsyncRequestItemList": [
+  *     {//非藥水
+  *       "drugId": "1c46f2d1-8455-49ef-9a20-f403d5bca8eb",
+  *       "drugName": "A SCABS LOTION 5%",
+  *       "dosage": "1",
+  *       "isMixture": false,
+  *       "frequency": "2",
+  *       "days": "1",
+  *       "dosageGuid": "6ba79f15-01c3-4d43-a8de-c32430d2828e",
+  *       "frequencyGuid": "cfb7f9f3-3858-4b39-9f72-8cd95a5ce7a3",
+  *       "daysGuid": "559c8d0e-9d7a-4a11-bc9f-18f208e43683",
+  *       "quantity": "2.00",
+  *       "salePrice": 0,
+  *       "isSyrup": false,
+  *       "isAllergyDrug": false,
+  *       "volume": 0,
+  *       "bar": 0,
+  *       "unit": "Cap(s)",
+  *       "inTakeRemarkStr": [
+  *         "With Meal or Within 1 Hour after Meal"
+  *       ],
+  *       "cautionRemarkStr": [
+  *         "Antioxidant"
+  *       ],
+  *       "addPackageMixDetailItemList": []
+  *     },
+  *    原本就是藥水
+  {
+  "drugId": "fcbcc101-71f0-4cad-8047-061a3e31a35c",
+  "drugName": "ACTIFED SYRUP",
+  "dosage": "5ML",
+  "isMixture": false,
+  "frequency": "4",
+  "days": "3",
+  "dosageGuid": "13bb6287-6aa6-4283-912a-51a577c71588",
+  "frequencyGuid": "d1b48d9b-eaaf-48cd-982a-abd53a15d555",
+  "daysGuid": "23aa56c5-8358-4d78-ba45-819dfc2f072f",
+  "quantity": 3,//藥水的 容量=數量
+  "salePrice": 0.615,
+  "isSyrup": true,
+  "isAllergyDrug": false,
+  "volume": 3,//藥水的 容量=數量
+  "bar": 123,
+  "unit": "ml",
+  "inTakeRemarkStr": [],
+  "cautionRemarkStr": [
+  "For Runny and Stuffy Nose",
+  "May Cause Drowsiness"
+  ],
+  "addPackageMixDetailItemList": []
+  },
+  原本不是藥水,改成藥水,調此接口會報錯 400
+  {
+  "doctorGuid": "e6a18451-1b68-4e8e-89ad-ff23291790a2",
+  "packageName": "11111",
+  "addPrescriptionPackageAsyncRequestItemList": [
+  {
+  "drugId": "1c46f2d1-8455-49ef-9a20-f403d5bca8eb",
+  "drugName": "A SCABS LOTION 5%",
+  "dosage": "1",
+  "isMixture": false,
+  "frequency": "2",
+  "days": "1",
+  "dosageGuid": "6ba79f15-01c3-4d43-a8de-c32430d2828e",
+  "frequencyGuid": "cfb7f9f3-3858-4b39-9f72-8cd95a5ce7a3",
+  "daysGuid": "559c8d0e-9d7a-4a11-bc9f-18f208e43683",
+  "quantity": "3.00",
+  "salePrice": 0,
+  "isSyrup": true,
+  "isAllergyDrug": false,
+  "volume": "3.00",
+  "bar": "123.00",
+  "unit": "Cap(s)",
+  "inTakeRemarkStr": [
+  "With Meal or Within 1 Hour after Meal"
+  ],
+  "cautionRemarkStr": [
+  "Antioxidant"
+  ],
+  "addPackageMixDetailItemList": []
+  }
+  ]
+  },
+  原本是藥水,改成非藥水,不報錯
+  {
+  "drugId": "fcbcc101-71f0-4cad-8047-061a3e31a35c",
+  "drugName": "ACTIFED SYRUP",
+  "dosage": "5ML",
+  "isMixture": false,
+  "frequency": "4",
+  "days": "3",
+  "dosageGuid": "13bb6287-6aa6-4283-912a-51a577c71588",
+  "frequencyGuid": "d1b48d9b-eaaf-48cd-982a-abd53a15d555",
+  "daysGuid": "23aa56c5-8358-4d78-ba45-819dfc2f072f",
+  "quantity": "60.00",
+  "salePrice": 12.299999999999999,
+  "isSyrup": false,
+  "isAllergyDrug": false,
+  "volume": 0,
+  "bar": 0,
+  "unit": "ml",
+  "inTakeRemarkStr": [],
+  "cautionRemarkStr": [
+  "For Runny and Stuffy Nose",
+  "May Cause Drowsiness"
+  ],
+  "addPackageMixDetailItemList": []
+  }
+  *   ]
+  * }
+  * @param p
+  */
+ export const save_prescription_package = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/save-prescription-package';
+     console.log('api save_prescription_package url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api save_prescription_package body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('save_prescription_package response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('save_prescription_package json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data || true;
+     }
+     return null;
+   } catch (error) {
+     console.error('save_prescription_package error=', error);
+     return null;
+   }
+ };
+ 
+ export const scan_qrcode = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/encounter/scan-qrcode';
+     console.log('api scan_qrcode url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api scan_qrcode body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('scan_qrcode response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('scan_qrcode json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data || true;
+     }
+     return null;
+   } catch (error) {
+     console.error('scan_qrcode error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 混合药存储 ,
+  新增時 對應 AddMixtureMedicineAsync , 傳
+  {
+  "doctorGuid": "ca8743fa-deae-46e2-b821-192e43cb3f71",
+  "mixtureDrugName": "11111",
+  "dosage": "0.5-1",
+  "dosageGuid": "dcba445b-6c87-44e3-b392-f4cb86b7e71d",
+  "frequency": "2-3",
+  "frequencyGuid": "9663016a-f098-4c2f-9915-6e0e78dd29c8",
+  "days": "101",
+  "daysGuid": "65d84f02-97ef-4d9e-9aa4-83087ff65087",
+  "totalSalePrice": 0,
+  "totalCost": 0,
+  "volume": null,
+  "bar": null,
+  "isInjection": false,
+  "barGuid": "",
+  "unit": "",
+  "unitGuid": "",
+  "inTakeRemarkStr": [],
+  "cautionRemarkStr": [],
+  "historyUnitPrice": 0,
+  "historyUnitCost": 0,
+  "salePrice": 0,
+  "mixtureMedicineItemList": [
+  {
+  "barUnit": "",
+  "contain": "2",
+  "drugId": "1c46f2d1-8455-49ef-9a20-f403d5bca8eb",
+  "drugName": "A SCABS LOTION 5%",
+  "mlUnit": "",
+  "unit": "ML"
+  }
+  ]
+  }
+  * @param p
+  */
+ export const save_mixture_medicine = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/save-mixture-medicine';
+     console.log('api save_mixture_medicine url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api save_mixture_medicine body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('save_mixture_medicine response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('save_mixture_medicine json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data || true;
+     }
+     processJson(json, url);
+     return null;
+   } catch (error) {
+     console.error('save_mixture_medicine error=', error);
+     return null;
+   }
+ };
+ 
+ export const GetOptionSetting = async (language: string): Promise<IGetOptionSetting | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/Patient/GetOptionSetting';
+     console.log('api GetOptionSetting url=', url);
+     console.log('api GetOptionSetting language=', language);
+     let _language = language;
+     if (language === 'zh') {
+       _language = 'zh-CN';
+     } else if (language === 'zh_tw') {
+       _language = 'zh-HK';
+     }
+-    const params = {langEnv: _language};
++    const params = { langEnv: _language };
+     console.log('api GetOptionSetting params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+       .map((key) => key + '=' + encodeURIComponent(params[key]))
+       .join('&');
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api GetOptionSetting urlWithParams=', urlWithParams);
+     let response = await fetch(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+     });
+     console.log('api GetOptionSetting response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     }
+     let json = await response.json();
+     console.log('api GetOptionSetting json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return Promise.resolve(json.data);
+     }
+     return Promise.reject(null);
+   } catch (error) {
+     console.error('api GetOptionSetting error=', error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ export const update_medical_record = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/update-medical-record';
+     console.log('api update_medical_record url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api update_medical_record body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('update_medical_record response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('update_medical_record json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data || true;
+     }
+     processJson(json, url);
+     return null;
+   } catch (error) {
+     console.error('update_medical_record error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 删除一条 藥方記錄
+  * @param p :{
+  *  id: Consultation/QueryPage 返回的 prescriptionId
+  * }
+  */
+ export const delete_prescription_record = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/delete-prescription-record';
+     console.log('api delete_prescription_record url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api delete_prescription_record body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('delete_prescription_record response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('delete_prescription_record json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data || true;
+     }
+     return null;
+   } catch (error) {
+     console.error('delete_prescription_record error=', error);
+     return null;
+   }
+ };
+ 
+ export const delete_medical_record = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/delete-medical-record';
+     console.log('api delete_medical_record url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api delete_medical_record body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('delete_medical_record response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('delete_medical_record json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data || true;
+     }
+     return null;
+   } catch (error) {
+     console.error('delete_medical_record error=', error);
+     return null;
+   }
+ };
+ 
+ export const ForgotPasswordValid = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Account/ForgotPasswordValid';
+     console.log('api ForgotPasswordValid url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api ForgotPasswordValid body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('ForgotPasswordValid response=', response);
+     // 获取从服务器响应中的Set-Cookie头部,debugger模式下,在response.headers中没有set-cookie,只能关了debug在终端查看
+     const setCookieHeader = response.headers.get('set-cookie');
+     console.log('api ForgotPasswordValid setCookieHeader=', setCookieHeader);
+     if (setCookieHeader) {
+       // 在这里，你需要自己实现一个函数来保存cookie到某处，例如AsyncStorage
+       // await storage.setItem(storage.csxMobileCachekeys.cookie, setCookieHeader);
+       global.cookie = setCookieHeader; // 关闭chrome 调试 才有cookie
+     }
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api ForgotPasswordValid json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data || true;
+     }
+     return null;
+   } catch (error) {
+     console.error('api ForgotPasswordValid error=', error);
+     return null;
+   }
+ };
+ 
+ export const getBanner = async () => {
+   try {
+     const url = constant.API_BASE_URL + '/Overview/query-marketing';
+     console.log('api getBanner url=', url);
+     const params = {};
+     console.log('api getBanner params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+       .map((key) => key + '=' + encodeURIComponent(params[key]))
+       .join('&');
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api getBanner urlWithParams=', urlWithParams);
+     let response = await fetch(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+     });
+     console.log('api getBanner response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api getBanner json=', json);
+     if (json && json.csxAdvertising) {
+       return json.csxAdvertising;
+     }
+     return null;
+   } catch (error) {
+     console.error('getBanner error=', error);
+     return null;
+   }
+ };
+ 
+ export const getGuideBanner = async () => {
+   try {
+     let response = await fetch(constant.API_BASE_BANNERS_URL, {
+       method: 'GET', // 指定请求方法
+       headers: {
+         'Cache-Control': 'no-cache', // 這裡的Header是防止某些瀏覽器可能會緩存請求
+       },
+       // body: JSON.stringify(body),
+     });
+     console.log('api get Guide Banner response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api get Guide Banner json=', json);
+     if (json) {
+       return !global.isTablet ? json.csmAdvertising || null : json.csmAdvertisingTablet || null;
+     }
+     return null;
+   } catch (error) {
+     console.error('get Guide Banner error=', error);
+     return null;
+   }
+ };
+ 
+ export const CheckHaveDoctor = async (docotrId: string) => {
+   try {
+     //api/Doctor/CheckHaveDoctor/{docotrId}
+     const url = constant.API_BASE_URL + `/Doctor/CheckHaveDoctor/${docotrId}`;
+     console.log('api CheckHaveDoctor url=', url);
+     const params = {};
+     console.log('api CheckHaveDoctor params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+       .map((key) => key + '=' + encodeURIComponent(params[key]))
+       .join('&');
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api CheckHaveDoctor urlWithParams=', urlWithParams);
+     let response = await fetch(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+     });
+     console.log('CheckHaveDoctor response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('CheckHaveDoctor json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('CheckHaveDoctor error=', error);
+     return null;
+   }
+ };
+ 
+ export const data_record_sharing_list_clinics = async (p): Promise<Data_record_sharing_list_clinics[] | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/ehr/data-record-sharing/v1/list-clinics';
+     console.log('api data_record_sharing_list_clinics url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api data_record_sharing_list_clinics body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('data_record_sharing_list_clinics response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     }
+     let json = await response.json();
+     console.log('api data_record_sharing_list_clinics json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return Promise.resolve(json.data);
+     }
+     return Promise.reject(null);
+   } catch (error) {
+     console.error('api data_record_sharing_list_clinics error=', error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ export const data_record_sharing_histories = async (p): Promise<Data | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/ehr/data-record-sharing/v1/histories';
+     console.log('api data_record_sharing_histories url=', url);
+-    const body = {...p, sorts: null, order: 'ASC'};
++    const body = { ...p, sorts: null, order: 'ASC' };
+     console.log('api data_record_sharing_histories body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('data_record_sharing_histories response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     }
+     let json = await response.json();
+     console.log('api data_record_sharing_histories json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return Promise.resolve(json.data);
+     }
+     return Promise.reject(null);
+   } catch (error) {
+     console.error('api data_record_sharing_histories error=', error);
+     return Promise.reject(null);
+   }
+ };
+ 
+ export const data_record_sharing_details = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/ehr/data-record-sharing/v1/details';
+     console.log('api data_record_sharing_details url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api data_record_sharing_details body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('data_record_sharing_details response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api data_record_sharing_details json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('api data_record_sharing_details error=', error);
+     return null;
+   }
+ };
+ /**
+  * 混合藥 詳情 ,對應 GetMixtureMedicineDetailByMixtureGuidAsync
+  * @param p
+  */
+ export const get_mixture_medicine = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/get-mixture-medicine';
+     console.log('api get_mixture_medicine url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api get_mixture_medicine body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('get_mixture_medicine response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api get_mixture_medicine json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('api get_mixture_medicine error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 获取药水默认容量 ,對應 csx 的  GetSyrupDrugUsageByConditionAsync
+  * @param p
+  */
+ export const get_syrup_drug_usage_by_condition = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/get-syrup-drug-usage-by-condition';
+     console.log('api get_syrup_drug_usage_by_condition url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api get_syrup_drug_usage_by_condition body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('get_syrup_drug_usage_by_condition response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api get_syrup_drug_usage_by_condition json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('api get_syrup_drug_usage_by_condition error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 设置药水默认容量 和单位默认值
+  * @param p
+  */
+ export const add_syrup_drug_usage = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/prescription/add-syrup-drug-usage';
+     console.log('api add_syrup_drug_usage url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api add_syrup_drug_usage body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('add_syrup_drug_usage response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api add_syrup_drug_usage json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('api add_syrup_drug_usage error=', error);
+     return null;
+   }
+ };
+ /**
+  * 獲取診所一共有哪些健康數據, CSX里 首页->管理设定->设定健康数据 页面的所有选项数据
+  * @param p
+  */
+ export const health_data_settings = async (p: { preset: number }): Promise<health_data_settings_data[] | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/health-data/setting/v2/items';
+     console.log('api health_data_settings url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api health_data_settings body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('health_data_settings response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api health_data_settings json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('api health_data_settings error=', error);
+     return null;
+   }
+ };
+ //診所健康數據哪些字段需要顯示: CSX里 首页->管理设定->设定健康数据 页面的所有已勾选的选项数据的id
+ export const health_data_setting_v1_clinic_get = async (p: { clinicCode: string }): Promise<health_data_setting_v1_clinic_get_data | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/health-data/setting/v2/clinic/get';
+     console.log('api health_data_setting_v1_clinic_get url=', url);
+-    const body = {...p, preset: 2};
++    const body = { ...p, preset: 2 };
+     console.log('api health_data_setting_v1_clinic_get body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api health_data_setting_v1_clinic_get response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api health_data_setting_v1_clinic_get json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('api health_data_setting_v1_clinic_get error=', error);
+     return null;
+   }
+ };
+ export const configurations = async () => {
+   try {
+     const url = constant.API_BASE_URL + `/app/v1/configurations`;
+     console.log('api configurations url=', url);
+     const params = {};
+     console.log('api configurations params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+       .map((key) => key + '=' + encodeURIComponent(params[key]))
+       .join('&');
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api configurations urlWithParams=', urlWithParams);
+     let response = await fetch(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+     });
+     console.log('configurations response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('configurations json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('configurations error=', error);
+     return null;
+   }
+ };
+ export const sign_out = async (curAccount, navigation, dispatch) => {
+   try {
+     await unregister_client();
+     const url = constant.API_BASE_URL + '/Account/sign-out';
+     console.log('api sign_out url=', url);
+     const body = {};
+     console.log('api sign_out body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('sign_out response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api sign_out json=', json);
+     if (json.code === 0 || json.code === 200) {
+       routes.reset(navigation, routes.LoginPage.routeName, {
+         pageData: {
+           type: 0,
+           // username: curAccount?.username,//https://app.clickup.com/t/8553538/TECH-7706?comment=90180202782227
+           skipBioMetric: false,//https://app.clickup.com/t/8553538/TECH-7759?comment=90180202545128
+         },
+       });
+       storage.clearCsxMobileStorage(dispatch, curAccount?.username, curAccount?.InstallationID, true);
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('api sign_out error=', error);
+     return null;
+   }
+ };
+ //發送賬單
+ export const updateConsultation = async (input: string) => {
+   try {
+     const url = constant.API_BASE_HEALS_CORE_URL + '/updateConsultation';
+     console.log('api updateConsultation url=', url);
+-    const body = {input};
++    const body = { input };
+     console.log('api updateConsultation body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('updateConsultation response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api updateConsultation json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('api updateConsultation error=', error);
+     return null;
+   }
+ };
+ //帳單記錄
+ export const billingsList = async (patientCode: string, pageIndex: number, pageSize: number): Promise<BillingData[] | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/billings/v1/list';
+     console.log('api billingsList url=', url);
+-    const body = {patientCode, pageIndex, pageSize};
++    const body = { patientCode, pageIndex, pageSize };
+     console.log('api billingsList body=', body);
+     const response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api billingsList response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     }
+     const json = await response.json();
+     console.log('api billingsList json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return Promise.resolve(json.data.items as BillingData[]);
+     }
+     return Promise.reject(null);
+   } catch (error) {
+     console.error('api billingsList error=', error);
+     return Promise.reject(null);
+   }
+ };
+ /**
+  * 發送賬單
+  * @param appointmentId
+  * @param diagnosisJsonAsString : Consultation/QueryPage  接口返回的
+  * diagnosisJson
+  * @param currencyCode
+  * @param expenseItems :
+  [
+  {
+  "benefitId":"HP-CONSULTATION",  //诊断费，补上对应金额
+  "itemCode":"CON101-HP",
+  "name":"CON101-HP",
+  "IncurredAmount": 300 // 可以传string類型,如 '1.23'，但是里面不能有字母之类的字符
+  },
+  {
+  "benefitId":"HP-MEDICATION",  // 治疗费（药费）
+  "itemCode":"MED101-HP",
+  "name":"MED101-HP",
+  "IncurredAmount": 200 //
+  },
+  {
+  "benefitId":null,
+  "itemCode":"OTH101-HP", // 快递费
+  "name":"OTH101-HP",
+  "IncurredAmount": 100 //
+  }
+  ]
+  */
+-export const send_bill_to_pay = async ({appointmentId, diagnosisJsonAsString, currencyCode, expenseItems}) => {
++export const send_bill_to_pay = async ({ appointmentId, diagnosisJsonAsString, currencyCode, expenseItems }) => {
+   try {
+     const url = constant.API_BASE_URL + '/Bill/send-bill-to-pay';
+     console.log('api send_bill_to_pay url=', url);
+-    const body = {appointmentId, diagnosisJsonAsString, currencyCode, expenseItems};
++    const body = { appointmentId, diagnosisJsonAsString, currencyCode, expenseItems };
+     console.log('api send_bill_to_pay body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('send_bill_to_pay response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api send_bill_to_pay json=', json);
+     if (
+       json.code ===
+       200 /*只有200才是發送賬單成功*/ /*|| json.status == 'WAIT_PAYMENT'Wait-payment是发送账单失败，不是成功，因为已经发送过了*/
+     ) {
+       return true;
+     }
+     if (json.status && json.status !== 'BAD_REQUST') {
+       emitEvent(globalEventName.showCommonAlertModal, {
+         commonAlertModalTitle: global.i18n.t('prompt'),
+         commonAlertModalContent:
+           json.status == 'WAIT_PAYMENT'
+             ? global.i18n.t('Waiting_patient_payment')
+             : global.i18n.t('Missing_diagnostic'),
+         commonAlertModalCancelTxt: global.i18n.t('cancel'),
+       });
+     } else {
+       if (json.message == 'The payment amount must be greater than 0.') {
+         emitEvent(globalEventName.showCommonAlertModal, {
+           commonAlertModalTitle: global.i18n.t('prompt'),
+           commonAlertModalContent: global.i18n.t('The_payment_amount_must_be_greater_than_0'),
+           commonAlertModalCancelTxt: global.i18n.t('cancel'),
+         });
+       } else {
+         emitEvent(globalEventName.showCommonAlertModal, {
+           commonAlertModalTitle: global.i18n.t('prompt'),
+           commonAlertModalContent: json.message,
+           commonAlertModalCancelTxt: global.i18n.t('cancel'),
+         });
+       }
+     }
+     return null;
+   } catch (error) {
+     console.error('api send_bill_to_pay error=', error);
+     return null;
+   }
+ };
+ 
+ export const check_transaction_status = async (ticketId: string) => {
+   try {
+     const url = constant.API_BASE_URL + `/Bill/check-transaction-status`;
+     console.log('api configurations url=', url);
+-    const params = {ticketId};
++    const params = { ticketId };
+     console.log('api check_transaction_status params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+       .map((key) => key + '=' + encodeURIComponent(params[key]))
+       .join('&');
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api check_transaction_status urlWithParams=', urlWithParams);
+     let response = await fetch(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+     });
+     console.log('check_transaction_status response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('check_transaction_status json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('configurations error=', error);
+     return null;
+   }
+ };
+ 
+ export const get_sent_bill_by_ticketid = async (ticketId: string) => {
+   try {
+     const url = constant.API_BASE_URL + `/Bill/get-sent-bill-by-ticketid`;
+     console.log('api get_sent_bill_by_ticketid url=', url);
+-    const params = {ticketId};
++    const params = { ticketId };
+     console.log('api get_sent_bill_by_ticketid params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+       .map((key) => key + '=' + encodeURIComponent(params[key]))
+       .join('&');
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api get_sent_bill_by_ticketid urlWithParams=', urlWithParams);
+     let response = await fetch(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+     });
+     console.log('get_sent_bill_by_ticketid response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('get_sent_bill_by_ticketid json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('get_sent_bill_by_ticketid error=', error);
+     return null;
+   }
+ };
+ 
+ export const finish_queued_appointment = async (appointmentId: string) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/encounter/finish-queued-appointment';
+     console.log('api finish_queued_appointment url=', url);
+-    const body = {id: appointmentId};
++    const body = { id: appointmentId };
+     console.log('api finish_queued_appointment body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('finish_queued_appointment response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api finish_queued_appointment json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     let str = '';
+     if (json.message == 'Can not finish non queued appointment.') {
+       str = global.i18n.t('Can not finish non queued appointment');
+     } else if (json.message == 'Appointment does not exits.') {
+       str = global.i18n.t('Appointment does not exits');
+     }
+     if (Platform.OS === 'android') {
+       Alert.alert('', str, [
+         {
+           text: global.i18n.t('good'),
+         },
+       ]);
+     } else {
+       setTimeout(() => {
+         Alert.alert('', str, [
+           {
+             text: global.i18n.t('good'),
+           },
+         ]);
+       }, 300);
+     }
+     return null;
+   } catch (error) {
+     console.error('api finish_queued_appointment error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 是否有 需要签署的 使用條款
+  *  return null 代表没有需要签署的 使用條款
+  *  return {
+  *      url:'/agreement?id=8686dd24-909c-4e38-9b5c-499f774a8400&signature=El8avntIVvTWSD7w71AbZw%3d%3d',id:'8686dd24-909c-4e38-9b5c-499f774a8400'
+  *  }
+  */
+ export const last_unsigned = async () => {
+   try {
+     const url = constant.API_BASE_URL + '/agreements/v1/last-unsigned';
+     console.log('api last_unsigned url=', url);
+     const body = {};
+     console.log('api last_unsigned body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('last_unsigned response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api last_unsigned json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('api last_unsigned error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 接受 使用條款
+  api agreements_sign json= {"code": 200, "data": {"agreementId": "8686dd24-909c-4e38-9b5c-499f774a8400", "id": null, "userId": "8429a089-f4cc-423d-88fc-c3750a0a1c02"}, "message": "", "status": "200", "success": true}
+  */
+ export const agreements_sign = async (agreementId: string) => {
+   try {
+     const url = constant.API_BASE_URL + '/agreements/v1/sign';
+     console.log('api agreements_sign url=', url);
+-    const body = {agreementId};
++    const body = { agreementId };
+     console.log('api agreements_sign body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('agreements_sign response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api agreements_sign json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('api agreements_sign error=', error);
+     return null;
+   }
+ };
+ 
+ export const setup_user_data = async () => {
+   try {
+     const url = constant.API_BASE_URL + '/Account/setup-user-data';
+     console.log('api setup_user_data url=', url);
+     const body = {};
+     console.log('api setup_user_data body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     // console.log('setup_user_data response=', response)
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api setup_user_data json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('api setup_user_data error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 判斷能否 進 忘記密碼 頁面; 成功後不僅返回 手機號, 手機還會收到短信驗證碼,用於 忘記密碼頁面的 輸入;
+  * @param installationId
+  * @param userName
+  */
+ export const send_otp_for_forgot_password = async (installationId: string, userName: string) => {
+   try {
+     const url = constant.API_BASE_URL + '/Account/send-otp-for-forgot-password';
+     console.log('api send_otp_for_forgot_password url=', url);
+-    const body = {installationId, userName};
++    const body = { installationId, userName };
+     console.log('api send_otp_for_forgot_password body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('send_otp_for_forgot_password response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api send_otp_for_forgot_password json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('api send_otp_for_forgot_password error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * 获取病人健康问卷
+  * @param appointmentId
+  */
+ export const health_questions = async (p) => {
+   try {
+     const url = constant.API_BASE_URL + '/Consultation/GetTicketQuestionnaireResponse';
+     console.log('api health_questions url=', url);
+-    const body = {...p};
++    const body = { ...p };
+     console.log('api health_questions body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api health_questions response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api health_questions json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('health_questions error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * add 轉診信
+  * https://healshealthcare.postman.co/workspace/My-Workspace~a28b0d05-c36a-4097-866e-b4bfc70e186a/example/18903114-5295fba3-0f9a-408b-ad70-5bc9ccc14c29
+  */
+ export const add_patient_document = async (
+   consultationId: string,
+   patientId: string,
+   date: string,
+   categoryId: string,
+   title: string,
+   text: string,
+   clinicId: string,
+   doctorId: string
+ ) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/add-patient-document';
+     console.log('api add_patient_document url=', url);
+     const body = {
+       consultationId,
+       patientId,
+       clinicId,
+       doctorId,
+       date,
+       categoryId,
+       content: {
+         title,
+         text,
+       },
+     };
+     console.log('api add_patient_document body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('add_patient_document response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api add_patient_document json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('api add_patient_document error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  * add 醫療證明
+  * @param consultationId
+  * @param patientId
+  * @param date 簽發日期
+  * @param categoryId
+  * @param title
+  * @param content
+  * @param clinicId
+  * @param doctorId
+  */
+ export const add_patient_sickLeave = async (
+   consultationId: string,
+   patientId: string,
+   clinicId: string,
+   doctorId: string,
+   date: string,
+   categoryId: string,
+   sickLeaveContent: SickLeaveContent
+ ) => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/consultation/add-patient-document';
+     console.log('api add_patient_sickLeave url=', url);
+     const body = {
+       consultationId,
+       patientId,
+       clinicId,
+       doctorId,
+       date,
+       categoryId,
+       content: sickLeaveContent,
+     };
+     console.log('api add_patient_sickLeave body=', body);
+     let response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('add_patient_sickLeave response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api add_patient_sickLeave json=', json);
+     if (json.code === 0 || json.code === 200) {
+-      return {...json.data, success: true};
++      return { ...json.data, success: true };
+     }
+     return json;
+   } catch (error) {
+     console.error('api add_patient_sickLeave error=', error);
+     return null;
+   }
+ };
+ 
+ export const get_PDF = async (id: string) => {
+   try {
+     const url = constant.API_BASE_HOST_URL + `/files/attachment/base64/` + id;
+     console.log('api get_PDF url=', url);
+     const params = {};
+     console.log('api get_PDF params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+       .map((key) => key + '=' + encodeURIComponent(params[key]))
+       .join('&');
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api get_PDF urlWithParams=', urlWithParams);
+     let response = await fetch(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+     });
+     console.log('get_PDF response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('get_PDF json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('get_PDF error=', error);
+     return null;
+   }
+ };
+ 
+ export const list_payor = async (): Promise<List_payor[] | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/csx/healsCore/list-payor';
+     console.log('api list_payor url=', url);
+     const body = {};
+     console.log('api list_payor body=', body);
+     let response = await fetch(url, {
+       method: 'POST',
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api list_payor response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api list_payor json=', json);
+     if (json.code === 0 || json.code === 200) {
+       global.list_payor = json.data;
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('api list_payor error=', error);
+     return null;
+   }
+ };
+ 
+ export const loginFromQRCodeAsync = async (qrCode: string): Promise<LoginFromQRCodeData | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/Account/loginFromQRCodeAsync';
+     console.log('api loginFromQRCodeAsync url=', url);
+-    const body = {qrCode};
++    const body = { qrCode };
+     console.log('api loginFromQRCodeAsync body=', body);
+     let response = await fetch(url, {
+       method: 'POST',
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api loginFromQRCodeAsync response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     }
+     // 获取从服务器响应中的Set-Cookie头部,debugger模式下,在response.headers中没有set-cookie,只能关了debug在终端查看
+     const setCookieHeader = response.headers.get('set-cookie');
+     console.log('api loginFromQRCodeAsync setCookieHeader=', setCookieHeader);
+     if (setCookieHeader) {
+       global.cookie = setCookieHeader; // 关闭chrome 调试 才有cookie
+     }
+     let json = await response.json();
+     console.log('api loginFromQRCodeAsync json=', json);
+     if (json.code === 0 || json.code === 200) {
+       global.curClinicData = null;
+       global.curDoctorData = null;
+       return Promise.resolve(json.data);
+     }
+     return Promise.reject(json.message);
+     ;
+   } catch (error) {
+     console.error('api loginFromQRCodeAsync error=', error);
+     return Promise.reject(null);
+     ;
+   }
+ };
+ 
+ export const SendBindPhoneVerificationCode = async (areaCode: string, phoneNumber: string): Promise<any | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/Account/SendBindPhoneVerificationCode';
+     logUtils.addLog('info', `api SendBindPhoneVerificationCode url=`, '', url);
+     console.log('api SendBindPhoneVerificationCode url=', url);
+-    const body = {areaCode, phoneNumber};
++    const body = { areaCode, phoneNumber };
+     console.log('api SendBindPhoneVerificationCode body=', body);
+     logUtils.addLog('info', `api SendBindPhoneVerificationCode body=`, '', body);
+     let response = await fetch(url, {
+       method: 'POST',
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api SendBindPhoneVerificationCode response=', response);
+     logUtils.addLog('info', `api SendBindPhoneVerificationCode response=`, '', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api SendBindPhoneVerificationCode json=', json);
+     logUtils.addLog('info', `api SendBindPhoneVerificationCode json=`, '', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     processJson(json, url);
+     return null;
+   } catch (error) {
+     console.error('api SendBindPhoneVerificationCode error=', error);
+     logUtils.addLog('info', `api SendBindPhoneVerificationCode error=`, '', error);
+     return null;
+   }
+ };
+ 
+ 
+ export const BindPhoneNumber = async (verificationCode: string): Promise<any | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/Account/BindPhoneNumber';
+     console.log('api BindPhoneNumber url=', url);
+-    const body = {verificationCode};
++    const body = { verificationCode };
+     console.log('api BindPhoneNumber body=', body);
+     let response = await fetch(url, {
+       method: 'POST',
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api BindPhoneNumber response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api BindPhoneNumber json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     processJson(json, url);
+     return null;
+   } catch (error) {
+     console.error('api BindPhoneNumber error=', error);
+     return null;
+   }
+ };
+ 
+ 
+ /*
+ Confirm时是没有校验的，但是如果这里给的值不对，后面验证时就用不了
+  */
+ export const trusted_devices_confirm = async (p: {
+   "trustedDeviceRequestId": string,
+   "verificationCode": string,
+   "deviceId": string,
+   "deviceModel": string,
+   "deviceOS": string,
+   "deviceFingerprint": string,
+   // "trustLevel": 0,
+   "publicKey": string,
+   deviceFingerprintPlaintext: string,
+   username: string
+ }): Promise<any | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/trusted-devices/v1/confirm';
+     console.log('api trusted_devices_confirm url=', url);
+     logUtils.addLog('info', 'api trusted_devices_confirm url=', '', url);
+     const body = p;
+     console.log('api trusted_devices_confirm body=', body);
+     logUtils.addLog('info', 'api trusted_devices_confirm url=', '', body);
+     let response = await fetch(url, {
+       method: 'POST',
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api trusted_devices_confirm response=', response);
+     logUtils.addLog('info', 'api trusted_devices_confirm response=', '', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api trusted_devices_confirm json=', json);
+     logUtils.addLog('info', 'api trusted_devices_confirm json=', '', json);
+     if (json.code === 0 || json.code === 200) {
+       await storage.setItem(`${storage.csxMobileCachekeys.trusted_devices_confirm_api_cache}|${p.username}`, json.data);
+       return json.data;
+     }
+     processJson(json, url);
+     return null;
+   } catch (error) {
+     console.error('api trusted_devices_confirm error=', error);
+     return null;
+   }
+ };
+ 
+ /**
+  *
+  * @param p
+  */
+ export const trusted_devices_remove = async (p: {
+   trustedDeviceRequestId: string,
+   verificationCode: string,
+   username: string
+ }): Promise<any | null> => {
+   try {
+     const privateKey = await storage.getItem(`${storage.csxMobileCachekeys.trusted_devices_privateKey}|${p.username}`);
+     console.log('api trusted_devices_remove privateKey=', privateKey);
+     const BearerTKey = 'plainText';
+     console.log('trusted_devices_remove BearerTKey=', BearerTKey);
+     //signature 使用RSA的私钥对 plainTextForSigning 进行签名
+     const signature = getSHA256withRSA(BearerTKey, privateKey)
+     const url = constant.API_BASE_URL + '/trusted-devices/v1/remove';
+     console.log('api trusted_devices_remove url=', url);
+     logUtils.addLog('info', 'api trusted_devices_remove url=', '', url);
+     const trusted_devices_confirm_api_cache = await storage.getItem(`${storage.csxMobileCachekeys.trusted_devices_confirm_api_cache}|${p.username}`, true);
+     console.log('api trusted_devices_remove trusted_devices_confirm_api_cache=', trusted_devices_confirm_api_cache);
+     logUtils.addLog('info', 'api trusted_devices_remove trusted_devices_confirm_api_cache=', '', url);
+     if (!trusted_devices_confirm_api_cache) {
+       return null
+     }
+     //data 使用RSA的公钥对 字符串 `v1|serverSecret|verificationCode` 进行加密,ServerSecret 是confirm接口返回的数据,VerificationCode 是csm会收到的push消息里的数据
+     const data = encryptWithPublicKeyPKCS1(trusted_devices_confirm_api_cache.publicKey, `v1|${trusted_devices_confirm_api_cache.serverSecret}|${p.verificationCode}`);
+     // Add padding parameter to match server-side expectation (default "Pkcs1")
+-    const body = {...p, plainTextForSigning: BearerTKey, signature, data, padding: "Pkcs1"};
++    const body = { ...p, plainTextForSigning: BearerTKey, signature, data, padding: "Pkcs1" };
+     console.log('api trusted_devices_remove body=', body);
+     logUtils.addLog('info', 'api trusted_devices_remove body=', '', body);
+     const _headers = headers()
+     logUtils.addLog('info', 'api trusted_devices_remove _headers=', '', _headers);
+     let response = await fetch(url, {
+       method: 'POST',
+       headers: _headers,
+       body: JSON.stringify(body),
+     });
+     console.log('api trusted_devices_remove response=', response);
+     logUtils.addLog('info', 'api trusted_devices_remove response=', '', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api trusted_devices_remove json=', json);
+     logUtils.addLog('info', 'api trusted_devices_remove json=', '', json);
+     if (json.code === 0 || json.code === 200) {
+       return json;
+     }
+     processJson(json, url);
+     return null;
+   } catch (error) {
+     console.error('api trusted_devices_remove error=', error);
+     logUtils.addLog('info', 'api trusted_devices_remove error=', '', error);
+     // processJson(json, url);
+     return null;
+   }
+ };
+ 
+ export const trusted_devices_reject = async (p: {
+   trustedDeviceRequestId: string,
+   verificationCode: string,
+   deviceId: string
+ }): Promise<any | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/trusted-devices/v1/reject';
+     console.log('api trusted_devices_reject url=', url);
+     logUtils.addLog('info', 'api trusted_devices_reject url=', '', url);
+     const body = p;
+     console.log('api trusted_devices_reject body=', body);
+     logUtils.addLog('info', 'api trusted_devices_reject body=', '', body);
+     let response = await fetch(url, {
+       method: 'POST',
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api trusted_devices_reject response=', response);
+     logUtils.addLog('info', 'api trusted_devices_reject response=', '', response);
+ 
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api trusted_devices_reject json=', json);
+     logUtils.addLog('info', 'api trusted_devices_reject json=', '', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     processJson(json, url);
+     return null;
+   } catch (error) {
+     console.error('api trusted_devices_reject error=', error);
+     // processJson(json, url);
+     return null;
+   }
+ };
+ 
+ 
+ export const trusted_devices_apply = async (p:
+-                                            {
+-                                              "deviceId": string,
+-                                              "deviceModel": string,
+-                                              "deviceOS": string,
+-                                              "deviceFingerprint": string,
+-                                              "publicKey": string,
+-                                              deviceFingerprintPlaintext: string
+-                                            }): Promise<any | null> => {
++  {
++    "deviceId": string,
++    "deviceModel": string,
++    "deviceOS": string,
++    "deviceFingerprint": string,
++    "publicKey": string,
++    deviceFingerprintPlaintext: string
++  }): Promise<any | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/trusted-devices/v1/apply';
+     console.log('api trusted_devices_apply url=', url);
+     const body = p;
+     console.log('api trusted_devices_apply body=', body);
+     let response = await fetch(url, {
+       method: 'POST',
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api trusted_devices_apply response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api trusted_devices_apply json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     processJson(json, url);
+     return null;
+   } catch (error) {
+     console.error('api trusted_devices_apply error=', error);
+     return null;
+   }
+ };
+ 
+ export const trusted_devices_fingerprint = async (p:
+-                                                  {
+-                                                    "trustedDeviceRequestId": string,
+-                                                    "deviceFingerprint": string,
+-                                                    deviceFingerprintPlaintext: string,
+-                                                    username: string
+-                                                  }): Promise<any | null> => {
++  {
++    "trustedDeviceRequestId": string,
++    "deviceFingerprint": string,
++    deviceFingerprintPlaintext: string,
++    username: string
++  }): Promise<any | null> => {
+   try {
+     const privateKey = await storage.getItem(`${storage.csxMobileCachekeys.trusted_devices_privateKey}|${p.username}`);
+     console.log('api trusted_devices_fingerprint privateKey=', privateKey);
+     const BearerTKey = 'plainText';
+     console.log('trusted_devices_fingerprint BearerTKey=', BearerTKey);
+     //signature 使用RSA的私钥对 plainTextForSigning 进行签名
+     const signature = getSHA256withRSA(BearerTKey, privateKey)
+     const url = constant.API_BASE_URL + '/trusted-devices/v1/fingerprint';
+     console.log('api trusted_devices_fingerprint url=', url);
+     logUtils.addLog('info', `api trusted_devices_fingerprint url=`, '', url);
+     const trusted_devices_confirm_api_cache = await storage.getItem(`${storage.csxMobileCachekeys.trusted_devices_confirm_api_cache}|${p.username}`, true);
+     console.log('api trusted_devices_remove trusted_devices_confirm_api_cache=', trusted_devices_confirm_api_cache);
+     if (!trusted_devices_confirm_api_cache) {
+       return null
+     }
+     //data 使用 confirm接口返回 的publicKey对 字符串 `v1|serverSecret|deviceFingerprint` 进行  (RSA padding: "Pkcs1")加密,ServerSecret 是confirm接口返回的数据
+     const data = encryptWithPublicKeyPKCS1(trusted_devices_confirm_api_cache.publicKey, `v1|${trusted_devices_confirm_api_cache.serverSecret}|${p.deviceFingerprint}`);
+     // Add padding parameter to match server-side expectation (default "Pkcs1")
+-    const body = {...p, plainTextForSigning: BearerTKey, signature, data, padding: "Pkcs1"};
++    const body = { ...p, plainTextForSigning: BearerTKey, signature, data, padding: "Pkcs1" };
+     console.log('api trusted_devices_fingerprint body=', body);
+     logUtils.addLog('info', `api trusted_devices_fingerprint body=`, '', body);
+     let response = await fetch(url, {
+       method: 'POST',
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api trusted_devices_fingerprint response=', response);
+     logUtils.addLog('info', `api trusted_devices_fingerprint response=`, '', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api trusted_devices_fingerprint json=', json);
+     logUtils.addLog('info', `api trusted_devices_fingerprint json=`, '', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     processJson(json, url);
+     return null;
+   } catch (error) {
+     console.error('api trusted_devices_fingerprint error=', error);
+     return null;
+   }
+ };
+ 
+ export const QueryPhoneBindStatus = async () => {
+   try {
+     const url = constant.API_BASE_URL + `/Account/QueryPhoneBindStatus`;
+     console.log('api QueryPhoneBindStatus url=', url);
+     const params = {};
+     console.log('api QueryPhoneBindStatus params=', params);
+     // 将参数转换为URL的查询字符串
+     const queryString = Object.keys(params)
+       .map((key) => key + '=' + encodeURIComponent(params[key]))
+       .join('&');
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api QueryPhoneBindStatus urlWithParams=', urlWithParams);
+     let response = await fetch(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+     });
+     console.log('api QueryPhoneBindStatus response=', response);
+     if (!response.ok) {
+       return null;
+     }
+     let json = await response.json();
+     console.log('api QueryPhoneBindStatus get_PDF json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return json.data;
+     }
+     return null;
+   } catch (error) {
+     console.error('api QueryPhoneBindStatus  error=', error);
+     return null;
+   }
+ };
+ 
+ export const trusted_devices_check = async (p:
+-                                            {
+-                                              deviceFingerprintPlaintext: string,
+-                                              "deviceFingerprint": string,
+-                                              deviceId: string,
+-                                            }): Promise<any | null> => {
++  {
++    deviceFingerprintPlaintext: string,
++    "deviceFingerprint": string,
++    deviceId: string,
++  }): Promise<any | null> => {
+   try {
+     const url = constant.API_BASE_URL + '/trusted-devices/v1/check';
+     console.log('api trusted_devices_check url=', url);
+     logUtils.addLog('info', `api trusted_devices_check url=`, '', url);
+     const body = p;
+     console.log('api trusted_devices_check body=', body);
+     logUtils.addLog('info', `api trusted_devices_check body=`, '', body);
+     let response = await fetch(url, {
+       method: 'POST',
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api trusted_devices_check response=', response);
+     logUtils.addLog('info', `api trusted_devices_check response=`, '', response);
+     if (!response.ok) {
+       return Promise.resolve(false);
+     }
+     let json = await response.json();
+     console.log('api trusted_devices_check json=', json);
+     logUtils.addLog('info', `api trusted_devices_check json=`, '', json);
+     if (json.code === 0 || json.code === 200) {
+       return Promise.resolve(json.data);
+     } else if (json.code === 500 && !json.success && !json.data) {//当前账号未绑定任何可信设备
+       return Promise.resolve(true);
+     }
+     // processJson(json, url);
+     return Promise.resolve(false);
+   } catch (error) {
+     console.error('api trusted_devices_check error=', error);
+     return Promise.resolve(false);
+   }
+ };
+ 
+ export const getUserPermission = async () => {
+   try {
+     const url = constant.API_BASE_URL + '/Account/GetUserPermission';
+ 
+     let response = await fetch(url, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+     });
+     console.log('api getUserPermission response=', response);
+     if (!response.ok) {
+     } else {
+       let json = await response.json();
+       console.log('api getUserPermission json=', json);
+       if (json.code === 200) {
+         return json.data;
+       } else {
+         return null;
+       }
+     }
+   } catch (error) {
+     console.log('api getUserPermission error=', error);
+   }
+ };
+ 
+ export const refresh_login_info = async (): Promise<Account | null | undefined> => {
+   try {
+     const url = constant.API_BASE_URL + '/Account/RefreshLoginInfo';
+     console.log('api refresh_login_info url=', url);
+     const body = {};
+     console.log('api refresh_login_info body=', body);
+     const response = await fetch(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+     });
+     console.log('api refresh_login_info response=', response);
+     if (!response.ok) {
+       return Promise.reject(null);
+     }
+     const json = await response.json();
+     console.log('api refresh_login_info json=', json);
+     if (json.code === 0 || json.code === 200) {
+       return Promise.resolve(json.data);
+     }
+     return Promise.reject(null);
+   } catch (error) {
+     console.error('api refresh_login_info error=', error);
+     return Promise.reject(null);
+   }
+-};
+\ No newline at end of file
++};
++
++
++export const getOccupiedTime = async (p: {
++  clinicId: string,
++  doctorId: string,
++  appointmentDate: string,
++  year: number,
++  showWeeklyData: boolean,
++}): Promise<OccupiedTimeResponse | null> => {
++  try {
++    const url = constant.API_BASE_URL + '/csx/appointment/occupied_time';
++
++    console.log('api getOccupiedTime url=', url);
++
++    const body = p;
++    let response = await fetch(url, {
++      method: 'POST', // 指定请求方法
++      headers: headers(),
++      body: JSON.stringify(body),
++    });
++    console.log('api getOccupiedTime response=', response);
++    if (!response.ok) {
++      return null;
++    } else {
++      let json = await response.json();
++      console.log('api getOccupiedTime json=', json);
++      if (json.code === 0 || json.code === 200) {
++        return json.data as OccupiedTimeResponse | null;
++      } else {
++        return null;
++      }
++    }
++  } catch (error) {
++    console.log('api getOccupiedTime error=', error);
++    return null;
++  }
++};
++
++export const accept_or_decline_booking = async (p: {
++  ticketId: string,
++  operation: string,
++  timeSlots: TimeSlot[],
++}): Promise<AcceptOrDeclineBookingResponse | null> => {
++  try {
++    const url = constant.API_BASE_URL + '/csx/appointment/accept_or_decline_booking';
++
++    console.log('api accept_or_decline_booking url=', url);
++
++    const body = p;
++    let response = await fetch(url, {
++      method: 'POST', // 指定请求方法
++      headers: headers(),
++      body: JSON.stringify(body),
++    });
++    console.log('api accept_or_decline_booking response=', response);
++    if (!response.ok) {
++      return null;
++    } else {
++      let json = await response.json();
++      console.log('api accept_or_decline_booking json=', json);
++      if (json.code === 0 || json.code === 200) {
++        return json.data as AcceptOrDeclineBookingResponse | null;
++      }
++      processJson(json, url);
++      return null;
++    }
++  } catch (error) {
++    console.log('api accept_or_decline_booking error=', error);
++    return null;
++  }
++};

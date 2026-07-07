@@ -1,0 +1,1427 @@
+diff --git a/src/api/api.ts b/src/api/api.ts
+index eed22b50..e18da666 100644
+--- a/src/api/api.ts
++++ b/src/api/api.ts
+@@ -86,7 +86,16 @@ const processResponse = async (response: Response, dispatch?: any) => {
+     console.log('api processResponse 401 global.navigation=', global.navigation);
+     const curAccount = await storage.getItem(storage.csxMobileCachekeys.curAccount, true);
+     console.log('api processResponse 401 curAccount=', curAccount);
+-    
++
++    if (global.navigationRef?.getCurrentRouteName() === 'LoginPage') {
++      return;
++    }
++
++    emitEvent(globalEventName.showCommonAlertModal, {
++      commonAlertModalTitle: global.i18n.t('prompt'),
++      commonAlertModalContent: global.i18n.t('account_status_abnormal'),
++    });
++
+     //进登录页面
+     routes.reset(global.navigation, routes.LoginPage.routeName, {
+       pageData: {
+@@ -98,6 +107,36 @@ const processResponse = async (response: Response, dispatch?: any) => {
+   }
+ };
+ 
++interface FetchOptions {
++  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD';
++  headers: Record<string, string>;
++  body?: BodyInit | null;
++}
++
++const fetchData = async (url: string, { method = 'GET', headers: headersOption = headers(), body = null }: FetchOptions): Promise<Response> => {
++
++  try {
++    const response = await fetch(url, {
++      method,
++      headers: headersOption,
++      body
++    });
++
++    if (!response.ok) {
++      // dispatch传null，避免每个请求都要传dispatch（useDispatch只在React函数组件或自定义钩子内部使用，无法在api.ts中使用）
++      // dispatch的作用是在processResponse中调用clearCsxMobileStorage时，setAccount(undefined)
++      // 而跳转到登录页后，进行登录会addAccountCached，执行setAccount(account)
++      // 所以此处dispatch可传null
++      processResponse(response, null);
++    }
++
++    return response;
++  } catch (error) {
++    console.error('Fetch error:', error);
++    throw error;
++  }
++}
++
+ interface JSON {
+   success: boolean;
+   data: null;
+@@ -295,7 +334,7 @@ export const PatientQuery = async (pageIndex: number, inputKey: string): Promise
+     const body = {pageIndex, pageSize: 50, inputKey};
+     console.log('api PatientQuery body=', body);
+     //pageIndex是从0开始的,如果你请求的是0,那么返回的就是第一页的数据
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -325,7 +364,7 @@ export const DoctorQuery = async (pageIndex: number, code?: string, pageSize?: n
+     //pageIndex是从0开始的,如果你请求的是0,那么返回的就是第一页的数据
+     const body = JSON.stringify({pageIndex, pageSize: pageSize || 10, code}); // 将JavaScript对象转换为字符串
+     console.log('api DoctorQuery body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body,
+@@ -386,16 +425,16 @@ export const waitingList = async (
+     }
+     console.log('api waitingList body=', ob);
+     const body = JSON.stringify(ob); // 将JavaScript对象转换为字符串
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body,
+     });
+     console.log('api waitingList response=', response);
+-    if (!response.ok) {
+-      processResponse(response,dispatch);
+-      return null;
+-    }
++    // if (!response.ok) {
++    //   processResponse(response,dispatch);
++    //   return null;
++    // }
+     let json = await response.json();
+     console.log('api waitingList json=', json);
+     if (json.code === 200) {
+@@ -444,7 +483,7 @@ export const bookedList = async (clinicId: number, doctorId: string, date: Date
+     //pageIndex是从0开始的,如果你请求的是0,那么返回的就是第一页的数据
+     const body = {clinicId, doctorId, dateTime: moment(date).format('YYYY-MM-DD'), appointStatus}; // 将JavaScript对象转换为字符串
+     console.log('api bookedList body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -475,7 +514,7 @@ export const ClinicQuery = async (code: string, pageIndex: number, pageSize?: nu
+     //pageIndex是从0开始的,如果你请求的是0,那么返回的就是第一页的数据
+     const body = JSON.stringify({pageIndex, pageSize: pageSize || 50, code}); // 将JavaScript对象转换为字符串
+     console.log('api ClinicQuery body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body,
+@@ -510,7 +549,7 @@ export const GetCurrentEncounterOverview = async (clinicId: string, doctorId: st
+     console.log('api GetCurrentEncounterOverview url=', url);
+     const body = {clinicId, doctorId}; // 将JavaScript对象转换为字符串
+     console.log('api GetCurrentEncounterOverview body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -551,7 +590,7 @@ export const QueryEncounterDateRecord = async (
+     console.log('api QueryEncounterDateRecord url=', url);
+     const body = {clinicId, doctorId, startDate, endDate}; // 将JavaScript对象转换为字符串
+     console.log('api QueryEncounterDateRecord body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -608,7 +647,7 @@ export const postAddAppointment = async (
+       ticketId: '',
+     }; // 将JavaScript对象转换为字符串
+     console.log('api AddAppointment body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -646,7 +685,7 @@ export const getPatientDetail = async (patientId: string /*, showTemporaryData:
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api getPatientDetail urlWithParams=', urlWithParams);
+-    let response = await fetch(urlWithParams, {
++    let response = await fetchData(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+     });
+@@ -682,7 +721,7 @@ export const patient_intial_data = async (language: string): Promise<I_get_patie
+     console.log('api patient_intial_data url=', url);
+     const body = {language: _language}; // 将JavaScript对象转换为字符串
+     console.log('api patient_intial_data body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -727,7 +766,7 @@ export const patientSeniorQuery = async ({
+       doctorInCharge,
+     }; // 将JavaScript对象转换为字符串
+     console.log('api patientSeniorQuery body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -778,7 +817,7 @@ export const queryEncounterRecord = async ({
+       endDate,
+     }; // 将JavaScript对象转换为字符串
+     console.log('api queryEncounterRecord body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -810,7 +849,7 @@ export const queryFutureAppointment = async (patientId: string, remarks: string)
+       remarks,
+     }; // 将JavaScript对象转换为字符串
+     console.log('api QueryFutureAppointment body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -841,7 +880,7 @@ export const queryFailAppointment = async (patientId: string, remarks: string):
+       remarks,
+     }; // 将JavaScript对象转换为字符串
+     console.log('api queryFailAppointment body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -879,7 +918,7 @@ export const getPatientConsultationStatus = async (patientId: string) => {
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api getPatientConsultationStatus urlWithParams=', urlWithParams);
+-    let response = await fetch(urlWithParams, {
++    let response = await fetchData(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+     });
+@@ -918,7 +957,7 @@ export const consultationQueryPage = async (
+       pageSize: 10,
+     }; // 将JavaScript对象转换为字符串
+     console.log('api consultationQueryPage body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -958,7 +997,7 @@ export const newPatient = async (
+       clinicCode: clinicCode
+     }; // 将JavaScript对象转换为字符串
+     console.log('api newPatient body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -989,7 +1028,7 @@ export const prefix = async (Gender = ''): Promise<Prefix[] | null> => {
+     console.log('api prefix url=', url);
+     const body = {Gender}; // 将JavaScript对象转换为字符串
+     console.log('api prefix body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1021,7 +1060,7 @@ export const refferal = async (pageIndex: number, category: string = ''): Promis
+     console.log('api refferal url=', url);
+     const body = {pageIndex, pageSize: 50, category, keyWord: ''}; // 将JavaScript对象转换为字符串
+     console.log('api refferal body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1083,7 +1122,7 @@ export const patientDataSetting = async (
+     console.log('api patientDataSetting url=', url);
+     const body = {pageIndex, pageSize: pageSize || 50, category, keyWord}; // 将JavaScript对象转换为字符串
+     console.log('api patientDataSetting body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1170,7 +1209,7 @@ export const register_client = async (token?: string, pushType: 'fcm' | 'hms' =
+     };
+     console.log('api register_client body=', body);
+     logUtils.addLog('info', 'api register_client body=', '', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1205,7 +1244,7 @@ export const unregister_client = async (token?: string) => {
+     }; // 将JavaScript对象转换为字符串
+     console.log('api unregister_client body=', body);
+     logUtils.addLog('info', 'api unregister_client body=', '', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1233,7 +1272,7 @@ export const create_patient = async (p) => {
+     console.log('api create_patient url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api create_patient body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1262,7 +1301,7 @@ export const update_patient = async (p) => {
+     console.log('api update_patient url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api update_patient body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1291,7 +1330,7 @@ export const delete_patient = async (p) => {
+     console.log('api delete_patient url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api delete_patient body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1324,7 +1363,7 @@ export const add_patient_to_appoint = async (p) => {
+     console.log('api add_patient_to_appoint url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api add_patient_to_appoint body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1367,7 +1406,7 @@ export const add_patient_to_queue = async (p) => {
+     console.log('api add_patient_to_queue url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api add_patient_to_queue body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1409,7 +1448,7 @@ export const update_appointment_remark = async (p) => {
+     console.log('api update_appointment_remark url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api update_appointment_remark body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1441,7 +1480,7 @@ export const update_appoint = async (p) => {
+     console.log('api update_appoint url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api update_appoint body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1474,7 +1513,7 @@ export const delete_appoint = async (p) => {
+     console.log('api delete_appoint url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api delete_appoint body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1507,7 +1546,7 @@ export const get_doctor_conference_data = async (p) => {
+     console.log('api get_doctor_conference_data url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api get_doctor_conference_data body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1534,7 +1573,7 @@ export const confirm_remote_ticket = async (p) => {
+     console.log('api confirm_remote_ticket url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api confirm_remote_ticket body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1565,7 +1604,7 @@ export const confirm_remote_ticket_option = async (p) => {
+     console.log('api confirm_remote_ticket_option url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api confirm_remote_ticket_option body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1596,7 +1635,7 @@ export const get_benefits = async (p) => {
+     console.log('api get_benefits url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api get_benefits body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1627,7 +1666,7 @@ export const list_contracts = async (p) => {
+     console.log('api list_contracts url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api list_contracts body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1656,7 +1695,7 @@ export const list_contract_filters = async (): Promise<ContractFilters | null> =
+   try {
+     const url = constant.API_BASE_URL + '/Overview/contract-filters';
+     console.log('api list_contract_filters url=', url);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+     });
+@@ -1686,7 +1725,7 @@ export const contract_details = async (p) => {
+     console.log('api contract_details url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api contract_details body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1723,7 +1762,7 @@ export const list_patient_file_directories = async (p) => {
+     console.log('api list_patient_file_directories url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api list_patient_file_directories body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1750,7 +1789,7 @@ export const list_patient_files = async (p) => {
+     console.log('api list_patient_files url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api list_patient_files body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1776,7 +1815,7 @@ export const upload_patient_files = async (body: FormData, onProgress?: (progres
+     const url = constant.API_BASE_URL + '/consultations/v1/upload-patient-file';
+     console.log('api upload_patient_files url=', url);
+     console.log('api upload_patient_files body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: {...headers(), 'Content-Type': 'multipart/form-data'},
+       body: body,
+@@ -1814,7 +1853,7 @@ export const getDoctorById = async (id: string) => {
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api getDoctorById urlWithParams=', urlWithParams);
+-    let response = await fetch(urlWithParams, {
++    let response = await fetchData(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+     });
+@@ -1852,7 +1891,7 @@ export const getClinicById = async (id: string) => {
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api getClinicById urlWithParams=', urlWithParams);
+-    let response = await fetch(urlWithParams, {
++    let response = await fetchData(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+     });
+@@ -1892,7 +1931,7 @@ export const GetUserInfo = async ({installationId}: { installationId: string })
+     console.log('api GetUserInfo urlWithParams=', urlWithParams);
+     // const Cookie = await storage.getItem(storage.csxMobileCachekeys.cookie)
+     // console.log('api GetUserInfo Cookie=', Cookie)
+-    let response = await fetch(urlWithParams, {
++    let response = await fetchData(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       credentials: 'include', // 这个设置是为了在跨域请求时能够包含 cookies，对于同源请求这个设置不是必需的
+@@ -1922,7 +1961,7 @@ export const SendOTPPassword = async (p) => {
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api SendOTPPassword body=', body);
+     console.log('api SendOTPPassword headers=', headers());
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1950,7 +1989,7 @@ export const mfa = async (p) => {
+     console.log('api mfa url=', url);
+     const body = p; // 将JavaScript对象转换为字符串
+     console.log('api mfa body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -1985,7 +2024,7 @@ export const messages_paging = async (p) => {
+     console.log('api messages_paging url=', url);
+     const body = {...p, pageSize: p.pageSize || 50, sorts: null}; // 将JavaScript对象转换为字符串
+     console.log('api messages_paging body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2016,7 +2055,7 @@ export const remove_patient_file = async (p) => {
+     console.log('api remove_patient_file url=', url);
+     const body = {...p}; // 将JavaScript对象转换为字符串
+     console.log('api remove_patient_file body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2043,7 +2082,7 @@ export const messages_get = async (p) => {
+     console.log('api messages_get url=', url);
+     const body = {...p}; // 将JavaScript对象转换为字符串
+     console.log('api messages_get body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2070,7 +2109,7 @@ export const update_read_state = async (p) => {
+     console.log('api update_read_state url=', url);
+     const body = {...p}; // 将JavaScript对象转换为字符串
+     console.log('api update_read_state body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2136,7 +2175,7 @@ export const open_biometrics_auth = async (p, username?: string, tenantID?: stri
+     console.log('api open_biometrics_auth url=', url);
+     const body = {...p, signature, halg: 'SHA256', publicKey: keys.publicKey}; // 将JavaScript对象转换为字符串
+     console.log('api open_biometrics_auth body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2205,7 +2244,7 @@ export const sign_in_by_biometrics = async (p : {
+     console.log('sign_in_by_biometrics data=', data);
+     const body = {type: p.type, signature, halg: 'SHA256', biometricsId: p.biometricsId, plainText: BearerTKey, data}; // 将JavaScript对象转换为字符串
+     console.log('api sign_in_by_biometrics body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2252,7 +2291,7 @@ export const close_biometrics_auth = async (p) => {
+     console.log('api close_biometrics_auth url=', url);
+     const body = {type: p.type, signature, halg: 'SHA256'}; // 将JavaScript对象转换为字符串
+     console.log('api close_biometrics_auth body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2279,7 +2318,7 @@ export const report_inputs = async (p) => {
+     console.log('api report_inputs url=', url);
+     const body = {...p};
+     console.log('api report_inputs body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2310,7 +2349,7 @@ export const income_report = async (p) => {
+     console.log('api income_report url=', url);
+     const body = {...p};
+     console.log('api income_report body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2341,7 +2380,7 @@ export const transaction_report = async (p) => {
+     console.log('api transaction_report url=', url);
+     const body = {...p};
+     console.log('api transaction_report body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2378,7 +2417,7 @@ export const list_allergic_drugs = async (p: {
+     console.log('api list_allergic_drugs url=', url);
+     const body = {...p};
+     console.log('api list_allergic_drugs body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2429,7 +2468,7 @@ export const get_all_allergic_reaction_terms = async (p?: any): Promise<Data | n
+     console.log('api get_all_allergic_reaction_terms url=', url);
+     const body = {...p};
+     console.log('api get_all_allergic_reaction_terms body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2465,7 +2504,7 @@ export const add_patient_allergy = async (p) => {
+     console.log('api add_patient_allergy url=', url);
+     const body = {...p};
+     console.log('api add_patient_allergy body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2497,7 +2536,7 @@ export const update_patient_nkda = async (p) => {
+     console.log('api update_patient_nkda url=', url);
+     const body = {...p};
+     console.log('api update_patient_nkda body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2524,7 +2563,7 @@ export const login_logs = async (p) => {
+     console.log('api login_logs url=', url);
+     const body = {...p, pageSize: 50};
+     console.log('api login_logs body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2560,7 +2599,7 @@ export const save_patient_extend_medical_record = async (p: {
+     console.log('api save_patient_extend_medical_record url=', url);
+     const body = {...p};
+     console.log('api save_patient_extend_medical_record body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2590,7 +2629,7 @@ export const QueryPatientAllergy = async (p: {
+     console.log('api QueryPatientAllergy url=', url);
+     const body = {...p};
+     console.log('api QueryPatientAllergy body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2617,7 +2656,7 @@ export const delete_patient_allergy = async (p) => {
+     console.log('api delete_patient_allergy url=', url);
+     const body = {...p};
+     console.log('api delete_patient_allergy body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2644,7 +2683,7 @@ export const call_logs = async (p): Promise<CallLogsItem[] | null> => {
+     console.log('api call_logs url=', url);
+     const body = {...p};
+     console.log('api call_logs body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2671,7 +2710,7 @@ export const list_doctor_medical_terms = async (p): Promise<Data | null> => {
+     console.log('api list_doctor_medical_terms url=', url);
+     const body = {...p};
+     console.log('api list_doctor_medical_terms body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2721,7 +2760,7 @@ export const add_medical_record = async (p) => {
+     console.log('api add_medical_record url=', url);
+     const body = {...p};
+     console.log('api add_medical_record body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2752,7 +2791,7 @@ export const patient_extend_medical_records = async (p) => {
+     console.log('api patient_extend_medical_records url=', url);
+     const body = {...p};
+     console.log('api patient_extend_medical_records body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2791,7 +2830,7 @@ export const get_consultation_setting = async (p: {}): Promise<get_consultation_
+     console.log('api get_consultation_setting url=', url);
+     const body = {...p};
+     console.log('api get_consultation_setting body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2822,7 +2861,7 @@ export const list_hkctt_dxpx_terms = async (p): Promise<List_hkctt_dxpx_terms |
+     console.log('api list_hkctt_dxpx_terms url=', url);
+     const body = {...p};
+     console.log('api list_hkctt_dxpx_terms body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2851,7 +2890,7 @@ export const QueryPatientImmunisation = async (p: {
+     console.log('api QueryPatientImmunisation url=', url);
+     const body = {...p};
+     console.log('api QueryPatientImmunisation body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2886,7 +2925,7 @@ export const list_hkctt_drug_vaccine_terms = async (p: {
+     console.log('api list_hkctt_drug_vaccine_terms url=', url);
+     const body = {...p, pageSize: p.pageSize || 50};
+     console.log('api list_hkctt_drug_vaccine_terms body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2939,7 +2978,7 @@ export const list_medical_terms = async (p: {
+     console.log('api list_medical_terms url=', url);
+     const body = {...p, pageSize: p.pageSize || 100};
+     console.log('api list_medical_terms body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -2997,7 +3036,7 @@ export const add_patient_immunization = async (p: {
+     //https://app.clickup.com/t/8553538/TECH-7056?comment=90180156118745
+     const body = {...p, dose: p.dose == 0 ? null : p.dose};
+     console.log('api add_patient_immunization body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3029,7 +3068,7 @@ export const patient_health_v1_get = async (p) => {
+     console.log('api patient_health_v1_get url=', url);
+     const body = {...p};
+     console.log('api patient_health_v1_get body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3056,7 +3095,7 @@ export const delete_patient_immunization = async (p) => {
+     console.log('api delete_patient_immunization url=', url);
+     const body = {...p};
+     console.log('api delete_patient_immunization body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3092,7 +3131,7 @@ export const calendar_v1_schedules = async (p) => {
+     const body = {...p};
+     console.log('api calendar_v1_schedules body=', body);
+     // 将参数转换为URL的查询字符串
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3123,7 +3162,7 @@ export const calendar_v1_delete_schedules = async (p: {
+     const body = { ...p };
+     console.log('api calendar_v1_delete_schedules body=', body);
+     // 将参数转换为URL的查询字符串
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3150,7 +3189,7 @@ export const complete_consultation = async (p) => {
+     console.log('api complete_consultation url=', url);
+     const body = {...p};
+     console.log('api complete_consultation body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3177,7 +3216,7 @@ export const get_conference_data_by_appointmentid = async (p) => {
+     console.log('api get_conference_data_by_appointmentid url=', url);
+     const body = {...p};
+     console.log('api get_conference_data_by_appointmentid body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3204,7 +3243,7 @@ export const update_doctor_conference_status = async (p) => {
+     console.log('api update_doctor_conference_status url=', url);
+     const body = {...p};
+     console.log('api update_doctor_conference_status body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3239,7 +3278,7 @@ export const GetLatestMedicalRecord = async (p) => {
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api GetLatestMedicalRecord urlWithParams=', urlWithParams);
+-    let response = await fetch(urlWithParams, {
++    let response = await fetchData(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+@@ -3278,7 +3317,7 @@ export const GetLatestPrescription = async (p) => {
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api GetLatestPrescription urlWithParams=', urlWithParams);
+-    let response = await fetch(urlWithParams, {
++    let response = await fetchData(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+@@ -3306,7 +3345,7 @@ export const get_drugbook_master_search_list = async (p): Promise<Data | any> =>
+     console.log('api get_drugbook_master_search_list url=', url);
+     const body = {...p, pageSize: p.pageSize || 20};
+     console.log('api get_drugbook_master_search_list body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3362,7 +3401,7 @@ export const add_patient_health_data = async (p: {
+     console.log('api add_patient_health_data url=', url);
+     const body = {...p};
+     console.log('api add_patient_health_data body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3389,7 +3428,7 @@ export const get_setting_data_model_list = async (p: { pageIndex: number, keyWor
+     console.log('api get_setting_data_model_list url=', url);
+     const body = {...p, pageSize: p.pageSize || 20};
+     console.log('api get_setting_data_model_list body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3435,7 +3474,7 @@ export const QueryPatientHealthData = async (p:{ patientId: string, pageIndex: n
+     console.log('api QueryPatientHealthData url=', url);
+     const body = {...p};
+     console.log('api QueryPatientHealthData body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3462,7 +3501,7 @@ export const delete_patient_health_data = async (p) => {
+     console.log('api delete_patient_health_data url=', url);
+     const body = {...p};
+     console.log('api delete-patient-health-data body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3490,7 +3529,7 @@ export const get_drugbook_masters_by_names = async (p): Promise<DrugbookMastersB
+     console.log('api get_drugbook_masters_by_names url=', url);
+     const body = {...p};
+     console.log('api get_drugbook_masters_by_names body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3522,7 +3561,7 @@ export const update_patient_health_data = async (p: {
+     console.log('api update_patient_health_data url=', url);
+     const body = {...p};
+     console.log('api update_patient_health_data body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3555,7 +3594,7 @@ export const add_prescription_record = async (p) => {
+     console.log('api add_prescription_record url=', url);
+     const body = {...p};
+     console.log('api add_prescription_record body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3583,7 +3622,7 @@ export const reset_password = async (p) => {
+     console.log('api reset_password url=', url);
+     const body = {...p};
+     console.log('api reset_password body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3613,7 +3652,7 @@ export const get_all_prescription_packages = async (p) => {
+     console.log('api get_all_prescription_packages url=', url);
+     const body = {...p};
+     console.log('api get_all_prescription_packages body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3647,7 +3686,7 @@ export const QueryOtherMedicalInfo = async (p) => {
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api QueryOtherMedicalInfo urlWithParams=', urlWithParams);
+-    let response = await fetch(urlWithParams, {
++    let response = await fetchData(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+@@ -3678,7 +3717,7 @@ export const get_package_medicine = async (p) => {
+     console.log('api get_package_medicine url=', url);
+     const body = {...p};
+     console.log('api get_package_medicine body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3826,7 +3865,7 @@ export const save_prescription_package = async (p) => {
+     console.log('api save_prescription_package url=', url);
+     const body = {...p};
+     console.log('api save_prescription_package body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3853,7 +3892,7 @@ export const scan_qrcode = async (p) => {
+     console.log('api scan_qrcode url=', url);
+     const body = {...p};
+     console.log('api scan_qrcode body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3918,7 +3957,7 @@ export const save_mixture_medicine = async (p) => {
+     console.log('api save_mixture_medicine url=', url);
+     const body = {...p};
+     console.log('api save_mixture_medicine body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -3960,7 +3999,7 @@ export const GetOptionSetting = async (language: string): Promise<IGetOptionSett
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api GetOptionSetting urlWithParams=', urlWithParams);
+-    let response = await fetch(urlWithParams, {
++    let response = await fetchData(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+@@ -3987,7 +4026,7 @@ export const update_medical_record = async (p) => {
+     console.log('api update_medical_record url=', url);
+     const body = {...p};
+     console.log('api update_medical_record body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4021,7 +4060,7 @@ export const delete_prescription_record = async (p) => {
+     console.log('api delete_prescription_record url=', url);
+     const body = {...p};
+     console.log('api delete_prescription_record body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4048,7 +4087,7 @@ export const delete_medical_record = async (p) => {
+     console.log('api delete_medical_record url=', url);
+     const body = {...p};
+     console.log('api delete_medical_record body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4075,7 +4114,7 @@ export const ForgotPasswordValid = async (p) => {
+     console.log('api ForgotPasswordValid url=', url);
+     const body = {...p};
+     console.log('api ForgotPasswordValid body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4117,7 +4156,7 @@ export const getBanner = async () => {
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api getBanner urlWithParams=', urlWithParams);
+-    let response = await fetch(urlWithParams, {
++    let response = await fetchData(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+@@ -4140,7 +4179,7 @@ export const getBanner = async () => {
+ 
+ export const getGuideBanner = async () => {
+   try {
+-    let response = await fetch(constant.API_BASE_BANNERS_URL, {
++    let response = await fetchData(constant.API_BASE_BANNERS_URL, {
+       method: 'GET', // 指定请求方法
+       headers: {
+         'Cache-Control': 'no-cache', // 這裡的Header是防止某些瀏覽器可能會緩存請求
+@@ -4177,7 +4216,7 @@ export const CheckHaveDoctor = async (docotrId: string) => {
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api CheckHaveDoctor urlWithParams=', urlWithParams);
+-    let response = await fetch(urlWithParams, {
++    let response = await fetchData(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+@@ -4204,7 +4243,7 @@ export const data_record_sharing_list_clinics = async (p): Promise<Data_record_s
+     console.log('api data_record_sharing_list_clinics url=', url);
+     const body = {...p};
+     console.log('api data_record_sharing_list_clinics body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4231,7 +4270,7 @@ export const data_record_sharing_histories = async (p): Promise<Data | null> =>
+     console.log('api data_record_sharing_histories url=', url);
+     const body = {...p, sorts: null, order: 'ASC'};
+     console.log('api data_record_sharing_histories body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4258,7 +4297,7 @@ export const data_record_sharing_details = async (p) => {
+     console.log('api data_record_sharing_details url=', url);
+     const body = {...p};
+     console.log('api data_record_sharing_details body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4288,7 +4327,7 @@ export const get_mixture_medicine = async (p) => {
+     console.log('api get_mixture_medicine url=', url);
+     const body = {...p};
+     console.log('api get_mixture_medicine body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4319,7 +4358,7 @@ export const get_syrup_drug_usage_by_condition = async (p) => {
+     console.log('api get_syrup_drug_usage_by_condition url=', url);
+     const body = {...p};
+     console.log('api get_syrup_drug_usage_by_condition body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4350,7 +4389,7 @@ export const add_syrup_drug_usage = async (p) => {
+     console.log('api add_syrup_drug_usage url=', url);
+     const body = {...p};
+     console.log('api add_syrup_drug_usage body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4380,7 +4419,7 @@ export const health_data_settings = async (p: { preset: number }): Promise<healt
+     console.log('api health_data_settings url=', url);
+     const body = {...p};
+     console.log('api health_data_settings body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4407,7 +4446,7 @@ export const health_data_setting_v1_clinic_get = async (p: { clinicCode: string
+     console.log('api health_data_setting_v1_clinic_get url=', url);
+     const body = {...p, preset: 2};
+     console.log('api health_data_setting_v1_clinic_get body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4440,7 +4479,7 @@ export const configurations = async () => {
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api configurations urlWithParams=', urlWithParams);
+-    let response = await fetch(urlWithParams, {
++    let response = await fetchData(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+@@ -4467,7 +4506,7 @@ export const sign_out = async (curAccount, navigation, dispatch) => {
+     console.log('api sign_out url=', url);
+     const body = {};
+     console.log('api sign_out body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4502,7 +4541,7 @@ export const updateConsultation = async (input: string) => {
+     console.log('api updateConsultation url=', url);
+     const body = {input};
+     console.log('api updateConsultation body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4529,7 +4568,7 @@ export const billingsList = async (patientCode: string, pageIndex: number, pageS
+     console.log('api billingsList url=', url);
+     const body = {patientCode, pageIndex, pageSize};
+     console.log('api billingsList body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4583,7 +4622,7 @@ export const send_bill_to_pay = async ({appointmentId, diagnosisJsonAsString, cu
+     console.log('api send_bill_to_pay url=', url);
+     const body = {appointmentId, diagnosisJsonAsString, currencyCode, expenseItems};
+     console.log('api send_bill_to_pay body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4644,7 +4683,7 @@ export const check_transaction_status = async (ticketId: string) => {
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api check_transaction_status urlWithParams=', urlWithParams);
+-    let response = await fetch(urlWithParams, {
++    let response = await fetchData(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+@@ -4678,7 +4717,7 @@ export const get_sent_bill_by_ticketid = async (ticketId: string) => {
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api get_sent_bill_by_ticketid urlWithParams=', urlWithParams);
+-    let response = await fetch(urlWithParams, {
++    let response = await fetchData(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+@@ -4705,7 +4744,7 @@ export const finish_queued_appointment = async (appointmentId: string) => {
+     console.log('api finish_queued_appointment url=', url);
+     const body = {id: appointmentId};
+     console.log('api finish_queued_appointment body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4760,7 +4799,7 @@ export const last_unsigned = async () => {
+     console.log('api last_unsigned url=', url);
+     const body = {};
+     console.log('api last_unsigned body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4791,7 +4830,7 @@ export const agreements_sign = async (agreementId: string) => {
+     console.log('api agreements_sign url=', url);
+     const body = {agreementId};
+     console.log('api agreements_sign body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4818,7 +4857,7 @@ export const setup_user_data = async () => {
+     console.log('api setup_user_data url=', url);
+     const body = {};
+     console.log('api setup_user_data body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4850,7 +4889,7 @@ export const send_otp_for_forgot_password = async (installationId: string, userN
+     console.log('api send_otp_for_forgot_password url=', url);
+     const body = {installationId, userName};
+     console.log('api send_otp_for_forgot_password body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4881,7 +4920,7 @@ export const health_questions = async (p) => {
+     console.log('api health_questions url=', url);
+     const body = {...p};
+     console.log('api health_questions body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4932,7 +4971,7 @@ export const add_patient_document = async (
+       },
+     };
+     console.log('api add_patient_document body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -4986,7 +5025,7 @@ export const add_patient_sickLeave = async (
+       content: sickLeaveContent,
+     };
+     console.log('api add_patient_sickLeave body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -5020,7 +5059,7 @@ export const get_PDF = async (id: string) => {
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api get_PDF urlWithParams=', urlWithParams);
+-    let response = await fetch(urlWithParams, {
++    let response = await fetchData(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+@@ -5047,7 +5086,7 @@ export const list_payor = async (): Promise<List_payor[] | null> => {
+     console.log('api list_payor url=', url);
+     const body = {};
+     console.log('api list_payor body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST',
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -5075,7 +5114,7 @@ export const loginFromQRCodeAsync = async (qrCode: string): Promise<LoginFromQRC
+     console.log('api loginFromQRCodeAsync url=', url);
+     const body = {qrCode};
+     console.log('api loginFromQRCodeAsync body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST',
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -5114,7 +5153,7 @@ export const SendBindPhoneVerificationCode = async (areaCode: string, phoneNumbe
+     const body = {areaCode, phoneNumber};
+     console.log('api SendBindPhoneVerificationCode body=', body);
+     logUtils.addLog('info', `api SendBindPhoneVerificationCode body=`, '', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST',
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -5146,7 +5185,7 @@ export const BindPhoneNumber = async (verificationCode: string): Promise<any | n
+     console.log('api BindPhoneNumber url=', url);
+     const body = {verificationCode};
+     console.log('api BindPhoneNumber body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST',
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -5191,7 +5230,7 @@ export const trusted_devices_confirm = async (p: {
+     const body = p;
+     console.log('api trusted_devices_confirm body=', body);
+     logUtils.addLog('info', 'api trusted_devices_confirm url=', '', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST',
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -5249,7 +5288,7 @@ export const trusted_devices_remove = async (p: {
+     logUtils.addLog('info', 'api trusted_devices_remove body=', '', body);
+     const _headers = headers()
+     logUtils.addLog('info', 'api trusted_devices_remove _headers=', '', _headers);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST',
+       headers: _headers,
+       body: JSON.stringify(body),
+@@ -5287,7 +5326,7 @@ export const trusted_devices_reject = async (p: {
+     const body = p;
+     console.log('api trusted_devices_reject body=', body);
+     logUtils.addLog('info', 'api trusted_devices_reject body=', '', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST',
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -5328,7 +5367,7 @@ export const trusted_devices_apply = async (p:
+     console.log('api trusted_devices_apply url=', url);
+     const body = p;
+     console.log('api trusted_devices_apply body=', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST',
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -5378,7 +5417,7 @@ export const trusted_devices_fingerprint = async (p:
+     const body = {...p, plainTextForSigning: BearerTKey, signature, data, padding: "Pkcs1"};
+     console.log('api trusted_devices_fingerprint body=', body);
+     logUtils.addLog('info', `api trusted_devices_fingerprint body=`, '', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST',
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -5415,7 +5454,7 @@ export const QueryPhoneBindStatus = async () => {
+     // 完整的URL，包括查询字符串
+     const urlWithParams = url + (queryString ? `?${queryString}` : '');
+     console.log('api QueryPhoneBindStatus urlWithParams=', urlWithParams);
+-    let response = await fetch(urlWithParams, {
++    let response = await fetchData(urlWithParams, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+       // body: JSON.stringify(body),
+@@ -5449,7 +5488,7 @@ export const trusted_devices_check = async (p:
+     const body = p;
+     console.log('api trusted_devices_check body=', body);
+     logUtils.addLog('info', `api trusted_devices_check body=`, '', body);
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'POST',
+       headers: headers(),
+       body: JSON.stringify(body),
+@@ -5479,7 +5518,7 @@ export const getUserPermission = async () => {
+   try {
+     const url = constant.API_BASE_URL + '/Account/GetUserPermission';
+ 
+-    let response = await fetch(url, {
++    let response = await fetchData(url, {
+       method: 'GET', // 指定请求方法
+       headers: headers(),
+     });
+@@ -5505,7 +5544,7 @@ export const refresh_login_info = async (): Promise<Account | null | undefined>
+     console.log('api refresh_login_info url=', url);
+     const body = {};
+     console.log('api refresh_login_info body=', body);
+-    const response = await fetch(url, {
++    const response = await fetchData(url, {
+       method: 'POST', // 指定请求方法
+       headers: headers(),
+       body: JSON.stringify(body),
+diff --git a/src/i18n/locale/en.ts b/src/i18n/locale/en.ts
+index 9f09a88d..14088c63 100644
+--- a/src/i18n/locale/en.ts
++++ b/src/i18n/locale/en.ts
+@@ -986,5 +986,6 @@ const en = {
+   EstimatedFoetalWeight: 'Estimated foetal weight',
+   'Please fill in the correct data': 'Please fill in the correct data',
+   'to_open': 'To Open',
++  'account_status_abnormal': 'Account status is abnormal. Please login again',
+ };
+ export default en;
+diff --git a/src/i18n/locale/jp.ts b/src/i18n/locale/jp.ts
+index 819d1e0d..e9d2f389 100644
+--- a/src/i18n/locale/jp.ts
++++ b/src/i18n/locale/jp.ts
+@@ -977,5 +977,6 @@ const jp = {
+   EstimatedFoetalWeight: '推定胎兒体重',
+   'Please fill in the correct data': '正しいデータを入力してください',
+   'to_open': '開く',
++  'account_status_abnormal': 'アカウントの状態が異常です。再ログインしてください',
+ };
+ export default jp; //日語
+diff --git a/src/i18n/locale/ph.ts b/src/i18n/locale/ph.ts
+index dd95ac8d..4750db48 100644
+--- a/src/i18n/locale/ph.ts
++++ b/src/i18n/locale/ph.ts
+@@ -990,5 +990,6 @@ export default {
+   EstimatedFoetalWeight: 'Estimated foetal weight',
+   'Please fill in the correct data': 'Mangyaring punan ang mga data na tama',
+   'to_open': 'Buksan',
++  'account_status_abnormal': 'Ang status ng account ay hindi normal, mangyaring mag-log in muli',
+ };
+ // 菲律賓語
+diff --git a/src/i18n/locale/th.ts b/src/i18n/locale/th.ts
+index 69aec3cb..93a8f95c 100644
+--- a/src/i18n/locale/th.ts
++++ b/src/i18n/locale/th.ts
+@@ -971,5 +971,6 @@ export default {
+   EstimatedFoetalWeight: 'ความยาวของการนั่ง',
+   'Please fill in the correct data': 'กรุณากรอกข้อมูลที่ถูกต้อลบ',
+   'to_open': 'เปิด',
++  'account_status_abnormal': 'สถานะบัญชีผิดปกติ กรุณาเข้าสู่ระบบอีกครั้ง',
+ };
+ // 泰語
+diff --git a/src/i18n/locale/vn.ts b/src/i18n/locale/vn.ts
+index 1cc56175..b09e4863 100644
+--- a/src/i18n/locale/vn.ts
++++ b/src/i18n/locale/vn.ts
+@@ -975,5 +975,6 @@ export default {
+   EstimatedFoetalWeight: 'Cân nặng dự đoán của bé sơ sinh',
+   'Please fill in the correct data': 'Vui lòng điền đúng dữ liệu',
+   'to_open': 'Mở',
++  'account_status_abnormal': 'Tình trạng tài khoản bất thường, vui lòng đăng nhập lại',
+ };
+ // 越南語
+diff --git a/src/i18n/locale/zh.ts b/src/i18n/locale/zh.ts
+index 2a10a21b..cc3a47ea 100644
+--- a/src/i18n/locale/zh.ts
++++ b/src/i18n/locale/zh.ts
+@@ -967,5 +967,6 @@ const zh = {
+   EstimatedFoetalWeight: '估计胎儿体重',
+   'Please fill in the correct data': '请填写正确的数据',
+   'to_open': '去开启',
++  'account_status_abnormal': '账户状态异常，请重新登录',
+ };
+ export default zh;
+diff --git a/src/i18n/locale/zh_tw.ts b/src/i18n/locale/zh_tw.ts
+index 42686171..6cd3dcbd 100644
+--- a/src/i18n/locale/zh_tw.ts
++++ b/src/i18n/locale/zh_tw.ts
+@@ -965,5 +965,6 @@ const zh_tw = {
+   EstimatedFoetalWeight: '估計胎兒體重',
+   'Please fill in the correct data': '請填寫正確的數據',
+   'to_open': '去啟用',
++  'account_status_abnormal': '賬號狀態異常，請重新登錄',
+ };
+ export default zh_tw;

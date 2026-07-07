@@ -11,10 +11,10 @@ description: >-
 
 ## 与 Codex 入口（分别维护）
 
-| 客户端 | `SKILL.md` | `name` | 口令 |
-|--------|------------|--------|------|
-| Cursor（本文件） | **Windows** `%USERPROFILE%\.cursor\skills\ask-ps5pro\SKILL.md` / **macOS** `/Users/<你的用户名>/.cursor/skills/ask-ps5pro/SKILL.md`（当前 Mac：`/Users/stark/.cursor/skills/ask-ps5pro/SKILL.md`） | `ask-ps5pro` | `/ask-ps5pro` |
-| Codex（对照入口） | **Windows** `%USERPROFILE%\.codex\skills\ps5pro\SKILL.md` / **macOS** `/Users/<你的用户名>/.codex/skills/ps5pro/SKILL.md`（当前 Mac：`/Users/stark/.codex/skills/ps5pro/SKILL.md`） | `ps5pro` | `/ps5pro` |
+| 客户端            | `SKILL.md`                                                                                                                                                                                         | `name`       | 口令          |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | ------------- |
+| Cursor（本文件）  | **Windows** `%USERPROFILE%\.cursor\skills\ask-ps5pro\SKILL.md` / **macOS** `/Users/<你的用户名>/.cursor/skills/ask-ps5pro/SKILL.md`（当前 Mac：`/Users/stark/.cursor/skills/ask-ps5pro/SKILL.md`） | `ask-ps5pro` | `/ask-ps5pro` |
+| Codex（对照入口） | **Windows** `%USERPROFILE%\.codex\skills\ps5pro\SKILL.md` / **macOS** `/Users/<你的用户名>/.codex/skills/ps5pro/SKILL.md`（当前 Mac：`/Users/stark/.codex/skills/ps5pro/SKILL.md`）                | `ps5pro`     | `/ps5pro`     |
 
 两份文件分别维护，但入口目标、必读顺序、上下文门禁、`context.md` 归档规则与任务验收口径必须保持一致。通过 Cursor 输入框执行 `/ask-ps5pro`，或在 Codex / Cursor 内 Codex 插件输入 `/ps5pro`，应获得同一任务执行效果。
 
@@ -37,16 +37,16 @@ description: >-
 
 ## 工作区与路径
 
-| 用途 | Windows | macOS |
-|------|---------|--------|
-| 工作区根（默认） | `D:\work\ps5 pro` | `/Users/<你的用户名>/Desktop/work/ps5 pro`（当前 Mac：`/Users/stark/Desktop/work/ps5 pro`） |
-| 项目上下文归档 | `D:\work\ps5 pro\context.md` | `/Users/<你的用户名>/Desktop/work/ps5 pro/context.md` |
-| 本 Cursor skill | `%USERPROFILE%\.cursor\skills\ask-ps5pro\SKILL.md` | `/Users/<你的用户名>/.cursor/skills/ask-ps5pro/SKILL.md` |
-| Codex 对照 skill | `%USERPROFILE%\.codex\skills\ps5pro\SKILL.md` | `/Users/<你的用户名>/.codex/skills/ps5pro/SKILL.md` |
-| Cursor skills 根 | `%USERPROFILE%\.cursor\skills` | `/Users/<你的用户名>/.cursor/skills` |
-| Cursor 应用数据 | `%APPDATA%\Cursor` | `~/Library/Application Support/Cursor` |
-| Codex 配置与 skills 根 | `%USERPROFILE%\.codex` | `/Users/<你的用户名>/.codex` |
-| Codex 全局规则 | `%USERPROFILE%\.codex\AGENTS.md` | `/Users/<你的用户名>/.codex/AGENTS.md` |
+| 用途                   | Windows                                            | macOS                                                                                       |
+| ---------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| 工作区根（默认）       | `D:\work\ps5 pro`                                  | `/Users/<你的用户名>/Desktop/work/ps5 pro`（当前 Mac：`/Users/stark/Desktop/work/ps5 pro`） |
+| 项目上下文归档         | `D:\work\ps5 pro\context.md`                       | `/Users/<你的用户名>/Desktop/work/ps5 pro/context.md`                                       |
+| 本 Cursor skill        | `%USERPROFILE%\.cursor\skills\ask-ps5pro\SKILL.md` | `/Users/<你的用户名>/.cursor/skills/ask-ps5pro/SKILL.md`                                    |
+| Codex 对照 skill       | `%USERPROFILE%\.codex\skills\ps5pro\SKILL.md`      | `/Users/<你的用户名>/.codex/skills/ps5pro/SKILL.md`                                         |
+| Cursor skills 根       | `%USERPROFILE%\.cursor\skills`                     | `/Users/<你的用户名>/.cursor/skills`                                                        |
+| Cursor 应用数据        | `%APPDATA%\Cursor`                                 | `~/Library/Application Support/Cursor`                                                      |
+| Codex 配置与 skills 根 | `%USERPROFILE%\.codex`                             | `/Users/<你的用户名>/.codex`                                                                |
+| Codex 全局规则         | `%USERPROFILE%\.codex\AGENTS.md`                   | `/Users/<你的用户名>/.codex/AGENTS.md`                                                      |
 
 下文 `{workspace}` 均指当前 IDE 实际打开的项目根；不要把 `.cursor` 或 `.codex` 用户目录误当成业务项目根。若用户明确给出 fork、迁移路径或临时路径，以用户指定路径为准。
 
@@ -99,14 +99,14 @@ description: >-
 
 名称与 **Windows** `%USERPROFILE%\.cursor\skills` / **macOS** `/Users/<你的用户名>/.cursor/skills` 下目录一致。路由到某 skill 后，必须按上文门禁读取该 skill 及依赖。
 
-| 场景 | Skill / 处理方式 |
-|------|------------------|
-| 初始化或刷新项目规则 | `init-project`（Cursor）/ `initProject`（Codex） |
+| 场景                               | Skill / 处理方式                                                                  |
+| ---------------------------------- | --------------------------------------------------------------------------------- |
+| 初始化或刷新项目规则               | `init-project`（Cursor）/ `initProject`（Codex）                                  |
 | 当前网页、登录态页面、官方页面读取 | 优先按全局规则检查并使用 `chrome-devtools`；不可用时使用浏览器/网络检索并说明限制 |
-| 代码仓库化后的代码审查 | `code-review` / `bmad-code-review` |
-| 文档结构化、资料归档 | 先读 `context.md` 与相关 `.md`，必要时再路由 `bmad-document-project` |
-| Cursor / Codex / MCP 配置问题 | `ask-cursor` 或 `codex` |
-| 中英文案和术语 | `chinese-english-translation` |
+| 代码仓库化后的代码审查             | `code-review` / `bmad-code-review`                                                |
+| 文档结构化、资料归档               | 先读 `context.md` 与相关 `.md`，必要时再路由 `bmad-document-project`              |
+| Cursor / Codex / MCP 配置问题      | `ask-cursor` 或 `codex`                                                           |
+| 中英文案和术语                     | `chinese-english-translation`                                                     |
 
 ## 执行工作流
 
@@ -132,5 +132,8 @@ description: >-
 - 除非用户明确要求，默认不创建额外 `.md` 或脚本。
 
 ## 当前活跃需求(不要修改这部分的子内容)
-
 - 本 Cursor 入口的当前活跃需求与 Codex 对照入口 **`/ps5pro`** 同步；执行 `/ask-ps5pro` 时必须读取 **Windows** `%USERPROFILE%\.codex\skills\ps5pro\SKILL.md` / **macOS** `/Users/<你的用户名>/.codex/skills/ps5pro/SKILL.md`（当前 Mac：`/Users/stark/.codex/skills/ps5pro/SKILL.md`）中的「当前活跃需求」，再与用户输入框任务合并为本轮验收范围。
+- 我买了`PS5 PRO`国行数字版,然后刷了 港版系统,外接了![img_152447.png](img_152447.png)![img_152503.png](img_152503.png)显示器;我住在上海,`PS5 PRO`使用的上海移动家庭宽带wifi网络;已使用UU加速器 ![img_152129.png](img_152129.png) 加速了 游戏
+  - 我也安装了 youtube 为什么打开之后黑屏了几秒,然后提示 未连接到互联网
+  <!-- - PS5 pro 里的 <战锤40K 星际战士2>游戏能否支持 键盘鼠标? 还有其它哪些游戏支持 键鼠? -->
+

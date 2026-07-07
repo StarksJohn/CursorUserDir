@@ -1,0 +1,1086 @@
+diff --git a/src/csxRoutes/MainStack.tsx b/src/csxRoutes/MainStack.tsx
+index 72871771..23bd1da6 100644
+--- a/src/csxRoutes/MainStack.tsx
++++ b/src/csxRoutes/MainStack.tsx
+@@ -1,143 +1,144 @@
+ // eslint-disable-next-line no-use-before-define
+ import React, {useEffect, useState, useRef} from 'react'
+ import {ActivityIndicator, View, Platform} from 'react-native'
+ import {useTheme} from '@react-navigation/native'
+ import {createStackNavigator, StackHeaderProps} from '@react-navigation/stack'
+ import MainTabNavigator, { MainTabNavigatorRef } from './MainTabNavigator'
+ import {WelcomePage} from 'pages'
+ import appStyle from 'styles/appStyle'
+ import * as asyncStorage from 'components/storage/storage';
+ import {useSafeAreaInsets} from 'react-native-safe-area-context'
+ import {constant} from 'constant'
+ // Use relative import to avoid circular dependency with csxRoutes/index.ts
+ import routes from './csxRouter'
+ import tool from 'tools/tool'
+ import loginPage from "pages/loginPage/loginPage";
+ import SearchPatients from 'pages/SearchPatients/SearchPatients'
+ import AddAppointment from 'pages/AddAppointment/AddAppointment'
+ import AgoraVideoCall from 'pages/agora/AgoraVideoCall'
+ import WaitingSchedulingDetailPage from "pages/WaitingSchedulingDetailPage/WaitingSchedulingDetailPage";
+ import NewlyAddedPatients from 'pages/NewlyAddedPatients/NewlyAddedPatients'
+ import QRCodeScanner from 'pages/QRCodeScanner/QRCodeScanner'
+ import SignInEcPages from 'pages/SignInEcPage/SignInEcPages'
+ import PatientInfoSearchPage from 'pages/PatientInfoSearchPage/PatientInfoSearchPage'
+ import AppointmentRecordPage from 'pages/AppointmentRecordPage/AppointmentRecordPage'
+ import MedicalRecordsPage from 'pages/MedicalRecordsPage/MedicalRecordsPage'
+ import DiagnosisPatientsListPage from 'pages/DiagnosisPatientsListPage/DiagnosisPatientsListPage'
+ import CreateConsultationPage from 'pages/CreateConsultationPage/CreateConsultationPage'
+ import SetsMixedMedicinePage from 'pages/SetsMixedMedicinePage/SetsMixedMedicinePage'
+ import AllergyPage from 'pages/AllergyPage/AllergyPage'
+ import PastMedicalRecordsPage from 'pages/PastMedicalRecordsPage/PastMedicalRecordsPage'
+ import ImmuneRecordPage from 'pages/ImmuneRecordPage/ImmuneRecordPage'
+ import HealthDataPage from 'pages/HealthDataPage/HealthDataPage'
+ import EditHealthDataPage from 'pages/EditHealthDataPage/EditHealthDataPage'
+ import ImgFilePage from 'pages/ImgFilePage/ImgFilePage'
+ import ImgFileAllPage from 'pages/ImgFileAllPage/ImgFileAllPage'
+ import ImageZoomPreviewPage from 'pages/ImageZoomPreviewPage/ImageZoomPreviewPage'
+ import ComparePage from 'pages/ComparePage/ComparePage'
+ import OtherDiagnosticPage from 'pages/OtherDiagnosticPage/OtherDiagnosticPage'
+ import AccountSecurityPage from 'pages/AccountSecurityPage/AccountSecurityPage'
+ import SwitchAccountPage from 'pages/SwitchAccountPage/SwitchAccountPage'
+ import ResetPassPage from 'pages/ResetPassPage/ResetPassPage'
+ import ForgotPassword from 'pages/ForgotPassword/ForgotPassword'
+ import TermsDetailsPage from 'pages/TermsDetailsPage/TermsDetailsPage'
+ import LogQueryPage from 'pages/LogQueryPage/LogQueryPage'
+ import AboutCSM from 'pages/AboutCSM/AboutCSM'
+ import MyContractPage from 'pages/MyContractPage/MyContractPage'
+ import ContractDetails from 'pages/ContractDetails/ContractDetails'
+ import MsgListPage from 'pages/MsgListPage/MsgListPage'
+ import DataSharingRecord from 'pages/DataSharingRecord/DataSharingRecord'
+ import DataSharingRecordDetail from 'pages/DataSharingRecordDetail/DataSharingRecordDetail'
+ import MsgDetailPage from 'pages/MsgDetailPage/MsgDetailPage'
+ import AppointmentListPage from 'pages/AppointmentListPage/AppointmentListPage'
+ import BillingRecordsPage from 'pages/BillingRecordsPage/BillingRecordsPage'
+ import type {UITheme, Theme} from 'types/Theme';
+ import TermsOfUsePage from 'pages/TermsOfUsePage/TermsOfUsePage'
+ import HealthQuestionPage from 'pages/HealthQuestionPage/HealthQuestionPage'
+ import AddLettersPage from 'pages/AddLettersPage/AddLettersPage'
+ import PreviewReferralLetterPage from 'pages/PreviewReferralLetterPage/PreviewReferralLetterPage'
+ import ScanQRCodeLoginScreen from 'pages/ScanQRCodeLoginScreen/ScanQRCodeLoginScreen'
+ import VerifyAccountPage from 'pages/VerifyAccountPage/VerifyAccountPage'
+ import BindMobileNumberPage from 'pages/BindMobileNumberPage/BindMobileNumberPage'
+ import PDFScreen from 'pages/PDFScreen/PDFScreen'
+ import ManageCalendarPage from 'pages/ManageCalendarPage/ManageCalendarPage'
++import BookingDetailPage from 'pages/BookingDetailPage/BookingDetailPage'
+ 
+ const Stack = createStackNavigator()
+ 
+ export interface Props {
+   theme: Theme | undefined,
+ }
+ 
+ const MainStack: React.FC<Props> = (props: Props) => {
+   const {colors} = useTheme()
+   appStyle.safeAreaInsets = useSafeAreaInsets()
+   console.log('MainStack.js safeAreaInsets =', appStyle.safeAreaInsets)
+   const [initialRouteName, setInitialRouteName] = useState(routes.WelcomePage.routeName)
+ 
+   // Create ref for MainTabNavigator
+   const mainTabNavigatorRef = useRef<MainTabNavigatorRef>(null)
+ 
+   useEffect(() => {
+     console.log('MainStack.js componentDidMount')
+ 
+     // Store MainTabNavigator ref to global object for global access
+     $mainTabNavigatorRef = mainTabNavigatorRef;
+     console.log('MainStack.js stored mainTabNavigatorRef to global object')
+ 
+     const getInitialRouteName = async () => {
+       console.log('MainStack.tsx getInitialRouteName')
+       const [errInitialRouteName, dataInitialRouteName] = await tool.to(
+         asyncStorage.getItem(constant.initialRouteName)
+       )
+       console.log(
+         'MainStack.js componentDidMount dataInitialRouteName=',
+         dataInitialRouteName,
+         ' errInitialRouteName=',
+         errInitialRouteName
+       )
+       // 保证 WelcomePage 只显示一次
+       if (dataInitialRouteName) {
+         console.log('MainStack.js setInitialRouteName routes.MainTabNavigator.routeName')
+         // @ts-ignore
+         setInitialRouteName(routes.MainTabNavigator.routeName)
+       } else {
+         // @ts-ignore
+         setInitialRouteName(routes.WelcomePage.routeName)
+       }
+     }
+     getInitialRouteName().then()
+     return () => {
+       console.log('MainStack componentWillUnmount')
+     }
+   }, [])
+   useEffect(() => {
+     console.log('MainStack.tsx initialRouteName=', initialRouteName)
+   }, [initialRouteName]);
+ 
+   const renderMainTabNavigator = () => {
+     return <MainTabNavigator ref={mainTabNavigatorRef} theme={props.theme} />
+   }
+ 
+   // useNetInfoModel()
+   return !initialRouteName
+     // eslint-disable-next-line multiline-ternary
+     ? (
+       // 加载各种启动时需要的缓存时 ,先显示全屏菊花
+       <View
+         style={{
+           flex: 1,
+           justifyContent: 'center',
+           alignItems: 'center',
+           backgroundColor: 'ffffff'
+         }}
+       >
+         <ActivityIndicator size='large' />
+       </View>
+     ) : (
+       <Stack.Navigator
+         // @ts-ignore 第一个路由是 WelcomePage,不需要显示导航栏
+         initialRouteName={initialRouteName}
+         // 通用的导航栏的样式,可根据暗黑模式改变背景色和title颜色 https://www.jianshu.com/p/a2582f8b16fd
+         screenOptions={{
+           // headerStyle: {
+           //     backgroundColor: colors.primary
+@@ -505,85 +506,112 @@ const MainStack: React.FC<Props> = (props: Props) => {
+           component={BillingRecordsPage}
+           initialParams={{}}
+           options={{
+             headerShown: false,
+           }}
+         />
+         <Stack.Screen
+           name={routes.TermsOfUsePage.routeName}
+           component={TermsOfUsePage}
+           initialParams={{}}
+           options={{
+             headerShown: false,
+           }}
+         />
+         <Stack.Group screenOptions={{presentation: 'modal'}}>
+           <Stack.Screen
+             name={routes.HealthQuestionPage.routeName}
+             component={HealthQuestionPage}
+             initialParams={{}}
+             options={{
+               headerShown: false,
+             }}
+           />
+         </Stack.Group>
+         <Stack.Screen
+           name={routes.AddLettersPage.routeName}
+           component={AddLettersPage}
+           initialParams={{}}
+           options={{
+             headerShown: false,
+           }}
+         />
+         <Stack.Screen
+           name={routes.PreviewReferralLetterPage.routeName}
+           component={PreviewReferralLetterPage}
+           initialParams={{}}
+           options={{
+             headerShown: false,
+           }}
+         />
+         <Stack.Screen
+           name={routes.ScanQRCodeLoginScreen.routeName}
+           component={ScanQRCodeLoginScreen}
+           initialParams={{}}
+           options={{
+             headerShown: false,
+           }}
+         />
+         <Stack.Screen
+           name={routes.VerifyAccountPage.routeName}
+           component={VerifyAccountPage}
+           initialParams={{}}
+           options={{
+             headerShown: false,
+           }}
+         />
+         <Stack.Screen
+           name={routes.BindMobileNumberPage.routeName}
+           component={BindMobileNumberPage}
+           initialParams={{}}
+           options={{
+             headerShown: false,
+           }}
+         />
+         <Stack.Screen
+           name={routes.PDFScreen.routeName}
+           component={PDFScreen}
+           initialParams={{}}
+           options={{
+             headerShown: false,
+           }}
+         />
+         <Stack.Screen
+           name={routes.ManageCalendarPage.routeName}
+           component={ManageCalendarPage}
+           initialParams={{}}
+           options={{
+             headerShown: false,
+           }}
+         />
++        {
++          Platform.OS === 'ios' ?
++            <Stack.Group screenOptions={{
++              presentation: 'modal',
++              cardShadowEnabled: false,
++              cardOverlayEnabled: true,
++            }}>
++              <Stack.Screen
++                name={routes.BookingDetailPage.routeName}
++                component={BookingDetailPage}
++                initialParams={{}}
++                options={{
++                  headerShown: false,
++                }}
++              />
++            </Stack.Group>
++            :
++            <Stack.Screen
++              name={routes.BookingDetailPage.routeName}
++              component={BookingDetailPage}
++              initialParams={{}}
++              options={{
++                headerShown: false,
++              }}
++            />
++        }
++
+       </Stack.Navigator>
+     )
+ }
+ 
+ export default MainStack
+diff --git a/src/csxRoutes/NavigationContainer.tsx b/src/csxRoutes/NavigationContainer.tsx
+index 81e92ae7..cdb3a8e6 100644
+--- a/src/csxRoutes/NavigationContainer.tsx
++++ b/src/csxRoutes/NavigationContainer.tsx
+@@ -1,177 +1,179 @@
+ // eslint-disable-next-line no-use-before-define
+ // import {NavigationContainer} from 'csxRoutes'
+-import {NavigationContainer, Theme} from '@react-navigation/native';
+-import type {NavigationState} from '@react-navigation/routers';
+-import {Route} from '@react-navigation/routers/src/types';
+-import {navigationRef} from 'tools/navigationService';
++import { NavigationContainer, Theme } from '@react-navigation/native';
++import type { NavigationState } from '@react-navigation/routers';
++import { Route } from '@react-navigation/routers/src/types';
++import { navigationRef } from 'tools/navigationService';
+ import AgoraShowBt from 'components/AgoraShowBt/AgoraShowBt';
+ import ConfirmDialog from 'components/ConfirmDialog/ConfirmDialog';
+ import LanguageModal from 'components/LanguageModal/LanguageModal'; // 确保正确导入 RouteContext
+ import WhatsappModal from 'components/WhatsappModal/WhatsappModal';
+ import VideoCallInviteModal from 'components/VideoCallInviteModal/VideoCallInviteModal';
+-import {ThemeContext} from 'components/theme/theme-context';
+-import {useThemeProvider} from 'components/theme/theme-provider';
++import { ThemeContext } from 'components/theme/theme-context';
++import { useThemeProvider } from 'components/theme/theme-provider';
+ // Use relative import to avoid circular dependency with csxRoutes/index.ts
+ import routes from './csxRouter';
+-import React, {ReactNode, useState} from 'react';
+-import {useDispatch} from 'react-redux';
+-import {globalEventName, useGlobalEventEmitter} from 'tools/useGlobalEventEmitter';
+-import type {Theme as Theme1} from 'types/Theme';
+-import {useInactivity} from 'useHooks/InactivityContext';
++import React, { ReactNode, useState } from 'react';
++import { useDispatch } from 'react-redux';
++import { globalEventName, useGlobalEventEmitter } from 'tools/useGlobalEventEmitter';
++import type { Theme as Theme1 } from 'types/Theme';
++import { useInactivity } from 'useHooks/InactivityContext';
+ import MainStack from './MainStack';
+-import {RouteContext} from './RouteContext';
++import { RouteContext } from './RouteContext';
+ 
+ /**
+  * PureComponent
+  * @param props
+  * @param parentRef
+  * @returns {*}
+  * @constructor
+  */
+ export interface Props {
+   theme: Theme | undefined;
+ }
+ 
+ // 定义 Props 接口，这里用于传递给组件的 children
+ interface RouteProviderProps extends Props {
+   children: ReactNode;
+ }
+ 
+ const RouteProvider: React.FC<RouteProviderProps> = (Props, parentRef) => {
+-  const {theme, children} = Props;
++  const { theme, children } = Props;
+   console.log('NavigationContainer.tsx Props=', Props);
+   const [routeState, setRouteState] = useState<Route<string> | null>(null);
+   const emitEvent = useGlobalEventEmitter();
+   const dispatch = useDispatch();
+-  const {isInactive, resetTimer} = useInactivity();
++  const { isInactive, resetTimer } = useInactivity();
+ 
+   //监听路由变化
+   const handleStateChange = (state: NavigationState | undefined) => {
+     console.log('NavigationContainer.js handleStateChange state=', state);
+     resetTimer();
+     // 这里可以获取到当前的路由状态
+     if (!state) return;
+     const currentRoute = state.routes[state.index];
+     console.log('NavigationContainer.tsx 当前路由状态:', currentRoute);
+     setRouteState(currentRoute); // 更新RouteContext的状态
+     if (currentRoute.state?.index === 1) {
+       //切換到 診症頁面
+       console.log('NavigationContainer.tsx handleStateChange 切換到 診症頁面');
+       emitEvent(globalEventName.refreshDiagnosisPage, '1'); //刷新診症頁面
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.state?.index === 2) {
+       //切換到 首页
+       emitEvent(globalEventName.refreshHomePage, '1'); //刷新首页
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.state?.index === 3) {
+       //切換到 業務概覽
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.AppointmentListPage.routeName) {
+       //切換到 AppointmentListPage
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.MedicalRecordsPage.routeName) {
+       //切換到 MedicalRecordsPage
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.BillingRecordsPage.routeName) {
+       //切換到 BillingRecordsPage
+       emitEvent(globalEventName.disabledPanResponder, '1'); //SignInEcPages
+     } else if (currentRoute.name === routes.SignInEcPages.routeName) {
+       //切換到 SignInEcPages
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.NewlyAddedPatients.routeName) {
+       //切換到 NewlyAddedPatients
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.TermsDetailsPage.routeName) {
+       //切換到 TermsDetailsPage
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.WaitingSchedulingDetailPage.routeName) {
+       //切換到 WaitingSchedulingDetailPage
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.TermsOfUsePage.routeName) {
+       //切換到 TermsOfUsePage
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.CreateConsultationPage.routeName) {
+       //切換到 CreateConsultationPage
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.SetsMixedMedicinePage.routeName) {
+       //切換到 SetsMixedMedicinePage
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.HealthQuestionPage.routeName) {
+       //切換到 HealthQuestionPage
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.AddLettersPage.routeName) {
+       //切換到 AddLettersPage
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.PreviewReferralLetterPage.routeName) {
+       //切換到 PreviewReferralLetterPage
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.HealthDataPage.routeName) {
+       //切換到 HealthDataPage
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.LogQueryPage.routeName) {
+       //切換到 LogQueryPage
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.ImageZoomPreviewPage.routeName) {
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.AllergyPage.routeName) {
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.ImmuneRecordPage.routeName) {
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.ScanQRCodeLoginScreen.routeName) {
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.PDFScreen.routeName) {
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.ManageCalendarPage.routeName) {
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else if (currentRoute.name === routes.EditHealthDataPage.routeName) {
+       emitEvent(globalEventName.disabledPanResponder, '1'); //
++    } else if (currentRoute.name === routes.BookingDetailPage.routeName) {
++      emitEvent(globalEventName.disabledPanResponder, '1'); //
+     } else {
+       emitEvent(globalEventName.disabledPanResponder, '0'); //
+     }
+   };
+-  const {mode, uiTheme, setMode} = useThemeProvider();
++  const { mode, uiTheme, setMode } = useThemeProvider();
+   console.log('NavigationContainer.tsx mode=', mode);
+   return (
+     <ThemeContext.Consumer>
+       {(theme1: Theme1) => {
+         console.log('NavigationContainer.tsx theme1=', theme1);
+         return (
+           <RouteContext.Provider value={routeState}>
+             {/*安卓上设置顶部状态栏背景色; iOS 不允许直接设置状态栏的背景色*/}
+             {/*<StatusBar*/}
+             {/*    // 状态栏背景色*/}
+             {/*    backgroundColor={theme1.uiTheme.colors.$background}*/}
+             {/*    // 状态栏文本颜色*/}
+             {/*    barStyle={theme1.mode === 'light' ? "dark-content" : "light-content"} />*/}
+             <NavigationContainer ref={navigationRef} theme={theme} onStateChange={handleStateChange}>
+               {/* eslint-disable-next-line multiline-ternary */}
+               {
+                 //   useDrawer ? (
+                 //   // https://reactnavigation.org/docs/drawer-based-navigation
+                 //   // https://reactnavigation.org/docs/drawer-navigator
+                 //   <Drawer.Navigator
+                 //     initialRouteName={routes.MainStack.routeName}
+                 //     drawerType={'slide'}
+                 //     drawerPosition={'left'}
+                 //     drawerContent={(props) => <DrawerContent {...props} navigation={props.navigation} />}
+                 //   >
+                 //     <Drawer.Screen name={routes.MainStack.routeName} component={MainStack} />
+                 //      <Drawer.Screen name={routes.SecondStack.routeName} component={SecondStack} />
+                 //   </Drawer.Navigator>
+                 // ) :
+                 <MainStack theme={theme1} />
+               }
+               <ConfirmDialog></ConfirmDialog>
+               <WhatsappModal></WhatsappModal>
+               <AgoraShowBt></AgoraShowBt>
+               <LanguageModal></LanguageModal>
+               <VideoCallInviteModal></VideoCallInviteModal>
+             </NavigationContainer>
+           </RouteContext.Provider>
+         );
+       }}
+     </ThemeContext.Consumer>
+   );
+ };
+ 
+ export default RouteProvider;
+diff --git a/src/csxRoutes/csxRouter.ts b/src/csxRoutes/csxRouter.ts
+index 01a4953f..82bedb8c 100644
+--- a/src/csxRoutes/csxRouter.ts
++++ b/src/csxRoutes/csxRouter.ts
+@@ -120,137 +120,140 @@ const routeName = {
+     OtherDiagnosticPage:{
+         routeName: 'OtherDiagnosticPage'
+     },
+     MinePage:{
+         routeName: 'MinePage'
+     },
+     AccountSecurityPage:{
+         routeName: 'AccountSecurityPage'
+     },
+     SwitchAccountPage:{
+         routeName: 'SwitchAccountPage'
+     },
+     ResetPassPage:{
+         routeName: 'ResetPassPage'
+     },
+     ForgotPassword:{
+         routeName: 'ForgotPassword'
+     },
+     TermsDetailsPage:{
+         routeName: 'TermsDetailsPage'
+     },
+     LogQueryPage:{
+         routeName: 'LogQueryPage'
+     },
+     AboutCSM:{
+         routeName: 'AboutCSM'
+     },
+     BusinessOverview:{
+         routeName: 'BusinessOverview'
+     },
+     MyContractPage:{
+         routeName: 'MyContractPage'
+     },
+     ContractDetails:{
+         routeName: 'ContractDetails'
+     },
+     MsgListPage:{
+         routeName: 'MsgListPage'
+     },
+     DataSharingRecord:{
+         routeName: 'DataSharingRecord'
+     },
+     DataSharingRecordDetail:{
+         routeName: 'DataSharingRecordDetail'
+     },
+     MsgDetailPage:{
+         routeName: 'MsgDetailPage'
+     },
+     AppointmentListPage:{
+         routeName: 'AppointmentListPage'
+     },
+     BillingRecordsPage:{
+         routeName: 'BillingRecordsPage'
+     },
+     TermsOfUsePage:{
+         routeName: 'TermsOfUsePage'
+     },
+     HealthQuestionPage: {
+         routeName: 'HealthQuestionPage'
+     },
+     AddLettersPage:{
+         routeName: 'AddLettersPage'
+     },
+     PreviewReferralLetterPage:{
+         routeName: 'PreviewReferralLetterPage'
+     },
+     ScanQRCodeLoginScreen:{
+         routeName: 'ScanQRCodeLoginScreen'
+     },
+     VerifyAccountPage:{
+         routeName: 'VerifyAccountPage'
+     },
+     BindMobileNumberPage:{
+         routeName: 'BindMobileNumberPage'
+     },
+     PDFScreen:{
+         routeName: 'PDFScreen'
+     },
+     ManageCalendarPage: {
+         routeName: 'ManageCalendarPage'
+-    }
++    },
++    BookingDetailPage: {
++        routeName: 'BookingDetailPage'
++    },
+ }
+ 
+ //告诉TypeScript你的路由和参数的结构
+ type csxStackParamList = {
+     [routeName.WelcomePage.routeName]: undefined;  // 假设 WelcomePage 路由不接受任何参数
+     [routeName.LoginPage.routeName]: undefined; AddAppointment
+     [routeName.SearchPatients.routeName]: undefined;
+     [routeName.AddAppointment.routeName]: { pageData: object };  // AddAppointment 路由接受一个名为 pageData 的参数
+ };
+ 
+ export default {
+     ...routeName,
+     //导航到任何已定义的路由，如果该路由已在堆栈中，则导航到该路由，而不是创建一个新实例
+     navigate: (navigation: StackNavigationProp<csxStackParamList, keyof csxStackParamList>,
+                routeName: keyof csxStackParamList,
+                params?: object | undefined
+     ) => {
+         console.log('csxRoutes.ts navigate routeName=', routeName, ' params=', params)
+         navigation.navigate(routeName as string, params)
+     },
+     //将新视图推入导航堆栈，即使相同的视图已经存在
+     push: (navigation: StackNavigationProp<csxStackParamList, keyof csxStackParamList>,
+            routeName: keyof csxStackParamList,
+            params?: object) => {
+         console.log('csxRoutes.js push routeName=', routeName, ' params=', params)
+         navigation.push(routeName as string, params)
+     },
+     goBack: (navigation: StackNavigationProp<csxStackParamList>) => {
+         console.log('csxRouter.ts goBack navigation=', navigation)
+         navigation.goBack()
+     },
+     replace: (navigation: StackNavigationProp<csxStackParamList, keyof csxStackParamList>, routeName: keyof csxStackParamList,
+               params?: object) => {
+         console.log('csxRouter.ts replace navigation=', navigation)
+         navigation.replace(routeName as string, params)
+     },
+     /**
+      * reset函数用于清除导航堆栈并将其设置到一个新的状态。这对于完成登录流程后清除导航历史非常有用。
+      * @param navigation
+      * @param routeName
+      */
+     reset: (navigation: StackNavigationProp<csxStackParamList, keyof csxStackParamList /*表示所有路由的名称*/>,
+             routeName: keyof csxStackParamList,
+             params: object | undefined) => {
+         console.log('csxRoutes.js reset routeName=', routeName, ' params=', params, '  navigation=', navigation)
+         navigation.reset({
+             index: 0,
+             routes: [
+                 {
+                     name: routeName,  // 注意：这里应该使用 name 而不是 routeName
+                     params: params,
+                 },
+             ],
+         });
+     }
+ }
+diff --git a/src/pages/MsgDetailPage/MsgDetailPage.styles.ts b/src/pages/MsgDetailPage/MsgDetailPage.styles.ts
+index 630099ad..dedaf82d 100644
+--- a/src/pages/MsgDetailPage/MsgDetailPage.styles.ts
++++ b/src/pages/MsgDetailPage/MsgDetailPage.styles.ts
+@@ -1,93 +1,94 @@
+ import EStyleSheet from 'react-native-extended-stylesheet';
+ import {Platform, StyleSheet} from 'react-native';
+ import borderStyle from "components/common-styles/borderStyle";
+ import pageContainer from 'components/common-styles/pageContainer.style'
+ import divider from 'components/common-styles/divider.style'
+ 
+ export default EStyleSheet.create({
+     pageContainer,
+     source_image: {
+         width: '16rem',
+         height: '16rem',
+         resizeMode: 'contain',
+         borderRadius: '4rem',
++        alignSelf: 'center',
+     },
+     APPOINTMENT_REQUEST_content: {
+         fontSize: '15rem',
+         lineHeight: '20rem',
+         fontWeight: '400',
+         color: '$text',
+     },
+     card: {
+         marginTop: '16rem',
+         width: '100%',
+         minHeight: '60rem',
+         backgroundColor: '$background',
+         borderRadius: '12rem',
+         padding: '16rem',
+         paddingTop: '84rem',
+     },
+     header: {
+         backgroundColor: '$background',
+         paddingHorizontal:'8rem'
+     },
+     bottomRowBt: {
+         width: '49%',
+         height: '100%',
+         backgroundColor: '$lightBlue',
+         borderRadius: '12rem',
+         justifyContent: 'center',
+         alignItems: 'center',
+     },
+     webviewBox: {
+         marginTop: '80rem',
+         width: '100%',
+         height: '400rem',
+         backgroundColor: 'white',
+         ...borderStyle
+     },
+     Next_btn: {
+         marginTop: '24rem',
+         width: '95%',
+         height: '50rem',
+         backgroundColor: 'rgba(0, 122, 255, 1)',
+         borderRadius: '12rem',
+         justifyContent: 'center',
+         alignItems: 'center',
+         ...borderStyle
+     },
+     Mark_as_unread_btn_text: {
+         fontSize: '17rem',
+         lineHeight: '22rem',
+         fontWeight: '400',
+         color: 'rgba(0, 122, 255, 1)',
+     },
+     bottomRow: {
+         position: 'absolute',
+         bottom: '20rem',
+         width: '100%',
+         height: '50rem',
+         flexDirection: 'row',
+         justifyContent:'space-between',
+         alignItems: 'center',
+         ...borderStyle
+     },
+     Mark_as_unread_btn: {
+         marginTop: '16rem',
+         width: '95%',
+         height: '50rem',
+         backgroundColor: 'rgba(0, 122, 255, 0.15)',
+         borderRadius: '12rem',
+         justifyContent: 'center',
+         alignItems: 'center',
+     },
+     tabletBottomView: {
+         position: 'absolute',
+         bottom: '31 rem',
+         width: '95%',
+         height: '50rem',
+         flexDirection: 'row',
+     },
+     Mark_as_unread_btnTablet: {
+         flex:1,
+         backgroundColor: 'rgba(0, 122, 255, 0.15)',
+diff --git a/src/pages/MsgDetailPage/MsgDetailPage.tsx b/src/pages/MsgDetailPage/MsgDetailPage.tsx
+index 5f0180e0..e7544b14 100644
+--- a/src/pages/MsgDetailPage/MsgDetailPage.tsx
++++ b/src/pages/MsgDetailPage/MsgDetailPage.tsx
+@@ -25,321 +25,364 @@ import { SafeView } from 'components'
+ import tool from 'tools/tool'
+ import styles from "./MsgDetailPage.styles";
+ import CsxMobileHeader from "components/csxMobileHeader/CsxMobileHeader";
+ import { ThemeContext } from "components/theme/theme-context";
+ import type { Theme } from "types/Theme";
+ import scrollViewStyle from 'components/common-styles/scrollView.style'
+ import { messages_get, update_read_state } from "api/api";
+ import pageContainer from 'components/common-styles/pageContainer.style'
+ import { routes } from "csxRoutes";
+ import CsxFlatList from "components/CsxFlatList/CsxFlatList";
+ import divider from 'components/common-styles/divider.style'
+ import moment from "moment";
+ import { useMomentFormatStr, showEnFormatDate } from 'useHooks/useMomentFormatStr'
+ import { setState } from "jest-circus";
+ import { KeepDigitsDecimalPlaces } from "tools/Math";
+ import { useLanguage } from 'useHooks/useLanguage'
+ import WebViewComponent from 'components/WebViewComponent/WebViewComponent'
+ import { useLoading } from '../../components/LoadingModal/LoadingContext';
+ 
+ interface Props extends pageProps {
+ }
+ 
+ interface pageDataProps {
+     id: string;
+     messagesIcon: Function;
+     index: number;
+ }
+ 
+ /**
+  * 消息详情
+  * @param props
+  * @param parentRef
+  * @returns {*}
+  * @constructor
+  */
+ const MsgDetailPage: React.FC<Props> = (props: Props, parentRef) => {
+     const { navigation, scene, route, messagesIcon } = props
+     console.log('MsgDetailPage props=', props)
+     const { pageData } = route?.params ?? {} as { pageData?: pageDataProps };//类型断言
+     const store = useSelector((state: object) => state)
+     const dispatch = useDispatch();
+     const [state, setState] = useState({
+         data: {} as {
+             id: string,
+             type: string,
+             from: string,
+             title: string,
+             content: {
+                 ClinicCode: string,
+                 ClinicId: string,
+                 DoctorName: string,
+                 DoctorOName: string,
+                 ClinicName: string,
+                 ClinicOName: string,
+                 DoctorCode: string,
+                 DoctorId: string,
+                 Payor: {
+                     Id: string,
+                     Code: string,
+                     Name: string,
+                     Icon: string | null
+                 },
+                 Patient: {
+                     name: string,
+                     gender: string,
+                     idNumber: string,
+                     memberId: string | null,
+                     birthDate: string,
+                     idType: string | null,
+                     otherIdNumber: string | null,
+                     idNumberRegistrationCountry: string,
+                     mobile: string | null,
+                     homeTel: string | null,
+                     officeTel: string | null,
+                     fax: string | null,
+                     email: string | null,
+                     age: string | null,
+                 },
+                 Id: string,
+                 Provider: string,
+-                RelatedDocuments: any | null,
++                RelatedDocuments: Array<{
++                    type: string;
++                    bucketName: string;
++                    key: string;
++                    fileName: string;
++                }> | null;
+                 Status: string,
+                 StatusSavedTime: string,
+                 TicketId: string | null,
+                 TimePreference: string,
+                 TimeSlots: string[],
+                 VisitType: string,
+             } | string,
+             sentTime: string,
+             isRead: boolean
+         },
+         index: (pageData?.index ?? 0) as number
+     })
+     const { setLoading } = useLoading();
+     const refCsxFlatList = useRef();
+     const formatString = useMomentFormatStr();
+     /**
+      * componentDidMount && componentWillUnmount
+      */
+     useEffect(
+         /*The async keyword cannot be added to the first parameter https://juejin.im/post/6844903985338400782#heading-27 */
+         () => {
+             (async () => {
+                 await _messages_get(pageData.id)
+             })();
+             console.log(`MsgDetailPage componentDidMount`)
+             //componentWillUnmount
+             return () => {
+                 console.log(`MsgDetailPage componentWillUnmount`)
+             }
+         }, []);
+     const language = useLanguage();
+     const _messages_get = useCallback(
+-        async (id) => {
++        async (id: string) => {
+             setLoading(true);
+             const [err, data] = await tool.to(messages_get({ id }))
+             await tool.to(update_read_state({ id, isRead: true }))
+             console.log('messages_get data=', data)
+             setLoading(false);
+             if (data) {
+                 if (data.type === 'QUEUE_REQUEST') {
+                     const content = { ...JSON.parse(data.content) }
+                     console.log('messages_get content=', content)
+                     data.content = `${data.from} ${global.i18n.t('member')} ${content.PatientName}` +
+                         (content.PatientMobile ? `( ${global.i18n.t('telephone')} ${content.PatientMobile})` : ``) +
+                         ` ${global.i18n.t('queuing')}`
+                 } else if (data.type === 'PRE_PAYMENT_REQUEST') {
+                     const content = { ...JSON.parse(data.content) }
+                     data.content = `${global.i18n.t('patient1')}${content.PatientName}${global.i18n.t('prepayment')}`
+                     console.log('messages_get content=', content)
+                 } else if (data.type === 'PAYMENT_REQUEST') {
+                     const content = { ...JSON.parse(data.content) }
+                     console.log('messages_get content=', content)
+                     if (data.title === 'PAYMENT_TIMEOUT') {
+                         data.content = `${content.PaymentAccount} ${global.i18n.t('customer')} ${content.PatientName} ${global.i18n.t('failed_to_complete_payment')} ${content.Amount.toFixed(2)}`
+                     } else if (data.title === 'PAYMENT_COMPLETED') {
+                         data.content = `${content.PaymentAccount} ${global.i18n.t('client')} ${content.PatientName} ${global.i18n.t('has_paid')} ${content.Amount.toFixed(2)}`
+                     } else if (data.title === 'PAYMENT_PENDING') {
+                         if (language === 'en') {
+                             data.content = `${global.i18n.t('Waiting_for')} ${content.PatientName} ${global.i18n.t('through')} ${content.PaymentAccount} ${content.Amount.toFixed(2)} ${global.i18n.t('through')}  `
+                         } else {
+                             data.content = `${global.i18n.t('Waiting_for')} ${content.PatientName} ${global.i18n.t('to_pay')}  ${content.PaymentAccount} ${global.i18n.t('pay')} ${content.Amount.toFixed(2)}`
+                         }
+                     }
+                 } else if (data.type === 'APPOINTMENT_REQUEST') {//前端也不知道怎么处理这种类型 
+                     const content = { ...JSON.parse(data.content) }
+                     console.log('messages_get content=', content)
+                     data.content = content
+                     console.log('messages_get data.content=', data.content);
+                 } else if (data.type === 'MARKETING_MESSAGE') {//用html展示content.body，以及附件列表content.attachments（可下载）
+                     const content = { ...JSON.parse(data.content) }
+                     console.log('messages_get content=', content)
+                     data.content = content
+                 } else if (data.type === 'EXPRESS_WAYBILL_READY') {//已收到運單 {waybill} | 英文：Waybill {waybill} is ready. waybill取值content.waybillNum
+                     const content = { ...JSON.parse(data.content) }
+                     console.log('messages_get content=', content)
+                     if (language !== 'en') {
+                         data.content = `${global.i18n.t('Waybill')} ${content.waybillNum}`
+                     } else {
+                         data.content = `Waybill ${content.waybillNum} is ready.`
+                     }
+                 }
+                 console.log('messages_get finally data =', data);
+                 setState((prevState) => {
+                     return {
+                         ...prevState, data: data
+                     }
+                 })
+             }
+         },
+         [],
+     );
+     /**
+      * Methods of child components that can be directly called by the parent component
+      */
+     useImperativeHandle(parentRef, () => ({
+         xxx: () => {
+         }
+     }), [])
+     const renderContent = useCallback(() => {
+         if (state.data.type === 'APPOINTMENT_REQUEST') {
++            // RelatedDocuments样本数据
++            // "RelatedDocuments": [
++            //     {
++            //         "type": "REFFERAL LETTER",
++            //         "bucketName": "heals-core-dev.tenant.watsontest",
++            //         "key": "/consultations/9b63c880-f057-4d62-9f2f-d9b030f327bd/medicalDocuments/e64af7e6-cfee-4fae-a74a-c9be9873b729.pdf",
++            //         "fileName": "e64af7e6-cfee-4fae-a74a-c9be9873b729.pdf"
++            //     }
++            // ]
++            // 前端不能直接使用 key 访问文件。需要将 key 和 bucketName 发送给后端
++            // 后端根据这些信息生成一个预签名URL或临时访问令牌，返回给前端。前端拿到这个带签名的 URL 后才能真正加载图片或 PDF
++
++            const referralDoc = state.data?.content?.RelatedDocuments?.find((doc: any) => doc.type === 'REFFERAL LETTER');
++            const referralFileName = referralDoc ? referralDoc.fileName : '';
++
++            // TODO: 报告类型未知，后端未提供 假设报告类型叫 REPORT
++            // const reportDoc = state.data?.content?.RelatedDocuments?.find((doc: any) => doc.type === 'REPORT');
++            // const reportFileName = reportDoc ? reportDoc.fileName : '';
++
+             return (
+                 <>
+                     <Text style={styles.APPOINTMENT_REQUEST_content} numberOfLines={0}>
+                         {i18n.t('doctor')}:  {state.data?.content?.DoctorName} {state.data?.content?.DoctorOName}
+                     </Text>
+                     <Text style={styles.APPOINTMENT_REQUEST_content} numberOfLines={0}>
+-                        {i18n.t('patient1')}:  {state.data?.content?.Patient.name} ({state.data?.content?.Patient.age} , {state.data?.content?.Patient.gender})
++                        {i18n.t('patient_name')}:  {state.data?.content?.Patient.name} ({state.data?.content?.Patient.age} , {state.data?.content?.Patient.gender})
+                     </Text>
+                     <Text style={styles.APPOINTMENT_REQUEST_content} numberOfLines={0}>
+-                        {i18n.t('telephone')}:  {state.data?.content?.Patient.mobile}
+-                    </Text>
+-                    <Text style={styles.APPOINTMENT_REQUEST_content} numberOfLines={0}>
+-                        {i18n.t('source')}:  <Image source={pageData.messagesIcon(state.data.from)} style={styles.source_image} />  {state.data?.content?.Payor?.Name}
++                        {i18n.t('contact_number')}:  {state.data?.content?.Patient.mobile}
+                     </Text>
++                    <View style={{ flexDirection: 'row' }}>
++                        <Text style={styles.APPOINTMENT_REQUEST_content}>
++                            {i18n.t('source')}:{"  "}
++                        </Text>
++                        <Image
++                            source={pageData.messagesIcon(state.data.from)}
++                            style={styles.source_image}
++                        />
++                        <Text style={styles.APPOINTMENT_REQUEST_content}>
++                            {"  "}{state.data?.content?.Payor?.Name}
++                        </Text>
++                    </View>
+                     <Text style={styles.APPOINTMENT_REQUEST_content} numberOfLines={0}>
+                         {i18n.t('Time preference')}:  {state.data?.content?.TimePreference}
+                     </Text>
+                     <Text style={styles.APPOINTMENT_REQUEST_content} numberOfLines={0}>
+-                        {i18n.t('Referral letter')}:  
++                        {i18n.t('Referral letter')}:  {referralFileName}
+                     </Text>
+                     <Text style={styles.APPOINTMENT_REQUEST_content} numberOfLines={0}>
+-                        {i18n.t('Report')}:  
++                        {i18n.t('Report')}:
+                     </Text>
+                 </>
+             )
+         }
+         return <Text style={styles.title1} numberOfLines={0}>{state.data?.content}</Text>
+     }, [state.data])
+     return (
+         <ThemeContext.Consumer>
+             {(theme: Theme) => {
+                 return (
+                     <View style={{ flex: 1 }}>
+                         <SafeView>
+                             <CsxMobileHeader style={styles.header}
+                                 titleStyle={{ color: theme.mode == 'light' ? 'rgba(51, 54, 100, 1)' : '#FFFFFF' }}
+                                 title={state.data.title} navigation={navigation} rightBtText={''}
+                                 backBtText={global.i18n.t('back')}
+                             />
+                             <View style={[styles.pageContainer, { backgroundColor: theme.uiTheme.colors.$grayBackground }]}>
+-                                <View style={styles.card}>
++                                <TouchableOpacity style={styles.card} onPress={() => {
++                                    // 如果是APPOINTMENT_REQUEST类型，则进入eBooking详情页；否则不做任何操作
++                                    if (state.data.type === 'APPOINTMENT_REQUEST') {
++                                        routes.navigate(navigation, routes.BookingDetailPage.routeName, {
++                                            pageData: {
++                                                data: state.data,
++                                                messagesIcon: pageData.messagesIcon(state.data.from)
++                                            },
++                                        });
++                                    }
++                                }}>
+                                     <Image source={pageData.messagesIcon(state.data.from)} style={styles.image} />
+                                     <Text style={styles.title} numberOfLines={1}>{state.data.title}</Text>
+                                     <Text style={styles.time} numberOfLines={1}>
+                                         {/*{moment(state.data.sentTime).format(formatString + ' HH:mm')}*/}
+                                         {/* {showEnFormatDate(state.data.sentTime, `${formatString} HH:mm`)} */}
+                                         {moment.parseZone(state.data.sentTime).format(`${formatString} HH:mm`)}
+                                     </Text>
+                                     <View style={styles.divider}></View>
+                                     {
+                                         state.data.type !== 'MARKETING_MESSAGE' ?
+                                             (renderContent()) :
+                                             (state.data.content?.body ? <View style={styles.webviewBox}>
+                                                 <WebViewComponent source={{
+                                                     html:
+                                                         `
+                                         <html>
+                                           <head>
+                                           <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                             <style>
+                                               p {
+                                                 font-size: 16px; /* 设置所有 p 标签的字体大小 */
+                                               }
+                                             </style>
+                                           </head>
+                                           <body>
+                                             ${state.data.content?.body}
+                                           </body>
+                                         </html>
+                                         `
+                                                 }} />
+                                             </View> : <></>
+                                             )
+                                     }
+-                                </View>
++                                </TouchableOpacity>
+                                 {!global.isTablet ?
+                                     <>
+                                         <TouchableOpacity disabled={state.index === pageData.list.length - 1}
+                                             style={[styles.Next_btn, (state.index === pageData.list.length - 1 ? { backgroundColor: 'rgba(118, 118, 128, 0.12)' } : null)]}
+                                             onPress={() => {
+                                                 console.log('MsgDetailPage Next_btn =', {
+                                                     'pageData.list': pageData.list,
+                                                     'state.index': state.index,
+                                                 });
+                                                 _messages_get(pageData.list[state.index + 1].id)
+                                                 setState((prevState) => {
+                                                     return {
+                                                         ...prevState, index: prevState.index + 1
+                                                     }
+                                                 })
+                                             }}>
+                                             <Text style={[styles.Mark_as_unread_btn_text, { color: 'white' }]}>{global.i18n.t('Next')}</Text>
+                                         </TouchableOpacity>
+                                         <TouchableOpacity style={styles.Mark_as_unread_btn} onPress={async () => {
+                                             const [err, data] = await tool.to(update_read_state({ id: pageData.id, isRead: false }))
+                                             if (data) {
+ 
+                                             }
+                                         }}>
+                                             <Text style={styles.Mark_as_unread_btn_text}>{global.i18n.t('Mark_as_unread')}</Text>
+                                         </TouchableOpacity>
+                                     </>
+                                     : <View style={styles.bottomRow}>
+                                         <TouchableOpacity style={styles.bottomRowBt} onPress={async () => {
+                                             const [err, data] = await tool.to(update_read_state({ id: pageData.id, isRead: false }))
+                                             if (data) {
+ 
+                                             }
+                                         }}>
+                                             <Text style={styles.Mark_as_unread_btn_text}>{global.i18n.t('Mark_as_unread')}</Text>
+                                         </TouchableOpacity>
+                                         <TouchableOpacity disabled={state.index === pageData.list.length - 1}
+                                             style={[styles.bottomRowBt, (state.index === pageData.list.length - 1 ? { backgroundColor: 'rgba(118, 118, 128, 0.12)' } : { backgroundColor: 'rgba(0, 122, 255, 1)' })]}
+                                             onPress={() => {
+                                                 _messages_get(pageData.list[state.index + 1].id)
+                                                 setState((prevState) => {
+                                                     return {
+                                                         ...prevState, index: prevState.index + 1
+                                                     }
+                                                 })
+                                             }}>
+                                             <Text style={[styles.Mark_as_unread_btn_text, { color: 'white' }]}>{global.i18n.t('Next')}</Text>
+                                         </TouchableOpacity>
+                                     </View>
+                                 }
+ 
+                             </View>
+                         </SafeView>
+                         <SafeAreaView style={styles.outSafeBottom} />
+                     </View>
+                 );
+             }}
+         </ThemeContext.Consumer>
+     )
+ }
+ const MsgDetailPageComp = memo(forwardRef(MsgDetailPage));
+ MsgDetailPageComp.defaultProps = {};
+ export default MsgDetailPageComp;
+ 
+ 

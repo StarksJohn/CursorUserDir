@@ -1,0 +1,1049 @@
+diff --git a/src/components/gender-bottom-sheet-component/gender-bottom-sheet-component.tsx b/src/components/gender-bottom-sheet-component/gender-bottom-sheet-component.tsx
+index 455ea488..e1502d41 100644
+--- a/src/components/gender-bottom-sheet-component/gender-bottom-sheet-component.tsx
++++ b/src/components/gender-bottom-sheet-component/gender-bottom-sheet-component.tsx
+@@ -1,136 +1,136 @@
+ import React, { useRef, useState, ReactElement, memo, useEffect } from "react";
+ import { GenderBottomSheetComponentProps } from '@components/gender-bottom-sheet-component/gender-bottom-sheet-component.props';
+ import AppText from "@components/app-text/app-text";
+ import { FlatList, TouchableOpacity, View, Image, ActivityIndicator } from "react-native";
+ import RBSheet from 'react-native-raw-bottom-sheet';
+ 
+ const GenderBottomSheetComponent = (props: GenderBottomSheetComponentProps) => {
+   const refRBSheet = useRef();
+   const [gender, setGender] = useState<string>(props.initValue || "");
+   const handleShowBottomSheet = () => {
+     refRBSheet?.current.open();
+   }
+ 
+   const callbackFunction = (e: any) => {
+     setGender(e.value);
+     props.onSelectCallback(e.value);
+     refRBSheet.current.close();
+   }
+ 
+   useEffect(() => {
+     setGender(props.initValue || "");
+   }, [props.initValue]);
+ 
+   const renderItem = ({ item, index }: { item: any; index: number }) => {
+     return <ItemComponent item={item} onTap={callbackFunction} />
+   }
+ 
+   const genderBottomSheet = (): ReactElement => {
+     return (
+       <RBSheet
+         ref={refRBSheet}
+         height={400}
+         closeOnDragDown={true}
+         closeOnPressMask={true}
+         customStyles={{
+           wrapper: {
+             backgroundColor: 'rgba(0, 0, 0, 0.5)', // Overlay background color
+           },
+           container: {
+             borderTopLeftRadius: 20,
+             borderTopRightRadius: 20,
+             paddingHorizontal: 10,
+           },
+           draggableIcon: {
+             backgroundColor: '#000',
+           },
+         }}
+       >
+         <FlatList
+           data={[
+             {
+               "value": 'male',
+               "label": $i18n.t('male')
+             },
+             {
+               "value": 'female',
+               "label": $i18n.t('female')
+             },
+             {
+               "value": 'prefer_not_to_say',
+               "label": $i18n.t('prefer_not_to_say')
+             }
+           ]}
+-          keyExtractor={(item) => item.code}
++          keyExtractor={(item) => item.value}
+           renderItem={renderItem}
+           showsVerticalScrollIndicator={false}
+         />
+       </RBSheet>
+     );
+   }
+ 
+   return (
+     <View >
+       <TouchableOpacity
+         style={{
+           borderBottomColor: '#C6CFCE',
+           borderBottomWidth: 1,
+           width: '100%',
+           marginTop: 8,
+           flexDirection: 'row',
+           justifyContent: 'space-between',
+           alignItems: 'center',
+           paddingBottom: 8,
+         }}
+         onPress={handleShowBottomSheet}
+       >
+         <AppText 
+           size={'xsmall'}
+           style={{
+             textTransform: 'capitalize',
+             color: '#000000FF',
+           }}
+         >
+           {gender !== '' ? gender: $i18n.t('prefer_not_to_say')}
+         </AppText>
+         <Image source={$assets.address_down()} style={{ width: 20, height: 20 }} />
+       </TouchableOpacity>
+       {genderBottomSheet()}
+     </View>
+   )
+ }
+ 
+ const ItemComponent = memo(({ item, onTap }) => {
+   return (
+     <TouchableOpacity
+       style={{
+         padding: 20,
+         borderBottomWidth: 1,
+         borderBottomColor: '#ddd',
+         alignItems: 'center'
+       }}
+       onPress={() => onTap(item)}
+     >
+       <View
+         style={{
+           flexDirection: 'row',
+         }}
+       >
+ 
+         <AppText 
+           size='medium'
+           style={{
+             marginRight: 8,
+             textTransform: 'capitalize',
+             textAlign: 'center',
+ 
+           }}
+         >
+           {item.label}
+         </AppText>
+       </View>
+     </TouchableOpacity>
+   )
+ });
+ 
+ export default GenderBottomSheetComponent;
+\ No newline at end of file
+diff --git a/src/i18n/locale/en.ts b/src/i18n/locale/en.ts
+index 5d2421cb..cc71a0e8 100644
+--- a/src/i18n/locale/en.ts
++++ b/src/i18n/locale/en.ts
+@@ -1,133 +1,133 @@
+ export default {
+   teleconsultLocalDoctors:
+     '1 time teleconsult (local GP doctors) within 12 months',
+   annualBasicCheckup: 'annualBasicCheckup',
+   '1 x Annual basic checkup': '1 x Annual basic checkup',
+   dnaTest: 'dnaTest',
+   basicPlan: 'basicPlan',
+   BenefitExpired: 'Benefit Expired',
+   BenefitExpiredDesc:
+     'Your benefits have expired. You may be charged a fee for the services.',
+   chinaPlan: 'chinaPlan',
+   'Excludes medication and delivery fees':
+     'Excludes medication and delivery fees',
+   'First 3 teleconsults include 3-days basic medication and delivery':
+     'First 3 teleconsults include 3-days basic medication and delivery',
+   '1 x DNA test': '1 x DNA test',
+   'First 6 teleconsults include 3-days basic medication and delivery':
+     'First 6 teleconsults include 3-days basic medication and delivery',
+   'First teleconsult includes 3-days basic medication and delivery':
+     'First teleconsult includes 3-days basic medication and delivery',
+   'Global Plan - Asia 1': 'Global Plan - Asia 1',
+   'Global Plan - Asia 2': 'Global Plan - Asia 2',
+   'Global Plan - EMEA': 'Global Plan - EMEA',
+   'HK drugs delivered to China': 'HK drugs delivered to China',
+   HOLD: 'Standard Delivery',
+   'Heals Plan International Student': 'Heals Plan International Student',
+   'Heals Plan International Worker': 'Heals Plan International Worker',
+   'Health Plan 365': 'Health Plan 365',
+   'Medication from Hong Kong': 'Medication from Hong Kong',
+   'Meds + delivery not included': 'Meds + delivery not included',
+   'Premium Plan 365': 'Premium Plan 365',
+   'Premium Plan Gold': 'Premium Plan Gold',
+   'Premium Plan Platinum': 'Premium Plan Platinum',
+   'Travel Plan - Annual': 'Travel Plan - Annual',
+   'Travel Plan - Single': 'Travel Plan - Single',
+   'Travel Plan - Single (7 Days)': 'Travel Plan - Single (7 Days)',
+   'Travel Plan - Single Promo': 'Travel Plan - Single Promo',
+-  'GP Teleconsults only': 'GP Teleconsults only',
++  'GP Teleconsults': 'GP Teleconsults',
+   'Unlimited teleconsults (with GP doctors in chosen country in Asia)':
+     'Unlimited teleconsults (with GP doctors in chosen country in Asia)',
+   'Unlimited teleconsults (with GP doctors in chosen country in EMEA)':
+     'Unlimited teleconsults (with GP doctors in chosen country in EMEA)',
+   'Unlimited teleconsults (with HK-based doctors)':
+     'Unlimited teleconsults (with HK-based doctors)',
+   'Unlimited teleconsults (with either Indonesian or Filipino GP doctors)':
+     'Unlimited teleconsults (with either Indonesian or Filipino GP doctors)',
+   'Unlimited teleconsults (with home-based GP doctors), up to 14 days for 1 destination':
+     'Unlimited teleconsults (with home-based GP doctors), up to 14 days for 1 destination',
+   'Unlimited teleconsults (with home-based GP doctors), up to 14 days per destination (each trip)':
+     'Unlimited teleconsults (with home-based GP doctors), up to 14 days per destination (each trip)',
+   'Unlimited teleconsults (with local GP doctors)':
+     'Unlimited teleconsults (with local GP doctors)',
+-  'Teleconsults x1 + Referral letter x1': 'Teleconsults x1 + Referral letter x1',
++  'Teleconsults x1': 'Single Teleconsult',
+   'Excludes medication and delivery': 'Excludes medication and delivery',
+   'Upgrade to recommended plans': 'Upgrade to recommended plans',
+   'View Doctor List': 'View Doctor List',
+   'View Plans': 'View Plans',
+   'View available doctors': 'View available doctors',
+   account_signup: 'Account Sign Up',
+   account_signup_desc:
+     'Personalise your account to access video consultation service, consultation history and more.',
+   activate: 'Activate',
+   activate_input: 'Input Activation Code',
+   'Invalid Activation Code': 'Invalid Activation Code',
+   activate_passs_title: 'Activate a Plan ',
+   activate_success: 'Successful Activation !',
+   activate_success1: 'Your plan is now active for up in one country',
+   activated: 'Activated',
+   activation: 'Activation',
+   activation_code: 'Activation Code',
+   activation_code_expired:
+     'Activation code has expired. Please obtain a new activation code to continue.',
+   activation_code_not_found:
+     'Activation code not found. Please check the code and try again.',
+   activation_code_success: 'Pass activated successfully!',
+   active: 'Active',
+   add_address: 'Add Addresses',
+   add_new_address: 'Add new address',
+   add_wallet: 'Add to Wallet',
+   address: 'Address',
+   address_deleted: 'Address deleted',
+   address_edit: {
+     contact_number: 'Contact Mobile',
+     contact_person: 'Contact Person',
+   },
+   address_reminder_msg:
+     'An address is mandatory for medicine delivery. Please ensure to add a correct and accurate address.',
+   addresses: 'Addresses',
+   administrative_medicine: 'Administrative Medicine',
+   afghan: 'Afghan',
+   agree: 'Agree',
+   agree_heals:
+     'I agree with the Heals service terms and conditions and data privacy policy.',
+   albanian: 'Albanian',
+   alcohol_user: 'Alcohol Use ',
+   algerian: 'Algerian',
+   all: 'All',
+   all_districts: 'All Districts',
+   all_services: 'All Services',
+   allergy: 'Allergy',
+   already_reg: 'Already Registered ?',
+   american: 'American',
+   amount_limit: 'Amount Limit',
+   anaesthesiology: 'Anaesthesiology',
+   and: 'and',
+   andorran: 'Andorran',
+   angolan: 'Angolan',
+   antiguans: 'Antiguans',
+   anywhere: 'Please select',
+   apply_activation_code: 'Apply Activation Code',
+   apply_activation_code_desc:
+     'Use your activation code to set up your account.',
+   _appointment: 'Appointment',
+   appointment: {
+     sending: {
+       description:
+         "Your request has been sent to the doctor.\nPlease wait patiently for the doctor's reply.",
+       title: 'Sending to doctor...',
+     },
+   },
+   appointment_cancel_btn: 'Cancel',
+   appointment_cancel_title: 'Are you sure to cancel?',
+   appointment_cancelled_title: 'Appointment Cancelled',
+   appointment_confirm_desc:
+     'Your booking request has been sent to the doctor. The clinic will contact you directly to confirm the appointment date and time.',
+   appointment_confirm_title: 'Appointment Successfully Made!',
+   appointment_continue_disabled_btn: 'Unable to book at the moment',
+   appointment_details: 'Appointment Details',
+   appointment_history: 'Appointment History',
+   appointments: 'Appointments',
+   'area:(Kowloon)': 'Kowloon',
+   getVerificationCode: 'Get verification code',
+   'area:(N': {
+diff --git a/src/i18n/locale/zh.ts b/src/i18n/locale/zh.ts
+index 2208a9dc..5a2efd33 100644
+--- a/src/i18n/locale/zh.ts
++++ b/src/i18n/locale/zh.ts
+@@ -1,126 +1,126 @@
+ export default {
+   teleconsultLocalDoctors: '12个月内1次远程咨询（当地全科医生）',
+   annualBasicCheckup: '1 次年度基本检查',
+   '1 x Annual basic checkup': '1 次年度基本检查',
+   dnaTest: '1 次 DNA 测试',
+   '1 x DNA test': '1 次 DNA 测试',
+   basicPlan: '基本计划',
+   BenefitExpired: '权益计划已过期',
+   BenefitExpiredDesc: '您的权益计划已到期。您可选择重新购买服务。',
+   chinaPlan: '中国计划',
+   'Excludes medication and delivery fees': '不包括药物费和送货费',
+   'First 3 teleconsults include 3-days basic medication and delivery':
+     '前 3 次远程咨询包括 3 天的基本药物和送药',
+   'First 6 teleconsults include 3-days basic medication and delivery':
+     '前 6 次远程咨询包括 3 天的基本药物和送药',
+   'First teleconsult includes 3-days basic medication and delivery':
+     '首次远程咨询包括 3 天的基本药物治疗和送药',
+   'Global Plan - Asia 1': '全球计划-亚洲区1',
+   'Global Plan - Asia 2': '全球计划-亚洲区2',
+   'Global Plan - EMEA': '全球计划-欧洲中东区',
+   'HK drugs delivered to China': '一站式含清关，全国各地，港药直送到家',
+   'Heals Plan International Student': 'Heals 福利权益计划国际学生',
+   'Heals Plan International Worker': 'Heals 福利权益计划国际工人',
+   'Health Plan 365': '标准计划',
+   'Medication from Hong Kong': '来自香港的药物',
+   'Meds + delivery not included': '不包括药物+送货',
+   'Premium Plan 365': '尊尚计划',
+   'Premium Plan Gold': '尊尚金卡计划',
+   'Premium Plan Platinum': '尊尚白金卡计划',
+   'Travel Plan - Annual': '旅游计划-年卡',
+   'Travel Plan - Single': '旅游计划-单次',
+   'Unlimited teleconsults (with GP doctors in chosen country in Asia)':
+     '无限次远程咨询（亚洲选定国家的全科医生）',
+   'Unlimited teleconsults (with GP doctors in chosen country in EMEA)':
+     '无限次远程咨询（欧洲、中东和非洲地区选定国家的全科医生）',
+   'Unlimited teleconsults (with HK-based doctors)':
+     '足不出户连线香港医生，视频问诊并提供处方',
+   'Unlimited teleconsults (with either Indonesian or Filipino GP doctors)':
+     '无限次远程咨询（印度尼西亚或菲律宾全科医生）',
+   'Unlimited teleconsults (with home-based GP doctors), up to 14 days for 1 destination':
+     '无限次远程咨询（普通科医生），1 个目的地最多 14 天',
+   'Unlimited teleconsults (with home-based GP doctors), up to 14 days per destination (each trip)':
+     '无限次远程咨询（普通科医生），每个目的地最多 14 天（每次行程）',
+   'Unlimited teleconsults (with local GP doctors)':
+     '无限次远程咨询（与当地全科医生）',
+-  'Teleconsults x1 + Referral letter x1': '线上视频问诊 x1 + 转介信 x1',
++  'Teleconsults x1': '单次线上视频问诊',
+   'Excludes medication and delivery': '不包含药物和配送',
+   'Upgrade to recommended plans': '升级至推荐计划',
+   'View Doctor List': '查看医生名单',
+   'View Plans': '查看计划',
+   'View available doctors': '查看可用的医生',
+   account_signup: '帐户注册',
+   account_signup_desc:
+     '请填写个人资料，以便登录账户使用在线视频问诊服务及查看诊症记录等服务 。',
+   activate: '激活',
+   activate_input: '输入激活码',
+   activate_passs_title: '激活福利计划',
+   activate_success: '成功激活！',
+   activate_success1: '您的计划现在已在一个国家启用',
+   activated: '已激活',
+   activation: '去使用',
+   activation_code: '启动码',
+   activation_code_expired: '激活码已过期，请取得新的激活码以继续。',
+   activation_code_not_found: '未找到激活码。 请检查激活码并重试。',
+   active: '可使用',
+   add_address: '新增地址',
+   add_new_address: '新增地址',
+   add_wallet: '添加到钱包',
+   address: '地址',
+   address_deleted: '地址已删除',
+   address_edit: {
+     contact_number: '收件人电话',
+     contact_person: '收件人姓名',
+   },
+   address_reminder_msg:
+     '为了确保你能顺利收到药物，请提供正确的地址。即使你不需要我们送药，我们也能为您匹配最近的药房地址，让您能透过电子处方取药。',
+   addresses: '地址',
+   administrative_medicine: '行政医学',
+   afghan: '阿富汗',
+   agree: '同意',
+   agree_heals: '我同意Heals的服务条款与隐私政策。',
+   albanian: '阿尔巴尼亚',
+   alcohol_user: '饮酒',
+   algerian: '阿尔及利亚',
+   all: '全部',
+   all_districts: '全部地区',
+   all_services: '所有服务',
+   allergy: '过敏',
+   already_reg: '已经注册 ?',
+   american: '美国',
+   amount_limit: '金额限制',
+   anaesthesiology: '麻醉学',
+   and: '和',
+   andorran: '安道尔',
+   angolan: '安哥拉',
+   antiguans: '安提瓜',
+   anywhere: '请选择',
+   apply_activation_code: '使用福利计划激活码',
+   apply_activation_code_desc: '请使用您的福利计划激活码来设置您的账户',
+   appointment: {
+     sending: {
+       description: '您的请求已发送给医生。请耐心等待医生的回复。',
+       title: '正在将您的请求发送给医生...',
+     },
+   },
+   _appointment: '预约',
+   appointment_cancel_btn: '取消预约',
+   appointment_cancel_title: '您确定要取消预约？',
+   appointment_cancelled_title: '预约已取消',
+   appointment_confirm_desc:
+     '您的预约请求已送交诊所。诊所将直接与您联络而确认就诊日期和时间。',
+   appointment_confirm_title: '预约提交成功!',
+   appointment_continue_disabled_btn: '暂时未能预约',
+   appointment_details: '预约详情',
+   appointment_history: '预约记录',
+   appointments: '预约',
+   'area:(Kowloon)': '九龙',
+   'area:(N': {
+     T: {
+       ')': '新界',
+     },
+   },
+   'area:(NEW TERRITORIES)': '新界',
+   'area:(Outlying Islands)': '离岛',
+   area_code: '区号',
+   argentinean: '阿根廷',
+@@ -1681,161 +1681,161 @@ export default {
+   'Saudi Arabia': '沙特阿拉伯',
+   Senegal: '塞内加尔',
+   Serbia: '塞尔维亚',
+   Seychelles: '塞舌尔',
+   'Sierra Leone': '塞拉利昂',
+   Singapore: '新加坡',
+   Slovakia: '斯洛伐克',
+   Slovenia: '斯洛文尼亚',
+   'Solomon Islands': '所罗门群岛',
+   Somalia: '索马里',
+   'South Africa': '南非',
+   'South Sudan': '南苏丹',
+   'South Georgia and the South Sandwich Islands': '南乔治亚和南桑德韦奇群岛',
+   Spain: '西班牙',
+   'Sri Lanka': '斯里兰卡',
+   Sudan: '苏丹',
+   Suriname: '苏里南',
+   'Svalbard and Jan Mayen': '斯瓦尔巴岛和扬马延岛',
+   Swaziland: '斯威士兰',
+   Sweden: '瑞典',
+   Switzerland: '瑞士',
+   'Syrian Arab Republic': '阿拉伯叙利亚共和国',
+   Syria: '叙利亚',
+   Taiwan: '台湾',
+   Tajikistan: '塔吉克斯坦',
+   'Tanzania, United Republic of Tanzania': '坦桑尼亚联合共和国',
+   Tanzania: '坦桑尼亚',
+   Thailand: '泰国',
+   'Timor-Leste': '东帝汶',
+   Togo: '多哥',
+   Tokelau: '托克劳',
+   Tonga: '汤加',
+   'Trinidad and Tobago': '特立尼达和多巴哥',
+   Tunisia: '突尼斯',
+   Turkey: '土耳其',
+   Turkmenistan: '土库曼斯坦',
+   'Turks and Caicos Islands': '特克斯和凯科斯群岛',
+   Tuvalu: '图瓦卢',
+   Uganda: '乌干达',
+   Ukraine: '乌克兰',
+   'United Arab Emirates': '阿联酋',
+   'United Kingdom': '英国',
+   'United States': '美国',
+   'United States of America': '美国',
+   Uruguay: '乌拉圭',
+   Uzbekistan: '乌兹别克斯坦',
+   Vanuatu: '瓦努阿图',
+   'Venezuela, Bolivarian Republic of Venezuela': '委内瑞拉玻利瓦尔共和国',
+   'Vatican City': '梵蒂冈',
+   Venezuela: '委内瑞拉',
+   Vietnam: '越南',
+   'Virgin Islands, British': '英属维尔京群岛',
+   'Virgin Islands, US': '‌美属维尔京群岛',
+   'Wallis and Futuna': '瓦利斯和富图纳群岛',
+   Yemen: '也门',
+   Zambia: '赞比亚',
+   Zimbabwe: '津巴布韦',
+   book_morning: '上午',
+   book_afternoon: '下午',
+   book_no_perference: '无偏好',
+   pharmacy_pick_up: '药房取药',
+   crash_error: '发生未知错误，即将重启',
+   'Heals x Food Panda Pass Trial': 'Heals 本地计划(单次)',
+   'Heals x Food Panda Pass Premium Silver': 'Heals 本地银卡计划',
+   'Heals x Food Panda Pass PremiumSilver': 'Heals 本地银卡计划',
+   'Heals x Food Panda Pass Unlimited': 'Heals 本地至尊计划',
+   'Heals x Food Panda Travel Pass Single Trip': 'Heals 旅行计划（单次）',
+   '1 time teleconsult': '1次 线上视频问诊',
+   '3 times teleconsult': '3次 线上视频问诊',
+   'GP TC unlimited': '无限次视频问诊，每日限用1次',
+   '1 time teleconsult(Home-town doctor + destination doctor)':
+     '1次 线上视频问诊（本地及旅行目的地医生）',
+   '1 time teleconsult (home-town doctor + destination doctor)':
+     '1次 线上视频问诊（本地及旅行目的地医生）',
+   'Including 3 days basic meds + delivery': '包含3日基本药物及运输（1次）',
+   'Including 3x3 days basic meds + delivery': '包含3日基本药物及运输（3次）',
+   'Including 12x3 days basic meds + delivery': '包含3日基本药物及运输（12次）',
+   'Self Pickup Address': '自取地址',
+   'Travel Plan - Single (7 Days)': '旅行计划（7日）',
+   'Travel Plan - Single Promo': '旅行计划 - 单次（试用）',
+-  'GP Teleconsults only': '普通科（只限诊症）',
++  'GP Teleconsults': '普通科诊症',
+   'Login Password': '密码登录',
+   total: '总次数',
+   medication_benefit_tip: '药物及药物运输',
+   is_required: 'is required',
+   'Unlimited GP teleconsult': '无限次视频问诊，每日限用1次',
+   medi_trans_extra_cost: '药费及药物运输费另计',
+   'extra charge for medication & delivery': '药费及药物运输费另计',
+   '407, Wangsimni-ro, Jung-gu, Seoul, Republic of Korea':
+     '韩国首尔中区望时尼路407号',
+   'Gomdori Pharmacy': 'Gomdori 药房',
+   'Hongik Pharmacy': 'Hongik 药房',
+   '7, Yanghwa-ro 18-gil, Mapo-gu, Seoul': '首尔麻浦区杨花路18巷7号',
+   '9:00-22:00 (break time 13:10-14:00)': '9:00-22:00（休息时间13:10-14:00）',
+   '09:00-23:00': '09:00-23:00',
+   swipe_click_cancel: '向上滑动或点击按钮取消',
+   press_hold_active: '长按主页键使用全球救援服务',
+   global_assistance: 'Heals全球救援服务',
+   please_signin: '请核验',
+   input_connect: '输入999联络24小时客户服务中心',
+   call_or_send: '请选择联络方式',
+   call_now: '拨通客服热线',
+   send_whatsapp: '发送WhatsApp信息',
+   login_faceid: '使用Face ID登录',
+   'Clinical Oncology': '临床肿瘤学',
+   'General Surgery': '普通外科',
+   'General Practitioner': '普通科医生',
+   'Administrative Medicine': '行政医学',
+   'Clinical Microbiology & Infection': '临床微生物学与感染',
+   'Gastroenterology & Hepatology': '胃肠病学和肝病学',
+   'Traditional Chinese Medicine': '中药',
+   Cardiology: '心脏病学',
+   Anaesthesiology: '麻醉学',
+   Chiropractor: '脊椎按摩师',
+   'Obstetrics & Gynecology': '妇产科',
+   Dermatology: '皮肤科',
+   Endoscopy: '肠胃镜服务',
+   'Medication Category': '药品类别',
+   anticoagulant: '抗凝血',
+   antihypertensive: '降血压',
+   'cholesterol-lowering': '降胆固醇',
+   diabetes: '糖尿病',
+   Supplement: '保健品',
+   'Common Drug': '非处方药',
+   cardiovascular: '心血管疾病',
+   'uric acid-lowering': '降尿酸',
+   druglist: '药品清单',
+   notice: '找不到您需要的药物？请联络我们的医疗客服团队了解更多详情。',
+   importantNote: '重要提示:',
+   contact: '联络方式',
+   shoppingcart: '购物车',
+   consultNotice: '请向医生咨询以确认处方',
+   totalPrice: '总金额',
+   consultDoctor: '咨询医生',
+   openingHoursService: '服务时间',
+   conceiregeHK: '礼宾服务（香港时间）',
+   '0811PM': '上午8:00 - 晚上11:00 (周一至周六)',
+   '0711PMandSat':
+     '上午07:00 - 晚上11:00 (周一至周五) 上午08:00 - 下午1:00 (周六)',
+   '0711pm': '上午07:00 - 晚上11:00 (周一至周六)',
+   serviceRegion: '服务区域',
+   '0911pm': '上午 9:00 至晚上 11:00（周一至周六）',
+   '09mid': '上午9:00 - 午夜 (周一至周六)',
+   closedSunPH: '周日及公众假期休息',
+   closedSun: '周日休息',
+   '0910pmMondaySat': '上午9:00 - 晚上10:00 (周一至周六)',
+   '0905pm': '上午9:00 - 下午5:00 (周一至周五)',
+   '0901pmSat': '上午9:00 - 下午1:00 (周六)',
+   '0806pmMonSun': '上午8:00 - 下午6:00 (周一至周日)',
+   medicalCertificate: '病假纸',
+   referralLetters: '转介信',
+   failed_to_verify_your_identity: '无法识别面容',
+   use_passcode: '使用密码',
+   'Unlimited teleconsultations (with Thailand-based doctors)':
+     '无限次远距咨询（泰国医生）',
+   pleaseEnter: '请输入...',
+   get_otp_new: '一次性验证码',
+   phoneNumber: '电话号码',
+   dateOfBirth: '出生日期',
+   countryOrRegion: '国家／地区',
+   next: '下一步',
+diff --git a/src/i18n/locale/zh_tw.ts b/src/i18n/locale/zh_tw.ts
+index b7930ec6..2ea71bc2 100644
+--- a/src/i18n/locale/zh_tw.ts
++++ b/src/i18n/locale/zh_tw.ts
+@@ -1,126 +1,126 @@
+ export default {
+   teleconsultLocalDoctors: '12個月內1次遠距諮詢（當地全科醫生）',
+   annualBasicCheckup: '1 次年度基本檢查',
+   '1 x Annual basic checkup': '1 次年度基本檢查',
+   dnaTest: '1 次 DNA 測試',
+   '1 x DNA test': '1 次 DNA 測試',
+   basicPlan: '基本計劃',
+   BenefitExpired: '福利計劃已到期',
+   BenefitExpiredDesc: '您的福利計劃已到期。您可選擇重新購買服務。',
+   chinaPlan: '中國計劃',
+   'Excludes medication and delivery fees': '不包括藥物費和送貨費',
+   'First 3 teleconsults include 3-days basic medication and delivery':
+     '前 3 次遠距諮詢包括 3 天的基本藥物和送藥',
+   'First 6 teleconsults include 3-days basic medication and delivery':
+     '前 6 次遠距諮詢包括 3 天的基本藥物和送藥',
+   'First teleconsult includes 3-days basic medication and delivery':
+     '首次遠距諮詢包括 3 天的基本藥物治療和送藥',
+   'Global Plan - Asia 1': '全球計劃-亞洲區1',
+   'Global Plan - Asia 2': '全球計劃-亞洲區2',
+   'Global Plan - EMEA': '全球計劃-歐洲中東區',
+   'HK drugs delivered to China': '一站式連清關，全國各地，港藥直送到家',
+   'Heals Plan International Student': 'Heals 福利計劃國際學生',
+   'Heals Plan International Worker': 'Heals 福利計劃國際工人',
+   'Health Plan 365': '標準計劃',
+   'Medication from Hong Kong': '來自香港的藥物',
+   'Meds + delivery not included': '不包括藥物+送貨',
+   'Premium Plan 365': '尊尚計劃',
+   'Premium Plan Gold': '尊尚金咭計劃',
+   'Premium Plan Platinum': '尊尚白金咭計劃',
+   'Travel Plan - Annual': '旅遊計劃-年咭',
+   'Travel Plan - Single': '旅遊計劃-單次',
+   'Unlimited teleconsults (with GP doctors in chosen country in Asia)':
+     '無限次遠距諮詢（亞洲選定國家的全科醫生）',
+   'Unlimited teleconsults (with GP doctors in chosen country in EMEA)':
+     '無限次遠距諮詢（歐洲、中東和非洲地區選定國家的全科醫生）',
+   'Unlimited teleconsults (with HK-based doctors)':
+     '足不出戶連接香港醫生，視訊問診並提供處方',
+   'Unlimited teleconsults (with either Indonesian or Filipino GP doctors)':
+     '無限次遠距諮詢（印尼或菲律賓全科醫生）',
+   'Unlimited teleconsults (with home-based GP doctors), up to 14 days for 1 destination':
+     '無限次遠距諮詢（全科醫生），1 個目的地最多 14 天',
+   'Unlimited teleconsults (with home-based GP doctors), up to 14 days per destination (each trip)':
+     '無限次遠距諮詢（全科醫生），每個目的地最多 14 天（每次行程）',
+   'Unlimited teleconsults (with local GP doctors)':
+     '無限次遠距諮詢（與當地全科醫生）',
+-  'Teleconsults x1 + Referral letter x1': '線上視訊診症 x1 + 轉介信 x1',
++  'Teleconsults x1': '單次線上視訊診症',
+   'Excludes medication and delivery': '不包含藥物和配送',
+   'Upgrade to recommended plans': '升級至推薦計劃',
+   'View Doctor List': '查看醫生名單',
+   'View Plans': '查看計劃',
+   'View available doctors': '查看可用的醫生',
+   account_signup: '帳戶註冊',
+   account_signup_desc:
+     '請填寫個人資料，以便登入帳戶使用線上視像會診及查看診症記錄等服務。',
+   activate: '啟動',
+   activate_input: '輸入啟動碼',
+   activate_passs_title: '啟動福利計畫',
+   activate_success: '啟動成功！',
+   activate_success1: '您的計劃現在已在一個國家啟用',
+   activated: '已啟動',
+   activation: '去使用',
+   activation_code: '啓動碼',
+   activation_code_expired: '啟動碼已過期，請取得新的啟動碼以繼續。',
+   activation_code_not_found: '未找到啟動碼。 請檢查啟動碼並重試。',
+   active: '可使用',
+   add_address: '新增地址',
+   add_new_address: '新增地址',
+   add_wallet: '加入銀包',
+   address: '地址',
+   address_deleted: '地址已刪除',
+   address_edit: {
+     contact_number: '收件人電話',
+     contact_person: '收件人姓名',
+   },
+   address_reminder_msg:
+     '為了確保你能順利收到藥物，請提供正確的地址。即使你不需要我們送藥，我們也能為您匹配最近的藥房地址，讓您能透過電子處方取藥。',
+   addresses: '地址',
+   administrative_medicine: '行政醫學',
+   afghan: '阿富汗',
+   agree: '同意',
+   agree_heals: '本人同意Heals的服務條款與私隱政策。',
+   albanian: '阿爾巴尼亞',
+   alcohol_user: '飲酒',
+   algerian: '阿爾及利亞',
+   all: '全部',
+   all_districts: '所有地區',
+   all_services: '所有服務',
+   allergy: '過敏',
+   already_reg: '已經註冊 ?',
+   american: '美國',
+   amount_limit: '金額限制',
+   anaesthesiology: '麻醉學',
+   and: '和',
+   andorran: '安道爾',
+   angolan: '安哥拉',
+   antiguans: '安提瓜',
+   anywhere: '請選擇',
+   apply_activation_code: '應用福利計畫啟動碼',
+   apply_activation_code_desc: '請使用你的福利計畫啟動碼以設置你的帳戶',
+   appointment: {
+     sending: {
+       description: '您的請求已發送畀醫生。請耐心等待醫生的答覆。',
+       title: '正在將您的請求發送畀醫生...',
+     },
+   },
+   _appointment: '預約',
+   appointment_cancel_btn: '取消預約',
+   appointment_cancel_title: '您確定要取消預約？',
+   appointment_cancelled_title: '預約已取消',
+   appointment_confirm_desc:
+     '您的預約請求已送交診所。診所將直接與您聯絡而確認就診日期和時間。',
+   appointment_confirm_title: '預約提交成功!',
+   appointment_continue_disabled_btn: '暫時未能預約',
+   appointment_details: '預約詳情',
+   appointment_history: '預約記錄',
+   appointments: '預約',
+   'area:(Kowloon)': '九龍',
+   'area:(N': {
+     T: {
+       ')': '新界',
+     },
+   },
+   'area:(NEW TERRITORIES)': '新界',
+   'area:(Outlying Islands)': '離島',
+   area_code: '區號',
+   argentinean: '阿根廷',
+@@ -1682,161 +1682,161 @@ export default {
+   'Saudi Arabia': '沙烏地阿拉伯',
+   Senegal: '塞內加爾',
+   Serbia: '塞爾維亞',
+   Seychelles: '塞席爾',
+   'Sierra Leone': '獅子山',
+   Singapore: '新加坡',
+   Slovakia: '斯洛伐克',
+   Slovenia: '斯洛維尼亞',
+   'Solomon Islands': '索羅門群島',
+   Somalia: '索馬利亞',
+   'South Africa': '南非',
+   'South Sudan': '南蘇丹',
+   'South Georgia and the South Sandwich Islands': '南喬治亞和南桑德韋奇群島',
+   Spain: '西班牙',
+   'Sri Lanka': '斯里蘭卡',
+   Sudan: '蘇丹',
+   Suriname: '蘇利南',
+   'Svalbard and Jan Mayen': '斯瓦爾巴島和揚馬延島',
+   Swaziland: '斯威士蘭',
+   Sweden: '瑞典',
+   Switzerland: '瑞士',
+   'Syrian Arab Republic': '阿拉伯敘利亞共和國',
+   Syria: '敘利亞',
+   Taiwan: '台灣',
+   Tajikistan: '塔吉克斯坦',
+   'Tanzania, United Republic of Tanzania': '坦桑尼亞聯合共和國',
+   Tanzania: '坦尚尼亞',
+   Thailand: '泰國',
+   'Timor-Leste': '東帝汶',
+   Togo: '多哥',
+   Tokelau: '托克勞',
+   Tonga: '東加',
+   'Trinidad and Tobago': '千里達及托巴哥',
+   Tunisia: '突尼西亞',
+   Turkey: '土耳其',
+   Turkmenistan: '土庫曼斯坦',
+   'Turks and Caicos Islands': '特克斯和凱科斯群島',
+   Tuvalu: '吐瓦魯',
+   Uganda: '烏干達',
+   Ukraine: '烏克蘭',
+   'United Arab Emirates': '阿拉伯聯合大公國',
+   'United Kingdom': '英國',
+   'United States': '美國',
+   'United States of America': '美國',
+   Uruguay: '烏拉圭',
+   Uzbekistan: '烏茲別克斯坦',
+   Vanuatu: '萬那杜',
+   'Venezuela, Bolivarian Republic of Venezuela': '委內瑞拉玻利瓦爾共和國',
+   'Vatican City': '梵蒂岡',
+   Venezuela: '委內瑞拉',
+   Vietnam: '越南',
+   'Virgin Islands, British': '英屬維爾京群島',
+   'Virgin Islands, US': '美屬維爾京群島',
+   'Wallis and Futuna': '瓦利斯和富圖納群島',
+   Yemen: '葉門',
+   Zambia: '尚比亞',
+   Zimbabwe: '辛巴威',
+   book_morning: '上午',
+   book_afternoon: '下午',
+   book_no_perference: '無偏好',
+   pharmacy_pick_up: '藥房取藥',
+   crash_error: '發生未知錯誤,即將重啟',
+   'Heals x Food Panda Pass Trial': 'Heals 本地計劃（單次）',
+   'Heals x Food Panda Pass Premium Silver': 'Heals 本地銀咭計劃',
+   'Heals x Food Panda Pass PremiumSilver': 'Heals 本地銀咭計劃',
+   'Heals x Food Panda Pass Unlimited': 'Heals 本地至尊計劃',
+   'Heals x Food Panda Travel Pass Single Trip': 'Heals 旅行計劃（單次）',
+   '1 time teleconsult': '1次 線上視訊診症',
+   '3 times teleconsult': '3次 線上視訊診症',
+   'GP TC unlimited': '無限次視像會診，每日限用1次',
+   '1 time teleconsult (home-town doctor + destination doctor)':
+     '1次 線上視訊診症（香港+旅行目的地醫生）',
+   '1 time teleconsult(Home-town doctor + destination doctor)':
+     '1次 線上視訊診症（香港+旅行目的地醫生）',
+   'Including 3 days basic meds + delivery': '包含3日基本藥物及運輸（1次）',
+   'Including 3x3 days basic meds + delivery': '包含3日基本藥物及運輸（3次）',
+   'Including 12x3 days basic meds + delivery': '包含3日基本藥物及運輸（12次）',
+   'Self Pickup Address': '自取地址',
+   'Travel Plan - Single (7 Days)': '旅行計劃（7日）',
+   'Travel Plan - Single Promo': '旅行計劃 - 單次（試用）',
+-  'GP Teleconsults only': '普通科（只限診症）',
++  'GP Teleconsults': '普通科診症',
+   'Login Password': '密碼登入',
+   medication_benefit_tip: '藥物及藥物運輸',
+   is_required: 'is required',
+   'Unlimited GP teleconsult': '無限次視像會診，每日限用1次',
+   medi_trans_extra_cost: '藥費及药物運輸費另計',
+   'extra charge for medication & delivery': '藥費及药物運輸費另計',
+   '407, Wangsimni-ro, Jung-gu, Seoul, Republic of Korea':
+     '韓國首爾中區望時尼路407號',
+   'Gomdori Pharmacy': 'Gomdori 藥房',
+   total: '总次数',
+   'Hongik Pharmacy': 'Hongik 藥房',
+   '7, Yanghwa-ro 18-gil, Mapo-gu, Seoul': '首爾麻浦區楊花路18巷7號',
+   '9:00-22:00 (break time 13:10-14:00)': '9:00-22:00（休息時間13:10-14:00）',
+   '09:00-23:00': '09:00-23:00',
+   swipe_click_cancel: '向上滑動或點擊按鈕取消',
+   press_hold_active: '長禁home鍵啟動全球救援服務',
+   global_assistance: 'Heals全球救援服務',
+   please_signin: '請核驗',
+   input_connect: '輸入999聯絡24小時服務中心',
+   call_or_send: '請選擇聯絡方式',
+   call_now: '撥通客服熱線',
+   send_whatsapp: '發送WhatsApp訊息',
+   login_faceid: '使用Face ID登錄',
+   'Clinical Oncology': '臨床腫瘤學',
+   'General Surgery': '普通外科',
+   'General Practitioner': '全科醫生',
+   'Administrative Medicine': '行政醫學',
+   'Clinical Microbiology & Infection': '臨床微生物學與感染',
+   'Gastroenterology & Hepatology': '胃腸病學和肝病學',
+   'Traditional Chinese Medicine': '中藥',
+   Cardiology: '心臟病學',
+   Anaesthesiology: '麻醉學',
+   Chiropractor: '脊椎按摩師',
+   'Obstetrics & Gynecology': '婦產科',
+   Dermatology: '皮膚科',
+   Endoscopy: '腸胃鏡服務',
+   'Medication Category': '藥物類別',
+   anticoagulant: '抗凝血',
+   antihypertensive: '降血壓',
+   'cholesterol-lowering': '降膽固醇',
+   diabetes: '糖尿病',
+   Supplement: '保健品',
+   'Common Drug': '非處方藥',
+   cardiovascular: '心血管疾病',
+   'uric acid-lowering': '降尿酸',
+   druglist: '藥品清單',
+   notice: '搵唔到你所需要的藥品？請聯絡我們的醫療禮賓團隊了解更多。',
+   importantNote: '重要提示:',
+   contact: '聯絡方式',
+   shoppingcart: '購物車',
+   consultNotice: '請向醫生諮詢以確認處方',
+   totalPrice: '總金額',
+   consultDoctor: '諮詢醫生',
+   openingHoursService: '服務時間',
+   conceiregeHK: '禮賓部（香港時間）',
+   '0811PM': '上午8:00 - 晚上11:00 (週一至週六)',
+   '0711PMandSat':
+     '上午07:00 - 晚上11:00 (週一至週五) 上午08:00 - 下午1:00 (週六)',
+   '0711pm': '上午07:00 - 晚上11:00 (週一至週六)',
+   serviceRegion: '服務區域',
+   '0911pm': '上午 9:00 至晚上 11:00（週一至週六）',
+   '09mid': '上午9:00 - 午夜 (週一至週六)',
+   closedSunPH: '週日及公眾假期休息',
+   closedSun: '週日休息',
+   '0910pmMondaySat': '上午9:00 - 晚上10:00 (週一至週六) ',
+   '0905pm': '上午9:00 - 下午5:00 (週一至週五) ',
+   '0901pmSat': '上午9:00 - 下午1:00 (週六) ',
+   '0806pmMonSun': '上午8:00 - 下午6:00 (週一至週日)',
+   medicalCertificate: '病假紙',
+   referralLetters: '轉介信',
+   failed_to_verify_your_identity: '無法識別面容',
+   use_passcode: '使用密碼',
+   'Unlimited teleconsultations (with Thailand-based doctors)':
+     '無限次遠距諮詢（泰國醫生）',
+   pleaseEnter: '請輸入...',
+   get_otp_new: '一次性密碼',
+   phoneNumber: '手機號碼',
+   dateOfBirt: '出生日期',
+   countryOrRegion: '國家／地區',
+   next: '下一步',
+diff --git a/src/screens/profile/profile-healsplan-screen/profile-healsplan-screen.tsx b/src/screens/profile/profile-healsplan-screen/profile-healsplan-screen.tsx
+index 22c5ead2..b68dfac1 100644
+--- a/src/screens/profile/profile-healsplan-screen/profile-healsplan-screen.tsx
++++ b/src/screens/profile/profile-healsplan-screen/profile-healsplan-screen.tsx
+@@ -70,166 +70,165 @@ const HealsPlanScreen = ({ navigation }) => {
+           <View style={[styles.rowStyle, { marginTop: 8 }]}>
+             <View>
+               <AppText style={styles.grayTitle}>{$i18n.t("date_purchase")}</AppText>
+               <AppText style={styles.numberText}>
+                 {dayjs(item.updatedAt).format("DD MMM YYYY")}
+               </AppText>
+               {item.activationRecords[index]?.isActivated ? (
+                 <View style={[styles.activated]}>
+                   <AppText style={styles.btnText}>{$i18n.t("activated")}</AppText>
+                 </View>
+               ) : (
+                 <GradientBt
+                   gradientStyle={[styles.bottomBt]}
+                   onPress={() => {
+                     setActivationCodes(item.activationRecords[index].activationCode || "");
+                     setShowActivateModal(true);
+                   }}
+                 >
+                   <AppText style={styles.btnText}>{$i18n.t("activate")}</AppText>
+                 </GradientBt>
+               )}
+             </View>
+             <View>
+               <AppText style={styles.grayTitle}>{$i18n.t("expiry_date")}</AppText>
+               <AppText style={styles.numberText}>
+                 {item.product.duration
+                   ? dayjs(expiredAt).format("DD MMM YYYY")
+                   : "--"}
+               </AppText>
+               {item.activationRecords[index]?.isActivated ? (
+                 <View style={{ width: 75 }} />
+               ) : (
+                 <GradientBt
+                   gradientStyle={[styles.bottomBt]}
+                   onPress={async () => {
+                     const activationCode = item.activationRecords[index].activationCode || "";
+ 
+                     Share.open({
+                       title: "Share file",
+                       message: `${constants.i18n.t("share_text")}`,
+                       url: `${Config.SHARE_URL}${constants.i18n.locale}/register?code=${activationCode}`,
+                     })
+                       .then((res) => {
+                         console.log(res);
+                       })
+                       .catch((err) => {
+                         err && console.log(err);
+                       });
+                   }}
+                 >
+                   <AppText style={styles.btnText}>{$i18n.t("share")}</AppText>
+                 </GradientBt>
+               )}
+             </View>
+             <View style={{ width: "40%", maxHeight: 70 }}>
+               <AppText style={[styles.grayTitle, { textAlign: "right" }]}>
+                 {$i18n.t("order_no")}
+               </AppText>
+               <AppText
+                 style={[styles.numberText, { textAlign: "right" }]}
+                 numberOfLines={0}
+               >
+                 {item.transactionId}
+               </AppText>
+             </View>
+           </View>
+         </View>
+       </View>
+     );
+   };
+ 
+   const renderFirstRouteItem = ({
+     item,
+     index,
+   }: {
+     item: HpListRequestResponse;
+     index: number;
+   }) => {
+     return (
+       <>
+-        {item.activationRecords
+-          .map((activationCode, originalIndex) => ({ activationCode, originalIndex }))
+-          // .filter(({ activationCode }) => !activationCode.isActivated)
+-          .map(({ activationCode, originalIndex }) => (
+-            <>{renderPlansPerItem(item, originalIndex)}</>
+-          ))}
++        {item.activationRecords.map((activationCode, originalIndex) => (
++          <React.Fragment key={`${item.id}-${originalIndex}`}>
++            {renderPlansPerItem(item, originalIndex)}
++          </React.Fragment>
++        ))}
+       </>
+     );
+   };
+ 
+   const FirstRoute = useCallback(() => {
+     const [refresh, setRefresh] = useState(false);
+     return (
+       <FlatList
+         style={{ flex: 1 }}
+         contentContainerStyle={{ flexGrow: 1 }}
+         data={data.filter(function (item) {
+           return item.isSettled;
+         })}
+         ListEmptyComponent={
+           <CommonListEmptyComponentComp tipText={$i18n.t("no_data")} />
+         }
+         renderItem={renderFirstRouteItem}
+         keyExtractor={(item) => item.id}
+         refreshing={refresh}
+         onRefresh={async () => {
+           setRefresh(true);
+           setTimeout(() => {
+             setRefresh(false);
+           }, 3000);
+           await getData();
+           setRefresh(false);
+         }}
+       />
+     );
+   }, [data]);
+ 
+   const SecondRoute = useCallback(() => {
+     const [refresh, setRefresh] = useState(false);
+     return (
+       <FlatList
+         style={{ flex: 1 }}
+         contentContainerStyle={{ flexGrow: 1 }}
+         data={data.filter(function (item) {
+           return !item.isSettled;
+         })}
+         ListEmptyComponent={
+           <CommonListEmptyComponentComp tipText={$i18n.t("no_data")} />
+         }
+         renderItem={({
+           item,
+           index,
+         }: {
+           item: HpListRequestResponse;
+           index: number;
+         }) => {
+           let expiredAt = new Date(item.updatedAt);
+           expiredAt.setFullYear(expiredAt.getFullYear() + 1);
+           return (
+             <View
+               style={{
+                 paddingVertical: 16,
+                 marginHorizontal: 16,
+                 borderBottomColor: "#ECF5F5",
+                 borderBottomWidth: 1,
+               }}
+             >
+               <View>
+                 <View style={styles.rowStyle}>
+                   <AppText style={styles.title}>
+                     {$i18n.t(item?.product?.displayName.split(" (")[0], {
+                       defaultValue: item?.product?.displayName.split(" (")[0],
+                     })}
+                   </AppText>
+                   <AppText style={styles.title}>×{item.numberOfPasses}</AppText>
+                 </View>
+                 <View style={[styles.rowStyle, { marginTop: 8 }]}>
+                   <View>
+                     <AppText style={styles.grayTitle}>
+                       {$i18n.t("date_purchase")}
+                     </AppText>
+                     <AppText style={styles.numberText}>
+                       {dayjs(item.updatedAt).format("DD MMM YYYY")}
+                     </AppText>
+                   </View>
+                   <View>
