@@ -1,0 +1,3606 @@
+diff --git a/e2e/display-screen-config.spec.ts b/e2e/display-screen-config.spec.ts
+index 3bf7650..332ba12 100644
+--- a/e2e/display-screen-config.spec.ts
++++ b/e2e/display-screen-config.spec.ts
+@@ -1,4 +1,4 @@
+-import {expect, test} from '@playwright/test';
++import {expect, test, type Page} from '@playwright/test';
+ 
+ const FIGMA_DISPLAY_HEIGHT = 1366;
+ const FIGMA_LAYOUT_RATIOS = {
+@@ -26,12 +26,179 @@ const getResponsiveCallLabelFontSize = (viewportHeight: number) =>
+ 
+ const MANAGEMENT_ROUTE = './management-settings/program-settings/display-screen-config/';
+ const AUTH_TRANSFER_PREFIX = 'CSX_DISPLAY_SCREEN_AUTH:';
++const CLINIC_API_PATTERN = '**/api/Clinic/GetClinicsAsync**';
++const FIRST_DISPLAY_URL = 'https://checkin-dev.heals.asia/f564830c-b310-4b56-8402-c0bd505b9caf/qr';
++const SECOND_DISPLAY_URL = 'https://checkin-dev.heals.asia/mock-display-device-02/qr';
++const FIGMA_MANAGEMENT_CONTENT_TOP = 60;
++const FIGMA_MANAGEMENT_TITLE_BASELINE = {
++  fontSize: 20,
++  iconSize: 20,
++  lineHeight: 24,
++} as const;
++const FIGMA_MANAGEMENT_FILTER_LABEL_BASELINE = {
++  fontSize: 16,
++  lineHeight: 24,
++} as const;
++const FIGMA_UPLOAD_HINT_BASELINE = {
++  color: 'rgb(108, 117, 125)',
++  fontSize: '14px',
++  lineHeight: '21px',
++} as const;
++const FIGMA_COPY_TOAST_CONTENT_OFFSET_TOP = 32;
++const FIGMA_COPY_TOAST_BASELINE = {
++  width: 400,
++  minHeight: 134,
++  top: FIGMA_MANAGEMENT_CONTENT_TOP + FIGMA_COPY_TOAST_CONTENT_OFFSET_TOP,
++  right: 24,
++  radius: 8,
++  titleFontSize: 24,
++  messageFontSize: 16,
++} as const;
++const COPY_TOAST_RESPONSIVE_MIN = {
++  width: 320,
++  minHeight: 118,
++  top: 68,
++  right: 12,
++  radius: 6,
++  titleFontSize: 20,
++  messageFontSize: 14,
++} as const;
++const FIGMA_COPY_CONFIG_MODAL_BASELINE = {
++  width: 500,
++  radius: 8,
++  titleFontSize: 20,
++  bodyFontSize: 16,
++} as const;
++const COPY_CONFIG_MODAL_RESPONSIVE_MIN = {
++  width: 320,
++  radius: 6,
++  titleFontSize: 18,
++  bodyFontSize: 14,
++} as const;
++const TEST_CLINICS = [
++  {clinicCode: 'ST'},
++  {clinicCode: 'SW'},
++  {clinicCode: 'TES'},
++  {clinicCode: 'TST'},
++] as const;
+ 
+ function encodeAuthTransfer(payload: unknown) {
+   return Buffer.from(JSON.stringify(payload), 'utf8').toString('base64url');
+ }
+ 
++function isHydrationErrorText(text: string) {
++  return text.includes('Hydration failed') || text.includes("didn't match the client");
++}
++
++async function mockClinicList(page: Page, clinics: readonly {clinicCode: string}[] = TEST_CLINICS) {
++  await page.route(CLINIC_API_PATTERN, async (route) => {
++    await route.fulfill({
++      contentType: 'application/json',
++      json: {
++        code: 0,
++        data: clinics,
++      },
++    });
++  });
++}
++
++async function readCopyToastStyle(page: Page) {
++  return page.getByTestId('management-copy-toast').evaluate((element) => {
++    const rect = element.getBoundingClientRect();
++    const style = window.getComputedStyle(element);
++    const title = element.querySelector('h2');
++    const message = element.querySelector('p');
++    const topbar = document.querySelector('.management-topbar');
++    const titleStyle = title ? window.getComputedStyle(title) : null;
++    const messageStyle = message ? window.getComputedStyle(message) : null;
++    const topbarRect = topbar?.getBoundingClientRect();
++    const toNumber = (value: string | null | undefined) => Number.parseFloat(value ?? '0') || 0;
++
++    return {
++      backgroundColor: style.backgroundColor,
++      borderColor: style.borderTopColor,
++      borderRadius: toNumber(style.borderTopLeftRadius),
++      color: style.color,
++      height: rect.height,
++      isOverflowingViewport: rect.left < 0 || rect.right > window.innerWidth,
++      left: rect.left,
++      messageFontSize: toNumber(messageStyle?.fontSize),
++      messageLineHeight: toNumber(messageStyle?.lineHeight),
++      right: window.innerWidth - rect.right,
++      titleFontSize: toNumber(titleStyle?.fontSize),
++      titleFontWeight: titleStyle?.fontWeight,
++      top: rect.top,
++      topbarBottom: topbarRect?.bottom ?? 0,
++      topbarOffsetTop: topbarRect ? rect.top - topbarRect.bottom : rect.top,
++      viewportHeight: window.innerHeight,
++      viewportWidth: window.innerWidth,
++      width: rect.width,
++    };
++  });
++}
++
++async function readCopyConfigDialogStyle(page: Page) {
++  return page.getByTestId('management-copy-config-dialog').evaluate((element) => {
++    const rect = element.getBoundingClientRect();
++    const style = window.getComputedStyle(element);
++    const title = element.querySelector('h2');
++    const label = element.querySelector('label');
++    const titleStyle = title ? window.getComputedStyle(title) : null;
++    const labelStyle = label ? window.getComputedStyle(label) : null;
++    const toNumber = (value: string | null | undefined) => Number.parseFloat(value ?? '0') || 0;
++
++    return {
++      borderColor: style.borderTopColor,
++      borderRadius: toNumber(style.borderTopLeftRadius),
++      centerXOffset: Math.abs(rect.left + rect.width / 2 - window.innerWidth / 2),
++      centerYOffset: Math.abs(rect.top + rect.height / 2 - window.innerHeight / 2),
++      height: rect.height,
++      isOverflowingViewport:
++        rect.left < 0 || rect.right > window.innerWidth || rect.top < 0 || rect.bottom > window.innerHeight,
++      labelFontSize: toNumber(labelStyle?.fontSize),
++      titleFontSize: toNumber(titleStyle?.fontSize),
++      titleFontWeight: titleStyle?.fontWeight,
++      viewportHeight: window.innerHeight,
++      viewportWidth: window.innerWidth,
++      width: rect.width,
++    };
++  });
++}
++
+ test('renders the display management shell on the module route', async ({page}) => {
++  const hydrationErrors: string[] = [];
++
++  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
++  page.on('console', (message) => {
++    const text = message.text();
++
++    if (message.type() === 'error' && isHydrationErrorText(text)) {
++      hydrationErrors.push(text);
++    }
++  });
++  await page.addInitScript(`
++    (() => {
++      const RealDate = Date;
++      let fixedTimestamp = new RealDate(2026, 2, 26, 14, 33, 0).getTime();
++
++      function FixedDate(...args) {
++        if (this instanceof FixedDate) {
++          return args.length ? new RealDate(...args) : new RealDate(fixedTimestamp);
++        }
++
++        return new RealDate(fixedTimestamp).toString();
++      }
++
++      FixedDate.now = () => fixedTimestamp;
++      FixedDate.parse = RealDate.parse;
++      FixedDate.UTC = RealDate.UTC;
++      FixedDate.prototype = RealDate.prototype;
++      window.__setManagementClockTimestamp = (value) => {
++        fixedTimestamp = value;
++      };
++      window.Date = FixedDate;
++    })();
++  `);
+   await page.addInitScript(() => {
+     window.localStorage.setItem('tok', JSON.stringify('local-token'));
+     window.localStorage.setItem('userName', JSON.stringify('stark.user'));
+@@ -51,27 +218,578 @@ test('renders the display management shell on the module route', async ({page})
+     window.localStorage.setItem('permission', JSON.stringify(['008', '008014']));
+     window.localStorage.setItem('locale', JSON.stringify('zh-HK'));
+   });
++  await mockClinicList(page);
+ 
+   await page.goto(MANAGEMENT_ROUTE);
+ 
+   await expect(page.getByRole('banner', {name: 'CSX 管理頂欄'})).toBeVisible();
++  await expect(page.locator('.management-current-time')).toHaveText('26 Mar 2026 (Thu) 14:33');
++  await page.evaluate(() => {
++    (
++      window as unknown as {
++        __setManagementClockTimestamp: (value: number) => void;
++      }
++    ).__setManagementClockTimestamp(new Date(2026, 2, 26, 14, 34, 0).getTime());
++  });
++  await expect(page.locator('.management-current-time')).toHaveText('26 Mar 2026 (Thu) 14:34');
+   await expect(page.getByRole('navigation', {name: '管理分區'})).toContainText('設定');
+-  await expect(page.getByRole('button', {name: '目前診所：Test Clinic'})).toBeVisible();
+-  await expect(page.getByRole('button', {name: '使用者：stark.user'})).toBeVisible();
++  const topbarClinicSelect = page.getByLabel('目前診所');
++  const formClinicSelect = page.getByLabel('診所', {exact: true});
++  await expect(topbarClinicSelect).toHaveValue('TES');
++  await expect(formClinicSelect).toHaveValue('TES');
++  await expect(page.getByRole('region', {name: '顯示屏配置列表：TES'})).toBeVisible();
++  const topbarClinicOptions = await topbarClinicSelect.evaluate((element) =>
++    Array.from((element as HTMLSelectElement).options).map((option) => option.value),
++  );
++  expect(topbarClinicOptions).toEqual(['ST', 'SW', 'TES', 'TST']);
++  await formClinicSelect.selectOption('ST');
++  await expect(formClinicSelect).toHaveValue('ST');
++  await expect(topbarClinicSelect).toHaveValue('TES');
++  await expect(page.getByRole('region', {name: '顯示屏配置列表：ST'})).toBeVisible();
++  await topbarClinicSelect.selectOption('SW');
++  await expect(topbarClinicSelect).toHaveValue('SW');
++  await expect(formClinicSelect).toHaveValue('SW');
++  await expect(page.getByRole('region', {name: '顯示屏配置列表：SW'})).toBeVisible();
++  await formClinicSelect.selectOption('ST');
++  await expect(formClinicSelect).toHaveValue('ST');
++  await expect(topbarClinicSelect).toHaveValue('SW');
++  await expect(page.getByRole('region', {name: '顯示屏配置列表：ST'})).toBeVisible();
++  await topbarClinicSelect.selectOption('TST');
++  await expect(topbarClinicSelect).toHaveValue('TST');
++  await expect(formClinicSelect).toHaveValue('TST');
++  await expect(page.getByRole('region', {name: '顯示屏配置列表：TST'})).toBeVisible();
++  await formClinicSelect.selectOption('ST');
++  await expect(formClinicSelect).toHaveValue('ST');
++  await expect(topbarClinicSelect).toHaveValue('TST');
++  await expect(page.getByRole('region', {name: '顯示屏配置列表：ST'})).toBeVisible();
++  const clinicIconStyle = await page.locator('.management-clinic-switcher .management-clinic-icon').evaluate((element) => {
++    const rect = element.getBoundingClientRect();
++    const image = element as HTMLImageElement;
++
++    return {
++      height: rect.height,
++      src: image.currentSrc,
++      width: rect.width,
++    };
++  });
++  expect(clinicIconStyle.src).toContain('/display/Clinic.png');
++  expect(clinicIconStyle.width).toBe(24);
++  expect(clinicIconStyle.height).toBe(24);
++  const topbarClinicStyle = await page.locator('.management-clinic-switcher').evaluate((element) => {
++    const rect = element.getBoundingClientRect();
++    const value = element.querySelector('.management-select-value');
++    const valueStyle = value ? window.getComputedStyle(value) : null;
++
++    return {
++      valueOverflow: valueStyle?.overflow,
++      valueText: value?.textContent ?? '',
++      valueTextOverflow: valueStyle?.textOverflow,
++      valueWhiteSpace: valueStyle?.whiteSpace,
++      width: rect.width,
++    };
++  });
++  expect(topbarClinicStyle.width).toBeGreaterThanOrEqual(150);
++  expect(topbarClinicStyle.valueText).toBe('TST');
++  expect(topbarClinicStyle.valueOverflow).toBe('hidden');
++  expect(topbarClinicStyle.valueTextOverflow).toBe('ellipsis');
++  expect(topbarClinicStyle.valueWhiteSpace).toBe('nowrap');
++  const userButton = page.getByRole('button', {name: '使用者：stark.user'});
++  await expect(userButton).toBeVisible();
++  await expect(userButton).toHaveText('');
++  const userButtonStyle = await userButton.evaluate((element) => {
++    const rect = element.getBoundingClientRect();
++    const computed = window.getComputedStyle(element);
++    const avatarImage = element.querySelector('.management-user-avatar-image') as HTMLImageElement | null;
++
++    return {
++      backgroundColor: computed.backgroundColor,
++      borderRadius: Number.parseFloat(computed.borderTopLeftRadius),
++      height: rect.height,
++      imageHeight: avatarImage?.getBoundingClientRect().height ?? 0,
++      imageNaturalHeight: avatarImage?.naturalHeight ?? 0,
++      imageNaturalWidth: avatarImage?.naturalWidth ?? 0,
++      imageSrc: avatarImage?.currentSrc ?? '',
++      imageWidth: avatarImage?.getBoundingClientRect().width ?? 0,
++      width: rect.width,
++    };
++  });
++  expect(Math.abs(userButtonStyle.width - userButtonStyle.height)).toBeLessThanOrEqual(1);
++  expect(userButtonStyle.width).toBe(40);
++  expect(userButtonStyle.height).toBe(40);
++  expect(userButtonStyle.imageSrc).toContain('/display/avatar.png');
++  expect(userButtonStyle.imageWidth).toBe(40);
++  expect(userButtonStyle.imageHeight).toBe(40);
++  expect(userButtonStyle.imageNaturalWidth).toBe(120);
++  expect(userButtonStyle.imageNaturalHeight).toBe(120);
++  expect(userButtonStyle.borderRadius).toBeGreaterThanOrEqual(userButtonStyle.width / 2 - 1);
++  expect(userButtonStyle.backgroundColor).toBe('rgba(0, 0, 0, 0)');
+   await expect(page.getByRole('status')).toContainText('已登入');
+   await expect(page.getByRole('complementary', {name: '左側導航'})).toContainText('程序設定');
+   await expect(page.getByRole('button', {name: '顯示屏配置'})).toBeVisible();
+-  await expect(page.getByRole('heading', {name: '顯示屏配置'})).toBeVisible();
+-  await expect(page.getByLabel('診所', {exact: true})).toHaveValue('Test Clinic');
++  await expect(page.getByRole('main', {name: '顯示屏配置'})).toBeVisible();
++  const pageTitle = page.getByRole('heading', {name: '顯示屏配置', level: 1});
++  await expect(pageTitle).toBeVisible();
++  const pageTitleStyle = await page.locator('.management-content-heading').evaluate((element) => {
++    const title = element.querySelector('h1');
++    const icon = element.querySelector('svg');
++    const titleStyle = title ? window.getComputedStyle(title) : null;
++    const iconStyle = icon ? window.getComputedStyle(icon) : null;
++    const iconRect = icon?.getBoundingClientRect();
++
++    return {
++      fontFamily: titleStyle?.fontFamily ?? '',
++      fontSize: Number.parseFloat(titleStyle?.fontSize ?? '0'),
++      fontWeight: titleStyle?.fontWeight ?? '',
++      iconColor: iconStyle?.color ?? '',
++      iconHeight: iconRect?.height ?? 0,
++      iconWidth: iconRect?.width ?? 0,
++      letterSpacing: titleStyle?.letterSpacing ?? '',
++      lineHeight: Number.parseFloat(titleStyle?.lineHeight ?? '0'),
++      titleColor: titleStyle?.color ?? '',
++    };
++  });
++  expect(pageTitleStyle.fontFamily).toContain('Roboto');
++  expect(pageTitleStyle.fontSize).toBe(FIGMA_MANAGEMENT_TITLE_BASELINE.fontSize);
++  expect(pageTitleStyle.fontWeight).toBe('700');
++  expect(pageTitleStyle.lineHeight).toBe(FIGMA_MANAGEMENT_TITLE_BASELINE.lineHeight);
++  expect(['0px', 'normal']).toContain(pageTitleStyle.letterSpacing);
++  expect(pageTitleStyle.titleColor).toBe('rgb(27, 39, 47)');
++  expect(pageTitleStyle.iconColor).toBe('rgb(14, 124, 132)');
++  expect(pageTitleStyle.iconWidth).toBe(FIGMA_MANAGEMENT_TITLE_BASELINE.iconSize);
++  expect(pageTitleStyle.iconHeight).toBe(FIGMA_MANAGEMENT_TITLE_BASELINE.iconSize);
++  const clinicFilterLabel = page.locator('label[for="management-clinic-select"]');
++  await expect(clinicFilterLabel).toBeVisible();
++  await expect(clinicFilterLabel).toHaveText('診所');
++  const clinicFilterLabelStyle = await clinicFilterLabel.evaluate((element) => {
++    const style = window.getComputedStyle(element);
++    const rect = element.getBoundingClientRect();
++    const selectRect = document.querySelector('.management-select')?.getBoundingClientRect();
++
++    return {
++      color: style.color,
++      fontFamily: style.fontFamily,
++      fontSize: Number.parseFloat(style.fontSize),
++      fontWeight: style.fontWeight,
++      isBeforeSelect: selectRect ? rect.right <= selectRect.left : false,
++      lineHeight: Number.parseFloat(style.lineHeight),
++      verticalCenterOffset: selectRect
++        ? Math.abs(rect.top + rect.height / 2 - (selectRect.top + selectRect.height / 2))
++        : Number.POSITIVE_INFINITY,
++    };
++  });
++  expect(clinicFilterLabelStyle.fontFamily).toContain('Roboto');
++  expect(clinicFilterLabelStyle.fontSize).toBe(FIGMA_MANAGEMENT_FILTER_LABEL_BASELINE.fontSize);
++  expect(clinicFilterLabelStyle.fontWeight).toBe('400');
++  expect(clinicFilterLabelStyle.lineHeight).toBe(FIGMA_MANAGEMENT_FILTER_LABEL_BASELINE.lineHeight);
++  expect(clinicFilterLabelStyle.color).toBe('rgb(27, 39, 47)');
++  expect(clinicFilterLabelStyle.isBeforeSelect).toBe(true);
++  expect(clinicFilterLabelStyle.verticalCenterOffset).toBeLessThanOrEqual(1);
+   await expect(page.getByRole('cell', {name: '前台觸摸屏-模板'})).toBeVisible();
+-  await expect(page.getByRole('button', {name: '複製配置'})).toBeVisible();
+-  await expect(page.getByRole('button', {name: '編輯'})).toBeVisible();
++  await expect(page.getByRole('cell', {name: '後備顯示屏-01'})).toBeAttached();
++  await expect(page.getByRole('button', {name: FIRST_DISPLAY_URL})).toBeVisible();
++  await expect(page.getByRole('button', {name: SECOND_DISPLAY_URL})).toBeVisible();
++  await expect(page.getByRole('button', {name: '複製配置'}).first()).toBeVisible();
++  const editButtons = page.getByRole('button', {name: '編輯'});
++  await expect(editButtons.first()).toBeVisible();
++  const managementListUrl = page.url();
++  const displayDeviceEditUrl =
++    `${managementListUrl}edit/?clinicCode=ST&deviceId=ST-display-config-08`;
++  await editButtons.nth(7).click();
++  await expect(page).toHaveURL(displayDeviceEditUrl);
++  await expect(page.getByRole('banner', {name: 'CSX 管理頂欄'})).toBeVisible();
++  await expect(page.getByRole('complementary', {name: '左側導航'})).toBeVisible();
++  await expect(page.getByRole('heading', {name: '編輯診症室門口屏-02', level: 1})).toBeVisible();
++  const editSaveButton = page.getByRole('button', {name: '存儲 S'});
++  await expect(editSaveButton).toBeVisible();
++  await expect(editSaveButton).toBeEnabled();
++  await expect(editSaveButton).toHaveAttribute('type', 'button');
++  await expect(editSaveButton).toHaveCSS('cursor', 'pointer');
++  expect(await editSaveButton.evaluate((element) => element.tagName)).toBe('BUTTON');
++  const editSaveIcon = editSaveButton.locator('.management-edit-save-icon');
++  await expect(editSaveIcon).toHaveAttribute('src', /\/display\/save-icon\.svg$/);
++  const editSaveIconSize = await editSaveIcon.evaluate((element) => {
++    const image = element as HTMLImageElement;
++    const rect = image.getBoundingClientRect();
++
++    return {
++      height: rect.height,
++      naturalHeight: image.naturalHeight,
++      naturalWidth: image.naturalWidth,
++      width: rect.width,
++    };
++  });
++  expect(editSaveIconSize.naturalWidth).toBe(16);
++  expect(editSaveIconSize.naturalHeight).toBe(16);
++  expect(editSaveIconSize.width).toBeCloseTo(16, 0);
++  expect(editSaveIconSize.height).toBeCloseTo(16, 0);
++  await expect(page.getByTestId('display-device-edit-clinic-code')).toHaveText('ST');
++  await expect(page.getByTestId('display-device-edit-device-id')).toHaveText('ST-display-config-08');
++  await expect(page.getByTestId('display-device-edit-device-name')).toHaveValue('診症室門口屏-02');
++  await expect(page.getByTestId('display-device-edit-orientation')).toHaveValue('豎屏');
++  await expect(page.getByTestId('display-device-edit-url')).toHaveValue(
++    'https://checkin-dev.heals.asia/mock-display-device-08/qr',
++  );
++  await expect(page.getByRole('heading', {name: '設定', exact: true, level: 2})).toBeVisible();
++  const editSettingsIcon = page.locator('.management-edit-settings-heading .management-edit-section-icon');
++  await expect(editSettingsIcon).toHaveAttribute('src', /\/display\/icon-left\.svg$/);
++  await expect(editSettingsIcon).toHaveCSS('width', '20px');
++  await expect(editSettingsIcon).toHaveCSS('height', '20px');
++  await expect(page.getByRole('heading', {name: '基本顯示', level: 2})).toBeAttached();
++  await expect(page.getByRole('heading', {name: '診所配置', level: 2})).toBeAttached();
++  await expect(page.getByRole('heading', {name: '醫生配置', level: 2})).toBeAttached();
++  await expect(page.getByRole('heading', {name: '自定義主題色', level: 2})).toBeAttached();
++  const uploadHint = page.getByText(
++    '請上傳圖片比例為1:1，jpg/png files with a size less than 500KB.',
++    {exact: true},
++  );
++  const uploadHintStyle = await uploadHint.evaluate((element) => {
++    const style = window.getComputedStyle(element);
++
++    return {
++      color: style.color,
++      fontFamily: style.fontFamily,
++      fontSize: style.fontSize,
++      fontStyle: style.fontStyle,
++      fontWeight: style.fontWeight,
++      letterSpacing: style.letterSpacing,
++      lineHeight: style.lineHeight,
++    };
++  });
++  expect(uploadHintStyle.color).toBe(FIGMA_UPLOAD_HINT_BASELINE.color);
++  expect(uploadHintStyle.fontFamily).toContain('Roboto');
++  expect(uploadHintStyle.fontSize).toBe(FIGMA_UPLOAD_HINT_BASELINE.fontSize);
++  expect(uploadHintStyle.fontStyle).toBe('normal');
++  expect(uploadHintStyle.fontWeight).toBe('400');
++  expect(['0px', 'normal']).toContain(uploadHintStyle.letterSpacing);
++  expect(uploadHintStyle.lineHeight).toBe(FIGMA_UPLOAD_HINT_BASELINE.lineHeight);
++  for (const [heading, assetName] of [
++    ['基本顯示', 'basic-display-icon.svg'],
++    ['診所配置', 'clinic-configuration-icon.svg'],
++    ['醫生配置', 'doctor-configuration-icon.svg'],
++    ['自定義主題色', 'theme-icon.svg'],
++  ] as const) {
++    const sectionIcon = page
++      .getByRole('heading', {name: heading, level: 2})
++      .locator('..')
++      .locator('.management-edit-section-icon');
++    await expect(sectionIcon).toHaveAttribute('src', new RegExp(`/display/${assetName}$`));
++  }
++  const themeRecommendation = page.getByText(
++    '* 建議選擇較深的顏色，以確保文字清晰可辨',
++    {exact: true},
++  );
++  const themeRecommendationStyle = await themeRecommendation.evaluate((element) => {
++    const style = window.getComputedStyle(element);
++
++    return {
++      color: style.color,
++      fontFamily: style.fontFamily,
++      fontSize: style.fontSize,
++      fontStyle: style.fontStyle,
++      fontWeight: style.fontWeight,
++      letterSpacing: style.letterSpacing,
++      lineHeight: style.lineHeight,
++      whiteSpace: style.whiteSpace,
++    };
++  });
++  expect(themeRecommendationStyle.color).toBe('rgb(56, 81, 94)');
++  expect(themeRecommendationStyle.fontFamily).toContain('Roboto');
++  expect(themeRecommendationStyle.fontSize).toBe('14px');
++  expect(themeRecommendationStyle.fontStyle).toBe('normal');
++  expect(themeRecommendationStyle.fontWeight).toBe('400');
++  expect(['0px', 'normal']).toContain(themeRecommendationStyle.letterSpacing);
++  expect(themeRecommendationStyle.lineHeight).toBe('21px');
++  expect(themeRecommendationStyle.whiteSpace).toBe('nowrap');
++  const firstVideoLink = page.getByLabel('視頻播放鏈接1', {exact: true});
++  const secondVideoLink = page.getByLabel('視頻播放鏈接2', {exact: true});
++  const addVideoLinkButton = page.getByRole('button', {name: '新增視頻播放鏈接'});
++  const videoLinkList = page.getByRole('group', {name: '視頻播放鏈接配置'});
++  await expect(firstVideoLink).toBeVisible();
++  await expect(firstVideoLink).toHaveAttribute('type', 'url');
++  await expect(secondVideoLink).toHaveCount(0);
++  await expect(addVideoLinkButton).toBeDisabled();
++  await firstVideoLink.fill('   ');
++  await expect(firstVideoLink).toHaveAttribute('aria-invalid', 'true');
++  await expect(addVideoLinkButton).toBeDisabled();
++  await firstVideoLink.fill('大青蛙五千多');
++  await expect(firstVideoLink).toHaveAttribute('aria-invalid', 'true');
++  await expect(addVideoLinkButton).toBeDisabled();
++  await firstVideoLink.fill('https://media.example.com/waiting-room-1.mp4');
++  await expect(firstVideoLink).toHaveAttribute('aria-invalid', 'false');
++  await expect(addVideoLinkButton).toBeEnabled();
++  await addVideoLinkButton.click();
++  await expect(secondVideoLink).toBeVisible();
++  await expect(firstVideoLink).toHaveValue('https://media.example.com/waiting-room-1.mp4');
++  await expect(addVideoLinkButton).toBeDisabled();
++  await secondVideoLink.fill('第二條視頻');
++  await expect(secondVideoLink).toHaveAttribute('aria-invalid', 'true');
++  await expect(addVideoLinkButton).toBeDisabled();
++  await secondVideoLink.fill('http://media.example.com/waiting-room-2.m3u8');
++  await expect(secondVideoLink).toHaveAttribute('aria-invalid', 'false');
++  await expect(addVideoLinkButton).toBeEnabled();
++  await addVideoLinkButton.click();
++  const thirdVideoLink = page.getByLabel('視頻播放鏈接3', {exact: true});
++  await thirdVideoLink.fill('https://www.youtube.com/watch?v=display-screen-3');
++  await expect(addVideoLinkButton).toBeEnabled();
++  await addVideoLinkButton.click();
++  const fourthVideoLink = page.getByLabel('視頻播放鏈接4', {exact: true});
++  await expect(fourthVideoLink).toBeVisible();
++  const videoListMetrics = await videoLinkList.evaluate((element) => {
++    const rows = Array.from(element.querySelectorAll('.management-edit-video-row'));
++    const style = window.getComputedStyle(element);
++
++    return {
++      clientHeight: element.clientHeight,
++      firstRowHeight: rows[0]?.getBoundingClientRect().height ?? 0,
++      overflowY: style.overflowY,
++      rowGap: Number.parseFloat(style.rowGap),
++      rowCount: rows.length,
++      scrollHeight: element.scrollHeight,
++    };
++  });
++  expect(videoListMetrics.rowCount).toBe(4);
++  expect(videoListMetrics.overflowY).toBe('auto');
++  expect(videoListMetrics.clientHeight).toBeCloseTo(
++    videoListMetrics.firstRowHeight * 3 + videoListMetrics.rowGap * 2,
++    0,
++  );
++  expect(videoListMetrics.scrollHeight).toBeGreaterThan(videoListMetrics.clientHeight);
++  await expect(addVideoLinkButton).toBeDisabled();
++  await fourthVideoLink.fill('https://media.example.com/waiting-room-4.webm');
++  await expect(addVideoLinkButton).toBeEnabled();
++  await addVideoLinkButton.click();
++  const fifthVideoLink = page.getByLabel('視頻播放鏈接5', {exact: true});
++  await expect(fifthVideoLink).toBeVisible();
++  await expect(videoLinkList.locator('.management-edit-video-row')).toHaveCount(5);
++  await page.getByRole('button', {name: '刪除視頻播放鏈接5'}).click();
++  await expect(fifthVideoLink).toHaveCount(0);
++  await expect(firstVideoLink).toHaveValue('https://media.example.com/waiting-room-1.mp4');
++  const editClinicSelect = page.getByLabel('診所', {exact: true});
++  await expect(topbarClinicSelect).toHaveValue('TST');
++  await expect(editClinicSelect).toHaveValue('ST');
++  await editClinicSelect.selectOption('SW');
++  await expect(editClinicSelect).toHaveValue('SW');
++  await expect(topbarClinicSelect).toHaveValue('TST');
++  await page.goBack();
++  await expect(page).toHaveURL(managementListUrl);
++  await expect(formClinicSelect).toHaveValue('ST');
++  await expect(page.getByRole('region', {name: '顯示屏配置列表：ST'})).toBeVisible();
++  await editButtons.nth(7).click();
++  await expect(page).toHaveURL(displayDeviceEditUrl);
++  await expect(editClinicSelect).toHaveValue('ST');
++  await topbarClinicSelect.selectOption('SW');
++  await expect(editClinicSelect).toHaveValue('SW');
++  await editClinicSelect.selectOption('ST');
++  await expect(editClinicSelect).toHaveValue('ST');
++  await expect(topbarClinicSelect).toHaveValue('SW');
++  await page.goBack();
++  await expect(page).toHaveURL(managementListUrl);
++  await expect(page.getByRole('main', {name: '顯示屏配置'})).toBeVisible();
++  await expect(formClinicSelect).toHaveValue('SW');
++  await page.goto(displayDeviceEditUrl);
++  await expect(topbarClinicSelect).toHaveValue('TES');
++  await expect(page.getByLabel('診所', {exact: true})).toHaveValue('ST');
++  await expect(page.getByTestId('display-device-edit-device-name')).toHaveValue('診症室門口屏-02');
++  await page.reload();
++  await expect(page.getByTestId('display-device-edit-device-name')).toHaveValue('診症室門口屏-02');
++  await page.goto(managementListUrl);
++  await expect(page.getByRole('main', {name: '顯示屏配置'})).toBeVisible();
++  await formClinicSelect.selectOption('ST');
++  await expect(formClinicSelect).toHaveValue('ST');
++  const tableScrollState = await page.locator('.management-table-card').evaluate((element) => {
++    const computed = window.getComputedStyle(element);
++
++    return {
++      clientHeight: element.clientHeight,
++      overflowY: computed.overflowY,
++      scrollHeight: element.scrollHeight,
++    };
++  });
++  expect(tableScrollState.overflowY).toBe('scroll');
++  expect(tableScrollState.scrollHeight).toBeGreaterThanOrEqual(tableScrollState.clientHeight);
++  const documentScrollState = await page.evaluate(() => {
++    const documentElement = document.documentElement;
++    const body = document.body;
++    const shell = document.querySelector('.management-shell');
++    const shellStyle = shell ? window.getComputedStyle(shell) : null;
++
++    return {
++      bodyScrollHeight: body.scrollHeight,
++      clientHeight: documentElement.clientHeight,
++      documentScrollHeight: documentElement.scrollHeight,
++      shellOverflowY: shellStyle?.overflowY,
++    };
++  });
++  expect(documentScrollState.shellOverflowY).toBe('hidden');
++  expect(documentScrollState.documentScrollHeight).toBeLessThanOrEqual(
++    documentScrollState.clientHeight + 1,
++  );
++  expect(documentScrollState.bodyScrollHeight).toBeLessThanOrEqual(
++    documentScrollState.clientHeight + 1,
++  );
++  const formSelectStyle = await page.locator('.management-select').evaluate((element) => {
++    const rect = element.getBoundingClientRect();
++    const value = element.querySelector('.management-select-value');
++    const valueStyle = value ? window.getComputedStyle(value) : null;
++
++    return {
++      valueOverflow: valueStyle?.overflow,
++      valueText: value?.textContent ?? '',
++      valueTextOverflow: valueStyle?.textOverflow,
++      valueWhiteSpace: valueStyle?.whiteSpace,
++      width: rect.width,
++    };
++  });
++  expect(formSelectStyle.width).toBeGreaterThanOrEqual(360);
++  expect(formSelectStyle.valueText).toBe('ST');
++  expect(formSelectStyle.valueOverflow).toBe('hidden');
++  expect(formSelectStyle.valueTextOverflow).toBe('ellipsis');
++  expect(formSelectStyle.valueWhiteSpace).toBe('nowrap');
++  await page.getByRole('button', {name: '複製配置'}).first().click();
++  const copyConfigDialog = page.getByRole('dialog', {name: '複製'});
++  await expect(copyConfigDialog).toBeVisible();
++  const copyConfigDialogStyle = await readCopyConfigDialogStyle(page);
++  expect(copyConfigDialogStyle.width).toBeGreaterThanOrEqual(
++    Math.min(COPY_CONFIG_MODAL_RESPONSIVE_MIN.width, copyConfigDialogStyle.viewportWidth - 24) - 1,
++  );
++  expect(copyConfigDialogStyle.width).toBeLessThanOrEqual(
++    Math.min(FIGMA_COPY_CONFIG_MODAL_BASELINE.width, copyConfigDialogStyle.viewportWidth - 24) + 1,
++  );
++  expect(copyConfigDialogStyle.borderColor).toBe('rgba(0, 0, 0, 0.17)');
++  expect(copyConfigDialogStyle.borderRadius).toBeGreaterThanOrEqual(
++    COPY_CONFIG_MODAL_RESPONSIVE_MIN.radius - 1,
++  );
++  expect(copyConfigDialogStyle.borderRadius).toBeLessThanOrEqual(FIGMA_COPY_CONFIG_MODAL_BASELINE.radius + 1);
++  expect(copyConfigDialogStyle.titleFontSize).toBeGreaterThanOrEqual(
++    COPY_CONFIG_MODAL_RESPONSIVE_MIN.titleFontSize - 1,
++  );
++  expect(copyConfigDialogStyle.titleFontSize).toBeLessThanOrEqual(
++    FIGMA_COPY_CONFIG_MODAL_BASELINE.titleFontSize + 1,
++  );
++  expect(copyConfigDialogStyle.titleFontWeight).toBe('400');
++  expect(copyConfigDialogStyle.labelFontSize).toBeGreaterThanOrEqual(
++    COPY_CONFIG_MODAL_RESPONSIVE_MIN.bodyFontSize - 1,
++  );
++  expect(copyConfigDialogStyle.labelFontSize).toBeLessThanOrEqual(
++    FIGMA_COPY_CONFIG_MODAL_BASELINE.bodyFontSize + 1,
++  );
++  expect(copyConfigDialogStyle.centerXOffset).toBeLessThanOrEqual(1);
++  expect(copyConfigDialogStyle.centerYOffset).toBeLessThanOrEqual(1);
++  expect(copyConfigDialogStyle.isOverflowingViewport).toBe(false);
++  const copyFromClinicSelect = page.getByLabel('從診所');
++  const copyToClinicSelect = page.getByLabel('至診所');
++  await expect(copyFromClinicSelect).toHaveValue('ST');
++  await expect(copyToClinicSelect).toHaveValue('');
++  const copyFromClinicOptions = await copyFromClinicSelect.evaluate((element) =>
++    Array.from((element as HTMLSelectElement).options)
++      .map((option) => option.value)
++      .filter(Boolean),
++  );
++  const copyToClinicOptions = await copyToClinicSelect.evaluate((element) =>
++    Array.from((element as HTMLSelectElement).options)
++      .map((option) => option.value)
++      .filter(Boolean),
++  );
++  expect(copyFromClinicOptions).toEqual(topbarClinicOptions);
++  expect(copyToClinicOptions).toEqual(topbarClinicOptions);
++  await expect(copyConfigDialog.getByRole('checkbox', {name: '完全相同'})).toBeChecked();
++  const cancelCopyConfigButton = copyConfigDialog.getByRole('button', {name: /取消\s*C/});
++  const confirmCopyConfigButton = copyConfigDialog.getByRole('button', {name: /複製\s*I/});
++  await expect(cancelCopyConfigButton).toHaveAttribute('aria-keyshortcuts', 'C');
++  await expect(confirmCopyConfigButton).toHaveAttribute('aria-keyshortcuts', 'I');
++  await expect(confirmCopyConfigButton).toBeDisabled();
++  await page.keyboard.press('i');
++  await expect(copyConfigDialog).toBeVisible();
++  await copyToClinicSelect.selectOption('ST');
++  await expect(copyToClinicSelect).toHaveValue('ST');
++  await expect(confirmCopyConfigButton).toBeDisabled();
++  await page.keyboard.press('i');
++  await expect(copyConfigDialog).toBeVisible();
++  await page.keyboard.press('c');
++  await expect(copyConfigDialog).toHaveCount(0);
++  await page.getByRole('button', {name: '複製配置'}).first().click();
++  await expect(page.getByRole('dialog', {name: '複製'})).toBeVisible();
++  await page.getByLabel('至診所').selectOption('SW');
++  await expect(page.getByLabel('至診所')).toHaveValue('SW');
++  await expect(page.getByRole('dialog', {name: '複製'}).getByRole('button', {name: /複製\s*I/})).toBeEnabled();
++  await page.keyboard.press('i');
++  await expect(page.getByRole('dialog', {name: '複製'})).toHaveCount(0);
++  await page.getByRole('button', {name: FIRST_DISPLAY_URL}).click();
++  await expect(page).toHaveURL(/management-settings\/program-settings\/display-screen-config\/$/);
++  await expect(page.getByTestId('management-copy-toast')).toContainText('連結已複製！');
++  await expect(page.getByTestId('management-copy-toast')).toContainText(
++    '請將此連結貼至瀏覽器開啟，以顯示排隊叫號畫面。',
++  );
++  await expect
++    .poll(() => page.evaluate(() => navigator.clipboard.readText()))
++    .toBe(FIRST_DISPLAY_URL);
++  const copyToastStyle = await readCopyToastStyle(page);
++  expect(copyToastStyle.width).toBeGreaterThanOrEqual(
++    Math.min(COPY_TOAST_RESPONSIVE_MIN.width, copyToastStyle.viewportWidth - 24) - 1,
++  );
++  expect(copyToastStyle.width).toBeLessThanOrEqual(FIGMA_COPY_TOAST_BASELINE.width + 1);
++  expect(copyToastStyle.height).toBeGreaterThanOrEqual(COPY_TOAST_RESPONSIVE_MIN.minHeight - 1);
++  expect(copyToastStyle.height).toBeLessThanOrEqual(FIGMA_COPY_TOAST_BASELINE.minHeight + 6);
++  expect(copyToastStyle.top).toBeGreaterThanOrEqual(COPY_TOAST_RESPONSIVE_MIN.top - 1);
++  expect(copyToastStyle.top).toBeLessThanOrEqual(FIGMA_COPY_TOAST_BASELINE.top + 1);
++  expect(copyToastStyle.right).toBeGreaterThanOrEqual(COPY_TOAST_RESPONSIVE_MIN.right - 1);
++  expect(copyToastStyle.right).toBeLessThanOrEqual(FIGMA_COPY_TOAST_BASELINE.right + 1);
++  expect(copyToastStyle.backgroundColor).toBe('rgb(229, 255, 250)');
++  expect(copyToastStyle.borderColor).toBe('rgb(161, 237, 222)');
++  expect(copyToastStyle.color).toBe('rgb(4, 42, 35)');
++  expect(copyToastStyle.borderRadius).toBeGreaterThanOrEqual(COPY_TOAST_RESPONSIVE_MIN.radius - 1);
++  expect(copyToastStyle.borderRadius).toBeLessThanOrEqual(FIGMA_COPY_TOAST_BASELINE.radius + 1);
++  expect(copyToastStyle.titleFontSize).toBeGreaterThanOrEqual(COPY_TOAST_RESPONSIVE_MIN.titleFontSize - 1);
++  expect(copyToastStyle.titleFontSize).toBeLessThanOrEqual(FIGMA_COPY_TOAST_BASELINE.titleFontSize + 1);
++  expect(copyToastStyle.titleFontWeight).toBe('600');
++  expect(copyToastStyle.messageFontSize).toBeGreaterThanOrEqual(
++    COPY_TOAST_RESPONSIVE_MIN.messageFontSize - 1,
++  );
++  expect(copyToastStyle.messageFontSize).toBeLessThanOrEqual(FIGMA_COPY_TOAST_BASELINE.messageFontSize + 1);
++  expect(copyToastStyle.messageLineHeight).toBeCloseTo(copyToastStyle.messageFontSize * 1.5, 0);
++  expect(copyToastStyle.isOverflowingViewport).toBe(false);
++  if (copyToastStyle.viewportWidth >= 1900) {
++    expect(copyToastStyle.width).toBeCloseTo(FIGMA_COPY_TOAST_BASELINE.width, 0);
++    expect(copyToastStyle.right).toBeCloseTo(FIGMA_COPY_TOAST_BASELINE.right, 0);
++  }
++  if (copyToastStyle.viewportHeight >= 1080) {
++    expect(copyToastStyle.top).toBeCloseTo(FIGMA_COPY_TOAST_BASELINE.top, 0);
++    expect(copyToastStyle.topbarOffsetTop).toBeCloseTo(FIGMA_COPY_TOAST_CONTENT_OFFSET_TOP, 0);
++    expect(copyToastStyle.titleFontSize).toBeCloseTo(FIGMA_COPY_TOAST_BASELINE.titleFontSize, 0);
++    expect(copyToastStyle.messageFontSize).toBeCloseTo(FIGMA_COPY_TOAST_BASELINE.messageFontSize, 0);
++  }
++  if (copyToastStyle.viewportWidth >= 1900 && copyToastStyle.viewportHeight >= 1080) {
++    await page.waitForTimeout(1500);
++    await page.getByRole('button', {name: SECOND_DISPLAY_URL}).click();
++    await expect
++      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
++      .toBe(SECOND_DISPLAY_URL);
++    await expect(page.getByTestId('management-copy-toast')).toBeVisible();
++    await page.waitForTimeout(1800);
++    await expect(page.getByTestId('management-copy-toast')).toBeVisible();
++    await page.waitForTimeout(1400);
++    await expect(page.getByTestId('management-copy-toast')).toHaveCount(0);
++  } else {
++    await page.getByRole('button', {name: '關閉提示'}).click();
++    await expect(page.getByTestId('management-copy-toast')).toHaveCount(0);
++  }
+ 
+   await page.setViewportSize({width: 390, height: 844});
+   await page.goto(MANAGEMENT_ROUTE);
+   await expect(page.getByRole('banner', {name: 'CSX 管理頂欄'})).toBeVisible();
+   await expect(page.getByRole('button', {name: '顯示屏配置'})).toBeVisible();
+-  await expect(page.getByRole('button', {name: '複製配置'})).toBeVisible();
++  await expect(page.getByRole('heading', {name: '顯示屏配置', level: 1})).toBeVisible();
++  await expect(clinicFilterLabel).toBeVisible();
++  const mobileClinicFilterLayout = await page.locator('.management-filter-form').evaluate((element) => {
++    const labelRect = element.querySelector('label')?.getBoundingClientRect();
++    const selectRect = element.querySelector('.management-select')?.getBoundingClientRect();
++
++    return {
++      isLabelAboveSelect: labelRect && selectRect ? labelRect.bottom <= selectRect.top : false,
++    };
++  });
++  expect(mobileClinicFilterLayout.isLabelAboveSelect).toBe(true);
++  await expect(page.getByRole('button', {name: '複製配置'}).first()).toBeVisible();
+ 
+   const hasHorizontalOverflow = await page.evaluate(() => {
+     const documentElement = document.documentElement;
+@@ -79,6 +797,20 @@ test('renders the display management shell on the module route', async ({page})
+     return documentElement.scrollWidth > window.innerWidth;
+   });
+   expect(hasHorizontalOverflow).toBe(false);
++  await page.getByRole('button', {name: FIRST_DISPLAY_URL}).click();
++  const mobileCopyToastStyle = await readCopyToastStyle(page);
++  expect(mobileCopyToastStyle.isOverflowingViewport).toBe(false);
++  expect(mobileCopyToastStyle.width).toBeLessThanOrEqual(
++    mobileCopyToastStyle.viewportWidth - mobileCopyToastStyle.left - mobileCopyToastStyle.right + 1,
++  );
++  expect(mobileCopyToastStyle.left).toBeGreaterThanOrEqual(11);
++  expect(mobileCopyToastStyle.right).toBeGreaterThanOrEqual(11);
++  expect(mobileCopyToastStyle.top).toBeLessThanOrEqual(FIGMA_COPY_TOAST_BASELINE.top);
++  expect(mobileCopyToastStyle.top).toBeGreaterThanOrEqual(COPY_TOAST_RESPONSIVE_MIN.top - 1);
++  expect(mobileCopyToastStyle.titleFontSize).toBeLessThanOrEqual(FIGMA_COPY_TOAST_BASELINE.titleFontSize);
++  expect(mobileCopyToastStyle.messageFontSize).toBeLessThanOrEqual(FIGMA_COPY_TOAST_BASELINE.messageFontSize);
++  await expect(page.getByText('Hydration failed')).toHaveCount(0);
++  expect(hydrationErrors).toEqual([]);
+ });
+ 
+ test('redirects the display management route to login without csx auth', async ({page}) => {
+@@ -110,13 +842,14 @@ test('imports the local csx login transfer from window.name', async ({page}) =>
+   await page.evaluate((transferName) => {
+     window.name = transferName;
+   }, `${AUTH_TRANSFER_PREFIX}${encodedPayload}`);
++  await mockClinicList(page, [...TEST_CLINICS, {clinicCode: 'TRANSFER'}]);
+ 
+   await page.goto(MANAGEMENT_ROUTE);
+ 
+-  await expect(page.getByRole('button', {name: '目前診所：Transfer Clinic'})).toBeVisible();
++  await expect(page.getByLabel('目前診所')).toHaveValue('TRANSFER');
+   await expect(page.getByRole('button', {name: '使用者：transfer.user'})).toBeVisible();
+   await expect(page.getByRole('status')).toContainText('已登入');
+-  await expect(page.getByLabel('診所', {exact: true})).toHaveValue('Transfer Clinic');
++  await expect(page.getByLabel('診所', {exact: true})).toHaveValue('TRANSFER');
+ 
+   const transferState = await page.evaluate(() => ({
+     hash: window.location.hash,
+@@ -164,10 +897,7 @@ test('hydrates the live clock without a time text mismatch', async ({page}) => {
+   page.on('console', (message) => {
+     const text = message.text();
+ 
+-    if (
+-      message.type() === 'error' &&
+-      (text.includes('Hydration failed') || text.includes("didn't match the client"))
+-    ) {
++    if (message.type() === 'error' && isHydrationErrorText(text)) {
+       hydrationErrors.push(text);
+     }
+   });
+diff --git a/src/app/layout.tsx b/src/app/layout.tsx
+index 07caee0..225b8bb 100644
+--- a/src/app/layout.tsx
++++ b/src/app/layout.tsx
+@@ -1,6 +1,7 @@
+ import type {Metadata, Viewport} from 'next';
+ import type {ReactNode} from 'react';
+ import {withAppBasePath} from '@/lib/app-base-path';
++import {GlobalClinicProvider} from '@/lib/global-clinic';
+ import './globals.css';
+ 
+ export const metadata: Metadata = {
+@@ -43,7 +44,7 @@ export default function RootLayout({children}: Readonly<{children: ReactNode}>)
+     <html lang="zh-Hant">
+       <body>
+         <style dangerouslySetInnerHTML={{__html: outfitFontFace}} />
+-        {children}
++        <GlobalClinicProvider>{children}</GlobalClinicProvider>
+       </body>
+     </html>
+   );
+diff --git a/src/features/display-management/DisplayManagementPage.tsx b/src/features/display-management/DisplayManagementPage.tsx
+index b0fe158..c71d503 100644
+--- a/src/features/display-management/DisplayManagementPage.tsx
++++ b/src/features/display-management/DisplayManagementPage.tsx
+@@ -1,9 +1,10 @@
+ 'use client';
+ 
+-import {useEffect, useMemo, useState} from 'react';
++import {useCallback, useEffect, useMemo, useRef, useState, type ReactNode} from 'react';
+ import Image from 'next/image';
++import {usePathname, useRouter} from 'next/navigation';
+ import {
+-  Building2,
++  CheckCircle2,
+   ChevronDown,
+   ClipboardCopy,
+   LoaderCircle,
+@@ -11,7 +12,7 @@ import {
+   Pencil,
+   ShieldAlert,
+   ShieldCheck,
+-  UserRound,
++  X,
+ } from 'lucide-react';
+ import {Button} from '@/components/ui/button';
+ import {
+@@ -22,36 +23,101 @@ import {
+   TableHeader,
+   TableRow,
+ } from '@/components/ui/table';
+-import {withAppBasePath} from '@/lib/app-base-path';
+-import {consumeCsxAuthTransfer, getCsxAuthContext, type CsxAuthContext} from '@/lib/csx-auth';
++import {APP_BASE_PATH, withAppBasePath} from '@/lib/app-base-path';
++import {fetchClinicOptions, type ClinicOption} from '@/lib/clinic-api';
++import {
++  consumeCsxAuthTransfer,
++  createEmptyCsxAuthContext,
++  getCsxAuthContext,
++  type CsxAuthContext,
++} from '@/lib/csx-auth';
++import {useGlobalClinicSelection} from '@/lib/global-clinic';
++import {buildDisplayConfigs} from './display-config-data';
+ 
+ const HEALS_ICON_SRC = withAppBasePath('/display/heals-icon.svg');
++const MANAGEMENT_CLINIC_ICON_SRC = withAppBasePath('/display/Clinic.png');
++const MANAGEMENT_USER_AVATAR_SRC = withAppBasePath('/display/avatar.png');
+ const LOGIN_ROUTE = withAppBasePath('/login/');
++const DISPLAY_DEVICE_EDIT_ROUTE = '/management-settings/program-settings/display-screen-config/edit/';
+ const FALLBACK_CLINIC_NAME = 'Heals Clinic';
++const FALLBACK_CLINIC_CODE = 'HEALS';
++const COPY_TOAST_DURATION_MS = 3000;
++const TOP_NAV_LABEL_BY_ROUTE_MODULE: Record<string, string> = {
++  'management-settings': '設定',
++};
++
++const dayFormatter = new Intl.DateTimeFormat('en-GB', {day: '2-digit'});
++const monthFormatter = new Intl.DateTimeFormat('en-GB', {month: 'short'});
++const yearFormatter = new Intl.DateTimeFormat('en-GB', {year: 'numeric'});
++const weekdayFormatter = new Intl.DateTimeFormat('en-GB', {weekday: 'short'});
++const timeFormatter = new Intl.DateTimeFormat('en-GB', {
++  hour: '2-digit',
++  minute: '2-digit',
++  hour12: false,
++});
++
++type CopyToastState = {
++  id: number;
++  url: string;
++};
+ 
+-const displayConfigs = [
+-  {
+-    id: 'front-desk-portrait-template',
+-    deviceName: '前台觸摸屏-模板',
+-    orientation: '豎屏',
+-    url: 'https://checkin-dev.heals.asia/f564830c-b310-4b56-8402-c0bd505b9caf/qr',
+-  },
+-];
++type CopyConfigDialogState = {
++  fromClinicCode: string;
++  isFullCopy: boolean;
++  toClinicCode: string;
++};
++
++async function copyTextToClipboard(text: string) {
++  if (navigator.clipboard?.writeText) {
++    await navigator.clipboard.writeText(text);
++
++    return;
++  }
++
++  const textarea = document.createElement('textarea');
++  textarea.value = text;
++  textarea.setAttribute('readonly', '');
++  textarea.style.position = 'fixed';
++  textarea.style.inset = '0 auto auto 0';
++  textarea.style.opacity = '0';
++  document.body.appendChild(textarea);
++  textarea.select();
++  const isCopied = document.execCommand('copy');
++  textarea.remove();
++
++  if (!isCopied) {
++    throw new Error('Unable to copy text to clipboard.');
++  }
++}
+ 
+ function formatDateTime(now: Date) {
+-  const date = new Intl.DateTimeFormat('en-GB', {
+-    day: '2-digit',
+-    month: 'short',
+-    year: 'numeric',
+-    weekday: 'short',
+-  }).format(now);
+-  const time = new Intl.DateTimeFormat('en-GB', {
+-    hour: '2-digit',
+-    minute: '2-digit',
+-    hour12: false,
+-  }).format(now);
+-
+-  return `${date.replace(',', '')} ${time}`;
++  const day = dayFormatter.format(now);
++  const month = monthFormatter.format(now);
++  const year = yearFormatter.format(now);
++  const weekday = weekdayFormatter.format(now);
++  const time = timeFormatter.format(now);
++
++  return `${day} ${month} ${year} (${weekday}) ${time}`;
++}
++
++function getRouteModule(pathname: string) {
++  const withoutQuery = pathname.split('?')[0] ?? '';
++  const normalizedPathname = withoutQuery.replace(/\/+$/g, '') || '/';
++  const normalizedBasePath = APP_BASE_PATH.replace(/\/+$/g, '');
++  const routePath =
++    normalizedBasePath && normalizedPathname.startsWith(`${normalizedBasePath}/`)
++      ? normalizedPathname.slice(normalizedBasePath.length)
++      : normalizedPathname === normalizedBasePath
++        ? '/'
++        : normalizedPathname;
++
++  return routePath.split('/').filter(Boolean)[0] ?? null;
++}
++
++function getTopNavLabel(pathname: string) {
++  const routeModule = getRouteModule(pathname);
++
++  return routeModule ? (TOP_NAV_LABEL_BY_ROUTE_MODULE[routeModule] ?? null) : null;
+ }
+ 
+ function useHeaderClock() {
+@@ -60,7 +126,7 @@ function useHeaderClock() {
+   useEffect(() => {
+     const updateClock = () => setNow(new Date());
+     updateClock();
+-    const timer = window.setInterval(updateClock, 60 * 1000);
++    const timer = window.setInterval(updateClock, 1000);
+ 
+     return () => window.clearInterval(timer);
+   }, []);
+@@ -69,14 +135,21 @@ function useHeaderClock() {
+ }
+ 
+ function useCsxAuthState() {
+-  const [authContext, setAuthContext] = useState<CsxAuthContext>(() => getCsxAuthContext());
++  const {initializeGlobalClinic} = useGlobalClinicSelection();
++  const [authContext, setAuthContext] = useState<CsxAuthContext>(() => createEmptyCsxAuthContext());
+   const [isResolved, setIsResolved] = useState(false);
+ 
+   useEffect(() => {
+     consumeCsxAuthTransfer();
+ 
+     const refreshAuthContext = () => {
+-      setAuthContext(getCsxAuthContext());
++      const nextAuthContext = getCsxAuthContext();
++
++      if (nextAuthContext.clinicCode) {
++        initializeGlobalClinic(nextAuthContext.clinicCode);
++      }
++
++      setAuthContext(nextAuthContext);
+       setIsResolved(true);
+     };
+ 
+@@ -88,44 +161,409 @@ function useCsxAuthState() {
+       window.removeEventListener('focus', refreshAuthContext);
+       window.removeEventListener('storage', refreshAuthContext);
+     };
+-  }, []);
++  }, [initializeGlobalClinic]);
+ 
+   return {authContext, isResolved};
+ }
+ 
+-function ManagementTopBar({authContext}: {authContext: CsxAuthContext}) {
++function buildFallbackClinicOption(clinicCode: string | null, clinicDisplayName: string | null): ClinicOption {
++  const resolvedClinicCode = clinicCode ?? FALLBACK_CLINIC_CODE;
++
++  return {
++    clinicCode: resolvedClinicCode,
++    displayName: clinicCode ?? clinicDisplayName ?? resolvedClinicCode ?? FALLBACK_CLINIC_NAME,
++  };
++}
++
++function resolveInitialClinicCode(clinics: ClinicOption[], preferredClinicCode: string | null) {
++  if (preferredClinicCode && clinics.some((clinic) => clinic.clinicCode === preferredClinicCode)) {
++    return preferredClinicCode;
++  }
++
++  return clinics[0]?.clinicCode ?? preferredClinicCode ?? FALLBACK_CLINIC_CODE;
++}
++
++function useClinicSelections(authContext: CsxAuthContext, isEnabled: boolean) {
++  const {clinicCode, clinicDisplayName, token} = authContext;
++  const {
++    displayManagementClinicSelection,
++    globalClinicCode,
++    globalClinicRevision,
++    selectDisplayManagementClinic,
++    selectGlobalClinic,
++  } = useGlobalClinicSelection();
++  const fallbackClinic = useMemo(
++    () => buildFallbackClinicOption(clinicCode, clinicDisplayName),
++    [clinicCode, clinicDisplayName],
++  );
++  const [apiClinics, setApiClinics] = useState<ClinicOption[]>([]);
++  useEffect(() => {
++    if (!isEnabled) {
++      return undefined;
++    }
++
++    const controller = new AbortController();
++
++    fetchClinicOptions(controller.signal)
++      .then((clinics) => {
++        if (!clinics.length) {
++          setApiClinics([]);
++
++          return;
++        }
++
++        setApiClinics(clinics);
++      })
++      .catch(() => {
++        setApiClinics([]);
++      });
++
++    return () => controller.abort();
++  }, [isEnabled, token]);
++
++  const clinics = useMemo(() => {
++    if (apiClinics.length) {
++      return apiClinics;
++    }
++
++    const fallbackClinics = [fallbackClinic];
++
++    if (
++      displayManagementClinicSelection?.clinicCode &&
++      !fallbackClinics.some(
++        (clinic) => clinic.clinicCode === displayManagementClinicSelection.clinicCode,
++      )
++    ) {
++      fallbackClinics.unshift({
++        clinicCode: displayManagementClinicSelection.clinicCode,
++        displayName: displayManagementClinicSelection.clinicCode,
++      });
++    }
++
++    if (
++      globalClinicCode &&
++      !fallbackClinics.some((clinic) => clinic.clinicCode === globalClinicCode)
++    ) {
++      fallbackClinics.unshift({clinicCode: globalClinicCode, displayName: globalClinicCode});
++    }
++
++    return fallbackClinics;
++  }, [apiClinics, displayManagementClinicSelection, fallbackClinic, globalClinicCode]);
++  const hasClinic = (selectedClinicCode: string | null): selectedClinicCode is string =>
++    Boolean(
++      selectedClinicCode && clinics.some((clinic) => clinic.clinicCode === selectedClinicCode),
++    );
++  const resolvedGlobalClinicCode = hasClinic(globalClinicCode)
++    ? globalClinicCode
++    : resolveInitialClinicCode(clinics, clinicCode);
++  const globalSelectionKey = `${globalClinicRevision}:${resolvedGlobalClinicCode}`;
++  const resolvedContentClinicCode =
++    displayManagementClinicSelection?.globalSelectionKey === globalSelectionKey &&
++    hasClinic(displayManagementClinicSelection.clinicCode)
++      ? displayManagementClinicSelection.clinicCode
++      : resolvedGlobalClinicCode;
++
++  const selectContentClinic = useCallback((nextClinicCode: string) => {
++    selectDisplayManagementClinic(nextClinicCode, globalSelectionKey);
++  }, [globalSelectionKey, selectDisplayManagementClinic]);
++
++  return {
++    clinics,
++    contentSelectedClinicCode: resolvedContentClinicCode,
++    globalClinicRevision,
++    setContentSelectedClinicCode: selectContentClinic,
++    setTopbarSelectedClinicCode: selectGlobalClinic,
++    topbarSelectedClinicCode: resolvedGlobalClinicCode,
++  };
++}
++
++export function ClinicSelect({
++  ariaLabel,
++  className,
++  clinics,
++  id,
++  onChange,
++  selectedClinicCode,
++  showClinicIcon = false,
++}: {
++  ariaLabel?: string;
++  className: string;
++  clinics: ClinicOption[];
++  id: string;
++  onChange: (clinicCode: string) => void;
++  selectedClinicCode: string;
++  showClinicIcon?: boolean;
++}) {
++  const selectedClinicLabel =
++    clinics.find((clinic) => clinic.clinicCode === selectedClinicCode)?.displayName ?? selectedClinicCode;
++
++  return (
++    <div className={className}>
++      {showClinicIcon ? (
++        <Image
++          alt=""
++          aria-hidden
++          className="management-clinic-icon"
++          height={24}
++          src={MANAGEMENT_CLINIC_ICON_SRC}
++          width={24}
++        />
++      ) : null}
++      <span className="management-select-value">{selectedClinicLabel}</span>
++      <select
++        aria-label={ariaLabel}
++        id={id}
++        onChange={(event) => onChange(event.target.value)}
++        value={selectedClinicCode}
++      >
++        {clinics.map((clinic) => (
++          <option key={clinic.clinicCode} value={clinic.clinicCode}>
++            {clinic.displayName}
++          </option>
++        ))}
++      </select>
++      <ChevronDown aria-hidden size={16} />
++    </div>
++  );
++}
++
++function CopyConfigClinicSelect({
++  ariaLabel,
++  clinics,
++  id,
++  onChange,
++  placeholder,
++  selectedClinicCode,
++}: {
++  ariaLabel: string;
++  clinics: ClinicOption[];
++  id: string;
++  onChange: (clinicCode: string) => void;
++  placeholder?: string;
++  selectedClinicCode: string;
++}) {
++  const selectedClinicLabel =
++    clinics.find((clinic) => clinic.clinicCode === selectedClinicCode)?.displayName ??
++    selectedClinicCode;
++  const hasSelectedClinic = Boolean(selectedClinicCode);
++
++  return (
++    <div className="management-copy-config-select">
++      <span
++        className={`management-copy-config-select-value${hasSelectedClinic ? '' : ' is-placeholder'}`}
++      >
++        {hasSelectedClinic ? selectedClinicLabel : placeholder}
++      </span>
++      <select
++        aria-label={ariaLabel}
++        id={id}
++        onChange={(event) => onChange(event.target.value)}
++        value={selectedClinicCode}
++      >
++        {placeholder ? (
++          <option disabled hidden value="">
++            {placeholder}
++          </option>
++        ) : null}
++        {clinics.map((clinic) => (
++          <option key={clinic.clinicCode} value={clinic.clinicCode}>
++            {clinic.displayName}
++          </option>
++        ))}
++      </select>
++      <ChevronDown aria-hidden size={16} />
++    </div>
++  );
++}
++
++function CopyConfigDialog({
++  clinics,
++  dialog,
++  onCancel,
++  onChangeFromClinic,
++  onChangeIsFullCopy,
++  onChangeToClinic,
++  onConfirm,
++}: {
++  clinics: ClinicOption[];
++  dialog: CopyConfigDialogState | null;
++  onCancel: () => void;
++  onChangeFromClinic: (clinicCode: string) => void;
++  onChangeIsFullCopy: (isFullCopy: boolean) => void;
++  onChangeToClinic: (clinicCode: string) => void;
++  onConfirm: () => void;
++}) {
++  const isConfirmDisabled =
++    !dialog?.toClinicCode || dialog.toClinicCode === dialog.fromClinicCode;
++
++  useEffect(() => {
++    if (!dialog) {
++      return undefined;
++    }
++
++    const handleShortcut = (event: KeyboardEvent) => {
++      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
++        return;
++      }
++
++      const key = event.key.toLowerCase();
++
++      if (key === 'escape' || key === 'c') {
++        event.preventDefault();
++        onCancel();
++
++        return;
++      }
++
++      if (key === 'i') {
++        event.preventDefault();
++        if (isConfirmDisabled) {
++          return;
++        }
++
++        onConfirm();
++      }
++    };
++
++    window.addEventListener('keydown', handleShortcut);
++
++    return () => window.removeEventListener('keydown', handleShortcut);
++  }, [dialog, isConfirmDisabled, onCancel, onConfirm]);
++
++  if (!dialog) {
++    return null;
++  }
++
++  return (
++    <div className="management-copy-config-overlay" data-testid="management-copy-config-overlay">
++      <section
++        aria-labelledby="management-copy-config-title"
++        aria-modal="true"
++        className="management-copy-config-dialog"
++        data-testid="management-copy-config-dialog"
++        role="dialog"
++      >
++        <header className="management-copy-config-header">
++          <h2 id="management-copy-config-title">複製</h2>
++          <button
++            aria-label="關閉複製配置"
++            className="management-copy-config-close"
++            onClick={onCancel}
++            type="button"
++          >
++            <X aria-hidden />
++          </button>
++        </header>
++        <div className="management-copy-config-content">
++          <div className="management-copy-config-form">
++            <label htmlFor="management-copy-config-from-select">從</label>
++            <CopyConfigClinicSelect
++              ariaLabel="從診所"
++              clinics={clinics}
++              id="management-copy-config-from-select"
++              onChange={onChangeFromClinic}
++              selectedClinicCode={dialog.fromClinicCode}
++            />
++            <label htmlFor="management-copy-config-to-select">至</label>
++            <CopyConfigClinicSelect
++              ariaLabel="至診所"
++              clinics={clinics}
++              id="management-copy-config-to-select"
++              onChange={onChangeToClinic}
++              placeholder="請選擇"
++              selectedClinicCode={dialog.toClinicCode}
++            />
++            <div className="management-copy-config-form-spacer" aria-hidden />
++            <label className="management-copy-config-checkbox">
++              <input
++                checked={dialog.isFullCopy}
++                onChange={(event) => onChangeIsFullCopy(event.target.checked)}
++                type="checkbox"
++              />
++              <span className="management-copy-config-checkbox-box" aria-hidden />
++              <span>完全相同</span>
++            </label>
++          </div>
++        </div>
++        <footer className="management-copy-config-footer">
++          <Button
++            aria-keyshortcuts="C"
++            className="management-copy-config-action is-cancel"
++            onClick={onCancel}
++            type="button"
++            variant="outline"
++          >
++            <span>取消</span>
++            <kbd>C</kbd>
++          </Button>
++          <Button
++            aria-keyshortcuts="I"
++            className="management-copy-config-action is-confirm"
++            disabled={isConfirmDisabled}
++            onClick={onConfirm}
++            type="button"
++            variant="default"
++          >
++            <span>複製</span>
++            <kbd>I</kbd>
++          </Button>
++        </footer>
++      </section>
++    </div>
++  );
++}
++
++function ManagementTopBar({
++  authContext,
++  clinics,
++  selectedClinicCode,
++  setSelectedClinicCode,
++}: {
++  authContext: CsxAuthContext;
++  clinics: ClinicOption[];
++  selectedClinicCode: string;
++  setSelectedClinicCode: (clinicCode: string) => void;
++}) {
++  const pathname = usePathname();
+   const dateTime = useHeaderClock();
+-  const clinicName = authContext.clinicDisplayName ?? FALLBACK_CLINIC_NAME;
+   const userName = authContext.userDisplayName ?? '未登入';
++  const topNavLabel = getTopNavLabel(pathname);
+ 
+   return (
+     <header className="management-topbar" aria-label="CSX 管理頂欄">
+       <div className="management-topbar-start">
+         <Image alt="Heals" className="management-logo" height={40} src={HEALS_ICON_SRC} width={40} />
+         <time className="management-current-time">{dateTime}</time>
+-        <nav aria-label="管理分區" className="management-topnav">
+-          <span className="management-topnav-item">設定</span>
+-        </nav>
++        {topNavLabel ? (
++          <nav aria-label="管理分區" className="management-topnav">
++            <span className="management-topnav-item">{topNavLabel}</span>
++          </nav>
++        ) : null}
+       </div>
+       <div className="management-topbar-actions">
+-        <Button
+-          aria-label={`目前診所：${clinicName}`}
++        <ClinicSelect
++          ariaLabel="目前診所"
+           className="management-clinic-switcher"
+-          type="button"
+-          variant="secondary"
+-        >
+-          <Building2 aria-hidden size={20} />
+-          <span>{clinicName}</span>
+-          <ChevronDown aria-hidden size={16} />
+-        </Button>
++          clinics={clinics}
++          id="management-topbar-clinic-select"
++          onChange={setSelectedClinicCode}
++          selectedClinicCode={selectedClinicCode}
++          showClinicIcon
++        />
+         <Button
+           aria-label={authContext.isAuthenticated ? `使用者：${userName}` : '使用者未登入'}
+           className="management-user-button"
+           type="button"
+           variant="default"
+         >
+-          <UserRound aria-hidden size={18} />
+-          <span className="management-user-name">{userName}</span>
++          <Image
++            alt=""
++            aria-hidden
++            className="management-user-avatar-image"
++            height={40}
++            src={MANAGEMENT_USER_AVATAR_SRC}
++            width={40}
++          />
+         </Button>
+       </div>
+     </header>
+@@ -162,7 +600,7 @@ function ManagementAuthStatus({authContext}: {authContext: CsxAuthContext}) {
+   }
+ 
+   return (
+-    <section className="management-auth-status is-ready" role="status">
++    <section className="management-auth-status is-ready is-visually-hidden" role="status">
+       <ShieldCheck aria-hidden size={18} />
+       <div>
+         <strong>已登入</strong>
+@@ -192,9 +630,134 @@ function ManagementAuthLoadingOverlay({authContext}: {authContext: CsxAuthContex
+   );
+ }
+ 
+-function DisplayConfigTable() {
++export interface ManagementFrameworkContext {
++  authContext: CsxAuthContext;
++  clinics: ClinicOption[];
++  contentSelectedClinicCode: string;
++  globalClinicRevision: number;
++  setContentSelectedClinicCode: (clinicCode: string) => void;
++  topbarSelectedClinicCode: string;
++}
++
++export function ManagementFramework({
++  children,
++  className = '',
++}: {
++  children: (context: ManagementFrameworkContext) => ReactNode;
++  className?: string;
++}) {
++  const {authContext, isResolved} = useCsxAuthState();
++  const isManagementReady = isResolved && authContext.isAuthenticated;
++  const {
++    clinics,
++    contentSelectedClinicCode,
++    globalClinicRevision,
++    setContentSelectedClinicCode,
++    setTopbarSelectedClinicCode,
++    topbarSelectedClinicCode,
++  } = useClinicSelections(authContext, isManagementReady);
++
++  useEffect(() => {
++    if (!isResolved || authContext.isAuthenticated) {
++      return;
++    }
++
++    window.location.replace(LOGIN_ROUTE);
++  }, [authContext.isAuthenticated, isResolved]);
++
++  if (!isManagementReady) {
++    return (
++      <div aria-busy className="management-shell is-auth-loading">
++        <ManagementAuthLoadingOverlay authContext={authContext} />
++      </div>
++    );
++  }
++
++  return (
++    <div className={`management-shell ${className}`.trim()}>
++      <ManagementTopBar
++        authContext={authContext}
++        clinics={clinics}
++        selectedClinicCode={topbarSelectedClinicCode}
++        setSelectedClinicCode={setTopbarSelectedClinicCode}
++      />
++      <div className="management-body">
++        <ManagementSidebar />
++        {children({
++          authContext,
++          clinics,
++          contentSelectedClinicCode,
++          globalClinicRevision,
++          setContentSelectedClinicCode,
++          topbarSelectedClinicCode,
++        })}
++      </div>
++    </div>
++  );
++}
++
++function CopySuccessToast({
++  onDismiss,
++  toast,
++}: {
++  onDismiss: () => void;
++  toast: CopyToastState | null;
++}) {
++  useEffect(() => {
++    if (!toast) {
++      return undefined;
++    }
++
++    const timer = window.setTimeout(onDismiss, COPY_TOAST_DURATION_MS);
++
++    return () => window.clearTimeout(timer);
++  }, [onDismiss, toast]);
++
++  if (!toast) {
++    return null;
++  }
++
++  return (
++    <section
++      aria-live="polite"
++      className="management-copy-toast"
++      data-testid="management-copy-toast"
++      role="status"
++    >
++      <div className="management-copy-toast-wrapper">
++        <CheckCircle2 aria-hidden className="management-copy-toast-icon" fill="currentColor" />
++        <div className="management-copy-toast-content">
++          <h2>連結已複製！</h2>
++          <div className="management-copy-toast-divider" />
++          <p>請將此連結貼至瀏覽器開啟，以顯示排隊叫號畫面。</p>
++        </div>
++      </div>
++      <button
++        aria-label="關閉提示"
++        className="management-copy-toast-close"
++        onClick={onDismiss}
++        type="button"
++      >
++        <X aria-hidden />
++      </button>
++    </section>
++  );
++}
++
++function DisplayConfigTable({
++  clinicCode,
++  onCopyConfig,
++  onCopyDisplayUrl,
++}: {
++  clinicCode: string;
++  onCopyConfig: () => void;
++  onCopyDisplayUrl: (url: string) => void;
++}) {
++  const router = useRouter();
++  const displayConfigs = useMemo(() => buildDisplayConfigs(clinicCode), [clinicCode]);
++
+   return (
+-    <div className="management-table-card">
++    <section aria-label={`顯示屏配置列表：${clinicCode}`} className="management-table-card">
+       <Table className="management-table">
+         <TableHeader>
+           <TableRow>
+@@ -214,17 +777,38 @@ function DisplayConfigTable() {
+                 {config.orientation}
+               </TableCell>
+               <TableCell data-label="網頁瀏覽地址">
+-                <a className="management-display-link" href={config.url}>
++                <button
++                  className="management-display-link"
++                  onClick={() => onCopyDisplayUrl(config.url)}
++                  type="button"
++                >
+                   {config.url}
+-                </a>
++                </button>
+               </TableCell>
+               <TableCell className="management-actions-column" data-label="操作">
+                 <div className="management-table-actions">
+-                  <Button className="management-table-action" type="button" variant="outline">
++                  <Button
++                    className="management-table-action"
++                    onClick={onCopyConfig}
++                    type="button"
++                    variant="outline"
++                  >
+                     <ClipboardCopy aria-hidden size={18} />
+                     <span>複製配置</span>
+                   </Button>
+-                  <Button className="management-table-action" type="button" variant="outline">
++                  <Button
++                    className="management-table-action"
++                    onClick={() => {
++                      const searchParams = new URLSearchParams({
++                        clinicCode,
++                        deviceId: config.id,
++                      });
++
++                      router.push(`${DISPLAY_DEVICE_EDIT_ROUTE}?${searchParams.toString()}`);
++                    }}
++                    type="button"
++                    variant="outline"
++                  >
+                     <Pencil aria-hidden size={18} />
+                     <span>編輯</span>
+                   </Button>
+@@ -234,18 +818,27 @@ function DisplayConfigTable() {
+           ))}
+         </TableBody>
+       </Table>
+-    </div>
++    </section>
+   );
+ }
+ 
+-function DisplayManagementContent({authContext}: {authContext: CsxAuthContext}) {
+-  const clinicOptions = useMemo(
+-    () => [authContext.clinicDisplayName ?? FALLBACK_CLINIC_NAME],
+-    [authContext.clinicDisplayName],
+-  );
+-
++function DisplayManagementContent({
++  authContext,
++  clinics,
++  onCopyConfig,
++  onCopyDisplayUrl,
++  selectedClinicCode,
++  setSelectedClinicCode,
++}: {
++  authContext: CsxAuthContext;
++  clinics: ClinicOption[];
++  onCopyConfig: () => void;
++  onCopyDisplayUrl: (url: string) => void;
++  selectedClinicCode: string;
++  setSelectedClinicCode: (clinicCode: string) => void;
++}) {
+   return (
+-    <main className="management-content-card">
++    <main aria-label="顯示屏配置" className="management-content-card">
+       <div className="management-content-heading">
+         <Monitor aria-hidden size={20} />
+         <h1>顯示屏配置</h1>
+@@ -254,49 +847,117 @@ function DisplayManagementContent({authContext}: {authContext: CsxAuthContext})
+       {authContext.isAuthenticated ? <ManagementAuthStatus authContext={authContext} /> : null}
+       <form className="management-filter-form">
+         <label htmlFor="management-clinic-select">診所</label>
+-        <div className="management-select">
+-          <select id="management-clinic-select" defaultValue={clinicOptions[0]}>
+-            {clinicOptions.map((clinic) => (
+-              <option key={clinic} value={clinic}>
+-                {clinic}
+-              </option>
+-            ))}
+-          </select>
+-          <ChevronDown aria-hidden size={18} />
+-        </div>
++        <ClinicSelect
++          ariaLabel="診所"
++          className="management-select"
++          clinics={clinics}
++          id="management-clinic-select"
++          onChange={setSelectedClinicCode}
++          selectedClinicCode={selectedClinicCode}
++        />
+       </form>
+-      <DisplayConfigTable />
++      <DisplayConfigTable
++        clinicCode={selectedClinicCode}
++        onCopyConfig={onCopyConfig}
++        onCopyDisplayUrl={onCopyDisplayUrl}
++      />
+     </main>
+   );
+ }
+ 
+ export function DisplayManagementPage() {
+-  const {authContext, isResolved} = useCsxAuthState();
+-  const isManagementReady = isResolved && authContext.isAuthenticated;
+-
+-  useEffect(() => {
+-    if (!isResolved || authContext.isAuthenticated) {
++  const [copyConfigDialog, setCopyConfigDialog] = useState<CopyConfigDialogState | null>(null);
++  const [copyToast, setCopyToast] = useState<CopyToastState | null>(null);
++  const copyToastRequestIdRef = useRef(0);
++  const pendingCopyToastTimerRef = useRef<number | null>(null);
++  const clearPendingCopyToastTimer = useCallback(() => {
++    if (pendingCopyToastTimerRef.current === null) {
+       return;
+     }
+ 
+-    window.location.replace(LOGIN_ROUTE);
+-  }, [authContext.isAuthenticated, isResolved]);
++    window.clearTimeout(pendingCopyToastTimerRef.current);
++    pendingCopyToastTimerRef.current = null;
++  }, []);
++  const dismissCopyToast = useCallback(() => {
++    clearPendingCopyToastTimer();
++    setCopyToast(null);
++  }, [clearPendingCopyToastTimer]);
++  const handleCopyDisplayUrl = useCallback((url: string) => {
++    const requestId = copyToastRequestIdRef.current + 1;
++    copyToastRequestIdRef.current = requestId;
++    clearPendingCopyToastTimer();
++    setCopyToast(null);
+ 
+-  if (!isManagementReady) {
+-    return (
+-      <div aria-busy className="management-shell is-auth-loading">
+-        <ManagementAuthLoadingOverlay authContext={authContext} />
+-      </div>
++    void copyTextToClipboard(url).then(() => {
++      if (copyToastRequestIdRef.current !== requestId) {
++        return;
++      }
++
++      pendingCopyToastTimerRef.current = window.setTimeout(() => {
++        if (copyToastRequestIdRef.current !== requestId) {
++          return;
++        }
++
++        setCopyToast({id: Date.now(), url});
++        pendingCopyToastTimerRef.current = null;
++      }, 0);
++    }).catch(() => undefined);
++  }, [clearPendingCopyToastTimer]);
++  const openCopyConfigDialog = useCallback((contentSelectedClinicCode: string) => {
++    setCopyConfigDialog({
++      fromClinicCode: contentSelectedClinicCode,
++      isFullCopy: true,
++      toClinicCode: '',
++    });
++  }, []);
++  const closeCopyConfigDialog = useCallback(() => {
++    setCopyConfigDialog(null);
++  }, []);
++  const handleChangeCopyConfigFromClinic = useCallback((clinicCode: string) => {
++    setCopyConfigDialog((currentDialog) =>
++      currentDialog ? {...currentDialog, fromClinicCode: clinicCode} : currentDialog,
+     );
+-  }
++  }, []);
++  const handleChangeCopyConfigToClinic = useCallback((clinicCode: string) => {
++    setCopyConfigDialog((currentDialog) =>
++      currentDialog ? {...currentDialog, toClinicCode: clinicCode} : currentDialog,
++    );
++  }, []);
++  const handleChangeCopyConfigFullCopy = useCallback((isFullCopy: boolean) => {
++    setCopyConfigDialog((currentDialog) =>
++      currentDialog ? {...currentDialog, isFullCopy} : currentDialog,
++    );
++  }, []);
++  const confirmCopyConfigDialog = useCallback(() => {
++    setCopyConfigDialog(null);
++  }, []);
++
++  useEffect(() => () => clearPendingCopyToastTimer(), [clearPendingCopyToastTimer]);
+ 
+   return (
+-    <div className="management-shell">
+-      <ManagementTopBar authContext={authContext} />
+-      <div className="management-body">
+-        <ManagementSidebar />
+-        <DisplayManagementContent authContext={authContext} />
+-      </div>
+-    </div>
++    <ManagementFramework>
++      {({authContext, clinics, contentSelectedClinicCode, setContentSelectedClinicCode}) => (
++        <>
++          <DisplayManagementContent
++            authContext={authContext}
++            clinics={clinics}
++            onCopyConfig={() => openCopyConfigDialog(contentSelectedClinicCode)}
++            onCopyDisplayUrl={handleCopyDisplayUrl}
++            selectedClinicCode={contentSelectedClinicCode}
++            setSelectedClinicCode={setContentSelectedClinicCode}
++          />
++          <CopyConfigDialog
++            clinics={clinics}
++            dialog={copyConfigDialog}
++            onCancel={closeCopyConfigDialog}
++            onChangeFromClinic={handleChangeCopyConfigFromClinic}
++            onChangeIsFullCopy={handleChangeCopyConfigFullCopy}
++            onChangeToClinic={handleChangeCopyConfigToClinic}
++            onConfirm={confirmCopyConfigDialog}
++          />
++          <CopySuccessToast onDismiss={dismissCopyToast} toast={copyToast} />
++        </>
++      )}
++    </ManagementFramework>
+   );
+ }
+diff --git a/src/features/display-management/display-management.css b/src/features/display-management/display-management.css
+index f999de7..c9e9c5d 100644
+--- a/src/features/display-management/display-management.css
++++ b/src/features/display-management/display-management.css
+@@ -5,28 +5,74 @@
+   --management-primary: #0e7c84;
+   --management-primary-soft: #bde6e6;
+   --management-text: #1b272f;
++  --management-secondary-text: #6c757d;
+   --management-border: #d6e4e8;
+   --management-muted-border: #90afbb;
+   --management-table-header: #f8f9fa;
+   --management-radius: clamp(14px, 1.85dvh, 20px);
+   --management-card-radius: clamp(6px, 0.74dvh, 8px);
+   --management-control-radius: 6px;
+-  --management-topbar-height: clamp(52px, 5.56dvh, 60px);
++  --management-topbar-height: clamp(56px, 5.56dvh, 60px);
+   --management-page-padding: clamp(6px, 0.74dvh, 8px);
+   --management-gap: clamp(6px, 0.74dvh, 8px);
+-  --management-sidebar-width: clamp(220px, 27.78dvh, 300px);
++  --management-sidebar-width: clamp(240px, 15.625vw, 300px);
+   --management-content-padding: clamp(16px, 2.22dvh, 24px);
+   --management-body-font-size: clamp(14px, 1.72dvh, 16px);
+   --management-small-font-size: clamp(13px, 1.57dvh, 14.6px);
+   --management-title-font-size: clamp(18px, 2.16dvh, 20px);
++  --management-title-icon-size: clamp(18px, 2.16dvh, 20px);
++  --management-title-gap: clamp(6px, 0.7408dvh, 8px);
++  --management-filter-label-width: clamp(96px, 16.11dvh, 174px);
++  --management-filter-control-width: clamp(360px, 50.56dvh, 546px);
+   --management-menu-title-font-size: clamp(15px, 1.83dvh, 17px);
+   --management-icon-size: clamp(16px, 1.67dvh, 18px);
+-  --management-logo-size: clamp(34px, 3.7dvh, 40px);
++  --management-logo-size: clamp(36px, 3.7dvh, 40px);
+   --management-control-height: clamp(36px, 3.7dvh, 40px);
++  --management-user-button-size: 40px;
++  --management-user-icon-size: clamp(14px, 1.48dvh, 16px);
+   --management-table-row-height: clamp(44px, 4.44dvh, 48px);
+-
+-  min-height: 100dvh;
+-  overflow: auto;
++  --management-copy-toast-inline-offset: clamp(12px, 1.25vw, 24px);
++  --management-copy-toast-block-offset: clamp(12px, 2.963dvh, 32px);
++  --management-copy-toast-top: calc(var(--management-topbar-height) + var(--management-copy-toast-block-offset));
++  --management-copy-toast-width: clamp(320px, 20.8334vw, 400px);
++  --management-copy-toast-min-height: clamp(118px, 12.4075dvh, 134px);
++  --management-copy-toast-padding: clamp(12px, 1.4815dvh, 16px);
++  --management-copy-toast-gap: clamp(6px, 0.7408dvh, 8px);
++  --management-copy-toast-divider-gap: clamp(12px, 1.4815dvh, 16px);
++  --management-copy-toast-radius: clamp(6px, 0.7408dvh, 8px);
++  --management-copy-toast-border-width: clamp(1px, 0.0926dvh, 1px);
++  --management-copy-toast-icon-size: clamp(20px, 2.2223dvh, 24px);
++  --management-copy-toast-close-size: clamp(44px, 5.1852dvh, 56px);
++  --management-copy-toast-close-icon-size: clamp(14px, 1.4815dvh, 16px);
++  --management-copy-toast-title-font-size: clamp(20px, 2.2223dvh, 24px);
++  --management-copy-toast-body-font-size: clamp(14px, 1.4815dvh, 16px);
++  --management-copy-config-overlay-padding: clamp(12px, 2.2223dvh, 24px);
++  --management-copy-config-width: clamp(320px, 26.0417vw, 500px);
++  --management-copy-config-radius: clamp(6px, 0.7408dvh, 8px);
++  --management-copy-config-border-width: clamp(1px, 0.0926dvh, 1px);
++  --management-copy-config-header-block-padding: clamp(12px, 1.5741dvh, 17px);
++  --management-copy-config-inline-padding: clamp(12px, 1.4815dvh, 16px);
++  --management-copy-config-content-padding: clamp(12px, 1.4815dvh, 16px);
++  --management-copy-config-footer-block-padding: clamp(10px, 1.2038dvh, 13px);
++  --management-copy-config-label-width: clamp(48px, 9.8959vw, 190px);
++  --management-copy-config-control-height: clamp(36px, 3.5186dvh, 38px);
++  --management-copy-config-button-height: clamp(36px, 3.7038dvh, 40px);
++  --management-copy-config-control-radius: clamp(5px, 0.5556dvh, 6px);
++  --management-copy-config-close-size: clamp(32px, 2.963dvh, 32px);
++  --management-copy-config-icon-size: clamp(14px, 1.4815dvh, 16px);
++  --management-copy-config-checkbox-size: clamp(14px, 1.4815dvh, 16px);
++  --management-copy-config-title-font-size: clamp(18px, 1.8519dvh, 20px);
++  --management-copy-config-body-font-size: clamp(14px, 1.4815dvh, 16px);
++  --management-copy-config-hotkey-font-size: clamp(11px, 1.1112dvh, 12px);
++  --management-copy-config-action-gap: clamp(6px, 0.7408dvh, 8px);
++  --management-copy-config-form-gap: clamp(10px, 1.4815dvh, 16px);
++  --management-copy-config-button-padding-inline: clamp(10px, 1.2038dvh, 13px);
++  --management-copy-config-hotkey-padding-inline: clamp(3px, 0.3704dvh, 4px);
++  --management-copy-config-hotkey-padding-block: clamp(3px, 0.3889dvh, 4.2px);
++
++  height: 100dvh;
++  min-height: 0;
++  overflow: hidden;
+   background: var(--management-bg);
+   color: var(--management-text);
+   font-family: Roboto, "Noto Sans HK", Arial, "Helvetica Neue", Helvetica, sans-serif;
+@@ -51,11 +97,12 @@
+ }
+ 
+ .management-topbar {
++  box-sizing: border-box;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+-  min-height: var(--management-topbar-height);
+-  padding: clamp(6px, 0.74dvh, 8px) clamp(12px, 1.48dvh, 16px);
++  height: var(--management-topbar-height);
++  padding: clamp(8px, 0.93dvh, 10px) clamp(12px, 1.48dvh, 16px);
+   gap: clamp(12px, 2.22dvh, 24px);
+ }
+ 
+@@ -116,8 +163,13 @@
+ }
+ 
+ .management-clinic-switcher {
++  position: relative;
++  display: flex;
++  align-items: center;
++  width: clamp(150px, 9.9vw, 190px);
++  max-width: min(100%, clamp(150px, 9.9vw, 190px));
+   min-height: var(--management-control-height);
+-  gap: 4px;
++  gap: clamp(6px, 0.93dvh, 10px);
+   border-radius: clamp(12px, 1.48dvh, 16px);
+   background: #f0f2f5;
+   color: var(--management-text);
+@@ -128,34 +180,70 @@
+   white-space: nowrap;
+ }
+ 
++.management-clinic-switcher select {
++  position: absolute;
++  inset: 0;
++  width: 100%;
++  height: 100%;
++  appearance: none;
++  border: 0;
++  background: transparent;
++  color: inherit;
++  cursor: pointer;
++  outline: 0;
++  padding: 0;
++  opacity: 0;
++}
++
++.management-clinic-switcher .management-clinic-icon {
++  display: block;
++  flex: 0 0 auto;
++  width: 24px;
++  height: 24px;
++}
++
++.management-clinic-switcher > svg:last-child {
++  position: relative;
++  z-index: 1;
++  width: clamp(14px, 1.48dvh, 16px);
++  height: clamp(14px, 1.48dvh, 16px);
++  color: var(--management-text);
++  pointer-events: none;
++}
++
+ .management-user-button {
+-  min-width: var(--management-control-height);
+-  height: var(--management-control-height);
+-  border-radius: 999px;
+-  background: var(--management-primary);
++  width: var(--management-user-button-size);
++  min-width: var(--management-user-button-size);
++  height: var(--management-user-button-size);
++  aspect-ratio: 1;
++  border-radius: 50%;
++  background: transparent;
+   color: #ffffff;
+-  padding: 0 clamp(10px, 1.2dvh, 13px);
++  padding: 0;
++  overflow: hidden;
+ }
+ 
+-.management-user-name {
+-  max-width: clamp(84px, 13.89dvh, 150px);
+-  min-width: 0;
+-  overflow: hidden;
+-  text-overflow: ellipsis;
+-  white-space: nowrap;
++.management-user-avatar-image {
++  display: block;
++  width: 40px;
++  height: 40px;
+ }
+ 
+ .management-body {
++  box-sizing: border-box;
+   display: grid;
+   grid-template-columns: var(--management-sidebar-width) minmax(0, 1fr);
+   align-items: stretch;
+   gap: var(--management-gap);
+-  min-height: calc(100dvh - var(--management-topbar-height));
++  height: calc(100dvh - var(--management-topbar-height));
++  min-height: 0;
++  overflow: hidden;
+   padding: var(--management-page-padding);
+   padding-top: var(--management-gap);
+ }
+ 
+ .management-sidebar {
++  box-sizing: border-box;
+   min-width: 0;
+   height: 100%;
+   padding: var(--management-page-padding);
+@@ -216,9 +304,13 @@
+ }
+ 
+ .management-content-card {
++  box-sizing: border-box;
++  position: relative;
++  display: flex;
++  flex-direction: column;
+   min-width: 0;
+   min-height: 0;
+-  overflow: auto;
++  overflow: hidden;
+   border-radius: var(--management-radius);
+   background: var(--management-panel-bg);
+   padding: var(--management-content-padding);
+@@ -227,22 +319,28 @@
+ .management-content-heading {
+   display: flex;
+   align-items: center;
+-  gap: clamp(8px, 1.11dvh, 12px);
++  gap: var(--management-title-gap);
+   min-height: clamp(22px, 2.22dvh, 24px);
+   color: var(--management-primary);
+ }
+ 
++.management-content-heading > svg {
++  width: var(--management-title-icon-size);
++  height: var(--management-title-icon-size);
++}
++
+ .management-content-heading h1 {
+   margin: 0;
+   color: var(--management-text);
+   font-size: var(--management-title-font-size);
+   font-weight: 700;
+   line-height: 1.2;
++  letter-spacing: 0;
+ }
+ 
+ .management-divider {
+   height: 1px;
+-  margin: clamp(12px, 1.48dvh, 16px) 0 clamp(16px, 2.22dvh, 24px);
++  margin: clamp(12px, 1.48dvh, 16px) 0 clamp(24px, 2.87dvh, 31px);
+   background: var(--management-border);
+ }
+ 
+@@ -268,6 +366,19 @@
+   background: #fff8ea;
+ }
+ 
++.management-auth-status.is-visually-hidden {
++  position: absolute;
++  width: 1px;
++  height: 1px;
++  margin: -1px;
++  overflow: hidden;
++  clip: rect(0 0 0 0);
++  clip-path: inset(50%);
++  border: 0;
++  padding: 0;
++  white-space: nowrap;
++}
++
+ .management-auth-status div {
+   display: grid;
+   gap: 2px;
+@@ -334,9 +445,15 @@
+ 
+ .management-filter-form {
+   display: grid;
+-  grid-template-columns: minmax(96px, clamp(126px, 16.11dvh, 174px)) minmax(220px, clamp(256px, 32.96dvh, 356px));
++  grid-template-columns:
++    minmax(0, var(--management-filter-label-width))
++    minmax(280px, var(--management-filter-control-width));
+   align-items: center;
+-  width: min(100%, clamp(360px, 50.56dvh, 546px));
++  min-height: clamp(46px, 5dvh, 54px);
++  width: min(
++    100%,
++    calc(var(--management-filter-label-width) + var(--management-filter-control-width))
++  );
+   margin-bottom: clamp(12px, 1.48dvh, 16px);
+ }
+ 
+@@ -345,28 +462,37 @@
+   padding-right: clamp(10px, 1.57dvh, 17px);
+   color: var(--management-text);
+   font-size: var(--management-body-font-size);
++  font-style: normal;
+   font-weight: 400;
+   line-height: 1.5;
++  letter-spacing: 0;
+ }
+ 
+ .management-select {
+   position: relative;
+   display: flex;
+   align-items: center;
++  width: 100%;
+   min-width: 0;
++  height: clamp(36px, 3.52dvh, 38px);
++  border: 1px solid var(--management-muted-border);
++  border-radius: var(--management-control-radius);
++  padding: clamp(6px, 0.65dvh, 7px) clamp(34px, 3.7dvh, 40px) clamp(6px, 0.65dvh, 7px) clamp(10px, 1.2dvh, 13px);
+ }
+ 
+ .management-select select {
++  position: absolute;
++  inset: 0;
+   width: 100%;
+-  height: clamp(36px, 3.52dvh, 38px);
++  height: 100%;
+   appearance: none;
+-  border: 1px solid var(--management-muted-border);
+-  border-radius: var(--management-control-radius);
++  border: 0;
+   background: transparent;
+   color: var(--management-text);
+-  padding: clamp(6px, 0.65dvh, 7px) clamp(34px, 3.7dvh, 40px) clamp(6px, 0.65dvh, 7px) clamp(10px, 1.2dvh, 13px);
++  cursor: pointer;
+   font-size: var(--management-body-font-size);
+   line-height: 1.5;
++  opacity: 0;
+ }
+ 
+ .management-select svg {
+@@ -376,12 +502,43 @@
+   color: var(--management-text);
+ }
+ 
++.management-select-value {
++  min-width: 0;
++  flex: 1 1 auto;
++  overflow: hidden;
++  color: inherit;
++  font-size: inherit;
++  line-height: 1.5;
++  text-overflow: ellipsis;
++  white-space: nowrap;
++  pointer-events: none;
++}
++
+ .management-table-card {
++  flex: 1 1 auto;
++  min-height: 0;
+   width: 100%;
+-  overflow: hidden;
++  overflow-x: hidden;
++  overflow-y: scroll;
+   border: 1px solid var(--management-border);
+   border-radius: var(--management-card-radius);
+   background: #ffffff;
++  scrollbar-color: var(--management-muted-border) transparent;
++  scrollbar-gutter: stable;
++  scrollbar-width: thin;
++}
++
++.management-table-card::-webkit-scrollbar {
++  width: 8px;
++}
++
++.management-table-card::-webkit-scrollbar-track {
++  background: transparent;
++}
++
++.management-table-card::-webkit-scrollbar-thumb {
++  border-radius: 999px;
++  background: var(--management-muted-border);
+ }
+ 
+ .management-table {
+@@ -393,6 +550,9 @@
+ }
+ 
+ .management-table thead {
++  position: sticky;
++  top: 0;
++  z-index: 1;
+   background: var(--management-table-header);
+   color: var(--management-text);
+ }
+@@ -433,121 +593,1244 @@
+   display: block;
+   max-width: 100%;
+   overflow: hidden;
++  border: 0;
++  background: transparent;
+   color: var(--management-primary);
++  cursor: pointer;
++  font: inherit;
++  padding: 0;
++  text-align: left;
+   text-decoration: underline;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+ }
+ 
+-.management-table-actions {
++.management-display-link:hover,
++.management-display-link:focus-visible {
++  color: #0a6b72;
++}
++
++.management-copy-toast {
++  box-sizing: border-box;
++  position: fixed;
++  top: var(--management-copy-toast-top);
++  right: var(--management-copy-toast-inline-offset);
++  z-index: 50;
+   display: flex;
+-  align-items: center;
+-  justify-content: flex-start;
+-  gap: clamp(10px, 1.48dvh, 16px);
++  align-items: flex-start;
++  width: min(
++    var(--management-copy-toast-width),
++    calc(100vw - (var(--management-copy-toast-inline-offset) * 2))
++  );
++  min-height: var(--management-copy-toast-min-height);
++  border: var(--management-copy-toast-border-width) solid #a1edde;
++  border-radius: var(--management-copy-toast-radius);
++  background: #e5fffa;
++  color: #042a23;
++  padding: var(--management-copy-toast-padding) var(--management-copy-toast-close-size)
++    var(--management-copy-toast-padding) var(--management-copy-toast-padding);
+ }
+ 
+-.management-table-action {
+-  height: auto;
+-  gap: clamp(4px, 0.56dvh, 6px);
+-  border: 0;
+-  background: transparent;
+-  color: var(--management-primary);
+-  padding: 0;
+-  font-size: var(--management-body-font-size);
+-  font-weight: 400;
+-  line-height: 1.5;
+-  white-space: nowrap;
++.management-copy-toast-wrapper {
++  display: flex;
++  align-items: flex-start;
++  flex: 1 1 auto;
++  min-width: 0;
++  gap: var(--management-copy-toast-gap);
+ }
+ 
+-@media (max-width: 920px) {
+-  .management-body {
+-    grid-template-columns: 1fr;
+-  }
++.management-copy-toast .management-copy-toast-icon {
++  flex: 0 0 auto;
++  width: var(--management-copy-toast-icon-size);
++  height: var(--management-copy-toast-icon-size);
++  color: #042a23;
++  stroke: #e5fffa;
++}
+ 
+-  .management-sidebar {
+-    height: auto;
+-  }
++.management-copy-toast-content {
++  flex: 1 1 auto;
++  min-width: 0;
++}
+ 
+-  .management-sidebar-panel {
+-    padding: clamp(14px, 2.22dvh, 24px);
+-  }
++.management-copy-toast-content h2 {
++  margin: 0;
++  padding-bottom: var(--management-copy-toast-gap);
++  color: #042a23;
++  font-size: var(--management-copy-toast-title-font-size);
++  font-weight: 600;
++  line-height: 1.2;
++  letter-spacing: 0;
++}
+ 
+-  .management-menu-group {
+-    gap: clamp(8px, 1.11dvh, 12px);
+-  }
++.management-copy-toast-divider {
++  width: 100%;
++  height: var(--management-copy-toast-border-width);
++  margin-bottom: var(--management-copy-toast-divider-gap);
++  background: rgba(4, 42, 35, 0.25);
++}
+ 
+-  .management-menu-group h2 {
+-    margin: 0;
+-  }
++.management-copy-toast-content p {
++  margin: 0;
++  color: #042a23;
++  font-size: var(--management-copy-toast-body-font-size);
++  font-weight: 400;
++  line-height: 1.5;
++  letter-spacing: 0;
++}
+ 
+-  .management-menu-item {
+-    width: min(100%, 360px);
+-  }
++.management-copy-toast-close {
++  position: absolute;
++  top: calc(var(--management-copy-toast-border-width) * -1);
++  right: calc(var(--management-copy-toast-border-width) * -1);
++  display: grid;
++  place-items: center;
++  width: var(--management-copy-toast-close-size);
++  height: var(--management-copy-toast-close-size);
++  border: 0;
++  background: transparent;
++  color: #042a23;
++  cursor: pointer;
++  opacity: 0.5;
++  padding: 0;
+ }
+ 
+-@media (max-width: 760px) {
+-  .management-topbar {
+-    align-items: flex-start;
+-    flex-direction: column;
+-  }
++.management-copy-toast-close:hover,
++.management-copy-toast-close:focus-visible {
++  opacity: 0.85;
++}
+ 
+-  .management-topbar-start,
+-  .management-topbar-actions {
+-    width: 100%;
+-  }
++.management-copy-toast-close svg {
++  width: var(--management-copy-toast-close-icon-size);
++  height: var(--management-copy-toast-close-icon-size);
++}
+ 
+-  .management-topbar-start {
+-    flex-wrap: wrap;
+-  }
++.management-copy-config-overlay {
++  position: fixed;
++  inset: 0;
++  z-index: 60;
++  display: flex;
++  align-items: center;
++  justify-content: center;
++  padding: var(--management-copy-config-overlay-padding);
++  background: rgba(27, 39, 47, 0.34);
++}
+ 
+-  .management-topnav {
+-    margin-left: auto;
+-  }
++.management-copy-config-dialog {
++  box-sizing: border-box;
++  display: flex;
++  flex-direction: column;
++  width: min(
++    var(--management-copy-config-width),
++    calc(100vw - (var(--management-copy-config-overlay-padding) * 2))
++  );
++  max-height: calc(100dvh - (var(--management-copy-config-overlay-padding) * 2));
++  overflow: hidden;
++  border: var(--management-copy-config-border-width) solid rgba(0, 0, 0, 0.17);
++  border-radius: var(--management-copy-config-radius);
++  background: #ffffff;
++  color: var(--management-text);
++}
+ 
+-  .management-topbar-actions {
+-    justify-content: flex-end;
+-  }
++.management-copy-config-header {
++  display: flex;
++  align-items: center;
++  gap: var(--management-copy-config-action-gap);
++  border-bottom: var(--management-copy-config-border-width) solid #b1c9d1;
++  padding: var(--management-copy-config-header-block-padding)
++    var(--management-copy-config-inline-padding);
++}
+ 
+-  .management-filter-form {
+-    grid-template-columns: 1fr;
+-    gap: clamp(6px, 0.93dvh, 10px);
+-    width: 100%;
+-  }
++.management-copy-config-header h2 {
++  flex: 1 1 auto;
++  min-width: 0;
++  margin: 0;
++  overflow: hidden;
++  color: var(--management-text);
++  font-size: var(--management-copy-config-title-font-size);
++  font-weight: 400;
++  line-height: 1.5;
++  letter-spacing: 0;
++  text-overflow: ellipsis;
++  white-space: nowrap;
++}
+ 
+-  .management-filter-form label {
+-    justify-self: start;
+-    padding-right: 0;
+-  }
++.management-copy-config-close {
++  display: grid;
++  place-items: center;
++  width: var(--management-copy-config-close-size);
++  height: var(--management-copy-config-close-size);
++  border: 0;
++  border-radius: var(--management-copy-config-control-radius);
++  background: transparent;
++  color: #000000;
++  cursor: pointer;
++  opacity: 0.5;
++  padding: 0;
++}
+ 
+-  .management-table,
+-  .management-table thead,
+-  .management-table tbody,
+-  .management-table th,
+-  .management-table td,
+-  .management-table tr {
+-    display: block;
+-  }
++.management-copy-config-close:hover,
++.management-copy-config-close:focus-visible {
++  opacity: 0.85;
++}
+ 
+-  .management-table thead {
+-    display: none;
+-  }
++.management-copy-config-close svg {
++  width: var(--management-copy-config-icon-size);
++  height: var(--management-copy-config-icon-size);
++}
+ 
+-  .management-table tbody {
+-    padding: clamp(12px, 1.48dvh, 16px);
+-  }
++.management-copy-config-content {
++  flex: 1 1 auto;
++  min-height: 0;
++  overflow: auto;
++  padding: var(--management-copy-config-content-padding);
++}
+ 
+-  .management-table tr {
+-    display: grid;
+-    gap: clamp(10px, 1.48dvh, 16px);
+-    border-bottom: 0;
+-  }
++.management-copy-config-form {
++  display: grid;
++  grid-template-columns: var(--management-copy-config-label-width) minmax(0, 1fr);
++  align-items: center;
++  row-gap: var(--management-copy-config-form-gap);
++  width: 100%;
++}
+ 
+-  .management-table td {
+-    display: grid;
+-    grid-template-columns: minmax(96px, 34%) minmax(0, 1fr);
+-    align-items: start;
+-    gap: clamp(8px, 1.11dvh, 12px);
+-    width: 100%;
++.management-copy-config-form > label:not(.management-copy-config-checkbox) {
++  min-width: 0;
++  color: var(--management-text);
++  font-size: var(--management-copy-config-body-font-size);
++  font-weight: 400;
++  line-height: 1.5;
++  letter-spacing: 0;
++  white-space: nowrap;
++}
++
++.management-copy-config-select {
++  position: relative;
++  display: flex;
++  align-items: center;
++  min-width: 0;
++  height: var(--management-copy-config-control-height);
++  border: var(--management-copy-config-border-width) solid var(--management-muted-border);
++  border-radius: var(--management-copy-config-control-radius);
++  background: #ffffff;
++  padding: clamp(6px, 0.6482dvh, 7px) clamp(34px, 3.7038dvh, 40px)
++    clamp(6px, 0.6482dvh, 7px) clamp(10px, 1.2038dvh, 13px);
++}
++
++.management-copy-config-select select {
++  position: absolute;
++  inset: 0;
++  width: 100%;
++  height: 100%;
++  appearance: none;
++  border: 0;
++  background: transparent;
++  color: var(--management-text);
++  cursor: pointer;
++  font-size: var(--management-copy-config-body-font-size);
++  line-height: 1.5;
++  opacity: 0;
++}
++
++.management-copy-config-select svg {
++  position: absolute;
++  right: clamp(10px, 1.2038dvh, 13px);
++  width: var(--management-copy-config-icon-size);
++  height: var(--management-copy-config-icon-size);
++  color: var(--management-text);
++  pointer-events: none;
++}
++
++.management-copy-config-select-value {
++  flex: 1 1 auto;
++  min-width: 0;
++  overflow: hidden;
++  color: var(--management-text);
++  font-size: var(--management-copy-config-body-font-size);
++  font-weight: 400;
++  line-height: 1.5;
++  letter-spacing: 0;
++  text-overflow: ellipsis;
++  white-space: nowrap;
++  pointer-events: none;
++}
++
++.management-copy-config-select-value.is-placeholder {
++  color: #577c8d;
++}
++
++.management-copy-config-form-spacer {
++  min-height: var(--management-copy-config-checkbox-size);
++}
++
++.management-copy-config-checkbox {
++  display: inline-flex;
++  align-items: center;
++  min-width: 0;
++  gap: var(--management-copy-config-action-gap);
++  color: var(--management-text);
++  cursor: pointer;
++  font-size: var(--management-copy-config-body-font-size);
++  font-weight: 400;
++  line-height: 1.5;
++  letter-spacing: 0;
++}
++
++.management-copy-config-checkbox input {
++  position: absolute;
++  width: 1px;
++  height: 1px;
++  margin: -1px;
++  overflow: hidden;
++  clip: rect(0 0 0 0);
++  clip-path: inset(50%);
++  border: 0;
++  padding: 0;
++  white-space: nowrap;
++}
++
++.management-copy-config-checkbox-box {
++  position: relative;
++  flex: 0 0 auto;
++  width: var(--management-copy-config-checkbox-size);
++  height: var(--management-copy-config-checkbox-size);
++  border: var(--management-copy-config-border-width) solid var(--management-primary);
++  border-radius: clamp(3px, 0.3704dvh, 4px);
++  background: var(--management-primary);
++}
++
++.management-copy-config-checkbox-box::after {
++  content: "";
++  position: absolute;
++  left: 50%;
++  top: 46%;
++  width: clamp(4px, 0.463dvh, 5px);
++  height: clamp(7px, 0.7408dvh, 8px);
++  border: solid #ffffff;
++  border-width: 0 clamp(1.5px, 0.1852dvh, 2px) clamp(1.5px, 0.1852dvh, 2px) 0;
++  transform: translate(-50%, -58%) rotate(45deg);
++}
++
++.management-copy-config-checkbox input:not(:checked) + .management-copy-config-checkbox-box {
++  background: #ffffff;
++  border-color: var(--management-muted-border);
++}
++
++.management-copy-config-checkbox input:not(:checked)
++  + .management-copy-config-checkbox-box::after {
++  opacity: 0;
++}
++
++.management-copy-config-checkbox input:focus-visible + .management-copy-config-checkbox-box {
++  outline: clamp(2px, 0.2778dvh, 3px) solid rgba(14, 124, 132, 0.28);
++  outline-offset: clamp(2px, 0.2778dvh, 3px);
++}
++
++.management-copy-config-checkbox span:last-child {
++  min-width: 0;
++  overflow: hidden;
++  text-overflow: ellipsis;
++  white-space: nowrap;
++}
++
++.management-copy-config-footer {
++  display: flex;
++  flex-wrap: wrap;
++  align-items: center;
++  justify-content: flex-end;
++  gap: var(--management-copy-config-action-gap);
++  border-top: var(--management-copy-config-border-width) solid #b1c9d1;
++  padding: var(--management-copy-config-footer-block-padding) var(--management-copy-config-inline-padding);
++}
++
++.management-copy-config-action {
++  display: inline-flex;
++  align-items: center;
++  justify-content: center;
++  height: var(--management-copy-config-button-height);
++  gap: var(--management-copy-config-action-gap);
++  border-radius: var(--management-copy-config-control-radius);
++  padding: clamp(6px, 0.6482dvh, 7px) var(--management-copy-config-button-padding-inline);
++  font-size: var(--management-copy-config-body-font-size);
++  font-weight: 700;
++  line-height: 1.5;
++  letter-spacing: 0;
++  white-space: nowrap;
++}
++
++.management-copy-config-action.is-cancel {
++  border-color: var(--management-primary-soft);
++  background: transparent;
++  color: var(--management-primary);
++}
++
++.management-copy-config-action.is-confirm {
++  border-color: var(--management-primary);
++  background: var(--management-primary);
++  color: #ffffff;
++}
++
++.management-copy-config-action.is-confirm:disabled {
++  border-color: #d6e4e8;
++  background: #d6e4e8;
++  color: #577c8d;
++  cursor: not-allowed;
++  opacity: 1;
++}
++
++.management-copy-config-action kbd {
++  display: inline-flex;
++  align-items: center;
++  justify-content: center;
++  min-width: clamp(18px, 1.8519dvh, 20px);
++  min-height: clamp(18px, 1.8519dvh, 20px);
++  border-radius: var(--management-copy-config-control-radius);
++  padding: var(--management-copy-config-hotkey-padding-block)
++    var(--management-copy-config-hotkey-padding-inline);
++  font-family: inherit;
++  font-size: var(--management-copy-config-hotkey-font-size);
++  font-weight: 400;
++  line-height: 1;
++}
++
++.management-copy-config-action.is-cancel kbd {
++  border: var(--management-copy-config-border-width) solid var(--management-primary-soft);
++  color: #053b42;
++}
++
++.management-copy-config-action.is-confirm kbd {
++  border: 0;
++  background: #084a52;
++  color: #ffffff;
++}
++
++.management-copy-config-action.is-confirm:disabled kbd {
++  background: #b1c9d1;
++  color: #577c8d;
++}
++
++@media (max-width: 460px) {
++  .management-copy-toast {
++    left: var(--management-copy-toast-inline-offset);
++    right: var(--management-copy-toast-inline-offset);
++    width: auto;
++  }
++}
++
++.management-table-actions {
++  display: flex;
++  align-items: center;
++  justify-content: flex-start;
++  gap: clamp(10px, 1.48dvh, 16px);
++}
++
++.management-table-action {
++  height: auto;
++  gap: clamp(4px, 0.56dvh, 6px);
++  border: 0;
++  background: transparent;
++  color: var(--management-primary);
++  padding: 0;
++  font-size: var(--management-body-font-size);
++  font-weight: 400;
++  line-height: 1.5;
++  white-space: nowrap;
++}
++
++.management-visually-hidden {
++  position: absolute !important;
++  width: 1px !important;
++  height: 1px !important;
++  margin: -1px !important;
++  overflow: hidden !important;
++  clip: rect(0 0 0 0) !important;
++  clip-path: inset(50%) !important;
++  border: 0 !important;
++  padding: 0 !important;
++  white-space: nowrap !important;
++}
++
++.management-edit-content {
++  --management-edit-card-padding: clamp(16px, 2.22dvh, 24px);
++  --management-edit-section-gap: clamp(6px, 0.74dvh, 8px);
++  --management-edit-form-label-width: clamp(120px, 9.9vw, 190px);
++  --management-edit-form-control-width: clamp(360px, 28.55vw, 548px);
++  --management-edit-control-height: clamp(36px, 3.7dvh, 40px);
++  --management-edit-icon-size: clamp(18px, 2.16dvh, 20px);
++  --management-edit-small-icon-size: clamp(14px, 1.48dvh, 16px);
++  --management-edit-checkbox-size: clamp(14px, 1.48dvh, 16px);
++  --management-edit-action-size: clamp(36px, 3.7dvh, 40px);
++  --management-edit-upload-logo-size: clamp(40px, 4.44dvh, 48px);
++  --management-edit-swatch-size: clamp(24px, 2.59dvh, 28px);
++  --management-edit-color-preview-size: clamp(20px, 2.22dvh, 24px);
++  --management-edit-title-size: clamp(18px, 2.16dvh, 20px);
++  --management-edit-helper-font-size: clamp(13px, 1.3dvh, 14px);
++  --management-edit-video-row-gap: clamp(6px, 0.74dvh, 8px);
++  --management-edit-video-row-height: var(--management-edit-action-size);
++
++  box-sizing: border-box;
++  display: flex;
++  flex-direction: column;
++  min-width: 0;
++  min-height: 0;
++  gap: var(--management-edit-section-gap);
++  overflow-x: hidden;
++  overflow-y: auto;
++  border-radius: var(--management-radius);
++  background: var(--management-bg);
++  scrollbar-color: var(--management-muted-border) transparent;
++  scrollbar-gutter: stable;
++  scrollbar-width: thin;
++}
++
++.management-edit-content::-webkit-scrollbar {
++  width: 8px;
++}
++
++.management-edit-content::-webkit-scrollbar-thumb {
++  border-radius: 999px;
++  background: var(--management-muted-border);
++}
++
++.management-edit-section {
++  box-sizing: border-box;
++  flex: 0 0 auto;
++  min-width: 0;
++  border-radius: var(--management-radius);
++  background: var(--management-panel-bg);
++  padding: var(--management-edit-card-padding);
++}
++
++.management-edit-section-heading,
++.management-edit-page-header,
++.management-edit-page-header > div {
++  display: flex;
++  align-items: center;
++}
++
++.management-edit-section-heading {
++  min-height: 24px;
++  gap: clamp(6px, 0.74dvh, 8px);
++  color: var(--management-primary);
++}
++
++.management-edit-section-heading > svg {
++  width: var(--management-edit-icon-size);
++  height: var(--management-edit-icon-size);
++}
++
++.management-edit-section-icon {
++  flex: 0 0 auto;
++  width: var(--management-edit-icon-size);
++  height: var(--management-edit-icon-size);
++}
++
++.management-edit-section-heading h2,
++.management-edit-page-header h1 {
++  margin: 0;
++  color: var(--management-text);
++  font-size: var(--management-edit-title-size);
++  font-weight: 700;
++  line-height: 1.2;
++}
++
++.management-edit-section-divider {
++  height: 1px;
++  margin: clamp(12px, 1.48dvh, 16px) 0;
++  background: var(--management-border);
++}
++
++.management-edit-page-header {
++  justify-content: space-between;
++  min-height: var(--management-control-height);
++  gap: 16px;
++}
++
++.management-edit-page-header > div {
++  min-width: 0;
++  gap: clamp(6px, 0.74dvh, 8px);
++}
++
++.management-edit-page-header h1 {
++  overflow: hidden;
++  text-overflow: ellipsis;
++  white-space: nowrap;
++}
++
++.management-edit-page-header button:not(.management-edit-save) {
++  display: grid;
++  flex: 0 0 auto;
++  place-items: center;
++  width: var(--management-edit-color-preview-size);
++  height: var(--management-edit-color-preview-size);
++  border: 0;
++  background: transparent;
++  color: var(--management-primary);
++  cursor: pointer;
++  padding: 0;
++}
++
++.management-edit-save {
++  display: inline-flex;
++  align-items: center;
++  height: var(--management-control-height);
++  gap: clamp(4px, 0.56dvh, 6px);
++  border-radius: var(--management-control-radius);
++  background: var(--management-primary);
++  padding: clamp(6px, 0.74dvh, 8px) clamp(10px, 1.2dvh, 13px);
++  color: #ffffff;
++  cursor: pointer;
++  font-size: var(--management-body-font-size);
++  font-weight: 700;
++}
++
++.management-edit-save-icon {
++  flex: 0 0 auto;
++  width: var(--management-edit-small-icon-size);
++  height: var(--management-edit-small-icon-size);
++}
++
++.management-edit-save kbd {
++  display: grid;
++  place-items: center;
++  min-width: var(--management-edit-icon-size);
++  min-height: var(--management-edit-icon-size);
++  border-radius: 4px;
++  background: #084a52;
++  font: inherit;
++  font-size: 12px;
++}
++
++.management-edit-clinic-row {
++  margin-bottom: clamp(20px, 2.22dvh, 24px);
++}
++
++.management-edit-clinic-select {
++  width: min(100%, var(--management-edit-form-control-width));
++}
++
++.management-edit-form-row {
++  position: relative;
++  display: grid;
++  grid-template-columns: var(--management-edit-form-label-width) minmax(0, var(--management-edit-form-control-width));
++  align-items: center;
++  width: min(100%, calc(var(--management-edit-form-label-width) + var(--management-edit-form-control-width)));
++  min-height: clamp(46px, 5dvh, 54px);
++}
++
++.management-edit-form-row > label {
++  padding-right: clamp(10px, 1.57dvh, 17px);
++  color: var(--management-text);
++  font-size: var(--management-body-font-size);
++  font-weight: 400;
++  line-height: 1.5;
++}
++
++.management-edit-form-row > input,
++.management-edit-video-row > input {
++  box-sizing: border-box;
++  width: 100%;
++  min-width: 0;
++  height: var(--management-edit-control-height);
++  border: 1px solid var(--management-muted-border);
++  border-radius: var(--management-control-radius);
++  background: var(--management-border);
++  color: var(--management-text);
++  padding: 7px 13px;
++  outline: 0;
++}
++
++.management-edit-settings-heading {
++  margin-top: clamp(4px, 0.74dvh, 8px);
++}
++
++.management-edit-settings-fields {
++  display: flex;
++  flex-direction: column;
++}
++
++.management-edit-url-control {
++  display: grid;
++  grid-template-columns: auto minmax(0, 1fr) var(--management-edit-control-height);
++  align-items: stretch;
++  min-width: 0;
++  height: var(--management-edit-control-height);
++  overflow: hidden;
++  border: 1px solid var(--management-muted-border);
++  border-radius: var(--management-control-radius);
++  background: var(--management-border);
++}
++
++.management-edit-url-control > span,
++.management-edit-url-control > input,
++.management-edit-url-control > button {
++  border: 0;
++  background: transparent;
++  color: var(--management-text);
++}
++
++.management-edit-url-control > span {
++  display: flex;
++  align-items: center;
++  border-right: 1px solid var(--management-muted-border);
++  padding: 7px 13px;
++}
++
++.management-edit-url-control > input {
++  min-width: 0;
++  padding: 7px 13px;
++  outline: 0;
++}
++
++.management-edit-url-control > button {
++  display: grid;
++  place-items: center;
++  border-left: 1px solid var(--management-muted-border);
++  cursor: pointer;
++  padding: 0;
++}
++
++.management-edit-url-control svg {
++  width: var(--management-edit-small-icon-size);
++  height: var(--management-edit-small-icon-size);
++}
++
++.management-edit-basic-content {
++  display: flex;
++  flex-direction: column;
++  align-items: flex-start;
++  gap: clamp(6px, 0.74dvh, 8px);
++  width: min(100%, calc(var(--management-edit-form-label-width) + var(--management-edit-form-control-width)));
++}
++
++.management-edit-basic-content p,
++.management-edit-theme-content p,
++.management-edit-theme-content small {
++  margin: 0;
++  color: var(--management-text);
++}
++
++.management-edit-basic-content p,
++.management-edit-theme-content small {
++  font-size: var(--management-small-font-size);
++  line-height: 1.5;
++}
++
++.management-edit-basic-content p {
++  width: 100%;
++  color: var(--management-secondary-text);
++  font-family: Roboto, "Noto Sans HK", Arial, "Helvetica Neue", Helvetica, sans-serif;
++  font-size: var(--management-edit-helper-font-size);
++  font-style: normal;
++  font-weight: 400;
++  letter-spacing: 0;
++  line-height: 1.5;
++  word-break: break-word;
++}
++
++.management-edit-theme-content small {
++  color: #38515e;
++  font-family: Roboto, "Noto Sans HK", Arial, "Helvetica Neue", Helvetica, sans-serif;
++  font-size: min(14px, var(--management-small-font-size));
++  font-style: normal;
++  font-weight: 400;
++  line-height: 1.5;
++  letter-spacing: 0;
++  white-space: nowrap;
++}
++
++.management-edit-check-option {
++  position: relative;
++  display: inline-flex;
++  align-items: center;
++  gap: 8px;
++  min-height: 24px;
++  color: var(--management-text);
++  cursor: pointer;
++  font-size: var(--management-body-font-size);
++  line-height: 1.5;
++}
++
++.management-edit-check-option > input {
++  position: absolute;
++  width: 1px;
++  height: 1px;
++  opacity: 0;
++}
++
++.management-edit-checkbox {
++  display: grid;
++  flex: 0 0 auto;
++  place-items: center;
++  width: var(--management-edit-checkbox-size);
++  height: var(--management-edit-checkbox-size);
++  border: 1px solid var(--management-muted-border);
++  border-radius: 4px;
++  background: #ffffff;
++  color: #ffffff;
++}
++
++.management-edit-checkbox svg {
++  width: clamp(10px, 1.11dvh, 12px);
++  height: clamp(10px, 1.11dvh, 12px);
++  opacity: 0;
++  stroke-width: 3;
++}
++
++.management-edit-check-option > input:checked + .management-edit-checkbox {
++  border-color: var(--management-primary);
++  background: var(--management-primary);
++}
++
++.management-edit-check-option > input:checked + .management-edit-checkbox svg {
++  opacity: 1;
++}
++
++.management-edit-check-option > input:focus-visible + .management-edit-checkbox {
++  outline: 3px solid rgba(14, 124, 132, 0.2);
++  outline-offset: 2px;
++}
++
++.management-edit-upload-button {
++  position: relative;
++  display: inline-flex;
++  align-items: center;
++  height: clamp(36px, 3.52dvh, 38px);
++  gap: 8px;
++  overflow: hidden;
++  border-radius: var(--management-control-radius);
++  background: var(--management-text);
++  color: #ffffff;
++  cursor: pointer;
++  padding: 7px 13px;
++  font-size: var(--management-body-font-size);
++  font-weight: 700;
++}
++
++.management-edit-upload-button input {
++  position: absolute;
++  width: 1px;
++  height: 1px;
++  opacity: 0;
++}
++
++.management-edit-upload-button svg {
++  width: var(--management-edit-small-icon-size);
++  height: var(--management-edit-small-icon-size);
++}
++
++.management-edit-upload-row {
++  box-sizing: border-box;
++  display: grid;
++  grid-template-columns: var(--management-edit-upload-logo-size) minmax(0, 1fr) var(--management-edit-action-size);
++  align-items: center;
++  width: 100%;
++  min-height: 58px;
++  border: 1px solid var(--management-muted-border);
++  border-radius: 2px;
++  color: var(--management-primary);
++}
++
++.management-edit-upload-row img {
++  width: var(--management-edit-upload-logo-size);
++  height: var(--management-edit-upload-logo-size);
++  margin-left: 4px;
++}
++
++.management-edit-upload-row > span {
++  overflow: hidden;
++  padding: 0 8px;
++  text-overflow: ellipsis;
++  white-space: nowrap;
++}
++
++.management-edit-upload-row > button,
++.management-edit-video-row > button {
++  display: grid;
++  place-items: center;
++  width: var(--management-edit-action-size);
++  height: var(--management-edit-action-size);
++  border: 0;
++  background: transparent;
++  color: var(--management-text);
++  cursor: pointer;
++  padding: 0;
++}
++
++.management-edit-video-row > button:disabled {
++  cursor: not-allowed;
++  opacity: 0.45;
++}
++
++.management-edit-upload-row > button svg,
++.management-edit-video-row > button svg {
++  width: var(--management-edit-small-icon-size);
++  height: var(--management-edit-small-icon-size);
++}
++
++.management-edit-configuration-section {
++  display: grid;
++  grid-template-columns: repeat(2, minmax(0, 1fr));
++  gap: clamp(24px, 2.08vw, 40px);
++}
++
++.management-edit-config-column {
++  min-width: 0;
++}
++
++.management-edit-option-list {
++  display: flex;
++  flex-direction: column;
++  align-items: flex-start;
++  gap: clamp(8px, 1.11dvh, 12px);
++}
++
++.management-edit-promotion-row,
++.management-edit-registration-row {
++  display: flex;
++  flex-wrap: wrap;
++  align-items: center;
++  width: 100%;
++  gap: clamp(12px, 2.08vw, 40px);
++}
++
++.management-edit-switch {
++  display: inline-flex;
++  align-items: center;
++  gap: 8px;
++  cursor: pointer;
++  font-size: var(--management-body-font-size);
++  font-weight: 400;
++}
++
++.management-edit-switch input {
++  position: absolute;
++  opacity: 0;
++}
++
++.management-edit-switch > span {
++  position: relative;
++  width: clamp(28px, 2.96dvh, 32px);
++  height: var(--management-edit-checkbox-size);
++  border-radius: 999px;
++  background: var(--management-muted-border);
++}
++
++.management-edit-switch > span::after {
++  content: "";
++  position: absolute;
++  top: 2px;
++  left: 2px;
++  width: clamp(10px, 1.11dvh, 12px);
++  height: clamp(10px, 1.11dvh, 12px);
++  border-radius: 50%;
++  background: #ffffff;
++  transition: transform 160ms ease;
++}
++
++.management-edit-switch input:checked + span {
++  background: var(--management-primary);
++}
++
++.management-edit-switch input:checked + span::after {
++  transform: translateX(var(--management-edit-checkbox-size));
++}
++
++.management-edit-switch b {
++  font-weight: 400;
++}
++
++.management-edit-video-row {
++  display: grid;
++  flex: 0 0 var(--management-edit-video-row-height);
++  grid-template-columns: var(--management-edit-form-label-width) minmax(0, 1fr) var(--management-edit-action-size);
++  align-items: center;
++  width: 100%;
++  height: var(--management-edit-video-row-height);
++  min-height: var(--management-edit-video-row-height);
++  gap: 8px;
++}
++
++.management-edit-video-list {
++  box-sizing: border-box;
++  display: flex;
++  flex-direction: column;
++  flex: 0 0 auto;
++  gap: var(--management-edit-video-row-gap);
++  width: 100%;
++  max-height: calc(
++    var(--management-edit-video-row-height) +
++    var(--management-edit-video-row-height) +
++    var(--management-edit-video-row-height) +
++    var(--management-edit-video-row-gap) +
++    var(--management-edit-video-row-gap)
++  );
++  overflow-x: hidden;
++  overflow-y: auto;
++  scrollbar-color: var(--management-muted-border) transparent;
++  scrollbar-width: thin;
++}
++
++.management-edit-video-list::-webkit-scrollbar {
++  width: clamp(4px, 0.37dvh, 6px);
++}
++
++.management-edit-video-list::-webkit-scrollbar-thumb {
++  border-radius: 999px;
++  background: var(--management-muted-border);
++}
++
++.management-edit-video-row > input {
++  background: #ffffff;
++}
++
++.management-edit-video-row > input[aria-invalid="true"] {
++  border-color: #d92d20;
++  box-shadow: 0 0 0 1px rgb(217 45 32 / 16%);
++}
++
++.management-edit-video-row > button {
++  border: 1px solid var(--management-muted-border);
++  border-radius: var(--management-control-radius);
++}
++
++.management-edit-registration-row > label:not(.management-edit-check-option) {
++  display: inline-flex;
++  align-items: center;
++  gap: 6px;
++  cursor: pointer;
++}
++
++.management-edit-registration-row input[type="radio"] {
++  width: var(--management-edit-checkbox-size);
++  height: var(--management-edit-checkbox-size);
++  margin: 0;
++  accent-color: var(--management-primary);
++}
++
++.management-edit-doctor-options {
++  display: grid;
++  grid-template-columns: repeat(2, minmax(0, 1fr));
++  gap: clamp(8px, 1.11dvh, 12px) clamp(24px, 4.17vw, 80px);
++}
++
++.management-edit-theme-content {
++  display: flex;
++  flex-direction: column;
++  align-items: flex-start;
++  gap: clamp(6px, 0.74dvh, 8px);
++}
++
++.management-edit-theme-content > p,
++.management-edit-theme-content > label {
++  font-size: var(--management-body-font-size);
++  line-height: 1.5;
++}
++
++.management-edit-swatches {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 8px;
++}
++
++.management-edit-swatches > button {
++  position: relative;
++  width: var(--management-edit-swatch-size);
++  height: var(--management-edit-swatch-size);
++  border: 1px solid var(--management-border);
++  border-radius: 50%;
++  background: #ffffff;
++  cursor: pointer;
++  padding: 4px;
++}
++
++.management-edit-swatches > button::after {
++  content: "";
++  display: block;
++  width: 100%;
++  height: 100%;
++  border-radius: 50%;
++  background: var(--swatch-color);
++}
++
++.management-edit-color-input {
++  display: flex;
++  align-items: center;
++  width: min(100%, 261px);
++  height: var(--management-edit-control-height);
++  overflow: hidden;
++  border: 1px solid var(--management-muted-border);
++  border-radius: var(--management-control-radius);
++  background: #ffffff;
++  padding: 0 12px;
++}
++
++.management-edit-color-input input[type="color"] {
++  width: var(--management-edit-color-preview-size);
++  height: var(--management-edit-color-preview-size);
++  border: 0;
++  background: transparent;
++  cursor: pointer;
++  padding: 0;
++}
++
++.management-edit-color-input input[type="text"] {
++  flex: 1 1 auto;
++  min-width: 0;
++  border: 0;
++  background: transparent;
++  color: var(--management-text);
++  padding: 7px 10px;
++  outline: 0;
++}
++
++.management-edit-not-found {
++  align-items: center;
++  justify-content: center;
++  background: #ffffff;
++  color: var(--management-primary);
++  text-align: center;
++}
++
++.management-edit-not-found h1 {
++  color: var(--management-text);
++  font-size: var(--management-edit-title-size);
++}
++
++@media (max-width: 920px) {
++  .management-shell.is-edit-page {
++    height: auto;
++    min-height: 100dvh;
++    overflow: visible;
++  }
++
++  .management-body {
++    grid-template-columns: 1fr;
++    height: auto;
++    min-height: calc(100dvh - var(--management-topbar-height));
++    overflow: visible;
++  }
++
++  .management-sidebar {
++    height: auto;
++  }
++
++  .management-sidebar-panel {
++    padding: clamp(14px, 2.22dvh, 24px);
++  }
++
++  .management-menu-group {
++    gap: clamp(8px, 1.11dvh, 12px);
++  }
++
++  .management-menu-group h2 {
++    margin: 0;
++  }
++
++  .management-menu-item {
++    width: min(100%, 360px);
++  }
++
++  .management-edit-content {
++    overflow: visible;
++  }
++
++  .management-edit-configuration-section {
++    grid-template-columns: 1fr;
++  }
++}
++
++@media (max-width: 760px) {
++  .management-edit-content {
++    --management-edit-video-row-height: clamp(108px, 13dvh, 124px);
++  }
++
++  .management-topbar {
++    align-items: flex-start;
++    flex-direction: column;
++    height: auto;
++    min-height: var(--management-topbar-height);
++  }
++
++  .management-topbar-start,
++  .management-topbar-actions {
++    width: 100%;
++  }
++
++  .management-topbar-start {
++    flex-wrap: wrap;
++  }
++
++  .management-topnav {
++    margin-left: auto;
++  }
++
++  .management-topbar-actions {
++    justify-content: flex-end;
++  }
++
++  .management-filter-form {
++    grid-template-columns: 1fr;
++    gap: clamp(6px, 0.93dvh, 10px);
++    width: 100%;
++  }
++
++  .management-filter-form label {
++    justify-self: start;
++    padding-right: 0;
++  }
++
++  .management-edit-form-row,
++  .management-edit-video-row {
++    grid-template-columns: 1fr;
++    gap: 6px;
++    width: 100%;
++  }
++
++  .management-edit-form-row {
++    padding: 6px 0;
++  }
++
++  .management-edit-form-row > label {
++    padding-right: 0;
++  }
++
++  .management-edit-video-row > button {
++    justify-self: end;
++  }
++
++  .management-edit-doctor-options {
++    grid-template-columns: 1fr;
++  }
++
++  .management-table,
++  .management-table thead,
++  .management-table tbody,
++  .management-table th,
++  .management-table td,
++  .management-table tr {
++    display: block;
++  }
++
++  .management-table thead {
++    display: none;
++  }
++
++  .management-table tbody {
++    padding: clamp(12px, 1.48dvh, 16px);
++  }
++
++  .management-table tr {
++    display: grid;
++    gap: clamp(10px, 1.48dvh, 16px);
++    border-bottom: 0;
++  }
++
++  .management-table td {
++    display: grid;
++    grid-template-columns: minmax(96px, 34%) minmax(0, 1fr);
++    align-items: start;
++    gap: clamp(8px, 1.11dvh, 12px);
++    width: 100%;
+     height: auto;
+     padding: 0;
+   }
+@@ -596,4 +1879,13 @@
+   .management-table td {
+     grid-template-columns: 1fr;
+   }
++
++  .management-edit-page-header {
++    align-items: flex-start;
++    flex-direction: column;
++  }
++
++  .management-edit-save {
++    align-self: flex-end;
++  }
+ }
+diff --git a/src/lib/csx-auth.ts b/src/lib/csx-auth.ts
+index f54b96b..4b235ea 100644
+--- a/src/lib/csx-auth.ts
++++ b/src/lib/csx-auth.ts
+@@ -31,6 +31,10 @@ const emptyAuthContext: CsxAuthContext = {
+   doctorDisplayName: null,
+ };
+ 
++export function createEmptyCsxAuthContext(): CsxAuthContext {
++  return {...emptyAuthContext, permissions: []};
++}
++
+ function parseJson<T>(value: string | null, fallback: T): T {
+   if (!value) {
+     return fallback;
+@@ -206,7 +210,7 @@ export function consumeCsxAuthTransfer() {
+ 
+ export function getCsxAuthContext(): CsxAuthContext {
+   if (typeof window === 'undefined') {
+-    return emptyAuthContext;
++    return createEmptyCsxAuthContext();
+   }
+ 
+   const token = parseJson<string | null>(window.localStorage.getItem('tok'), null);
+---STAT---
+ e2e/display-screen-config.spec.ts                  |  758 +++++++++-
+ src/app/layout.tsx                                 |    3 +-
+ .../display-management/DisplayManagementPage.tsx   |  845 +++++++++--
+ .../display-management/display-management.css      | 1526 ++++++++++++++++++--
+ src/lib/csx-auth.ts                                |    6 +-
+ 5 files changed, 2913 insertions(+), 225 deletions(-)
+---UNTRACKED---
+ M e2e/display-screen-config.spec.ts
+ M src/app/layout.tsx
+ M src/features/display-management/DisplayManagementPage.tsx
+ M src/features/display-management/display-management.css
+ M src/lib/csx-auth.ts
+?? public/display/Clinic.png
+?? public/display/avatar.png
+?? public/display/basic-display-icon.svg
+?? public/display/clinic-configuration-icon.svg
+?? public/display/doctor-configuration-icon.svg
+?? public/display/icon-left.svg
+?? public/display/save-icon.svg
+?? public/display/theme-icon.svg
+?? src/app/management-settings/program-settings/display-screen-config/edit/page.tsx
+?? src/features/display-management/DisplayDeviceEditPage.tsx
+?? src/features/display-management/display-config-data.ts
+?? src/lib/clinic-api.ts
+?? src/lib/global-clinic.tsx

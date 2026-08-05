@@ -1,0 +1,910 @@
+# Issue: openai/codex #1581
+
+- Repository: openai/codex | Lightweight coding agent that runs in your terminal | 101K stars | Rust
+
+## stream error: stream disconnected before completion: stream closed before response.complete; retrying...
+
+- Author: [@FreedomLabsIO](https://github.com/FreedomLabsIO)
+- State: closed (completed)
+- Locked: true
+- Labels: bug
+- Assignees: [@pakrym-oai](https://github.com/pakrym-oai)
+- Reactions: 👍 38
+- Created: 2025-07-15T07:31:43Z
+- Updated: 2025-10-16T03:26:14Z
+- Closed: 2025-10-16T03:26:07Z
+- Closed by: [@tibo-openai](https://github.com/tibo-openai)
+
+### What version of Codex is running?
+
+codex-cli 0.7.0
+
+### Which model were you using?
+
+codex-mini-latest
+
+### What platform is your computer?
+
+Linux 6.8.0-63-generic x86_64 x86_64
+
+### What steps can reproduce the bug?
+
+Send any prompt after `codex login`
+
+### What is the expected behavior?
+
+Model response
+
+### What do you see instead?
+
+[Image: Image | https://github.com/user-attachments/assets/1af1875d-3460-4f72-9c0c-85003ec0d3f3]
+
+### Additional information
+
+_No response_
+
+---
+
+### Timeline
+
+**FreedomLabsIO** added label `bug` · Jul 15, 2025 at 7:31am
+
+**@BedrettinOrtak** commented · Jul 15, 2025 at 4:15pm
+
+> same error on macos anyone help?
+
+**@Qi-jsallis** commented · Jul 15, 2025 at 7:09pm
+
+> Same error on WSL...
+
+**@Cai-z-us** commented · Jul 15, 2025 at 7:10pm
+
+> Same error on WSL...
+
+**@BedrettinOrtak** commented · Jul 15, 2025 at 8:05pm
+
+> Will anyone take care of this problem?
+
+**@nicolas-san** commented · Jul 15, 2025 at 10:41pm
+
+> +1
+
+**@pwnz22** commented · Jul 16, 2025 at 7:01am · edited
+
+> - same problem
+
+**@polcrub** commented · Jul 16, 2025 at 12:40pm
+
+> same issue in macOS with azure APIs
+
+**@youvalv** commented · Jul 16, 2025 at 1:56pm
+
+> same issue version 0.7
+
+**@Cai-z-us** commented · Jul 16, 2025 at 6:08pm
+
+> @bolinfest
+
+**@markuskreitzer** commented · Jul 16, 2025 at 6:16pm
+
+> After endless searching and experimenting, I got past this issue. I don't think it's as much Codex's fault as the transition going on at Azure right now. I went to Azure AI Foundry and pieced together this config that works with codex with plain ol' gpt-4o.
+> 
+> ```toml
+> model_provider = "azure"
+> provider = "azure"
+> model = " " # Your deployment name, not the ai model name.
+> 
+> # This From AI Foundry:
+> # https://.openai.azure.us/openai/deployments/ /chat/completions?api-version=2025-01-01-preview
+> 
+> [model_providers.azure]
+> name = "Azure OpenAI" # Not certain if this name matters.
+> base_url = "https://.openai.azure.us/openai/deployments/ "
+> env_key = "AZURE_OPENAI_API_KEY"
+> #wire_api = "responses" # Don't think this works with GPT-4o
+> query_params = { api-version = "2025-01-01-preview" } # Get this from AI Foundry URL. Azure AI Services had the wrong version, which sent me down the wrong path for half a day.
+> 
+> ```
+> 
+> I have tested this with the latest npm version (0.7.0)
+
+**@xHeaven** commented · Jul 16, 2025 at 8:24pm
+
+> Just to clarify, do you have any amount of money topped up to your credit? Check it here: https://platform.openai.com/settings/organization/billing/overview
+> I had the same issue, but as soon as I topped up my balance with $5, the error message is gone. Even though I have/had $38 in credit grants.
+
+**@BedrettinOrtak** commented · Jul 16, 2025 at 9:12pm
+
+> ı have 120$ but not working
+
+**@polcrub** commented · Jul 17, 2025 at 11:12am · edited
+
+> I have an Azure student license for context. The only configuration that does something for me is:
+> 
+> ```
+> # Default settings ── used when you run plain `codex`
+> model_provider = "azure"
+> provider = "azure"
+> model = "o4-mini" # pick whatever you want as your day-to-day default
+> 
+> [model_providers.azure]
+> name = "Azure OpenAI"
+> # NOTE: leave **only** the part up to /openai
+> base_url = "https://.cognitiveservices.azure.com/openai"
+> env_key = "AZURE_OPENAI_API_KEY" 
+> wire_api = "responses" 
+> query_params = { api-version = "2025-04-01-preview" }
+> ```
+> 
+> Where my "`resource`" name is the "folder" with multiple models deployed, I did not find a way to access an individual deployed model. Moreover, any other `api-version` fails. With this configuration o3-mini seems to work for more than one message (o4-mini always fails after the first response, always). see:
+> 
+> [Image: Image | https://github.com/user-attachments/assets/871666cc-146c-4a67-aa37-9aa871d4ef31]
+> 
+> With o4-mini:
+> 
+> [Image: Image | https://github.com/user-attachments/assets/08105b18-a9cd-4149-a702-06c95cd0e40c]
+> 
+> The set up it's just too messy. I'm working with the 0.7.0 version installed via brew.
+
+**@vitatea2023** commented · Jul 17, 2025 at 11:18am
+
+> [https://grok.com/share/bGVnYWN5_291468fe-b9cd-44a4-928e-dbc5be3b4542](https://grok.com/share/bGVnYWN5_291468fe-b9cd-44a4-928e-dbc5be3b4542)
+
+**@polcrub** commented · Jul 17, 2025 at 1:22pm
+
+> > https://grok.com/share/bGVnYWN5_291468fe-b9cd-44a4-928e-dbc5be3b4542
+> 
+> I did build the latest main branch up until now, the codex cli interface is different (OpenAI Codex (research preview) v0.0.0-dev ). And now nothing works with the config I shared before, which I had to convert to JSON since for some reason the .toml version is ignored. See:
+> 
+> [Image: Image | https://github.com/user-attachments/assets/20b8acb0-3a70-4e7b-930d-7bded9485f9c]
+> 
+> At least it loads faster and you can try more messages once past the error. I'm giving up.
+
+**@doroness** commented · Jul 20, 2025 at 7:40pm
+
+> [Image: Image | https://github.com/user-attachments/assets/e9f474cf-2fd0-4053-bba6-089eb2ebf0ad]
+> 
+> Same for me
+
+**@sjdefalco** commented · Jul 21, 2025 at 4:19pm
+
+> Same error as everyone above. I have $ in my api credit.
+> 
+> when I logged in initially I got:
+> 
+> Credit redemption request failed: HTTP Error 400: Bad Request
+> Successfully logged in
+
+**@netpoetica** commented · Jul 21, 2025 at 7:46pm
+
+> For me, if I use the default model it works just fine, but if I update config.toml to have `model = "o3"` then I receive this error endlessly. Similarly, if I launch with `codex -m o3`, will get the same error. It seems specific to using o3 for me. I have a Plus subscription so I wouldn't expect there to be an issue with credits, etc.
+
+**@fnavarijo** commented · Jul 21, 2025 at 11:54pm
+
+> For me ocurred the same when using the models: `codex-mini-latest` and `o4-mini`.
+> But when using `o3-mini` it started working. Is codex cli limited to specific models for the moment?
+
+**@netpoetica** commented · Jul 22, 2025 at 3:02am
+
+> As a small update - I found that after I went through Verification in my Organization (using third party Persona svc) I was able to use o3 via codex/cli for quite some time (hours). I did however once again just start observing the same issue consistently, 3 or 4 retries resulting in `BackgroundEvent { message: "stream error: stream disconnected before completion..." }`
+
+**@sjdefalco** commented · Jul 22, 2025 at 3:07am
+
+> Ok I seem to have fixed this. You need to be verified before you can use the default model. I was able to get it working as-is by running codex -m o3-mini.
+> 
+> To use the other models, in the Logs section from the Dashboard (https://platform.openai.com/logs) if you click into one of the failed messages and scroll all the way to the bottom, it will tell you that you need to be verified to use certain models.
+> 
+> You can complete that process here: https://platform.openai.com/settings/organization/general
+> 
+> Once that was done, I can now use the default model codex-mini-latest (and I believe a few others you need verification for).
+
+**@daniel-heater-imprivata** commented · Jul 22, 2025 at 5:36pm
+
+> `-m o3-mini` didn't work for me with 0.8.0 on MacOS. I installed `codex` with brew
+> 
+> A colleague shared that they installed with `npm install -g @openai/codex@native` earlier and did not get the stream error. The same for me. No stream error (still need company to fund before I can test it). But `npm install -g @openai/codex@native` shows the version as `codex-cli 0.0.2505291458`
+
+**@HunterHillegas** commented · Jul 29, 2025 at 6:33pm
+
+> I'm seeing this as well.
+> 
+> - macOS 26 beta 4
+> - Codex CLI v0.10
+> - Multiple models: o3, codex-mini-latest
+> - Organization has been long verified
+> - Plenty of budget in the account
+> 
+> Still, tons of these stream errors.
+
+**HunterHillegas** mentioned this in issue [#1879: Codex CLI Stream Error](https://github.com/openai/codex/issues/1879) · Aug 6, 2025 at 7:52pm
+
+**@lukaszciastko** commented · Aug 8, 2025 at 5:56am
+
+> Same here. I wanted to use codex but seeing these errors instead.
+
+**@QualityRobD** commented · Aug 11, 2025 at 7:25pm · edited
+
+> Yep same in WSL. Using an enterprise account but aside from that it's setup the same.
+> 
+> v0.20.0 as well, so the latest available version.
+> 
+> 1. I can auth into the CLI but any calls are met wtih that streaming error.
+> 2. Our organization is verfified so it's not that the issue
+
+**@yasuda0320** commented · Aug 21, 2025 at 12:48am
+
+> This is about my mistake—I had specified the following in my .env file for Qwen Code. The OPENAI_BASE_URL setting here was affecting Codex CLI and causing the error "🖐 stream disconnected before completion: stream closed before response.completed." Maybe you could check your environment variables or the contents of your .env file?
+> 
+> OPENAI_API_KEY=sk-or-v1-xxxxxxxxxx
+> OPENAI_BASE_URL=https://openrouter.ai/api/v1
+> OPENAI_MODEL=qwen/qwen3-coder:free
+
+**@grahamseamans** commented · Aug 21, 2025 at 5:46pm
+
+> Fixed it by removing open-ai related environment variables in my zsh rc. I'm guessing that codex defaults to bash env vars over what you set set in the actual codex config. IDK why it would be this way, but this did fix it for me.
+
+**github-actions[bot]** mentioned this in issue [#54: [Producer] Upstream Bug – Intermittent streaming disconnects and retry behavior](https://github.com/a5c-incubator/codex/issues/54) · Aug 30, 2025 at 7:51am
+
+**unknown** mentioned this in issue [#2419: 🖐 stream disconnected before completion: stream closed before response.completed](https://github.com/openai/codex/issues/2419) · Sep 7, 2025 at 6:24pm
+
+**@landmann** commented · Sep 9, 2025 at 5:02pm
+
+> I'm getting this now every 5-10 minutes. Something broke in the last update.
+
+**@i-oliva** commented · Sep 10, 2025 at 3:41pm
+
+> Getting this every few minutes...
+
+**bolinfest** assigned [@pakrym-oai](https://github.com/pakrym-oai) · Sep 10, 2025 at 3:44pm
+
+**@bolinfest** commented · Sep 10, 2025 at 3:45pm
+
+> This may be because we stopped honoring `.env` in `0.30.0`? See "breaking changes:"
+> 
+> https://github.com/openai/codex/releases/tag/rust-v0.30.0
+> 
+> /cc @pakrym-oai
+
+**@soLorden** commented · Sep 11, 2025 at 3:55pm
+
+> getting same error all the time. any fix?
+
+**@Adamcf123** commented · Sep 11, 2025 at 4:12pm
+
+> Same error. almost unusable
+
+**@vnicolici** commented · Sep 12, 2025 at 1:32pm
+
+> I started getting this error today in a long session that worked fine yesterday. It seems to work fine if I start a new session. I'm guessing the model I was using during that session, apparently gpt-5-1p-codexswic, is not available anymore?
+> 
+> The model from /status looks the same in both the old and the new session that works:
+> 
+> 🧠 Model
+> • Name: gpt-5
+> • Provider: OpenAI
+> • Reasoning Effort: Medium
+> • Reasoning Summaries: Auto
+> 
+> But I'm guessing the version of the model I was using in the old session has been retired while I was working. These are the errors I get in the old session:
+> 
+> ✔ You approved codex to run go build ./... this time
+> 
+> > _
+> 
+> ✗ ⌨️ go build ./...
+> error: command timed out
+> ⚠  stream error: stream disconnected before completion: Attempted an engine lookup because both a model and engine were passed. Engine gpt-5-1p-codexswic not found; retrying 1/5 in 200ms…
+> 
+> ⚠  stream error: stream disconnected before completion: Attempted an engine lookup because both a model and engine were passed. Engine gpt-5-1p-codexswic not found; retrying 2/5 in 394ms…
+> 
+> ⚠  stream error: stream disconnected before completion: Attempted an engine lookup because both a model and engine were passed. Engine gpt-5-1p-codexswic not found; retrying 3/5 in 865ms…
+> 
+> ⚠  stream error: stream disconnected before completion: Attempted an engine lookup because both a model and engine were passed. Engine gpt-5-1p-codexswic not found; retrying 4/5 in 1.628s…
+> 
+> ⚠  stream error: stream disconnected before completion: Attempted an engine lookup because both a model and engine were passed. Engine gpt-5-1p-codexswic not found; retrying 5/5 in 3.306s…
+> 
+> 🖐  stream disconnected before completion: Attempted an engine lookup because both a model and engine were passed. Engine gpt-5-1p-codexswic not found
+> 
+> user
+> It seems there were some inference API error when you attempted to build. Can you try again?
+> ⚠  stream error: stream disconnected before completion: Attempted an engine lookup because both a model and engine were passed. Engine gpt-5-1p-codexswic not found; retrying 1/5 in 190ms…
+> 
+> ⚠  stream error: stream disconnected before completion: Attempted an engine lookup because both a model and engine were passed. Engine gpt-5-1p-codexswic not found; retrying 2/5 in 408ms…
+> 
+> ⚠  stream error: stream disconnected before completion: Attempted an engine lookup because both a model and engine were passed. Engine gpt-5-1p-codexswic not found; retrying 3/5 in 731ms…
+> 
+> ⚠  stream error: stream disconnected before completion: Attempted an engine lookup because both a model and engine were passed. Engine gpt-5-1p-codexswic not found; retrying 4/5 in 1.759s…
+> 
+> ⚠  stream error: stream disconnected before completion: Attempted an engine lookup because both a model and engine were passed. Engine gpt-5-1p-codexswic not found; retrying 5/5 in 3.334s…
+> 
+> 🖐  stream disconnected before completion: Attempted an engine lookup because both a model and engine were passed. Engine gpt-5-1p-codexswic not found
+> 
+> ▌ Write tests for @filename
+> ⏎ send Ctrl+J newline Ctrl+T transcript Ctrl+C quit 513323 tokens used 80% context left
+
+**@raulblanko** commented · Sep 12, 2025 at 4:20pm
+
+> similar issue, the error today in a long session that worked fine since yesterday until this moment:
+> 
+> ```
+> • Ran powershell -NoProfile -Command 'npm run typecheck' 
+> 
+> ⚠️ stream error: stream disconnected before completion: Transport error: error 
+> decoding response body; retrying 1/5 in 186ms… 
+> 
+> ⚠️ stream error: stream disconnected before completion: Transport error: error 
+> decoding response body; retrying 2/5 in 402ms… 
+> 
+> ⚠️ stream error: stream disconnected before completion: Transport error: error 
+> decoding response body; retrying 3/5 in 772ms… 
+> 
+> ⚠️ stream error: stream disconnected before completion: Transport error: error 
+> decoding response body; retrying 4/5 in 1.575s… 
+> 
+> ⚠️ stream error: stream disconnected before completion: Transport error: error 
+> decoding response body; retrying 5/5 in 3.371s… 
+> 
+> 🖐  stream disconnected before completion: Transport error: error decoding 
+> response body 
+> 
+> ▌ Implement {feature} 
+> ⏎ send Ctrl+J newline Ctrl+T transcript Ctrl+C quit 2.52M tokens used
+> ```
+> 
+> is it possible that too many tokens used (2.52M in my case) is a reason?
+> 
+> also could anyone please help with arguments to be passed to the command line to continue the old session? is it possible?
+
+**@vnicolici** commented · Sep 12, 2025 at 4:28pm
+
+> > also could anyone please help with arguments to be passed to the command line to continue the old session? is it possible?
+> 
+> It is possible if you are on codex cli 0.30.0 or newer, the options are --resume and --continue. They are not documented in --help at the moment.
+> 
+> https://github.com/openai/codex/issues/2173#issuecomment-3264145154
+> 
+> Unfortunately it doesn't support resuming sessions created with older versions. As a workaround, I copied the json. session file from the .codex directory to the project I was working on, then, in a new session, I asked it to read it to familiarize itself with the previously done work. That worked reasonably well.
+
+**@raulblanko** commented · Sep 12, 2025 at 4:59pm · edited
+
+> @vnicolici
+> 
+> > I copied the json. session file from the .codex directory to the project I was working on, then, in a new session, I asked it to read it to familiarize itself
+> 
+> Almost like i did before, but even without a copying. It has access to its home directory.
+> 
+> > the options are --resume and --continue. They are not documented in --help at the moment.
+> 
+> Huge thanks for that!
+
+**@yonson40** commented · Sep 14, 2025 at 6:52pm
+
+> I get the same error for both codex ide and codex cli but only on my macbook, not when im on windows parallels, or on my mac mini... Super annoying...
+
+**@aud** commented · Sep 17, 2025 at 6:30pm
+
+> FWIW this makes Codex completely unusable. Surprised this is still open. I have an `OPENAI_API_KEY` set in my env. Should be considered a sev0.
+
+**@aibrahim-oai** commented · Sep 17, 2025 at 6:50pm
+
+> As of 0.36, we don't support implicit login. You need to use `codex login --api-key "your-api-key-here"` to explicitly login using your api key.
+> 
+> [Release notes](https://github.com/openai/codex/releases/tag/rust-v0.36.0)
+
+**@aud** commented · Sep 17, 2025 at 7:26pm
+
+> @aibrahim-oai Thanks. This error should really be handled properly. For eg. the stream error should propagate some status code code so people can at least see it's failing for authentication reasons.
+> 
+> Or, better yet perform some sort of pre-flight check when you launch Codex that verifies that you have authentication configured properly, and if not guides you to do the right thing.
+
+**@evanreilly** commented · Sep 17, 2025 at 10:56pm
+
+> ▌ Write tests for @filename
+> ⏎ send Shift+⏎ newline Ctrl+C quit`@aib
+> 
+> > As of 0.36, we don't support implicit login. You need to use `codex login --api-key "your-api-key-here"` to explicitly login using your api key.
+> > 
+> > [Release notes](https://github.com/openai/codex/releases/tag/rust-v0.36.0)
+> 
+> `codex login --api-key
+> " "
+> Successfully logged in
+> (base) evanreilly@Evans-MacBook-Pro-2 moondream-station % codex
+> ✨⬆️ Update available! 0.23.0 -> 0.38.0.
+> Run npm install -g @openai/codex@latest to update.
+> 
+> > _ You are using OpenAI Codex in ~/code/moondream/moondream-station
+> 
+> To get started, describe a task or try one of these commands:
+> 
+> /init - create an AGENTS.md file with instructions for Codex
+> /status - show current session configuration and token usage
+> /diff - show git diff (including untracked files)
+> 
+> user
+> walk me through converting this to mlx
+> 
+> 🖐 stream disconnected before completion: stream closed before response.completed
+> 
+> care to explain @aibrahim-oai ?
+
+**@evanreilly** commented · Sep 17, 2025 at 11:05pm
+
+> at my wits end, upgraded npm, upgraded codex, signed in with oauth, signed in with api key. Still always get
+> 
+> 🖐 stream disconnected before completion: stream closed before response.completed
+
+**@evanreilly** commented · Sep 17, 2025 at 11:05pm
+
+> also same deal with vscode/cursor extensions
+
+**@Prestapro** commented · Oct 7, 2025 at 3:21am · edited
+
+> I'm not sure it's work for you, but it's work for me twice (Mac OS 26, M2 Max). If any member or developer from team Open AI/Codex, please check this issue. I think it's authoriztion/key. I attach additional information (describe problem)[/+]
+> 
+> ### name:
+> 
+> "🐞 Codex CLI Bugfix / Diagnostic Checklist"
+> 
+> ### about:
+> 
+> Fix or diagnose stream disconnects / 401 errors in codex-cli v0.43.x
+> 
+> ### title:
+> 
+> "[Bug] Codex CLI stream disconnect or 401 Unauthorized"
+> 
+> ### labels:
+> 
+> ["bug", "codex-cli", "openai-cli"]
+> 
+> ### assignees: ""
+> 
+> # 🧩 Codex CLI Bugfix / Diagnostic Checklist
+> 
+> **Target:** macOS ARM — `codex-cli v0.43.0-alpha.15` 
+> **Purpose:** Fix or diagnose `stream disconnect` or `401 Unauthorized` issues during ChatGPT SSO sessions.
+> 
+> ---
+> 
+> ## A) Clean Environment Variables
+> 
+> ```bash
+> env | egrep -i 'OPENAI|OPENROUTER|AZURE'
+> unset OPENAI_API_KEY OPENROUTER_API_KEY AZURE_OPENAI_API_KEY
+> ```
+> 
+> ---
+> 
+> ## B) Login via ChatGPT SSO
+> 
+> (officially recommended for Plus / Pro / Team users)
+> 
+> ```bash
+> codex login
+> ```
+> 
+> > In the browser window, choose **Sign in with ChatGPT → confirm**.
+> 
+> ---
+> 
+> ## C) Launch TUI and Check Status
+> 
+> ```bash
+> codex
+> ```
+> 
+> Inside the TUI:
+> 
+> ```
+> /status
+> ```
+> 
+> ---
+> 
+> ## D) Switch Model to Stable `gpt-5`
+> 
+> ```
+> /model
+> ```
+> 
+> Select **gpt-5** (not `gpt-5-codex`).
+> 
+> ---
+> 
+> ## E) Quick Sanity Stream Test
+> 
+> ```
+> Say "pong" and nothing else.
+> ```
+> 
+> > Expect a clean streamed response with no disconnection.
+> 
+> If OK — switch back to `gpt-5-codex` and repeat.
+> 
+> ---
+> 
+> # 🪲 If the stream disconnects
+> 
+> ### Enable Debug Logging
+> 
+> ```bash
+> RUST_LOG=debug codex
+> ```
+> 
+> In another terminal:
+> 
+> ```bash
+> tail -F ~/.codex/log/codex-tui.log
+> ```
+> 
+> ---
+> 
+> # ✅ Minimal Fix — Force Stable Model
+> 
+> ### Option 1 — One-off Launch
+> 
+> ```bash
+> codex --model gpt-5
+> ```
+> 
+> ### Option 2 — Make Default
+> 
+> ```bash
+> mkdir -p ~/.codex
+> printf 'model="gpt-5"\n' > ~/.codex/config.toml
+> codex
+> ```
+> 
+> Then check inside TUI:
+> 
+> ```
+> /status
+> ```
+> 
+> > Should show: `Model: gpt-5`
+> 
+> ---
+> 
+> # If the stream still breaks
+> 
+> ### 1️⃣ Relogin and Clear Cache
+> 
+> ```bash
+> codex logout
+> rm -rf ~/.codex ~/.config/codex
+> codex login
+> ```
+> 
+> ### 2️⃣ Recreate Minimal Config
+> 
+> ```bash
+> mkdir -p ~/.codex
+> printf 'model="gpt-5"\n' > ~/.codex/config.toml
+> ```
+> 
+> ### 3️⃣ Start with Debug Logs
+> 
+> ```bash
+> RUST_LOG=debug codex
+> ```
+> 
+> In another terminal:
+> 
+> ```bash
+> tail -F ~/.codex/log/codex-tui.log
+> ```
+> 
+> ### 4️⃣ Verify SSE Network Stability
+> 
+> ```bash
+> curl -N https://stream.wikimedia.org/v2/stream/recentchange
+> ```
+> 
+> > If this also disconnects — the issue is with local network, proxy, or SSL interception.
+> 
+> ### 5️⃣ Headless Mode (Non-TUI)
+> 
+> ```bash
+> codex exec "Say 'pong' and stop."
+> ```
+> 
+> > If this works but TUI fails → it’s a TUI stream issue.
+> 
+> ---
+> 
+> # 🔧 Clean Up OpenRouter / BASE URL / Proxy
+> 
+> ```bash
+> env | egrep -i 'OPENROUTER|ROUTER|OPENAI.*BASE|API_BASE|BASE_URL|PROXY'
+> unset OPENROUTER_API_KEY OPENROUTER BASE_URL OPENAI_BASE_URL OPENAI_API_BASE HTTPS_PROXY HTTP_PROXY ALL_PROXY NO_PROXY
+> sed -i.bak '/OPENROUTER\|OPENAI_.*BASE\|API_BASE\|BASE_URL\|_PROXY/d' ~/.zshrc ~/.bashrc ~/.bash_profile 2>/dev/null
+> grep -RIn --no-ignore -E 'openrouter\.ai|OPENROUTER|OPENAI_.*BASE|API_BASE|BASE_URL' ~ 2>/dev/null | head -n 50
+> rm -rf ~/.codex ~/.config/codex
+> mkdir -p ~/.codex && printf 'model="gpt-5"\n' > ~/.codex/config.toml
+> export OPENAI_BASE_URL="https://api.openai.com/v1"
+> RUST_LOG=debug codex
+> ```
+> 
+> Then check where Codex connects:
+> 
+> ```bash
+> tail -F ~/.codex/log/codex-tui.log | egrep -i 'api\.openai\.com|openrouter\.ai|api_request'
+> ```
+> 
+> > Should show `api.openai.com` (not `openrouter.ai`).
+> 
+> ---
+> 
+> # 🔐 If `401 Unauthorized` Persists
+> 
+> ### A) Clean SSO Relogin
+> 
+> ```bash
+> codex logout
+> rm -rf ~/.codex ~/.config/codex
+> open "https://chat.openai.com/auth/logout"
+> open "https://platform.openai.com/logout"
+> codex login
+> mkdir -p ~/.codex && printf 'model="gpt-5"\n' > ~/.codex/config.toml
+> RUST_LOG=debug codex
+> ```
+> 
+> ### B) Clear Auth-Related Environment Vars
+> 
+> ```bash
+> env | egrep -i 'OPENAI_(ORGANIZATION|PROJECT|API_KEY)|OPENROUTER|API_BASE|BASE_URL|_PROXY'
+> unset OPENAI_ORGANIZATION OPENAI_PROJECT OPENAI_API_KEY OPENROUTER_API_KEY OPENAI_BASE_URL API_BASE BASE_URL HTTPS_PROXY HTTP_PROXY ALL_PROXY NO_PROXY
+> ```
+> 
+> ### C) Sync System Time (Critical for OAuth/JWT)
+> 
+> ```bash
+> systemsetup -getusingnetworktime
+> sudo systemsetup -setusingnetworktime on
+> sudo sntp -sS time.apple.com
+> ```
+> 
+> ---
+> 
+> # 🧭 Temporary Workaround — API Key Mode
+> 
+> If SSO remains broken:
+> 
+> ```bash
+> codex logout
+> codex login
+> # Choose "Use OpenAI API key"
+> codex --model gpt-4o
+> ```
+> 
+> > **Note:** ChatGPT subscription ≠ API access — use a valid `sk-...` key from [platform.openai.com](https://platform.openai.com).
+> 
+> ---
+> 
+> # ⚙️ Minimal Config Options
+> 
+> ### Simple
+> 
+> ```bash
+> printf 'model="gpt-5"\n' > ~/.codex/config.toml
+> ```
+> 
+> ### Explicit Provider Definition
+> 
+> ```bash
+> printf '%s\n' 'model = "gpt-5"' 'model_provider = "openai"' '[model_providers.openai]' 'name = "OpenAI"' 'wire_api = "responses"' 'base_url = "https://api.openai.com/v1"' > ~/.codex/config.toml
+> ```
+> 
+> ---
+> 
+> ## ✅ Expected `/status` Output
+> 
+> ```
+> Model: gpt-5
+> Provider: openai
+> Wire API: responses
+> ```
+> 
+> ---
+> 
+> Please attach:
+> 
+> - the last 20 lines from `~/.codex/log/codex-tui.log` near the failure,
+> - `/status` output from inside the TUI.
+> 
+> Maintainers will review logs to determine if the issue is SSO, SSE, or model access related.
+> 
+> ---
+
+**@Prestapro** commented · Oct 7, 2025 at 3:22am · edited
+
+> 
+> 
+> 
+> 
+> 
+> 
+> The root cause of this Codex CLI bug isn’t just “one thing” — it’s a combination of authentication and environment misalignment introduced in the 0.41–0.43 branch. 
+> Here’s a clear technical breakdown 👇 
+> 
+> 🔍 Root Cause Summary 
+> 
+> 
+> Codex CLI ( codex-cli 0.43.x) uses multiple authentication and networking backends — ChatGPT SSO, OpenAI API key, and OpenRouter routing. 
+> When these collide or get misdetected, the CLI sends requests to the wrong API endpoint or with invalid tokens, leading to: 
+> 
+> 401 Unauthorized errors 
+> 
+> Broken SSE (Server-Sent Events) streams in TUI mode 
+> 
+> Sudden disconnects when using models like gpt-5-codex 
+> 
+> 
+> ⚙️ Detailed Breakdown 
+> 
+> 
+> 1.   SSO Token Mismatch 
+> 
+> The “Sign in with ChatGPT” SSO flow issues a short-lived JWT token, valid only for ChatGPT web context. 
+> 
+> Codex CLI, however, sometimes tries to reuse it for OpenAI’s API endpoints (api.openai.com/v1/responses) — which reject it with 401 Unauthorized. 
+> 
+> This happens because CLI doesn’t refresh the SSO token correctly or misidentifies the provider. 
+> 
+> 
+> 
+> Symptoms: 
+> 
+> /status shows “Logged in with ChatGPT” but every call to OpenAI fails. 
+> 
+> codex.api_request lines in logs return 401 even though login appears successful. 
+> 
+> 
+> 2.   Conflicting Environment Variables 
+> 
+> 
+> Many users have legacy or hidden exports like: 
+> 
+> ```
+> OPENAI_API_KEY
+> OPENAI_BASE_URL
+> OPENROUTER_API_KEY
+> API_BASE
+> BASE_URL
+> ```
+> 
+> If any of these are set, Codex overrides its SSO provider logic and starts routing via: 
+> 
+> openrouter.ai (proxy endpoint) 
+> 
+> or a stale custom OPENAI_BASE_URL 
+> 
+> 
+> 
+> Result: 
+> SSO token is valid, but requests go to the wrong host → instant disconnection or 401. 
+> 
+> 3.   Model Access Policy Change 
+> 
+> gpt-5-codex sometimes requires org-level verification. 
+> 
+> Normal gpt-5 is public for Plus/Pro/Team SSO users. 
+> 
+> So the same token can succeed with gpt-5, but fail with gpt-5-codex. 
+> 
+> 
+> 
+> This causes false reports of “streaming broken,” while the real issue is permission denial on that specific model. 
+> 
+> 4.   TUI Stream (SSE) Regression 
+> 
+> 
+> Versions 0.41–0.42 had partial regressions in the SSE handler: 
+> the event parser and connection timeout were not robust to partial chunked responses. 
+> So even when the model response was valid, the client aborted early. 
+> 
+> 
+> That’s why: 
+> 
+> codex exec "Say 'pong'" (headless mode) works perfectly, 
+> 
+> but codex (interactive TUI) drops mid-stream. 
+> 
+> 
+> 5.   Network Layer / SSL Inspection 
+> 
+> 
+> When all else is correct, some macOS setups still interrupt streaming: 
+> 
+> HTTPS interception (AdGuard, Little Snitch, antiviruses) 
+> 
+> Corporate proxy rewriting chunked transfer encoding 
+> 
+> Broken SSE keep-alive frames 
+> 
+> 
+> 
+> You can confirm by: 
+> 
+> ```
+> curl -N https://stream.wikimedia.org/v2/stream/recentchange
+> ```
+> 
+> If that stream also dies → it’s the network layer, not Codex. 
+> 
+> 🧩 So in short 
+> 
+> | Category | Root Cause | Fix |
+> | --- | --- | --- |
+> | Auth | ChatGPT SSO token used on API endpoint | Full relogin + remove stale auth.json |
+> | Routing | Wrong base URL (OpenRouter / proxy) | Clear env vars & config |
+> | Model | Restricted gpt-5-codex | Temporarily use gpt-5 |
+> | Client | SSE parser bug in TUI | Use codex exec (headless) |
+> | Network | Proxy / SSL inspection | Test SSE with curl; disable filters |
+> 
+> 
+> ✅ Confirmed Workarounds 
+> 
+> Hard-reset login: 
+> 
+> 
+> ```
+> codex logout
+> rm -rf ~/.codex ~/.config/codex
+> codex login
+> ```
+> 
+> 
+> → choose “Sign in with ChatGPT”. 
+> 
+> Force base model and endpoint: 
+> 
+> 
+> ```
+> mkdir -p ~/.codex
+> printf 'model="gpt-5"\n' > ~/.codex/config.toml
+> export OPENAI_BASE_URL="https://api.openai.com/v1"
+> codex --model gpt-5
+> ```
+> 
+> 
+> 
+> 
+> 
+> If still 401: 
+> Use API key auth instead of SSO (temporary fallback): 
+> 
+> 
+> ```
+> codex login
+> # choose “Use OpenAI API key”
+> codex --model gpt-4o
+> ```
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+
+**LucienBrule** mentioned this in PR [#5106: fix(transport): prevent idle disconnects via HTTP keepalives + heartbeats; add liveness telemetry](https://github.com/openai/codex/pull/5106) · Oct 15, 2025 at 3:56am
+
+**@tibo-openai** commented · Oct 16, 2025 at 3:26am
+
+> Please use
+> 
+> ```
+> printenv OPENAI_API_KEY | codex login --with-api-key
+> ```
+> 
+> and then
+> 
+> ```
+> codex -m codex-mini-latest
+> ```
+
+**tibo-openai** closed this · Oct 16, 2025 at 3:26am
+
+**openai** locked this conversation as **resolved** · Oct 16, 2025 at 3:26am

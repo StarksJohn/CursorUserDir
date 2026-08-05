@@ -12,10 +12,10 @@ description: >-
 
 ## 与 Codex 入口的区别（分别维护）
 
-| 客户端 | `SKILL.md` | `name` | 口令 |
-|--------|------------|--------|------|
+| 客户端           | `SKILL.md`                                                                                                                                      | `name`             | 口令                |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ------------------- |
 | Cursor（本文件） | **Windows** `%USERPROFILE%\.cursor\skills\ask-heals-app-rn\SKILL.md` / **macOS** `/Users/<你的用户名>/.cursor/skills/ask-heals-app-rn/SKILL.md` | `ask-heals-app-rn` | `/ask-heals-app-rn` |
-| Codex（OpenAI） | **Windows** `%USERPROFILE%\.codex\skills\heals-app-rn\SKILL.md` / **macOS** `/Users/<你的用户名>/.codex/skills/heals-app-rn/SKILL.md` | `heals-app-rn` | `/heals-app-rn` |
+| Codex（OpenAI）  | **Windows** `%USERPROFILE%\.codex\skills\heals-app-rn\SKILL.md` / **macOS** `/Users/<你的用户名>/.codex/skills/heals-app-rn/SKILL.md`           | `heals-app-rn`     | `/heals-app-rn`     |
 
 两处不要求逐句同步；但围绕 **`heals-app-rn`** 工作区的任务入口、必读顺序、上下文门禁、路由规则与输出约定必须保持一致。在 Cursor 的 Codex 插件中输入 **`/heals-app-rn`**，应与 Cursor 输入框中执行 **`/ask-heals-app-rn`** 达到同一任务推进效果。
 
@@ -41,15 +41,15 @@ description: >-
 
 ## 工作区与本 skill 路径
 
-| 用途 | Windows | macOS |
-|------|---------|----------------|
-| 工作区根 | `D:\work\RN\heals-app-rn` | `/Users/<你的用户名>/Desktop/work/RN/heals-app-rn`（当前 Mac：`/Users/stark/Desktop/work/RN/heals-app-rn`） |
-| 本 skill 文件 | `%USERPROFILE%\.cursor\skills\ask-heals-app-rn\SKILL.md`（本机示例：`C:\Users\Stark8964911\.cursor\skills\ask-heals-app-rn\SKILL.md`） | `/Users/<你的用户名>/.cursor/skills/ask-heals-app-rn/SKILL.md`（当前 Mac：`/Users/stark/.cursor/skills/ask-heals-app-rn/SKILL.md`） |
-| Codex 对口 skill（`name: heals-app-rn`） | `%USERPROFILE%\.codex\skills\heals-app-rn\SKILL.md`（本机示例：`C:\Users\Stark8964911\.codex\skills\heals-app-rn\SKILL.md`） | `/Users/<你的用户名>/.codex/skills/heals-app-rn/SKILL.md`（当前 Mac：`/Users/stark/.codex/skills/heals-app-rn/SKILL.md`） |
-| Cursor skills 根 | `%USERPROFILE%\.cursor\skills` | `/Users/<你的用户名>/.cursor/skills`（当前 Mac：`/Users/stark/.cursor/skills`） |
-| Cursor 应用配置与用户数据 | `%APPDATA%\Cursor` | `~/Library/Application Support/Cursor` |
-| Codex 全局规则（Codex / Cursor 内 Codex 插件） | `%USERPROFILE%\.codex\AGENTS.md` | `/Users/<你的用户名>/.codex/AGENTS.md`（当前 Mac：`/Users/stark/.codex/AGENTS.md`） |
-| Codex 配置、规则、skills、归档 | `%USERPROFILE%\.codex` | `/Users/<你的用户名>/.codex`（当前 Mac：`/Users/stark/.codex`） |
+| 用途                                           | Windows                                                                                                                                | macOS                                                                                                                               |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 工作区根                                       | `D:\work\RN\heals-app-rn`                                                                                                              | `/Users/<你的用户名>/Desktop/work/RN/heals-app-rn`（当前 Mac：`/Users/stark/Desktop/work/RN/heals-app-rn`）                         |
+| 本 skill 文件                                  | `%USERPROFILE%\.cursor\skills\ask-heals-app-rn\SKILL.md`（本机示例：`C:\Users\Stark8964911\.cursor\skills\ask-heals-app-rn\SKILL.md`） | `/Users/<你的用户名>/.cursor/skills/ask-heals-app-rn/SKILL.md`（当前 Mac：`/Users/stark/.cursor/skills/ask-heals-app-rn/SKILL.md`） |
+| Codex 对口 skill（`name: heals-app-rn`）       | `%USERPROFILE%\.codex\skills\heals-app-rn\SKILL.md`（本机示例：`C:\Users\Stark8964911\.codex\skills\heals-app-rn\SKILL.md`）           | `/Users/<你的用户名>/.codex/skills/heals-app-rn/SKILL.md`（当前 Mac：`/Users/stark/.codex/skills/heals-app-rn/SKILL.md`）           |
+| Cursor skills 根                               | `%USERPROFILE%\.cursor\skills`                                                                                                         | `/Users/<你的用户名>/.cursor/skills`（当前 Mac：`/Users/stark/.cursor/skills`）                                                     |
+| Cursor 应用配置与用户数据                      | `%APPDATA%\Cursor`                                                                                                                     | `~/Library/Application Support/Cursor`                                                                                              |
+| Codex 全局规则（Codex / Cursor 内 Codex 插件） | `%USERPROFILE%\.codex\AGENTS.md`                                                                                                       | `/Users/<你的用户名>/.codex/AGENTS.md`（当前 Mac：`/Users/stark/.codex/AGENTS.md`）                                                 |
+| Codex 配置、规则、skills、归档                 | `%USERPROFILE%\.codex`                                                                                                                 | `/Users/<你的用户名>/.codex`（当前 Mac：`/Users/stark/.codex`）                                                                     |
 
 若用户明确给出 fork、分支工作区或临时路径，以用户指定路径为准；否则按上表定位。
 
@@ -81,12 +81,12 @@ description: >-
    - Auth / 全局状态：AppContext、Auth、storage、启动流程
    - 原生构建：`ios/`、`android/`、Podfile、Gradle、Info.plist、Manifest、权限配置
 
-| 优先级 | 来源 | 用途 |
-|--------|------|------|
-| 1 | 本 skill + 项目规则 | 入口、长期项目事实、约束与加载门禁 |
-| 2 | `package.json`、README、CLAUDE/README_stark | 脚本、依赖、环境与团队约定 |
-| 3 | 任务直接相关源码/配置 | 实现、排障、审查、验证 |
-| 4 | 官方文档或第三方类型定义 | 核对易变 API、平台差异、弃用/实验标记 |
+| 优先级 | 来源                                        | 用途                                  |
+| ------ | ------------------------------------------- | ------------------------------------- |
+| 1      | 本 skill + 项目规则                         | 入口、长期项目事实、约束与加载门禁    |
+| 2      | `package.json`、README、CLAUDE/README_stark | 脚本、依赖、环境与团队约定            |
+| 3      | 任务直接相关源码/配置                       | 实现、排障、审查、验证                |
+| 4      | 官方文档或第三方类型定义                    | 核对易变 API、平台差异、弃用/实验标记 |
 
 不要默认通读 `src/` 全文；先根据用户问题定位 1-3 个高价值文件，再决定是否扩大范围。
 
@@ -198,33 +198,5 @@ description: >-
 
 ## 当前活跃需求(不要修改这部分的子内容)
 - WIN:
-  - 当前电脑已经在 Windows 项目根 目录`D:\work\RN\heals-app-rn`执行了 `npm run android:dev:win` 把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区`
-  - 在 `D:\work\RN\heals-app-rn\src\screens\login\login-screen\login-screen.tsx`页面,一开始显示![img_185014.png](img_185014.png),点击`renderMobileNumber`函数绘制的输入框后, 键盘弹起, 如图 ![img_185100.png](img_185100.png), 输入框的下半部分内容被遮挡了, 测试用屏幕更小的机型也发现了更明显的这个问题![img_185145.png](img_185145.png),并且提了BUG: `Problem Statement
-The login screen does not properly adapt when the mobile keyboard opens. Important UI elements such as the “Next” button and form content become partially hidden or compressed, creating a poor user experience on mobile devices.
-The current layout also contains excessive vertical spacing, reducing usable screen area during user input.
-Objective
-Improve the login screen responsiveness and keyboard behavior to ensure all interactive elements remain visible, accessible, and user-friendly across different mobile screen sizes.
-Proposed Solution
-Implement a responsive keyboard-aware layout that:
- Prevents keyboard overlap 
- Supports vertical scrolling 
- Keeps focused inputs visible 
- Improves spacing and content positioning during text input 
-Optimize the screen structure for better mobile usability and accessibility.
-In Scope
-Keyboard no longer overlaps actionable UI elements 
- “Next” button remains accessible during typing 
- User can scroll content while keyboard is open 
- Input field remains visible when focused 
- Layout adapts properly across device sizes 
- Screen feels responsive and polished 
- No UI clipping or overlapping occurs
-
-Out of Scope
-Authentication logic changes 
- API/backend modifications 
- OTP flow redesign 
- Form validation changes 
- Language selector redesign 
- Visual branding/logo redesign`; 
- 帮我解决
+  <!-- - 当前电脑已经在 Windows 项目根 目录`D:\work\RN\heals-app-rn`执行了 `npm run android:dev:win` 把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区` -->
+  <!-- - 在 `D:\work\RN\heals-app-rn\src\screens\login\login-screen\login-screen.tsx`页面,一开始显示![img_185014.png](img_185014.png),点击`renderMobileNumber`函数绘制的输入框后, 键盘弹起, 如图 ![img_185100.png](img_185100.png), 输入框的下半部分内容被遮挡了, 测试用屏幕更小的机型也发现了更明显的这个问题![img_185145.png](img_185145.png),并且提了BUG: `Problem Statement -->

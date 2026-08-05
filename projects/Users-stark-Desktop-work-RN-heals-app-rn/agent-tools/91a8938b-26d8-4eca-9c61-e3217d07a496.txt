@@ -1,0 +1,1118 @@
+[0.76] React Native DevTools — Issues and Feedback · react-native-community discussions-and-proposals · Discussion #819 · GitHub
+
+# [0.76] React Native DevTools — Issues and Feedback #819
+
+huntie started this conversation in Feedback
+
+[0.76] React Native DevTools — Issues and Feedback #819
+
+Return to top
+
+edited
+
+## huntie Sep 4, 2024 Maintainer
+
+## Introduction
+
+In React Native 0.76, we're shipping the first stable release of React Native DevTools, our new debugging experience for React Native apps using Hermes.
+
+React Native DevTools features:
+
+- A completely rebuilt debugger architecture, including an all-new CDP backend, designed for reliability and correctness.
+- Familiar, web-aligned tooling — An integrated frontend with familiar features from Chrome DevTools that work as they do on web, as well as the React DevTools Element Inspector and Profiler.
+- A cohesive and refined experience — React Native DevTools is set up by default with zero config. Open from the Dev Menu or via`j` to debug in the CLI server. See a new “Paused in Debugger” overlay and simplified LogBox states while debugging.
+
+React Native DevTools is designed for debugging React app concerns, and not to replace native tools. If you want to inspect React Native’s underlying platform layers (for example, while developing a Native Module), please use the debugging tools available in Xcode and Android Studio.
+
+Tip
+
+Learn more about React Native DevTools in the 0.76 release blog post or the announcement talk 🎬.
+
+## Compatibility
+
+React Native DevTools supports all React Native 0.76 apps running Hermes. It replaces the previous Flipper, Experimental Debugger, and Hermes debugger (Chrome) entry points.
+
+It is not possible to set up React Native DevTools with any older versions of React Native.
+
+Chrome Browser DevTools — unsupported
+
+- Connecting to React Native via`chrome://inspect` is no longer supported. Features may not work correctly, as the latest versions of Chrome DevTools (which are built to match the latest browser capabilities and APIs) have not been tested, and this frontend lacks our customisations. Instead, we ship a supported version with React Native DevTools.
+
+Visual Studio Code — unsupported (pre-existing)
+
+- Third party extensions such as Expo Tools and Radon IDE may have improved compatibility, but are not directly supported by the React team.
+
+## Available debugging options from 0.76
+
+- React Native DevTools (default)
+- Remote JavaScript Debugging (deprecated)
+- Safari Developer Tools (Direct JSC Debugging)
+
+If you are using a debugging option other than React Native DevTools, this will not be connected to the React Native DevTools backend, and therefore issues should be raised outside this discussion thread.
+
+## Related deprecations in 0.76
+
+- The standalone build of React DevTools (`npx react-devtools`) will no longer work with 0.76, and this entry point is deprecated.
+
+## FAQs
+
+React Native DevTools is fundamentally separate from the previous “Experimental Debugger” (React Native 0.73-0.75). Please use the previous thread if you see the old frontend.
+
+How do I know if I’m on React Native DevTools?
+
+- After launching DevTools from the Dev Menu or CLI, you should land on a welcome panel saying “React Native DevTools” (NOT "React Native JS Inspector").
+- A highlighted log saying`Welcome to React Native DevTools` should be printed to the console.
+
+When is React Native DevTools coming to Expo?
+
+React Native DevTools should land in Expo in the next Expo SDK that aligns with React Native 0.76, so long as Expo is happy with end to end compatibility. At time of writing, this will be SDK 52.
+
+How do I use the Network panel?
+
+React Native DevTools does not ship with Network inspection as of 0.76. We are aware this is a highly-requested feature. First party support, built into our new C++ debugger stack, is work in progress and will ship in a future release.
+
+Alternatives:
+
+- Network panel under Expo: Supported in Expo since SDK 49. This implementation is built outside of the React Native DevTools stack, but we've exposed a "Network (Expo, unstable)" panel in our frontend.
+- Use third party tools such as Reactotron, Charles Proxy.
+
+How do I use third party Chrome extensions?
+
+React Native DevTools does not ship with support for loading third party Chrome extensions (such as Relay DevTools or Redux DevTools) as of 0.76. This is a feature that conceptually fits what we want to offer, but is further out in our plans.
+
+We are in early exploration on this feature, in partnership with Expo. We want JS dev plugins in React Native DevTools to share the same reliable debugger connection as the rest of our infra, and we want to design the necessary APIs for this precisely. Another concern will be how we safely load 3P extension code and meet our quality bar. Prior art such as Expo Dev Plugins may inform us about how we make third party plugins loadable into DevTools.
+
+Alternatives:
+
+- Expo Dev Plugins are an existing solution for loading a number of third party DevTools plugins in an out-of-tree manner.
+- react-native-debugger is a community project that includes built in DevTools plugins for popular third party JavaScript libraries. (Note: This will eject out of the React Native DevTools backend and to Remote JavaScript Debugging.)
+
+Why are JavaScript logs leaving Metro?
+
+We want every aspect of React Native debugging to behave reliably, and to match the functionality of modern browser tooling. To meet this quality bar, we are removing log forwarding via Metro in 0.77, with a warning logged today.
+
+Web alignment, separation of concerns: Application logs in Metro pollute the primary information logged by Metro/the dev server, such as when bundles are sent to a device. No other bundlers replicate this functionality.
+
+- For a web app, you wouldn’t forward logs in the dev server. Instead, these tools only log bundle requests, and you go to a particular instance of the webpage/app to open the browser DevTools.
+
+Please use React Native DevTools and its fully featured Console panel — supporting log filtering, rich object inspection, and Live Expressions.
+
+If you really want to view inline logs in your IDE, the modern approach would be to consider one of the third party VS Code offerings, which stream logs over CDP.
+
+When will we remove Remote JavaScript Debugging?
+
+No time soon(!). This debugging mode remains deprecated, but we appreciate the use case for third party Chrome extensions. Remote JavaScript Debugging won't stay around forever — but we'll consider down the line if we've replaced enough of its functionality (or this functionality is implemented robustly by frameworks), to remove it.
+
+What features are coming next?
+
+- Performance panel (+ profiling builds support): In progress (targeting next year).
+- Network panel: In progress (targeting next year).
+- Third party Chrome extensions: In early exploration, in collaboration with Expo (no ETA).
+
+10
+
+👍 44 👎 15 😄 1 😕 1 👀 7
+
+## 45 comments 131 replies
+
+edited
+
+### huntie Oct 4, 2024 Maintainer Author
+
+## [FAQ Thread] Network inspection
+
+### TLDR: Should be available from Expo SDK 52, support in core is WIP
+
+React Native DevTools does not ship with Network inspection as of 0.76. We are aware this is a highly-requested feature. First party support, built into our new C++ debugger stack, is work in progress and will ship in a future release.
+
+#### Alternatives
+
+- Network panel under Expo: Supported in Expo since SDK 49. This implementation is built outside of the React Native DevTools stack, but we've exposed a "Network (Expo, unstable)" panel in our frontend.
+- Use third party tools such as Reactotron, Proxyman, Charles Proxy.
+
+At this time, we aren't committing to a timeline for Network debugging in React Native core.
+
+### Updates
+
+- Sep 2024: The Network panel is work in progress (no ETA).
+- Mar 2024: Under active development, tentative ETA 0.81.
+- Dec 2025: Shipped in 0.83! 🎉 https://reactnative.dev/blog/2025/12/10/react-native-0.83
+
+20
+
+👍 23 👎 15
+
+12 replies
+
+Show 7 previous replies
+
+#### vietdiemtran Aug 13, 2025
+
+@LovesWorking I don't want to use expo and want the Network panel feature. What tool are you using?
+
+#### lgibso34 Aug 21, 2025
+
+Doesn't look like it made it in 0.81 now that it's released 😢
+
+👀 2
+
+#### mptorz Oct 9, 2025
+
+Still missing in 0.82 as well.@huntie is there any new updates/new ETA on this?
+
+#### kraenhansen Oct 9, 2025
+
+@mptorz the network inspector is expected to land in React Native 0.83, planned for end-of-year 2025.
+
+🎉 6
+
+#### kraenhansen Dec 10, 2025
+
+Good news everyone! https://reactnative.dev/blog/2025/12/10/react-native-0.83
+
+Time to find another wish for Santa to vibecode 🎅🏼🎄
+
+🎉 1
+
+edited
+
+### huntie Oct 4, 2024 Maintainer Author
+
+## [FAQ Thread] Third party Chrome extensions
+
+### TLDR: Use Expo Dev Plugins, no timeline yet on support in core
+
+React Native DevTools does not ship with support for loading third party Chrome extensions (such as Relay DevTools or Redux DevTools) as of 0.76. This is a feature that conceptually fits what we want to offer, but is further out in our plans.
+
+We are in early exploration on this feature, in partnership with Expo. We want JS dev plugins in React Native DevTools to share the same reliable debugger connection as the rest of our infra, and we want to design the necessary APIs for this precisely. Another concern will be how we safely load 3P extension code and meet our quality bar. Prior art such as Expo Dev Plugins may inform us about how we make third party plugins loadable into DevTools.
+
+#### Alternatives
+
+- Expo Dev Plugins are an existing solution for loading a number of third party DevTools plugins in an out-of-tree manner.
+- react-native-debugger is a community project that includes built in DevTools plugins for popular third party JavaScript libraries. (Note: This will eject out of the React Native DevTools backend and to Remote JavaScript Debugging.)
+
+### Updates
+
+- Sep 2024: 3P Chrome extensions support is in early investigation (no ETA).
+
+8
+
+👀 1
+
+5 replies
+
+#### SeanDunford Dec 4, 2024
+
+I have a bare react native app that integrates some expo libraries but wasn't started as an expo project and only integrates a few expo packages.
+
+Expo Dev plugins seems to only be available for projects that use expo cli. https://docs.expo.dev/bare/using-expo-cli/ Are you aware of any work that's been done to use these tools with the react native cli. eg:`npx react-native start`
+
+👀 3
+
+edited
+
+#### LovesWorking Feb 23, 2025
+
+Any updates on allowing third part extensions? I'm working on moving over the React / Tanstack Query Dev Tools over, and I'm disappointed this isn't supported yet.@huntie
+
+#### LovesWorking Aug 7, 2025
+
+Bump@huntie I've made some awesome internal and external dev tools for React Native so far, but the extensions would be a huge plus. Expo plugins suck, so I tried that route, but you don’t get much control at all... let us know! Thanks.
+
+Screen.Recording.2025-08-07.at.6.04.23.AM.mov
+
+👍 4
+
+#### longb1997 Aug 13, 2025
+
+0.81 is released but still no Network panel :(
+
+👍 4
+
+#### LovesWorking Aug 13, 2025
+
+0.81 is released but still no Network panel :(
+
+damn. I'll have mine release most likely by the end of this weekend at least.
+
+🚀 3
+
+edited
+
+### byCedric Oct 4, 2024
+
+Through the console you can inject snippets of code into your app in the global state, or on any paused breakpoint context. Unfortunately, this snippet of code seems to be heavily tied to what Hermes can execute, e.g.
+
+- `const somevar = 'hello'` doesn't work as`const` isn't supported
+- `let somevar = 'hello'` doesn't work as`let` isn't supported
+- `var response = await fetch('...')` doesn't work as await isn't supported (in top level?)
+
+Would be awesome if we can figure out a way to A - make this and the reason more visible, e.g. error/warning as response for that snippet with this info, B - support basic language level features (like`const/let` or`await`).
+
+4
+
+1 reply
+
+#### huntie Oct 7, 2024 Maintainer Author
+
+Great observation. I guess this behaviour is correct (from Hermes' point of view), but unintuitive 😅. Raising internally 👍🏻
+
+👍 3
+
+### hrithik73 Oct 26, 2024
+
+Option for people not using Chrome or Microsoft edge ?
+
+8
+
+5 replies
+
+#### huntie Oct 30, 2024 Maintainer Author
+
+Which browser are you intending to use?
+
+React Native DevTools, based on the Chrome DevTools frontend, requires a Chromium based browser to run. Our launch flow (also historically in Expo) uses either Chrome or Microsoft Edge, which are highly likely to be already installed on a developer's machine, across desktop environments. We don't require that either browser is your system default 😄.
+
+edited
+
+#### hrithik73 Nov 2, 2024
+
+I am using Arc (Chromium Based), and i don't want the debugger to open chrome every time. Is there any way to select the browser i want to open debugger in ?
+
+edited
+
+#### huntie Nov 4, 2024 Maintainer Author
+
+Sure (I use Arc as well!). As@sntg-p mentioned, you can try setting CHROME_PATH, however Arc's launch behaviour is different to base Chromium and I don't think this will work.
+
+Instead, try this workaround (power users only) — paste the following URL into your browser (assuming Metro is running at localhost:8081), and it will redirect to React Native DevTools.
+
+```
+http://localhost:8081/open-debugger
+
+```
+
+Note that this approach is unstable and unsupported:
+
+- A`GET` request to this URL will only work if there is exactly one device connected to Metro. Additionally, this URL may work differently/break in future RN versions.
+- We don't officially support browsers other than Google Chrome or Microsoft Edge.
+
+In future, we're looking at packaging React Native DevTools so that it doesn't require an external browser at all.
+
+❤️ 4
+
+edited
+
+#### bionicmaster Nov 20, 2024
+
+and how I can select one browser over another? right now I have both installed (with Chrome being my default, btw) and it always opens Edge, being successful 1 of each 5 launches or so, I wanna change it to Chrome and see if something changes, I'm on Mac
+
+👍 3
+
+#### huntie Dec 11, 2025 Maintainer Author
+
+Update: We've shipped our new React Native DevTools desktop app in 0.83! https://reactnative.dev/blog/2025/12/10/react-native-0.83
+
+🎉 2
+
+### sntg-p Oct 30, 2024
+
+When using Linux, I thought I wouldn't be able to use the new DevTools unless I installed Edge or Google Chrome via APT or similar. But I managed to use them with Ungoogled Chromium installed via Flatpak like this:
+
+```
+EDGE_PATH=/var/lib/flatpak/app/io.github.ungoogled_software.ungoogled_chromium/current/active/export/bin/io.github.ungoogled_software.ungoogled_chromium; export EDGE_PATH
+yarn run start
+```
+
+Then pressing the`j` key to invoke the new DevTools. Seems to be working fine!
+
+2
+
+❤️ 7
+
+0 replies
+
+### usmanabid94 Nov 15, 2024
+
+when can we expect an offical update on this as this is much needed.
+
+5
+
+0 replies
+
+### SeanDunford Nov 18, 2024
+
+Great work, thank you for this. React Native debugging has been a pain for some time. This is a welcome change and am personally glad to have moved away from Flipper.
+
+Understand that it will take time but personally Redux debugging is more important to me than networking or performance. I need to use the Redux Debugger every time i debug something but Networking and Performance are more situational.
+
+Thanks again. 🍻
+
+9
+
+6 replies
+
+Show 1 previous reply
+
+#### SeanDunford Nov 20, 2024
+
+@SeanDunford do you have any idea how to debug network api calls in 0.76 or how to debug redux in this version?
+
+This is the only official response at the moment.
+
+#### usmanabid94 Nov 20, 2024
+
+ok i thought some one had any idea about it
+
+edited
+
+#### jamonholmgren Mar 14, 2025 Collaborator
+
+Worth saying that we have those things in Reactotron and are investing more in improvements to Reactotron this year. (Reactotron is open source and free.)
+
+❤️ 3
+
+#### jehillert Mar 16, 2025
+
+Is the classic redux devtools integrated into it? If you did that, I'd be a convert. It's just I've never seen a redux plugin or reimagining of redux devtools that didn't immediately make me wish for the original. They really knocked it out of the part when they made that.
+
+#### jamonholmgren Jun 12, 2025 Collaborator
+
+Is the classic redux devtools integrated into it?
+
+No, and I share your admiration for amazing the original redux devtools was! The integration is fairly basic, but IMO works pretty well for a lot of daily redux work.
+
+edited
+
+### hrithik73 Nov 22, 2024
+
+Just a question why can't meta open source the debugger so that the community can also help to make the development fast ?
+
+4
+
+1 reply
+
+#### huntie Nov 29, 2024 Maintainer Author
+
+React Native DevTools is built into React Native and is already open source. Our customised Chrome DevTools frontend lives in its own repo. See links below:
+
+❤️ 6
+
+edited
+
+### shunnokw Nov 23, 2024
+
+I am getting this error when trying to start the devtools by pressing`j` after`npx expo start`:
+
+```
+Failed to open the React Native DevTools.
+TypeError: fetch failed
+
+```
+
+on a fresh install, fresh project on my Mac. Any idea why?
+
+3
+
+11 replies
+
+Show 6 previous replies
+
+#### jrjenkins555 Dec 23, 2024
+
+I'm new to expo but also getting the following error when trying to open the debugger. I wasn't getting this about a month ago when I started my expo project and I'm just now picking it up again so I'm having a hard time debugging what this could be.`Failed to open the React Native DevTools. TypeError: fetch failed`
+
+I also for some reason can't connect to the app using local iOS simulator on mac but I use expo go on my actual phone and it works. Any input is appreciated!
+
+edited
+
+#### aabuhijleh Dec 23, 2024
+
+@jrjenkins555 Do you see the following in System settings > Network > Firewall > Options ?
+
+Can you try to change it to`Allow incoming connections` and see if your issue is resolved?
+
+👍 1
+
+#### jrjenkins555 Dec 23, 2024
+
+@aabuhijleh No I don't have my firewall turned on. BTW the iOS simulator started working after I ran`expo start --ios --localhost` this led me down a rabbit hole of installing`react-devtools` globally and running`REACT_DEBUGGER=\"open -g 'rndebugger://set-debugger-loc?port=8081' -a 'React Native Debugger'\" expo start --ios --localhost`. This however gives me a similar error that doesn't seem helpful:
+
+```
+Error: Request timeout
+    at Timeout.<anonymous> (/Users/jrjenkins/<app-name>/app/node_modules/@expo/cli/src/start/server/middleware/inspector/CdpClient.ts:21:14)
+    at listOnTimeout (node:internal/timers:569:17)
+    at processTimers (node:internal/timers:512:7)
+
+```
+
+```
+TypeError: fetch failed
+    at fetch (/Users/jrjenkins/<app-name>/app/node_modules/undici/index.js:112:13)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at queryAllInspectorAppsAsync (/Users/jrjenkins/<app-name>/app/node_modules/@expo/cli/src/start/server/middleware/inspector/JsInspector.ts:91:16)
+    at queryInspectorAppAsync (/Users/jrjenkins/<app-name>/app/node_modules/@expo/cli/src/start/server/middleware/inspector/JsInspector.ts:84:16)
+    at /Users/jrjenkins/<app-name>/app/node_modules/@expo/cli/src/start/server/middleware/inspector/createJsInspectorMiddleware.ts:23:17 {
+  [cause]: ConnectTimeoutError: Connect Timeout Error
+      at onConnectTimeout (node:internal/deps/undici/undici:7760:28)
+      at node:internal/deps/undici/undici:7716:50
+      at Immediate._onImmediate (node:internal/deps/undici/undici:7748:13)
+      at processImmediate (node:internal/timers:476:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT'
+  }
+}
+
+```
+
+#### aabuhijleh Dec 24, 2024
+
+@jrjenkins555 I opened an issue in expo repo here expo/expo#33833 to track this.
+
+👍 1
+
+#### aabuhijleh Dec 25, 2024
+
+I was able to resolve this issue by running the app like this`npx expo start --localhost` and making 2 modifications in the`@expo/cli` package.
+
+I've detailed this here: expo/expo#33833 (comment)
+
+Of course, this should be resolved by the expo team and they should handle the`--localhost` argument better.
+
+edited
+
+### adsalihac Nov 23, 2024
+
+The copy option is not functioning. Device (MAC)
+
+2
+
+5 replies
+
+#### huntie Nov 29, 2024 Maintainer Author
+
+Can you give more info?
+
+#### fernandoheusi Dec 4, 2024
+
+Is there any solution for this? It also does not work on my mac
+
+edited
+
+#### the-kenneth Jan 3, 2025
+
+Seems a lot of places that have a right click menu option for copying don't work. Im using a Mac too, I haven't tried other platforms.
+
+e.g. Right clicking to copy link address or file name in the Sources tab doesn't work. Also all the right click copy options don't work in the Expo network tab.
+
+#### umangloria Feb 7, 2025
+
+Same here, I tried to copy cURL and it is not doing anything, Does anyone knows how to use expo dev tools mainly for network inspector? having option to copy cURL comes in handy when we want to share the payload and complete example to report issues.
+
+#### agrinko May 11, 2025
+
+Same for me on Windows. Opened Network Panel to analyze some responses. Wanted to copy some response JSON in the Preview tab, so I right-clicked on some objects/arrays and selected an option to "Copy Value" or "Copy Object" - but nothing happens, the data is not copied.
+
+### vallode Dec 1, 2024
+
+Is there any possibility of silencing the information in the output of the`expo start` command? I must admit I am quite new to Expo, but the presence of the information gives me the impression that I have something setup incorrectly. Usually such warnings come when you are actively using a feature that will be deprecated in the future, as far as I can see I am not. This could be communicated a bit more clearly because I spent a little while trying to understand how to disable "JavaScript logs".
+
+1
+
+1 reply
+
+#### huntie Dec 2, 2024 Maintainer Author
+
+No way to silence at present.
+
+- The deprecation notice relates to JavaScript logs streaming to your terminal — specifically, the`expo start` inline output.
+
+Let’s explore a way for Frameworks to disable this warning. cc@byCedric
+
+👍 1
+
+### micekr Dec 6, 2024
+
+I can no longer see my ReactNative app Typescript source code within
+
+Chrome > ReactNativeDevTools Sources (tab) "React Native (sub-tab)" within "Sources (tab)"
+
+therefore I can NOT debug this ReactNative Typescript code ANYMORE !
+
+see below: There was a "Page (sub-tab)" BEFORE where I could see the ReactNative app Typescript source code
+
+---
+
+I am using expo to build the ReactNative app and native (android) code via the following process:
+
+connect desktop to physical android cell via USB cable
+
+executing npx expo run:android on my desktop terminal
+
+app is deploying and launching in my physical android cell my desktop and cell are communication via adb successfully loading DevTools by pressing J (to load the debugger) from desktop terminal
+
+^^^^^^^^^^^^^^^
+
+package.json "expo": "~52.0.11", "react-native": "0.76.3",
+
+---
+
+Previously in Chrome > DevTools Sources (tab)
+
+"Page (sub-tab)" within "Sources (tab)"
+
+I would see the following top parent node show up like follows:
+
+23.28.X.X.XXX:8081 < ip of my windows local desktop node_modules/expo-router/entry.bundle folder (no name) c:\folder-on-my-computer\app(tabs)\index.tsx
+
+I could then click the last node c:\folder-on-my-computer\app(tabs)\index.tsx and it's actual index.tsx code would show up in the RIGHT pane for me to set breakpoints and step thru the code
+
+1
+
+2 replies
+
+edited
+
+#### huntie Dec 10, 2024 Maintainer Author
+
+@micekr Viewing all app source code should be fully supported in React Native DevTools, although we're aware of an issue of sources being hidden in some Expo projects where the JS entry point is within`node_modules/`. Please:
+
+- Check your source file ignore list under DevTools > Settings > Ignore List > Custom exclusion rules, and uncheck any custom exclusion rules.
+- Check your`metro.config.js` file and remove any override of`serializer.isThirdPartyModule`.
+
+We recently pushed a fix for this in 0.76.5: react/react-native-devtools-frontend#136.
+
+👍 1
+
+#### micekr Dec 11, 2024
+
+@micekr Viewing all app source code should be fully supported in React Native DevTools, although we're aware of an issue of sources being hidden in some Expo projects where the JS entry point is within`node_modules/`. Please:
+
+- Check your source file ignore list under DevTools > Settings > Ignore List > Custom exclusion rules, and uncheck any custom exclusion rules.
+- Check your`metro.config.js` file and remove any override of`serializer.isThirdPartyModule`.
+
+We recently pushed a fix for this in 0.76.5: facebookexperimental/rn-chrome-devtools-frontend#136.
+
+---
+
+Your suggestion
+
+- Check your source file ignore list under DevTools > Settings > Ignore List > Custom exclusion rules, and uncheck any custom exclusion rules. worked.
+
+I unchecked /node_modules/|/bower_components/ and did another app build and launch with just
+
+npx expo aka: "› Using Expo Go"
+
+aka: I did NOT have to use npx expo run:android for an Expo "development build"
+
+I was then able to open a ReactNativeDevTools (instance) and SEE my ReactNative source code via: ReactNativeDevTools (aka: chrome debugger instance) Sources (tab) "React Native (sub-tab)" within "Sources (tab)"
+
+I was then able to set breakpoints and step thru the code.
+
+More good news: I was also able to start 2 separate npx expo instances. One for my Pixel7 android emulator and One for my physical Pixel7 cell that was attached to my win11 desktop via a usb cable and I was able to debug both in their own ReactNativeDevTools (instance) s.
+
+---
+
+Minor glitch I discovered in ReactNativeDevTools:
+
+ReactNativeDevTools (aka: chrome debugger instance) Sources (tab) "React Native (sub-tab)" within "Sources (tab)" pick any TSX file after the TSX file shows up in the RIGHT pane if you right-mouse-click on the (tab) title of that selected TSX file "Copy link address" << does NOT copy the link address path "Reveal in navigator sidebar" << this works
+
+Desktop OS: win11
+
+edited by huntie
+
+### jehillert Dec 10, 2024
+
+## [Feedback] What will happen to react-native-debugger?
+
+I could be wrong, but I think the majority of the React Native community would kill to have react-native-debugger back in full form, and if not that, then at least the classic redux devtools experience, over any of the tools available in the debugger. We have a terminal. It console logs stuff for us. Time travel and a constantly evolving 2d representation of our state tree every time a state change occurs? You can't get that from a terminal.
+
+I'm not suggesting the team's hard work isn't appreciated. I understand a baseline debugging experience has to be established before accommodating community tools. I also understand you made massive beneficial changes under the hood and there's nothing trivial about bringing the new debugger online. But you broke the tools we all relied upon and loved more than 2 years ago. And it was broken several times in several different ways... what junior dev is going to know they are two patch-package packages away from making their job 10 times easier? They won't, and from stack-overflow and github issue boards it sounds like 90% of us haven't figured it out. Meanwhile a new iteration of redux-devtools is nowhere in sight.
+
+I'm glad it is still possible to make the devtools work (with hours and hours of online research). And I was glad to see that one of the bugs has actually been fixed (in reanimated). But it would be appreciated if redux was moved up in the priority list. Or at least please fix what was broken.
+
+btw, I am uncomfortable bringing this up. I do appreciate what you guys do immensely. But this one thing just baffles me.
+
+13
+
+👍 8
+
+5 replies
+
+edited
+
+#### huntie Jan 24, 2025 Maintainer Author
+
+@jehillert I hear your feedback.
+
+The main thing here is that, unfortunately, react-native-debugger has been relied upon without being updated to work with any of React Native's modern debugging options. In the meantime, alternatives and standalone workflows for dev integrations such as Redux DevTools have emerged.
+
+#### Background
+
+- It's worth noting that third-party dev plugins have always been adjacent to our core debugger offering (not directly offered or supported by the React team).
+- react-native-debugger is a community project that has composed these together (rightly celebrated at the time!), but also has been architecturally tied to Remote JS Debugging and has not moved forward. React Native has provided a CDP-based debugging backend for >4 years (since Hermes as the default engine).
+
+Today, tools like Expo DevTools Plugins are the way to handle third party developer tools. Expo includes a documented setup flow for Redux DevTools. (I appreciate that not all React Native apps have moved to Expo yet — but a brownfield setup is possible.)
+
+- Notable: Every previous DevTools plugin via react-native-debugger communicated via a separate WebSocket connection — this is exactly what the Expo/Radon IDE solutions do now.
+- Redux DevTools documents a remote integration setup, which can be combined with the`@redux-devtools/cli` launcher.
+- With either of these packages, it's possible for development teams to set up a Redux DevTools launch flow for their project, and expose them to other developers via an npm script.
+
+#### Other ways forward
+
+The only realistic future for react-native-debugger is the WIP effort to migrate to CDP. We're happy to answer questions if this effort resumes and blockers are encountered — but it is more than likely that the existence of the other solutions means the work is now unjustified.
+
+- Plan: New Hermes/RNV8 debugger support jhen0409/react-native-debugger#774.
+
+---
+
+The bottom line: Remote JS Debugging was fundamentally a debugging method at odds with React Native's architecture. We will be removing Remote JS Debugging in React Native 0.79, following Expo already having dropped support in SDK 52.
+
+- [0.79] Removal of Remote JS Debugging via Chrome #872
+
+And we do, aspirationally, want to offer more in React Native DevTools, such as select 3P dev plugins. We need to be careful how we do this, for stability/future maintainability.
+
+❤️ 2
+
+#### jehillert Jan 24, 2025
+
+Hey, I'm glad to hear these things. The redux devtools was the piece that mattered the most. My team doesn't use expo, but I will definitely look into the CLI integration. React devtools seems to work fine. And the new debugger is the third major piece, and that seems to be pretty decent for what it does. Being able to monitor APOs would be nice, but if I recall there are other ways to do that.
+
+#### jehillert Jan 24, 2025
+
+Actually, I just tried the remote integration setup. That is more-or-less a nightmare. So basically it's expo or nothing after 79?
+
+👍 2
+
+#### Lakston Jan 28, 2025
+
+I appreciate that not all React Native apps have moved to Expo yet
+
+Yet ? Are you saying you expect everyone to move to expo and if we dont it's just ah well, too bad 🤷 We have no plans moving to expo, but the rn team pushing expo so hard lately it feels like bare rn is now just the poor child.
+
+👍 2
+
+edited
+
+#### huntie Jan 28, 2025 Maintainer Author
+
+I think we've communicated around: if you're not using a React Native framework (like Expo), you are maintaining your own framework [1].
+
+- So it's in this regard that, unfortunately, we can't offer a solution that replaces this flow (which was technically never part of our core debugger featureset) right now.
+- We are not removing parts of React Native arbitrarily — the case of Remote JS Debugging is specifically to address a broken feature, and to focus on our modern debugger architecture.
+
+In general around Frameworks/Expo, we are paying a lot of attention here to allow users to migrate slowly (with no near term deprecation set), and/or facilitate the CLI project taking on more responsibilities, to continue to work for users.
+
+Disclaimer: I'm not the source of truth on this topic 😅
+
+### wael-fadlallah Dec 14, 2024
+
+First I want to thank the team and contributors for their effort.
+
+I have a question about viewing/debugging local storage, is there are any suggested option to achieve this currently? as I can't see it in the new devtool
+
+1
+
+0 replies
+
+### OmkarK45 Dec 25, 2024
+
+Hi! I was wondering if it's possible to launch the dev tools via some sort of script/shortcut command.
+
+1
+
+1 reply
+
+#### OmkarK45 Feb 3, 2025
+
+How does the`j` command work internally? Can we make a request to`localhost:8081` that executes the same effect as pressing`j` in terminal? I am working on a macOS menu bar app which will have a button to open the devtools
+
+15 hidden items Load more…
+
+### LeXuanKhanh Apr 28, 2025
+
+Can you write a tutorial connecting the new React Native devtool to the VSCode React Native extension? I try the option "attach to direct iOS - experimental," but the port I entered didn't work ( tried 8081, 8097, 9221)
+
+1
+
+1 reply
+
+edited
+
+#### huntie Apr 28, 2025 Maintainer Author
+
+@LeXuanKhanh We don't officially support this (with bare VS Code) today. You can refer to the docs for either:
+
+- Expo Tools
+- Radon IDE
+
+edited
+
+### yongseung-song May 26, 2025
+
+Hi, first of all, thank you for your support. I think it's really coming together.
+
+The metro debugging experience was not that pleasant, but one good thing was being able to log iOS and AOS on one screen. When I tried using react native devtools, I had to debug iOS and AOS in separate windows, which is natural because logs are like, device specific thing, but as a man who is used to metro, it feels a bit cumbersome. I'll be grateful if anyone on this discussion give me a hint on debugging iOS and AOS on one screen? or, a more comfortable way to debug two different platforms?
+
+Thank you.
+
+1
+
+2 replies
+
+edited
+
+#### LovesWorking May 26, 2025
+
+Hi, first of all, thank you for your support. I think it's really coming together.
+
+The metro debugging experience was not that pleasant, but one good thing was being able to log iOS and AOS on one screen. When I tried using react native devtools, I had to debug iOS and AOS in separate windows, which is natural because logs are like, device specific thing, but as a man who is used to metro, it feels a bit cumbersome. I'll be grateful if anyone on this discussion give me a hint on debugging iOS and AOS on one screen? or, a more comfortable way to debug two different platforms?
+
+Thank you.
+
+I'm actually working on this right now @ https://github.com/LovesWorking/rn-better-dev-tools I'll respond here when I'm done. It may be another week or two as I'm updating this to handle crud for all storage types, MMKV, Secure and async storage.
+
+😄 2
+
+#### yongseung-song May 27, 2025
+
+@LovesWorking Thank you for the reply and great news! Just checked out your repo above and forwarded it to my coworkers. They were as thrilled as I am. Thank you again and I'll look forward to your response!
+
+edited
+
+### flixyudh Jun 7, 2025
+
+[Feedback] Hi folks, I'm a shortcut/hotkey lover, so I usually use`CMD+(tab position)` to select a tab or`CTRL+TAB/CTRL+SHIFT+TAB` to select next/prev tab, since React Native DevTools create new window, I need to use`CMD+[backtick]` to show the debugger, and sometime I don't realize that I've open dozen of devtools window.
+
+is it possible to make React Native DevTools create a new tab instead of creating new window?
+
+5
+
+4 replies
+
+edited
+
+#### flixyudh Jun 9, 2025
+
+here's an example to directly open devtools inside a tab instead of creating new window.
+
+#### huntie Jun 26, 2025 Maintainer Author
+
+Hey@flixyudh, we hear you — and proper windowing is high in our backlog.
+
+Important sidenote: I see you using`devtools://devtools/bundled/js_app.html`— this version of the Chrome DevTools frontend is unsupported. Please use`GET http://localhost:8081/open-debugger` instead, which will redirect you to the correct web app.
+
+❤️ 1
+
+#### flixyudh Jun 26, 2025
+
+Thank you@huntie, glad you consider it 😄
+
+actually those URL is just a simple tool I used for showing`adb logcat` in devtools, and i got it from https://github.com/nieheyong/logcat-in-devtools
+
+❤️ 1
+
+#### flixyudh Dec 14, 2025
+
+hi@huntie, does the new debugger on 0.83 still not support open in tab? I've tried to open`http://localhost:8081/open-debugger` but i got this:
+
+### xk0fe Jun 10, 2025
+
+On my side Settings buttons (Gear icon) does not react to clicks
+
+First time I've launched devtools it reacted to my click once. After that it never worked on any of the tabs
+
+MacOS Metro 0.80.12 React Native 0.74.7
+
+Is this because I am running unsupported React Native version?
+
+1
+
+5 replies
+
+#### huntie Jun 10, 2025 Maintainer Author
+
+@xk0fe Hi, it seems like you're using`npx react-devtools`, not React Native DevTools. Please follow our docs to use our supported workflows.
+
+#### xk0fe Jun 10, 2025
+
+@huntie hi, thank you for quick response
+
+Here's the React Native DevTools that are available to me if I follow documentation. It does not state the version of the tool anywhere, but seems to be old.
+
+I was confused as docs and guides on the internet feature DevTools with features that are missing on my side
+
+#### xk0fe Jun 10, 2025
+
+Here's documentation accurate to my version: https://reactnative.dev/docs/0.74/react-devtools
+
+However, it still has a different DevTools presented that differs from the one I have 🤔
+
+#### xk0fe Jun 10, 2025
+
+Follow up:
+
+I've installed react-devtools@4.28.4, same as on the image in the docs. It works as intended now
+
+👍 1
+
+#### huntie Jun 10, 2025 Maintainer Author
+
+Great! For reference, you are on React Native < 0.76, which is why you aren't seeing React Native DevTools or the integrated "Components ⚛︎" panel.
+
+👍 1
+
+### bharatkhatke Jul 7, 2025
+
+react-native-flipper not supporting for React-Native 0.76.9
+
+2
+
+1 reply
+
+#### longb1997 Jul 14, 2025
+
+that sad, i wish that a guide to implement flipper manually
+
+### sharplet Jul 29, 2025
+
+Do you have any plans to support Async Stack Tagging / console.createTask? Debugging async JavaScript functions can be quite painful and it would be very helpful to preserve stack context across`await`.
+
+3
+
+1 reply
+
+#### hoxyq Jan 9, 2026
+
+No near term plans, at least for H1 2026. This work would involve some significant time investments, given that this would require changes in core parts of Hermes and introduction of async stack traces as a concept. There was an attempt that has proved the feasibility of the approach, but it is far from the production-ready solution.
+
+We've been considering doing this work for a while now, given that Web environment has had it for many years now. Especially since we started using these APIs in React since last year for owner stacks and other features.
+
+### farojos Jul 30, 2025
+
+Any updates on Redux DevTools support? Has anyone managed to integrate the new DevTools with Redux DevTools CLI?
+
+6
+
+2 replies
+
+edited
+
+#### LovesWorking Jul 31, 2025
+
+I'm working on adding it into my React Native dev tools project here. https://github.com/LovesWorking/react-native-buoys will work for expo / RN cli
+
+👍 2
+
+#### LovesWorking Sep 25, 2025
+
+Done! Here is the repo https://github.com/LovesWorking/react-native-buoy
+
+🚀 1
+
+### DragomirAndrei19 Sep 16, 2025
+
+@huntie Would it be possible to add an option like "Parse Hook names from source"?
+
+I’ve always found it baffling that React Native doesn’t have a debugger that can monitor local state in real time. I feel this would be a huge help to many developers, both experienced and less experienced.
+
+Even dedicated debuggers and IDEs, like Radon IDE don’t seem to have anything similar.
+
+Adding this feature could be a good step in that direction.
+
+1
+
+0 replies
+
+### LovesWorking Sep 25, 2025
+
+🚀 Just released React Buoy — a floating DevTools menu for React Native!
+
+Features include: 🏷️ Environment & role indicators (always visible) 📡 Real-time network monitoring 💾 Storage browser with live updates ⚡ React Query DevTools 🧩 Add your own custom tools with simple React components
+
+Built to make debugging faster and easier for entire teams, not just developers.
+
+Check it out and let me know what you think!
+
+1
+
+👍 3 ❤️ 3
+
+2 replies
+
+edited
+
+#### kraenhansen Sep 25, 2025
+
+First off: I think is great that we as a community explore different solutions to this problem of having great and reliable developer tooling! And I definitely don't want to rain on your parade.
+
+Now that you explicitly asked for feedback, I feel obligated to think out loud: The UI is futuristic and slick - I can definitely see an audience for something like that. At the same time, I find it unproductive to have any DevTools UI overlaying my actual app UI, even when I can move it around. I know this is the easiest way to get access to the relevant data (on device) but there's a good reason IMO the current DevTools are outside of the app UI.
+
+On a more philosophical note, I think we (as a community) has transcended an era of needing to build these tools ourselves and the React DevTools team at Meta knows how important it is for us to have reliable developer tooling. At the contributors summit hosted by Callstack earlier this month, we saw sneak peeks of the great progress the team at Meta has been making and I personally look forward to seeing more and more developers use the official DevTools in their daily routines.
+
+My hot take: Let's focus on building with and around these official tools and help the team at Meta understand where the tools are falling short. At the same time, I hope they would also acknowledge the community's need for extensibility as I feel most of these alternative approaches is an expression of that need.
+
+That was a bit long 😅
+
+👍 5
+
+#### vaidyakhil Sep 25, 2025
+
++1 for DevTools being outside of the app UI and using single and official DevTools!
+
+❤️ 2
+
+### puelocesar Dec 8, 2025
+
+Since the new React Native DevTools were released, I'm unable to use the JS Profiler when connecting to a normal DevTools through`about:inspect`. This was invaluable as it allowed me to quickly find performance issues on the huge legacy code I'm maintaining.
+
+Example:
+
+Now, although I'm still able to connect to it:
+
+The JS profiler won't work anymore, as it's stuck forever in "Initializing tracing".
+
+I find the React profiler in the React Native DevTools to not be very useful, as it only calculates how long it takes to render some views, so it won't help me if other calculations are freezing up the JS thread.
+
+1
+
+2 replies
+
+#### huntie Dec 11, 2025 Maintainer Author
+
+We've just launched the Performance panel in React Native 0.83: https://reactnative.dev/blog/2025/12/10/react-native-0.83;)
+
+🎉 1 ❤️ 1
+
+#### LovesWorking Dec 11, 2025
+
+We've just launched the Performance panel in React Native 0.83: https://reactnative.dev/blog/2025/12/10/react-native-0.83;)
+
+Nice job! I cant' wait to check this out.
+
+### CodeByRahulSaini Dec 25, 2025
+
+Hello all, Looks like the CallStack team solved it for all of us and built Rozenite which works with existing React Native Devtools — and a plugin framework that brings a clean, extensible plugin system in React Native DevTools.
+
+- Official plugins already available: Redux DevTools, TanStack Query, network activity monitoring, performance marks & more.
+- Works with Expo + bare RN, and lets you build custom plugins for your own use cases.
+
+Surprisingly, most people still don’t know this exists — worth checking out!
+
+🔗 https://www.rozenite.dev/🎥 https://www.youtube.com/watch?v=J0rXmTIGGRk
+
+Would love to know what the community thinks about this.
+
+1
+
+👎 2 😄 1
+
+7 replies
+
+Show 2 previous replies
+
+### This comment was marked as off-topic.
+
+Sign in to view
+
+### This comment was marked as off-topic.
+
+Sign in to view
+
+### This comment was marked as off-topic.
+
+Sign in to view
+
+### This comment was marked as off-topic.
+
+Sign in to view
+
+### This comment was marked as off-topic.
+
+Sign in to view
+
+### marqroldan Dec 30, 2025
+
+Has anybody had the same problem as me? I'm currently migrating from 0.7x to 0.8x
+
+When the runtime isn't ready due to an unknown problem, RN DevTools won't show any logs So I have to make it load something correct first, then bring back the broken build (basically a blank App.tsx, then the actuall App component)
+
+When trying to open the dev tools..
+
+---
+
+There's a lot of warnings that I miss when this happens, and these warnings don't get transmitted to the terminal at all
+
+1
+
+1 reply
+
+edited
+
+#### marqroldan Dec 30, 2025
+
+Finally traced the issue, it was a bad export of styles...
+
+`export default Styles = StyleSheet.create({})`(note`const` is missing!) when it should've been something like
+
+```
+const Styles = StyleSheet.create({});
+export default Styles;
+
+```
+
+Surprisingly had the line for 3 months and the old RN didn't seem to catch it ;0
+
+### TheRealMikeD Mar 31, 2026
+
+### The console does not honor an existing filter string for new output.
+
+If I set a filter in the RN DevTools console, it works fine. Until there is new output. When new output is added to the console, that output does not honor the filter. You can get the new output to honor the filter by manually re-entering the filter string, but that gets tiresome really quickly. The result is that the output gets cluttered by junk that you are trying to filter out.
+
+The desired behavior is that any newly added output in the DevTools console continues to honor the filter string that has already been entered.
+
+In the attached screen recording, new output gets added to the console by using the UI of the attached app. The new output includes warning text (yellow background) which should be filtered out by the filter string. I then change the filter string manually by deleting or re-typing the last character, which causes the console to re-filter the output, and the warning text to be filtered out.
+
+Using RN 0.79.5.
+
+| RNDevToolsConsoleFiltering-480.mov |
+| --- |
+
+2
+
+2 replies
+
+#### huntie Apr 1, 2026 Maintainer Author
+
+Huh. Does this behave the same in Chrome?
+
+#### TheRealMikeD Apr 1, 2026
+
+The behavior appears to be correct in Chrome DevTools. I'm using Chrome v146.0.7680.81 for Mac.
+
+### web-iou May 5, 2026
+
+The console of my`react-native-devtools` often remains blank and shows no output. The network logs are normal. After I have attempted to build or restart the`metro` service multiple times, there might be some output.
+
+1
+
+0 replies
+
+### Olimarrex Jun 8, 2026
+
+After upgrading from a much older version of react-native to 0.85.3, my logs are now all listed as coming from console.js
+
+1
+
+0 replies
+
+Sign up for free to join this conversation on GitHub. Already have an account? Sign in to comment
+
+Category
+
+Labels
+
+None yet
+
+69 participants
+
+and others

@@ -1,14 +1,14 @@
 {
   "mcpServers": {
     "chrome-devtools": {
-      "command": "npx",
-      "args": ["-y", "chrome-devtools-mcp@latest", "--autoConnect"]
-    },
-    "figma": {
-      "url": "https://mcp.figma.com/mcp"
-    },
-    "figma-desktop": {
-      "url": "http://127.0.0.1:3845/mcp"
+      "command": "/Users/stark/.nvm/versions/node/v20.20.2/bin/node",
+      "args": [
+        "/Users/stark/.codex/mcp/chrome-devtools/node_modules/chrome-devtools-mcp/build/src/bin/chrome-devtools-mcp.js",
+        "--autoConnect"
+      ],
+      "env": {
+        "CHROME_DEVTOOLS_MCP_NO_UPDATE_CHECKS": "true"
+      }
     }
   }
 }

@@ -1,0 +1,1232 @@
+diff --git a/README.md b/README.md
+index 99fd7ed..c68ba86 100644
+--- a/README.md
++++ b/README.md
+@@ -1,189 +1,233 @@
+ # csx-web-react 工程规则信息说明,通用项目配置、环境规则、构建发布流程和验证方式
+ 
+ `csx-web-react` 是独立的 CSX React / Next.js 前端仓库，用于承接 CSX Web 的 React 页面实现。项目拥有独立依赖、构建、测试、CI/CD、发布和回滚边界。
+ 
+ ## 技术栈
+ 
+ - Node `>=20.9`
+ - pnpm `>=8.15`
+ - Next.js `16.1.1`
+ - React / React DOM `19.2.3`
+ - TypeScript 5
+ - Tailwind CSS 4
+ - ESLint 9
+ - Playwright
+ - Lucide React、qrcode.react、clsx、class-variance-authority、tailwind-merge
+ 
+ 项目使用 Next.js App Router 和 static export。只引入本项目需要的前端依赖。
+ 
+ ## 目录结构
+ 
+ ```text
+ csx-web-react/
+   .cursor/rules/                  项目上下文规则
+   .gitignore                      Git 忽略规则
+   .nvmrc                          Node 版本声明
+   bitbucket-pipelines.yml        独立 CI/CD
+   components.json                 UI 组件生成 / 配置
+   doc/                            项目附属文档
+   e2e/                            端到端测试
+   public/                         static export 静态资源
+     display/                      大屏图片、字体和图标资源
+   package.json                   依赖和脚本
+   pnpm-lock.yaml                 pnpm 锁文件
+   next.config.ts                 Next.js static export 配置
+   next-env.d.ts                   Next.js TypeScript 类型声明
+   eslint.config.mjs              ESLint 配置
+   playwright.config.ts           Playwright 配置
+   postcss.config.mjs             Tailwind CSS PostCSS 配置
+   tsconfig.json                  TypeScript 配置
+   scripts/                       本地开发辅助脚本
+   src/                           应用源码
+     app/                         Next.js App Router 路由入口
++      page.tsx                   管理后端根入口兼容页 / 公开大屏查询兼容页
++      management-settings/
++        display-screen-config/   管理后端显示屏配置兼容入口
++        program-settings/
++          display-screen-config/ 管理后端显示屏配置正式模块入口
+       tvScreenNew/               公开大屏页面路由
+     components/                  通用 React 组件
+       ui/                        基础 UI 组件
+     features/                    业务 feature 模块
++      display-management/        管理后端布局和显示屏配置页面框架
+       display-screen/            显示屏页面 feature
+     lib/                         API client、数据映射和共享工具
+ ```
+ 
+ ## 本地开发
+ 
+ 首次启动：
+ 
+ ```bash
+ cd <csx-web-react 项目根目录>
+ nvm use
+ pnpm install
+ ```
+ 
+ 四个主链路环境：
+ 
+ | 环境               | 本地启动命令        | 构建脚本            | 系统     | 环境值 | API 规则                                |
+ | ------------------ | ------------------- | ------------------- | -------- | ------ | --------------------------------------- |
+ | 旧 `csx` POC       | `pnpm dev:csx`      | `pnpm build:poc`    | `csx`    | `poc`  | 同源相对 `/api`                         |
+ | 旧 `csx` Prod      | `pnpm dev:csx:prod` | `pnpm build:prd`    | `csx`    | `prod` | 同源相对 `/api`                         |
+ | `csx-k8` dev / POC | `pnpm dev:k8`       | `pnpm build:poc:k8` | `csx-k8` | `poc`  | `https://api-poc.clinicsolution.hk/api` |
+ | `csx-k8` Prod      | `pnpm dev:k8:prod`  | `pnpm build:prd:k8` | `csx-k8` | `prod` | `https://api.clinicsolution.hk/api`     |
+ 
+ 所有本地 `next dev` 脚本使用 `next dev --webpack`，避免 Turbopack / `.next` 缓存导致浏览器刷新后仍加载旧 CSS chunk。
+ 
+ 比如:
+ `pnpm dev:k8` 会启动本地 API 代理：
+ - Next.js dev server：`http://localhost:3000`
+ - 本地 K8 dev API 代理：`http://127.0.0.1:3100`
+ - 目标 API：`https://api-poc.clinicsolution.hk`
+ - 模拟租户来源：`https://csx-poc.clinicsolution.hk`
+ - 代理只监听本机，用于本地开发，不进入 static export 产物。
+ 
+ ## 环境入口
++### React 管理后端入口
++`/display-screen-config` 是当前 React static export 的部署挂载前缀；显示屏配置管理页的正式业务模块入口为 `/display-screen-config/management-settings/program-settings/display-screen-config/`。已部署的公开大屏入口仍保持 `/display-screen-config/tvScreenNew/`。
++
++| 系统 / 环境              | 页面入口                                                                                 |
++| ------------------------ | ---------------------------------------------------------------------------------------- |
++| 旧 `csx` POC             | `https://poc.demo.clinicsolution.hk/display-screen-config/management-settings/program-settings/display-screen-config/` |
++| 旧 `csx` Prod (示例租户) | `https://sfsc3051.clinicsolution.hk/display-screen-config/management-settings/program-settings/display-screen-config/` |
++| `csx-k8` dev / POC       | `https://csx-poc.clinicsolution.hk/display-screen-config/management-settings/program-settings/display-screen-config/`  |
++| `csx-k8` Prod            | `https://csx.clinicsolution.hk/display-screen-config/management-settings/program-settings/display-screen-config/`      |
++
+ ###  React 新大屏页面入口
+ | 系统 / 环境              | 页面入口                                                                                        |
+ | ------------------------ | ----------------------------------------------------------------------------------------------- |
+ | 旧 `csx` POC             | `https://poc.demo.clinicsolution.hk/display-screen-config/tvScreenNew/?clinicCode={clinicCode}` |
+ | 旧 `csx` Prod (示例租户) | `https://sfsc3051.clinicsolution.hk/display-screen-config/tvScreenNew/?clinicCode=SFSC`         |
+ | `csx-k8` dev / POC       | `https://csx-poc.clinicsolution.hk/display-screen-config/tvScreenNew/?clinicCode={clinicCode}`  |
+ | `csx-k8` Prod            | `https://csx.clinicsolution.hk/display-screen-config/tvScreenNew/?clinicCode={clinicCode}`      |
+ 
+ ### 旧 `csx-web` 页面入口参考
+ | 系统 / 环境              | `csx-web` 页面入口                                 |
+ | ------------------------ | -------------------------------------------------- |
+ | 旧 `csx` POC             | `https://poc.demo.clinicsolution.hk/ui/index.html` |
+ | 旧 `csx` Prod (示例租户) | `https://sfsc3051.clinicsolution.hk/ui/index.html` |
+ | `csx-k8` dev / POC       | `https://csx-poc.clinicsolution.hk/`               |
+ | `csx-k8` Prod            | `https://csx.clinicsolution.hk/`                   |
+ 
+ ## Static Export
+ `next.config.ts` 固定使用：
+ - `output: "export"`
+ - 默认 `basePath=/display-screen-config`
+ - 默认 `assetPrefix=/display-screen-config`
+ - `trailingSlash=true`
+ - `images.unoptimized=true`
+ 可通过 `NEXT_PUBLIC_CSX_APP_BASE_PATH` 覆盖 `basePath` / `assetPrefix`。正式发布默认使用 `/display-screen-config`。
++当前不直接更改默认 `basePath`，因为旧 `csx` POC / Prod 和 `csx-k8` dev / Prod 已按 `/display-screen-config/**` 部署公开大屏静态产物。若后续项目从显示屏配置扩展为完整平替 `csx-web`，应在独立迁移方案中统一调整挂载前缀、静态目录、pipeline、S3 / CloudFront 或旧 CSX package 映射。
+ 旧 `csx` artifact 和 `csx-k8` 静态托管都应把 `out/` 内容放到最终站点的 `display-screen-config/` 物理目录下，因此浏览器入口保持：
+ ```text
+ /display-screen-config/tvScreenNew/?clinicCode={clinicCode}
+ ```
+ 
++### 暂不建议把根挂载前缀改为 `csx-new`
++`csx-web-react` 的仓库名可以承接未来更多 React 页面，但当前默认 `basePath=/display-screen-config` 已进入旧 `csx` POC / Prod 和 `csx-k8` dev / Prod 的部署链路。短期内不建议把根挂载前缀改为 `/csx-new`，原因是这不是单纯的前端路由重命名，而是会改变静态资源、页面入口和部署目录。
++
++如果改为 `/csx-new`，至少会影响：
++- `next.config.ts` 的默认 `basePath` / `assetPrefix`，以及所有 HTML、JS、CSS、图片等静态资源 URL。
++- 公开大屏已有入口，例如 `/display-screen-config/tvScreenNew/?clinicCode={clinicCode}`，现有浏览器书签、设备配置、二维码链接、排障文档和已交付环境都需要同步迁移。
++- 旧 `csx` POC / Prod artifact 的 zip 顶层目录、后端下载校验规则、解压目标目录、CSX package 注入路径和后端静态文件映射。
++- `csx-k8` dev / Prod 的 S3 sync 目标路径、CloudFront invalidation 路径、reverse proxy / domain alias 路径和上线后回滚口径。
++- README、Pipeline、运维部署文档、旧 CSX package release 流程和验收 URL。
++
++如果只是把已部署入口外层加一段 `/csx-new`，例如：
++```text
++https://csx-poc.clinicsolution.hk/display-screen-config/tvScreenNew/?clinicCode={clinicCode}
++-> https://csx-poc.clinicsolution.hk/csx-new/display-screen-config/tvScreenNew/?clinicCode={clinicCode}
++
++https://poc.demo.clinicsolution.hk/display-screen-config/tvScreenNew/?clinicCode={clinicCode}
++-> https://poc.demo.clinicsolution.hk/csx-new/display-screen-config/tvScreenNew/?clinicCode={clinicCode}
++```
++影响仍然不是单纯改入口文案：
++- 前端 static export 需要先选定真实运行策略：要么把 `basePath` / `assetPrefix` 改为 `/csx-new/display-screen-config` 并重新构建所有环境产物；要么继续构建 `/display-screen-config`，由服务器把 `/csx-new/display-screen-config/**` rewrite 到旧目录。两种策略不能混用，否则 HTML 入口、`_next` chunk、字体、图片和 `public/display/**` 资源路径会不一致。
++- 对 `csx-k8` dev / POC：当前 pipeline 把 `out/` 同步到 `s3://${DISPLAY_SCREEN_S3_BUCKET}/display-screen-config/`，并只 invalidation `/display-screen-config/*`。如果入口改为 `/csx-new/display-screen-config/**`，需要同步调整 S3 目录、CloudFront invalidation、reverse proxy / domain routing 和 deep link 配置；否则新 URL 可能 HTML、JS、CSS 或图片 404。
++- 对旧 `csx` POC：当前 React artifact 顶层目录约定是 `display-screen-config/**`，后端 / release owner 的 zip 校验、解压目录、CSX package 注入路径和后端静态文件映射也按这个目录做。如果入口改为 `/csx-new/display-screen-config/**`，需要把 artifact 顶层目录、校验规则、package 注入路径和 IIS / 后端静态映射一起调整，或额外提供 rewrite / redirect。
++- 对既有已部署页面：已发给诊所或设备端的旧 URL、浏览器书签、排障文档和 QA 用例仍会指向 `/display-screen-config/**`。如果不保留旧路径、双目录发布或提供明确 redirect，现有大屏设备和已交付验收入口会中断。
++- 对 API：API host 和 `clinicCode` query 本身不需要因为路径前缀变化而改；旧 `csx` POC 仍应请求同源 `/api`，`csx-k8` dev / POC 仍应请求 `https://api-poc.clinicsolution.hk/api`。但改路径后必须重新验证页面刷新 deep link、静态资源、同源 `/api` 或 K8 API 请求、CloudFront / IIS 缓存和回滚路径。
++
++因此，当前推荐保持 `/display-screen-config` 作为既有部署挂载前缀，在其下新增业务模块路由，例如 `/display-screen-config/management-settings/program-settings/display-screen-config/`。如果后续确认当前项目要完整平替 `csx-web` 并统一使用 `/csx-new`，应作为独立迁移任务处理：先确定新旧路径并行期、兼容重定向或双目录发布策略，再同步前端、后端 release owner、运维和 QA 的验证清单。
++
+ ## Bitbucket Pipelines
+ Run Pipeline 的 Branch 固定选择 `main`。本地未提交、未推送或未合入 `main` 的改动不会进入发布产物。
+ ### 旧 `csx` POC / Prod artifact
+ | 环境          | Pipeline                              | 构建脚本             | 固定 Downloads 文件                          |
+ | ------------- | ------------------------------------- | -------------------- | -------------------------------------------- |
+ | 旧 `csx` POC  | `custom: build-old-csx-poc-artifact`  | `pnpm run build:poc` | `csx-web-react-old-poc-main-latest.zip`      |
+ | 旧 `csx` Prod | `custom: build-old-csx-prod-artifact` | `pnpm run build:prd` | `csx-web-react-old-csx-prod-main-latest.zip` |
+ 固定下载 API URL：
+ ```text
+ https://api.bitbucket.org/2.0/repositories/healshealthcare/csx-web-react/downloads/csx-web-react-old-poc-main-latest.zip
+ https://api.bitbucket.org/2.0/repositories/healshealthcare/csx-web-react/downloads/csx-web-react-old-csx-prod-main-latest.zip
+ ```
+ Bitbucket Downloads 上传需要仓库变量：
+ ```text
+ ATLASSIAN_ACCOUNT_EMAIL
+ ATLASSIAN_API_TOKEN
+ ```
+ Jenkins 下载私有 Bitbucket Downloads 文件时使用 Basic auth：
+ ```text
+ Username = ATLASSIAN_ACCOUNT_EMAIL
+ Password/Secret = ATLASSIAN_API_TOKEN
+ ```
+ `ATLASSIAN_API_TOKEN` 至少需要 `read:repository:bitbucket` 权限；如果同一个 token 还要由 pipeline 上传 Downloads，则还需要 `write:repository:bitbucket`。不要把 token 写入仓库文件。
+ 
+ #### 旧 `csx` Prod 部署职责分工
+ 前端项目配置：
+ - `package.json` 中 `pnpm run build:prd` 固定使用 `NEXT_PUBLIC_CSX_SYSTEM=csx` 和 `NEXT_PUBLIC_CSX_ENV=prod`，旧 `csx` Prod artifact 默认请求部署站点同源 `/api`，不写死单一租户域名。
+ - `next.config.ts` 使用 static export，默认 `basePath` / `assetPrefix` 为 `/display-screen-config`，构建产物为 `out/`。
+ - 旧 `csx` Prod 页面入口按租户域名访问，例如 `https://sfsc3051.clinicsolution.hk/display-screen-config/tvScreenNew/?clinicCode=SFSC`。
+ - 本地可用 `pnpm dev:csx:prod` 走旧 `csx` Prod 口径做前端开发验证；正式 artifact 使用 `pnpm run build:prd` 生成。
+ - 前端不在旧 `csx-web` 仓库内混入 React 源码，不在 29 / Windows Jenkins 上安装 Node / pnpm 来 build React。
+ 
+ Bitbucket 仓库配置：
+ - Run Pipeline 时 Branch 固定选择 `main`。
+ - Prod artifact 发布选择 `custom: build-old-csx-prod-artifact`。
+ - `Build csx-web-react for old csx Prod` 包括 `pnpm install --frozen-lockfile`、`pnpm run lint`、`pnpm run typecheck` 和 `pnpm run build:prd`。
+ - 构建完成后把 `out/` 内容复制到 `react-artifact/display-screen-config/`，再压缩为 `react-artifact.zip`；zip 顶层应只有 `display-screen-config/**`。
+ - Bitbucket Downloads 会保留固定 latest 文件 `csx-web-react-old-csx-prod-main-latest.zip`，并同时上传版本化文件 `csx-web-react-old-csx-prod-main-{buildNumber}-{commit}.zip`。
+ - Bitbucket repository variables 只维护 `ATLASSIAN_ACCOUNT_EMAIL` 和 `ATLASSIAN_API_TOKEN` 这类上传 Downloads 所需 secret；密钥只放 Bitbucket / Jenkins secret，不写入仓库。
+ 
+ 后端 / release owner 配置：
+ - 旧 `csx` 最终 release package 仍按原 CSX 打包流程生成；React 项目只提供 `display-screen-config/**` 前端静态 artifact。
+ - 旧打包 job 继续维护 `CsxMainVersion`、`CsxEnvironmentName`、`CsxApiBranch`、`CsxWebBranch`、`CsxToolBranch` 等原有参数；Production packaging 的 `CsxEnvironmentName` 使用 `Production`。
+ - Jenkins / wrapper 用 Basic auth 从 Bitbucket Downloads 下载 `csx-web-react-old-csx-prod-main-latest.zip` 或同一次构建的版本化 zip。
+ - 下载后先按 zip 可打开和必需 entries 校验：必须存在 `display-screen-config/tvScreenNew/index.html`、`display-screen-config/_next/**`、`display-screen-config/display/**`，且 zip 根目录不能有 `index.html`、`weboffice.html` 或 `static/**`。
+ - 校验通过后把 `display-screen-config/**` 注入最终 CSX package 的 Web root；同一份 old Prod artifact 进入不同租户最终 package 后会请求各自 host 的同源 `/api`。
+ - 后端应用层需保证 `/display-screen-config/tvScreenNew/` 作为 default document / static path 可访问；正式入口不应要求用户访问带 `index.html` 的排障 URL。
+ - 旧打包文档中的 package 分发流程仍适用：最终 package 生成后，从 29 服务器 `D:\CsxRelease\release` 取 zip，上传到 `csx-upgrade-package` S3 bucket，并在 CSX&CSM 群通知版本号、环境、任务号、package URL、额外配置和需要单独执行的 SQL。
+ - `csx-upgrade-package` S3 bucket 是最终 package 分发位置，不是当前 React static export 的运行时托管位置。
+ 
+ 运维配置：
+ - 运维继续部署后端 / release owner 生成并分发的最终 CSX package，不单独 build 当前 React 项目。
+ - 维护旧 `csx` Prod 各租户域名的既有部署和访问路径，确保 `/display-screen-config/**` 静态资源、`/display-screen-config/tvScreenNew/` deep link 和 query string 可正常访问。
+ - 旧 Prod 已验证不需要为当前 React artifact 额外配置独立 S3 / CloudFront，也不需要把入口改成带 `index.html` 的 URL。
+ 
+ 旧 `csx` Prod 发布流程：
+ 1. 前端代码合入远端 `main`。
+ 2. 在 Bitbucket Pipelines 页面 Run Pipeline，Branch 选择 `main`，Pipeline 选择 `custom: build-old-csx-prod-artifact`。
+ 3. Pipeline 成功后确认 fixed latest 文件和版本化文件来自同一次最新成功构建。
+ 4. 后端 / release owner 下载 Bitbucket Downloads zip，校验并注入最终 CSX release package。
+ 5. 运维按旧 CSX package 流程部署最终 package。
+ 6. 部署完成后按目标租户验证 `https://{tenant-host}/display-screen-config/tvScreenNew/?clinicCode={clinicCode}`，例如 `https://sfsc3051.clinicsolution.hk/display-screen-config/tvScreenNew/?clinicCode=SFSC`。
+ 
+ ### `csx-k8` dev / Prod deploy
+ | 环境               | Pipeline                 | 构建脚本                | Bitbucket deployment |
+ | ------------------ | ------------------------ | ----------------------- | -------------------- |
+ | `csx-k8` dev / POC | `custom: deploy-to-dev`  | `pnpm run build:poc:k8` | `csx-k8-dev`         |
+ | `csx-k8` Prod      | `custom: deploy-to-prod` | `pnpm run build:prd:k8` | `production`         |
+ 部署 step 需要在对应 Bitbucket deployment environment 中维护：
+ ```text
+ DISPLAY_SCREEN_S3_BUCKET
+ DISPLAY_SCREEN_CLOUDFRONT_DISTRIBUTION_ID
+ ```
+ `DISPLAY_SCREEN_S3_BUCKET` 只能填写 bucket name，不能填写 `s3://` 或 `https://` URL。部署 step 会同步：
+ ```text
+ out/ -> s3://${DISPLAY_SCREEN_S3_BUCKET}/display-screen-config/
+ ```
+ 并执行 CloudFront invalidation：
+ ```text
+ /display-screen-config/*
+diff --git a/e2e/display-screen-config.spec.ts b/e2e/display-screen-config.spec.ts
+index 1cc54b0..93e5e76 100644
+--- a/e2e/display-screen-config.spec.ts
++++ b/e2e/display-screen-config.spec.ts
+@@ -1,106 +1,135 @@
+ import {expect, test} from '@playwright/test';
+ 
+ const FIGMA_DISPLAY_HEIGHT = 1366;
+ const FIGMA_LAYOUT_RATIOS = {
+   clinicHeader: 80 / FIGMA_DISPLAY_HEIGHT,
+   queueHeader: 57 / FIGMA_DISPLAY_HEIGHT,
+   doctorsStage: 863 / FIGMA_DISPLAY_HEIGHT,
+   mediaPanel: 366 / FIGMA_DISPLAY_HEIGHT,
+   featuredDoctor: 328 / 863,
+   doctorCardNode: 529 / FIGMA_DISPLAY_HEIGHT,
+   doctorCard: 513 / FIGMA_DISPLAY_HEIGHT,
+   carouselProgress: 6 / FIGMA_DISPLAY_HEIGHT,
+ } as const;
+ const FIGMA_DOCTOR_CARD_CONTENT_HEIGHT = 513 - 24 - 24;
+ const FIGMA_DOCTOR_CARD_LAYOUT_RATIOS = {
+   profile: 197 / FIGMA_DOCTOR_CARD_CONTENT_HEIGHT,
+   latestCall: 187 / (187 + 81),
+   queued: 81 / (187 + 81),
+ } as const;
+ 
+ const getResponsiveCarouselProgressHeight = (viewportHeight: number) =>
+   Math.min(6, Math.max(2, viewportHeight * FIGMA_LAYOUT_RATIOS.carouselProgress));
+ 
+ const getResponsiveCallLabelFontSize = (viewportHeight: number) =>
+   Math.min(18, Math.max(12, viewportHeight * 0.01318));
+ 
++const MANAGEMENT_ROUTE = './management-settings/program-settings/display-screen-config/';
++
++test('renders the display management shell on the module route', async ({page}) => {
++  await page.goto(MANAGEMENT_ROUTE);
++
++  await expect(page.getByRole('banner', {name: 'CSX 管理頂欄'})).toBeVisible();
++  await expect(page.getByRole('navigation', {name: '管理分區'})).toContainText('設定');
++  await expect(page.getByRole('complementary', {name: '左側導航'})).toContainText('程序設定');
++  await expect(page.getByRole('button', {name: '顯示屏配置'})).toBeVisible();
++  await expect(page.getByRole('heading', {name: '顯示屏配置'})).toBeVisible();
++  await expect(page.getByLabel('診所')).toHaveValue('Heals Clinic');
++  await expect(page.getByRole('cell', {name: '前台觸摸屏-模板'})).toBeVisible();
++  await expect(page.getByRole('button', {name: '複製配置'})).toBeVisible();
++  await expect(page.getByRole('button', {name: '編輯'})).toBeVisible();
++
++  await page.setViewportSize({width: 390, height: 844});
++  await page.goto(MANAGEMENT_ROUTE);
++  await expect(page.getByRole('banner', {name: 'CSX 管理頂欄'})).toBeVisible();
++  await expect(page.getByRole('button', {name: '顯示屏配置'})).toBeVisible();
++  await expect(page.getByRole('button', {name: '複製配置'})).toBeVisible();
++
++  const hasHorizontalOverflow = await page.evaluate(() => {
++    const documentElement = document.documentElement;
++
++    return documentElement.scrollWidth > window.innerWidth;
++  });
++  expect(hasHorizontalOverflow).toBe(false);
++});
++
+ test('shows the public display without a login', async ({page}) => {
+   await page.goto('./tvScreenNew/?mock=1&doctors=1');
+ 
+   await expect(page.getByLabel('Heals Clinic 診寶')).toBeVisible();
+   await expect(page.getByText('資料已更新')).toHaveCount(0);
+   await expect(page.getByText('等待叫號')).toBeVisible();
+   await expect(page.getByTestId('featured-doctor')).toContainText('傅嘉明 醫生');
+   await expect(page.getByTestId('featured-doctor').getByText('全科西醫 GP')).toBeVisible();
+   await expect(page.getByTestId('featured-last-call-placeholder')).toHaveText('-');
+   await expect(page.getByLabel('診所媒體及自助排隊')).toBeVisible();
+ });
+ 
+ test('uses only mock data on the tvScreenNew mock URL', async ({page}) => {
+   const apiRequests: string[] = [];
+ 
+   await page.route('**/api/AppointmentQueueData/**', async (route) => {
+     apiRequests.push(route.request().url());
+     await route.fulfill({contentType: 'application/json', json: {code: 500, data: null}});
+   });
+ 
+   await page.goto('./tvScreenNew/?mock=1&doctors=2');
+ 
+   await expect(page.locator('article.doctor-card')).toHaveCount(2);
+   await expect(page.getByTestId('featured-doctor')).toContainText('傅嘉明 醫生');
+   expect(apiRequests).toEqual([]);
+ });
+ 
+ test('hydrates the live clock without a time text mismatch', async ({page}) => {
+   const hydrationErrors: string[] = [];
+ 
+   page.on('console', (message) => {
+     const text = message.text();
+ 
+     if (
+       message.type() === 'error' &&
+       (text.includes('Hydration failed') || text.includes("didn't match the client"))
+     ) {
+       hydrationErrors.push(text);
+     }
+   });
+   await page.addInitScript(`
+     (() => {
+       const RealDate = Date;
+       const fixedTimestamp = new RealDate('2035-01-01T00:21:00+08:00').getTime();
+ 
+       function FixedDate(...args) {
+         if (this instanceof FixedDate) {
+           return args.length ? new RealDate(...args) : new RealDate(fixedTimestamp);
+         }
+ 
+         return new RealDate(fixedTimestamp).toString();
+       }
+ 
+       FixedDate.now = () => fixedTimestamp;
+       FixedDate.parse = RealDate.parse;
+       FixedDate.UTC = RealDate.UTC;
+       FixedDate.prototype = RealDate.prototype;
+       window.Date = FixedDate;
+     })();
+   `);
+   await page.route('**/api/AppointmentQueueData/GetClincInfoAsync**', async (route) => {
+     await route.fulfill({
+       contentType: 'application/json',
+       json: {
+         code: 0,
+         data: {
+           clinicChineseName: 'TES',
+           clinicEnglishName: 'TES',
+           healsCoreId: 'b45f0e1c-623e-49b2-accc-8b0746a4a2d1',
+           videoURL: 'https://video.test/playing.mp4',
+         },
+       },
+     });
+   });
+   await page.route('**/api/AppointmentQueueData/GetQueueNewPatientListAsync**', async (route) => {
+     await route.fulfill({
+       contentType: 'application/json',
+       json: {
+         code: 0,
+         data: {
+diff --git a/package.json b/package.json
+index dce8dcb..96e0280 100644
+--- a/package.json
++++ b/package.json
+@@ -1,54 +1,54 @@
+ {
+   "name": "csx-web-react",
+-  "version": "1.0.0",
++  "version": "1.0.1",
+   "private": true,
+   "packageManager": "pnpm@8.15.0",
+   "engines": {
+     "node": ">=20.9.0",
+     "pnpm": ">=8.15.0"
+   },
+   "scripts": {
+     "dev": "next dev --webpack",
+     "dev:csx": "NEXT_PUBLIC_CSX_SYSTEM=csx NEXT_PUBLIC_CSX_ENV=poc next dev --webpack",
+     "dev:csx:internal": "NEXT_PUBLIC_CSX_SYSTEM=csx NEXT_PUBLIC_CSX_ENV=dev next dev --webpack",
+     "dev:csx:prod": "NEXT_PUBLIC_CSX_SYSTEM=csx NEXT_PUBLIC_CSX_ENV=prod next dev --webpack",
+     "dev:k8": "node scripts/dev-with-csx-proxy.mjs",
+     "dev:k8:direct": "NEXT_PUBLIC_CSX_SYSTEM=csx-k8 NEXT_PUBLIC_CSX_ENV=poc NEXT_PUBLIC_CSX_API_BASE_URL=https://api-poc.clinicsolution.hk next dev --webpack",
+     "dev:k8:uat": "NEXT_PUBLIC_CSX_SYSTEM=csx-k8 NEXT_PUBLIC_CSX_ENV=uat NEXT_PUBLIC_CSX_API_BASE_URL=https://api-uat.clinicsolution.hk next dev --webpack",
+     "dev:k8:prod": "NEXT_PUBLIC_CSX_SYSTEM=csx-k8 NEXT_PUBLIC_CSX_ENV=prod NEXT_PUBLIC_CSX_API_BASE_URL=https://api.clinicsolution.hk next dev --webpack",
+     "build": "next build",
+     "build:poc": "NEXT_PUBLIC_CSX_SYSTEM=csx NEXT_PUBLIC_CSX_ENV=poc next build",
+     "build:dev": "NEXT_PUBLIC_CSX_SYSTEM=csx NEXT_PUBLIC_CSX_ENV=dev next build",
+     "build:prd": "NEXT_PUBLIC_CSX_SYSTEM=csx NEXT_PUBLIC_CSX_ENV=prod next build",
+     "build:poc:k8": "NEXT_PUBLIC_CSX_SYSTEM=csx-k8 NEXT_PUBLIC_CSX_ENV=poc NEXT_PUBLIC_CSX_API_BASE_URL=https://api-poc.clinicsolution.hk next build",
+     "build:uat:k8": "NEXT_PUBLIC_CSX_SYSTEM=csx-k8 NEXT_PUBLIC_CSX_ENV=uat NEXT_PUBLIC_CSX_API_BASE_URL=https://api-uat.clinicsolution.hk next build",
+     "build:prd:k8": "NEXT_PUBLIC_CSX_SYSTEM=csx-k8 NEXT_PUBLIC_CSX_ENV=prod NEXT_PUBLIC_CSX_API_BASE_URL=https://api.clinicsolution.hk next build",
+     "start": "next start",
+     "lint": "eslint",
+     "typecheck": "tsc --noEmit",
+     "test:e2e": "playwright test",
+     "test:e2e:ui": "playwright test --ui",
+     "test:e2e:debug": "playwright test --debug"
+   },
+   "dependencies": {
+     "class-variance-authority": "^0.7.1",
+     "clsx": "^2.1.1",
+     "lucide-react": "^0.562.0",
+     "next": "16.1.1",
+     "qrcode.react": "4.2.0",
+     "react": "19.2.3",
+     "react-dom": "19.2.3",
+     "tailwind-merge": "^3.4.0"
+   },
+   "devDependencies": {
+     "@playwright/test": "^1.57.0",
+     "@tailwindcss/postcss": "^4",
+     "@types/node": "^20",
+     "@types/react": "^19",
+     "@types/react-dom": "^19",
+     "eslint": "^9",
+     "eslint-config-next": "16.1.1",
+     "tailwindcss": "^4",
+     "typescript": "^5"
+   }
+ }
+diff --git a/src/app/management-settings/program-settings/display-screen-config/page.tsx b/src/app/management-settings/program-settings/display-screen-config/page.tsx
+new file mode 100644
+index 0000000..e5c3ff2
+--- /dev/null
++++ b/src/app/management-settings/program-settings/display-screen-config/page.tsx
+@@ -0,0 +1,6 @@
++import '@/features/display-management/display-management.css';
++import {DisplayManagementPage} from '@/features/display-management';
++
++export default function ProgramSettingsDisplayScreenConfigPage() {
++  return <DisplayManagementPage />;
++}
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index 94278c4..ba6f037 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -1,6 +1,7 @@
+ import '@/features/display-screen/display-screen.css';
+-import { DisplayScreenPage } from '@/features/display-screen';
++import '@/features/display-management/display-management.css';
++import {DisplayManagementRoute} from '@/features/display-management';
+ 
+ export default function Page() {
+-  return <DisplayScreenPage />;
++  return <DisplayManagementRoute />;
+ }
+diff --git a/src/features/display-management/DisplayManagementPage.tsx b/src/features/display-management/DisplayManagementPage.tsx
+new file mode 100644
+index 0000000..bee5888
+--- /dev/null
++++ b/src/features/display-management/DisplayManagementPage.tsx
+@@ -0,0 +1,197 @@
++'use client';
++
++import {useEffect, useMemo, useState} from 'react';
++import Image from 'next/image';
++import {
++  Building2,
++  ChevronDown,
++  ClipboardCopy,
++  Monitor,
++  Pencil,
++  UserRound,
++} from 'lucide-react';
++import {Button} from '@/components/ui/button';
++import {
++  Table,
++  TableBody,
++  TableCell,
++  TableHead,
++  TableHeader,
++  TableRow,
++} from '@/components/ui/table';
++import {withAppBasePath} from '@/lib/app-base-path';
++
++const HEALS_ICON_SRC = withAppBasePath('/display/heals-icon.svg');
++
++const displayConfigs = [
++  {
++    id: 'front-desk-portrait-template',
++    deviceName: '前台觸摸屏-模板',
++    orientation: '豎屏',
++    url: 'https://checkin-dev.heals.asia/f564830c-b310-4b56-8402-c0bd505b9caf/qr',
++  },
++];
++
++function formatDateTime(now: Date) {
++  const date = new Intl.DateTimeFormat('en-GB', {
++    day: '2-digit',
++    month: 'short',
++    year: 'numeric',
++    weekday: 'short',
++  }).format(now);
++  const time = new Intl.DateTimeFormat('en-GB', {
++    hour: '2-digit',
++    minute: '2-digit',
++    hour12: false,
++  }).format(now);
++
++  return `${date.replace(',', '')} ${time}`;
++}
++
++function useHeaderClock() {
++  const [now, setNow] = useState<Date | null>(null);
++
++  useEffect(() => {
++    const updateClock = () => setNow(new Date());
++    updateClock();
++    const timer = window.setInterval(updateClock, 60 * 1000);
++
++    return () => window.clearInterval(timer);
++  }, []);
++
++  return now ? formatDateTime(now) : 'Loading time';
++}
++
++function ManagementTopBar() {
++  const dateTime = useHeaderClock();
++
++  return (
++    <header className="management-topbar" aria-label="CSX 管理頂欄">
++      <div className="management-topbar-start">
++        <Image alt="Heals" className="management-logo" height={40} src={HEALS_ICON_SRC} width={40} />
++        <time className="management-current-time">{dateTime}</time>
++        <nav aria-label="管理分區" className="management-topnav">
++          <span className="management-topnav-item">設定</span>
++        </nav>
++      </div>
++      <div className="management-topbar-actions">
++        <Button className="management-clinic-switcher" type="button" variant="secondary">
++          <Building2 aria-hidden size={20} />
++          <span>Heals Clinic</span>
++          <ChevronDown aria-hidden size={16} />
++        </Button>
++        <Button
++          aria-label="使用者"
++          className="management-user-button"
++          size="icon"
++          type="button"
++          variant="default"
++        >
++          <UserRound aria-hidden size={18} />
++        </Button>
++      </div>
++    </header>
++  );
++}
++
++function ManagementSidebar() {
++  return (
++    <aside className="management-sidebar" aria-label="左側導航">
++      <div className="management-sidebar-panel">
++        <section className="management-menu-group" aria-labelledby="program-settings-title">
++          <h2 id="program-settings-title">程序設定</h2>
++          <button className="management-menu-item is-active" type="button">
++            <Monitor aria-hidden size={18} />
++            <span>顯示屏配置</span>
++          </button>
++        </section>
++      </div>
++    </aside>
++  );
++}
++
++function DisplayConfigTable() {
++  return (
++    <div className="management-table-card">
++      <Table className="management-table">
++        <TableHeader>
++          <TableRow>
++            <TableHead className="management-device-column">設備名稱</TableHead>
++            <TableHead className="management-orientation-column">螢幕方向</TableHead>
++            <TableHead>網頁瀏覽地址</TableHead>
++            <TableHead className="management-actions-column">操作</TableHead>
++          </TableRow>
++        </TableHeader>
++        <TableBody>
++          {displayConfigs.map((config) => (
++            <TableRow key={config.id}>
++              <TableCell className="management-device-column" data-label="設備名稱">
++                {config.deviceName}
++              </TableCell>
++              <TableCell className="management-orientation-column" data-label="螢幕方向">
++                {config.orientation}
++              </TableCell>
++              <TableCell data-label="網頁瀏覽地址">
++                <a className="management-display-link" href={config.url}>
++                  {config.url}
++                </a>
++              </TableCell>
++              <TableCell className="management-actions-column" data-label="操作">
++                <div className="management-table-actions">
++                  <Button className="management-table-action" type="button" variant="outline">
++                    <ClipboardCopy aria-hidden size={18} />
++                    <span>複製配置</span>
++                  </Button>
++                  <Button className="management-table-action" type="button" variant="outline">
++                    <Pencil aria-hidden size={18} />
++                    <span>編輯</span>
++                  </Button>
++                </div>
++              </TableCell>
++            </TableRow>
++          ))}
++        </TableBody>
++      </Table>
++    </div>
++  );
++}
++
++function DisplayManagementContent() {
++  const clinicOptions = useMemo(() => ['Heals Clinic'], []);
++
++  return (
++    <main className="management-content-card">
++      <div className="management-content-heading">
++        <Monitor aria-hidden size={20} />
++        <h1>顯示屏配置</h1>
++      </div>
++      <div className="management-divider" />
++      <form className="management-filter-form">
++        <label htmlFor="management-clinic-select">診所</label>
++        <div className="management-select">
++          <select id="management-clinic-select" defaultValue={clinicOptions[0]}>
++            {clinicOptions.map((clinic) => (
++              <option key={clinic} value={clinic}>
++                {clinic}
++              </option>
++            ))}
++          </select>
++          <ChevronDown aria-hidden size={18} />
++        </div>
++      </form>
++      <DisplayConfigTable />
++    </main>
++  );
++}
++
++export function DisplayManagementPage() {
++  return (
++    <div className="management-shell">
++      <ManagementTopBar />
++      <div className="management-body">
++        <ManagementSidebar />
++        <DisplayManagementContent />
++      </div>
++    </div>
++  );
++}
+diff --git a/src/features/display-management/DisplayManagementRoute.tsx b/src/features/display-management/DisplayManagementRoute.tsx
+new file mode 100644
+index 0000000..ca782bc
+--- /dev/null
++++ b/src/features/display-management/DisplayManagementRoute.tsx
+@@ -0,0 +1,48 @@
++'use client';
++
++import {useSyncExternalStore} from 'react';
++import {DisplayScreenPage} from '@/features/display-screen';
++import {DisplayManagementPage} from './DisplayManagementPage';
++
++const DISPLAY_SCREEN_QUERY_KEYS = [
++  'clinic',
++  'clinicCode',
++  'data',
++  'doctors',
++  'latestCall',
++  'latestCallNumberDoctorProfile',
++  'mock',
++  'noLatestCall',
++  'state',
++] as const;
++
++function subscribeToLocation(onStoreChange: () => void) {
++  window.addEventListener('popstate', onStoreChange);
++  window.queueMicrotask(onStoreChange);
++
++  return () => window.removeEventListener('popstate', onStoreChange);
++}
++
++function getLocationSnapshot() {
++  return window.location.search;
++}
++
++function getServerLocationSnapshot() {
++  return '';
++}
++
++function shouldRenderDisplayScreen(search: string) {
++  const query = new URLSearchParams(search);
++
++  return DISPLAY_SCREEN_QUERY_KEYS.some((key) => query.has(key));
++}
++
++export function DisplayManagementRoute() {
++  const search = useSyncExternalStore(
++    subscribeToLocation,
++    getLocationSnapshot,
++    getServerLocationSnapshot,
++  );
++
++  return shouldRenderDisplayScreen(search) ? <DisplayScreenPage /> : <DisplayManagementPage />;
++}
+diff --git a/src/features/display-management/display-management.css b/src/features/display-management/display-management.css
+new file mode 100644
+index 0000000..025969a
+--- /dev/null
++++ b/src/features/display-management/display-management.css
+@@ -0,0 +1,497 @@
++.management-shell {
++  --management-bg: #d6e4e8;
++  --management-panel-bg: #ffffff;
++  --management-sidebar-bg: #e2f3f3;
++  --management-primary: #0e7c84;
++  --management-primary-soft: #bde6e6;
++  --management-text: #1b272f;
++  --management-border: #d6e4e8;
++  --management-muted-border: #90afbb;
++  --management-table-header: #f8f9fa;
++  --management-radius: clamp(14px, 1.85dvh, 20px);
++  --management-card-radius: clamp(6px, 0.74dvh, 8px);
++  --management-control-radius: 6px;
++  --management-topbar-height: clamp(52px, 5.56dvh, 60px);
++  --management-page-padding: clamp(6px, 0.74dvh, 8px);
++  --management-gap: clamp(6px, 0.74dvh, 8px);
++  --management-sidebar-width: clamp(220px, 27.78dvh, 300px);
++  --management-content-padding: clamp(16px, 2.22dvh, 24px);
++  --management-body-font-size: clamp(14px, 1.72dvh, 16px);
++  --management-small-font-size: clamp(13px, 1.57dvh, 14.6px);
++  --management-title-font-size: clamp(18px, 2.16dvh, 20px);
++  --management-menu-title-font-size: clamp(15px, 1.83dvh, 17px);
++  --management-icon-size: clamp(16px, 1.67dvh, 18px);
++  --management-logo-size: clamp(34px, 3.7dvh, 40px);
++  --management-control-height: clamp(36px, 3.7dvh, 40px);
++  --management-table-row-height: clamp(44px, 4.44dvh, 48px);
++
++  min-height: 100dvh;
++  overflow: auto;
++  background: var(--management-bg);
++  color: var(--management-text);
++  font-family: Roboto, "Noto Sans HK", Arial, "Helvetica Neue", Helvetica, sans-serif;
++}
++
++.management-shell button,
++.management-shell select,
++.management-shell input {
++  font: inherit;
++}
++
++.management-shell svg {
++  flex: 0 0 auto;
++  width: var(--management-icon-size);
++  height: var(--management-icon-size);
++}
++
++.management-topbar {
++  display: flex;
++  align-items: center;
++  justify-content: space-between;
++  min-height: var(--management-topbar-height);
++  padding: clamp(6px, 0.74dvh, 8px) clamp(12px, 1.48dvh, 16px);
++  gap: clamp(12px, 2.22dvh, 24px);
++}
++
++.management-topbar-start,
++.management-topbar-actions {
++  display: flex;
++  align-items: center;
++  min-width: 0;
++}
++
++.management-topbar-start {
++  flex: 1 1 auto;
++  gap: clamp(12px, 2.22dvh, 24px);
++}
++
++.management-topbar-actions {
++  flex: 0 0 auto;
++  gap: clamp(6px, 0.74dvh, 8px);
++}
++
++.management-logo {
++  flex: 0 0 auto;
++  display: block;
++  width: var(--management-logo-size);
++  height: var(--management-logo-size);
++}
++
++.management-current-time {
++  flex: 0 1 auto;
++  min-width: 0;
++  overflow: hidden;
++  color: var(--management-text);
++  font-size: var(--management-body-font-size);
++  font-weight: 400;
++  line-height: 1.5;
++  text-overflow: ellipsis;
++  white-space: nowrap;
++}
++
++.management-topnav {
++  display: flex;
++  align-items: center;
++  min-width: 0;
++}
++
++.management-topnav-item {
++  display: inline-flex;
++  align-items: center;
++  justify-content: center;
++  min-height: var(--management-control-height);
++  padding: clamp(8px, 1.48dvh, 16px) clamp(18px, 2.59dvh, 28px);
++  border-radius: var(--management-radius);
++  color: var(--management-text);
++  font-size: var(--management-menu-title-font-size);
++  font-weight: 500;
++  line-height: 20px;
++  white-space: nowrap;
++}
++
++.management-clinic-switcher {
++  min-height: var(--management-control-height);
++  gap: 4px;
++  border-radius: clamp(12px, 1.48dvh, 16px);
++  background: #f0f2f5;
++  color: var(--management-text);
++  padding: clamp(6px, 0.74dvh, 8px) clamp(12px, 1.48dvh, 16px);
++  font-size: var(--management-small-font-size);
++  font-weight: 510;
++  line-height: 1.5;
++  white-space: nowrap;
++}
++
++.management-user-button {
++  width: var(--management-control-height);
++  height: var(--management-control-height);
++  border-radius: 999px;
++  background: var(--management-primary);
++  color: #ffffff;
++}
++
++.management-body {
++  display: grid;
++  grid-template-columns: var(--management-sidebar-width) minmax(0, 1fr);
++  align-items: stretch;
++  gap: var(--management-gap);
++  min-height: calc(100dvh - var(--management-topbar-height));
++  padding: var(--management-page-padding);
++  padding-top: var(--management-gap);
++}
++
++.management-sidebar {
++  min-width: 0;
++  height: 100%;
++  padding: var(--management-page-padding);
++  border-radius: var(--management-radius);
++  background: var(--management-panel-bg);
++}
++
++.management-sidebar-panel {
++  height: 100%;
++  border-radius: var(--management-radius);
++  background: var(--management-sidebar-bg);
++  padding: clamp(24px, 3.7dvh, 40px) clamp(16px, 2.22dvh, 24px);
++}
++
++.management-menu-group {
++  display: flex;
++  flex-direction: column;
++  gap: clamp(6px, 0.74dvh, 8px);
++}
++
++.management-menu-group h2 {
++  margin: clamp(12px, 1.48dvh, 16px) clamp(16px, 2.22dvh, 24px) 4px 0;
++  color: var(--management-text);
++  font-size: var(--management-menu-title-font-size);
++  font-weight: 700;
++  line-height: 1.2;
++}
++
++.management-menu-item {
++  display: flex;
++  align-items: center;
++  width: 100%;
++  min-height: clamp(48px, 5.18dvh, 56px);
++  gap: clamp(6px, 0.74dvh, 8px);
++  border: 0;
++  border-radius: clamp(8px, 1.11dvh, 12px);
++  padding: clamp(8px, 0.74dvh, 8px) clamp(16px, 2.22dvh, 24px);
++  background: transparent;
++  color: #000000;
++  cursor: pointer;
++  font-size: var(--management-body-font-size);
++  font-weight: 700;
++  line-height: 1.5;
++  text-align: left;
++  transition: background 160ms ease, color 160ms ease;
++}
++
++.management-menu-item span {
++  min-width: 0;
++  overflow: hidden;
++  text-overflow: ellipsis;
++  white-space: nowrap;
++}
++
++.management-menu-item.is-active,
++.management-menu-item:hover {
++  background: var(--management-primary-soft);
++}
++
++.management-content-card {
++  min-width: 0;
++  min-height: 0;
++  overflow: auto;
++  border-radius: var(--management-radius);
++  background: var(--management-panel-bg);
++  padding: var(--management-content-padding);
++}
++
++.management-content-heading {
++  display: flex;
++  align-items: center;
++  gap: clamp(8px, 1.11dvh, 12px);
++  min-height: clamp(22px, 2.22dvh, 24px);
++  color: var(--management-primary);
++}
++
++.management-content-heading h1 {
++  margin: 0;
++  color: var(--management-text);
++  font-size: var(--management-title-font-size);
++  font-weight: 700;
++  line-height: 1.2;
++}
++
++.management-divider {
++  height: 1px;
++  margin: clamp(12px, 1.48dvh, 16px) 0 clamp(16px, 2.22dvh, 24px);
++  background: var(--management-border);
++}
++
++.management-filter-form {
++  display: grid;
++  grid-template-columns: minmax(96px, clamp(126px, 16.11dvh, 174px)) minmax(220px, clamp(256px, 32.96dvh, 356px));
++  align-items: center;
++  width: min(100%, clamp(360px, 50.56dvh, 546px));
++  margin-bottom: clamp(12px, 1.48dvh, 16px);
++}
++
++.management-filter-form label {
++  justify-self: end;
++  padding-right: clamp(10px, 1.57dvh, 17px);
++  color: var(--management-text);
++  font-size: var(--management-body-font-size);
++  font-weight: 400;
++  line-height: 1.5;
++}
++
++.management-select {
++  position: relative;
++  display: flex;
++  align-items: center;
++  min-width: 0;
++}
++
++.management-select select {
++  width: 100%;
++  height: clamp(36px, 3.52dvh, 38px);
++  appearance: none;
++  border: 1px solid var(--management-muted-border);
++  border-radius: var(--management-control-radius);
++  background: transparent;
++  color: var(--management-text);
++  padding: clamp(6px, 0.65dvh, 7px) clamp(34px, 3.7dvh, 40px) clamp(6px, 0.65dvh, 7px) clamp(10px, 1.2dvh, 13px);
++  font-size: var(--management-body-font-size);
++  line-height: 1.5;
++}
++
++.management-select svg {
++  position: absolute;
++  right: clamp(10px, 1.2dvh, 13px);
++  pointer-events: none;
++  color: var(--management-text);
++}
++
++.management-table-card {
++  width: 100%;
++  overflow: hidden;
++  border: 1px solid var(--management-border);
++  border-radius: var(--management-card-radius);
++  background: #ffffff;
++}
++
++.management-table {
++  table-layout: fixed;
++  min-width: 0;
++  color: var(--management-text);
++  font-size: var(--management-body-font-size);
++  line-height: 1.5;
++}
++
++.management-table thead {
++  background: var(--management-table-header);
++  color: var(--management-text);
++}
++
++.management-table tr {
++  border-color: var(--management-border);
++}
++
++.management-table th,
++.management-table td {
++  height: var(--management-table-row-height);
++  padding: clamp(6px, 0.74dvh, 8px) clamp(16px, 2.22dvh, 24px);
++  font-size: var(--management-body-font-size);
++  vertical-align: middle;
++}
++
++.management-table th {
++  font-weight: 700;
++}
++
++.management-table td {
++  font-weight: 400;
++}
++
++.management-device-column {
++  width: 24%;
++}
++
++.management-orientation-column {
++  width: 18%;
++}
++
++.management-actions-column {
++  width: clamp(190px, 19.82dvh, 214px);
++}
++
++.management-display-link {
++  display: block;
++  max-width: 100%;
++  overflow: hidden;
++  color: var(--management-primary);
++  text-decoration: underline;
++  text-overflow: ellipsis;
++  white-space: nowrap;
++}
++
++.management-table-actions {
++  display: flex;
++  align-items: center;
++  justify-content: flex-start;
++  gap: clamp(10px, 1.48dvh, 16px);
++}
++
++.management-table-action {
++  height: auto;
++  gap: clamp(4px, 0.56dvh, 6px);
++  border: 0;
++  background: transparent;
++  color: var(--management-primary);
++  padding: 0;
++  font-size: var(--management-body-font-size);
++  font-weight: 400;
++  line-height: 1.5;
++  white-space: nowrap;
++}
++
++@media (max-width: 920px) {
++  .management-body {
++    grid-template-columns: 1fr;
++  }
++
++  .management-sidebar {
++    height: auto;
++  }
++
++  .management-sidebar-panel {
++    padding: clamp(14px, 2.22dvh, 24px);
++  }
++
++  .management-menu-group {
++    gap: clamp(8px, 1.11dvh, 12px);
++  }
++
++  .management-menu-group h2 {
++    margin: 0;
++  }
++
++  .management-menu-item {
++    width: min(100%, 360px);
++  }
++}
++
++@media (max-width: 760px) {
++  .management-topbar {
++    align-items: flex-start;
++    flex-direction: column;
++  }
++
++  .management-topbar-start,
++  .management-topbar-actions {
++    width: 100%;
++  }
++
++  .management-topbar-start {
++    flex-wrap: wrap;
++  }
++
++  .management-topnav {
++    margin-left: auto;
++  }
++
++  .management-topbar-actions {
++    justify-content: flex-end;
++  }
++
++  .management-filter-form {
++    grid-template-columns: 1fr;
++    gap: clamp(6px, 0.93dvh, 10px);
++    width: 100%;
++  }
++
++  .management-filter-form label {
++    justify-self: start;
++    padding-right: 0;
++  }
++
++  .management-table,
++  .management-table thead,
++  .management-table tbody,
++  .management-table th,
++  .management-table td,
++  .management-table tr {
++    display: block;
++  }
++
++  .management-table thead {
++    display: none;
++  }
++
++  .management-table tbody {
++    padding: clamp(12px, 1.48dvh, 16px);
++  }
++
++  .management-table tr {
++    display: grid;
++    gap: clamp(10px, 1.48dvh, 16px);
++    border-bottom: 0;
++  }
++
++  .management-table td {
++    display: grid;
++    grid-template-columns: minmax(96px, 34%) minmax(0, 1fr);
++    align-items: start;
++    gap: clamp(8px, 1.11dvh, 12px);
++    width: 100%;
++    height: auto;
++    padding: 0;
++  }
++
++  .management-table td::before {
++    content: attr(data-label);
++    color: var(--management-text);
++    font-weight: 700;
++  }
++
++  .management-display-link {
++    white-space: normal;
++    overflow-wrap: anywhere;
++  }
++
++  .management-table-actions {
++    flex-wrap: wrap;
++  }
++}
++
++@media (max-width: 460px) {
++  .management-current-time {
++    width: calc(100% - var(--management-logo-size) - 16px);
++  }
++
++  .management-topnav {
++    width: 100%;
++    margin-left: 0;
++  }
++
++  .management-topnav-item,
++  .management-clinic-switcher {
++    width: 100%;
++  }
++
++  .management-topbar-actions {
++    align-items: stretch;
++    flex-direction: column;
++  }
++
++  .management-user-button {
++    align-self: flex-end;
++  }
++
++  .management-table td {
++    grid-template-columns: 1fr;
++  }
++}
+diff --git a/src/features/display-management/index.ts b/src/features/display-management/index.ts
+new file mode 100644
+index 0000000..264980b
+--- /dev/null
++++ b/src/features/display-management/index.ts
+@@ -0,0 +1,2 @@
++export {DisplayManagementPage} from './DisplayManagementPage';
++export {DisplayManagementRoute} from './DisplayManagementRoute';

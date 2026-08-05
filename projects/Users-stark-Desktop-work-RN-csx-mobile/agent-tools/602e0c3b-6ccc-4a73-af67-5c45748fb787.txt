@@ -1,0 +1,2623 @@
+4737e696 https://app.clickup.com/t/8553538/TECH-7957?comment=90180198609358&threadedComment=90180198631249
+ README.md                                          |  10 ++
+ src/assets/svg/index.ts                            |   1 -
+ .../CreateConsultationPage.tsx                     | 123 +--------------------
+ .../NewlyAddedPatients/NewlyAddedPatients.tsx      |  76 +------------
+ src/pages/SignInEcPage/SignInEcPages.tsx           |   4 +-
+ .../WaitingSchedulingDetailPage.tsx                |   5 +-
+ src/pages/loginPage/loginPage.tsx                  |   4 +-
+ 7 files changed, 24 insertions(+), 199 deletions(-)
+9b26d904 https://app.clickup.com/t/8553538/TECH-6590?comment=90180142676283
+ .../NewlyAddedPatients/NewlyAddedPatients.tsx      | 237 ++++++++++++++-------
+ 1 file changed, 155 insertions(+), 82 deletions(-)
+10875ff4 TECH-6219
+ src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx | 16 +++++++++-------
+ src/pages/PatientInfoPage/PatientInfoPage.tsx       |  1 +
+ 2 files changed, 10 insertions(+), 7 deletions(-)
+1d77afd8 TECH-6219
+ src/assets/svg/Remove.tsx                          |  32 ++
+ src/assets/svg/index.ts                            |   7 +
+ src/i18n/locale/en.ts                              |   2 +
+ src/i18n/locale/jp.ts                              |   2 +
+ src/i18n/locale/ph.ts                              |   2 +
+ src/i18n/locale/th.ts                              |   2 +
+ src/i18n/locale/vn.ts                              |   2 +
+ src/i18n/locale/zh.ts                              |   2 +
+ src/i18n/locale/zh_tw.ts                           |   2 +
+ .../NewlyAddedPatients.styles.ts                   |   5 +-
+ .../NewlyAddedPatients/NewlyAddedPatients.tsx      | 395 ++++++++++++++-------
+ 11 files changed, 316 insertions(+), 137 deletions(-)
+diff --git a/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx b/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx
+index 37a8b3b3..50153080 100644
+--- a/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx
++++ b/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx
+@@ -85,100 +85,101 @@ const DatePickerBox: React.FC<{
+ }> = memo(({
+              updateState,
+              children,
+              selectedItem,
+              uiTheme,
+              baseInfo, onDayPress
+            }: {
+   updateState: (key: string, value: any) => void;
+   children?: any,
+   selectedItem: string | undefined,
+   uiTheme: UITheme,
+   baseInfo: { birthDate: string | null },
+   onDayPress: () => void
+ }): React.JSX.Element => {
+   return useMemo(() => {
+     return <ThemeContext.Consumer>
+       {
+         (theme: Theme) => {
+           return <View style={{width: '90%'}}>
+             <DatePicker
+               key={'DateBirth'}
+               UITheme={uiTheme}
+               // style={styles.DatePicker}
+               current={selectedItem || ''}
+               showYearPicker={true}
+               onDayPress={(day: DateData) => {
+                 console.log('onDateSelect day.dateString=', day.dateString)
+                 updateState('baseInfo', {
+                   ...baseInfo,
+                   birthDate: day.dateString,
+                 });
+                 onDayPress()
+               }
+               }
+             />
+             {children}
+           </View>;
+         }
+       }
+     </ThemeContext.Consumer>
+   }, [updateState, children, selectedItem, uiTheme, baseInfo, onDayPress]);
+ });
+ 
+ interface pageDataProps {
+   pageType: number,//-1:新增 0:编辑 1:签到前
+   patientId?: string,
+   from?: string,
+   WaitingSchedulingDetailPageType?: number,//0等候中 1预约
+   appointmentId?: string,
+   showTemporaryData?: boolean,
++  doctorId?: string,
+   // checkInInsuranceId?: string,
+   // scannedCode: string,
+   // toAction:string
+ }
+ 
+ interface OccupationCustomRowProps {
+   children?: React.ReactNode;
+   selectedItem?: PatientDataSettingItem | null;
+ }
+ 
+ const OccupationCustomRow: React.FC<OccupationCustomRowProps> = memo(({
+                                                                         children,
+                                                                       }: OccupationCustomRowProps) => {
+   return (
+     <View style={styles.AccordionListRow}>
+       <Text style={[styles.tagLabel, {marginHorizontal: 8}]}>{i18n.t('occupation')}</Text>
+       {children}
+       <ArrowUpDown />
+     </View>
+   );
+ });
+ const GroupCustomRow: React.FC<RNAutoPositionedPopupCustomRowProps> = memo(({
+                                                                         children,
+                                                                       }: RNAutoPositionedPopupCustomRowProps) => {
+   return (
+     <View style={styles.AccordionListRow}>
+       <Text style={[styles.tagLabel, {marginHorizontal: 8}]}>{i18n.t('group')}</Text>
+       {children}
+       <ArrowUpDown />
+     </View>
+   );
+ });
+ const OccupationBtChildren: React.FC<OccupationCustomRowProps> = memo(({
+                                                                          selectedItem,
+                                                                        }: OccupationCustomRowProps) => {
+   const {uiTheme} = useThemeProvider();
+   const [searchQuery, setSearchQuery] = useState<string>('');
+   useGlobalEventListener(
+     AutoPositionedPopupEventNames.searchQueryChange,
+     useCallback(({tag, searchQuery: newQuery}: { tag: string; searchQuery: string }): void => {
+       console.log('OccupationBtChildren searchQueryChange event received=', {tag, searchQuery: newQuery});
+       if (tag === i18n.t('occupation')) {
+         setSearchQuery(newQuery);
+       }
+     }, [])
+   );
+   console.log('MedicationNotesBtChildren render=', {
+     selectedItem, searchQuery
+   })
+   return (
+@@ -4454,124 +4455,125 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+                       emergencyContactName: state.emergencyContactInfo.emergencyContactName,
+                       emergencyContactPhone: state.emergencyContactInfo.emergencyContactPhone,
+                       emergencyContactRelationship: state.emergencyContactInfo.emergencyContactRelationship,
+                       emergencyContactRemark: state.emergencyContactInfo.emergencyContactRemark,
+                       contact: {
+                         //無線電話
+                         mobile: {
+                           areaCode: state.baseInfo.mobileCountryCode, // 数据接口query/patient-intial-data, 关联areacodes.code
+                           number: state.baseInfo.mobileNumber
+                         },
+                         // 電話
+                         tel: {
+                           areaCode: state.baseInfo.tel?.areaCode?.code,
+                           number: state.baseInfo.tel.number
+                         },
+                         email: state.baseInfo.email
+                       },
+                       houseAddress: {
+                         area: state.otherInfo.houseArea?.item, // 数据接口query/patient-data-setting, 类别area, 关联item
+                         district: state.otherInfo.houseDistrict?.item, // 数据接口query/patient-data-setting, 类别district, 关联item
+                         street: state.otherInfo.houseAddress // free text, 详细地址
+                       },
+                       referral: {
+                         category: state.otherInfo.referralCategory?.code, // 数据接口query/patient-intial-data, 关联 refferalType.code
+                         description: state.otherInfo.referralDescription?.value // 数据接口query/refferal, catagory取refferalType.code, 关联value
+                       },
+                       insurance: state.insuranceInfos.map(
+                         (item, index, array) => {
+                           return {
+                             id: item.id,
+                             payor: {
+                               id: item.payor?.id,
+                               name: item.payor.name
+                             },
+                             policyNo: item.policyNo,
+                             membershipNo: item.membershipNo,
+                             insuranceContent: item.insuranceContent,
+                             isDefault: index == state.defIndex ? true : false
+                           }
+                         }
+                       ),
+                       occupation: state.baseInfo.occupation?.item,
+                       Group: state.baseInfo.group
+                     }))
+                   }
+                   if (pageData.WaitingSchedulingDetailPageType === 1) {
+                     try {
+                       const data1 = await confirm_remote_ticket_option({
+                         appointmentId: data.appointmentId,
+                         checkInInsuranceId: data.checkInInsuranceId,
+-                        patientId: data.patientId
++                        patientId: data.patientId,
++                        doctorId: pageData.doctorId
+                       });
+                       console.log('NewlyAddedPatients confirm_remote_ticket_option data1=', data1)
+                       if (!data1.eligibilityChecked) {
+                         setLoading(false);
+                         routes.navigate(navigation, routes.AppointmentListPage.routeName, {});
+                         emitEvent(globalEventName.changehomeType, 0)
+                         return false;
+                       }
+                     } catch (error) {
+                       console.error('Error refreshing page:', error);
+                     } finally {
+                     }
+                   }
+                   setLoading(false)
+                   routes.navigate(navigation, routes.SignInEcPages.routeName, {
+                       pageData: {
+                         appointmentId: data.appointmentId,
+                         checkInInsuranceId: data.checkInInsuranceId,
+                         // WaitingSchedulingDetailPageType: pageData.WaitingSchedulingDetailPageType,
+                         // patientData: state,
+                         patientId: data.patientId,
+-                        confirmPatientData:
+-                        data.confirmPatientData
++                        doctorId: pageData.doctorId,
++                        confirmPatientData:data.confirmPatientData
+                       }
+                     }
+                   )
+                 }
+               }
+             }
+             setLoading(false)
+           }}>
+             <Text style={[styles.buttonText, (disabledSave ? {color: '#B7B7B9'} : null)]}>{global.i18n.t('confirm')}</Text>
+           </TouchableOpacity>
+         )
+       },
+       [state, state.pageType, state.insuranceInfos, pageData, disabledSave],
+     );
+ 
+   // 去掉 首尾空格，iOS中\u200D
+   const cleanZWJ = (str?: string) => str ? str.replace(/\u200D/g, ' ').trim() : str;
+ 
+   const onSave = useCallback(
+     async () => {
+       console.log('NewlyAddedPatients.tsx onSave state=', state)
+       if (!state.baseInfo.identityDocumentType) {
+         console.log('请选择證件類型')
+         return false
+       }
+       if (!state.baseInfo.identityDocumentNumber) {
+         console.log('請輸入證件編號')
+         return false
+       }
+ 
+       // 去掉id 否则对后端保存造成影响
+       const validMobiles = state.baseInfo.mobiles.filter(
+         item => item.mobileAreaCode && item.mobile
+       ).map(item => {
+         // 创建一个不包含 id 属性的新对象
+         const {id, ...rest} = item;
+         return rest;
+       });
+       const [firstMobile, ...otherMobiles] = validMobiles;
+ 
+       const validTelephones = state.baseInfo.telephones.filter(
+         item => item.telephoneAreaCode && item.telephone
+       ).map(item => {
+         // 创建一个不包含 id 属性的新对象
+         const {id, ...rest} = item;
+         return rest;
+       });
+       const [firsTelephone, ...otherTelephones] = validTelephones;
+ 
+       if (state.pageType === -1) {//新增
+@@ -4589,168 +4591,100 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+             number: cleanZWJ(state.baseInfo.identityDocumentNumber),
+             // 其他證件編號
+             otherNumber: cleanZWJ(state.baseInfo.otherIdentityNumber)
+           },
+           name: {
+             en: cleanZWJ(state.baseInfo.enName), zh: cleanZWJ(state.baseInfo.zhName)
+           },
+           blood: state.baseInfo.blood?.item,
+           doctorInCharge: state.otherInfo.doctorInCharge?.item,
+           familyHistory: cleanZWJ(state.otherInfo.familyHistory),
+           remark: cleanZWJ(state.baseInfo.remark),
+           receiveMarketingMessage: state.receiveMarketingMessage,
+           emergencyContactAreaCode: state.emergencyContactInfo.emergencyContactAreaCode,
+           emergencyContactName: cleanZWJ(state.emergencyContactInfo.emergencyContactName),
+           emergencyContactPhone: state.emergencyContactInfo.emergencyContactPhone,
+           emergencyContactRelationship: state.emergencyContactInfo.emergencyContactRelationship,
+           emergencyContactRemark: cleanZWJ(state.emergencyContactInfo.emergencyContactRemark),
+           contact: {
+             //無線電話
+             mobile: {
+               areaCode: firstMobile.mobileAreaCode, // 数据接口query/patient-intial-data, 关联areacodes.code
+               number: firstMobile.mobile
+             },
+             // 電話
+             tel: {
+               areaCode: firsTelephone?.telephoneAreaCode,
+               number: firsTelephone?.telephone,
+             },
+             email: cleanZWJ(state.baseInfo.email)
+           },
+           patientMobiles: otherMobiles,
+           patientTelephones: otherTelephones,
+           houseAddress: {
+             area: state.otherInfo.houseArea?.item, // 数据接口query/patient-data-setting, 类别area, 关联item
+             district: state.otherInfo.houseDistrict?.item, // 数据接口query/patient-data-setting, 类别district, 关联item
+             street: state.otherInfo.houseAddress // free text, 详细地址
+           },
+           referral: {
+             category: state.otherInfo.referralCategory?.code, // 数据接口query/patient-intial-data, 关联 refferalType.code
+             description: state.otherInfo.referralDescription?.value // 数据接口query/refferal, catagory取refferalType.code, 关联value
+           },
+           insurance: state.insuranceInfos,
+           occupation: state.baseInfo.occupation?.item,
+           Group: state.baseInfo.group
+         }))
+         if (data) {
+           emitEvent(globalEventName.refreshPatientList, '1')
+           routes.goBack(navigation);
+         }
+       } else if (state.pageType === 0 || state.pageType === 1) {//編輯 |签到前
+-        // const [err, data] = await tool.to(update_patient({
+-        //   id: state.patientId,
+-        //   gender: state.baseInfo.gender,
+-        //   prefix: state.baseInfo.prefix?.identifier,
+-        //   dateOfBirth: state.baseInfo.birthDate,
+-        //   documentId: {
+-        //     //證件類型
+-        //     type: state.baseInfo.identityDocumentType.code,
+-        //     //證件編號
+-        //     number: cleanZWJ(state.baseInfo.identityDocumentNumber),
+-        //     // 其他證件編號
+-        //     otherNumber: cleanZWJ(state.baseInfo.otherIdentityNumber)
+-        //   },
+-        //   name: {
+-        //     en: cleanZWJ(state.baseInfo.enName), zh: cleanZWJ(state.baseInfo.zhName)
+-        //   },
+-        //   blood: state.baseInfo.blood?.item,
+-        //   doctorInCharge: state.otherInfo.doctorInCharge?.item,
+-        //   familyHistory: cleanZWJ(state.otherInfo.familyHistory),
+-        //   remark: cleanZWJ(state.baseInfo.remark),
+-        //   receiveMarketingMessage: state.receiveMarketingMessage,
+-        //   emergencyContactAreaCode: state.emergencyContactInfo.emergencyContactAreaCode,
+-        //   emergencyContactName: cleanZWJ(state.emergencyContactInfo.emergencyContactName),
+-        //   emergencyContactPhone: state.emergencyContactInfo.emergencyContactPhone,
+-        //   emergencyContactRelationship: state.emergencyContactInfo.emergencyContactRelationship,
+-        //   emergencyContactRemark: cleanZWJ(state.emergencyContactInfo.emergencyContactRemark),
+-        //   contact: {
+-        //     //無線電話
+-        //     mobile: {
+-        //       areaCode: firstMobile.mobileAreaCode, // 数据接口query/patient-intial-data, 关联areacodes.code
+-        //       number: firstMobile.mobile
+-        //     },
+-        //     // 電話
+-        //     tel: {
+-        //       areaCode: firsTelephone.telephoneAreaCode,
+-        //       number: firsTelephone.telephone,
+-        //     },
+-        //     email: cleanZWJ(state.baseInfo.email)
+-        //   },
+-        //   patientMobiles: otherMobiles,
+-        //   patientTelephones: otherTelephones,
+-        //   houseAddress: {
+-        //     area: state.otherInfo.houseArea?.item, // 数据接口query/patient-data-setting, 类别area, 关联item
+-        //     district: state.otherInfo.houseDistrict?.item, // 数据接口query/patient-data-setting, 类别district, 关联item
+-        //     street: state.otherInfo.houseAddress // free text, 详细地址
+-        //   },
+-        //   referral: {
+-        //     category: state.otherInfo.referralCategory?.code, // 数据接口query/patient-intial-data, 关联 refferalType.code
+-        //     description: state.otherInfo.referralDescription?.value // 数据接口query/refferal, catagory取refferalType.code, 关联value
+-        //   },
+-        //   insurance: state.insuranceInfos.map(
+-        //     (item, index, array) => {
+-        //       return {
+-        //         id: item.id,
+-        //         payor: {
+-        //           id: item.payor?.id,
+-        //           name: item.payor.name
+-        //         },
+-        //         policyNo: item.policyNo,
+-        //         membershipNo: item.membershipNo,
+-        //         insuranceContent: item.insuranceContent,
+-        //         isDefault: index == state.defIndex ? true : false
+-        //       }
+-        //     }
+-        //   ),
+-        //   occupation: state.baseInfo.occupation?.item,
+-        //   Group: state.baseInfo.group
+-        // }))
+         try {
+           const data = await update_patient({
+             id: state.patientId,
+             gender: state.baseInfo.gender,
+             prefix: state.baseInfo.prefix?.identifier,
+             dateOfBirth: state.baseInfo.birthDate,
+             documentId: {
+               //證件類型
+               type: state.baseInfo.identityDocumentType.code,
+               //證件編號
+               number: cleanZWJ(state.baseInfo.identityDocumentNumber),
+               // 其他證件編號
+               otherNumber: cleanZWJ(state.baseInfo.otherIdentityNumber)
+             },
+             name: {
+               en: cleanZWJ(state.baseInfo.enName), zh: cleanZWJ(state.baseInfo.zhName)
+             },
+             blood: state.baseInfo.blood?.item,
+             doctorInCharge: state.otherInfo.doctorInCharge?.item,
+             familyHistory: cleanZWJ(state.otherInfo.familyHistory),
+             remark: cleanZWJ(state.baseInfo.remark),
+             receiveMarketingMessage: state.receiveMarketingMessage,
+             emergencyContactAreaCode: state.emergencyContactInfo.emergencyContactAreaCode,
+             emergencyContactName: cleanZWJ(state.emergencyContactInfo.emergencyContactName),
+             emergencyContactPhone: state.emergencyContactInfo.emergencyContactPhone,
+             emergencyContactRelationship: state.emergencyContactInfo.emergencyContactRelationship,
+             emergencyContactRemark: cleanZWJ(state.emergencyContactInfo.emergencyContactRemark),
+             contact: {
+               //無線電話
+               mobile: {
+                 areaCode: firstMobile.mobileAreaCode, // 数据接口query/patient-intial-data, 关联areacodes.code
+                 number: firstMobile.mobile
+               },
+               // 電話
+               tel: {
+                 areaCode: firsTelephone?.telephoneAreaCode,
+                 number: firsTelephone?.telephone,
+               },
+               email: cleanZWJ(state.baseInfo.email)
+             },
+             patientMobiles: otherMobiles,
+             patientTelephones: otherTelephones,
+             houseAddress: {
+               area: state.otherInfo.houseArea?.item, // 数据接口query/patient-data-setting, 类别area, 关联item
+               district: state.otherInfo.houseDistrict?.item, // 数据接口query/patient-data-setting, 类别district, 关联item
+               street: state.otherInfo.houseAddress // free text, 详细地址
+             },
+             referral: {
+               category: state.otherInfo.referralCategory?.code, // 数据接口query/patient-intial-data, 关联 refferalType.code
+               description: state.otherInfo.referralDescription?.value // 数据接口query/refferal, catagory取refferalType.code, 关联value
+diff --git a/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx b/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx
+index d090e33c..299a732b 100644
+--- a/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx
++++ b/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx
+@@ -3427,183 +3427,256 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+             number: cleanZWJ(state.baseInfo.identityDocumentNumber),
+             // 其他證件編號
+             otherNumber: cleanZWJ(state.baseInfo.otherIdentityNumber)
+           },
+           name: {
+             en: cleanZWJ(state.baseInfo.enName), zh: cleanZWJ(state.baseInfo.zhName)
+           },
+           blood: state.baseInfo.blood?.item,
+           doctorInCharge: state.otherInfo.doctorInCharge?.item,
+           familyHistory: cleanZWJ(state.otherInfo.familyHistory),
+           remark: cleanZWJ(state.baseInfo.remark),
+           receiveMarketingMessage: state.receiveMarketingMessage,
+           emergencyContactAreaCode: state.emergencyContactInfo.emergencyContactAreaCode,
+           emergencyContactName: cleanZWJ(state.emergencyContactInfo.emergencyContactName),
+           emergencyContactPhone: state.emergencyContactInfo.emergencyContactPhone,
+           emergencyContactRelationship: state.emergencyContactInfo.emergencyContactRelationship,
+           emergencyContactRemark: cleanZWJ(state.emergencyContactInfo.emergencyContactRemark),
+           contact: {
+             //無線電話
+             mobile: {
+               areaCode: firstMobile.mobileAreaCode, // 数据接口query/patient-intial-data, 关联areacodes.code
+               number: firstMobile.mobile
+             },
+             // 電話
+             tel: {
+               areaCode: firsTelephone.telephoneAreaCode,
+               number: firsTelephone.telephone,
+             },
+             email: cleanZWJ(state.baseInfo.email)
+           },
+           patientMobiles: otherMobiles,
+           patientTelephones: otherTelephones,
+           houseAddress: {
+             area: state.otherInfo.houseArea?.item, // 数据接口query/patient-data-setting, 类别area, 关联item
+             district: state.otherInfo.houseDistrict?.item, // 数据接口query/patient-data-setting, 类别district, 关联item
+             street: state.otherInfo.houseAddress // free text, 详细地址
+           },
+           referral: {
+             category: state.otherInfo.referralCategory?.code, // 数据接口query/patient-intial-data, 关联 refferalType.code
+             description: state.otherInfo.referralDescription?.value // 数据接口query/refferal, catagory取refferalType.code, 关联value
+           },
+           insurance: state.insuranceInfos,
+           occupation: state.baseInfo.occupation?.item,
+           Group: state.baseInfo.group
+         }))
+         if (data) {
+           emitEvent(globalEventName.refreshPatientList, '1')
+           routes.goBack(navigation);
+         }
+       } else if (state.pageType === 0 || state.pageType === 1) {//編輯 |签到前
+-        const [err, data] = await tool.to(update_patient({
+-          id: state.patientId,
+-          gender: state.baseInfo.gender,
+-          prefix: state.baseInfo.prefix?.identifier,
+-          dateOfBirth: state.baseInfo.birthDate,
+-          documentId: {
+-            //證件類型
+-            type: state.baseInfo.identityDocumentType.code,
+-            //證件編號
+-            number: cleanZWJ(state.baseInfo.identityDocumentNumber),
+-            // 其他證件編號
+-            otherNumber: cleanZWJ(state.baseInfo.otherIdentityNumber)
+-          },
+-          name: {
+-            en: cleanZWJ(state.baseInfo.enName), zh: cleanZWJ(state.baseInfo.zhName)
+-          },
+-          blood: state.baseInfo.blood?.item,
+-          doctorInCharge: state.otherInfo.doctorInCharge?.item,
+-          familyHistory: cleanZWJ(state.otherInfo.familyHistory),
+-          remark: cleanZWJ(state.baseInfo.remark),
+-          receiveMarketingMessage: state.receiveMarketingMessage,
+-          emergencyContactAreaCode: state.emergencyContactInfo.emergencyContactAreaCode,
+-          emergencyContactName: cleanZWJ(state.emergencyContactInfo.emergencyContactName),
+-          emergencyContactPhone: state.emergencyContactInfo.emergencyContactPhone,
+-          emergencyContactRelationship: state.emergencyContactInfo.emergencyContactRelationship,
+-          emergencyContactRemark: cleanZWJ(state.emergencyContactInfo.emergencyContactRemark),
+-          contact: {
+-            //無線電話
+-            mobile: {
+-              areaCode: firstMobile.mobileAreaCode, // 数据接口query/patient-intial-data, 关联areacodes.code
+-              number: firstMobile.mobile
+-            },
+-            // 電話
+-            tel: {
+-              areaCode: firsTelephone.telephoneAreaCode,
+-              number: firsTelephone.telephone,
+-            },
+-            email: cleanZWJ(state.baseInfo.email)
+-          },
+-          patientMobiles: otherMobiles,
+-          patientTelephones: otherTelephones,
+-          houseAddress: {
+-            area: state.otherInfo.houseArea?.item, // 数据接口query/patient-data-setting, 类别area, 关联item
+-            district: state.otherInfo.houseDistrict?.item, // 数据接口query/patient-data-setting, 类别district, 关联item
+-            street: state.otherInfo.houseAddress // free text, 详细地址
+-          },
+-          referral: {
+-            category: state.otherInfo.referralCategory?.code, // 数据接口query/patient-intial-data, 关联 refferalType.code
+-            description: state.otherInfo.referralDescription?.value // 数据接口query/refferal, catagory取refferalType.code, 关联value
+-          },
+-          insurance: state.insuranceInfos.map(
+-            (item, index, array) => {
+-              return {
+-                id: item.id,
+-                payor: {
+-                  id: item.payor?.id,
+-                  name: item.payor.name
+-                },
+-                policyNo: item.policyNo,
+-                membershipNo: item.membershipNo,
+-                insuranceContent: item.insuranceContent,
+-                isDefault: index == state.defIndex ? true : false
+-              }
+-            }
+-          ),
+-          occupation: state.baseInfo.occupation?.item,
+-          Group: state.baseInfo.group
+-        }))
+-        if (data) {
+-          if (pageData.from == routes.WaitingSchedulingDetailPage.routeName) {
+-            if (pageData.WaitingSchedulingDetailPageType == 0 && state.pageType === 0) {//编辑排队
+-              emitEvent(globalEventName.refreshHomeWaittinglist, '1')
+-              routes.navigate(navigation, routes.AppointmentListPage.routeName, {})
+-            }
+-          } else if (pageData.from == routes.DiagnosisPage.routeName) {
+-            emitEvent(globalEventName.updatePatientInfoInDiagnosisPage, '1')
+-            routes.goBack(navigation);
+-          } else {
+-            console.log('NewlyAddedPatients.tsx onSave emitEvent refreshPatientList')
+-            emitEvent(globalEventName.refreshPatientList, '1')
+-            routes.goBack(navigation);
++        // const [err, data] = await tool.to(update_patient({
++        //   id: state.patientId,
++        //   gender: state.baseInfo.gender,
++        //   prefix: state.baseInfo.prefix?.identifier,
++        //   dateOfBirth: state.baseInfo.birthDate,
++        //   documentId: {
++        //     //證件類型
++        //     type: state.baseInfo.identityDocumentType.code,
++        //     //證件編號
++        //     number: cleanZWJ(state.baseInfo.identityDocumentNumber),
++        //     // 其他證件編號
++        //     otherNumber: cleanZWJ(state.baseInfo.otherIdentityNumber)
++        //   },
++        //   name: {
++        //     en: cleanZWJ(state.baseInfo.enName), zh: cleanZWJ(state.baseInfo.zhName)
++        //   },
++        //   blood: state.baseInfo.blood?.item,
++        //   doctorInCharge: state.otherInfo.doctorInCharge?.item,
++        //   familyHistory: cleanZWJ(state.otherInfo.familyHistory),
++        //   remark: cleanZWJ(state.baseInfo.remark),
++        //   receiveMarketingMessage: state.receiveMarketingMessage,
++        //   emergencyContactAreaCode: state.emergencyContactInfo.emergencyContactAreaCode,
++        //   emergencyContactName: cleanZWJ(state.emergencyContactInfo.emergencyContactName),
++        //   emergencyContactPhone: state.emergencyContactInfo.emergencyContactPhone,
++        //   emergencyContactRelationship: state.emergencyContactInfo.emergencyContactRelationship,
++        //   emergencyContactRemark: cleanZWJ(state.emergencyContactInfo.emergencyContactRemark),
++        //   contact: {
++        //     //無線電話
++        //     mobile: {
++        //       areaCode: firstMobile.mobileAreaCode, // 数据接口query/patient-intial-data, 关联areacodes.code
++        //       number: firstMobile.mobile
++        //     },
++        //     // 電話
++        //     tel: {
++        //       areaCode: firsTelephone.telephoneAreaCode,
++        //       number: firsTelephone.telephone,
++        //     },
++        //     email: cleanZWJ(state.baseInfo.email)
++        //   },
++        //   patientMobiles: otherMobiles,
++        //   patientTelephones: otherTelephones,
++        //   houseAddress: {
++        //     area: state.otherInfo.houseArea?.item, // 数据接口query/patient-data-setting, 类别area, 关联item
++        //     district: state.otherInfo.houseDistrict?.item, // 数据接口query/patient-data-setting, 类别district, 关联item
++        //     street: state.otherInfo.houseAddress // free text, 详细地址
++        //   },
++        //   referral: {
++        //     category: state.otherInfo.referralCategory?.code, // 数据接口query/patient-intial-data, 关联 refferalType.code
++        //     description: state.otherInfo.referralDescription?.value // 数据接口query/refferal, catagory取refferalType.code, 关联value
++        //   },
++        //   insurance: state.insuranceInfos.map(
++        //     (item, index, array) => {
++        //       return {
++        //         id: item.id,
++        //         payor: {
++        //           id: item.payor?.id,
++        //           name: item.payor.name
++        //         },
++        //         policyNo: item.policyNo,
++        //         membershipNo: item.membershipNo,
++        //         insuranceContent: item.insuranceContent,
++        //         isDefault: index == state.defIndex ? true : false
++        //       }
++        //     }
++        //   ),
++        //   occupation: state.baseInfo.occupation?.item,
++        //   Group: state.baseInfo.group
++        // }))
++         try {
++          const data=await update_patient({
++             id: state.patientId,
++             gender: state.baseInfo.gender,
++             prefix: state.baseInfo.prefix?.identifier,
++             dateOfBirth: state.baseInfo.birthDate,
++             documentId: {
++               //證件類型
++               type: state.baseInfo.identityDocumentType.code,
++               //證件編號
++               number: cleanZWJ(state.baseInfo.identityDocumentNumber),
++               // 其他證件編號
++               otherNumber: cleanZWJ(state.baseInfo.otherIdentityNumber)
++             },
++             name: {
++               en: cleanZWJ(state.baseInfo.enName), zh: cleanZWJ(state.baseInfo.zhName)
++             },
++             blood: state.baseInfo.blood?.item,
++             doctorInCharge: state.otherInfo.doctorInCharge?.item,
++             familyHistory: cleanZWJ(state.otherInfo.familyHistory),
++             remark: cleanZWJ(state.baseInfo.remark),
++             receiveMarketingMessage: state.receiveMarketingMessage,
++             emergencyContactAreaCode: state.emergencyContactInfo.emergencyContactAreaCode,
++             emergencyContactName: cleanZWJ(state.emergencyContactInfo.emergencyContactName),
++             emergencyContactPhone: state.emergencyContactInfo.emergencyContactPhone,
++             emergencyContactRelationship: state.emergencyContactInfo.emergencyContactRelationship,
++             emergencyContactRemark: cleanZWJ(state.emergencyContactInfo.emergencyContactRemark),
++             contact: {
++               //無線電話
++               mobile: {
++                 areaCode: firstMobile.mobileAreaCode, // 数据接口query/patient-intial-data, 关联areacodes.code
++                 number: firstMobile.mobile
++               },
++               // 電話
++               tel: {
++                 areaCode: firsTelephone.telephoneAreaCode,
++                 number: firsTelephone.telephone,
++               },
++               email: cleanZWJ(state.baseInfo.email)
++             },
++             patientMobiles: otherMobiles,
++             patientTelephones: otherTelephones,
++             houseAddress: {
++               area: state.otherInfo.houseArea?.item, // 数据接口query/patient-data-setting, 类别area, 关联item
++               district: state.otherInfo.houseDistrict?.item, // 数据接口query/patient-data-setting, 类别district, 关联item
++               street: state.otherInfo.houseAddress // free text, 详细地址
++             },
++             referral: {
++               category: state.otherInfo.referralCategory?.code, // 数据接口query/patient-intial-data, 关联 refferalType.code
++               description: state.otherInfo.referralDescription?.value // 数据接口query/refferal, catagory取refferalType.code, 关联value
++             },
++             insurance: state.insuranceInfos.map(
++               (item, index, array) => {
++                 return {
++                   id: item.id,
++                   payor: {
++                     id: item.payor?.id,
++                     name: item.payor.name
++                   },
++                   policyNo: item.policyNo,
++                   membershipNo: item.membershipNo,
++                   insuranceContent: item.insuranceContent,
++                   isDefault: index == state.defIndex ? true : false
++                 }
++               }
++             ),
++             occupation: state.baseInfo.occupation?.item,
++             Group: state.baseInfo.group
++           })
++           console.log('NewlyAddedPatients.tsx onSave data=', data)
++           if (data) {
++             if (pageData.from == routes.WaitingSchedulingDetailPage.routeName) {
++               if (pageData.WaitingSchedulingDetailPageType == 0 && state.pageType === 0) {//编辑排队
++                 emitEvent(globalEventName.refreshHomeWaittinglist, '1')
++                 routes.navigate(navigation, routes.AppointmentListPage.routeName, {})
++               }
++             } else if (pageData.from == routes.DiagnosisPage.routeName) {
++               emitEvent(globalEventName.updatePatientInfoInDiagnosisPage, '1')
++               routes.goBack(navigation);
++             } else {
++               console.log('NewlyAddedPatients.tsx onSave emitEvent refreshPatientList')
++               emitEvent(globalEventName.refreshPatientList, '1')
++               routes.goBack(navigation);
++             }
++           }
++          } catch (e) {
++           console.log('NewlyAddedPatients.tsx onSave error', e)
+           }
+-        }
+       }
+     },
+     [state, state.otherInfo, state.baseInfo.group],
+   );
+   const renderOccupationModal = useCallback(
+     () => {
+       return state.showOccupationModal && (
+         <CommonModal onClose={() => {
+           setState(prevState => {
+             return {...prevState, showOccupationModal: false}
+           })
+         }}
+           // modalOverlayStyle={commonModalStyle.blackModalOverlay}
+         >
+           <View style={[commonModalStyle.baseModalView, commonModalStyle.modalViewStyle, {height: '60%'}]}>
+             <CsxFlatList
+               keyExtractor={item => item.id}
+               // ref={refCsxFlatList}
+               autoRefresh={true}
+               fetchData={
+                 async ({pageIndex}) => {
+                   const [err, data] = await tool.to(patientDataSetting(pageIndex, 'Occupation'))
+                   return data
+                 }
+               }
+               renderItem={
+                 ({item, index}: { item: any; index: number }) => {
+                   return (
+                     <TouchableOpacity key={index} style={commonModalStyle.commonModalRow} onPress={() => {
+                       setState(prevState => {
+                         return {
+                           ...prevState, showOccupationModal: false,
+                           baseInfo: {
+                             ...prevState.baseInfo,
+                             occupation: item
+                           }
+                         }
+                       })
+                     }}>
+                       {item.item === state.baseInfo.occupation?.item &&
+                         <Image source={check_mark} style={commonModalStyle.checkbox} />}
+                       <Text style={commonModalStyle.commonModalRowText}>{item.item}</Text>
+                     </TouchableOpacity>
+                   );
+                 }}
+             />
+           </View>
+         </CommonModal>
+       )
+     },
+diff --git a/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx b/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx
+index d1348419..1404c46f 100644
+--- a/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx
++++ b/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx
+@@ -134,107 +134,107 @@ interface pageDataProps {
+  * @returns {*}
+  * @constructor
+  */
+ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) => {
+   const {navigation, scene, route} = props
+   console.log('NewlyAddedPatients props=', props)
+   const {pageData} = route?.params ?? {} as { pageData?: pageDataProps };//类型断言
+   //整个 src/csxStore/store.ts
+   const store = useSelector((state: object) => state)
+   const dispatch = useDispatch();
+   /**
+    setState(prevState => {
+    return {
+    ...prevState, // 复制原来的状态
+    baseInfo: {
+    ...prevState.baseInfo, // 复制 baseInfo 对象
+    enName,
+    }
+    }
+    })
+    */
+   const [state, setState] = useState({
+     pageType: pageData.pageType/*-1:新增 0:编辑 1:签到前*/, idTypeOptions: [],//证件类型列表
+     areaCodeOptions: [],//电话区号
+     refferalTypes: [],//介绍人类别
+     showEmergencyAreaCodeModal: false,
+     patientId: pageData.patientId || null,
+     showOccupationModal: false,
+     groupText: '',
+     showGroupModal: false,
+     selectedGroup: null,
+     defIndex: 0,//默认选中的索引
+     mobileIndex: 0,//默认选中的手机号码索引
+     telephoneIndex: 0,//默认选中的电话号码索引
+     baseInfo: {
+       patientCode: '', autoGeneratePatientCode: false,
+       enName: '',
+       zhName: '',
+       gender: '',//接口传: '0'为女，'1'为男，'255'为不明性别
+       prefix: null,
+       birthDate: null,//<string|null> ;'2007-05-18'; Patient/Get 可能不返回此字段 ;
+       identityDocumentType: null,
+       identityDocumentNumber: '',
+       //無線電話
+       // mobile: {
+       //   areaCode: null, // 数据接口 query/patient-intial-data, 关联areacodes.code
+       //   number: '',//手机号码
+       // },
+       // mobileCountryCode: '',
+       // mobileNumber: '',
+-      mobiles: [],
++      mobiles: [{ mobile: '', mobileAreaCode: '' }],
+       //電話
+       // tel: {
+       //   areaCode: null,
+       //   number: ''
+       // },
+-      telephones: [],
++      telephones: [{ telephone: '', telephoneAreaCode: '' }],
+       blood: null, ehrNumber: '', remark: '', email: '', otherIdentityNumber: '',
+       //職業
+       occupation: {
+         id: '',
+         item: ''
+       },
+       //類別
+       group: []
+     }, otherInfo: {
+       houseArea: null,
+       houseDistrict: null,
+       houseAddress: '',
+       officeArea: global.i18n.t('PleaseSelect'),
+       officeDistrict: global.i18n.t('PleaseSelect'),
+       officeAddress: '',
+       referralCategory: null,
+       referralDescription: null, doctorInCharge: null,
+       //家族歷史
+       familyHistory: '',
+     }, emergencyContactInfo: {
+       emergencyContactName: '',
+       emergencyContactAreaCode: '',
+       emergencyContactPhone: '',
+       emergencyContactRelationship: '',
+       emergencyContactRemark: '',
+     },
+     //保险资料列表,用于 保险资料里的表格
+     insuranceInfos: [],
+     //正在编辑的 保险资料
+     editingInsuranceInfo: {
+       payor: null,
+       insuranceNo: '',//保险编号
+       //會員編號
+       membershipId: '',
+       //保險備註
+       insuranceContent: '',
+     },
+     houseAreaList: ['香港島', '九龍', '新界', '離島'],
+     houseDistrictList: ['中西區', '灣仔區', '東區', '南區', '九龍城區', '觀塘區', '深水埗區', '黃大仙區', '油尖旺區', '離島區', '葵青區', '荃灣區', '屯門區', '元朗區', '北區', '大埔區', '沙田區', '西貢區'],
+     officeAreaList: ['香港島', '九龍', '新界', '離島'],
+     officeDistrictList: ['中西區', '灣仔區', '東區', '南區', '九龍城區', '觀塘區', '深水埗區', '黃大仙區', '油尖旺區', '離島區', '葵青區', '荃灣區', '屯門區', '元朗區', '北區', '大埔區', '沙田區', '西貢區'],
+     showHouseAreaModal: false, showHouseDistrictModal: false, showOfficeAreaModal: false, showOfficeDistrictModal: false,
+     rBtDisabled: false, addInsuranceInfoBtDisabled: true,
+     showDoctorInChargeModal: false,
+     receiveMarketingMessage: false,
+     responsibleDoctorList: ['醫生', '代理', '病人', '其他'],
+     //關聯病人
+     relatedPatients: '',
+     //關聯病人姓名
+     associated_patient_name: '',
+@@ -362,115 +362,115 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+               if (data) {
+                 const _prefix = data.baseInfo.prefix?.split('|')
+                 console.log('NewlyAddedPatients componentDidMount _prefix=', _prefix)
+                 const _insuranceInfos = data.insuranceInfos.map(
+                   ({
+                      payorId,
+                      insuranceContent,
+                      insuranceNo,
+                      isDefault,
+                      membershipId,
+                      payor,
+                      policyId,
+                      patientInsuranceId
+                    }, index, array) => {
+                     return {
+                       id: patientInsuranceId,
+                       payor: {
+                         id: payorId,
+                         name: payor, item: payor
+                       },
+                       insuranceNo,
+                       policyNo: insuranceNo,
+                       membershipId,
+                       membershipNo: membershipId,
+                       insuranceContent: insuranceContent,
+                       editing: false,
+                       isDefault: isDefault,
+                       patientInsuranceId
+                     }
+                   }
+                 )
+                 console.log('NewlyAddedPatients componentDidMount _insuranceInfos=', _insuranceInfos)
+                 setState(prevState => {
+                   return {
+                     ...prevState,
+                     baseInfo: {
+                       ...prevState.baseInfo, // 复制 baseInfo 对象
+                       ...data.baseInfo,
+                       patientCode: data.baseInfo.code,
+                       gender: `${data.baseInfo.gender}`,
+                       //無線電話
+                       // mobile: {
+                       //   areaCode: {
+                       //     code: data.baseInfo.mobileCountryCode
+                       //   },
+                       //   number: data.baseInfo.mobileNumber,//手机号码
+                       // },
+                       mobiles: [
+                         ...(data.baseInfo.mobileNumber && data.baseInfo.mobileCountryCode
+                           ? [{ mobile: data.baseInfo.mobileNumber, mobileAreaCode: data.baseInfo.mobileCountryCode }]
+-                          : []),
+-                        ...(data.baseInfo.patientMobiles || [])
++                          : [{ mobile: '', mobileAreaCode: '' }]),
++                        ...(data.patientMobiles || [])
+                       ],
+                       //電話
+                       // tel: {
+                       //   areaCode: {
+                       //     code: data.baseInfo.telephoneAreaCode || ''
+                       //   },
+                       //   number: data.baseInfo.telephone
+                       // },
+                       telephones: [
+                         ...(data.baseInfo.telephone && data.baseInfo.telephoneAreaCode
+                           ? [{ telephone: data.baseInfo.telephone, telephoneAreaCode: data.baseInfo.telephoneAreaCode }]
+                           : []),
+-                        ...(data.baseInfo.patientTelephones || [])
++                        ...(data.patientTelephones || [])
+                       ],
+                       prefix: (_prefix ? {
+                         code: _prefix[0],
+                         name: {
+                           zh: _prefix[3],
+                           en: _prefix[2]
+                         }, identifier: data.baseInfo.prefix
+                       } : null),
+                       identityDocumentType: data1.idTypes.find((item) => item.code === data.baseInfo.identityDocumentType),
+                       blood: {
+                         item: data.baseInfo.blood
+                       },
+                       occupation: {
+                         item: data.baseInfo.occupation
+                       },
+                       group: data.baseInfo.group?.split('|')
+                     },
+                     otherInfo: {
+                       ...prevState.otherInfo, // 复制 otherInfo 对象
+                       ...data.otherInfo,
+                       houseArea: {
+                         item: data.otherInfo.houseArea
+                       },
+                       houseDistrict: {
+                         item: data.otherInfo.houseDistrict
+                       },
+                       referralCategory: {
+                         code: data.otherInfo.referralCategory
+                       },
+                       referralDescription: {
+                         value: data.otherInfo.referralDescription
+                       },
+                       doctorInCharge: {
+                         item: data.otherInfo.doctorInCharge
+                       }
+                     },
+                     emergencyContactInfo: {
+                       ...prevState.emergencyContactInfo,
+                       ...data.emergencyContactInfo
+                     },
+                     insuranceInfos: _insuranceInfos,
+                     //editingInsuranceInfo.payor.item
+                     editingInsuranceInfo: {
+                       ...prevState.editingInsuranceInfo,
+                       payor: {
+                         item: data.insuranceInfos.length > 0 ? data.insuranceInfos[0].payor : '',
+                         name: data.insuranceInfos.length > 0 ? data.insuranceInfos[0].payor : '',
+                         id: data.insuranceInfos.length > 0 ? data.insuranceInfos[0].payorId : '',
+                         category: '',
+                       },
+@@ -3387,110 +3387,112 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+         console.log('请选择證件類型')
+         return false
+       }
+       if (!state.baseInfo.identityDocumentNumber) {
+         console.log('請輸入證件編號')
+         return false
+       }
+ 
+       const validMobiles = state.baseInfo.mobiles.filter(
+         item => item.mobileAreaCode && item.mobile
+       );
+       const [firstMobile, ...otherMobiles] = validMobiles;
+ 
+       const validTelephones = state.baseInfo.telephones.filter(
+         item => item.telephoneAreaCode && item.telephone
+       );
+       const [firsTelephone, ...otherTelephones] = validTelephones;
+ 
+       if (state.pageType === -1) {//新增
+         const [err, data] = await tool.to(create_patient({
+           clinicCode: global.curClinicData.code,
+           doctorCode: global.curDoctorData.code,
+           patientCode: state.baseInfo.patientCode,
+           gender: state.baseInfo.gender,
+           prefix: state.baseInfo.prefix?.identifier,
+           dateOfBirth: state.baseInfo.birthDate,
+           documentId: {
+             //證件類型
+             type: state.baseInfo.identityDocumentType.code,
+             //證件編號
+             number: cleanZWJ(state.baseInfo.identityDocumentNumber),
+             // 其他證件編號
+             otherNumber: cleanZWJ(state.baseInfo.otherIdentityNumber)
+           },
+           name: {
+             en: cleanZWJ(state.baseInfo.enName), zh: cleanZWJ(state.baseInfo.zhName)
+           },
+           blood: state.baseInfo.blood?.item,
+           doctorInCharge: state.otherInfo.doctorInCharge?.item,
+           familyHistory: cleanZWJ(state.otherInfo.familyHistory),
+           remark: cleanZWJ(state.baseInfo.remark),
+           receiveMarketingMessage: state.receiveMarketingMessage,
+           emergencyContactAreaCode: state.emergencyContactInfo.emergencyContactAreaCode,
+           emergencyContactName: cleanZWJ(state.emergencyContactInfo.emergencyContactName),
+           emergencyContactPhone: state.emergencyContactInfo.emergencyContactPhone,
+           emergencyContactRelationship: state.emergencyContactInfo.emergencyContactRelationship,
+           emergencyContactRemark: cleanZWJ(state.emergencyContactInfo.emergencyContactRemark),
+           contact: {
+             //無線電話
+             mobile: {
+-              areaCode: firstMobile.mobileCountryCode, // 数据接口query/patient-intial-data, 关联areacodes.code
+-              number: firstMobile.mobileNumber
++              areaCode: firstMobile.mobileAreaCode, // 数据接口query/patient-intial-data, 关联areacodes.code
++              number: firstMobile.mobile
+             },
+             // 電話
+             tel: {
+               areaCode: firsTelephone.telephoneAreaCode,
+               number: firsTelephone.telephone,
+             },
+             email: cleanZWJ(state.baseInfo.email)
+           },
++          patientMobiles: otherMobiles,
++          patientTelephones: otherTelephones,
+           houseAddress: {
+             area: state.otherInfo.houseArea?.item, // 数据接口query/patient-data-setting, 类别area, 关联item
+             district: state.otherInfo.houseDistrict?.item, // 数据接口query/patient-data-setting, 类别district, 关联item
+             street: state.otherInfo.houseAddress // free text, 详细地址
+           },
+           referral: {
+             category: state.otherInfo.referralCategory?.code, // 数据接口query/patient-intial-data, 关联 refferalType.code
+             description: state.otherInfo.referralDescription?.value // 数据接口query/refferal, catagory取refferalType.code, 关联value
+           },
+           insurance: state.insuranceInfos,
+           occupation: state.baseInfo.occupation?.item,
+           Group: state.baseInfo.group
+         }))
+         if (data) {
+           emitEvent(globalEventName.refreshPatientList, '1')
+           routes.goBack(navigation);
+         }
+       } else if (state.pageType === 0 || state.pageType === 1) {//編輯 |签到前
+         const [err, data] = await tool.to(update_patient({
+           id: state.patientId,
+           gender: state.baseInfo.gender,
+           prefix: state.baseInfo.prefix?.identifier,
+           dateOfBirth: state.baseInfo.birthDate,
+           documentId: {
+             //證件類型
+             type: state.baseInfo.identityDocumentType.code,
+             //證件編號
+             number: cleanZWJ(state.baseInfo.identityDocumentNumber),
+             // 其他證件編號
+             otherNumber: cleanZWJ(state.baseInfo.otherIdentityNumber)
+           },
+           name: {
+             en: cleanZWJ(state.baseInfo.enName), zh: cleanZWJ(state.baseInfo.zhName)
+           },
+           blood: state.baseInfo.blood?.item,
+           doctorInCharge: state.otherInfo.doctorInCharge?.item,
+           familyHistory: cleanZWJ(state.otherInfo.familyHistory),
+           remark: cleanZWJ(state.baseInfo.remark),
+           receiveMarketingMessage: state.receiveMarketingMessage,
+           emergencyContactAreaCode: state.emergencyContactInfo.emergencyContactAreaCode,
+           emergencyContactName: cleanZWJ(state.emergencyContactInfo.emergencyContactName),
+           emergencyContactPhone: state.emergencyContactInfo.emergencyContactPhone,
+           emergencyContactRelationship: state.emergencyContactInfo.emergencyContactRelationship,
+           emergencyContactRemark: cleanZWJ(state.emergencyContactInfo.emergencyContactRemark),
+           contact: {
+             //無線電話
+             mobile: {
+               areaCode: firstMobile.mobileAreaCode, // 数据接口query/patient-intial-data, 关联areacodes.code
+               number: firstMobile.mobile
+             },
+diff --git a/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx b/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx
+index d928cd46..d1348419 100644
+--- a/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx
++++ b/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx
+@@ -6,101 +6,101 @@ import {
+   TouchableOpacity,
+   ActivityIndicator,
+   TextInput,
+   FlatList,
+   Animated, SafeAreaView,
+   LayoutAnimation,
+   UIManager, Switch,
+   Platform, ScrollView, Keyboard,
+   StyleSheet, Alert,
+   Dimensions,
+ } from 'react-native'
+ import {useSelector, useDispatch} from 'react-redux'
+ import {pageProps} from 'csxRoutes/csxRouter'
+ import {SafeView} from 'components'
+ import tool from 'tools/tool'
+ import styles from "./NewlyAddedPatients.styles";
+ import CsxMobileHeader from "components/csxMobileHeader/CsxMobileHeader";
+ import {ThemeContext} from "components/theme/theme-context";
+ import {Theme, UITheme} from "types/Theme";
+ import AccordionListItem from "components/AccordionListItem/AccordionListItem";
+ import {arrowdown, arrowUp, chooseDoctorArrow, checked, unchecked, check_mark, addbt, addBt_disabled, icon_cancel, icon_sure} from "/icon/icon";
+ import scrollViewStyle from 'components/common-styles/scrollView.style'
+ import CommonModal from "components/commonModal/CommonModal";
+ import commonModalStyle from "components/commonModal/CommonModal.styles";
+ import CsxFlatList, {Data} from "components/CsxFlatList/CsxFlatList";
+ import type {DateData} from "react-native-calendars";
+ import moment from "moment/moment";
+ import {routes} from "csxRoutes";
+ import {
+   getPatientDetail,
+   newPatient,
+   patientDataSetting,
+   patient_intial_data,
+   prefix,
+   refferal,
+   create_patient,
+   update_patient,
+   delete_patient, confirm_remote_ticket, confirm_remote_ticket_option, getDoctorById, getClinicById, get_all_allergic_reaction_terms, list_hkctt_dxpx_terms, list_doctor_medical_terms
+ } from "api/api";
+ import {useGlobalEventListener, useGlobalEventEmitter, globalEventName} from 'tools/useGlobalEventEmitter'
+ import {useLanguage} from "useHooks/useLanguage";
+ import textInputStyle from "components/common-styles/textInputStyle";
+ import {useLoading} from 'components/LoadingModal/LoadingContext';
+ import {AutocompleteDropdownContextProvider, type AutocompleteDropdownRef} from 'react-native-autocomplete-dropdown';
+ import {WheelPicker} from 'react-native-ui-lib';
+ import CommonModalChild from 'components/commonModal/CommonModalChild';
+ import {useCommonAutocompleteDropdownModal} from 'components/CommonAutocompleteDropdown/CommonAutocompleteDropdownProvider'
+ import CommonAutocompleteDropdownModal from "components/CommonAutocompleteDropdown/CommonAutocompleteDropdownModal";
+ import {useCommonModal} from "components/commonModal/CommonModalProvider";
+ import {setNonSafeZoneBackgroundColorAction} from "actions/app-actions";
+-import {ArrowUpDown, Delete} from 'assets/svg/index';
++import { ArrowUpDown, Delete, Remove } from 'assets/svg/index';
+ import AutoDropdownRow from "components/AutoDropdownRow/AutoDropdownRow";
+ import {List_doctor_medical_terms, List_hkctt_dxpx_terms, List_hkctt_dxpx_terms_Item, Patient_config_data_occupation} from "api/api-types";
+ import {Props, SelectedItem} from "components/AutoDropdown/AutoDropdown.props";
+ import {NativeSyntheticEvent} from "react-native/Libraries/Types/CoreEventTypes";
+ import {TextInputSubmitEditingEventData} from "react-native/Libraries/Components/TextInput/TextInput";
+ import DatePicker from "components/date-picker/date-picker";
+ import {useThemeProvider} from "components/theme/theme-provider";
+ import {useCommonAlertModal, ButtonDirection} from 'components/CommonAlertModal/CommonAlertModalContext'
+ import {SelectedItem as AutoPositionedPopupSelectedItem} from "components/AutoPositionedPopup/AutoPositionedPopupProps.ts";
+ import AutoPositionedPopup from "components/AutoPositionedPopup/AutoPositionedPopup.tsx";
+ import {useRootView} from "components/RootViewProvider/RootViewContext.tsx";
+ 
+ const screenHeight = Dimensions.get('window').height;
+ const DatePickerBox: React.FC<{
+   updateState: (key: string, value: any) => void;
+   children: any,
+   selectedItem: SelectedItem | undefined,
+   uiTheme: UITheme,
+   baseInfo: { birthDate: string | null }
+ }> = memo(({
+              updateState,
+              children,
+              selectedItem,
+              uiTheme,
+              baseInfo
+            }: {
+   updateState: (key: string, value: any) => void;
+   children: any,
+   selectedItem: SelectedItem | undefined,
+   uiTheme: UITheme,
+   baseInfo: { birthDate: string | null }
+ }): React.JSX.Element => {
+   return useMemo(() => {
+     return <ThemeContext.Consumer>
+       {
+         (theme: Theme) => {
+           return <>
+             <DatePicker
+               key={'DateBirth'}
+               UITheme={uiTheme}
+               // style={styles.DatePicker}
+               current={selectedItem}
+               showYearPicker={true}
+               onDayPress={(day: DateData) => {
+                 console.log('onDateSelect day.dateString=', day.dateString)
+                 updateState('baseInfo', {
+                   ...baseInfo,
+                   birthDate: day.dateString,
+                 });
+               }
+@@ -116,341 +116,362 @@ const DatePickerBox: React.FC<{
+ 
+ interface pageDataProps {
+   pageType: number,//-1:新增 0:编辑 1:签到前
+   patientId?: string,
+   from?: string,
+   WaitingSchedulingDetailPageType?: number,//0等候中 1预约
+   appointmentId?: string,
+   showTemporaryData?: boolean,
+   // checkInInsuranceId?: string,
+   // scannedCode: string,
+   // toAction:string
+ }
+ 
+ /**
+  * 新增编辑病人资料 | 病人签到前的
+  * PureComponent
+  * @param props
+  * @param parentRef
+  * @returns {*}
+  * @constructor
+  */
+ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) => {
+   const {navigation, scene, route} = props
+   console.log('NewlyAddedPatients props=', props)
+   const {pageData} = route?.params ?? {} as { pageData?: pageDataProps };//类型断言
+   //整个 src/csxStore/store.ts
+   const store = useSelector((state: object) => state)
+   const dispatch = useDispatch();
+   /**
+    setState(prevState => {
+    return {
+    ...prevState, // 复制原来的状态
+    baseInfo: {
+    ...prevState.baseInfo, // 复制 baseInfo 对象
+    enName,
+    }
+    }
+    })
+    */
+   const [state, setState] = useState({
+     pageType: pageData.pageType/*-1:新增 0:编辑 1:签到前*/, idTypeOptions: [],//证件类型列表
+     areaCodeOptions: [],//电话区号
+     refferalTypes: [],//介绍人类别
+     showEmergencyAreaCodeModal: false,
+     patientId: pageData.patientId || null,
+     showOccupationModal: false,
+     groupText: '',
+     showGroupModal: false,
+     selectedGroup: null,
+     defIndex: 0,//默认选中的索引
++    mobileIndex: 0,//默认选中的手机号码索引
++    telephoneIndex: 0,//默认选中的电话号码索引
+     baseInfo: {
+       patientCode: '', autoGeneratePatientCode: false,
+       enName: '',
+       zhName: '',
+       gender: '',//接口传: '0'为女，'1'为男，'255'为不明性别
+       prefix: null,
+       birthDate: null,//<string|null> ;'2007-05-18'; Patient/Get 可能不返回此字段 ;
+       identityDocumentType: null,
+       identityDocumentNumber: '',
+       //無線電話
+-      mobile: {
+-        areaCode: null, // 数据接口 query/patient-intial-data, 关联areacodes.code
+-        number: '',//手机号码
+-      },
++      // mobile: {
++      //   areaCode: null, // 数据接口 query/patient-intial-data, 关联areacodes.code
++      //   number: '',//手机号码
++      // },
++      // mobileCountryCode: '',
++      // mobileNumber: '',
++      mobiles: [],
+       //電話
+-      tel: {
+-        areaCode: null,
+-        number: ''
+-      },
++      // tel: {
++      //   areaCode: null,
++      //   number: ''
++      // },
++      telephones: [],
+       blood: null, ehrNumber: '', remark: '', email: '', otherIdentityNumber: '',
+       //職業
+       occupation: {
+         id: '',
+         item: ''
+       },
+       //類別
+       group: []
+     }, otherInfo: {
+       houseArea: null,
+       houseDistrict: null,
+       houseAddress: '',
+       officeArea: global.i18n.t('PleaseSelect'),
+       officeDistrict: global.i18n.t('PleaseSelect'),
+       officeAddress: '',
+       referralCategory: null,
+       referralDescription: null, doctorInCharge: null,
+       //家族歷史
+       familyHistory: '',
+     }, emergencyContactInfo: {
+       emergencyContactName: '',
+       emergencyContactAreaCode: '',
+       emergencyContactPhone: '',
+       emergencyContactRelationship: '',
+       emergencyContactRemark: '',
+     },
+     //保险资料列表,用于 保险资料里的表格
+     insuranceInfos: [],
+     //正在编辑的 保险资料
+     editingInsuranceInfo: {
+       payor: null,
+       insuranceNo: '',//保险编号
+       //會員編號
+       membershipId: '',
+       //保險備註
+       insuranceContent: '',
+     },
+     houseAreaList: ['香港島', '九龍', '新界', '離島'],
+     houseDistrictList: ['中西區', '灣仔區', '東區', '南區', '九龍城區', '觀塘區', '深水埗區', '黃大仙區', '油尖旺區', '離島區', '葵青區', '荃灣區', '屯門區', '元朗區', '北區', '大埔區', '沙田區', '西貢區'],
+     officeAreaList: ['香港島', '九龍', '新界', '離島'],
+     officeDistrictList: ['中西區', '灣仔區', '東區', '南區', '九龍城區', '觀塘區', '深水埗區', '黃大仙區', '油尖旺區', '離島區', '葵青區', '荃灣區', '屯門區', '元朗區', '北區', '大埔區', '沙田區', '西貢區'],
+     showHouseAreaModal: false, showHouseDistrictModal: false, showOfficeAreaModal: false, showOfficeDistrictModal: false,
+     rBtDisabled: false, addInsuranceInfoBtDisabled: true,
+     showDoctorInChargeModal: false,
+     receiveMarketingMessage: false,
+     responsibleDoctorList: ['醫生', '代理', '病人', '其他'],
+     //關聯病人
+     relatedPatients: '',
+     //關聯病人姓名
+     associated_patient_name: '',
+     //關聯病人關係
+     relatedPatientsRelationship: global.i18n.t('PleaseSelect'),
+     showrelatedPatientsRelationshipModal: false,
+     showEmergencyContactRelationshipModal: false,
+     showInsuranceCompaniesModal: false,
+     showReferralCategoryModal: false,
+     showReferralDescriptionModal: false,
+     doctorInChargeList: ['负责医生'],
+     cnName: '',
+     sex: '不明性別',//接口传: 0为女，1为男，255为不明性别
+     showSexMoal: false,
+     showCallModal: false,
+     showbirthdayModal: false,
+     curSelectDay: moment(new Date()).format('YYYY-MM-DD'),
+     showDocTypeModal: false,
+     showAreaCodeModal: false, showTelAreaCodeModal: false,
+     showbloodtypeModal: false,
+     docTypeList: ['身份證', '護照', '其他', '身份證', '護照', '其他', '身份證', '護照', '其他']
+   })
+   const language = useLanguage();
+   const {setLoading, setNoOpacity} = useLoading();
+   const {
+     showCommonAlertModal, setShowCommonAlertModal, commonAlertModalTitle, setCommonAlertModalTitle, commonAlertModalContent,
+     setCommonAlertModalContent, setCommonAlertModalCancelTxt, setCommonAlertModalConfirmTxt, refOnConfirm, setCommonAlertModalConfirmTxtStyle, setButtonDirection
+   } = useCommonAlertModal();
+   const {removeRootView} = useRootView();
+   const {
+     setShowCommonAutocompleteDropdownModal,
+     showCommonAutocompleteDropdownModal,
+     setRef_CommonAutocompleteDropdown
+   } = useCommonAutocompleteDropdownModal();
+   console.log('NewlyAddedPatients showCommonAutocompleteDropdownModal=', showCommonAutocompleteDropdownModal)
+   let docTypeSel = {}
+   const {mode, uiTheme, setMode} = useThemeProvider();
+   console.log('NewlyAddedPatients uiTheme=', uiTheme)
+   //监听 state 对象的任何数据变化
+   useEffect(() => {
+     // 这里可以执行任何依赖于 state 变化的代码
+     console.log('NewlyAddedPatients state has changed=', state);
+   }, [state]); // 将 state 作为依赖项
+   //使用 useMemo 缓存计算结果，避免重复计算
+   const expensiveCalculation = () => {
+     // ... 耗时计算
+   };
+   const disabledSave = useMemo(() => {
++    const validMobileCount = state.baseInfo.mobiles.filter(
++      item => item.mobileAreaCode && item.mobile
++    ).length;
+     return (state.baseInfo.gender == ''/* &&
+          state.baseInfo.gender !==
+          '0'*/) ||
+-      !state.baseInfo.identityDocumentType || !state.baseInfo.identityDocumentNumber || !state.baseInfo.mobile.areaCode?.code || !state.baseInfo.mobile.number
+-  }, [state.baseInfo.patientCode, state.baseInfo.gender, state.baseInfo.identityDocumentType, state.baseInfo.identityDocumentNumber, state.baseInfo.mobile, pageData]);
++      !state.baseInfo.identityDocumentType || !state.baseInfo.identityDocumentNumber || validMobileCount === 0
++  }, [state.baseInfo.patientCode, state.baseInfo.gender, state.baseInfo.identityDocumentType, state.baseInfo.identityDocumentNumber, pageData, state.baseInfo.mobiles]);
+   const ref_occupation = useRef(undefined);
+   const ref_Responsible_doctor = useRef(undefined);
+   const ref_insuranceCompany = useRef(undefined);
+   const ref_GenderBt = useRef();
+   const ref_call = useRef();
+   const ref_group = useRef();
+   const ref_blood_type = useRef();
+-  const ref_Wireless_telephone = useRef();
+-  const ref_telephone = useRef();
++  const ref_Wireless_telephone = useRef([]);
++  const ref_telephone = useRef([]);
+   const ref_Residential_areas = useRef();
+   const ref_Residential_zoning = useRef();
+   const ref_Category_introducer = useRef();
+   const ref_Referee = useRef();
+   const ref_telephone1 = useRef();
+   const ref_Relationship_with_patients = useRef();
+   const flatListRef = useRef<FlatList>(null);
+   const [selectedTab, setSelectedTab] = useState(0); // 当前选中的 Tab 索引
+   /**
+    * componentDidMount && componentWillUnmount
+    */
+   useEffect(
+     /*The async keyword cannot be added to the first parameter https://juejin.im/post/6844903985338400782#heading-27 */
+     () => {
+       // console.log(`NewlyAddedPatients componentDidMount`)
+       (async () => {
+         {
+           const [err, data1] = await tool.to(patient_intial_data(language))
+           console.log('NewlyAddedPatients patient_intial_data data1=', data1)
+           if (data1.idTypes) {
+             setState(prevState => {
+               return {
+                 ...prevState,
+                 idTypeOptions: data1.idTypes,
+                 areaCodeOptions: data1.areaCodes,
+                 refferalTypes: data1.refferalTypes
+               }
+             })
+             if (state.patientId) {//编辑 | 签到前
+               // if (pageData.pageType === 1) {
+               //     const [err, data] = await tool.to(confirm_remote_ticket({appointmentId: pageData.appointmentId}))
+               //     console.log('confirm_remote_ticket data=', JSON.stringify(data))
+               //     /**
+               //      {
+               //      "appointmentId":"3863b6e7-689b-4f81-941f-f97ec5979bd3","patientId":"dcd33065-52f4-49dc-8467-e040c24c504e","checkInInsuranceId":"d9a6e996-c279-4a63-9101-0c031b612cc0","option":2,"confirmPatientData":{"name":{"hasValue":true,"value":"huang1"},"gender":{"hasValue":true,"value":255},"documentId":{"hasValue":true,"value":{"type":"Others","number":"1","otherNumber":""}},"dateOfBirth":{"hasValue":true,"value":"2003-01-02T00:00:00"},"mobile":{"hasValue":true,"value":{"areaCode":"","number":"13692183550"}},"tel":{"hasValue":true,"value":{"areaCode":"852","number":""}},"email":{"hasValue":true,"value":""},"insurances":[{"id":"d9a6e996-c279-4a63-9101-0c031b612cc0","payor":{"id":"00000000-0000-0000-0000-000000000000","name":"-"},"policyNo":"","membershipNo":null,"insuranceContent":"","isDefault":true}]}
+               //      }
+               //      */
+               //     if (data) {
+               //
+               //     }
+               // }
+               setLoading(true);
+               setNoOpacity && setNoOpacity(true);
+               const [err, data] = await tool.to(getPatientDetail(state.patientId))
+               if (data.insuranceInfos.length) {
+                 //将 isDefault 为 true 的对象放在数组的第一个位置
+                 data.insuranceInfos.sort((a, b) => {
+                   // 如果 a.isDefault 是 true，返回 -1，让 a 排在前面
+                   if (a.isDefault === true) return -1;
+                   // 如果 b.isDefault 是 true，返回 1，让 b 排在前面
+                   if (b.isDefault === true) return 1;
+                   // 如果 a 和 b 的 isDefault 相同，保持原来的顺序
+                   return 0;
+                 })
+               }
+               console.log('NewlyAddedPatients componentDidMount getPatientDetail data=', data, ' state=', state)
+               /**
+                {"baseInfo": {"birthDate": "2024-04-10", "blood": null, "code": null, "ehrNumber": null, "email": null, "enName": "huang1", "gender": 1, "group": null, "identityDocumentNumber": "1", "identityDocumentType": "EC", "mobileCountryCode": "86", "mobileNumber": "13692183550", "occupation": null, "otherIdentityNumber": null, "prefix": null, "remark": null, "telephone": null, "telephoneAreaCode": null, "zhName": "啊"}, "emergencyContactInfo": {"emergencyContactAreaCode": "86", "emergencyContactName": "1", "emergencyContactPhone": "1", "emergencyContactRelationship": null, "emergencyContactRemark": null}, "id": "4262c767-6af1-482b-9da3-b874e2891193", "insuranceInfos": [], "isTemporary": true, "nkda": false, "otherInfo": {"doctorInCharge": null, "familyHistory": null, "houseAddress": "1", "houseArea": null, "houseDistrict": null, "referralCategory": null, "referralDescription": null}, "receiveMarketingMessage": true}  state= {"addInsuranceInfoBtDisabled": true, "areaCodeOptions": [], "associated_patient_name": "", "baseInfo": {"autoGeneratePatientCode": false, "birthDate": null, "blood": null, "ehrNumber": "", "email": "", "enName": "", "gender": "", "group": [], "identityDocumentNumber": "", "identityDocumentType": null, "mobile": {"areaCode": null, "number": ""}, "occupation": {"id": "", "item": ""}, "otherIdentityNumber": "", "patientCode": "", "prefix": null, "remark": "", "tel": {"areaCode": null, "number": ""}, "zhName": ""}, "cnName": "", "curSelectDay": "2024-05-21", "docTypeList": ["身份證", "護照", "其他", "身份證", "護照", "其他", "身份證", "護照", "其他"], "doctorInChargeList": ["负责医生"], "editingInsuranceInfo": {"insuranceContent": "", "insuranceNo": "", "membershipId": "", "payor": null}, "emergencyContactInfo": {"emergencyContactAreaCode": "", "emergencyContactName": "", "emergencyContactPhone": "", "emergencyContactRelationship": "", "emergencyContactRemark": ""}, "groupText": "", "houseAreaList": ["香港島", "九龍", "新界", "離島"], "houseDistrictList": ["中西區", "灣仔區", "東區", "南區", "九龍城區", "觀塘區", "深水埗區", "黃大仙區", "油尖旺區", "離島區", "葵青區", "荃灣區", "屯門區", "元朗區", "北區", "大埔區", "沙田區", "西貢區"], "idTypeOptions": [], "insuranceInfos": [], "officeAreaList": ["香港島", "九龍", "新界", "離島"], "officeDistrictList": ["中西區", "灣仔區", "東區", "南區", "九龍城區", "觀塘區", "深水埗區", "黃大仙區", "油尖旺區", "離島區", "葵青區", "荃灣區", "屯門區", "元朗區", "北區", "大埔區", "沙田區", "西貢區"], "otherInfo": {"doctorInCharge": null, "familyHistory": "", "houseAddress": "", "houseArea": null, "houseDistrict": null, "officeAddress": "", "officeArea": "请选择", "officeDistrict": "请选择", "referralCategory": null, "referralDescription": null}, "pageType": 1, "patientId": "4262c767-6af1-482b-9da3-b874e2891193", "rBtDisabled": false, "receiveMarketingMessage": false, "refferalTypes": [], "relatedPatients": "", "relatedPatientsRelationship": "请选择", "responsibleDoctorList": ["醫生", "代理", "病人", "其他"], "selectedGroup": null, "sex": "不明性別", "showAreaCodeModal": false, "showCallModal": false, "showDocTypeModal": false, "showDoctorInChargeModal": false, "showEmergencyAreaCodeModal": false, "showEmergencyContactRelationshipModal": false, "showGroupModal": false, "showHouseAreaModal": false, "showHouseDistrictModal": false, "showInsuranceCompaniesModal": false, "showOccupationModal": false, "showOfficeAreaModal": false, "showOfficeDistrictModal": false, "showReferralCategoryModal": false, "showReferralDescriptionModal": false, "showSexMoal": false, "showTelAreaCodeModal": false, "showbirthdayModal": false, "showbloodtypeModal": false, "showrelatedPatientsRelationshipModal": false}
+                */
+               if (data) {
+                 const _prefix = data.baseInfo.prefix?.split('|')
+                 console.log('NewlyAddedPatients componentDidMount _prefix=', _prefix)
+                 const _insuranceInfos = data.insuranceInfos.map(
+                   ({
+                      payorId,
+                      insuranceContent,
+                      insuranceNo,
+                      isDefault,
+                      membershipId,
+                      payor,
+                      policyId,
+                      patientInsuranceId
+                    }, index, array) => {
+                     return {
+                       id: patientInsuranceId,
+                       payor: {
+                         id: payorId,
+                         name: payor, item: payor
+                       },
+                       insuranceNo,
+                       policyNo: insuranceNo,
+                       membershipId,
+                       membershipNo: membershipId,
+                       insuranceContent: insuranceContent,
+                       editing: false,
+                       isDefault: isDefault,
+                       patientInsuranceId
+                     }
+                   }
+                 )
+                 console.log('NewlyAddedPatients componentDidMount _insuranceInfos=', _insuranceInfos)
+                 setState(prevState => {
+                   return {
+                     ...prevState,
+                     baseInfo: {
+                       ...prevState.baseInfo, // 复制 baseInfo 对象
+                       ...data.baseInfo,
+                       patientCode: data.baseInfo.code,
+                       gender: `${data.baseInfo.gender}`,
+                       //無線電話
+-                      mobile: {
+-                        areaCode: {
+-                          code: data.baseInfo.mobileCountryCode
+-                        },
+-                        number: data.baseInfo.mobileNumber,//手机号码
+-                      },
++                      // mobile: {
++                      //   areaCode: {
++                      //     code: data.baseInfo.mobileCountryCode
++                      //   },
++                      //   number: data.baseInfo.mobileNumber,//手机号码
++                      // },
++                      mobiles: [
++                        ...(data.baseInfo.mobileNumber && data.baseInfo.mobileCountryCode
++                          ? [{ mobile: data.baseInfo.mobileNumber, mobileAreaCode: data.baseInfo.mobileCountryCode }]
++                          : []),
++                        ...(data.baseInfo.patientMobiles || [])
++                      ],
+                       //電話
+-                      tel: {
+-                        areaCode: {
+-                          code: data.baseInfo.telephoneAreaCode || ''
+-                        },
+-                        number: data.baseInfo.telephone
+-                      },
++                      // tel: {
++                      //   areaCode: {
++                      //     code: data.baseInfo.telephoneAreaCode || ''
++                      //   },
++                      //   number: data.baseInfo.telephone
++                      // },
++                      telephones: [
++                        ...(data.baseInfo.telephone && data.baseInfo.telephoneAreaCode
++                          ? [{ telephone: data.baseInfo.telephone, telephoneAreaCode: data.baseInfo.telephoneAreaCode }]
++                          : []),
++                        ...(data.baseInfo.patientTelephones || [])
++                      ],
+                       prefix: (_prefix ? {
+                         code: _prefix[0],
+                         name: {
+                           zh: _prefix[3],
+                           en: _prefix[2]
+                         }, identifier: data.baseInfo.prefix
+                       } : null),
+                       identityDocumentType: data1.idTypes.find((item) => item.code === data.baseInfo.identityDocumentType),
+                       blood: {
+                         item: data.baseInfo.blood
+                       },
+                       occupation: {
+                         item: data.baseInfo.occupation
+                       },
+                       group: data.baseInfo.group?.split('|')
+                     },
+                     otherInfo: {
+                       ...prevState.otherInfo, // 复制 otherInfo 对象
+                       ...data.otherInfo,
+                       houseArea: {
+                         item: data.otherInfo.houseArea
+                       },
+                       houseDistrict: {
+                         item: data.otherInfo.houseDistrict
+                       },
+                       referralCategory: {
+                         code: data.otherInfo.referralCategory
+                       },
+                       referralDescription: {
+                         value: data.otherInfo.referralDescription
+                       },
+                       doctorInCharge: {
+                         item: data.otherInfo.doctorInCharge
+                       }
+                     },
+                     emergencyContactInfo: {
+                       ...prevState.emergencyContactInfo,
+                       ...data.emergencyContactInfo
+                     },
+                     insuranceInfos: _insuranceInfos,
+                     //editingInsuranceInfo.payor.item
+                     editingInsuranceInfo: {
+                       ...prevState.editingInsuranceInfo,
+                       payor: {
+                         item: data.insuranceInfos.length > 0 ? data.insuranceInfos[0].payor : '',
+                         name: data.insuranceInfos.length > 0 ? data.insuranceInfos[0].payor : '',
+                         id: data.insuranceInfos.length > 0 ? data.insuranceInfos[0].payorId : '',
+                         category: '',
+                       },
+                       insuranceNo: data.insuranceInfos.length > 0 ? data.insuranceInfos[0].insuranceNo : '',//保险编号
+@@ -826,209 +847,301 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+                       ...prevState.baseInfo, // 复制 baseInfo 对象
+                       identityDocumentNumber,
+                     }
+                   }
+                 })
+               }
+               placeholder={global.i18n.t('Please_enter')}
+               placeholderTextColor={uiTheme.colors.$placeholderTextColor}
+               style={styles.AccordionListRowInput}
+               returnKeyType="done"
+               underlineColorAndroid="transparent"
+               // onSubmitEditing={on_insurance_code_SubmitEditing}
+             />
+             <View style={styles.divider}></View>
+           </View>
+           <View style={styles.AccordionListRow}>
+             <Text style={styles.AccordionListRowLabel}>{global.i18n.t('other_ID_number')}</Text>
+             <TextInput
+               accessible={true}
+               // value={state.baseInfo.otherIdentityNumber}
+               value={
+                 Platform.OS === 'ios' && state.baseInfo.otherIdentityNumber?.endsWith(' ')
+                   ? state.baseInfo.otherIdentityNumber + '\u200D'
+                   : state.baseInfo.otherIdentityNumber
+               }
+               autoCapitalize="none"
+               autoFocus={false}
+               selectTextOnFocus={false}
+               autoCorrect={false}
+               onChangeText={otherIdentityNumber =>
+                 setState(prevState => {
+                   return {
+                     ...prevState,
+                     baseInfo: {
+                       ...prevState.baseInfo, // 复制 baseInfo 对象
+                       otherIdentityNumber,
+                     }
+                   }
+                 })
+               }
+               placeholder={global.i18n.t('Please_enter')}
+               placeholderTextColor={uiTheme.colors.$placeholderTextColor}
+               style={styles.AccordionListRowInput}
+               returnKeyType="done"
+               underlineColorAndroid="transparent"
+               // onSubmitEditing={on_insurance_code_SubmitEditing}
+             />
+             <View style={styles.divider}></View>
+           </View>
+           {/*無線電話*/}
+-          <View style={styles.AccordionListRow}>
+-            <View style={[styles.phoneLeftView, {alignItems: 'center'}]}>
+-              <Text adjustsFontSizeToFit={true} numberOfLines={1} style={styles.phoneTitleLabel}>{global.i18n.t('Wireless_telephone')}<Text
+-                style={{color: 'red'}}> *</Text></Text>
+-              <TouchableOpacity ref={ref_Wireless_telephone} style={[styles.rowReverse, {alignItems: 'center'}]} onPress={() => {
+-                ref_Wireless_telephone.current?.measureInWindow((x, y, width, height) => {
+-                  if (y + 240 > screenHeight) {
+-                    setPos({x, y: y - 240 - height})
+-                  } else {
+-                    setPos({x, y: y - 60 + height})
+-                  }
+-                  setState(prevState => {
+-                    return {...prevState, showAreaCodeModal: true}
+-                  })
+-                })
++          <FlatList
++            data={state.baseInfo.mobiles}
++            keyExtractor={item => item.id}
++            renderItem={({ item, index }) => (
++              <View style={styles.AccordionListRow}>
++                <View style={[styles.phoneLeftView, { alignItems: 'center' }]}>
++                  {state.baseInfo.mobiles.length !== 1 && <TouchableOpacity style={{ marginLeft: 8 }} onPress={() => {
++                    setState(prevState => {
++                      const mobiles = [...prevState.baseInfo.mobiles];
++                      mobiles.splice(index, 1);
++                      return {
++                        ...prevState,
++                        baseInfo: {
++                          ...prevState.baseInfo,
++                          mobiles
++                        }
++                      };
++                    })
++                  }}>
++                    {Remove()}
++                  </TouchableOpacity>}
++                  <Text adjustsFontSizeToFit={true} numberOfLines={1} style={styles.phoneTitleLabel}>
++                    {global.i18n.t('Wireless_telephone')}{state.baseInfo.mobiles.length !== 1 && index + 1}
++                    {state.baseInfo.mobiles.length === 1 && index === 0 && <Text style={{ color: 'red' }}> *</Text>}
++                  </Text>
++                  <TouchableOpacity
++                    ref={el => (ref_Wireless_telephone.current[index] = el)}
++                    style={[styles.rowReverse, { alignItems: 'center' }]}
++                    onPress={() => {
++                      ref_Wireless_telephone.current[index]?.measureInWindow((x, y, width, height) => {
++                        if (y + 240 > screenHeight) {
++                          setPos({ x, y: y - 240 - height })
++                        } else {
++                          setPos({ x, y: y - 60 + height })
++                        }
++                        setState(prevState => {
++                          return { ...prevState, mobileIndex: index, showAreaCodeModal: true }
++                        })
++                      })
+               }}>
+                 <Image source={chooseDoctorArrow} style={styles.openCommonModalBtArrow} />
+-                <Text style={[styles.areaCodeText, {fontWeight: state.baseInfo.mobile.areaCode ? '400' : '100'}]}
++                    <Text style={[styles.areaCodeText, { fontWeight: item.mobileAreaCode ? '400' : '100' }]}
+                       numberOfLines={1}
+                       ellipsizeMode='tail' // 在末尾显示省略号
+-                >{state.baseInfo.mobile.areaCode ? `+${state.baseInfo.mobile.areaCode.code}` : global.i18n.t('Please_enter')}</Text>
++                    >{item.mobileAreaCode ? `+${item.mobileAreaCode}` : global.i18n.t('Please_enter')}</Text>
+               </TouchableOpacity>
+             </View>
+             <TextInput
+-              style={styles.RemarksRowInput}
++                  style={styles.RemarksRowInput}
+               accessible={true}
+-              value={state.baseInfo.mobile.number}
++                  value={item.mobile}
+               autoCapitalize="none"
+               autoFocus={false}
+               selectTextOnFocus={false}
+               autoCorrect={false}
+-              onChangeText={number =>
+-                setState(prevState => {
+-                  return {
+-                    ...prevState, baseInfo: {
+-                      ...prevState.baseInfo, // 复制 baseInfo 对象
+-                      mobile: {
+-                        ...prevState.baseInfo.mobile,
+-                        number,
++                  onChangeText={number =>
++                    setState(prevState => {
++                      const mobiles = prevState.baseInfo.mobiles.map((mobileItem, i) =>
++                        i === index ? { ...mobileItem, mobile: number } : mobileItem
++                      );
++                      return {
++                        ...prevState,
++                        baseInfo: {
++                          ...prevState.baseInfo,
++                          mobiles,
++                        }
+                       }
+-                    }
++                    })
+                   }
+-                })
+-              }
+-              placeholder={global.i18n.t('Please_enter')}
+-              placeholderTextColor={uiTheme.colors.$placeholderTextColor}
+-              returnKeyType="done"
+-              keyboardType="phone-pad"
+-              underlineColorAndroid="transparent"
+-              // onSubmitEditing={on_insurance_code_SubmitEditing}
+-            />
+-            <View style={styles.divider}></View>
+-          </View>
++                  placeholder={global.i18n.t('Please_enter')}
++                  placeholderTextColor={uiTheme.colors.$placeholderTextColor}
++                  returnKeyType="done"
++                  keyboardType="phone-pad"
++                  underlineColorAndroid="transparent"
++                // onSubmitEditing={on_insurance_code_SubmitEditing}
++                />
++                <View style={styles.divider}></View>
++              </View>
++            )}
++            ListFooterComponent={() =>
++              state.baseInfo.mobiles.length !== 5 && <View style={{ height: 54, width: '100%', alignItems: 'flex-end', justifyContent: 'center' }}>
++                <TouchableOpacity style={{ marginRight: 8, padding: 8, backgroundColor: '#007AFF1A', borderRadius: 8 }} onPress={() => {
++                  setState(prevState => ({
++                    ...prevState,
++                    baseInfo: {
++                      ...prevState.baseInfo,
++                      mobiles: [
++                        ...prevState.baseInfo.mobiles,
++                        { mobile: '', mobileAreaCode: '' }
++                      ]
++                    }
++                  }));
++                }}
++                >
++                  <Text style={styles.addMobileBtText}>{global.i18n.t('add_mobile_phone')}</Text>
++                </TouchableOpacity>
++                <View style={styles.divider}></View>
++              </View>
++            }
++          />
+           {/*電話*/}
+-          <View style={styles.RemarksRow}>
+-            <View style={styles.phoneLeftView}>
+-              <Text style={styles.AccordionListRowLabel}>{global.i18n.t('telephone')}</Text>
+-              <TouchableOpacity ref={ref_telephone} style={styles.rowReverse} onPress={() => {
+-                ref_telephone.current?.measureInWindow((x, y, width, height) => {
+-                  // setPos({ x, y: y + height })
+-                  if (y + 240 > screenHeight) {
+-                    setPos({x, y: y - 240 - 20})
+-                  } else {
+-                    setPos({x, y: y - height + 20})
+-                  }
+-                  setState(prevState => {
+-                    return {...prevState, showTelAreaCodeModal: true}
+-                  })
+-                })
+-              }}>
+-                <Image source={chooseDoctorArrow} style={styles.areaCodeArrow} />
+-
+-                <Text style={[styles.areaCodeText, {fontWeight: state.baseInfo.tel.areaCode ? '400' : '100'}]}
++          <FlatList
++            data={state.baseInfo.telephones}
++            keyExtractor={item => item.id}
++            renderItem={({ item, index }) => (
++              <View style={styles.AccordionListRow}>
++                <View style={[styles.phoneLeftView, { alignItems: 'center' }]}>
++                  {state.baseInfo.telephones.length !== 1 && <TouchableOpacity style={{ marginLeft: 8 }} onPress={() => {
++                    setState(prevState => {
++                      const telephones = [...prevState.baseInfo.telephones];
++                      telephones.splice(index, 1);
++                      return {
++                        ...prevState,
++                        baseInfo: {
++                          ...prevState.baseInfo,
++                          telephones
++                        }
++                      };
++                    })
++                  }}>
++                    {Remove()}
++                  </TouchableOpacity>}
++                  <Text adjustsFontSizeToFit={true} numberOfLines={1} style={styles.phoneTitleLabel}>
++                    {global.i18n.t('telephone')}{state.baseInfo.telephones.length !== 1 && index + 1}
++                  </Text>
++                  <TouchableOpacity
++                    ref={el => (ref_telephone.current[index] = el)}
++                    style={[styles.rowReverse, { alignItems: 'center' }]}
++                    onPress={() => {
++                      ref_telephone.current[index]?.measureInWindow((x, y, width, height) => {
++                        if (y + 240 > screenHeight) {
++                          setPos({ x, y: y - 240 - height })
++                        } else {
++                          setPos({ x, y: y - 60 + height })
++                        }
++                        setState(prevState => {
++                          return { ...prevState, telephoneIndex: index, showTelAreaCodeModal: true }
++                        })
++                      })
++                    }}>
++                    <Image source={chooseDoctorArrow} style={styles.openCommonModalBtArrow} />
++                    <Text style={[styles.areaCodeText, { fontWeight: item.telephoneAreaCode ? '400' : '100' }]}
+                       numberOfLines={1}
+                       ellipsizeMode='tail' // 在末尾显示省略号
+-                >{state.baseInfo.tel.areaCode ? `+${state.baseInfo.tel.areaCode?.code}` : global.i18n.t('Please_enter')}</Text>
+-              </TouchableOpacity>
+-            </View>
+-            <TextInput
+-              style={styles.RemarksRowInput}
+-              accessible={true}
+-              multiline={true}
+-              value={state.baseInfo.tel.number}
+-              autoCapitalize="none"
+-              autoFocus={false}
+-              selectTextOnFocus={false}
+-              autoCorrect={false}
+-              onChangeText={number =>
+-                setState(prevState => {
+-                  return {
+-                    ...prevState, baseInfo: {
+-                      ...prevState.baseInfo, // 复制 baseInfo 对象
+-                      tel: {
+-                        ...prevState.baseInfo.tel,
+-                        number,
++                    >{item.telephoneAreaCode ? `+${item.telephoneAreaCode}` : global.i18n.t('Please_enter')}</Text>
++                  </TouchableOpacity>
++                </View>
++                <TextInput
++                  style={styles.RemarksRowInput}
++                  accessible={true}
++                  value={item.telephone}
++                  autoCapitalize="none"
++                  autoFocus={false}
++                  selectTextOnFocus={false}
++                  autoCorrect={false}
++                  onChangeText={number =>
++                    setState(prevState => {
++                      const telephones = prevState.baseInfo.telephones.map((telephoneItem, i) =>
++                        i === index ? { ...telephoneItem, telephone: number } : telephoneItem
++                      );
++                      return {
++                        ...prevState,
++                        baseInfo: {
++                          ...prevState.baseInfo,
++                          telephones,
++                        }
+                       }
+-                    }
++                    })
+                   }
+-                })
+-              }
+               placeholder={global.i18n.t('Please_enter')}
+               placeholderTextColor={uiTheme.colors.$placeholderTextColor}
+               returnKeyType="done"
+               keyboardType="phone-pad"
+               underlineColorAndroid="transparent"
+               // onSubmitEditing={on_insurance_code_SubmitEditing}
+-            />
+-            <View style={styles.divider}></View>
+-          </View>
++                />
++                <View style={styles.divider}></View>
++              </View>
++            )}
++            ListFooterComponent={() =>
++              state.baseInfo.telephones.length !== 5 && <View style={{ height: 54, width: '100%', alignItems: 'flex-end', justifyContent: 'center' }}>
++                <TouchableOpacity style={{ marginRight: 8, padding: 8, backgroundColor: '#007AFF1A', borderRadius: 8 }} onPress={() => {
++                  setState(prevState => ({
++                    ...prevState,
++                    baseInfo: {
++                      ...prevState.baseInfo,
++                      telephones: [
++                        ...prevState.baseInfo.telephones,
++                        { telephone: '', telephoneAreaCode: '' }
++                      ]
++                    }
++                  }));
++                }}
++                >
++                  <Text style={styles.addMobileBtText}>{global.i18n.t('add_telephone')}</Text>
++                </TouchableOpacity>
++                <View style={styles.divider}></View>
++              </View>
++            }
++          />
++          {/*郵箱*/}
+           <View style={styles.AccordionListRow}>
+             <Text style={styles.AccordionListRowLabel}>{global.i18n.t('Email')}</Text>
+             <TextInput
+               accessible={true}
+               // value={state.baseInfo.email}
+               value={
+                 Platform.OS === 'ios' && state.baseInfo.email?.endsWith(' ')
+                   ? state.baseInfo.email + '\u200D'
+                   : state.baseInfo.email
+               }
+               autoCapitalize="none"
+               autoFocus={false}
+               selectTextOnFocus={false}
+               autoCorrect={false}
+               onChangeText={email =>
+                 setState(prevState => {
+                   return {
+                     ...prevState,
+                     baseInfo: {
+                       ...prevState.baseInfo, // 复制 baseInfo 对象
+                       email,
+                     }
+                   }
+                 })
+               }
+               placeholder={global.i18n.t('Please_enter')}
+               placeholderTextColor={uiTheme.colors.$placeholderTextColor}
+               style={styles.AccordionListRowInput}
+               returnKeyType="done"
+               underlineColorAndroid="transparent"
+               // onSubmitEditing={on_insurance_code_SubmitEditing}
+             />
+             <View style={styles.divider}></View>
+           </View>
+           {/*職業*/}
+           {/*<View style={styles.AccordionListRow}>*/}
+           {/*  <AutoDropdownRow*/}
+           {/*    ref={ref_occupation}*/}
+           {/*    style={styles.leftMargin}*/}
+           {/*    labelStyle={styles.openCommonModalBtText}*/}
+           {/*    tag={global.i18n.t('occupation')}*/}
+           {/*    tagStyle={styles.tagLabel}*/}
+           {/*    updateState={updateState}*/}
+           {/*    textAlign={'right'}*/}
+           {/*    pageSize={20}*/}
+           {/*    selectedItem={state.baseInfo.occupation ? {*/}
+           {/*      ...state.baseInfo.occupation,*/}
+           {/*      title: state.baseInfo.occupation.item || ''*/}
+           {/*    } : null}*/}
+           {/*    localSearch={false}*/}
+@@ -1257,101 +1370,101 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+             }}>
+               <Text style={[styles.openCommonModalBtText, {fontWeight: state.baseInfo.blood ? '400' : '100'}]}
+                     numberOfLines={1}
+                     ellipsizeMode='tail' // 在末尾显示省略号
+               >{(state.baseInfo.blood ? state.baseInfo.blood.item : global.i18n.t('PleaseSelect'))}</Text>
+               <Image source={chooseDoctorArrow} style={styles.openCommonModalBtArrow} />
+             </TouchableOpacity>
+             <View style={styles.divider}></View>
+           </View>
+           {state.pageType !== -1 && <View style={styles.AccordionListFirstRow}>
+             <Text style={styles.AccordionListRowLabel}>eHealth eHR No</Text>
+             <Text style={styles.AccordionListRowRLabel}>{state.baseInfo.ehrNumber}</Text>
+           </View>}
+           <View style={styles.RemarksRow}>
+             <Text style={styles.RemarksRowLabel}>{global.i18n.t('Remarks')}</Text>
+             <TextInput
+               style={[styles.RemarksRowInput]}
+               accessible={true}
+               multiline={true}
+               value={
+                 Platform.OS === 'ios' && state.baseInfo.remark?.endsWith(' ')
+                   ? state.baseInfo.remark + '\u200D'
+                   : state.baseInfo.remark
+               }
+               autoCapitalize="none"
+               autoFocus={false}
+               selectTextOnFocus={false}
+               autoCorrect={false}
+               onChangeText={remark =>
+                 setState(prevState => {
+                   return {
+                     ...prevState,
+                     baseInfo: {
+                       ...prevState.baseInfo, // 复制 baseInfo 对象
+                       remark,
+                     }
+                   }
+                 })
+               }
+               placeholder={global.i18n.t('Please_enter')}
+               placeholderTextColor={uiTheme.colors.$placeholderTextColor}
+               returnKeyType="done"
+               underlineColorAndroid="transparent"
+               // onSubmitEditing={on_insurance_code_SubmitEditing}
+             />
+             <View style={styles.divider}></View>
+           </View>
+         </View>
+       )
+     },
+-    [state.baseInfo.enName, state.baseInfo.zhName, state.baseInfo.gender, state.baseInfo.prefix, state.showSexMoal, state.showCallModal, state.showbirthdayModal, state.curSelectDay, state.baseInfo.identityDocumentType, state.showDocTypeModal, state.baseInfo.identityDocumentNumber, state.baseInfo.mobile, state.baseInfo.mobile, state.showbloodtypeModal, state.baseInfo.blood, state.baseInfo.remark, state.idTypeOptions, state.baseInfo.patientCode, state.baseInfo.tel, state.baseInfo.email, language, state.baseInfo.occupation, state.groupText, state.baseInfo.group, state.baseInfo.otherIdentityNumber, state.baseInfo, uiTheme],
++    [state.baseInfo.enName, state.baseInfo.zhName, state.baseInfo.gender, state.baseInfo.prefix, state.showSexMoal, state.showCallModal, state.showbirthdayModal, state.curSelectDay, state.baseInfo.identityDocumentType, state.showDocTypeModal, state.baseInfo.identityDocumentNumber, state.showbloodtypeModal, state.baseInfo.blood, state.baseInfo.remark, state.idTypeOptions, state.baseInfo.patientCode, state.baseInfo.email, language, state.baseInfo.occupation, state.groupText, state.baseInfo.group, state.baseInfo.otherIdentityNumber, state.baseInfo, uiTheme, state.telephoneIndex, state.baseInfo.telephones],
+   );
+   const renderAccordionListItemChildrenOtherInfo = useCallback(
+     () => {
+       return (
+         <View style={styles.AccordionListItemChildren}>
+           {/*地區*/}
+           <View style={styles.AccordionListRow}>
+             <Text style={styles.AccordionListRowLabel}>{global.i18n.t('Residential_areas')}</Text>
+             <TouchableOpacity ref={ref_Residential_areas} style={styles.openCommonModalBt} onPress={() => {
+               ref_Residential_areas.current?.measureInWindow((x, y, width, height) => {
+                 setPos({x: x + width, y: y + height})
+                 setState(prevState => {
+                   return {...prevState, showHouseAreaModal: true}
+                 })
+               })
+             }}>
+               <Text style={[styles.openCommonModalBtText, {fontWeight: state.otherInfo.houseArea ? '400' : '100'}]}
+                     numberOfLines={1}
+                     ellipsizeMode='tail' // 在末尾显示省略号
+               >{state.otherInfo.houseArea ? state.otherInfo.houseArea.item : global.i18n.t('PleaseSelect')}</Text>
+               <Image source={chooseDoctorArrow} style={styles.openCommonModalBtArrow} />
+             </TouchableOpacity>
+             <View style={styles.divider}></View>
+           </View>
+           <View style={styles.AccordionListRow}>
+             <Text style={styles.AccordionListRowLabel}>{global.i18n.t('Residential_zoning')}</Text>
+             <TouchableOpacity ref={ref_Residential_zoning} style={styles.openCommonModalBt} onPress={() => {
+               ref_Residential_zoning.current?.measureInWindow((x, y, width, height) => {
+                 setPos({x: x + width, y: y + height})
+                 setState(prevState => {
+                   return {...prevState, showHouseDistrictModal: true}
+                 })
+               })
+             }}>
+               <Text style={[styles.openCommonModalBtText, {fontWeight: state.otherInfo.houseDistrict ? '400' : '100'}]}
+                     numberOfLines={1}
+                     ellipsizeMode='tail' // 在末尾显示省略号
+               >{state.otherInfo.houseDistrict ? state.otherInfo.houseDistrict.item : global.i18n.t('PleaseSelect')}</Text>
+               <Image source={chooseDoctorArrow} style={styles.openCommonModalBtArrow} />
+             </TouchableOpacity>
+             <View style={styles.divider}></View>
+           </View>
+           <View style={[styles.AccordionListRow, styles.detailAddressRow]}>
+             <Text style={styles.AccordionListRowLabel}>{global.i18n.t('Detailed_address')}</Text>
+             <TextInput
+               accessible={true}
+               value={state.otherInfo.houseAddress}
+               autoCapitalize="none"
+               autoFocus={false}
+               selectTextOnFocus={false}
+@@ -2424,183 +2537,180 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+                           ...prevState, showCallModal: false,
+                           baseInfo: {
+                             ...prevState.baseInfo,
+                             prefix: item
+                           }
+                         }
+                       })
+                     }}>
+                       {state.baseInfo.prefix && item.id === state.baseInfo.prefix.id &&
+                         <Image source={check_mark} style={commonModalStyle.checkbox} />}
+                       <Text style={commonModalStyle.commonModalRowText}>{language === 'en' ? item.name.en : item.name.zh}</Text>
+                     </TouchableOpacity>
+                   );
+                 }}
+             />
+           </CommonModalChild>
+         </CommonModal>
+       )
+     },
+     [state.showCallModal, state.baseInfo.prefix, state.baseInfo.gender, language],
+   );
+   //無線電話 区号
+   const renderAreaCodeModal = useCallback(
+     () => {
+       return state.showAreaCodeModal && (
+         <CommonModal onClose={() => {
+           setState(prevState => {
+             return {...prevState, showAreaCodeModal: false}
+           })
+         }}
+           // modalOverlayStyle={commonModalStyle.blackModalOverlay}
+         >
+           <CommonModalChild>
+             <CsxFlatList
+               keyExtractor={item => item.code}
+               // ref={refCsxFlatList}
+               style={styles.flatListBoxStyle}
+               autoRefresh={true}
+               fetchData={
+                 async ({pageIndex}) => {
+                   return {
+                     items: state.areaCodeOptions, pageIndex, totalCount: 0, totalPage: 0
+                   }
+                 }
+               }
+               renderItem={
+                 ({item, index}: { item: any; index: number }) => {
+                   return (
+                     <TouchableOpacity key={index} style={commonModalStyle.commonModalRow} onPress={() => {
+                       setState(prevState => {
++                        const mobiles = prevState.baseInfo.mobiles.map((mobileItem, i) =>
++                          i === state.mobileIndex ? { ...mobileItem, "mobileAreaCode": item.code } : mobileItem
++                        );
+                         return {
+                           ...prevState, showAreaCodeModal: false,
+                           baseInfo: {
+-                            ...prevState.baseInfo, // 复制 baseInfo 对象
+-                            mobile: {
+-                              ...prevState.baseInfo.mobile,
+-                              areaCode: item
+-                            },
++                            ...prevState.baseInfo,
++                            mobiles,
+                           },
+-                          // emergencyContactInfo: {
+-                          //     ...prevState.emergencyContactInfo, emergencyContactAreaCode: item
+-                          // }
+                         }
+                       })
+                     }}
+                     >
+-                      {item.code == state.baseInfo.mobile.areaCode?.code &&
++                      {item.code == state.baseInfo.mobiles[state.mobileIndex].mobileAreaCode &&
+                         < Image source={check_mark} style={commonModalStyle.checkbox} />}
+                       <Text style={commonModalStyle.commonModalRowText}>{item.code}</Text>
+                     </TouchableOpacity>
+                   )
+                 }}
+             />
+           </CommonModalChild>
+         </CommonModal>
+       )
+     },
+-    [state.showAreaCodeModal, state.areaCodeOptions, state.baseInfo.mobile, state.emergencyContactInfo.emergencyContactAreaCode, state.emergencyContactInfo.emergencyContactAreaCode],
++    [state.showAreaCodeModal, state.areaCodeOptions, state.baseInfo.mobiles, state.mobileIndex, state.emergencyContactInfo.emergencyContactAreaCode, state.emergencyContactInfo.emergencyContactAreaCode],
+   );
+   //電話 区号
+   const renderTelAreaCodeModal = useCallback(
+     () => {
+       return state.showTelAreaCodeModal && (
+         <CommonModal onClose={() => {
+           setState(prevState => {
+             return {...prevState, showTelAreaCodeModal: false}
+           })
+         }}
+           // modalOverlayStyle={commonModalStyle.blackModalOverlay}
+         >
+           <CommonModalChild>
+             <CsxFlatList
+               keyExtractor={item => item.code}
+               // ref={refCsxFlatList}
+               style={styles.flatListBoxStyle}
+               autoRefresh={true}
+               fetchData={
+                 async ({pageIndex}) => {
+                   return {
+                     items: state.areaCodeOptions, pageIndex, totalCount: 0, totalPage: 0
+                   }
+                 }
+               }
+               renderItem={
+                 ({item, index}: { item: any; index: number }) => {
+                   return (
+                     <TouchableOpacity key={index} style={commonModalStyle.commonModalRow} onPress={() => {
+                       setState(prevState => {
++                        const telephones = prevState.baseInfo.telephones.map((telephoneItem, i) =>
++                          i === state.telephoneIndex ? { ...telephoneItem, "telephoneAreaCode": item.code } : telephoneItem
++                        );
+                         return {
+                           ...prevState, showTelAreaCodeModal: false,
+                           baseInfo: {
+                             ...prevState.baseInfo, // 复制 baseInfo 对象
+-                            tel: {
+-                              ...prevState.baseInfo.tel,
+-                              areaCode: item
+-                            },
++                            telephones,
+                           },
+                         }
+                       })
+                     }}
+                     >
+-                      {item.code == state.baseInfo.tel.areaCode?.code &&
++                      {item.code == state.baseInfo.telephones[state.telephoneIndex].telephoneAreaCode &&
+                         < Image source={check_mark} style={commonModalStyle.checkbox} />}
+                       <Text style={commonModalStyle.commonModalRowText}>{item.code}</Text>
+                     </TouchableOpacity>
+                   )
+                 }}
+             />
+           </CommonModalChild>
+         </CommonModal>
+       )
+     },
+-    [state.showTelAreaCodeModal, state.areaCodeOptions, state.baseInfo.tel],
++    [state.showTelAreaCodeModal, state.areaCodeOptions, state.baseInfo.telephones, state.telephoneIndex],
+   );
+   //緊急聯繫人 区号
+   const renderEmergencyAreaCodeModal = useCallback(
+     () => {
+       return state.showEmergencyAreaCodeModal && (
+         <CommonModal onClose={() => {
+           setState(prevState => {
+             return {...prevState, showEmergencyAreaCodeModal: false}
+           })
+         }}
+           // modalOverlayStyle={commonModalStyle.blackModalOverlay}
+         >
+           <CommonModalChild>
+             <CsxFlatList
+               keyExtractor={item => item.code}
+               // ref={refCsxFlatList}
+               style={styles.flatListBoxStyle}
+               autoRefresh={true}
+               fetchData={
+                 async ({pageIndex}) => {
+                   return {
+                     items: state.areaCodeOptions, pageIndex, totalCount: 0, totalPage: 0
+                   }
+                 }
+               }
+               renderItem={
+                 ({item, index}: { item: any; index: number }) => {
+                   return (
+                     <TouchableOpacity key={index} style={commonModalStyle.commonModalRow} onPress={() => {
+                       setState(prevState => {
+                         return {
+                           ...prevState, showEmergencyAreaCodeModal: false,
+                           emergencyContactInfo: {
+                             ...prevState.emergencyContactInfo, emergencyContactAreaCode: item.code
+                           }
+                         }
+                       })
+                     }}
+                     >
+                       {item.code == state.emergencyContactInfo.emergencyContactAreaCode &&
+                         < Image source={check_mark} style={commonModalStyle.checkbox} />}
+                       <Text style={commonModalStyle.commonModalRowText}>{item.code}</Text>
+                     </TouchableOpacity>
+                   )
+                 }}
+             />
+           </CommonModalChild>
+         </CommonModal>
+       )
+     },
+@@ -3138,295 +3248,308 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+     //         )
+     //     },
+     //     [state.Document_type],
+     //   );
+     //render
+     // 確定
+   const renderRightBt = useCallback(
+       () => {
+         console.log('NewlyAddedPatients.tsx renderRightBt pageData.pageType=', pageData.pageType, ' WaitingSchedulingDetailPageType=', pageData.WaitingSchedulingDetailPageType)
+         return (
+           <TouchableOpacity disabled={disabledSave} style={[styles.sideButton]} onPress={async () => {
+             setLoading(true)
+             await onSave()
+             setLoading(false)
+             {
+               if (pageData.pageType === 1) {
+                 setLoading(true)
+                 const [err, data] = await tool.to(confirm_remote_ticket({appointmentId: pageData.appointmentId}))
+                 console.log('confirm_remote_ticket data=', data)
+                 if (data) {
+                   if (!state.patientId) {
+                     await tool.to(update_patient({
+                       id: data.patientId,
+                       gender: state.baseInfo.gender,
+                       prefix: state.baseInfo.prefix?.identifier,
+                       dateOfBirth: state.baseInfo.birthDate,
+                       documentId: {
+                         //證件類型
+                         type: state.baseInfo.identityDocumentType.code,
+                         //證件編號
+                         number: state.baseInfo.identityDocumentNumber,
+                         // 其他證件編號
+                         otherNumber: state.baseInfo.otherIdentityNumber
+                       },
+                       name: {
+                         en: state.baseInfo.enName, zh: state.baseInfo.zhName
+                       },
+                       blood: state.baseInfo.blood?.item,
+                       doctorInCharge: state.otherInfo.doctorInCharge?.item,
+                       familyHistory: state.otherInfo.familyHistory,
+                       remark: state.baseInfo.remark,
+                       receiveMarketingMessage: state.receiveMarketingMessage,
+                       emergencyContactAreaCode: state.emergencyContactInfo.emergencyContactAreaCode,
+                       emergencyContactName: state.emergencyContactInfo.emergencyContactName,
+                       emergencyContactPhone: state.emergencyContactInfo.emergencyContactPhone,
+                       emergencyContactRelationship: state.emergencyContactInfo.emergencyContactRelationship,
+                       emergencyContactRemark: state.emergencyContactInfo.emergencyContactRemark,
+                       contact: {
+                         //無線電話
+                         mobile: {
+-                          areaCode: state.baseInfo.mobile?.areaCode?.code, // 数据接口query/patient-intial-data, 关联areacodes.code
+-                          number: state.baseInfo.mobile.number
++                          areaCode: state.baseInfo.mobileCountryCode, // 数据接口query/patient-intial-data, 关联areacodes.code
++                          number: state.baseInfo.mobileNumber
+                         },
+                         // 電話
+                         tel: {
+                           areaCode: state.baseInfo.tel?.areaCode?.code,
+                           number: state.baseInfo.tel.number
+                         },
+                         email: state.baseInfo.email
+                       },
+                       houseAddress: {
+                         area: state.otherInfo.houseArea?.item, // 数据接口query/patient-data-setting, 类别area, 关联item
+                         district: state.otherInfo.houseDistrict?.item, // 数据接口query/patient-data-setting, 类别district, 关联item
+                         street: state.otherInfo.houseAddress // free text, 详细地址
+                       },
+                       referral: {
+                         category: state.otherInfo.referralCategory?.code, // 数据接口query/patient-intial-data, 关联 refferalType.code
+                         description: state.otherInfo.referralDescription?.value // 数据接口query/refferal, catagory取refferalType.code, 关联value
+                       },
+                       insurance: state.insuranceInfos.map(
+                         (item, index, array) => {
+                           return {
+                             id: item.id,
+                             payor: {
+                               id: item.payor?.id,
+                               name: item.payor.name
+                             },
+                             policyNo: item.policyNo,
+                             membershipNo: item.membershipNo,
+                             insuranceContent: item.insuranceContent,
+                             isDefault: index == state.defIndex ? true : false
+                           }
+                         }
+                       ),
+                       occupation: state.baseInfo.occupation?.item,
+                       Group: state.baseInfo.group
+                     }))
+                   }
+                   if (pageData.WaitingSchedulingDetailPageType === 1) {
+                     try {
+                       const data1 = await confirm_remote_ticket_option({
+                         appointmentId: data.appointmentId,
+                         checkInInsuranceId: data.checkInInsuranceId,
+                         patientId: data.patientId
+                       });
+                       console.log('NewlyAddedPatients confirm_remote_ticket_option data1=', data1)
+                       if (!data.eligibilityChecked) {
+                         setLoading(false);
+                         routes.navigate(navigation, routes.AppointmentListPage.routeName, {});
+                         emitEvent(globalEventName.changehomeType, 0)
+                         return false;
+                       }
+                     } catch (error) {
+                       console.error('Error refreshing page:', error);
+                     } finally {
+                     }
+                   }
+                   setLoading(false)
+                   routes.navigate(navigation, routes.SignInEcPages.routeName, {
+                       pageData: {
+                         appointmentId: data.appointmentId,
+                         checkInInsuranceId: data.checkInInsuranceId,
+                         // WaitingSchedulingDetailPageType: pageData.WaitingSchedulingDetailPageType,
+                         // patientData: state,
+                         patientId: data.patientId,
+                         confirmPatientData:
+                         data.confirmPatientData
+                       }
+                     }
+                   )
+                 }
+               }
+             }
+             setLoading(false)
+           }}>
+             <Text style={[styles.buttonText, (disabledSave ? {color: '#B7B7B9'} : null)]}>{global.i18n.t('confirm')}</Text>
+           </TouchableOpacity>
+         )
+       },
+       [state, state.pageType, state.insuranceInfos, pageData, disabledSave],
+     );
+ 
+   // 去掉 首尾空格，iOS中\u200D
+   const cleanZWJ = (str?: string) => str ? str.replace(/\u200D/g, ' ').trim() : str;
+ 
+   const onSave = useCallback(
+     async () => {
+       console.log('NewlyAddedPatients.tsx onSave state=', state)
+       if (!state.baseInfo.identityDocumentType) {
+         console.log('请选择證件類型')
+         return false
+       }
+       if (!state.baseInfo.identityDocumentNumber) {
+         console.log('請輸入證件編號')
+         return false
+       }
++
++      const validMobiles = state.baseInfo.mobiles.filter(
++        item => item.mobileAreaCode && item.mobile
++      );
++      const [firstMobile, ...otherMobiles] = validMobiles;
++
++      const validTelephones = state.baseInfo.telephones.filter(
++        item => item.telephoneAreaCode && item.telephone
++      );
++      const [firsTelephone, ...otherTelephones] = validTelephones;
++
+       if (state.pageType === -1) {//新增
+         const [err, data] = await tool.to(create_patient({
+           clinicCode: global.curClinicData.code,
+           doctorCode: global.curDoctorData.code,
+           patientCode: state.baseInfo.patientCode,
+           gender: state.baseInfo.gender,
+           prefix: state.baseInfo.prefix?.identifier,
+           dateOfBirth: state.baseInfo.birthDate,
+           documentId: {
+             //證件類型
+             type: state.baseInfo.identityDocumentType.code,
+             //證件編號
+             number: cleanZWJ(state.baseInfo.identityDocumentNumber),
+             // 其他證件編號
+             otherNumber: cleanZWJ(state.baseInfo.otherIdentityNumber)
+           },
+           name: {
+             en: cleanZWJ(state.baseInfo.enName), zh: cleanZWJ(state.baseInfo.zhName)
+           },
+           blood: state.baseInfo.blood?.item,
+           doctorInCharge: state.otherInfo.doctorInCharge?.item,
+           familyHistory: cleanZWJ(state.otherInfo.familyHistory),
+           remark: cleanZWJ(state.baseInfo.remark),
+           receiveMarketingMessage: state.receiveMarketingMessage,
+           emergencyContactAreaCode: state.emergencyContactInfo.emergencyContactAreaCode,
+           emergencyContactName: cleanZWJ(state.emergencyContactInfo.emergencyContactName),
+           emergencyContactPhone: state.emergencyContactInfo.emergencyContactPhone,
+           emergencyContactRelationship: state.emergencyContactInfo.emergencyContactRelationship,
+           emergencyContactRemark: cleanZWJ(state.emergencyContactInfo.emergencyContactRemark),
+           contact: {
+             //無線電話
+             mobile: {
+-              areaCode: state.baseInfo.mobile?.areaCode?.code, // 数据接口query/patient-intial-data, 关联areacodes.code
+-              number: state.baseInfo.mobile.number
++              areaCode: firstMobile.mobileCountryCode, // 数据接口query/patient-intial-data, 关联areacodes.code
++              number: firstMobile.mobileNumber
+             },
+             // 電話
+             tel: {
+-              areaCode: state.baseInfo.tel?.areaCode?.code,
+-              number: state.baseInfo.tel.number
++              areaCode: firsTelephone.telephoneAreaCode,
++              number: firsTelephone.telephone,
+             },
+             email: cleanZWJ(state.baseInfo.email)
+           },
+           houseAddress: {
+             area: state.otherInfo.houseArea?.item, // 数据接口query/patient-data-setting, 类别area, 关联item
+             district: state.otherInfo.houseDistrict?.item, // 数据接口query/patient-data-setting, 类别district, 关联item
+             street: state.otherInfo.houseAddress // free text, 详细地址
+           },
+           referral: {
+             category: state.otherInfo.referralCategory?.code, // 数据接口query/patient-intial-data, 关联 refferalType.code
+             description: state.otherInfo.referralDescription?.value // 数据接口query/refferal, catagory取refferalType.code, 关联value
+           },
+           insurance: state.insuranceInfos,
+           occupation: state.baseInfo.occupation?.item,
+           Group: state.baseInfo.group
+         }))
+         if (data) {
+           emitEvent(globalEventName.refreshPatientList, '1')
+           routes.goBack(navigation);
+         }
+       } else if (state.pageType === 0 || state.pageType === 1) {//編輯 |签到前
+         const [err, data] = await tool.to(update_patient({
+           id: state.patientId,
+           gender: state.baseInfo.gender,
+           prefix: state.baseInfo.prefix?.identifier,
+           dateOfBirth: state.baseInfo.birthDate,
+           documentId: {
+             //證件類型
+             type: state.baseInfo.identityDocumentType.code,
+             //證件編號
+             number: cleanZWJ(state.baseInfo.identityDocumentNumber),
+             // 其他證件編號
+             otherNumber: cleanZWJ(state.baseInfo.otherIdentityNumber)
+           },
+           name: {
+             en: cleanZWJ(state.baseInfo.enName), zh: cleanZWJ(state.baseInfo.zhName)
+           },
+           blood: state.baseInfo.blood?.item,
+           doctorInCharge: state.otherInfo.doctorInCharge?.item,
+           familyHistory: cleanZWJ(state.otherInfo.familyHistory),
+           remark: cleanZWJ(state.baseInfo.remark),
+           receiveMarketingMessage: state.receiveMarketingMessage,
+           emergencyContactAreaCode: state.emergencyContactInfo.emergencyContactAreaCode,
+           emergencyContactName: cleanZWJ(state.emergencyContactInfo.emergencyContactName),
+           emergencyContactPhone: state.emergencyContactInfo.emergencyContactPhone,
+           emergencyContactRelationship: state.emergencyContactInfo.emergencyContactRelationship,
+           emergencyContactRemark: cleanZWJ(state.emergencyContactInfo.emergencyContactRemark),
+           contact: {
+             //無線電話
+             mobile: {
+-              areaCode: state.baseInfo.mobile?.areaCode?.code, // 数据接口query/patient-intial-data, 关联areacodes.code
+-              number: state.baseInfo.mobile.number
++              areaCode: firstMobile.mobileAreaCode, // 数据接口query/patient-intial-data, 关联areacodes.code
++              number: firstMobile.mobile
+             },
+             // 電話
+             tel: {
+-              areaCode: state.baseInfo.tel?.areaCode?.code,
+-              number: state.baseInfo.tel.number
++              areaCode: firsTelephone.telephoneAreaCode,
++              number: firsTelephone.telephone,
+             },
+             email: cleanZWJ(state.baseInfo.email)
+           },
++          patientMobiles: otherMobiles,
++          patientTelephones: otherTelephones,
+           houseAddress: {
+             area: state.otherInfo.houseArea?.item, // 数据接口query/patient-data-setting, 类别area, 关联item
+             district: state.otherInfo.houseDistrict?.item, // 数据接口query/patient-data-setting, 类别district, 关联item
+             street: state.otherInfo.houseAddress // free text, 详细地址
+           },
+           referral: {
+             category: state.otherInfo.referralCategory?.code, // 数据接口query/patient-intial-data, 关联 refferalType.code
+             description: state.otherInfo.referralDescription?.value // 数据接口query/refferal, catagory取refferalType.code, 关联value
+           },
+           insurance: state.insuranceInfos.map(
+             (item, index, array) => {
+               return {
+                 id: item.id,
+                 payor: {
+                   id: item.payor?.id,
+                   name: item.payor.name
+                 },
+                 policyNo: item.policyNo,
+                 membershipNo: item.membershipNo,
+                 insuranceContent: item.insuranceContent,
+                 isDefault: index == state.defIndex ? true : false
+               }
+             }
+           ),
+           occupation: state.baseInfo.occupation?.item,
+           Group: state.baseInfo.group
+         }))
+         if (data) {
+           if (pageData.from == routes.WaitingSchedulingDetailPage.routeName) {
+             if (pageData.WaitingSchedulingDetailPageType == 0 && state.pageType === 0) {//编辑排队
+               emitEvent(globalEventName.refreshHomeWaittinglist, '1')
+               routes.navigate(navigation, routes.AppointmentListPage.routeName, {})
+             }
+           } else if (pageData.from == routes.DiagnosisPage.routeName) {
+             emitEvent(globalEventName.updatePatientInfoInDiagnosisPage, '1')
+             routes.goBack(navigation);
+           } else {
+             console.log('NewlyAddedPatients.tsx onSave emitEvent refreshPatientList')
+             emitEvent(globalEventName.refreshPatientList, '1')
+             routes.goBack(navigation);
+           }
+         }
+       }
+     },
+     [state, state.otherInfo, state.baseInfo.group],
+   );
+   const renderOccupationModal = useCallback(
+     () => {
+       return state.showOccupationModal && (
+         <CommonModal onClose={() => {

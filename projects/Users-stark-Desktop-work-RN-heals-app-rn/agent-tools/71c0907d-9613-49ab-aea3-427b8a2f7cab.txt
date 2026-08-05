@@ -1,0 +1,2886 @@
+diff --git a/ios/Heals.xcodeproj/project.pbxproj b/ios/Heals.xcodeproj/project.pbxproj
+index 94ca7956..329c51a3 100644
+--- a/ios/Heals.xcodeproj/project.pbxproj
++++ b/ios/Heals.xcodeproj/project.pbxproj
+@@ -360,171 +360,171 @@
+ 			outputFileListPaths = (
+ 				"${PODS_ROOT}/Target Support Files/Pods-Heals/Pods-Heals-resources-${CONFIGURATION}-output-files.xcfilelist",
+ 			);
+ 			outputPaths = (
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+ 			shellPath = /bin/sh;
+ 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Heals/Pods-Heals-resources.sh\"\n";
+ 			showEnvVarsInLog = 0;
+ 		};
+ /* End PBXShellScriptBuildPhase section */
+ 
+ /* Begin PBXSourcesBuildPhase section */
+ 		13B07F871A680F5B00A75B9A /* Sources */ = {
+ 			isa = PBXSourcesBuildPhase;
+ 			buildActionMask = 2147483647;
+ 			files = (
+ 				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+ 		};
+ /* End PBXSourcesBuildPhase section */
+ 
+ /* Begin PBXVariantGroup section */
+ 		553807C12F06192600817BF8 /* InfoPlist.strings */ = {
+ 			isa = PBXVariantGroup;
+ 			children = (
+ 				553807C22F06192600817BF8 /* en */,
+ 				553807C42F06195100817BF8 /* zh-Hans */,
+ 				553807C52F06195500817BF8 /* zh-Hant */,
+ 				553807C62F06195800817BF8 /* fil */,
+ 				553807C72F06195A00817BF8 /* th */,
+ 				553807C82F06195C00817BF8 /* vi */,
+ 				553807C92F061A2D00817BF8 /* fil-PH */,
+ 			);
+ 			name = InfoPlist.strings;
+ 			sourceTree = "<group>";
+ 		};
+ /* End PBXVariantGroup section */
+ 
+ /* Begin XCBuildConfiguration section */
+ 		13B07F941A680F5B00A75B9A /* Debug */ = {
+ 			isa = XCBuildConfiguration;
+ 			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-Heals.debug.xcconfig */;
+ 			buildSettings = {
+ 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+ 				CLANG_ENABLE_MODULES = YES;
+ 				CODE_SIGN_ENTITLEMENTS = Heals/Heals.entitlements;
+ 				CURRENT_PROJECT_VERSION = 1;
+ 				DEVELOPMENT_TEAM = HS8K5BGDV7;
+ 				ENABLE_BITCODE = NO;
+ 				INFOPLIST_FILE = Heals/Info.plist;
+ 				INFOPLIST_KEY_CFBundleDisplayName = "Heals (Debug)";
+ 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
+ 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+ 				LD_RUNPATH_SEARCH_PATHS = (
+ 					"$(inherited)",
+ 					"@executable_path/Frameworks",
+ 				);
+ 				MARKETING_VERSION = 1.0;
+ 				OTHER_LDFLAGS = (
+ 					"$(inherited)",
+ 					"-ObjC",
+ 					"-lc++",
+ 				);
+ 				PRODUCT_BUNDLE_IDENTIFIER = com.healshealthcare.healspass;
+ 				PRODUCT_NAME = Heals;
+ 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+ 				SWIFT_VERSION = 5.0;
+ 				VERSIONING_SYSTEM = "apple-generic";
+ 			};
+ 			name = Debug;
+ 		};
+ 		13B07F951A680F5B00A75B9A /* Release */ = {
+ 			isa = XCBuildConfiguration;
+ 			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-Heals.release.xcconfig */;
+ 			buildSettings = {
+ 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+ 				CLANG_ENABLE_MODULES = YES;
+ 				CODE_SIGN_ENTITLEMENTS = Heals/HealsRelease.entitlements;
+-				CURRENT_PROJECT_VERSION = 6;
++				CURRENT_PROJECT_VERSION = 1;
+ 				DEVELOPMENT_TEAM = HS8K5BGDV7;
+ 				INFOPLIST_FILE = Heals/Info.plist;
+ 				INFOPLIST_KEY_CFBundleDisplayName = Heals;
+ 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
+ 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+ 				LD_RUNPATH_SEARCH_PATHS = (
+ 					"$(inherited)",
+ 					"@executable_path/Frameworks",
+ 				);
+-				MARKETING_VERSION = 1.1.8;
++				MARKETING_VERSION = 1.2.2;
+ 				OTHER_LDFLAGS = (
+ 					"$(inherited)",
+ 					"-ObjC",
+ 					"-lc++",
+ 				);
+ 				PRODUCT_BUNDLE_IDENTIFIER = com.healshealthcare.healspass;
+ 				PRODUCT_NAME = Heals;
+ 				SWIFT_VERSION = 5.0;
+ 				VERSIONING_SYSTEM = "apple-generic";
+ 			};
+ 			name = Release;
+ 		};
+ 		553807912F05ADA200817BF8 /* Dev Debug */ = {
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
+ 				ALWAYS_SEARCH_USER_PATHS = NO;
+ 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+ 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+ 				CLANG_CXX_LIBRARY = "libc++";
+ 				CLANG_ENABLE_MODULES = YES;
+ 				CLANG_ENABLE_OBJC_ARC = YES;
+ 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+ 				CLANG_WARN_BOOL_CONVERSION = YES;
+ 				CLANG_WARN_COMMA = YES;
+ 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+ 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+ 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+ 				CLANG_WARN_EMPTY_BODY = YES;
+ 				CLANG_WARN_ENUM_CONVERSION = YES;
+ 				CLANG_WARN_INFINITE_RECURSION = YES;
+ 				CLANG_WARN_INT_CONVERSION = YES;
+ 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+ 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+ 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+ 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+ 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+ 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+ 				CLANG_WARN_STRICT_PROTOTYPES = YES;
+ 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+ 				CLANG_WARN_UNREACHABLE_CODE = YES;
+ 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+ 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+ 				COPY_PHASE_STRIP = NO;
+ 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+ 				ENABLE_TESTABILITY = YES;
+ 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+ 				GCC_C_LANGUAGE_STANDARD = gnu99;
+ 				GCC_DYNAMIC_NO_PIC = NO;
+ 				GCC_NO_COMMON_BLOCKS = YES;
+ 				GCC_OPTIMIZATION_LEVEL = 0;
+ 				GCC_PREPROCESSOR_DEFINITIONS = (
+ 					"DEBUG=1",
+ 					"$(inherited)",
+ 				);
+ 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+ 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+ 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+ 				GCC_WARN_UNDECLARED_SELECTOR = YES;
+ 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+ 				GCC_WARN_UNUSED_FUNCTION = YES;
+ 				GCC_WARN_UNUSED_VARIABLE = YES;
+ 				HEADER_SEARCH_PATHS = (
+ 					"$(inherited)",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/React-runtimeexecutor/React_runtimeexecutor.framework/Headers",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/React-runtimeexecutor/React_runtimeexecutor.framework/Headers/platform/ios",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/React-Fabric/React_Fabric.framework/Headers/react/renderer/components/view/platform/cxx",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
+ 				);
+ 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+ 				LD_RUNPATH_SEARCH_PATHS = (
+ 					/usr/lib/swift,
+ 					"$(inherited)",
+ 				);
+ 				LIBRARY_SEARCH_PATHS = (
+@@ -592,171 +592,171 @@
+ 				CLANG_ENABLE_OBJC_ARC = YES;
+ 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+ 				CLANG_WARN_BOOL_CONVERSION = YES;
+ 				CLANG_WARN_COMMA = YES;
+ 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+ 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+ 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+ 				CLANG_WARN_EMPTY_BODY = YES;
+ 				CLANG_WARN_ENUM_CONVERSION = YES;
+ 				CLANG_WARN_INFINITE_RECURSION = YES;
+ 				CLANG_WARN_INT_CONVERSION = YES;
+ 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+ 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+ 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+ 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+ 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+ 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+ 				CLANG_WARN_STRICT_PROTOTYPES = YES;
+ 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+ 				CLANG_WARN_UNREACHABLE_CODE = YES;
+ 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+ 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+ 				COPY_PHASE_STRIP = YES;
+ 				ENABLE_NS_ASSERTIONS = NO;
+ 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+ 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+ 				GCC_C_LANGUAGE_STANDARD = gnu99;
+ 				GCC_NO_COMMON_BLOCKS = YES;
+ 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+ 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+ 				GCC_WARN_UNDECLARED_SELECTOR = YES;
+ 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+ 				GCC_WARN_UNUSED_FUNCTION = YES;
+ 				GCC_WARN_UNUSED_VARIABLE = YES;
+ 				HEADER_SEARCH_PATHS = (
+ 					"$(inherited)",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/React-runtimeexecutor/React_runtimeexecutor.framework/Headers",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/React-runtimeexecutor/React_runtimeexecutor.framework/Headers/platform/ios",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/React-Fabric/React_Fabric.framework/Headers/react/renderer/components/view/platform/cxx",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
+ 				);
+ 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+ 				LD_RUNPATH_SEARCH_PATHS = (
+ 					/usr/lib/swift,
+ 					"$(inherited)",
+ 				);
+ 				LIBRARY_SEARCH_PATHS = (
+ 					"\"$(SDKROOT)/usr/lib/swift\"",
+ 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
+ 					"\"$(inherited)\"",
+ 				);
+ 				MTL_ENABLE_DEBUG_INFO = NO;
+ 				OTHER_CPLUSPLUSFLAGS = (
+ 					"$(OTHER_CFLAGS)",
+ 					"-DFOLLY_NO_CONFIG",
+ 					"-DFOLLY_MOBILE=1",
+ 					"-DFOLLY_USE_LIBCPP=1",
+ 					"-DFOLLY_CFG_NO_COROUTINES=1",
+ 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
+ 				);
+ 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
+ 				SDKROOT = iphoneos;
+ 				USE_HERMES = true;
+ 				VALIDATE_PRODUCT = YES;
+ 			};
+ 			name = Dev;
+ 		};
+ 		553807942F05ADB800817BF8 /* Dev */ = {
+ 			isa = XCBuildConfiguration;
+ 			baseConfigurationReference = FA8FFDB1ACA41F14F91836AB /* Pods-Heals.dev.xcconfig */;
+ 			buildSettings = {
+ 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+ 				CLANG_ENABLE_MODULES = YES;
+ 				CODE_SIGN_ENTITLEMENTS = Heals/HealsDev.entitlements;
+-				CURRENT_PROJECT_VERSION = 1767830503;
++				CURRENT_PROJECT_VERSION = 1;
+ 				DEVELOPMENT_TEAM = HS8K5BGDV7;
+ 				INFOPLIST_FILE = Heals/Info.plist;
+ 				INFOPLIST_KEY_CFBundleDisplayName = "Heals (Dev)";
+ 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
+ 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+ 				LD_RUNPATH_SEARCH_PATHS = (
+ 					"$(inherited)",
+ 					"@executable_path/Frameworks",
+ 				);
+-				MARKETING_VERSION = 1.1.8;
++				MARKETING_VERSION = 1.2.2;
+ 				OTHER_LDFLAGS = (
+ 					"$(inherited)",
+ 					"-ObjC",
+ 					"-lc++",
+ 				);
+ 				PRODUCT_BUNDLE_IDENTIFIER = com.healshealthcare.healspass.dev;
+ 				PRODUCT_NAME = Heals;
+ 				SWIFT_VERSION = 5.0;
+ 				VERSIONING_SYSTEM = "apple-generic";
+ 			};
+ 			name = Dev;
+ 		};
+ 		83CBBA201A601CBA00E9B192 /* Debug */ = {
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
+ 				ALWAYS_SEARCH_USER_PATHS = NO;
+ 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+ 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+ 				CLANG_CXX_LIBRARY = "libc++";
+ 				CLANG_ENABLE_MODULES = YES;
+ 				CLANG_ENABLE_OBJC_ARC = YES;
+ 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+ 				CLANG_WARN_BOOL_CONVERSION = YES;
+ 				CLANG_WARN_COMMA = YES;
+ 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+ 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+ 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+ 				CLANG_WARN_EMPTY_BODY = YES;
+ 				CLANG_WARN_ENUM_CONVERSION = YES;
+ 				CLANG_WARN_INFINITE_RECURSION = YES;
+ 				CLANG_WARN_INT_CONVERSION = YES;
+ 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+ 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+ 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+ 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+ 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+ 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+ 				CLANG_WARN_STRICT_PROTOTYPES = YES;
+ 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+ 				CLANG_WARN_UNREACHABLE_CODE = YES;
+ 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+ 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+ 				COPY_PHASE_STRIP = NO;
+ 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+ 				ENABLE_TESTABILITY = YES;
+ 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+ 				GCC_C_LANGUAGE_STANDARD = gnu99;
+ 				GCC_DYNAMIC_NO_PIC = NO;
+ 				GCC_NO_COMMON_BLOCKS = YES;
+ 				GCC_OPTIMIZATION_LEVEL = 0;
+ 				GCC_PREPROCESSOR_DEFINITIONS = (
+ 					"DEBUG=1",
+ 					"$(inherited)",
+ 				);
+ 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+ 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+ 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+ 				GCC_WARN_UNDECLARED_SELECTOR = YES;
+ 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+ 				GCC_WARN_UNUSED_FUNCTION = YES;
+ 				GCC_WARN_UNUSED_VARIABLE = YES;
+ 				HEADER_SEARCH_PATHS = (
+ 					"$(inherited)",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/React-runtimeexecutor/React_runtimeexecutor.framework/Headers",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/React-runtimeexecutor/React_runtimeexecutor.framework/Headers/platform/ios",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/React-Fabric/React_Fabric.framework/Headers/react/renderer/components/view/platform/cxx",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers",
+ 					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
+ 				);
+ 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+ 				LD_RUNPATH_SEARCH_PATHS = (
+ 					/usr/lib/swift,
+ 					"$(inherited)",
+ 				);
+ 				LIBRARY_SEARCH_PATHS = (
+diff --git a/src/api/api-types.ts b/src/api/api-types.ts
+index 7eccdd34..a0340236 100644
+--- a/src/api/api-types.ts
++++ b/src/api/api-types.ts
+@@ -180,179 +180,160 @@ interface PatientValueAsJson {
+ }
+ 
+ interface Patient {
+   name: string;
+   valueAsJson: PatientValueAsJson;
+ }
+ 
+ interface Clinic {
+   id: string;
+   name: string;
+   country: string;
+   region: string;
+   area: string;
+   district: string;
+   address: string;
+   coordinates: {
+     lat: number;
+     lng: number;
+   };
+ }
+ 
+ interface Doctor {
+   id: string;
+   name: string;
+   type: string;
+   specialties: string[];
+   specialtyIds: string[];
+ }
+ 
+ interface Provider {
+   id: string;
+ }
+ 
+ export interface Ticket {
+   id: string;
+   memberId: string;
+   policyId: string;
+   providerId: string;
+   visitType: string;
+   statuses: Status[];
+   ticketStatus: string;
+   valueAsJson: ValueAsJson;
+   startTime: string | null;
+   currentPosition: number;
+   expectedCallTime: string;
+   referencedTicketId: string | null;
+   updatedTicketId: string | null;
+   patient: Patient;
+   consultation: Consultation;
+   provider: Provider;
+   clinic: Clinic;
+   doctor: Doctor;
+   expectedCallDateTimeUtc?: string;
+   calledDateTimeUtc?: string;
+ }
+ 
+ export interface Plan {
+   id: string;
+   name: string;
+   isProduct: boolean;
+   providerCountries: string[];
+   payorId: string;
+ }
+ 
+ export interface Policys {
+   id: string;
+   plan: Plan;
+   policyNumber: string;
+   issueDate: string;
+   effectiveDate: string;
+   expirationDate: string;
+   memberShipId: string;
+   iconSrc?: string | null;
+ }
+ 
+ export interface MemberPolicies {
+   memberId: string;
+   policies: Policys[];
+ }
+ 
+-export interface PolicysV2 {
+-  benefits: Benefit[];
+-  conditions: Condition[];
+-  currency: string;
+-  effectiveDate: string;
+-  expirationDate: string;
+-  id: string;
+-  identifiers: any[];
+-  insuredItem: UserInsuredItem | null;
+-  paymentConfig: any;
+-  plan: Plan;
+-  planId: string;
+-  policyName: string;
+-  policyNumber: string;
+-  product: UserProduct | null;
+-  remainingBenefits: UserRemainingBenefits | null;
+-  statuses: Status[];
+-}
+-
+ export interface MemberDetailPolicies {
+   memberId: string;
+   policies: UserPolicy[];
+ }
+ 
+ interface QueueItemClinic {
+   id: string;
+   name: string;
+   country: string;
+   region: string;
+   area: string;
+   district: string;
+   address: string;
+   coordinates: {
+     lat: number;
+     lng: number;
+   };
+ }
+ 
+ interface QueueItemDoctor {
+   id: string;
+   name: string;
+   type: string;
+   specialties: string[];
+   specialtyIds: string[];
+ }
+ 
+ export interface QueueItem {
+   id: string;
+   isOnline: boolean;
+   queuePosition: number;//當前用戶在排隊中的位置,列表裡標示當前用戶前邊還有(queuePosition-1)個人,
+   queueExpectedTime: string | null;
+   type: string[];
+   clinic: QueueItemClinic;
+   doctor: QueueItemDoctor;
+   hasValidContract: boolean;
+ }
+ 
+ 
+ interface Practitioner {
+   id: string;
+   name: string;
+   valueAsString: string; // JSON string with detailed practitioner data
+ }
+ 
+ interface License {
+   number: string;
+   registrationYear: number;
+   registrationAddress: string;
+   registrationCountryId: string;
+   natureOfQualifications: string[];
+ }
+ 
+ interface Qualification {
+   name: string;
+   type: string;
+   year: number;
+   nameSimplifiedChinese: string;
+   nameTraditionalChinese: string;
+ }
+ 
+ interface PractitionerDetails {
+   gender: string;
+   typeId: string;
+   lastName: string;
+   licenses: License[];
+   firstName: string;
+   salutation: string;
+   languageIds: string[];
+   specialtyIds: string[];
+   qualifications: Qualification[];
+   nameSimplifiedChinese: string;
+   nameTraditionalChinese: string;
+ }
+ 
+ interface AddressField {
+   key: string;
+   value: string;
+ }
+ 
+diff --git a/src/api/api.ts b/src/api/api.ts
+index 2c2a4966..c29ef7c1 100644
+--- a/src/api/api.ts
++++ b/src/api/api.ts
+@@ -1,93 +1,92 @@
+ import {
+   deleteRequest,
+   getRequest,
+   postRequest,
+   putRequest,
+ } from './api-client.ts';
+ import urls from '@api/urls';
+ import { AppState, getGlobalAppState, LoginData } from '@store/AppContext';
+ import Config from 'react-native-config';
+ import {
+   heals_pass_product_list_Response,
+   MemberPolicies,
+-  PolicysV2,
+   QueueItem,
+   Ticket,
+   Provider_timeslot,
+   User,
+   MemberAddresses,
+   Ticket_post_response,
+   files_ticket_response,
+   Response,
+   Files_ticket_list,
+   Files_ticket_getOneFile_response,
+   HpPurchaseRequestResponse,
+   PurchaseRecord,
+   HpListRequestResponse,
+   Ticket_statuses,
+   Transaction,
+   Transaction_ticket,
+   Sponsorship,
+   PrescriptionFiles,
+   health_info_response,
+   Geolocation,
+   AddToCart,
+   CartResponse,
+ } from '@api/api-types.ts';
+ import { AxiosProgressEvent } from 'axios';
+ import * as Keychain from 'react-native-keychain';
+ import AsyncStorage from '@react-native-async-storage/async-storage';
+ import { FCMTokenStoreRequestDTO } from '@dto/FCMTokenStoreRequestDTO.ts';
+ import { FCMTokenStoreResponseDTO } from '@dto/FCMTokenStoreResponseDTO.ts';
+ import AppConfig from '../config/index';
+ // import * as Sentry from "@sentry/react-native";
+ 
+ const handleRequestError = (error: any): Promise<never> => {
+   /**
+    * error: {
+     "success": false,
+     "error": {
+         "constraints": [
+             "visitorId must be a string"
+         ],
+         "localize_key": "invalid_member_registration_data"
+     }
+ }
+    */
+   console.log('handleRequestError=>>>>', error);
+   // Extract meaningful error message from various possible error structures
+   let errorMessage = 'An error occurred';
+   try {
+     if (typeof error === 'string') {
+       // If error is already a string
+       errorMessage = error;
+     } else if (error?.message && typeof error.message === 'string') {
+       // First try: error.message (from API response data)
+       errorMessage = error.message;
+     } else if (
+       error?.error?.constraints &&
+       Array.isArray(error.error.constraints) &&
+       error.error.constraints.length > 0
+     ) {
+       // Handle error object with constraints array (e.g., { success: false, error: { constraints: ["..."], localize_key: "..." } })
+       // Join all constraint messages into a single string
+       errorMessage = error.error.constraints.join(', ');
+     } else if (
+       error?.error?.message &&
+       typeof error.error.message === 'string'
+     ) {
+       // Handle error object with message field (e.g., { success: false, error: { message: "...", localize_key: "..." } })
+       // Prioritize message over localize_key as it contains more meaningful error description
+       errorMessage = error.error.message;
+     } else if (
+       error?.error?.localize_key &&
+       typeof error.error.localize_key === 'string'
+     ) {
+       // Fallback to localize_key if message is not available (e.g., { success: false, error: { localize_key: "..." } })
+       errorMessage = error.error.localize_key;
+     } else if (error?.response?.data?.message) {
+       // Try: Axios error response data message
+       errorMessage = error.response.data.message;
+     } else if (error?.response?.data?.error) {
+       // Try: Axios error response data error field
+       const errorData = error.response.data.error;
+@@ -259,181 +258,172 @@ export const dependants = async () => {
+   try {
+     const response = await getRequest<any>(urls.API_DEPENDANTS);
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+ };
+ 
+ export const heals_pass_product_list =
+   async (): Promise<heals_pass_product_list_Response> => {
+     try {
+       const response = await getRequest<any>(urls.API_heals_pass_product_list, {
+         baseURL: Config.BASE_URL_1,
+       });
+       return Promise.resolve(response.data);
+     } catch (error) {
+       return handleRequestError(error);
+     }
+   };
+ 
+ export const ticketList = async (params: {
+   statusGroup: string;
+   limit: number;
+   page: number;
+ }): Promise<Ticket[]> => {
+   try {
+     const response = await getRequest<any>(urls.API_ticket, {
+       // baseURL: Config.BASE_URL_1,
+       params,
+     });
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+ };
+ 
+ export const getOneTicket = async (ticketId: string): Promise<Ticket> => {
+   try {
+     const response = await getRequest<any>(urls.API_ticket + `/${ticketId}`, {
+       // baseURL: Config.BASE_URL_1,
+       // params: {ticketId}
+     });
+ 
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+ };
+ 
+ export const ticket_post = async (): Promise<Ticket_post_response> => {
+   try {
+     const globalAppState = getGlobalAppState();
+     const response = await postRequest<any>(
+       urls.API_ticket,
+       {
+         ...globalAppState?.ticketPostData,
+       },
+       {
+         // baseURL: Config.BASE_URL_1,
+       },
+     );
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+ };
+ 
+ /**
+  * get questionnaire
+  */
+ export const questionnaire = async insurerId => {
+   try {
+     const response = await getRequest<any>(urls.API_QUESTION + `/${insurerId}`);
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+ };
+ 
+ /*
+- * const res: MemberPolicies | undefined = await $api.member_policies()
++ * const res: MemberPolicies | undefined = await $api.member_policies(filterIsActive)
++ * filterIsActive: boolean - optional, default is false. If true, only active policies will be returned.
+  */
+-export const member_policies = async (): Promise<
++export const member_policies = async (filterIsActive: boolean = false): Promise<
+   MemberPolicies | undefined
+ > => {
+   try {
+-    const response = await getRequest<any>(urls.API_member_policies, {});
+-    return Promise.resolve(response.data?.data);
+-  } catch (error) {
+-    return handleRequestError(error);
+-  }
+-};
+-
+-/*
+- * const res: PolicysV2[] | undefined = await $api.member_policies_v2()
+- */
+-export const member_policies_v2 = async (): Promise<
+-  PolicysV2[] | undefined
+-> => {
+-  try {
+-    const response = await getRequest<any>(urls.API_member_policies_v2, {});
++    const response = await getRequest<any>(urls.API_member_policies, {
++      params: {
++        filterIsActive,
++      },
++    });
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+ };
+ 
+ /**
+  * post questionnaire
+  */
+ export const post_questionnaire = async (
+   payload: {
+     answers: any;
+     questionnaireId: string;
+     memberId: string;
+   },
+   payorid: string,
+ ) => {
+   try {
+     console.log(``);
+     const response = await postRequest<any>(
+       urls.API_QUESTION + `?payorId=${payorid}`,
+       payload,
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     // return handleRequestError(error);
+     return error;
+   }
+ };
+ 
+ /**
+  * get address
+  */
+ export const get_address = async (): Promise<MemberAddresses[]> => {
+   try {
+     const response = await getRequest<any>(urls.API_ADDRESS, {
+       baseURL: Config.BASE_URL_1,
+     });
+     return Promise.resolve(response.data.data?.addresses);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+ };
+ 
+ /**
+  * delete address
+  */
+ export const delete_address = async (
+   useId: string,
+   addressId: string,
+ ): Promise<MemberAddresses[]> => {
+   try {
+     const response = await deleteRequest<any>(
+       urls.API_ADDRESS_DELETE + '/' + useId + '/address/' + addressId,
+     );
+     return Promise.resolve(response.data.data?.addresses);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+ };
+ 
+ /**
+  * add address
+  */
+ export const add_address = async (
+   useId: string,
+   payload: {},
+ ): Promise<MemberAddresses[]> => {
+   try {
+     const response = await putRequest<any>(urls.API_ADDRESS_ADD + '/' + useId, {
+       addresses: [payload],
+     });
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+ };
+ 
+ /**
+  * const res: QueueItem[] | undefined = await $api.provider_list()
+@@ -1193,138 +1183,138 @@ export const sendOneTimePassword = async (payload: any) => {
+ export const registerOTP = async (payload: any) => {
+   try {
+     // API_OTP_REGISTRATION
+     const response = await postRequest<any>(urls.API_OTP_REGISTRATION, payload);
+     const globalAppState = getGlobalAppState();
+     globalAppState?.setLoginData(response?.data.data);
+     await AsyncStorage.setItem(
+       'memberData',
+       JSON.stringify(response?.data.data),
+     );
+     await Keychain.setGenericPassword(
+       'password',
+       response?.data?.data.accessToken,
+     );
+     return Promise.resolve(response.data);
+   } catch (e) {
+     return e;
+   }
+ };
+ 
+ export const getAddresses = async (country: string) => {
+   try {
+     const response = await getRequest<any>(`${urls.API_ADDRESSES}${country}`);
+     return response.data;
+   } catch (error) {
+     return error;
+   }
+ };
+ 
+ export const delivery_request = async ({
+   ticket_id,
+   contactPerson,
+   contactNumber,
+   address,
+   street,
+   city,
+   state,
+   country,
+ }: {
+   ticket_id: string;
+   contactPerson: string;
+   contactNumber: string /*"+852-66668888"*/;
+   address: string;
+   street: string;
+   city: string;
+   state: string;
+   country: string;
+ }) => {
+   try {
+     const endpoint = `${urls.API_delivery_request}/${ticket_id}/delivery_request`;
+     const response = await putRequest<any>(
+       endpoint,
+       JSON.stringify({
+         contactPerson,
+         contactNumber,
+         address,
+         street,
+         city,
+         state,
+         country,
+       }),
+       {
+         // headers: {
+         //   'x-client-id': 'health-passport-web',
+         //   'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
+         // }
+       },
+     );
+     return Promise.resolve(response.data);
+   } catch (e) {
+     console.log(`Excpetion encountered @ updateDependant ${JSON.stringify(e)}`);
+   }
+ };
+ 
+ export const get_ticket_upcoming = async (): Promise<Ticket[]> => {
+   try {
+     const response = await getRequest<{ data: Ticket[] }>(
+       urls.API_ticket_upcoming,
+     );
+     console.log('api get_ticket_upcoming response=', response);
+-    return Promise.resolve(response.data.data);
++    return Promise.resolve(response?.data?.data);
+   } catch (error) {
+     return handleRequestError(error) as Promise<Ticket[]>;
+   }
+ };
+ 
+ export const getInquiryQuestions = async () => {
+   try {
+     const response = await getRequest(urls.API_INQUIRY);
+     return Promise.resolve(response.data);
+   } catch (error: any) {
+     return handleRequestError(error) as Promise<Ticket[]>;
+   }
+ };
+ 
+ export const getLocation = async () => {
+   try {
+     const response = await getRequest(urls.API_GET_LOCATION);
+     return Promise.resolve(response.data);
+   } catch (error: any) {
+     return error;
+   }
+ };
+ 
+ export const sendMagicLink = async (payload: {
+   contact: string;
+   email: string;
+ }) => {
+   try {
+     const response = await postRequest<any>(urls.API_MAGIC_LINK, payload);
+     return Promise.resolve(response.data);
+   } catch (e) {
+     return handleRequestError(e);
+   }
+ };
+ 
+ export const magicLogin = async (payload: {
+   id: string;
+   token: string;
+   source: string;
+ }) => {
+   try {
+     const response = await postRequest<any>(urls.API_MAGIC_LOGIN, payload);
+     const globalAppState = getGlobalAppState();
+     globalAppState?.setLoginData(response?.data?.data);
+     await AsyncStorage.setItem(
+       'memberData',
+       JSON.stringify(response?.data?.data),
+     );
+     await Keychain.setGenericPassword(
+       'password',
+       response?.data?.data?.accessToken,
+     );
+     return Promise.resolve(response.data);
+   } catch (e) {
+     return handleRequestError(e);
+   }
+ };
+diff --git a/src/api/urls.ts b/src/api/urls.ts
+index fa7aa537..2fd79ad8 100644
+--- a/src/api/urls.ts
++++ b/src/api/urls.ts
+@@ -1,79 +1,78 @@
+ import Config from 'react-native-config';
+ 
+ export default Object.freeze({
+   API_BASE_URL: Config.BASE_URL,
+   API_LOGIN: `${Config.BASE_URL_1}/v1/health-passport/auth/login`,
+   API_SEND_OTP: '/sendotp',
+   API_LOGIN_OTP: `${Config.BASE_URL_1}/v1/health-passport/auth/login-otp`,
+   API_ACTIVATE: '/v1/health-passport/activate',
+   API_DEPENDANTS: `${Config.BASE_URL_1}/v1/health-passport/dependants`,
+   API_heals_pass_product_list: '/v1/health-passport/heals-pass-product/list',
+   API_ticket: `${Config.BASE_URL_1}/v1/ticket`,
+   API_QUESTION: `${Config.BASE_URL_1}/v1/questionnaire`,
+   API_ADDRESS: `${Config.BASE_URL_1}/v1/health-passport/member/addresses`,
+   API_ADDRESS_DELETE: `${Config.BASE_URL_1}/v1/health-passport/entity`,
+   API_ADDRESS_ADD: `${Config.BASE_URL_1}/v1/health-passport/user/update`,
+   API_PROFILE_EDIT: `${Config.BASE_URL_1}/v1/health-passport/user/update`,
+   API_member_policies: `${Config.BASE_URL_1}/v1/health-passport/member/policies`,
+-  API_member_policies_v2: `${Config.BASE_URL_1}/v1/health-passport/member/policies_v2`,
+   API_provider_list: '/v1/provider',
+   API_provider_timeslot: `/v1/provider/timeslot`,
+   API_USER: `${Config.BASE_URL_1}/v1/health-passport/user`,
+   API_REGISTER: '/v1/health-passport/user/heals/registration',
+   API_HEALTH_RECORD: '/v1/health-passport/health-record',
+   API_files_ticket: '/v1/files/ticket',
+   API_GOOGLE_MAP: 'AIzaSyDMCeqf31ZR36GURoZTBpDNSH4sZpf8Ff0',
+   API_heals_pass_product_request:
+     '/v1/health-passport/heals-pass-product/request',
+   API_finishHPPurchase:
+     Config.NEXT_PUBLIC_BASEURL +
+     '/v1/health-passport/heals-pass-product/request/finish',
+   API_APPLE_WALLET_PASS:
+     Config.BASE_URL_1 + '/v1/health-passport/apple-wallet-pass',
+   API_GOOGLE_WALLET_PASS:
+     Config.BASE_URL_1 + '/v1/health-passport/google-wallet-pass',
+   API_ticket_statuses: Config.NEXT_PUBLIC_BASEURL + '/v1/ticket/statuses',
+   API_transaction: Config.BASE_URL_1 + '/v1/transaction',
+   API_DELETE_ACCOUNT: Config.BASE_URL_1 + '/v1/health-passport/entity',
+   API_transaction_ticket: Config.BASE_URL_1 + '/v1/transaction/ticket',
+   API_sponsorship_list:
+     Config.BASE_URL_1 + '/v1/health-passport/heals-pass-product/sponsorship',
+   API_edocs_prescription: Config.BASE_URL + '/edocs/prescription',
+   API_CHANGE_PASSWORD:
+     Config.BASE_URL_1 + '/v1/health-passport/user/change-password',
+   API_edocs_receipt: Config.BASE_URL + '/edocs/receipt',
+   API_STORE_FCM: Config.BASE_URL_1 + '/v1/health-passport/fcm',
+   API_geolocation: Config.BASE_URL + '/geolocation',
+   API_NOTIFICATION_LISTS:
+     Config.BASE_URL_1 + '/v1/health-passport/notifications/',
+   API_UPDATE_NOTIFICATION:
+     Config.BASE_URL_1 + '/v1/health-passport/notifications/update',
+   API_MINIMUM_VERSION:
+     Config.BASE_URL_1 + '/v1/health-passport/minimum-app-version',
+   API_REFRESH_TOKEN:
+     Config.BASE_URL_1 + '/v1/health-passport/auth/refreshToken',
+   API_FILTER_BY_SPECIALTY: Config.BASE_URL_1 + '/v1/provider?',
+   API_PROVIDER_OPTIONS: Config.BASE_URL_1 + '/v1/provider/options',
+   API_DRUG_INSURANCE_PLAN: Config.BASE_URL_1 + '/drugs/insurance-plan/',
+   API_ADD_TO_CART: Config.BASE_URL_1 + '/v1/health-passport/shopping-cart',
+   API_GET_TO_CART: Config.BASE_URL_1 + '/v1/health-passport/shopping-cart',
+   API_GET_CART_ITEM_INFO: Config.BASE_URL_1 + '/drug/',
+   API_QUESTIONNAIRE: `${Config.BASE_URL_1}/v1/questionnaire`,
+   API_MESSAGE_AID: `${Config.BASE_URL_1}/v1/health-passport/aid`,
+   API_DELETE_MEDICATION: `${Config.BASE_URL_1}/v1/health-passport/shopping-cart`,
+   API_GET_EMC_FILE: `${Config.NEXT_PUBLIC_HSBC_PROXY_URL}/hp/getEmcFile`,
+   API_GET_REFERRAL: `${Config.NEXT_PUBLIC_HSBC_PROXY_URL}/hp/getReferralFile`,
+   API_ADD_DEPENDANT: `${Config.BASE_URL_1}/v1/health-passport/dependants`,
+   API_UPDATE_DEPENDANT: `${Config.BASE_URL_1}/v1/health-passport/user/update/`,
+   API_DELETE_DEPENDANT: `${Config.BASE_URL_1}/v1/health-passport/dependants/`,
+   API_VERIFY_EXISTING_ACCOUNT: `${Config.BASE_URL_1}/v1/health-passport/verifications/sendotp?verifyExistingContact=true&loginRequest=true`,
+   API_OTP: `${Config.BASE_URL_1}/v1/health-passport/verifications/sendotp?verifyExistingContact=false&loginRequest=false`,
+   API_OTP_REGISTRATION: `${Config.BASE_URL_1}/v1/health-passport/user/otp-login-or-register`,
+   API_ADDRESSES: `${Config.BASE_URL_1}/v1/health-passport/address/database?country=`,
+   API_delivery_request: `${Config.BASE_URL_1}/v1/ticket`,
+   API_ticket_upcoming: `${Config.BASE_URL_1}/v1/ticket/upcoming`,
+   API_INQUIRY: `${Config.BASE_URL_1}/v1/health-passport/heals-pass-product/inquiry`,
+   API_GET_LOCATION: `${Config.BASE_URL_1}/v1/health-passport/geo/ip-location`,
+   API_MAGIC_LINK: `${Config.BASE_URL_1}/v1/health-passport/auth/magic-link`,
+   API_MAGIC_LOGIN: `${Config.BASE_URL_1}/v1/health-passport/auth/magic-login`,
+ });
+diff --git a/src/i18n/locale/en.ts b/src/i18n/locale/en.ts
+index d9b47378..499cacf9 100644
+--- a/src/i18n/locale/en.ts
++++ b/src/i18n/locale/en.ts
+@@ -1,132 +1,137 @@
+ export default {
+   teleconsultLocalDoctors:
+     '1 time teleconsult (local GP doctors) within 12 months',
+   annualBasicCheckup: 'annualBasicCheckup',
+   '1 x Annual basic checkup': '1 x Annual basic checkup',
+   dnaTest: 'dnaTest',
+   basicPlan: 'basicPlan',
+   BenefitExpired: 'Benefit Expired',
+   BenefitExpiredDesc:
+     'Your benefits have expired. You may be charged a fee for the services.',
+   chinaPlan: 'chinaPlan',
+   'Excludes medication and delivery fees':
+     'Excludes medication and delivery fees',
+   'First 3 teleconsults include 3-days basic medication and delivery':
+     'First 3 teleconsults include 3-days basic medication and delivery',
+   '1 x DNA test': '1 x DNA test',
+   'First 6 teleconsults include 3-days basic medication and delivery':
+     'First 6 teleconsults include 3-days basic medication and delivery',
+   'First teleconsult includes 3-days basic medication and delivery':
+     'First teleconsult includes 3-days basic medication and delivery',
+   'Global Plan - Asia 1': 'Global Plan - Asia 1',
+   'Global Plan - Asia 2': 'Global Plan - Asia 2',
+   'Global Plan - EMEA': 'Global Plan - EMEA',
++  'Heals China Plan': 'Heals China Plan',
++  'Global Plan EMEA': 'Global Plan EMEA',
+   'HK drugs delivered to China': 'HK drugs delivered to China',
+   HOLD: 'Standard Delivery',
+   'Heals Plan International Student': 'Heals Plan International Student',
+   'Heals Plan International Worker': 'Heals Plan International Worker',
+   'Health Plan 365': 'Health Plan 365',
+   'Medication from Hong Kong': 'Medication from Hong Kong',
+   'Meds + delivery not included': 'Meds + delivery not included',
+   'Premium Plan 365': 'Premium Plan 365',
+   'Premium Plan Gold': 'Premium Plan Gold',
+   'Premium Plan Platinum': 'Premium Plan Platinum',
+   'Travel Plan - Annual': 'Travel Plan - Annual',
+   'Travel Plan - Single': 'Travel Plan - Single',
+   'Travel Plan - Single (7 Days)': 'Travel Plan - Single (7 Days)',
+   'Travel Plan - Single Promo': 'Travel Plan - Single Promo',
+   'GP Teleconsult': 'GP Teleconsult',
++  'Health Plan': 'Health Plan',
+   'Unlimited teleconsults (with GP doctors in chosen country in Asia)':
+     'Unlimited teleconsults (with GP doctors in chosen country in Asia)',
+   'Unlimited teleconsults (with GP doctors in chosen country in EMEA)':
+     'Unlimited teleconsults (with GP doctors in chosen country in EMEA)',
+   'Unlimited teleconsults (with HK-based doctors)':
+     'Unlimited teleconsults (with HK-based doctors)',
+   'Unlimited teleconsults (with either Indonesian or Filipino GP doctors)':
+     'Unlimited teleconsults (with either Indonesian or Filipino GP doctors)',
+   'Unlimited teleconsults (with home-based GP doctors), up to 14 days for 1 destination':
+     'Unlimited teleconsults (with home-based GP doctors), up to 14 days for 1 destination',
+   'Unlimited teleconsults (with home-based GP doctors), up to 14 days per destination (each trip)':
+     'Unlimited teleconsults (with home-based GP doctors), up to 14 days per destination (each trip)',
+   'Unlimited teleconsults (with local GP doctors)':
+     'Unlimited teleconsults (with local GP doctors)',
++  '1 time teleconsults (with local GP doctors)': '1 time teleconsults (with local GP doctors)',
++  'Include 3 days basic medication and delivery': 'Include 3 days basic medication and delivery',
+   'Teleconsults x1': 'Single Teleconsult',
+   'Excludes medication and delivery': 'Excludes medication and delivery',
+   'Upgrade to recommended plans': 'Upgrade to recommended plans',
+   'View Doctor List': 'View Doctor List',
+   'View Plans': 'View Plans',
+   'View available doctors': 'View available doctors',
+   account_signup: 'Account Sign Up',
+   account_signup_desc:
+     'Personalise your account to access video consultation service, consultation history and more.',
+   activate: 'Activate',
+   activate_input: 'Input Activation Code',
+   'Invalid Activation Code': 'Invalid Activation Code',
+   activate_passs_title: 'Activate a Plan ',
+   activate_success: 'Successful Activation !',
+   activate_success1: 'Your plan is now active for up in one country',
+   activated: 'Activated',
+   activation: 'Activation',
+   activation_code: 'Activation Code',
+   activation_code_expired:
+     'Activation code has expired. Please obtain a new activation code to continue.',
+   activation_code_not_found:
+     'Activation code not found. Please check the code and try again.',
+   activation_code_success: 'Pass activated successfully!',
+   active: 'Active',
+   add_address: 'Add Addresses',
+   add_new_address: 'Add new address',
+   add_wallet: 'Add to Wallet',
+   address: 'Address',
+   address_deleted: 'Address deleted',
+   address_edit: {
+     contact_number: 'Contact Mobile',
+     contact_person: 'Contact Person',
+   },
+   address_reminder_msg:
+     'An address is mandatory for medicine delivery. Please ensure to add a correct and accurate address.',
+   addresses: 'Addresses',
+   administrative_medicine: 'Administrative Medicine',
+   afghan: 'Afghan',
+   agree: 'Agree',
+   agree_heals:
+     'I agree with the Heals service terms and conditions and data privacy policy.',
+   albanian: 'Albanian',
+   alcohol_user: 'Alcohol Use ',
+   algerian: 'Algerian',
+   all: 'All',
+   all_districts: 'All Districts',
+   all_services: 'All Services',
+   allergy: 'Allergy',
+   already_reg: 'Already Registered ?',
+   american: 'American',
+   amount_limit: 'Amount Limit',
+   anaesthesiology: 'Anaesthesiology',
+   and: 'and',
+   andorran: 'Andorran',
+   angolan: 'Angolan',
+   antiguans: 'Antiguans',
+   anywhere: 'Please select',
+   apply_activation_code: 'Apply Activation Code',
+   apply_activation_code_desc:
+     'Use your activation code to set up your account.',
+   _appointment: 'Appointment',
+   appointment: {
+     sending: {
+       description:
+         "Your request has been sent to the doctor.\nPlease wait patiently for the doctor's reply.",
+       title: 'Sending to doctor...',
+     },
+   },
+   appointment_cancel_btn: 'Cancel',
+   appointment_cancel_title: 'Are you sure to cancel?',
+   appointment_cancelled_title: 'Appointment Cancelled',
+   appointment_confirm_desc:
+     'Your booking request has been sent to the doctor. The clinic will contact you directly to confirm the appointment date and time.',
+   appointment_confirm_title: 'Appointment Successfully Made!',
+   appointment_continue_disabled_btn: 'Unable to book at the moment',
+   appointment_details: 'Appointment Details',
+   appointment_history: 'Appointment History',
+   appointments: 'Appointments',
+   'area:(Kowloon)': 'Kowloon',
+   getVerificationCode: 'Get verification code',
+diff --git a/src/i18n/locale/th.ts b/src/i18n/locale/th.ts
+index c33c1030..6d404ecf 100644
+--- a/src/i18n/locale/th.ts
++++ b/src/i18n/locale/th.ts
+@@ -1119,127 +1119,129 @@ export default {
+   "emergency": {
+     "txt-cnslt-doc": "ภาวะฉุกเฉิน",
+     "txt-emer-questn-1": "การให้คำปรึกษาผ่านวิดีโอไม่เหมาะสำหรับกรณีฉุกเฉิน ในกรณีฉุกเฉิน โปรดเข้ารับการรักษาที่โรงพยาบาลที่ใกล้ที่สุดเพื่อรับการตรวจหรือรักษาเพิ่มเติม",
+     "txt-emer-questn-2": "การให้คำปรึกษาผ่านวิดีโอไม่เหมาะสำหรับกรณีฉุกเฉิน ในกรณีฉุกเฉิน โปรดเข้ารับการรักษาที่โรงพยาบาลที่ใกล้ที่สุดเพื่อรับการตรวจหรือรักษาเพิ่มเติม",
+     "vc_unavailable_list": "[\n\"หายใจลำบากหรือไอเป็นเลือด\",\n\"เจ็บหน้าอกหรือมีอาการปวดรุนแรงตามส่วนอื่นของร่างกาย\",\n\"การหายใจไม่ออก\",\n\"อาการสับสนและ/ หรือเห็นภาพหลอน\",\n\"เป็นลมหรือหมดสติ\",\n\"การบาดเจ็บที่ศีรษะหรือกระดูกสันหลังหรือกระดูกหัก\",\n\"อาการชัก\",\n\"เลือดออกมาก\",\n\"อาเจียนรุนแรงหรือต่อเนื่อง\",\n\"พูดลำบาก\",\n\"อาการวิงเวียนศีรษะ อ่อนแรง หรือการมองเห็นเปลี่ยนแปลงอย่างกะทันหัน\",\n\"มีความคิดอยากฆ่าตัวตายหรือฆ่าผู้อื่น\"\n]"
+   },
+   "health_questionnaire": "แบบสอบถามสุขภาพ",
+   "questionnaire": {
+     "agree_tnc": "การดำเนินการต่อแสดงว่าคุณยอมรับ"
+   },
+   "start_video_consultation_now": "เข้าร่วมการให้คำปรึกษาผ่านวิดีโอ",
+   "upload": "อัปโหลด",
+   "Medication Category": "หมวดยา",
+   "anticoagulant": "ยาป้องกันเลือดแข็งตัว",
+   "antihypertensive": "ลดความดันโลหิต",
+   "cholesterol-lowering": "ลดคอเลสเตอรอล",
+   "diabetes": "โรคเบาหวาน",
+   "Supplement": "เสริม",
+   "Common Drug": "ยาสามัญ",
+   "cardiovascular": "หัวใจและหลอดเลือด",
+   "uric acid-lowering": "การลดกรดยูริก",
+   "shoppingcart": "ตะกร้าสินค้า",
+   "consultNotice": "โปรดปรึกษาแพทย์เพื่อดำเนินการต่อ",
+   "totalPrice": "ราคารวม",
+   "consultDoctor": "ปรึกษาแพทย์",
+   "openingHoursService": "เวลาทำการของบริการของเรา",
+   "conceiregeHK": "คอนเซียร์จ (เวลาฮ่องกง)",
+   "0811PM": '08:00~23:00 น. (จันทร์~เสาร์)',
+   "serviceRegion": "พื้นที่ให้บริการ",
+   "0911pm": "09:00~23:00 น. (จันทร์~เสาร์) ปิดวันอาทิตย์",
+   "09mid": "09:00~Tengah Malam (Senin~Sabtu)",
+   "closedSunPH": "ปิดวันอาทิตย์",
+   "closedSun": "ปิดวันอาทิตย์",
+   "0910pmMondaySat": "09.00-22.00น. (จันทร์-เสาร์) ",
+   "0905pm": "09:00~17:00 น. (จันทร์~ศุกร์) ",
+   "0901pmSat": "09:00~13:00 น. (เสาร์)",
+   "0806pmMonSun": "08:00~18:00 น. (จันทร์~อาทิตย์)",
+   "medicalCertificate": "ใบรับรองแพทย์",
+   "Unlimited teleconsultations (with Thailand-based doctors)": "Unlimited teleconsultations (with Thailand-based doctors)",
+   "pleaseEnter": "กรุณาระบุ...",
+   "get_otp_new": "OTP",
+   'our_opening_hours': 'เวลาทำการของเรา',
+   'gpConsultHours': 'เวลาปรึกษาแพทย์ทั่วไป (เวลาท้องถิ่น)',
+   '0804pmMonSat': '08:00-16:00น. (จันทร์-เสาร์)',
+   'openOnPublicHolidayExcept': 'เปิดในวันหยุดนักขัตฤกษ์ (ยกเว้น 1 ม.ค. และสงกรานต์ (13~15 เม.ย.))',
+   'Premium Plan Silver': 'Premium Plan GSilver',
+   'choose_region': 'เลือกประเทศหรือภูมิภาค',
+   'top_search': 'ค้นหายอดนิยม',
+   'input_search': 'ค้นหา',
+   'required': 'จำเป็น',
+   'Payment Notification': 'การแจ้งเตือนการชำระเงิน',
+   'notifications': 'การแจ้งเตือน',
+   'no_notification_news': 'ไม่มีการแจ้งเตือนหรือข่าวสาร',
+   'login_by_touchId': 'เข้าสู่ระบบโดย TouchID',
+   'login_by_faceId': 'เข้าสู่ระบบโดย FaceID',
+   'use_by_touchId': 'ใช้ Touch ID สำหรับ Heals? ',
+   'use_by_faceId': 'ใช้ Face ID สำหรับ Heals? ',
+   'sign_by_touchId': 'เข้าสู่ระบบ Heals ด้วยลายนิ้วมือของคุณ เพื่อความปลอดภัยและสะดวกในการเข้าถึงบัญชีของคุณ ',
+   'sign_by_faceId': 'เข้าสู่ระบบ Heals ด้วยมุมมอง รักษาบัญชีของคุณปลอดภัยโดยใช้ Face ID เพื่อตรวจสอบความเป็นจริง ',
+   "loginByFaceID": "เข้าสู่ระบบด้วย Face ID",
+   'change_successful': 'เปลี่ยนแปลงสำเร็จ',
+   'back_to_login_page': 'กลับไปหน้าล็อกอิน',
+   'back_to_home_page': 'กลับไปหน้าหลัก',
+   "South Korea": "เกาหลีใต้",
+   'Dubai': 'ดูไบ',
+   'support_msg': 'วิดีโอการให้คำปรึกษา - วันจันทร์ถึงวันศุกร์ 7:00 - 23:00\nวิดีโอให้คำปรึกษา - เสาร์ 8.00 น. - 13.00 น.\nวันอาทิตย์และวันหยุดนักขัตฤกษ์ - ปิด\n\nโทรศัพท์ / ฝ่ายบริการลูกค้าออนไลน์ - วันจันทร์ถึงวันเสาร์ 7:00 น. - 23:00 น.',
+   'Invalid username or password': 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
+   "ongoing": "Ongoing",
+   'Add New Dependents':'เพิ่มผู้พึ่งพาใหม่',
+   'Add Dependent':'เพิ่มผู้พึ่งพา',
+   'Kind Reminder':'การเตือนอย่างสุภาพ',
+   'kindRemindeDescription':'กรุณาให้ข้อมูลส่วนบุคคลพื้นฐาน ข้อมูลส่วนบุคคลที่ครอบคลุมช่วยให้แพทย์และเจ้าหน้าที่ให้บริการได้ดียิ่งขึ้น ข้อมูลส่วนบุคคลของคุณได้รับการคุ้มครองตามนโยบายความเป็นส่วนตัว',
+   'membershipRole':'บทบาทของสมาชิก',
+   'google_wallet_not_installed':'ยังไม่ได้ติดตั้ง google wallet กำลังเปลี่ยนเส้นทางไปที่ play store',
+   "Global Plan - Asia 1": "Global Plan - Asia 1",
+   'Unlimited teleconsults (with GPs in Indonesia or the Philippines)':'การปรึกษาทางไกลไม่จำกัด (กับแพทย์ทั่วไปในอินโดนีเซียหรือฟิลิปปินส์)',
+   'Excludes medication & delivery fees':'ไม่รวมค่ายาและค่าจัดส่ง',
+   'Global Plan - Asia 2':'Global Plan - Asia 2',
+   'Unlimited teleconsults (with GPs in selected Asian countries)':'ปรึกษาทางไกลไม่จำกัด (กับแพทย์ทั่วไปในบางประเทศในเอเชีย)',
+   'Global Plan - EMEA':'Global Plan - EMEA',
++  'Heals China Plan': 'Heals China Plan',
++  'Global Plan EMEA': 'Global Plan EMEA',
+   'Unlimited teleconsults (with GPs in selected regions across Europe, Middle East & Africa)':'การปรึกษาทางไกลไม่จำกัด (กับแพทย์ทั่วไปในบางภูมิภาคของยุโรป ตะวันออกกลาง และแอฟริกา)',
+   'Unlimited teleconsults (with GPs), 1 destination for up to 14 days':'Unlimited teleconsults (with GPs), 1 destination for up to 14 days',
+   'Unlimited teleconsults (with GPs), each destination for up to 14 days (per trip)':'Unlimited teleconsults (with GPs), each destination for up to 14 days (per trip)',
+   'Unlimited teleconsults (with local GPs)':'Unlimited teleconsults (with local GPs)',
+   'First teleconsults includes 3-days basic medication & delivery':'การปรึกษาครั้งแรก รวมยาพื้นฐาน 3 วันและการจัดส่ง',
+   'First 3 teleconsults include 3-days basic medication & delivery':'การปรึกษาออนไลน์ 3 ครั้งแรก รวมถึงยาพื้นฐาน 3 วัน และบริการจัดส่ง',
+   '1 × DNA test':'1 × การตรวจ dna',
+   'First 6 teleconsults include 3-days basic medication & delivery':'การปรึกษาทางไกล 6 ครั้งแรก รวมยาพื้นฐาน 3 วันและการจัดส่ง',
+   '1 × Annual basic checkup':'1 × การตรวจสุขภาพพื้นฐานประจำปี',
+   'Unlimited teleconsults (with HK GPs)':'ปรึกษาแพทย์ทางไกลไม่จำกัด (กับแพทย์ทั่วไปของฮ่องกง)',
+   'HK meds direct delivery to mainland China': 'จัดส่งยาจาก hk โดยตรงไปยังจีนแผ่นดินใหญ่',
+   'Medical Ceritificate': 'ใบรับรองแพทย์',
+   'inform_msg': 'เราจะแจ้งให้คุณทราบรหัสการตรวจสอบผ่านโทรศัพท์ โปรดระวังโทรศัพท์',
+   'Referral Letter': 'หนังสือส่งตัว',
+   "region": "ภูมิภาค",
+   'checkin': 'Checkin',
+   'Start': 'Start',
+   'prescription_gentle_reminder1': 'กรุณาระวังว่ากรณีที่เลือกที่นี่จะเป็นกรณีที่มีผลตั้งแต่การปรึกษา',
+   'Buy a Plan': 'ซื้อแพลน',
+   'go_now': 'ไปตอนนี้',
+   'newcomers_guide': 'คู่มือสำหรับผู้มาใหม่',
+   'want_delete_address': 'คุณแน่ใจว่าคุณต้องการลบที่อยู่',
+   "Doctors' Access - Worldwide": "การเข้าถึงแพทย์ - ทั่วโลก",
+   "You can now access doctors": "คุณสามารถเข้าถึงแพทย์และคลินิกในมากกว่า 50 ประเทศในทั่วโลก, 24/7, ผ่านออนไลน์หรือคำแนะนำไปยังคลินิกหรือโรงพยาบาลใกล้ที่สุด",
+   "Choose Your Plan": "เลือกแผนของคุณ",
+   "We offer several plans": "เราเสนอหลายแผนที่เหมาะสำหรับความต้องการของคุณ - หรือสำหรับการเดินทางสั้น หรือการกลับบ้านหรือการศึกษา โปรดติดต่อเราถ้าคุณไม่แน่ใจว่าจะเลือกแผนใด!",
+   'the_system_has_recognize': "เราได้รับการรับรู้ว่าคุณเป็นผู้ใช้งานใหม่และได้สร้างบัญชีให้คุณอัตโนมัติ กรุณาอนุญาตให้ใช้งานการรับรู้บุคคลเพื่อความสะดวกในการใช้งานครั้งถัดไป ขอบคุณ!",
+   'Plan list': 'รายการแพลน',
+   'premium': 'พรีเมี่ยม',
+   'All': 'ทั่วไป',
+   'China Series': 'China Series',
+   'global': 'ทั่วโลก',
+   'travel': 'การเดินทาง',
+   'Live in Hong Kong & need regular care': 'อาศัยในฮ่องกง & ต้องการการรักษาประจำ',
+   'Year': 'ปี',
+   'Just want to browse available doctors first':'ต้องการดูแพทย์ที่มีอยู่ก่อน?',
+   'Living or working abroad long-term': 'อาศัยหรือทำงานต่างประเทศนานับปี',
+   'Frequent traveler needing emergency coverage':'ผู้เดินทางบ่อยครั้งที่ต้องการการความปลอดภัยในกรณีฉุกเฉิน',
+   'Mainland China': 'จีนแผ่นดินใหญ่',
+   'Hong Kong SAR': 'Hong Kong SAR',
+   'Macau SAR': 'Macau SAR',
+   "doctor_lang_prescriptions": "Dokter dalam Bahasa Anda. \nPrescriptions Worldwide.",
+   'china': 'จีน',
+   'Based in Mainland China, need HK medical services': 'อาศัยในจีนแผ่นดินใหญ่, ต้องการบริการทางการแพทย์ของฮ่องกง',
+   'Hong Kong medicine and drugs': 'การปรึกษาแพทย์และยาจากฮ่องกง'
+ };
+ // 泰語
+diff --git a/src/i18n/locale/zh.ts b/src/i18n/locale/zh.ts
+index c44aadc6..609e5495 100644
+--- a/src/i18n/locale/zh.ts
++++ b/src/i18n/locale/zh.ts
+@@ -1,125 +1,129 @@
+ export default {
+   teleconsultLocalDoctors: '12个月内1次远程咨询（当地全科医生）',
+   annualBasicCheckup: '1 次年度基本检查',
+   '1 x Annual basic checkup': '1 次年度基本检查',
+   dnaTest: '1 次 DNA 测试',
+   '1 x DNA test': '1 次 DNA 测试',
+   basicPlan: '基本计划',
+   BenefitExpired: '权益计划已过期',
+   BenefitExpiredDesc: '您的权益计划已到期。您可选择重新购买服务。',
+   chinaPlan: '中国计划',
+   'Excludes medication and delivery fees': '不包括药物费和送货费',
+   'First 3 teleconsults include 3-days basic medication and delivery':
+     '前 3 次远程咨询包括 3 天的基本药物和送药',
+   'First 6 teleconsults include 3-days basic medication and delivery':
+     '前 6 次远程咨询包括 3 天的基本药物和送药',
+   'First teleconsult includes 3-days basic medication and delivery':
+     '首次远程咨询包括 3 天的基本药物治疗和送药',
+   'Global Plan - Asia 1': '全球计划-亚洲区1',
+   'Global Plan - Asia 2': '全球计划-亚洲区2',
+   'Global Plan - EMEA': '全球计划-欧洲中东区',
++  'Heals China Plan': '中国计划',
++  'Global Plan EMEA': '全球计划（欧洲中东区）',
+   'HK drugs delivered to China': '一站式含清关，全国各地，港药直送到家',
+   'Heals Plan International Student': 'Heals 福利权益计划国际学生',
+   'Heals Plan International Worker': 'Heals 福利权益计划国际工人',
+   'Health Plan 365': '标准计划',
+   'Medication from Hong Kong': '来自香港的药物',
+   'Meds + delivery not included': '不包括药物+送货',
+   'Premium Plan 365': '尊尚计划',
+   'Premium Plan Gold': '尊尚金卡计划',
+   'Premium Plan Platinum': '尊尚白金卡计划',
+   'Travel Plan - Annual': '旅游计划-年卡',
+   'Travel Plan - Single': '旅游计划-单次',
+   'Unlimited teleconsults (with GP doctors in chosen country in Asia)':
+     '无限次远程咨询（亚洲选定国家的全科医生）',
+   'Unlimited teleconsults (with GP doctors in chosen country in EMEA)':
+     '无限次远程咨询（欧洲、中东和非洲地区选定国家的全科医生）',
+   'Unlimited teleconsults (with HK-based doctors)':
+     '足不出户连线香港医生，视频问诊并提供处方',
+   'Unlimited teleconsults (with either Indonesian or Filipino GP doctors)':
+     '无限次远程咨询（印度尼西亚或菲律宾全科医生）',
+   'Unlimited teleconsults (with home-based GP doctors), up to 14 days for 1 destination':
+     '无限次远程咨询（普通科医生），1 个目的地最多 14 天',
+   'Unlimited teleconsults (with home-based GP doctors), up to 14 days per destination (each trip)':
+     '无限次远程咨询（普通科医生），每个目的地最多 14 天（每次行程）',
+   'Unlimited teleconsults (with local GP doctors)':
+     '无限次远程咨询（与当地全科医生）',
++  '1 time teleconsults (with local GP doctors)': '1次远程咨询（与当地全科医生）',
++  'Include 3 days basic medication and delivery': '包含3天的基本药物和送药（1次）',
+   'Teleconsults x1': '单次线上视频问诊',
+   'Excludes medication and delivery': '不包含药物和配送',
+   'Upgrade to recommended plans': '升级至推荐计划',
+   'View Doctor List': '查看医生名单',
+   'View Plans': '查看计划',
+   'View available doctors': '查看可用的医生',
+   account_signup: '帐户注册',
+   account_signup_desc:
+     '请填写个人资料，以便登录账户使用在线视频问诊服务及查看诊症记录等服务 。',
+   activate: '激活',
+   activate_input: '输入激活码',
+   activate_passs_title: '激活福利计划',
+   activate_success: '成功激活！',
+   activate_success1: '您的计划现在已在一个国家启用',
+   activated: '已激活',
+   activation: '去使用',
+   activation_code: '启动码',
+   activation_code_expired: '激活码已过期，请取得新的激活码以继续。',
+   activation_code_not_found: '未找到激活码。 请检查激活码并重试。',
+   active: '可使用',
+   add_address: '新增地址',
+   add_new_address: '新增地址',
+   add_wallet: '添加到钱包',
+   address: '地址',
+   address_deleted: '地址已删除',
+   address_edit: {
+     contact_number: '收件人电话',
+     contact_person: '收件人姓名',
+   },
+   address_reminder_msg:
+     '为了确保你能顺利收到药物，请提供正确的地址。即使你不需要我们送药，我们也能为您匹配最近的药房地址，让您能透过电子处方取药。',
+   addresses: '地址',
+   administrative_medicine: '行政医学',
+   afghan: '阿富汗',
+   agree: '同意',
+   agree_heals: '我同意Heals的服务条款与隐私政策。',
+   albanian: '阿尔巴尼亚',
+   alcohol_user: '饮酒',
+   algerian: '阿尔及利亚',
+   all: '全部',
+   all_districts: '全部地区',
+   all_services: '所有服务',
+   allergy: '过敏',
+   already_reg: '已经注册 ?',
+   american: '美国',
+   amount_limit: '金额限制',
+   anaesthesiology: '麻醉学',
+   and: '和',
+   andorran: '安道尔',
+   angolan: '安哥拉',
+   antiguans: '安提瓜',
+   anywhere: '请选择',
+   apply_activation_code: '使用福利计划激活码',
+   apply_activation_code_desc: '请使用您的福利计划激活码来设置您的账户',
+   appointment: {
+     sending: {
+       description: '您的请求已发送给医生。请耐心等待医生的回复。',
+       title: '正在将您的请求发送给医生...',
+     },
+   },
+   _appointment: '预约',
+   appointment_cancel_btn: '取消预约',
+   appointment_cancel_title: '您确定要取消预约？',
+   appointment_cancelled_title: '预约已取消',
+   appointment_confirm_desc:
+     '您的预约请求已送交诊所。诊所将直接与您联络而确认就诊日期和时间。',
+   appointment_confirm_title: '预约提交成功!',
+   appointment_continue_disabled_btn: '暂时未能预约',
+   appointment_details: '预约详情',
+   appointment_history: '预约记录',
+   appointments: '预约',
+   'area:(Kowloon)': '九龙',
+   'area:(N': {
+     T: {
+       ')': '新界',
+     },
+   },
+   'area:(NEW TERRITORIES)': '新界',
+   'area:(Outlying Islands)': '离岛',
+   area_code: '区号',
+@@ -1677,160 +1681,161 @@ export default {
+   Senegal: '塞内加尔',
+   Serbia: '塞尔维亚',
+   Seychelles: '塞舌尔',
+   'Sierra Leone': '塞拉利昂',
+   Singapore: '新加坡',
+   Slovakia: '斯洛伐克',
+   Slovenia: '斯洛文尼亚',
+   'Solomon Islands': '所罗门群岛',
+   Somalia: '索马里',
+   'South Africa': '南非',
+   'South Sudan': '南苏丹',
+   'South Georgia and the South Sandwich Islands': '南乔治亚和南桑德韦奇群岛',
+   Spain: '西班牙',
+   'Sri Lanka': '斯里兰卡',
+   Sudan: '苏丹',
+   Suriname: '苏里南',
+   'Svalbard and Jan Mayen': '斯瓦尔巴岛和扬马延岛',
+   Swaziland: '斯威士兰',
+   Sweden: '瑞典',
+   Switzerland: '瑞士',
+   'Syrian Arab Republic': '阿拉伯叙利亚共和国',
+   Syria: '叙利亚',
+   Taiwan: '台湾',
+   Tajikistan: '塔吉克斯坦',
+   'Tanzania, United Republic of Tanzania': '坦桑尼亚联合共和国',
+   Tanzania: '坦桑尼亚',
+   Thailand: '泰国',
+   'Timor-Leste': '东帝汶',
+   Togo: '多哥',
+   Tokelau: '托克劳',
+   Tonga: '汤加',
+   'Trinidad and Tobago': '特立尼达和多巴哥',
+   Tunisia: '突尼斯',
+   Turkey: '土耳其',
+   Turkmenistan: '土库曼斯坦',
+   'Turks and Caicos Islands': '特克斯和凯科斯群岛',
+   Tuvalu: '图瓦卢',
+   Uganda: '乌干达',
+   Ukraine: '乌克兰',
+   'United Arab Emirates': '阿联酋',
+   'United Kingdom': '英国',
+   'United States': '美国',
+   'United States of America': '美国',
+   Uruguay: '乌拉圭',
+   Uzbekistan: '乌兹别克斯坦',
+   Vanuatu: '瓦努阿图',
+   'Venezuela, Bolivarian Republic of Venezuela': '委内瑞拉玻利瓦尔共和国',
+   'Vatican City': '梵蒂冈',
+   Venezuela: '委内瑞拉',
+   Vietnam: '越南',
+   'Virgin Islands, British': '英属维尔京群岛',
+   'Virgin Islands, US': '‌美属维尔京群岛',
+   'Wallis and Futuna': '瓦利斯和富图纳群岛',
+   Yemen: '也门',
+   Zambia: '赞比亚',
+   Zimbabwe: '津巴布韦',
+   book_morning: '上午',
+   book_afternoon: '下午',
+   book_no_perference: '无偏好',
+   pharmacy_pick_up: '药房取药',
+   crash_error: '发生未知错误，即将重启',
+   'Heals x Food Panda Pass Trial': 'Heals 本地计划(单次)',
+   'Heals x Food Panda Pass Premium Silver': 'Heals 本地银卡计划',
+   'Heals x Food Panda Pass PremiumSilver': 'Heals 本地银卡计划',
+   'Heals x Food Panda Pass Unlimited': 'Heals 本地至尊计划',
+   'Heals x Food Panda Travel Pass Single Trip': 'Heals 旅行计划（单次）',
+   '1 time teleconsult': '1次 线上视频问诊',
+   '3 times teleconsult': '3次 线上视频问诊',
+   'GP TC unlimited': '无限次视频问诊，每日限用1次',
+   '1 time teleconsult(Home-town doctor + destination doctor)':
+     '1次 线上视频问诊（本地及旅行目的地医生）',
+   '1 time teleconsult (home-town doctor + destination doctor)':
+     '1次 线上视频问诊（本地及旅行目的地医生）',
+   'Including 3 days basic meds + delivery': '包含3日基本药物及运输（1次）',
+   'Including 3x3 days basic meds + delivery': '包含3日基本药物及运输（3次）',
+   'Including 12x3 days basic meds + delivery': '包含3日基本药物及运输（12次）',
+   'Self Pickup Address': '自取地址',
+   'Travel Plan - Single (7 Days)': '旅行计划（7日）',
+   'Travel Plan - Single Promo': '旅行计划 - 单次（试用）',
+   'GP Teleconsult': '普通科线上诊症',
++  'Health Plan': '定制健康直通服务',
+   'Login Password': '密码登录',
+   total: '总次数',
+   medication_benefit_tip: '药物及药物运输',
+   is_required: 'is required',
+   'Unlimited GP teleconsult': '无限次视频问诊，每日限用1次',
+   medi_trans_extra_cost: '药费及药物运输费另计',
+   'extra charge for medication & delivery': '药费及药物运输费另计',
+   '407, Wangsimni-ro, Jung-gu, Seoul, Republic of Korea':
+     '韩国首尔中区望时尼路407号',
+   'Gomdori Pharmacy': 'Gomdori 药房',
+   'Hongik Pharmacy': 'Hongik 药房',
+   '7, Yanghwa-ro 18-gil, Mapo-gu, Seoul': '首尔麻浦区杨花路18巷7号',
+   '9:00-22:00 (break time 13:10-14:00)': '9:00-22:00（休息时间13:10-14:00）',
+   '09:00-23:00': '09:00-23:00',
+   swipe_click_cancel: '向上滑动或点击按钮取消',
+   press_hold_active: '长按主页键使用全球救援服务',
+   global_assistance: 'Heals全球救援服务',
+   please_signin: '请核验',
+   input_connect: '输入999联络24小时客户服务中心',
+   call_or_send: '请选择联络方式',
+   call_now: '拨通客服热线',
+   send_whatsapp: '发送WhatsApp信息',
+   login_faceid: '使用Face ID登录',
+   'Clinical Oncology': '临床肿瘤学',
+   'General Surgery': '普通外科',
+   'General Practitioner': '普通科医生',
+   'Administrative Medicine': '行政医学',
+   'Clinical Microbiology & Infection': '临床微生物学与感染',
+   'Gastroenterology & Hepatology': '胃肠病学和肝病学',
+   'Traditional Chinese Medicine': '中药',
+   Cardiology: '心脏病学',
+   Anaesthesiology: '麻醉学',
+   Chiropractor: '脊椎按摩师',
+   'Obstetrics & Gynecology': '妇产科',
+   Dermatology: '皮肤科',
+   Endoscopy: '肠胃镜服务',
+   'Medication Category': '药品类别',
+   anticoagulant: '抗凝血',
+   antihypertensive: '降血压',
+   'cholesterol-lowering': '降胆固醇',
+   diabetes: '糖尿病',
+   Supplement: '保健品',
+   'Common Drug': '非处方药',
+   cardiovascular: '心血管疾病',
+   'uric acid-lowering': '降尿酸',
+   druglist: '药品清单',
+   notice: '找不到您需要的药物？请联络我们的医疗客服团队了解更多详情。',
+   importantNote: '重要提示:',
+   contact: '联络方式',
+   shoppingcart: '购物车',
+   consultNotice: '请向医生咨询以确认处方',
+   totalPrice: '总金额',
+   consultDoctor: '咨询医生',
+   openingHoursService: '服务时间',
+   conceiregeHK: '礼宾服务（香港时间）',
+   '0811PM': '上午8:00 - 晚上11:00 (周一至周六)',
+   '0711PMandSat':
+     '上午07:00 - 晚上11:00 (周一至周五) 上午08:00 - 下午1:00 (周六)',
+   '0711pm': '上午07:00 - 晚上11:00 (周一至周六)',
+   serviceRegion: '服务区域',
+   '0911pm': '上午 9:00 至晚上 11:00（周一至周六）',
+   '09mid': '上午9:00 - 午夜 (周一至周六)',
+   closedSunPH: '周日及公众假期休息',
+   closedSun: '周日休息',
+   '0910pmMondaySat': '上午9:00 - 晚上10:00 (周一至周六)',
+   '0905pm': '上午9:00 - 下午5:00 (周一至周五)',
+   '0901pmSat': '上午9:00 - 下午1:00 (周六)',
+   '0806pmMonSun': '上午8:00 - 下午6:00 (周一至周日)',
+   medicalCertificate: '病假纸',
+   referralLetters: '转介信',
+   failed_to_verify_your_identity: '无法识别面容',
+   use_passcode: '使用密码',
+   'Unlimited teleconsultations (with Thailand-based doctors)':
+     '无限次远距咨询（泰国医生）',
+   pleaseEnter: '请输入...',
+   get_otp_new: '一次性验证码',
+   phoneNumber: '电话号码',
+   dateOfBirth: '出生日期',
+   countryOrRegion: '国家／地区',
+   next: '下一步',
+diff --git a/src/i18n/locale/zh_tw.ts b/src/i18n/locale/zh_tw.ts
+index d68da693..b47c0e80 100644
+--- a/src/i18n/locale/zh_tw.ts
++++ b/src/i18n/locale/zh_tw.ts
+@@ -1,125 +1,129 @@
+ export default {
+   teleconsultLocalDoctors: '12個月內1次遠距諮詢（當地全科醫生）',
+   annualBasicCheckup: '1 次年度基本檢查',
+   '1 x Annual basic checkup': '1 次年度基本檢查',
+   dnaTest: '1 次 DNA 測試',
+   '1 x DNA test': '1 次 DNA 測試',
+   basicPlan: '基本計劃',
+   BenefitExpired: '福利計劃已到期',
+   BenefitExpiredDesc: '您的福利計劃已到期。您可選擇重新購買服務。',
+   chinaPlan: '中國計劃',
+   'Excludes medication and delivery fees': '不包括藥物費和送貨費',
+   'First 3 teleconsults include 3-days basic medication and delivery':
+     '前 3 次遠距諮詢包括 3 天的基本藥物和送藥',
+   'First 6 teleconsults include 3-days basic medication and delivery':
+     '前 6 次遠距諮詢包括 3 天的基本藥物和送藥',
+   'First teleconsult includes 3-days basic medication and delivery':
+     '首次遠距諮詢包括 3 天的基本藥物治療和送藥',
+   'Global Plan - Asia 1': '全球計劃-亞洲區1',
+   'Global Plan - Asia 2': '全球計劃-亞洲區2',
+   'Global Plan - EMEA': '全球計劃-歐洲中東區',
++  'Heals China Plan': '中國計劃',
++  'Global Plan EMEA': '全球計劃（歐洲中東區）',
+   'HK drugs delivered to China': '一站式連清關，全國各地，港藥直送到家',
+   'Heals Plan International Student': 'Heals 福利計劃國際學生',
+   'Heals Plan International Worker': 'Heals 福利計劃國際工人',
+   'Health Plan 365': '標準計劃',
+   'Medication from Hong Kong': '來自香港的藥物',
+   'Meds + delivery not included': '不包括藥物+送貨',
+   'Premium Plan 365': '尊尚計劃',
+   'Premium Plan Gold': '尊尚金咭計劃',
+   'Premium Plan Platinum': '尊尚白金咭計劃',
+   'Travel Plan - Annual': '旅遊計劃-年咭',
+   'Travel Plan - Single': '旅遊計劃-單次',
+   'Unlimited teleconsults (with GP doctors in chosen country in Asia)':
+     '無限次遠距諮詢（亞洲選定國家的全科醫生）',
+   'Unlimited teleconsults (with GP doctors in chosen country in EMEA)':
+     '無限次遠距諮詢（歐洲、中東和非洲地區選定國家的全科醫生）',
+   'Unlimited teleconsults (with HK-based doctors)':
+     '足不出戶連接香港醫生，視訊問診並提供處方',
+   'Unlimited teleconsults (with either Indonesian or Filipino GP doctors)':
+     '無限次遠距諮詢（印尼或菲律賓全科醫生）',
+   'Unlimited teleconsults (with home-based GP doctors), up to 14 days for 1 destination':
+     '無限次遠距諮詢（全科醫生），1 個目的地最多 14 天',
+   'Unlimited teleconsults (with home-based GP doctors), up to 14 days per destination (each trip)':
+     '無限次遠距諮詢（全科醫生），每個目的地最多 14 天（每次行程）',
+   'Unlimited teleconsults (with local GP doctors)':
+     '無限次遠距諮詢（與當地全科醫生）',
++  '1 time teleconsults (with local GP doctors)': '1次遠距諮詢（與當地全科醫生）',
++  'Include 3 days basic medication and delivery': '包含3天的基本药物和送药（1次）',
+   'Teleconsults x1': '單次線上視訊診症',
+   'Excludes medication and delivery': '不包含藥物和配送',
+   'Upgrade to recommended plans': '升級至推薦計劃',
+   'View Doctor List': '查看醫生名單',
+   'View Plans': '查看計劃',
+   'View available doctors': '查看可用的醫生',
+   account_signup: '帳戶註冊',
+   account_signup_desc:
+     '請填寫個人資料，以便登入帳戶使用線上視像會診及查看診症記錄等服務。',
+   activate: '啟動',
+   activate_input: '輸入啟動碼',
+   activate_passs_title: '啟動福利計畫',
+   activate_success: '啟動成功！',
+   activate_success1: '您的計劃現在已在一個國家啟用',
+   activated: '已啟動',
+   activation: '去使用',
+   activation_code: '啓動碼',
+   activation_code_expired: '啟動碼已過期，請取得新的啟動碼以繼續。',
+   activation_code_not_found: '未找到啟動碼。 請檢查啟動碼並重試。',
+   active: '可使用',
+   add_address: '新增地址',
+   add_new_address: '新增地址',
+   add_wallet: '加入銀包',
+   address: '地址',
+   address_deleted: '地址已刪除',
+   address_edit: {
+     contact_number: '收件人電話',
+     contact_person: '收件人姓名',
+   },
+   address_reminder_msg:
+     '為了確保你能順利收到藥物，請提供正確的地址。即使你不需要我們送藥，我們也能為您匹配最近的藥房地址，讓您能透過電子處方取藥。',
+   addresses: '地址',
+   administrative_medicine: '行政醫學',
+   afghan: '阿富汗',
+   agree: '同意',
+   agree_heals: '本人同意Heals的服務條款與私隱政策。',
+   albanian: '阿爾巴尼亞',
+   alcohol_user: '飲酒',
+   algerian: '阿爾及利亞',
+   all: '全部',
+   all_districts: '所有地區',
+   all_services: '所有服務',
+   allergy: '過敏',
+   already_reg: '已經註冊 ?',
+   american: '美國',
+   amount_limit: '金額限制',
+   anaesthesiology: '麻醉學',
+   and: '和',
+   andorran: '安道爾',
+   angolan: '安哥拉',
+   antiguans: '安提瓜',
+   anywhere: '請選擇',
+   apply_activation_code: '應用福利計畫啟動碼',
+   apply_activation_code_desc: '請使用你的福利計畫啟動碼以設置你的帳戶',
+   appointment: {
+     sending: {
+       description: '您的請求已發送畀醫生。請耐心等待醫生的答覆。',
+       title: '正在將您的請求發送畀醫生...',
+     },
+   },
+   _appointment: '預約',
+   appointment_cancel_btn: '取消預約',
+   appointment_cancel_title: '您確定要取消預約？',
+   appointment_cancelled_title: '預約已取消',
+   appointment_confirm_desc:
+     '您的預約請求已送交診所。診所將直接與您聯絡而確認就診日期和時間。',
+   appointment_confirm_title: '預約提交成功!',
+   appointment_continue_disabled_btn: '暫時未能預約',
+   appointment_details: '預約詳情',
+   appointment_history: '預約記錄',
+   appointments: '預約',
+   'area:(Kowloon)': '九龍',
+   'area:(N': {
+     T: {
+       ')': '新界',
+     },
+   },
+   'area:(NEW TERRITORIES)': '新界',
+   'area:(Outlying Islands)': '離島',
+   area_code: '區號',
+@@ -1678,160 +1682,161 @@ export default {
+   Senegal: '塞內加爾',
+   Serbia: '塞爾維亞',
+   Seychelles: '塞席爾',
+   'Sierra Leone': '獅子山',
+   Singapore: '新加坡',
+   Slovakia: '斯洛伐克',
+   Slovenia: '斯洛維尼亞',
+   'Solomon Islands': '索羅門群島',
+   Somalia: '索馬利亞',
+   'South Africa': '南非',
+   'South Sudan': '南蘇丹',
+   'South Georgia and the South Sandwich Islands': '南喬治亞和南桑德韋奇群島',
+   Spain: '西班牙',
+   'Sri Lanka': '斯里蘭卡',
+   Sudan: '蘇丹',
+   Suriname: '蘇利南',
+   'Svalbard and Jan Mayen': '斯瓦爾巴島和揚馬延島',
+   Swaziland: '斯威士蘭',
+   Sweden: '瑞典',
+   Switzerland: '瑞士',
+   'Syrian Arab Republic': '阿拉伯敘利亞共和國',
+   Syria: '敘利亞',
+   Taiwan: '台灣',
+   Tajikistan: '塔吉克斯坦',
+   'Tanzania, United Republic of Tanzania': '坦桑尼亞聯合共和國',
+   Tanzania: '坦尚尼亞',
+   Thailand: '泰國',
+   'Timor-Leste': '東帝汶',
+   Togo: '多哥',
+   Tokelau: '托克勞',
+   Tonga: '東加',
+   'Trinidad and Tobago': '千里達及托巴哥',
+   Tunisia: '突尼西亞',
+   Turkey: '土耳其',
+   Turkmenistan: '土庫曼斯坦',
+   'Turks and Caicos Islands': '特克斯和凱科斯群島',
+   Tuvalu: '吐瓦魯',
+   Uganda: '烏干達',
+   Ukraine: '烏克蘭',
+   'United Arab Emirates': '阿拉伯聯合大公國',
+   'United Kingdom': '英國',
+   'United States': '美國',
+   'United States of America': '美國',
+   Uruguay: '烏拉圭',
+   Uzbekistan: '烏茲別克斯坦',
+   Vanuatu: '萬那杜',
+   'Venezuela, Bolivarian Republic of Venezuela': '委內瑞拉玻利瓦爾共和國',
+   'Vatican City': '梵蒂岡',
+   Venezuela: '委內瑞拉',
+   Vietnam: '越南',
+   'Virgin Islands, British': '英屬維爾京群島',
+   'Virgin Islands, US': '美屬維爾京群島',
+   'Wallis and Futuna': '瓦利斯和富圖納群島',
+   Yemen: '葉門',
+   Zambia: '尚比亞',
+   Zimbabwe: '辛巴威',
+   book_morning: '上午',
+   book_afternoon: '下午',
+   book_no_perference: '無偏好',
+   pharmacy_pick_up: '藥房取藥',
+   crash_error: '發生未知錯誤,即將重啟',
+   'Heals x Food Panda Pass Trial': 'Heals 本地計劃（單次）',
+   'Heals x Food Panda Pass Premium Silver': 'Heals 本地銀咭計劃',
+   'Heals x Food Panda Pass PremiumSilver': 'Heals 本地銀咭計劃',
+   'Heals x Food Panda Pass Unlimited': 'Heals 本地至尊計劃',
+   'Heals x Food Panda Travel Pass Single Trip': 'Heals 旅行計劃（單次）',
+   '1 time teleconsult': '1次 線上視訊診症',
+   '3 times teleconsult': '3次 線上視訊診症',
+   'GP TC unlimited': '無限次視像會診，每日限用1次',
+   '1 time teleconsult (home-town doctor + destination doctor)':
+     '1次 線上視訊診症（香港+旅行目的地醫生）',
+   '1 time teleconsult(Home-town doctor + destination doctor)':
+     '1次 線上視訊診症（香港+旅行目的地醫生）',
+   'Including 3 days basic meds + delivery': '包含3日基本藥物及運輸（1次）',
+   'Including 3x3 days basic meds + delivery': '包含3日基本藥物及運輸（3次）',
+   'Including 12x3 days basic meds + delivery': '包含3日基本藥物及運輸（12次）',
+   'Self Pickup Address': '自取地址',
+   'Travel Plan - Single (7 Days)': '旅行計劃（7日）',
+   'Travel Plan - Single Promo': '旅行計劃 - 單次（試用）',
+   'GP Teleconsult': '普通科線上診症',
++  'Health Plan': '定制健康直通服務',
+   'Login Password': '密碼登入',
+   medication_benefit_tip: '藥物及藥物運輸',
+   is_required: 'is required',
+   'Unlimited GP teleconsult': '無限次視像會診，每日限用1次',
+   medi_trans_extra_cost: '藥費及药物運輸費另計',
+   'extra charge for medication & delivery': '藥費及药物運輸費另計',
+   '407, Wangsimni-ro, Jung-gu, Seoul, Republic of Korea':
+     '韓國首爾中區望時尼路407號',
+   'Gomdori Pharmacy': 'Gomdori 藥房',
+   total: '总次数',
+   'Hongik Pharmacy': 'Hongik 藥房',
+   '7, Yanghwa-ro 18-gil, Mapo-gu, Seoul': '首爾麻浦區楊花路18巷7號',
+   '9:00-22:00 (break time 13:10-14:00)': '9:00-22:00（休息時間13:10-14:00）',
+   '09:00-23:00': '09:00-23:00',
+   swipe_click_cancel: '向上滑動或點擊按鈕取消',
+   press_hold_active: '長禁home鍵啟動全球救援服務',
+   global_assistance: 'Heals全球救援服務',
+   please_signin: '請核驗',
+   input_connect: '輸入999聯絡24小時服務中心',
+   call_or_send: '請選擇聯絡方式',
+   call_now: '撥通客服熱線',
+   send_whatsapp: '發送WhatsApp訊息',
+   login_faceid: '使用Face ID登錄',
+   'Clinical Oncology': '臨床腫瘤學',
+   'General Surgery': '普通外科',
+   'General Practitioner': '全科醫生',
+   'Administrative Medicine': '行政醫學',
+   'Clinical Microbiology & Infection': '臨床微生物學與感染',
+   'Gastroenterology & Hepatology': '胃腸病學和肝病學',
+   'Traditional Chinese Medicine': '中藥',
+   Cardiology: '心臟病學',
+   Anaesthesiology: '麻醉學',
+   Chiropractor: '脊椎按摩師',
+   'Obstetrics & Gynecology': '婦產科',
+   Dermatology: '皮膚科',
+   Endoscopy: '腸胃鏡服務',
+   'Medication Category': '藥物類別',
+   anticoagulant: '抗凝血',
+   antihypertensive: '降血壓',
+   'cholesterol-lowering': '降膽固醇',
+   diabetes: '糖尿病',
+   Supplement: '保健品',
+   'Common Drug': '非處方藥',
+   cardiovascular: '心血管疾病',
+   'uric acid-lowering': '降尿酸',
+   druglist: '藥品清單',
+   notice: '搵唔到你所需要的藥品？請聯絡我們的醫療禮賓團隊了解更多。',
+   importantNote: '重要提示:',
+   contact: '聯絡方式',
+   shoppingcart: '購物車',
+   consultNotice: '請向醫生諮詢以確認處方',
+   totalPrice: '總金額',
+   consultDoctor: '諮詢醫生',
+   openingHoursService: '服務時間',
+   conceiregeHK: '禮賓部（香港時間）',
+   '0811PM': '上午8:00 - 晚上11:00 (週一至週六)',
+   '0711PMandSat':
+     '上午07:00 - 晚上11:00 (週一至週五) 上午08:00 - 下午1:00 (週六)',
+   '0711pm': '上午07:00 - 晚上11:00 (週一至週六)',
+   serviceRegion: '服務區域',
+   '0911pm': '上午 9:00 至晚上 11:00（週一至週六）',
+   '09mid': '上午9:00 - 午夜 (週一至週六)',
+   closedSunPH: '週日及公眾假期休息',
+   closedSun: '週日休息',
+   '0910pmMondaySat': '上午9:00 - 晚上10:00 (週一至週六) ',
+   '0905pm': '上午9:00 - 下午5:00 (週一至週五) ',
+   '0901pmSat': '上午9:00 - 下午1:00 (週六) ',
+   '0806pmMonSun': '上午8:00 - 下午6:00 (週一至週日)',
+   medicalCertificate: '病假紙',
+   referralLetters: '轉介信',
+   failed_to_verify_your_identity: '無法識別面容',
+   use_passcode: '使用密碼',
+   'Unlimited teleconsultations (with Thailand-based doctors)':
+     '無限次遠距諮詢（泰國醫生）',
+   pleaseEnter: '請輸入...',
+   get_otp_new: '一次性密碼',
+   phoneNumber: '手機號碼',
+   dateOfBirt: '出生日期',
+   countryOrRegion: '國家／地區',
+   next: '下一步',
+diff --git a/src/screens/doctor-detail-screen/doctor-detail-screen.styles.ts b/src/screens/doctor-detail-screen/doctor-detail-screen.styles.ts
+index 1f28d9a4..36a427e2 100644
+--- a/src/screens/doctor-detail-screen/doctor-detail-screen.styles.ts
++++ b/src/screens/doctor-detail-screen/doctor-detail-screen.styles.ts
+@@ -268,243 +268,246 @@ export const styles = ScaledSheet.create({
+     flex: 1,
+     flexDirection: 'row',
+     alignItems: 'center',
+     paddingHorizontal: '16@s',
+   },
+   radioImg: {
+     width: '15@s',
+     height: '15@s',
+     resizeMode: 'contain',
+   },
+   radioButtonContainerNoPref: {
+     flexDirection: 'row',
+     borderRadius: '16@s',
+     borderWidth: 1,
+     borderColor: '#00AC86',
+     height: '66@s',
+   },
+   radioBt1: {
+     flexDirection: 'row',
+     alignItems: 'center',
+     marginRight:'8@s',
+     borderRadius: '16@s',
+     borderWidth: 1,
+     borderColor: '#00AC86',
+     height: '66@s',
+     width: '144@s',
+   },
+   radioBt: {
+     marginTop: '4@s',
+     flexDirection: 'row',
+     alignItems: 'center',
+     ...borderStyle
+   },
+   divider: {
+     borderWidth: 1,
+     borderColor: $themeColorsPalette.$lightGrey,
+     borderStyle: 'dashed',
+     marginTop: '16@s',
+   },
+   phoneNumberBt: {
+     flexDirection: 'row',
+     justifyContent: 'center',
+     alignItems: 'center',
+   },
+   pageCardRowText: {
+     fontSize: '12@s',
+     lineHeight: '20@s',
+     color: '#4B6363',
+     marginLeft: '16@s',
+     textTransform: 'capitalize',
+     paddingVertical: '8@s',
+   },
+   visitModeText: {
+     fontSize: '12@s',
+     color: '#4B6363',
+     textTransform: 'capitalize',
+     fontWeight: '700',
+   },
+   pageCardRowImg: {
+     width: '20@s',
+     height: '24@s',
+   },
+   pageCardRow: {
+     width: '100%',
+     flexDirection: 'row',
+     alignItems: 'center',
+     alignContent: 'center',
+     flexWrap: 'wrap',
+   },
+   avatar: {
+     marginTop: `16@s`,
+     width: '64@s',
+     height: '64@s',
+     borderRadius: '64@s',
+   },
+   docName: {
+     // marginTop: `16@s`,
+     fontSize: '20@s',
+     lineHeight: '24@s',
+     color: '#00AC86',
+-    fontWeight: '700'
++    fontWeight: '700',
+   },
+   specialty: { 
+     marginTop: `12@s`,
+     fontSize: '12@s',
+     lineHeight: '16@s',
+     color: '#4B6363',
+     fontWeight: '400',
+   },
+   pageCard: {
+     padding: '8@s',
+     width: '100%',
+     ...borderStyle,
+     borderWidth: '0.5@s', //
+     borderColor: $themeColorsPalette.$dividerBackground, //
+     minHeight: '100@s',
+     borderRadius: '8@s',
+     marginTop: `${$pagePadding}@s`,
+   },
+   info: {
+     borderWidth: '1@s',
+     borderRadius: '16@s',
+     borderColor: $themeColorsPalette.$lightGrey,
+     width: '100%',
+     marginTop: '16@s',
+     paddingVertical: '12@s',
+     paddingHorizontal: '12@s',
+   },
+   estimateAvailableConsultationTimeContainer: {
+     flexDirection: 'row',
+     alignItems: 'center',
+     alignContent: 'center',
+   },
+   estimateTimeText: {
+     fontSize: '12@s',
+     lineHeight: '20@s',
+     color: $themeColorsPalette.$black,
+     marginLeft: '32@s',
+     paddingTop: '8@s',  
+   },
+   dependentsRBHeader: {
+     flexDirection: 'row',
+     alignItems: 'center',
+     paddingTop: '20@s',
+     paddingBottom: '8@s',
+     borderColor: $themeColorsPalette.$lightGrey,
+     borderBottomWidth: 1,
+     marginBottom: '16@s',
+   },
+   addNewDependents: {
+     borderWidth: 1,
+     borderColor: $themeColorsPalette.$appThemeGreen,
+     paddingVertical: '10@s',
+     borderRadius: '4@s',
+     alignItems: 'center',
+     justifyContent: 'center',
+     marginBottom: '32@s',
+     marginTop: '8@s',
+   },
+   ContinueBtSelectDependent: {
+     width: '100%',
+     justifyContent: 'center',
+     alignItems: 'center',
+     bottom: Platform.OS === 'ios' ? '22@s' :'8@s',
+     paddingVertical: '18@s',
+     borderRadius: '12@s',
+   },
+   addNewDependentsText: {
+     color: $themeColorsPalette.$appThemeGreen,
+     fontSize: '12@s',
+   },
+   continueText: {
+     color: $themeColorsPalette.$white,
+     fontSize: '12@s',
+   },
+   editIconContainer: {
+     marginLeft: '8@s',
+     paddingBottom: '4@s',
+   },
+   doctorNameContainer: {
+     flexDirection: 'row',
+     alignItems: 'center',
++    justifyContent: 'center',
+     marginTop: `16@s`,
++    width: '100%',
++    paddingHorizontal: '32@s',
+   },
+   spaceIconDocName: {
+     marginLeft: '8@s',
+   },
+   peopleQueueContainer: {
+     flexDirection: 'row',
+     alignItems: 'center',
+     width: '280@s',
+   },
+   peopleQueueText: {
+     fontSize: '12@s',
+     fontWeight: '400',
+     color: '#4B6363',
+   },
+   peopleQueueTextNumber: {
+     fontSize: '12@s',
+     fontWeight: '400',
+     color: 'rgba(0, 172, 134, 1)',
+   },
+   brokenLine: {
+     borderStyle: 'dashed',
+     borderWidth: 1,
+     borderColor: '#E1EBEC',
+     width: '100%',
+     marginTop: '18@s',
+     marginBottom: '18@s',
+   },
+   visitTypeContainer: {
+     flexDirection: 'row',
+     alignItems: 'center',
+     paddingVertical: '16@s'
+   },
+   dateString: {
+     fontSize: '18@s',
+     fontWeight: '700',
+     color: '#0F1617',
+     paddingLeft: '8@s',
+     paddingRight: '24@s',
+   },
+   timeString: {
+     fontSize: '18@s',
+     fontWeight: '700',
+     color: '#0F1617',
+     paddingLeft: '8@s',
+     // paddingRight: '24@s',
+   },
+   estimatedTimeContainer: {
+     flexDirection: 'row',
+     alignItems: 'center',
+     flex: 1,
+   },
+   completeInfoNote: {
+     color: '#F33060',
+     fontSize: '12@s',
+     fontWeight: '400',
+     paddingVertical: '8@s',
+     paddingRight: '8@s',
+     textAlign: 'left',
+     flexShrink: 1,
+   },
+   noteContainer: {
+     // flex: 1,
+     flexDirection: 'row',
+     backgroundColor: 'rgba(243, 48, 96, 0.10)',
+     borderRadius: '8@s',
+     marginTop: '16@s',
+     alignItems: 'center',
+   },
+   containerInnerNote: {
+     paddingLeft: '8@s',
+     paddingRight: '8@s',
+     paddingBottom: '32@s',
+   },
+   commonContainer: {
+     flexDirection: 'row',
+     alignItems: 'center',
+     paddingTop: '8@s',
+   },
+   clinicText: {
+     color: '#4B6363',
+diff --git a/src/screens/doctor-detail-screen/doctor-detail-screen.tsx b/src/screens/doctor-detail-screen/doctor-detail-screen.tsx
+index 7352ec56..5178ee14 100644
+--- a/src/screens/doctor-detail-screen/doctor-detail-screen.tsx
++++ b/src/screens/doctor-detail-screen/doctor-detail-screen.tsx
+@@ -695,161 +695,161 @@ const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = (props: DoctorDeta
+           provider.type.includes("tc-booking") ||
+           provider.type.includes("pv-booking");
+ 
+         const hasEQueue = provider.type.includes("tc-queuing") || provider.type.includes("pv-queuing");
+         const hasEBooking =  provider.type.includes("tc-booking") || provider.type.includes("pv-booking");
+ 
+         return (
+           <>
+             <NavigationBar
+               title={$i18n.t("doctor_details")}
+               rightBt={(
+                 <PageRightBt 
+                 tag={$routeNames.doctorDetailScreen}/>
+               )}
+             />
+             <View style={theme.uiTheme?.commonStyles.pageContainer}>
+               <ScrollView
+                 style={scrollViewStyle.scrollViewStyle}
+                 contentContainerStyle={[
+                   scrollViewStyle.contentContainerStyle, 
+                   styles.paddinbBottomScrollView,
+                   {paddingBottom: 142}
+                 ]}
+                 alwaysBounceVertical={true}
+                 showsHorizontalScrollIndicator={false}
+                 horizontal={false}
+                 showsVerticalScrollIndicator={false}
+               >
+                 <View
+                   style={[{
+                     justifyContent: 'center',
+                     alignContent: 'center',
+                     alignItems: 'center',
+                   }, styles.info]
+                   }
+                 >
+                   <DoctorAvatar 
+                     id={provider.doctor.id} 
+                     style={styles.avatar} 
+                   />
+                   <View style={styles.doctorNameContainer}>
+                     <AppText 
+                       style={styles.docName}
+                     >
+                       {provider.doctor?.name}
+                     </AppText>
+                     <View style={styles.spaceIconDocName}>
+                       <SVGBookmarkIcon width={20} height={20}/>
+                     </View>
+                     <View style={styles.spaceIconDocName}>
+                       <SVGVideoIcon width={20} height={20}/>
+                     </View>
+                   </View>
+                   {provider?.doctor?.specialties
+                     ? provider.doctor.specialties.map(item => {
+                       return (
+                         <AppText 
+                           style={styles.specialty}
+                         >
+                           {item}
+                         </AppText>
+                       )
+                     })
+                     : <></>
+                   }
+                   <>
+                     <View style={[styles.brokenLine, {marginBottom: 0}]}/>
+                     {renderDoctorAddressInfo()}
+                   </>
+                 </View>
+                 <View style={styles.info}>
+                   <View style={styles.peopleQueueContainer}>
+                     <View style={styles.peopleQueueContainer}>
+                       <SVGPeopleQueuIcon width={16} height={16}/>
+                       <AppText style={styles.peopleQueueText}>
+                         {$i18n.t('people_ahead_now')}
+                       </AppText>
+                     </View>
+                     <View style={{marginRight: 16}}>
+                       <AppText style={styles.peopleQueueTextNumber}>
+-                        {provider?.queuePosition ?? '0'}
++                        {provider?.queuePosition > 0 ? provider?.queuePosition - 1 : 0}
+                       </AppText>
+                     </View>
+                   </View>
+                   <View style={styles.brokenLine}/>
+                   <AppText style={styles.visitModeText}>
+                     {$i18n.t("dsi.visit_type")}
+                   </AppText>
+                   <View style={styles.visitTypeContainer}>
+                     <TouchableOpacity
+                       style={[
+                         styles.radioBt1, 
+                         state.visit_type === 0
+                           ? {backgroundColor: '#F3FAFA', borderColor: '#00AC86'} 
+                           : {borderColor: '#ECF5F5'}
+                       ]}
+                       disabled={!disable_eQueue}
+                       onPress={() => {
+                         setState((prevState) => {
+                           return {
+                             ...prevState,
+                             visit_type: 0,
+                           };
+                         });
+                       }}
+                     >
+                       <View style={styles.visitTypeContainerInner}>
+                         <Image
+                           source={
+                             state.visit_type === 0
+                               ? $assets.radio()
+                               : $assets.radio_unselect()
+                           }
+                           style={styles.radioImg}
+                         />
+                         <AppText
+                           style={[
+                             styles.radioBtText,
+                             !disable_eQueue && {
+                               color: "rgba(60, 60, 67, 0.18)",
+                             },
+                           ]}
+                         >
+                           {$i18n.t("e_queue")}
+                         </AppText>
+                       </View>
+                     </TouchableOpacity>
+                     <TouchableOpacity
+                       style={[styles.radioBt1, state.visit_type === 1 ? {backgroundColor: '#F3FAFA', borderColor: '#00AC86'} : {borderColor: '#ECF5F5'}]}
+                       disabled={!disable_ebook || !provider?.isOnline}
+                       onPress={() => {
+                         setState((prevState) => {
+                           return {
+                             ...prevState,
+                             visit_type: 1,
+                           };
+                         });
+                       }}
+                     >
+                       <View style={styles.visitTypeContainerInner}>
+                         <Image
+                           source={
+                             state.visit_type === 1
+                               ? $assets.radio()
+                               : $assets.radio_unselect()
+                           }
+                           style={styles.radioImg}
+                         />
+                         <AppText
+                           style={[
+                             styles.radioBtText,
+                             !disable_ebook && {
+                               color: "rgba(60, 60, 67, 0.18)",
+                             },
+                             !provider?.isOnline && {color: 'rgba(59, 107, 137, 0.35)'}
+                           ]}
+                         >
+                           {$i18n.t("e_book")}
+                         </AppText>
+                       </View>
+                     </TouchableOpacity>
+diff --git a/src/screens/doctor-list-screen/doctor-list-screen.tsx b/src/screens/doctor-list-screen/doctor-list-screen.tsx
+index 2910294d..891bb2fb 100644
+--- a/src/screens/doctor-list-screen/doctor-list-screen.tsx
++++ b/src/screens/doctor-list-screen/doctor-list-screen.tsx
+@@ -1,208 +1,209 @@
+ import React, {
+   useEffect,
+   useRef,
+   useState,
+   memo,
+   useCallback,
+   ReactElement,
+ } from "react";
+ import {
+   Modal,
+   Image,
+   View,
+   TouchableOpacity,
+   FlatList,
+   ActivityIndicator,
+ } from "react-native";
+ import Config from "react-native-config";
+ import Geolocation from "@react-native-community/geolocation";
+ import {DoctorListScreenProps, EURegion, StateProps} from "./doctor-list-screen.props";
+ import CommonFlatList from "@components/common-flatList/common-flatList";
+ import {ThemeContext} from "@style/theme/theme-context.tsx";
+ import type {Theme} from "@types/Theme.ts";
+ import NavigationBar from "@components/navigation-bar/navigation-bar.tsx";
+ import PageRightBt from "@components/page-right-bt/page-right-bt.tsx";
+ import styles from "./doctor-list-screen.styles";
+ import {
+-  PolicysV2,
++  MemberPolicies,
+   Policys,
+   QueueItem,
+   Sponsorship,
+ } from "@api/api-types.ts";
+ import {useAppState} from "@store/AppContext";
+ import gradient_background_color_bt from "@style/common-styles/gradient-background-color-bt.style";
+ import RBSheet from "react-native-raw-bottom-sheet";
+ import DoctorAvatar from "@components/doctor-avatar/doctor-avatar.tsx";
+ import AppText from "@components/app-text/app-text";
+ import {useLoading} from "@components/loading-modal/loading-context";
+ import GradientBt from '@components/gradient-bt/gradient-bt';
+ import Dropdown from '../../assets/images/dropdown.svg';
+ import {
+   SVGSmallClockCircleComponent,
+   SVGSVideoIconComponent,
+   SVGTeleconsultPinComponent,
+   SVGRowWaitingComponent,
+   SVGArrowRightGreenComponent,
+ } from '../../assets/svg/index.ts';
+ 
+ 
+ const DoctorListScreen: React.FC<DoctorListScreenProps> = (
+   props: DoctorListScreenProps
+ ) => {
+   const {} = props;
+   const [state, setState] = useState<StateProps>({
+     member_policies: undefined,
+     filterBarSelectedIndex: -1,
+     regionListEN: [],
+     regionList: [],
+     regionListIndex: 0,
+     doctorList: [],
+     provider_list: [],
+     allSpecialties: [],
+     allSpecialties_index: 0,
+   });
+   const [showRegionModal, setShowRegionModal] = useState<boolean>(false);
+   const [showServiceModal, setshowServiceModal] = useState<boolean>(false);
+   const [service, setServices] = useState<string>('');
+   const refRBSheet = useRef(null);
+   const refRegionFlatlist = useRef(null);
+   const refSericesFlatlist = useRef(null);
+   const [selectedCountry, setSelectedCountry] = useState<string>('Hong Kong');
+   const [user, setUser] = useState<any>({});
+   const [selectedPlan, setSelectedPlan] = useState("");
+   const {setLoading, setLoadingText, loading} = useLoading();
+   const refState = useRef(null);
+   const refdoctorList = useRef(null);
+   const {
+     setSelectedPolicies,
+     selectedPolicies,
+     setErrorModalText,
+     setShowErrorModal,
+     setCommonModalKey,
+     sponsorship_list,
+   } = useAppState();
+   const [page, setPage] = useState(1);
+   const [limit, setLimit] = useState(10);
+   const [isLoading, setIsLoading] = useState<boolean>(false);
+   const [hasMore, setHasMore] = useState<boolean>(true);
+   const [providerOptions, setProviderOptions] = useState();
+   const [openTipsModal, setOpenTipsModal] = useState<boolean>(false);
+   const [openConsultModal, setOpenConsultModal] = useState<boolean>(false);
+   const [isHKDestination, setIsHKDestination] = useState<boolean>(true);
+   const [isDestination, setIsDestination] = useState<boolean>(false);
+   const EU_COUNTRIES = new Set(EURegion);
+ 
+   useEffect(() => {
+     refState.current = state;
+   }, [state]);
+ 
+   useEffect(() => {
+     intitData();
+   }, []);
+ 
+   const intitData = async () => {
+     try {
+       setSelectedPolicies(null);
+       setLoadingText($i18n.t("loading"));
+       setLoading(true);
+       setIsLoading(true); //For flatlist
+       await getUserInfo();
+-      const res: PolicysV2[] | undefined = await $api.member_policies_v2();
++      const res: MemberPolicies | undefined = await $api.member_policies(true);
+       const providerOptionsRes = await $api.getProviderOptions();
+       setProviderOptions(['all_services', ...providerOptionsRes.data.specialty]);
+ 
+       setState((prevState) => {
+         return {
+           ...prevState,
+           regionList: providerOptionsRes.data.region
+         }
+       })
+-      if (res && res.length > 0) {
++      if (res && res.policies.length > 0) {
++        const now = new Date();
+         setState((prevState) => {
+           return {
+             ...prevState,
+-            member_policies: res.filter(
++            member_policies: res.policies.filter(
+               (currentValue, index, arr) => {
+                 return (
+                   currentValue.plan.id !==
+-                  Config.NEXT_PUBLIC_365_BASIC_PLAN_ID
++                  Config.NEXT_PUBLIC_365_BASIC_PLAN_ID && (new Date(currentValue.expirationDate) > now)
+                 );
+               }
+             ),
+           };
+         });
+       }
+     } catch (e) {
+       console.log(`Exception encountered @ initData ${e}`);
+       setLoading(false);
+     }
+     setLoading(false);
+     setIsLoading(false);
+   }
+ 
+   const getRegionList = async (payorId, planId) => {
+     // selectedPlan
+     if (payorId && planId) {
+       const providerOptionsRes = await $api.getProviderOptions2(payorId, planId);
+       setProviderOptions(providerOptionsRes.data.specialty);
+ 
+       setSelectedCountry(providerOptionsRes.data.region[0]);
+ 
+       const params = {
+         payorId: payorId,
+         planId: planId,
+         specialty: '',
+         region: providerOptionsRes.data.region[0],
+         page: page,
+         limit: limit,
+       }
+ 
+       const response = await $api.filterBySpecialty(params);
+ 
+       if (response.success) {
+         setState(prevState => {
+           return {
+             ...prevState,
+             doctorList: response.data,
+           };
+         });
+       }
+ 
+       setState((prevState) => {
+         return {
+           ...prevState,
+           regionList: providerOptionsRes.data.region,
+         }
+       });
+       // await fetchInitDoctors();
+     }
+   }
+ 
+   const getUserInfo = async () => {
+     const response = await $api.getUser();
+ 
+     if (response) {
+       setUser(response.currentUser);
+       await fetchInitDoctors();
+     }
+   }
+ 
+   const fetchInitDoctors = async () => {
+     const params = {
+       payorId: selectedPlan?.payorId ?? "",
+       planId: '',
+       specialty: '',
+       region: selectedCountry,
+       page: page,
+       limit: limit,
+     }
+ 
+     const response = await $api.filterBySpecialty(params);
+     console.log('fetchInitDoctors filterBySpecialty=', {
+       params, response
+     })
+     if (response.success) {
+       setState(prevState => {
+         return {
+           ...prevState,
+           doctorList: response.data,
+@@ -476,161 +477,161 @@ const DoctorListScreen: React.FC<DoctorListScreenProps> = (
+               style={{
+                 flexDirection: 'row',
+                 marginTop: 18,
+                 alignItems: 'center',
+               }}
+             >
+               <TouchableOpacity
+                 onPress={() => {
+                   setIsDestination(true);
+                   setIsHKDestination(false);
+                 }}
+                 hitSlop={{top: 24, bottom: 24, left: 24, right: 24}}
+                 style={{
+                   height: 14,
+                   width: 14,
+                   borderRadius: 14,
+                   borderWidth: isDestination ? 4 : 1,
+                   borderColor: '#00AC86',
+                   marginRight: 8,
+                 }}
+               />
+               <View
+                 style={{
+                   alignSelf: 'center',
+                   width: 200
+                 }}>
+                 <AppText
+                   size={'small'}
+                 >
+                   {$i18n.t('consult_tips_2')}
+                 </AppText>
+               </View>
+             </View>
+             <View
+               style={{
+                 marginTop: 18,
+                 alignItems: 'center',
+               }}
+             >
+               <View
+                 style={{
+                   alignSelf: 'center',
+                   width: 200
+                 }}>
+                 <AppText
+                   size={'small'}
+                 >
+                   {$i18n.t('consult_tips_3')}
+                 </AppText>
+               </View>
+             </View>
+             <View
+               style={{
+                 alignSelf: 'center',
+                 marginTop: 18
+               }}>
+               <GradientBt
+                 gradientStyle={styles.modalGradientButton}
+                 onPress={() => {
+                   setOpenConsultModal(false);
+                   handleContinue();
+                 }}
+               >
+                 <AppText
+                   style={{
+                     color: '#ffffff',
+                     fontWeight: 700
+                   }}
+                 >
+                   {$i18n.t('continue')}
+                 </AppText>
+               </GradientBt>
+             </View>
+           </View>
+         </View>
+       </Modal>
+     </>)
+   }
+ 
+   const renderPlanList = useCallback(
+-    ({item, index}: { item: Policys; index: number }) => {
++    ({ item, index }: { item: Policys; index: number }) => {
+       const query = {
+         planId: item?.plan.id,
+         policyId: item.id,
+       };
+       let name = item?.plan?.name;
+       let setting = findSponsorshipSetting(query);
+ 
+       if (setting) {
+         name = setting.fauxPlanName;
+         item.iconSrc = setting.iconSrc;
+       }
+ 
+       return (
+         <TouchableOpacity
+           style={[styles.PlanListRow,{height: 48}]}
+           onPress={async () => handleSelectedPlan(item)}
+         >
+           <AppText style={[styles.PlanListText, setting && {maxWidth: "88%"}]}>
+             {$i18n.t(`${name}`).includes('missing') ? name : $i18n.t(`${name}`)}
+           </AppText>
+           {setting && (
+             <Image source={{uri: setting.iconSrc}} style={styles.iconSrc} />
+           )}
+           <Image
+             source={
+               selectedPolicies && selectedPolicies.id === item.id
+                 ? $assets.radio()
+                 : $assets.radio_unselect()
+             }
+             style={styles.radio}
+           />
+         </TouchableOpacity>
+       );
+     },
+     [selectedPlan, state.regionListEN, state.regionListIndex, selectedPolicies]
+   );
+ 
+   const fetchingPlanList = useCallback(
+     async ({
+         pageIndex,
+         pageSize,
+       }: {
+       pageIndex: number;
+       pageSize: number;
+     }) => {
+       return {
+         items: refState.current?.member_policies??[],
+         pageIndex,
+         totalCount: 0,
+         totalPage: 0,
+         needLoadMore: false,
+       };
+     },
+     [state.member_policies]
+   );
+ 
+   const planBottomSheet = (): ReactElement => {
+     
+     let height = refState.current?.member_policies?.length > 9 ? 9 * 48 : refState.current?.member_policies?.length * 48;
+     if (refState.current?.member_policies?.length===0 ) {
+       height =231
+     }
+     console.log('planBottomSheet=', {
+       'refState.current.member_policies': refState.current?.member_policies,
+       height
+     });
+     return refState.current?.member_policies?.length > 0 &&(
+       <RBSheet
+         ref={refRBSheet}
+         height={height+56+42}
+         closeOnDragDown={true}
+         closeOnPressMask={true}
+         customStyles={{
+           wrapper: {
+             backgroundColor: "rgba(0, 0, 0, 0.5)", // Overlay background color
+           },
+           container: {
+             borderTopLeftRadius: 20,
+             borderTopRightRadius: 20,
+             paddingHorizontal: 20,
+diff --git a/src/screens/home/home-screen/home-screen.tsx b/src/screens/home/home-screen/home-screen.tsx
+index 2aafdf44..a96d568b 100644
+--- a/src/screens/home/home-screen/home-screen.tsx
++++ b/src/screens/home/home-screen/home-screen.tsx
+@@ -659,161 +659,163 @@ const HomeScreen: React.FC = (props: any) => {
+                           ? ticket.currentPosition - 1
+                           : 0}
+                       </AppText>
+                     </View>
+                     <View style={styles.detailRow}>
+                       <AppText style={styles.detailLabel}>
+                         {constants.i18n.t('estimated_start_time')}
+                       </AppText>
+                       <AppText style={styles.detailValue}>
+                         {moment(ticket.expectedCallTime).format('HH:mm')}
+                       </AppText>
+                     </View>
+                     <View style={styles.btnContainerViewchecking}>
+                       <TouchableOpacity
+                         style={[
+                           styles.viewBtn,
+                           onlyShowViewBt
+                             ? { width: '100%' }
+                             : { marginRight: 8 },
+                         ]}
+                         onPress={() => {
+                           $NavigationActions.navigate(
+                             $routeNames.myAppointmentScreen,
+                             {
+                               ticketId: ticket.id,
+                             },
+                           );
+                         }}
+                       >
+                         <AppText style={styles.viewBtnText}>
+                           {constants.i18n.t('view')}
+                         </AppText>
+                       </TouchableOpacity>
+                       {!onlyShowViewBt &&
+                         (rBtText === $i18n.t('Start') ? (
+                           <GradientButtonComponent
+                             title={rBtText}
+                             disabled={false}
+                             onPressCallback={() => {
+                               if (rBtText === $i18n.t('Start')) {
+                                 let token = null;
+                                 token = ticket?.consultation?.patientAgoraToken;
+                                 $NavigationActions.navigate(
+                                   $routeNames.teleconsultScreen,
+                                   {
+                                     ticketId: ticket.id,
+                                     appId: token.applicationId,
+                                     uid: token.uid,
+                                     token: token.rtcToken,
+                                     channel: token.channelId,
+                                   },
+                                 );
+                               } else {
+                               }
+                             }}
+                             activityIndicator={true}
+                             width={'50%'}
+                           />
+                         ) : (
+                           <QRCodeBt
+                             ticket={ticket}
+                             styleProps={{ width: '50%', marginTop: 0 }}
+                             title={$i18n.t('checkin')}
+                           />
+                         ))}
+                     </View>
+                   </View>
+                 </View>
+               );
+             })}
+           </View>
+         )}
+       </>
+     );
+   }, [state.tickets]);
+ 
+   const handleViewMore = async (item: any) => {
+     await getInsuredItem((response: any) => {
+       if (response) {
+         setSelectedPlan(item);
+-        setShowPlanDeets(true);
++        setTimeout(() => {
++          setShowPlanDeets(true);
++        }, Platform.OS === 'ios' ? 300 : 0);
+       }
+     });
+   };
+ 
+   const plansCarousel = ({ item, index }: { item: any; index: number }) => {
+     const filteredPlanInsuredItem = user?.policies.filter(
+       _item => _item?.planId === item.id,
+     );
+     let expirationDate =
+       filteredPlanInsuredItem && filteredPlanInsuredItem.length > 0
+         ? filteredPlanInsuredItem[0]?.expirationDate
+         : undefined;
+     if (expirationDate) {
+       if (
+         (language === 'zh-Hant' || language === 'zh-Hans') &&
+         expirationDate !== ''
+       ) {
+         const expdate = new Date(expirationDate);
+         expirationDate = new Intl.DateTimeFormat(language, {
+           year: 'numeric',
+           month: 'short',
+           day: 'numeric',
+           timeZone: 'UTC',
+         }).format(expdate);
+       } else {
+         expirationDate = dayjs(expirationDate)
+           .locale(language)
+           .format('DD MMM YYYY');
+       }
+     }
+ 
+     return (
+       <TouchableOpacity
+         style={[
+           styles.product_card,
+           item.isActive && { backgroundColor: item.theme?.bgcolor },
+         ]}
+         onLayout={event => onLayout(index, event)}
+         onPress={() => {
+           $NavigationActions.navigate($routeNames.myPlansScreen);
+         }}
+       >
+         {!item.isActive && <View style={[styles.Semicircle]}></View>}
+         <View
+           style={[
+             styles.product_card_line,
+             item.isActive && { borderColor: item.theme?.bordercolor },
+           ]}
+         >
+           <View style={[styles.bigTree]}>
+             <SVGBigTree
+               fill={
+                 !item.isActive ? 'rgb(131, 141, 140)' : 'rgba(164, 118, 0, 1)'
+               }
+             />
+           </View>
+           {item.isActive ? (
+             <TouchableOpacity
+               style={styles.viewButton}
+               onPress={() => {
+                 $NavigationActions.navigate($routeNames.myPlansScreen);
+               }}
+             >
+               <LinearGradient
+                 colors={['#50B0D2', '#4AA55B']}
+                 start={{ x: 0, y: 0 }}
+                 end={{ x: 1, y: 0 }}
+                 locations={[0.0007, 0.9989]}
+                 style={{
+                   borderRadius: 100,
+                 }}
+               >
+                 <AppText style={styles.viewText}>{$i18n.t('view')}</AppText>
+               </LinearGradient>
+             </TouchableOpacity>
+           ) : (
+             <TouchableOpacity
+               style={styles.viewButton}
+               onPress={async () => {
+                 $NavigationActions.navigate($routeNames.healsPlanMembership, {

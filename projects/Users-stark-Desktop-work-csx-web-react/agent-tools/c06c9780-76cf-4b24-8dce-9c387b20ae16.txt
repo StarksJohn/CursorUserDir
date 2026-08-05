@@ -1,0 +1,4665 @@
+diff --git a/README.md b/README.md
+index 07ff88d..ef9bfb4 100644
+--- a/README.md
++++ b/README.md
+@@ -287,6 +287,13 @@ http://localhost:4300/display-screen-config/tvScreenNew/?clinicCode={clinicCode}
+ - 页面不再请求已经废弃的旧补全接口。
+ - zip 顶层只有 `display-screen-config/**`，不能包含根目录 `index.html`、`weboffice.html` 或 `static/**`。
+ 
++## TypeScript 代码风格
++
++- 命名函数、React 函数组件、Hooks 和模块级 helper 默认使用带 `const` 的箭头函数；Next.js 默认导出组件先声明为 `const`，再单独 `export default`。
++- 所有新增或修改的 TypeScript 函数都必须为每个参数和返回值写显式类型；异步函数使用明确的 `Promise<...>` 返回类型，不新增或扩大 `any`。
++- 单一返回表达式优先使用简洁箭头函数体。只有生成器、函数重载、确实依赖声明提升、需要作为构造函数，或必须使用动态 `this` 时才保留 `function`，且不得为了统一形式改变运行语义。
++- ESLint 通过 `func-style`、`prefer-arrow-callback`、`arrow-body-style` 和 `@typescript-eslint/explicit-function-return-type` 持续执行上述规则。
++
+ ## 质量验证
+ 
+ 常用质量门：
+diff --git a/e2e/display-screen-config.spec.ts b/e2e/display-screen-config.spec.ts
+index 332ba12..e345f5b 100644
+--- a/e2e/display-screen-config.spec.ts
++++ b/e2e/display-screen-config.spec.ts
+@@ -18,10 +18,10 @@ const FIGMA_DOCTOR_CARD_LAYOUT_RATIOS = {
+   queued: 81 / (187 + 81),
+ } as const;
+ 
+-const getResponsiveCarouselProgressHeight = (viewportHeight: number) =>
++const getResponsiveCarouselProgressHeight = (viewportHeight: number): number =>
+   Math.min(6, Math.max(2, viewportHeight * FIGMA_LAYOUT_RATIOS.carouselProgress));
+ 
+-const getResponsiveCallLabelFontSize = (viewportHeight: number) =>
++const getResponsiveCallLabelFontSize = (viewportHeight: number): number =>
+   Math.min(18, Math.max(12, viewportHeight * 0.01318));
+ 
+ const MANAGEMENT_ROUTE = './management-settings/program-settings/display-screen-config/';
+@@ -82,15 +82,81 @@ const TEST_CLINICS = [
+   {clinicCode: 'TST'},
+ ] as const;
+ 
+-function encodeAuthTransfer(payload: unknown) {
+-  return Buffer.from(JSON.stringify(payload), 'utf8').toString('base64url');
++interface CopyToastStyleSnapshot {
++  backgroundColor: string;
++  borderColor: string;
++  borderRadius: number;
++  color: string;
++  height: number;
++  isOverflowingViewport: boolean;
++  left: number;
++  messageFontSize: number;
++  messageLineHeight: number;
++  right: number;
++  titleFontSize: number;
++  titleFontWeight: string | undefined;
++  top: number;
++  topbarBottom: number;
++  topbarOffsetTop: number;
++  viewportHeight: number;
++  viewportWidth: number;
++  width: number;
+ }
+ 
+-function isHydrationErrorText(text: string) {
+-  return text.includes('Hydration failed') || text.includes("didn't match the client");
++interface CopyConfigDialogStyleSnapshot {
++  borderColor: string;
++  borderRadius: number;
++  centerXOffset: number;
++  centerYOffset: number;
++  height: number;
++  isOverflowingViewport: boolean;
++  labelFontSize: number;
++  titleFontSize: number;
++  titleFontWeight: string | undefined;
++  viewportHeight: number;
++  viewportWidth: number;
++  width: number;
+ }
+ 
+-async function mockClinicList(page: Page, clinics: readonly {clinicCode: string}[] = TEST_CLINICS) {
++interface CarouselGridLayoutSnapshot {
++  bottomGap: number;
++  cardHeight: number;
++  topGap: number;
++}
++
++interface CoreUiMetricsSnapshot {
++  brandMarkWidth: number;
++  brandNameFontSize: string;
++  brandNameLineHeight: string;
++  brandSecondaryNameFontSize: string;
++  brandSecondaryNameLineHeight: string;
++  cardAvatarHeight: number;
++  cardAvatarWidth: number;
++  clinicHeaderHeight: number;
++  doctorCardHeight: number;
++  doctorGridViewportHeight: number;
++  doctorsStageHeight: number;
++  featuredAvatarHeight: number;
++  featuredAvatarWidth: number;
++  headingFontSize: string;
++  lastCallFontSize: string;
++  mediaHeight: number;
++  progressHeight: number;
++  queueHeaderHeight: number;
++  queueTitleFontFamily: string;
++  queueTitleFontSize: string;
++  queueTitleLineHeight: string;
++  queueTotalFontSize: string;
++  screenHeight: number;
++  screenLeft: number;
++  screenWidth: number;
++}
++
++const encodeAuthTransfer = (payload: unknown): string => Buffer.from(JSON.stringify(payload), 'utf8').toString('base64url');
++
++const isHydrationErrorText = (text: string): boolean => text.includes('Hydration failed') || text.includes("didn't match the client");
++
++const mockClinicList = async (page: Page, clinics: readonly {clinicCode: string}[] = TEST_CLINICS): Promise<void> => {
+   await page.route(CLINIC_API_PATTERN, async (route) => {
+     await route.fulfill({
+       contentType: 'application/json',
+@@ -100,10 +166,9 @@ async function mockClinicList(page: Page, clinics: readonly {clinicCode: string}
+       },
+     });
+   });
+-}
++};
+ 
+-async function readCopyToastStyle(page: Page) {
+-  return page.getByTestId('management-copy-toast').evaluate((element) => {
++const readCopyToastStyle = async (page: Page): Promise<CopyToastStyleSnapshot> => page.getByTestId('management-copy-toast').evaluate((element) => {
+     const rect = element.getBoundingClientRect();
+     const style = window.getComputedStyle(element);
+     const title = element.querySelector('h2');
+@@ -112,7 +177,8 @@ async function readCopyToastStyle(page: Page) {
+     const titleStyle = title ? window.getComputedStyle(title) : null;
+     const messageStyle = message ? window.getComputedStyle(message) : null;
+     const topbarRect = topbar?.getBoundingClientRect();
+-    const toNumber = (value: string | null | undefined) => Number.parseFloat(value ?? '0') || 0;
++    const toNumber = (value: string | null | undefined): number =>
++      Number.parseFloat(value ?? '0') || 0;
+ 
+     return {
+       backgroundColor: style.backgroundColor,
+@@ -135,17 +201,18 @@ async function readCopyToastStyle(page: Page) {
+       width: rect.width,
+     };
+   });
+-}
+ 
+-async function readCopyConfigDialogStyle(page: Page) {
+-  return page.getByTestId('management-copy-config-dialog').evaluate((element) => {
++const readCopyConfigDialogStyle = async (
++  page: Page,
++): Promise<CopyConfigDialogStyleSnapshot> => page.getByTestId('management-copy-config-dialog').evaluate((element) => {
+     const rect = element.getBoundingClientRect();
+     const style = window.getComputedStyle(element);
+     const title = element.querySelector('h2');
+     const label = element.querySelector('label');
+     const titleStyle = title ? window.getComputedStyle(title) : null;
+     const labelStyle = label ? window.getComputedStyle(label) : null;
+-    const toNumber = (value: string | null | undefined) => Number.parseFloat(value ?? '0') || 0;
++    const toNumber = (value: string | null | undefined): number =>
++      Number.parseFloat(value ?? '0') || 0;
+ 
+     return {
+       borderColor: style.borderTopColor,
+@@ -163,7 +230,6 @@ async function readCopyConfigDialogStyle(page: Page) {
+       width: rect.width,
+     };
+   });
+-}
+ 
+ test('renders the display management shell on the module route', async ({page}) => {
+   const hydrationErrors: string[] = [];
+@@ -222,6 +288,11 @@ test('renders the display management shell on the module route', async ({page})
+ 
+   await page.goto(MANAGEMENT_ROUTE);
+ 
++  await expect(page).toHaveTitle('ClinicSolution');
++  await expect(page.locator('link[rel~="icon"]')).toHaveAttribute(
++    'href',
++    /\/display-screen-config\/icon\.png(?:\?.*)?$/,
++  );
+   await expect(page.getByRole('banner', {name: 'CSX 管理頂欄'})).toBeVisible();
+   await expect(page.locator('.management-current-time')).toHaveText('26 Mar 2026 (Thu) 14:33');
+   await page.evaluate(() => {
+@@ -304,6 +375,7 @@ test('renders the display management shell on the module route', async ({page})
+     return {
+       backgroundColor: computed.backgroundColor,
+       borderRadius: Number.parseFloat(computed.borderTopLeftRadius),
++      cursor: computed.cursor,
+       height: rect.height,
+       imageHeight: avatarImage?.getBoundingClientRect().height ?? 0,
+       imageNaturalHeight: avatarImage?.naturalHeight ?? 0,
+@@ -323,6 +395,161 @@ test('renders the display management shell on the module route', async ({page})
+   expect(userButtonStyle.imageNaturalHeight).toBe(120);
+   expect(userButtonStyle.borderRadius).toBeGreaterThanOrEqual(userButtonStyle.width / 2 - 1);
+   expect(userButtonStyle.backgroundColor).toBe('rgba(0, 0, 0, 0)');
++  expect(userButtonStyle.cursor).toBe('pointer');
++  await expect(page.locator('html')).toHaveAttribute('lang', 'zh-HK');
++  await expect(userButton).toHaveAttribute('aria-expanded', 'false');
++  const userMenu = page.getByRole('dialog', {name: '使用者選單'});
++  await expect(userMenu).toHaveCount(0);
++  await userButton.click();
++  await expect(userButton).toHaveAttribute('aria-expanded', 'true');
++  await expect(userMenu).toBeVisible();
++  await expect(userMenu.locator('.management-user-profile')).toContainText('stark.user');
++  const languageButton = userMenu.getByRole('button', {name: '語言'});
++  await expect(languageButton).toHaveAttribute('aria-expanded', 'false');
++  const userMenuStyle = await userMenu.evaluate((element) => {
++    const rect = element.getBoundingClientRect();
++    const style = window.getComputedStyle(element);
++    const userButtonRect = document.querySelector('.management-user-button')?.getBoundingClientRect();
++    const profile = element.querySelector('.management-user-profile');
++    const profileRect = profile?.getBoundingClientRect();
++    const profileStyle = profile ? window.getComputedStyle(profile) : null;
++    const profileName = profile?.querySelector('strong');
++    const profileNameStyle = profileName ? window.getComputedStyle(profileName) : null;
++    const language = element.querySelector('.management-user-language');
++    const languageRect = language?.getBoundingClientRect();
++    const languageStyle = language ? window.getComputedStyle(language) : null;
++    const languageIconRect = language?.querySelector('svg')?.getBoundingClientRect();
++
++    return {
++      backgroundColor: style.backgroundColor,
++      borderRadius: Number.parseFloat(style.borderTopLeftRadius),
++      boxShadow: style.boxShadow,
++      height: rect.height,
++      languageFontSize: Number.parseFloat(languageStyle?.fontSize ?? '0'),
++      languageFontWeight: languageStyle?.fontWeight ?? '',
++      languageHeight: languageRect?.height ?? 0,
++      languageIconHeight: languageIconRect?.height ?? 0,
++      languageIconWidth: languageIconRect?.width ?? 0,
++      languageLineHeight: Number.parseFloat(languageStyle?.lineHeight ?? '0'),
++      profileBackgroundColor: profileStyle?.backgroundColor ?? '',
++      profileBorderRadius: Number.parseFloat(profileStyle?.borderTopLeftRadius ?? '0'),
++      profileHeight: profileRect?.height ?? 0,
++      profileNameFontSize: Number.parseFloat(profileNameStyle?.fontSize ?? '0'),
++      profileNameFontWeight: profileNameStyle?.fontWeight ?? '',
++      profileNameLineHeight: Number.parseFloat(profileNameStyle?.lineHeight ?? '0'),
++      profileWidth: profileRect?.width ?? 0,
++      rightOffset: window.innerWidth - rect.right,
++      topOffset: userButtonRect ? rect.top - userButtonRect.bottom : Number.POSITIVE_INFINITY,
++      width: rect.width,
++    };
++  });
++  expect(userMenuStyle.width).toBe(324);
++  expect(userMenuStyle.height).toBe(152);
++  expect(Math.abs(userMenuStyle.rightOffset)).toBeLessThanOrEqual(1);
++  expect(Math.abs(userMenuStyle.topOffset)).toBeLessThanOrEqual(1);
++  expect(userMenuStyle.borderRadius).toBe(20);
++  expect(userMenuStyle.backgroundColor).toBe('rgb(255, 255, 255)');
++  expect(userMenuStyle.boxShadow).toContain('0px 8px 16px');
++  expect(userMenuStyle.profileWidth).toBe(292);
++  expect(userMenuStyle.profileHeight).toBe(72);
++  expect(userMenuStyle.profileBorderRadius).toBe(12);
++  expect(userMenuStyle.profileBackgroundColor).toBe('rgb(248, 249, 250)');
++  expect(userMenuStyle.profileNameFontSize).toBe(20);
++  expect(userMenuStyle.profileNameFontWeight).toBe('700');
++  expect(userMenuStyle.profileNameLineHeight).toBe(24);
++  expect(userMenuStyle.languageHeight).toBe(32);
++  expect(userMenuStyle.languageFontSize).toBe(16);
++  expect(userMenuStyle.languageFontWeight).toBe('400');
++  expect(userMenuStyle.languageLineHeight).toBe(24);
++  expect(userMenuStyle.languageIconWidth).toBe(16);
++  expect(userMenuStyle.languageIconHeight).toBe(16);
++  const languageRow = userMenu.locator('.management-user-language');
++  await languageRow.hover();
++  const languageHoverStyle = await languageRow.evaluate((element) => {
++    const rect = element.getBoundingClientRect();
++    const style = window.getComputedStyle(element);
++
++    return {
++      backgroundColor: style.backgroundColor,
++      borderRadius: Number.parseFloat(style.borderTopLeftRadius),
++      color: style.color,
++      height: rect.height,
++      paddingLeft: Number.parseFloat(style.paddingLeft),
++      paddingRight: Number.parseFloat(style.paddingRight),
++      width: rect.width,
++    };
++  });
++  expect(languageHoverStyle.width).toBe(292);
++  expect(languageHoverStyle.height).toBe(32);
++  expect(languageHoverStyle.borderRadius).toBe(8);
++  expect(languageHoverStyle.paddingLeft).toBe(16);
++  expect(languageHoverStyle.paddingRight).toBe(16);
++  expect(languageHoverStyle.backgroundColor).toBe('rgb(214, 228, 232)');
++  expect(languageHoverStyle.color).toBe('rgb(27, 39, 47)');
++  await languageButton.click();
++  await expect(languageButton).toHaveAttribute('aria-expanded', 'true');
++  const languageMenu = userMenu.getByRole('menu', {name: '語言'});
++  await expect(languageMenu).toBeVisible();
++  await expect(languageMenu.getByRole('menuitemradio', {name: '中文繁體'})).toHaveAttribute(
++    'aria-checked',
++    'true',
++  );
++  const languageMenuStyle = await languageMenu.evaluate((element) => {
++    const rect = element.getBoundingClientRect();
++    const style = window.getComputedStyle(element);
++    const languageButtonRect = document
++      .querySelector('.management-user-language')
++      ?.getBoundingClientRect();
++    const selectedItem = element.querySelector('.management-language-menu-item.is-selected');
++    const selectedItemStyle = selectedItem ? window.getComputedStyle(selectedItem) : null;
++
++    return {
++      backgroundColor: style.backgroundColor,
++      borderColor: style.borderTopColor,
++      borderRadius: Number.parseFloat(style.borderTopLeftRadius),
++      height: rect.height,
++      horizontalGap: languageButtonRect ? languageButtonRect.left - rect.right : Number.POSITIVE_INFINITY,
++      selectedBackgroundColor: selectedItemStyle?.backgroundColor ?? '',
++      selectedColor: selectedItemStyle?.color ?? '',
++      topOffset: languageButtonRect ? rect.top - languageButtonRect.top : Number.POSITIVE_INFINITY,
++      viewportHeight: window.innerHeight,
++      width: rect.width,
++    };
++  });
++  expect(languageMenuStyle.backgroundColor).toBe('rgb(255, 255, 255)');
++  expect(languageMenuStyle.borderColor).toBe('rgba(0, 0, 0, 0.15)');
++  expect(languageMenuStyle.selectedBackgroundColor).toBe('rgb(248, 249, 250)');
++  expect(languageMenuStyle.selectedColor).toBe('rgb(14, 124, 132)');
++  if (languageMenuStyle.viewportHeight >= 1080) {
++    expect(languageMenuStyle.width).toBe(162);
++    expect(languageMenuStyle.height).toBe(114);
++    expect(languageMenuStyle.borderRadius).toBe(8);
++    expect(languageMenuStyle.horizontalGap).toBe(2);
++    expect(languageMenuStyle.topOffset).toBe(-4);
++  } else {
++    expect(languageMenuStyle.width).toBeGreaterThanOrEqual(150);
++    expect(languageMenuStyle.width).toBeLessThanOrEqual(162);
++    expect(languageMenuStyle.height).toBeGreaterThanOrEqual(96);
++    expect(languageMenuStyle.height).toBeLessThanOrEqual(114);
++    expect(languageMenuStyle.borderRadius).toBeGreaterThanOrEqual(6);
++    expect(languageMenuStyle.borderRadius).toBeLessThanOrEqual(8);
++    expect(languageMenuStyle.horizontalGap).toBeGreaterThanOrEqual(1);
++    expect(languageMenuStyle.horizontalGap).toBeLessThanOrEqual(2);
++    expect(languageMenuStyle.topOffset).toBeGreaterThanOrEqual(-4);
++    expect(languageMenuStyle.topOffset).toBeLessThanOrEqual(-3);
++  }
++  await page.keyboard.press('Escape');
++  await expect(languageMenu).toHaveCount(0);
++  await expect(userMenu).toBeVisible();
++  await expect(languageButton).toBeFocused();
++  await page.keyboard.press('Escape');
++  await expect(userMenu).toHaveCount(0);
++  await expect(userButton).toHaveAttribute('aria-expanded', 'false');
++  await expect(userButton).toBeFocused();
++  await userButton.click();
++  await expect(userMenu).toBeVisible();
++  await page.locator('.management-current-time').click();
++  await expect(userMenu).toHaveCount(0);
+   await expect(page.getByRole('status')).toContainText('已登入');
+   await expect(page.getByRole('complementary', {name: '左側導航'})).toContainText('程序設定');
+   await expect(page.getByRole('button', {name: '顯示屏配置'})).toBeVisible();
+@@ -390,6 +617,39 @@ test('renders the display management shell on the module route', async ({page})
+   await expect(page.getByRole('button', {name: SECOND_DISPLAY_URL})).toBeVisible();
+   await expect(page.getByRole('button', {name: '複製配置'}).first()).toBeVisible();
+   const editButtons = page.getByRole('button', {name: '編輯'});
++  const tableActionIcons = page.locator('.management-table-action-icon');
++  await expect(tableActionIcons.nth(0)).toHaveAttribute(
++    'src',
++    /\/display\/copy-configuration-icon\.svg$/,
++  );
++  await expect(tableActionIcons.nth(1)).toHaveAttribute(
++    'src',
++    /\/display\/edit-configuration-icon\.svg$/,
++  );
++  const tableActionIconSizes = await tableActionIcons.evaluateAll((elements) =>
++    elements.slice(0, 2).map((element) => {
++      const image = element as HTMLImageElement;
++      const rect = image.getBoundingClientRect();
++
++      return {
++        height: rect.height,
++        naturalHeight: image.naturalHeight,
++        naturalWidth: image.naturalWidth,
++        width: rect.width,
++      };
++    }),
++  );
++  for (const iconSize of tableActionIconSizes) {
++    expect(iconSize.naturalWidth).toBe(16);
++    expect(iconSize.naturalHeight).toBe(16);
++    expect(iconSize.width).toBeGreaterThanOrEqual(14);
++    expect(iconSize.width).toBeLessThanOrEqual(16);
++    expect(iconSize.height).toBe(iconSize.width);
++  }
++  const tableActionCursors = await page.locator('.management-table-action').evaluateAll((elements) =>
++    elements.slice(0, 2).map((element) => window.getComputedStyle(element).cursor),
++  );
++  expect(tableActionCursors).toEqual(['pointer', 'pointer']);
+   await expect(editButtons.first()).toBeVisible();
+   const managementListUrl = page.url();
+   const displayDeviceEditUrl =
+@@ -817,10 +1077,80 @@ test('redirects the display management route to login without csx auth', async (
+   await page.goto(MANAGEMENT_ROUTE);
+ 
+   await page.waitForURL('**/login/');
+-  await expect(page.getByRole('main', {name: 'CSX 登入頁'})).toBeAttached();
++  await expect(page.getByRole('main', {name: 'CSX'})).toBeAttached();
+   expect(new URL(page.url()).pathname.endsWith('/display-screen-config/login/')).toBe(true);
+ });
+ 
++test('uses the transferred locale for the first loading frame', async ({page}) => {
++  const encodedPayload = encodeAuthTransfer({
++    source: 'csx-web',
++    issuedAt: Date.now(),
++    token: 'transfer-token',
++    locale: 'zh-CN',
++  });
++
++  await page.goto('./login/');
++  await page.evaluate(() => {
++    window.localStorage.setItem('locale', JSON.stringify('en'));
++  });
++  await page.goto('about:blank');
++  await page.evaluate((transferName) => {
++    window.name = transferName;
++  }, `${AUTH_TRANSFER_PREFIX}${encodedPayload}`);
++  await page.route('**/*.js*', async (route) => route.abort());
++
++  await page.goto(MANAGEMENT_ROUTE, {waitUntil: 'domcontentloaded'});
++
++  await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
++  await expect(page.locator('html')).toHaveAttribute('data-management-locale', 'zh-CN');
++  await expect(page.getByTestId('management-auth-loading-overlay')).toBeVisible();
++  await expect(page.getByText('加载中', {exact: true})).toBeVisible();
++  await expect(page.getByText('正在同步 CSX 登录信息', {exact: true})).toBeVisible();
++  await expect(page.getByText('Loading', {exact: true})).toBeHidden();
++});
++
++test('uses the React cached locale for the first loading frame when opened directly', async ({page}) => {
++  await page.goto('./login/');
++  await page.evaluate(() => {
++    window.localStorage.setItem('locale', JSON.stringify('en'));
++  });
++  await page.goto('about:blank');
++  await page.evaluate(() => {
++    window.name = '';
++  });
++  await page.route('**/*.js*', async (route) => route.abort());
++
++  await page.goto(MANAGEMENT_ROUTE, {waitUntil: 'domcontentloaded'});
++
++  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
++  await expect(page.locator('html')).toHaveAttribute('data-management-locale', 'en');
++  await expect(page.getByTestId('management-auth-loading-overlay')).toBeVisible();
++  await expect(page.getByText('Loading', {exact: true})).toBeVisible();
++  await expect(page.getByText('Syncing CSX sign-in information', {exact: true})).toBeVisible();
++  await expect(page.getByText('加载中', {exact: true})).toBeHidden();
++});
++
++test('defaults the first loading frame to Traditional Chinese without source or cache', async ({page}) => {
++  await page.goto('./login/');
++  await page.evaluate(() => {
++    window.localStorage.removeItem('locale');
++  });
++  await page.goto('about:blank');
++  await page.evaluate(() => {
++    window.name = '';
++  });
++  await page.route('**/*.js*', async (route) => route.abort());
++
++  await page.goto(MANAGEMENT_ROUTE, {waitUntil: 'domcontentloaded'});
++
++  await expect(page.locator('html')).toHaveAttribute('lang', 'zh-HK');
++  await expect(page.locator('html')).toHaveAttribute('data-management-locale', 'zh-HK');
++  await expect(page.getByTestId('management-auth-loading-overlay')).toBeVisible();
++  await expect(page.getByText('載入中', {exact: true})).toBeVisible();
++  await expect(page.getByText('正在同步 CSX 登入資訊', {exact: true})).toBeVisible();
++  await expect(page.getByText('Loading', {exact: true})).toBeHidden();
++});
++
+ test('imports the local csx login transfer from window.name', async ({page}) => {
+   const encodedPayload = encodeAuthTransfer({
+     source: 'csx-web',
+@@ -838,6 +1168,10 @@ test('imports the local csx login transfer from window.name', async ({page}) =>
+     locale: 'en',
+   });
+ 
++  await page.goto('./login/');
++  await page.evaluate(() => {
++    window.localStorage.setItem('locale', JSON.stringify('zh-CN'));
++  });
+   await page.goto('about:blank');
+   await page.evaluate((transferName) => {
+     window.name = transferName;
+@@ -846,22 +1180,105 @@ test('imports the local csx login transfer from window.name', async ({page}) =>
+ 
+   await page.goto(MANAGEMENT_ROUTE);
+ 
+-  await expect(page.getByLabel('目前診所')).toHaveValue('TRANSFER');
+-  await expect(page.getByRole('button', {name: '使用者：transfer.user'})).toBeVisible();
+-  await expect(page.getByRole('status')).toContainText('已登入');
+-  await expect(page.getByLabel('診所', {exact: true})).toHaveValue('TRANSFER');
++  await expect(page.getByLabel('Current clinic')).toHaveValue('TRANSFER');
++  const transferredUserButton = page.getByRole('button', {name: 'User: transfer.user'});
++  await expect(transferredUserButton).toBeVisible();
++  await expect(page.getByRole('status')).toContainText('Signed in');
++  await expect(page.getByLabel('Clinic', {exact: true})).toHaveValue('TRANSFER');
++  await expect(page.getByRole('heading', {name: 'Display Screen Configuration'})).toBeVisible();
++  await expect(page.getByRole('cell', {name: 'Front Desk Touchscreen - Template'})).toBeVisible();
++  await expect(page.getByRole('cell', {name: 'Portrait'}).first()).toBeVisible();
++  const englishActionLayout = await page.locator('.management-actions-column').nth(1).evaluate((cell) => {
++    const cellRect = cell.getBoundingClientRect();
++    const buttons = Array.from(cell.querySelectorAll('.management-table-action'));
++
++    return {
++      cellLeft: cellRect.left,
++      cellRight: cellRect.right,
++      buttons: buttons.map((button) => {
++        const buttonRect = button.getBoundingClientRect();
++        const icon = button.querySelector('.management-table-action-icon') as HTMLImageElement | null;
++
++        return {
++          iconSrc: icon?.currentSrc ?? '',
++          left: buttonRect.left,
++          right: buttonRect.right,
++          text: button.textContent?.trim() ?? '',
++        };
++      }),
++    };
++  });
++  expect(englishActionLayout.buttons.map((button) => button.text)).toEqual([
++    'Copy Configuration',
++    'Edit',
++  ]);
++  expect(englishActionLayout.buttons[1]?.iconSrc).toContain(
++    '/display/edit-configuration-icon.svg',
++  );
++  for (const button of englishActionLayout.buttons) {
++    expect(button.left).toBeGreaterThanOrEqual(englishActionLayout.cellLeft);
++    expect(button.right).toBeLessThanOrEqual(englishActionLayout.cellRight + 1);
++  }
++  await expect(page.getByRole('cell', {name: '前台觸摸屏-模板'})).toHaveCount(0);
++  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+ 
+   const transferState = await page.evaluate(() => ({
+     hash: window.location.hash,
++    locale: JSON.parse(window.localStorage.getItem('locale') ?? 'null'),
+     token: JSON.parse(window.localStorage.getItem('tok') ?? 'null'),
+     windowName: window.name,
+   }));
+ 
+   expect(transferState).toEqual({
+     hash: '',
++    locale: 'en',
+     token: 'transfer-token',
+     windowName: '',
+   });
++
++  await page.goto(
++    `${MANAGEMENT_ROUTE}edit/?clinicCode=TRANSFER&deviceId=TRANSFER-display-config-08`,
++  );
++  await expect(
++    page.getByRole('heading', {name: 'Edit Consultation Room Door Display - 02', level: 1}),
++  ).toBeVisible();
++  await expect(page.getByTestId('display-device-edit-device-name')).toHaveValue(
++    'Consultation Room Door Display - 02',
++  );
++  await expect(page.getByTestId('display-device-edit-orientation')).toHaveValue('Portrait');
++  await expect(page.getByRole('heading', {name: 'Basic Display', level: 2})).toBeVisible();
++  await expect(page.getByRole('heading', {name: 'Clinic Configuration', level: 2})).toBeVisible();
++  await expect(page.getByRole('heading', {name: 'Doctor Configuration', level: 2})).toBeVisible();
++  await expect(page.getByRole('heading', {name: 'Custom Theme Colour', level: 2})).toBeVisible();
++  await expect(page.getByLabel('Video Link 1', {exact: true})).toBeVisible();
++  await expect(page.getByText('診所配置', {exact: true})).toHaveCount(0);
++
++  await page.goto(MANAGEMENT_ROUTE);
++
++  await page.getByRole('button', {name: 'User: transfer.user'}).click();
++  const languageButton = page.getByRole('button', {name: 'Language'});
++  await languageButton.click();
++  const languageMenu = page.getByRole('menu', {name: 'Language'});
++  await expect(languageMenu.getByRole('menuitemradio', {name: 'English'})).toHaveAttribute(
++    'aria-checked',
++    'true',
++  );
++  await languageMenu.getByRole('menuitemradio', {name: '中文简体'}).click();
++  await expect(page.getByRole('heading', {name: '显示屏配置'})).toBeVisible();
++  await expect(page.getByRole('status')).toContainText('已登录');
++  await expect(page.getByRole('cell', {name: '前台触摸屏-模板'})).toBeVisible();
++  await expect(page.getByRole('cell', {name: '竖屏'}).first()).toBeVisible();
++  await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
++  await expect(page.getByRole('dialog', {name: '用户菜单'})).toHaveCount(0);
++  expect(await page.evaluate(() => JSON.parse(window.localStorage.getItem('locale') ?? 'null'))).toBe('zh-CN');
++
++  await page.goto('about:blank');
++  await page.goto(MANAGEMENT_ROUTE);
++
++  await expect(page.getByRole('heading', {name: '显示屏配置'})).toBeVisible();
++  await expect(page.getByLabel('当前诊所')).toHaveValue('TRANSFER');
++  await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
++  expect(await page.evaluate(() => window.name)).toBe('');
+ });
+ 
+ test('shows the public display without a login', async ({page}) => {
+@@ -2013,8 +2430,8 @@ test('advances after mid-playback error instead of replaying the active video',
+   let clinicInfoRequests = 0;
+ 
+   await page.addInitScript(() => {
+-    HTMLMediaElement.prototype.load = function load() {};
+-    HTMLMediaElement.prototype.play = function play() {
++    HTMLMediaElement.prototype.load = (): void => {};
++    HTMLMediaElement.prototype.play = function play(this: HTMLMediaElement): Promise<void> {
+       Object.defineProperty(this, 'paused', {
+         configurable: true,
+         get() {
+@@ -2085,8 +2502,8 @@ test('advances after mid-playback error instead of replaying the active video',
+ 
+ test('does not skip the first configured video while it is still buffering', async ({page}) => {
+   await page.addInitScript(() => {
+-    HTMLMediaElement.prototype.load = function load() {};
+-    HTMLMediaElement.prototype.play = function play() {
++    HTMLMediaElement.prototype.load = (): void => {};
++    HTMLMediaElement.prototype.play = function play(this: HTMLMediaElement): Promise<void> {
+       return Promise.resolve();
+     };
+     Object.defineProperty(HTMLMediaElement.prototype, 'currentTime', {
+@@ -2148,8 +2565,8 @@ test('retries the current video when autoplay leaves it paused', async ({page})
+         return playCalls;
+       },
+     });
+-    HTMLMediaElement.prototype.load = function load() {};
+-    HTMLMediaElement.prototype.play = function play() {
++    HTMLMediaElement.prototype.load = (): void => {};
++    HTMLMediaElement.prototype.play = function play(this: HTMLMediaElement): Promise<void> {
+       playCalls += 1;
+       return Promise.resolve();
+     };
+@@ -2218,8 +2635,8 @@ test('starts configured videos muted by default', async ({page}) => {
+     };
+ 
+     global.__videoPlayCalls = [];
+-    HTMLMediaElement.prototype.load = function load() {};
+-    HTMLMediaElement.prototype.play = function play() {
++    HTMLMediaElement.prototype.load = (): void => {};
++    HTMLMediaElement.prototype.play = function play(this: HTMLMediaElement): Promise<void> {
+       global.__videoPlayCalls.push({
+         defaultMuted: this.defaultMuted,
+         muted: this.muted,
+@@ -2292,8 +2709,8 @@ test('keeps the video muted when the first playback attempt is interrupted', asy
+     };
+ 
+     global.__interruptedPlayCalls = [];
+-    HTMLMediaElement.prototype.load = function load() {};
+-    HTMLMediaElement.prototype.play = function play() {
++    HTMLMediaElement.prototype.load = (): void => {};
++    HTMLMediaElement.prototype.play = function play(this: HTMLMediaElement): Promise<void> {
+       global.__interruptedPlayCalls.push({muted: this.muted, src: this.getAttribute('src')});
+ 
+       if (global.__interruptedPlayCalls.length === 1) {
+@@ -2364,8 +2781,8 @@ test('does not repeatedly request playback while the active video is already pla
+         return playCalls;
+       },
+     });
+-    HTMLMediaElement.prototype.load = function load() {};
+-    HTMLMediaElement.prototype.play = function play() {
++    HTMLMediaElement.prototype.load = (): void => {};
++    HTMLMediaElement.prototype.play = function play(this: HTMLMediaElement): Promise<void> {
+       playCalls += 1;
+       return Promise.resolve();
+     };
+@@ -2434,8 +2851,8 @@ test('skips an unavailable video when it errors before playback starts', async (
+   let clinicInfoRequests = 0;
+ 
+   await page.addInitScript(() => {
+-    HTMLMediaElement.prototype.load = function load() {};
+-    HTMLMediaElement.prototype.play = function play() {
++    HTMLMediaElement.prototype.load = (): void => {};
++    HTMLMediaElement.prototype.play = function play(this: HTMLMediaElement): Promise<void> {
+       return Promise.resolve();
+     };
+     Object.defineProperty(HTMLMediaElement.prototype, 'currentTime', {
+@@ -2546,8 +2963,8 @@ test('fetches refreshed video URLs only after the current playback round finishe
+   await page.addInitScript(() => {
+     const currentTimes = new WeakMap<HTMLMediaElement, number>();
+ 
+-    HTMLMediaElement.prototype.load = function load() {};
+-    HTMLMediaElement.prototype.play = function play() {
++    HTMLMediaElement.prototype.load = (): void => {};
++    HTMLMediaElement.prototype.play = function play(this: HTMLMediaElement): Promise<void> {
+       Object.defineProperty(this, 'paused', {
+         configurable: true,
+         get() {
+@@ -2638,8 +3055,8 @@ test('clears the last video while waiting for the next playback round', async ({
+   });
+ 
+   await page.addInitScript(() => {
+-    HTMLMediaElement.prototype.load = function load() {};
+-    HTMLMediaElement.prototype.play = function play() {
++    HTMLMediaElement.prototype.load = (): void => {};
++    HTMLMediaElement.prototype.play = function play(this: HTMLMediaElement): Promise<void> {
+       Object.defineProperty(this, 'paused', {
+         configurable: true,
+         get() {
+@@ -2823,7 +3240,7 @@ test('keeps core UI dimensions stable while the display fills browser width', as
+   await expect(page.locator('.featured-last-call strong')).toBeVisible();
+   await expect(page.locator('.queue-header svg')).toHaveCount(0);
+ 
+-  const getMetrics = () =>
++  const getMetrics = (): Promise<CoreUiMetricsSnapshot> =>
+     page.evaluate(() => {
+       const screen = document.querySelector('.display-screen');
+       const brandMark = document.querySelector('.clinic-brand-mark');
+@@ -4016,7 +4433,7 @@ test('polls clinic and queue data without refreshing profiles after the full car
+ 
+     const viewportRect = viewport.getBoundingClientRect();
+ 
+-    function getLayout(grid: Element) {
++    const getLayout = (grid: Element): CarouselGridLayoutSnapshot => {
+       const gridRect = grid.getBoundingClientRect();
+       const card = grid.querySelector('article.doctor-card');
+ 
+@@ -4029,7 +4446,7 @@ test('polls clinic and queue data without refreshing profiles after the full car
+         cardHeight: card.getBoundingClientRect().height,
+         topGap: gridRect.top - viewportRect.top,
+       };
+-    }
++    };
+ 
+     return {
+       incoming: getLayout(incoming),
+@@ -4531,8 +4948,8 @@ test('updates clinic brand from the five-second poll but restarts video only whe
+     };
+ 
+     global.__videoPlayCalls = [];
+-    HTMLMediaElement.prototype.load = function load() {};
+-    HTMLMediaElement.prototype.play = function play() {
++    HTMLMediaElement.prototype.load = (): void => {};
++    HTMLMediaElement.prototype.play = function play(this: HTMLMediaElement): Promise<void> {
+       global.__videoPlayCalls.push({src: this.getAttribute('src')});
+ 
+       Object.defineProperty(this, 'paused', {
+@@ -4672,7 +5089,7 @@ test('keeps the self-service QR timer stable across API refreshes', async ({page
+   const qr = page.locator('.self-service-qr');
+   await expect(qr).toBeVisible();
+ 
+-  const getQrTimestamp = () =>
++  const getQrTimestamp = (): Promise<number> =>
+     qr.evaluate((element) => {
+       const qrUrl = element.getAttribute('data-qr-url');
+ 
+diff --git a/eslint.config.mjs b/eslint.config.mjs
+index 368a909..2841dfd 100644
+--- a/eslint.config.mjs
++++ b/eslint.config.mjs
+@@ -5,6 +5,22 @@ import nextTs from 'eslint-config-next/typescript';
+ export default defineConfig([
+   ...nextVitals,
+   ...nextTs,
++  {
++    files: ['**/*.{ts,tsx}'],
++    rules: {
++      'arrow-body-style': ['error', 'as-needed'],
++      '@typescript-eslint/explicit-function-return-type': [
++        'error',
++        {
++          allowConciseArrowFunctionExpressionsStartingWithVoid: true,
++          allowExpressions: true,
++          allowTypedFunctionExpressions: true,
++        },
++      ],
++      'func-style': ['error', 'expression', {allowArrowFunctions: true}],
++      'prefer-arrow-callback': 'error',
++    },
++  },
+   globalIgnores([
+     '.next/**',
+     'out/**',
+diff --git a/next.config.ts b/next.config.ts
+index bd1823b..2a183e7 100644
+--- a/next.config.ts
++++ b/next.config.ts
+@@ -2,7 +2,7 @@ import type {NextConfig} from 'next';
+ 
+ const DEFAULT_BASE_PATH = '/display-screen-config';
+ 
+-function normalizeBasePath(value: string | undefined) {
++const normalizeBasePath = (value: string | undefined): string => {
+   const trimmed = value?.trim();
+ 
+   if (!trimmed) {
+@@ -12,7 +12,7 @@ function normalizeBasePath(value: string | undefined) {
+   const withoutEdges = trimmed.replace(/^\/+|\/+$/g, '');
+ 
+   return withoutEdges ? `/${withoutEdges}` : '';
+-}
++};
+ 
+ const basePath = normalizeBasePath(process.env.NEXT_PUBLIC_CSX_APP_BASE_PATH);
+ 
+diff --git a/src/app/icon.svg b/src/app/icon.svg
+deleted file mode 100644
+index fe30b36..0000000
+--- a/src/app/icon.svg
++++ /dev/null
+@@ -1,69 +0,0 @@
+-<svg width="197" height="40" viewBox="0 0 197 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+-<path d="M35.0201 15.1206C35.0201 11.0456 31.7269 7.74796 27.6573 7.74796C27.4163 7.74796 27.1754 7.74796 26.9344 7.77477C25.9438 4.90614 23.2128 2.8418 20 2.8418C16.7871 2.8418 14.0562 4.90614 13.0388 7.77477C12.7978 7.74796 12.5569 7.74796 12.3159 7.74796C8.2463 7.74796 4.95312 11.0456 4.95312 15.1206C4.95312 17.4262 5.9973 19.4638 7.65728 20.8311C7.28244 21.7158 7.06825 22.6809 7.06825 23.7265C7.06825 27.8016 10.3614 31.0992 14.431 31.0992C15.3146 31.0992 16.1446 30.9383 16.921 30.6702C16.9478 30.8847 16.9478 31.0992 16.9478 31.3136C16.9478 31.3673 16.9478 31.4477 16.9478 31.5013C16.9478 31.5549 16.9478 31.6354 16.9478 31.689C16.8942 34.7185 15.7697 37.2118 15.7697 37.2118H19.9464H20.0268H24.2035C24.2035 37.2118 23.079 34.7185 23.0254 31.689C23.0254 31.6354 23.0254 31.5549 23.0254 31.5013C23.0254 31.4477 23.0254 31.3673 23.0254 31.3136C23.0254 31.0992 23.0522 30.8847 23.0522 30.6702C23.8286 30.9651 24.6854 31.126 25.5689 31.126C29.6385 31.126 32.9317 27.8284 32.9317 23.7533C32.9317 22.7077 32.7175 21.7426 32.3427 20.8579C33.9759 19.437 35.0201 17.3994 35.0201 15.1206Z" fill="url(#paint0_linear_2137_344)"/>
+-<path d="M31.245 0H8.75502C3.93574 0 0 3.91421 0 8.73995V31.2601C0 36.0858 3.90897 40 8.75502 40H31.245C36.0643 40 40 36.0858 40 31.2601V8.73995C39.9732 3.91421 36.0643 0 31.245 0ZM38.5542 31.2601C38.5542 35.3083 35.261 38.6059 31.245 38.6059H8.75502C4.71218 38.6059 1.44578 35.3083 1.44578 31.2601V8.73995C1.44578 4.69169 4.73896 1.3941 8.75502 1.3941H31.245C35.2878 1.3941 38.5542 4.69169 38.5542 8.73995V31.2601Z" fill="url(#paint1_linear_2137_344)"/>
+-<path d="M53.032 29.3717C52.744 29.3717 52.496 29.2757 52.288 29.0837C52.096 28.8757 52 28.6277 52 28.3397V11.6597C52 11.3557 52.096 11.1077 52.288 10.9157C52.496 10.7237 52.744 10.6277 53.032 10.6277C53.336 10.6277 53.584 10.7237 53.776 10.9157C53.984 11.1077 54.088 11.3557 54.088 11.6597V18.9557H65.608V11.6597C65.608 11.3557 65.704 11.1077 65.896 10.9157C66.088 10.7237 66.336 10.6277 66.64 10.6277C66.944 10.6277 67.192 10.7237 67.384 10.9157C67.576 11.1077 67.672 11.3557 67.672 11.6597V28.3397C67.672 28.6277 67.576 28.8757 67.384 29.0837C67.192 29.2757 66.944 29.3717 66.64 29.3717C66.336 29.3717 66.088 29.2757 65.896 29.0837C65.704 28.8757 65.608 28.6277 65.608 28.3397V20.8037H54.088V28.3397C54.088 28.6277 53.984 28.8757 53.776 29.0837C53.584 29.2757 53.336 29.3717 53.032 29.3717Z" fill="url(#paint2_linear_2137_344)"/>
+-<path d="M78.2449 29.4917C76.9329 29.4917 75.7729 29.2117 74.7649 28.6517C73.7569 28.0757 72.9649 27.2837 72.3889 26.2757C71.8129 25.2677 71.5249 24.1157 71.5249 22.8197C71.5249 21.5077 71.7969 20.3557 72.3409 19.3637C72.8849 18.3557 73.6289 17.5637 74.5729 16.9877C75.5329 16.4117 76.6369 16.1237 77.8849 16.1237C79.1169 16.1237 80.1809 16.4037 81.0769 16.9637C81.9729 17.5077 82.6609 18.2677 83.1409 19.2437C83.6369 20.2197 83.8849 21.3317 83.8849 22.5797C83.8849 22.8517 83.7969 23.0757 83.6209 23.2517C83.4449 23.4117 83.2209 23.4917 82.9489 23.4917H72.9169V21.8357H83.0449L82.0369 22.5557C82.0369 21.6757 81.8689 20.8837 81.5329 20.1797C81.1969 19.4757 80.7169 18.9237 80.0929 18.5237C79.4849 18.1237 78.7489 17.9237 77.8849 17.9237C76.9729 17.9237 76.1809 18.1397 75.5089 18.5717C74.8369 18.9877 74.3169 19.5637 73.9489 20.2997C73.5809 21.0357 73.3969 21.8757 73.3969 22.8197C73.3969 23.7637 73.6049 24.6037 74.0209 25.3397C74.4369 26.0597 75.0049 26.6357 75.7249 27.0677C76.4609 27.4837 77.3009 27.6917 78.2449 27.6917C78.7889 27.6917 79.3409 27.5957 79.9009 27.4037C80.4769 27.2117 80.9329 26.9717 81.2689 26.6837C81.4609 26.5237 81.6769 26.4437 81.9169 26.4437C82.1729 26.4277 82.3889 26.4917 82.5649 26.6357C82.7889 26.8437 82.9009 27.0757 82.9009 27.3317C82.9169 27.5717 82.8209 27.7797 82.6129 27.9557C82.0689 28.4037 81.3889 28.7717 80.5729 29.0597C79.7729 29.3477 78.9969 29.4917 78.2449 29.4917Z" fill="url(#paint3_linear_2137_344)"/>
+-<path d="M92.2293 29.4917C91.0133 29.4917 89.9253 29.2037 88.9653 28.6277C88.0053 28.0357 87.2453 27.2357 86.6852 26.2277C86.1252 25.2197 85.8452 24.0837 85.8452 22.8197C85.8452 21.5397 86.1333 20.3957 86.7093 19.3877C87.3013 18.3797 88.1012 17.5877 89.1092 17.0117C90.1172 16.4197 91.2533 16.1237 92.5173 16.1237C93.7653 16.1237 94.8853 16.4197 95.8773 17.0117C96.8853 17.5877 97.6772 18.3797 98.2533 19.3877C98.8452 20.3957 99.1493 21.5397 99.1653 22.8197L98.3493 23.2037C98.3493 24.3877 98.0773 25.4597 97.5333 26.4197C97.0053 27.3637 96.2773 28.1157 95.3493 28.6757C94.4373 29.2197 93.3973 29.4917 92.2293 29.4917ZM92.5173 27.6437C93.3973 27.6437 94.1893 27.4357 94.8932 27.0197C95.5972 26.6037 96.1493 26.0277 96.5493 25.2917C96.9492 24.5557 97.1493 23.7317 97.1493 22.8197C97.1493 21.8917 96.9492 21.0677 96.5493 20.3477C96.1493 19.6117 95.5972 19.0357 94.8932 18.6197C94.1893 18.1877 93.3973 17.9717 92.5173 17.9717C91.6372 17.9717 90.8452 18.1877 90.1413 18.6197C89.4373 19.0357 88.8773 19.6117 88.4613 20.3477C88.0452 21.0677 87.8372 21.8917 87.8372 22.8197C87.8372 23.7317 88.0452 24.5557 88.4613 25.2917C88.8773 26.0277 89.4373 26.6037 90.1413 27.0197C90.8452 27.4357 91.6372 27.6437 92.5173 27.6437ZM98.1333 29.3717C97.8293 29.3717 97.5813 29.2837 97.3893 29.1077C97.1973 28.9157 97.1012 28.6677 97.1012 28.3637V24.4037L97.5573 22.2917L99.1653 22.8197V28.3637C99.1653 28.6677 99.0613 28.9157 98.8533 29.1077C98.6613 29.2837 98.4212 29.3717 98.1333 29.3717Z" fill="url(#paint4_linear_2137_344)"/>
+-<path d="M105.688 29.3717C105.032 29.3717 104.44 29.1957 103.912 28.8437C103.4 28.4757 103 27.9717 102.712 27.3317C102.424 26.6917 102.28 25.9557 102.28 25.1237V11.6357C102.28 11.3317 102.368 11.0917 102.544 10.9157C102.736 10.7237 102.984 10.6277 103.288 10.6277C103.592 10.6277 103.832 10.7237 104.008 10.9157C104.2 11.0917 104.296 11.3317 104.296 11.6357V25.1237C104.296 25.7797 104.424 26.3157 104.68 26.7317C104.952 27.1477 105.288 27.3557 105.688 27.3557H106.288C106.56 27.3557 106.776 27.4517 106.936 27.6437C107.096 27.8197 107.176 28.0597 107.176 28.3637C107.176 28.6677 107.056 28.9157 106.816 29.1077C106.592 29.2837 106.288 29.3717 105.904 29.3717H105.688Z" fill="url(#paint5_linear_2137_344)"/>
+-<path d="M114.33 29.4917C113.322 29.4917 112.346 29.3317 111.402 29.0117C110.474 28.6757 109.73 28.2037 109.17 27.5957C108.978 27.3877 108.898 27.1477 108.93 26.8757C108.962 26.6037 109.09 26.3717 109.314 26.1797C109.57 25.9877 109.826 25.9157 110.082 25.9637C110.354 25.9957 110.586 26.1077 110.778 26.2997C111.114 26.6997 111.594 27.0277 112.218 27.2837C112.842 27.5237 113.53 27.6437 114.282 27.6437C115.386 27.6437 116.194 27.4597 116.706 27.0917C117.218 26.7077 117.482 26.2437 117.498 25.6997C117.514 25.1557 117.258 24.6997 116.73 24.3317C116.218 23.9637 115.338 23.6757 114.09 23.4677C112.474 23.1957 111.29 22.7397 110.538 22.0997C109.802 21.4597 109.434 20.6917 109.434 19.7957C109.434 18.9797 109.658 18.2997 110.106 17.7557C110.554 17.2117 111.138 16.8037 111.858 16.5317C112.594 16.2597 113.386 16.1237 114.234 16.1237C115.306 16.1237 116.234 16.3077 117.018 16.6757C117.802 17.0277 118.434 17.5077 118.914 18.1157C119.106 18.3397 119.186 18.5797 119.154 18.8357C119.122 19.0757 118.994 19.2757 118.77 19.4357C118.546 19.5637 118.29 19.6037 118.002 19.5557C117.73 19.5077 117.498 19.3797 117.306 19.1717C116.906 18.7397 116.45 18.4277 115.938 18.2357C115.426 18.0437 114.842 17.9477 114.186 17.9477C113.37 17.9477 112.698 18.1077 112.17 18.4277C111.658 18.7477 111.402 19.1637 111.402 19.6757C111.402 20.0277 111.49 20.3317 111.666 20.5877C111.858 20.8437 112.194 21.0757 112.674 21.2837C113.154 21.4757 113.826 21.6517 114.69 21.8117C115.89 22.0197 116.834 22.3077 117.522 22.6757C118.226 23.0437 118.73 23.4837 119.034 23.9957C119.338 24.4917 119.49 25.0437 119.49 25.6517C119.49 26.3877 119.274 27.0437 118.842 27.6197C118.426 28.1957 117.826 28.6517 117.042 28.9877C116.274 29.3237 115.37 29.4917 114.33 29.4917Z" fill="url(#paint6_linear_2137_344)"/>
+-<path d="M138.33 29.6117C137.034 29.6117 135.818 29.3637 134.682 28.8677C133.562 28.3717 132.57 27.6837 131.706 26.8037C130.858 25.9237 130.194 24.9077 129.714 23.7557C129.25 22.5877 129.018 21.3317 129.018 19.9877C129.018 18.6597 129.25 17.4197 129.714 16.2677C130.194 15.0997 130.858 14.0837 131.706 13.2197C132.554 12.3397 133.538 11.6517 134.658 11.1557C135.794 10.6437 137.018 10.3877 138.33 10.3877C139.498 10.3877 140.546 10.5557 141.474 10.8917C142.402 11.2117 143.306 11.7397 144.186 12.4757C144.33 12.5877 144.418 12.7157 144.45 12.8597C144.498 12.9877 144.506 13.1157 144.474 13.2437C144.442 13.3717 144.378 13.4757 144.282 13.5557C144.266 13.7477 144.178 13.8997 144.018 14.0117C143.858 14.1237 143.674 14.1797 143.466 14.1797C143.258 14.1637 143.05 14.0757 142.842 13.9157C142.234 13.3877 141.578 12.9957 140.874 12.7397C140.17 12.4677 139.322 12.3317 138.33 12.3317C137.322 12.3317 136.378 12.5317 135.498 12.9317C134.618 13.3317 133.842 13.8837 133.17 14.5877C132.498 15.2917 131.97 16.1077 131.586 17.0357C131.218 17.9637 131.034 18.9477 131.034 19.9877C131.034 21.0597 131.218 22.0597 131.586 22.9877C131.97 23.8997 132.498 24.7077 133.17 25.4117C133.842 26.1157 134.618 26.6677 135.498 27.0677C136.378 27.4677 137.322 27.6677 138.33 27.6677C139.178 27.6677 139.986 27.5237 140.754 27.2357C141.522 26.9477 142.25 26.5397 142.938 26.0117C143.162 25.8357 143.394 25.7637 143.634 25.7957C143.874 25.8277 144.074 25.9317 144.234 26.1077C144.41 26.2837 144.498 26.5157 144.498 26.8037C144.498 26.9317 144.474 27.0597 144.426 27.1877C144.378 27.2997 144.306 27.4197 144.21 27.5477C143.378 28.2677 142.458 28.7957 141.45 29.1317C140.458 29.4517 139.418 29.6117 138.33 29.6117Z" fill="url(#paint7_linear_2137_344)"/>
+-<path d="M151.157 29.3717C150.501 29.3717 149.909 29.1957 149.381 28.8437C148.869 28.4757 148.469 27.9717 148.181 27.3317C147.893 26.6917 147.749 25.9557 147.749 25.1237V11.6357C147.749 11.3317 147.837 11.0917 148.013 10.9157C148.205 10.7237 148.453 10.6277 148.757 10.6277C149.061 10.6277 149.301 10.7237 149.477 10.9157C149.669 11.0917 149.765 11.3317 149.765 11.6357V25.1237C149.765 25.7797 149.893 26.3157 150.149 26.7317C150.421 27.1477 150.757 27.3557 151.157 27.3557H151.757C152.029 27.3557 152.245 27.4517 152.405 27.6437C152.565 27.8197 152.645 28.0597 152.645 28.3637C152.645 28.6677 152.525 28.9157 152.285 29.1077C152.061 29.2837 151.757 29.3717 151.373 29.3717H151.157Z" fill="url(#paint8_linear_2137_344)"/>
+-<path d="M156.511 29.3717C156.207 29.3717 155.959 29.2757 155.767 29.0837C155.575 28.8917 155.479 28.6437 155.479 28.3397V17.2757C155.479 16.9557 155.575 16.7077 155.767 16.5317C155.959 16.3397 156.207 16.2437 156.511 16.2437C156.815 16.2437 157.055 16.3397 157.231 16.5317C157.423 16.7077 157.519 16.9557 157.519 17.2757V28.3397C157.519 28.6437 157.423 28.8917 157.231 29.0837C157.055 29.2757 156.815 29.3717 156.511 29.3717ZM156.487 13.8677C156.103 13.8677 155.775 13.7317 155.503 13.4597C155.231 13.1877 155.095 12.8517 155.095 12.4517C155.095 12.0517 155.231 11.7237 155.503 11.4677C155.791 11.1957 156.127 11.0597 156.511 11.0597C156.879 11.0597 157.199 11.1957 157.471 11.4677C157.759 11.7237 157.903 12.0517 157.903 12.4517C157.903 12.8517 157.759 13.1877 157.471 13.4597C157.199 13.7317 156.871 13.8677 156.487 13.8677Z" fill="url(#paint9_linear_2137_344)"/>
+-<path d="M173.382 29.3717C173.078 29.3717 172.83 29.2757 172.638 29.0837C172.446 28.8917 172.35 28.6517 172.35 28.3637V22.2437C172.35 21.2677 172.166 20.4757 171.798 19.8677C171.43 19.2437 170.934 18.7797 170.31 18.4757C169.702 18.1717 168.998 18.0197 168.198 18.0197C167.462 18.0197 166.79 18.1637 166.182 18.4517C165.574 18.7397 165.094 19.1397 164.742 19.6517C164.39 20.1477 164.214 20.7237 164.214 21.3797H162.846C162.862 20.3717 163.118 19.4757 163.614 18.6917C164.126 17.8917 164.806 17.2597 165.654 16.7957C166.502 16.3317 167.446 16.0997 168.486 16.0997C169.622 16.0997 170.63 16.3397 171.51 16.8197C172.406 17.2837 173.11 17.9717 173.622 18.8837C174.134 19.7957 174.39 20.9157 174.39 22.2437V28.3637C174.39 28.6517 174.294 28.8917 174.102 29.0837C173.91 29.2757 173.67 29.3717 173.382 29.3717ZM163.206 29.3717C162.902 29.3717 162.654 29.2837 162.462 29.1077C162.27 28.9157 162.174 28.6677 162.174 28.3637V17.2757C162.174 16.9557 162.27 16.7077 162.462 16.5317C162.654 16.3397 162.902 16.2437 163.206 16.2437C163.51 16.2437 163.75 16.3397 163.926 16.5317C164.118 16.7077 164.214 16.9557 164.214 17.2757V28.3637C164.214 28.6677 164.118 28.9157 163.926 29.1077C163.75 29.2837 163.51 29.3717 163.206 29.3717Z" fill="url(#paint10_linear_2137_344)"/>
+-<path d="M179.831 29.3717C179.527 29.3717 179.279 29.2757 179.087 29.0837C178.895 28.8917 178.799 28.6437 178.799 28.3397V17.2757C178.799 16.9557 178.895 16.7077 179.087 16.5317C179.279 16.3397 179.527 16.2437 179.831 16.2437C180.135 16.2437 180.375 16.3397 180.551 16.5317C180.743 16.7077 180.839 16.9557 180.839 17.2757V28.3397C180.839 28.6437 180.743 28.8917 180.551 29.0837C180.375 29.2757 180.135 29.3717 179.831 29.3717ZM179.807 13.8677C179.423 13.8677 179.095 13.7317 178.823 13.4597C178.551 13.1877 178.415 12.8517 178.415 12.4517C178.415 12.0517 178.551 11.7237 178.823 11.4677C179.111 11.1957 179.447 11.0597 179.831 11.0597C180.199 11.0597 180.519 11.1957 180.791 11.4677C181.079 11.7237 181.223 12.0517 181.223 12.4517C181.223 12.8517 181.079 13.1877 180.791 13.4597C180.519 13.7317 180.191 13.8677 179.807 13.8677Z" fill="url(#paint11_linear_2137_344)"/>
+-<path d="M191.374 29.4917C190.11 29.4917 188.982 29.2037 187.99 28.6277C186.998 28.0357 186.214 27.2357 185.638 26.2277C185.078 25.2197 184.798 24.0837 184.798 22.8197C184.798 21.5397 185.07 20.3957 185.614 19.3877C186.174 18.3797 186.926 17.5877 187.87 17.0117C188.83 16.4197 189.934 16.1237 191.182 16.1237C192.142 16.1237 193.03 16.3157 193.846 16.6997C194.662 17.0677 195.382 17.6277 196.006 18.3797C196.198 18.6037 196.262 18.8357 196.198 19.0757C196.15 19.2997 196.006 19.4997 195.766 19.6757C195.574 19.8197 195.358 19.8677 195.118 19.8197C194.878 19.7717 194.67 19.6437 194.494 19.4357C193.614 18.4597 192.51 17.9717 191.182 17.9717C190.318 17.9717 189.55 18.1797 188.878 18.5957C188.222 19.0117 187.71 19.5797 187.342 20.2997C186.974 21.0197 186.79 21.8597 186.79 22.8197C186.79 23.7477 186.982 24.5797 187.366 25.3157C187.75 26.0357 188.286 26.6037 188.974 27.0197C189.678 27.4357 190.478 27.6437 191.374 27.6437C191.982 27.6437 192.526 27.5637 193.006 27.4037C193.502 27.2437 193.942 27.0037 194.326 26.6837C194.534 26.5077 194.75 26.4117 194.974 26.3957C195.214 26.3637 195.43 26.4277 195.622 26.5877C195.83 26.7797 195.95 26.9957 195.982 27.2357C196.014 27.4757 195.934 27.6917 195.742 27.8837C194.574 28.9557 193.118 29.4917 191.374 29.4917Z" fill="url(#paint12_linear_2137_344)"/>
+-<defs>
+-<linearGradient id="paint0_linear_2137_344" x1="33.1266" y1="23.9818" x2="4.39006" y2="16.2922" gradientUnits="userSpaceOnUse">
+-<stop stop-color="#00A84F"/>
+-<stop offset="1" stop-color="#00B3D8"/>
+-</linearGradient>
+-<linearGradient id="paint1_linear_2137_344" x1="41.7421" y1="25.8485" x2="-1.76118" y2="14.2074" gradientUnits="userSpaceOnUse">
+-<stop stop-color="#00A84F"/>
+-<stop offset="1" stop-color="#00B3D8"/>
+-</linearGradient>
+-<linearGradient id="paint2_linear_2137_344" x1="52" y1="22.1317" x2="196.196" y2="20.0549" gradientUnits="userSpaceOnUse">
+-<stop stop-color="#50B0D2"/>
+-<stop offset="1" stop-color="#4AA55B"/>
+-</linearGradient>
+-<linearGradient id="paint3_linear_2137_344" x1="52" y1="22.1317" x2="196.196" y2="20.0549" gradientUnits="userSpaceOnUse">
+-<stop stop-color="#50B0D2"/>
+-<stop offset="1" stop-color="#4AA55B"/>
+-</linearGradient>
+-<linearGradient id="paint4_linear_2137_344" x1="52" y1="22.1317" x2="196.196" y2="20.0549" gradientUnits="userSpaceOnUse">
+-<stop stop-color="#50B0D2"/>
+-<stop offset="1" stop-color="#4AA55B"/>
+-</linearGradient>
+-<linearGradient id="paint5_linear_2137_344" x1="52" y1="22.1317" x2="196.196" y2="20.0549" gradientUnits="userSpaceOnUse">
+-<stop stop-color="#50B0D2"/>
+-<stop offset="1" stop-color="#4AA55B"/>
+-</linearGradient>
+-<linearGradient id="paint6_linear_2137_344" x1="52" y1="22.1317" x2="196.196" y2="20.0549" gradientUnits="userSpaceOnUse">
+-<stop stop-color="#50B0D2"/>
+-<stop offset="1" stop-color="#4AA55B"/>
+-</linearGradient>
+-<linearGradient id="paint7_linear_2137_344" x1="52" y1="22.1317" x2="196.196" y2="20.0549" gradientUnits="userSpaceOnUse">
+-<stop stop-color="#50B0D2"/>
+-<stop offset="1" stop-color="#4AA55B"/>
+-</linearGradient>
+-<linearGradient id="paint8_linear_2137_344" x1="52" y1="22.1317" x2="196.196" y2="20.0549" gradientUnits="userSpaceOnUse">
+-<stop stop-color="#50B0D2"/>
+-<stop offset="1" stop-color="#4AA55B"/>
+-</linearGradient>
+-<linearGradient id="paint9_linear_2137_344" x1="52" y1="22.1317" x2="196.196" y2="20.0549" gradientUnits="userSpaceOnUse">
+-<stop stop-color="#50B0D2"/>
+-<stop offset="1" stop-color="#4AA55B"/>
+-</linearGradient>
+-<linearGradient id="paint10_linear_2137_344" x1="52" y1="22.1317" x2="196.196" y2="20.0549" gradientUnits="userSpaceOnUse">
+-<stop stop-color="#50B0D2"/>
+-<stop offset="1" stop-color="#4AA55B"/>
+-</linearGradient>
+-<linearGradient id="paint11_linear_2137_344" x1="52" y1="22.1317" x2="196.196" y2="20.0549" gradientUnits="userSpaceOnUse">
+-<stop stop-color="#50B0D2"/>
+-<stop offset="1" stop-color="#4AA55B"/>
+-</linearGradient>
+-<linearGradient id="paint12_linear_2137_344" x1="52" y1="22.1317" x2="196.196" y2="20.0549" gradientUnits="userSpaceOnUse">
+-<stop stop-color="#50B0D2"/>
+-<stop offset="1" stop-color="#4AA55B"/>
+-</linearGradient>
+-</defs>
+-</svg>
+diff --git a/src/app/layout.tsx b/src/app/layout.tsx
+index 225b8bb..a5e3dbb 100644
+--- a/src/app/layout.tsx
++++ b/src/app/layout.tsx
+@@ -1,13 +1,13 @@
+ import type {Metadata, Viewport} from 'next';
+-import type {ReactNode} from 'react';
++import type {JSX, ReactNode} from 'react';
+ import {withAppBasePath} from '@/lib/app-base-path';
+ import {GlobalClinicProvider} from '@/lib/global-clinic';
+ import './globals.css';
+ 
+ export const metadata: Metadata = {
+-  title: 'Heals Clinic Waiting Queue',
++  title: 'ClinicSolution',
+   description: 'ClinicSolution public waiting queue display',
+-  applicationName: 'csx-web-react',
++  applicationName: 'ClinicSolution',
+   robots: {
+     index: false,
+     follow: false,
+@@ -39,13 +39,68 @@ const outfitFontFace = `
+   }
+ `;
+ 
+-export default function RootLayout({children}: Readonly<{children: ReactNode}>) {
+-  return (
+-    <html lang="zh-Hant">
++const managementLocaleBootstrapScript = `
++  (() => {
++    const normalizeLocale = (value) => {
++      const normalized = typeof value === 'string' ? value.trim().toLowerCase() : '';
++
++      if (normalized.startsWith('en')) return 'en';
++      if (normalized === 'zh-cn' || normalized === 'zh-hans') return 'zh-CN';
++      return 'zh-HK';
++    };
++    const parseStoredLocale = (value) => {
++      if (!value) return null;
++
++      try {
++        return JSON.parse(value);
++      } catch {
++        return value;
++      }
++    };
++    let sourceLocale = null;
++
++    try {
++      const prefix = 'CSX_DISPLAY_SCREEN_AUTH:';
++      const isLocalHost = ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
++
++      if (isLocalHost && window.name.startsWith(prefix)) {
++        const encoded = window.name.slice(prefix.length);
++        const base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
++        const padding = '='.repeat((4 - (base64.length % 4)) % 4);
++        const binary = window.atob(base64 + padding);
++        const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
++        const payload = JSON.parse(new TextDecoder().decode(bytes));
++        const isFresh = typeof payload.issuedAt === 'number'
++          && Math.abs(Date.now() - payload.issuedAt) <= 10 * 60 * 1000;
++
++        if (payload.source === 'csx-web' && isFresh && (payload.token || payload.tok)) {
++          sourceLocale = payload.locale;
++        }
++      }
++    } catch {}
++
++    if (!sourceLocale) {
++      try {
++        sourceLocale = parseStoredLocale(window.localStorage.getItem('locale'));
++      } catch {}
++    }
++
++    const locale = normalizeLocale(sourceLocale);
++    document.documentElement.lang = locale;
++    document.documentElement.dataset.managementLocale = locale;
++  })();
++`;
++
++const RootLayout = ({children}: Readonly<{children: ReactNode}>): JSX.Element => (
++    <html data-management-locale="zh-HK" lang="zh-HK" suppressHydrationWarning>
++      <head>
++        <script dangerouslySetInnerHTML={{__html: managementLocaleBootstrapScript}} />
++      </head>
+       <body>
+         <style dangerouslySetInnerHTML={{__html: outfitFontFace}} />
+         <GlobalClinicProvider>{children}</GlobalClinicProvider>
+       </body>
+     </html>
+   );
+-}
++
++export default RootLayout;
+diff --git a/src/app/login/page.tsx b/src/app/login/page.tsx
+index a418028..8f12d55 100644
+--- a/src/app/login/page.tsx
++++ b/src/app/login/page.tsx
+@@ -1,3 +1,5 @@
+-export default function LoginPage() {
+-  return <main aria-label="CSX 登入頁" />;
+-}
++import type {JSX} from 'react';
++
++const LoginPage = (): JSX.Element => <main aria-label="CSX" />;
++
++export default LoginPage;
+diff --git a/src/app/management-settings/program-settings/display-screen-config/edit/page.tsx b/src/app/management-settings/program-settings/display-screen-config/edit/page.tsx
+index 097868f..86d5837 100644
+--- a/src/app/management-settings/program-settings/display-screen-config/edit/page.tsx
++++ b/src/app/management-settings/program-settings/display-screen-config/edit/page.tsx
+@@ -1,11 +1,11 @@
+-import {Suspense} from 'react';
++import {Suspense, type JSX} from 'react';
+ import '@/features/display-management/display-management.css';
+ import {DisplayDeviceEditPage} from '@/features/display-management/DisplayDeviceEditPage';
+ 
+-export default function DisplayScreenDeviceEditPage() {
+-  return (
+-    <Suspense fallback={<main aria-busy="true" aria-label="載入顯示屏設備資料" />}>
++const DisplayScreenDeviceEditPage = (): JSX.Element => (
++    <Suspense fallback={<main aria-busy="true" />}>
+       <DisplayDeviceEditPage />
+     </Suspense>
+   );
+-}
++
++export default DisplayScreenDeviceEditPage;
+diff --git a/src/app/management-settings/program-settings/display-screen-config/page.tsx b/src/app/management-settings/program-settings/display-screen-config/page.tsx
+index e5c3ff2..5d4c10f 100644
+--- a/src/app/management-settings/program-settings/display-screen-config/page.tsx
++++ b/src/app/management-settings/program-settings/display-screen-config/page.tsx
+@@ -1,6 +1,7 @@
++import type {JSX} from 'react';
+ import '@/features/display-management/display-management.css';
+ import {DisplayManagementPage} from '@/features/display-management';
+ 
+-export default function ProgramSettingsDisplayScreenConfigPage() {
+-  return <DisplayManagementPage />;
+-}
++const ProgramSettingsDisplayScreenConfigPage = (): JSX.Element => <DisplayManagementPage />;
++
++export default ProgramSettingsDisplayScreenConfigPage;
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index ba6f037..f6e1516 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -1,7 +1,8 @@
++import type {JSX} from 'react';
+ import '@/features/display-screen/display-screen.css';
+ import '@/features/display-management/display-management.css';
+ import {DisplayManagementRoute} from '@/features/display-management';
+ 
+-export default function Page() {
+-  return <DisplayManagementRoute />;
+-}
++const Page = (): JSX.Element => <DisplayManagementRoute />;
++
++export default Page;
+diff --git a/src/app/tvScreenNew/page.tsx b/src/app/tvScreenNew/page.tsx
+index 7f87736..09db878 100644
+--- a/src/app/tvScreenNew/page.tsx
++++ b/src/app/tvScreenNew/page.tsx
+@@ -1,6 +1,7 @@
++import type {JSX} from 'react';
+ import '@/features/display-screen/display-screen.css';
+ import { DisplayScreenPage } from '@/features/display-screen';
+ 
+-export default function TvScreenNewPage() {
+-  return <DisplayScreenPage />;
+-}
++const TvScreenNewPage = (): JSX.Element => <DisplayScreenPage />;
++
++export default TvScreenNewPage;
+diff --git a/src/components/ui/table.tsx b/src/components/ui/table.tsx
+index 5443149..53e6339 100644
+--- a/src/components/ui/table.tsx
++++ b/src/components/ui/table.tsx
+@@ -1,26 +1,14 @@
+ import * as React from 'react';
+ import {cn} from '@/lib/utils';
+ 
+-export function Table({className, ...props}: React.HTMLAttributes<HTMLTableElement>) {
+-  return <table className={cn('w-full caption-bottom text-sm', className)} {...props} />;
+-}
++export const Table = ({className, ...props}: React.HTMLAttributes<HTMLTableElement>): React.JSX.Element => <table className={cn('w-full caption-bottom text-sm', className)} {...props} />;
+ 
+-export function TableHeader({className, ...props}: React.HTMLAttributes<HTMLTableSectionElement>) {
+-  return <thead className={cn('bg-slate-50 text-slate-500', className)} {...props} />;
+-}
++export const TableHeader = ({className, ...props}: React.HTMLAttributes<HTMLTableSectionElement>): React.JSX.Element => <thead className={cn('bg-slate-50 text-slate-500', className)} {...props} />;
+ 
+-export function TableBody({className, ...props}: React.HTMLAttributes<HTMLTableSectionElement>) {
+-  return <tbody className={cn('[&_tr:last-child]:border-0', className)} {...props} />;
+-}
++export const TableBody = ({className, ...props}: React.HTMLAttributes<HTMLTableSectionElement>): React.JSX.Element => <tbody className={cn('[&_tr:last-child]:border-0', className)} {...props} />;
+ 
+-export function TableRow({className, ...props}: React.HTMLAttributes<HTMLTableRowElement>) {
+-  return <tr className={cn('border-b border-border', className)} {...props} />;
+-}
++export const TableRow = ({className, ...props}: React.HTMLAttributes<HTMLTableRowElement>): React.JSX.Element => <tr className={cn('border-b border-border', className)} {...props} />;
+ 
+-export function TableHead({className, ...props}: React.ThHTMLAttributes<HTMLTableCellElement>) {
+-  return <th className={cn('h-10 px-3 text-left font-medium', className)} {...props} />;
+-}
++export const TableHead = ({className, ...props}: React.ThHTMLAttributes<HTMLTableCellElement>): React.JSX.Element => <th className={cn('h-10 px-3 text-left font-medium', className)} {...props} />;
+ 
+-export function TableCell({className, ...props}: React.TdHTMLAttributes<HTMLTableCellElement>) {
+-  return <td className={cn('h-10 px-3 align-middle', className)} {...props} />;
+-}
++export const TableCell = ({className, ...props}: React.TdHTMLAttributes<HTMLTableCellElement>): React.JSX.Element => <td className={cn('h-10 px-3 align-middle', className)} {...props} />;
+diff --git a/src/features/display-management/DisplayDeviceEditPage.tsx b/src/features/display-management/DisplayDeviceEditPage.tsx
+index 4bf8788..5dd2d15 100644
+--- a/src/features/display-management/DisplayDeviceEditPage.tsx
++++ b/src/features/display-management/DisplayDeviceEditPage.tsx
+@@ -1,6 +1,6 @@
+ 'use client';
+ 
+-import {useMemo, useState, type CSSProperties, type ReactNode} from 'react';
++import {useMemo, useState, type CSSProperties, type JSX, type ReactNode} from 'react';
+ import Image from 'next/image';
+ import {useRouter, useSearchParams} from 'next/navigation';
+ import {
+@@ -15,7 +15,12 @@ import {
+ import {Button} from '@/components/ui/button';
+ import {withAppBasePath} from '@/lib/app-base-path';
+ import type {ClinicOption} from '@/lib/clinic-api';
+-import {ClinicSelect, ManagementFramework} from './DisplayManagementPage';
++import {
++  ClinicSelect,
++  ManagementFramework,
++  type ManagementLocale,
++  type ManagementMessages,
++} from './DisplayManagementPage';
+ import {findDisplayConfig, type DisplayConfig} from './display-config-data';
+ 
+ const BASIC_DISPLAY_ICON_SRC = withAppBasePath('/display/basic-display-icon.svg');
+@@ -31,6 +36,8 @@ const THEME_COLORS = [
+   '#ed1600', '#e64900', '#ef8500', '#ffb600', '#c9dd00', '#66bd00', '#00a512', '#008e42',
+ ] as const;
+ 
++const appendLocalizedValue = (label: string, value: string | number, locale: ManagementLocale): string => `${label}${locale === 'en' ? ' ' : ''}${value}`;
++
+ interface EditSectionProps {
+   children: ReactNode;
+   className?: string;
+@@ -38,8 +45,7 @@ interface EditSectionProps {
+   title: string;
+ }
+ 
+-function EditSectionIcon({src}: {src: string}) {
+-  return (
++const EditSectionIcon = ({src}: {src: string}): JSX.Element => (
+     <Image
+       alt=""
+       aria-hidden
+@@ -49,10 +55,8 @@ function EditSectionIcon({src}: {src: string}) {
+       width={20}
+     />
+   );
+-}
+ 
+-function EditSection({children, className = '', iconSrc, title}: EditSectionProps) {
+-  return (
++const EditSection = ({children, className = '', iconSrc, title}: EditSectionProps): JSX.Element => (
+     <section className={`management-edit-section ${className}`.trim()}>
+       <div className="management-edit-section-heading">
+         <EditSectionIcon src={iconSrc} />
+@@ -62,29 +66,28 @@ function EditSection({children, className = '', iconSrc, title}: EditSectionProp
+       {children}
+     </section>
+   );
+-}
+ 
+-function CheckOption({children, defaultChecked = true}: {children: ReactNode; defaultChecked?: boolean}) {
+-  return (
++const CheckOption = ({children, defaultChecked = true}: {children: ReactNode; defaultChecked?: boolean}): JSX.Element => (
+     <label className="management-edit-check-option">
+       <input defaultChecked={defaultChecked} type="checkbox" />
+       <span aria-hidden className="management-edit-checkbox"><Check /></span>
+       <span>{children}</span>
+     </label>
+   );
+-}
+ 
+-function EditClinicSelect({
++const EditClinicSelect = ({
+   clinicCode,
+   clinics,
+   globalClinicCode,
+   globalClinicRevision,
++  messages,
+ }: {
+   clinicCode: string;
+   clinics: ClinicOption[];
+   globalClinicCode: string;
+   globalClinicRevision: number;
+-}) {
++  messages: ManagementMessages;
++}): JSX.Element => {
+   const [clinicSelection, setClinicSelection] = useState(() => ({
+     clinicCode,
+     globalClinicRevision,
+@@ -103,9 +106,9 @@ function EditClinicSelect({
+ 
+   return (
+     <div className="management-edit-form-row management-edit-clinic-row">
+-      <label htmlFor="management-edit-clinic-select">診所</label>
++      <label htmlFor="management-edit-clinic-select">{messages.clinic}</label>
+       <ClinicSelect
+-        ariaLabel="診所"
++        ariaLabel={messages.clinic}
+         className="management-select management-edit-clinic-select"
+         clinics={availableClinics}
+         id="management-edit-clinic-select"
+@@ -117,9 +120,15 @@ function EditClinicSelect({
+       />
+     </div>
+   );
+-}
++};
+ 
+-function DeviceSettings({displayConfig}: {displayConfig: DisplayConfig}) {
++const DeviceSettings = ({
++  displayConfig,
++  messages,
++}: {
++  displayConfig: DisplayConfig;
++  messages: ManagementMessages;
++}): JSX.Element => {
+   const parsedUrl = useMemo(() => {
+     try {
+       const url = new URL(displayConfig.url);
+@@ -129,14 +138,14 @@ function DeviceSettings({displayConfig}: {displayConfig: DisplayConfig}) {
+     }
+   }, [displayConfig.url]);
+ 
+-  const handleCopy = () => {
++  const handleCopy = (): void => {
+     void navigator.clipboard?.writeText(displayConfig.url);
+   };
+ 
+   return (
+     <div className="management-edit-settings-fields">
+       <div className="management-edit-form-row">
+-        <label htmlFor="management-edit-device-name">名稱</label>
++        <label htmlFor="management-edit-device-name">{messages.name}</label>
+         <input
+           data-testid="display-device-edit-device-name"
+           id="management-edit-device-name"
+@@ -145,20 +154,20 @@ function DeviceSettings({displayConfig}: {displayConfig: DisplayConfig}) {
+         />
+       </div>
+       <div className="management-edit-form-row">
+-        <label htmlFor="management-edit-orientation">螢屏方向</label>
++        <label htmlFor="management-edit-orientation">{messages.screenOrientation}</label>
+         <input
+           data-testid="display-device-edit-orientation"
+           id="management-edit-orientation"
+           readOnly
+-          value={displayConfig.orientation}
++          value={displayConfig.orientationLabel}
+         />
+       </div>
+       <div className="management-edit-form-row">
+-        <label htmlFor="management-edit-url-path">螢屏鏈接</label>
++        <label htmlFor="management-edit-url-path">{messages.screenLink}</label>
+         <div className="management-edit-url-control">
+           <span>{parsedUrl.protocol}</span>
+           <input id="management-edit-url-path" readOnly value={parsedUrl.value} />
+-          <button aria-label="複製螢屏鏈接" onClick={handleCopy} type="button"><Copy /></button>
++          <button aria-label={messages.copyScreenLink} onClick={handleCopy} type="button"><Copy /></button>
+         </div>
+         <input
+           className="management-visually-hidden"
+@@ -170,39 +179,39 @@ function DeviceSettings({displayConfig}: {displayConfig: DisplayConfig}) {
+       </div>
+     </div>
+   );
+-}
++};
+ 
+-function BasicDisplaySection() {
+-  return (
+-    <EditSection iconSrc={BASIC_DISPLAY_ICON_SRC} title="基本顯示">
++const BasicDisplaySection = ({messages}: {messages: ManagementMessages}): JSX.Element => (
++    <EditSection iconSrc={BASIC_DISPLAY_ICON_SRC} title={messages.basicDisplay}>
+       <div className="management-edit-basic-content">
+-        <CheckOption>診所logo</CheckOption>
+-        <p>請上傳圖片比例為1:1，jpg/png files with a size less than 500KB.</p>
++        <CheckOption>{messages.clinicLogo}</CheckOption>
++        <p>{messages.imageUploadHint}</p>
+         <label className="management-edit-upload-button">
+           <Upload aria-hidden />
+-          <span>點擊上傳</span>
++          <span>{messages.upload}</span>
+           <input accept="image/jpeg,image/png" type="file" />
+         </label>
+         <div className="management-edit-upload-row">
+-          <Image alt="目前診所 logo" height={48} src={HEALS_ICON_SRC} width={48} />
++          <Image alt={messages.currentClinicLogo} height={48} src={HEALS_ICON_SRC} width={48} />
+           <span>image1.png</span>
+-          <button aria-label="刪除 image1.png" type="button"><Trash2 /></button>
++          <button aria-label={`${messages.deleteFile} image1.png`} type="button"><Trash2 /></button>
+         </div>
+       </div>
+     </EditSection>
+   );
+-}
+ 
+ interface VideoLinkRowProps {
+   addDisabled: boolean;
+   index: number;
++  locale: ManagementLocale;
++  messages: ManagementMessages;
+   onAdd: () => void;
+   onChange: (value: string) => void;
+   onRemove: () => void;
+   value: string;
+ }
+ 
+-function isValidVideoLink(value: string) {
++const isValidVideoLink = (value: string): boolean => {
+   const trimmedValue = value.trim();
+ 
+   if (!trimmedValue) {
+@@ -216,27 +225,40 @@ function isValidVideoLink(value: string) {
+   } catch {
+     return false;
+   }
+-}
++};
+ 
+-function VideoLinkRow({addDisabled, index, onAdd, onChange, onRemove, value}: VideoLinkRowProps) {
++const VideoLinkRow = ({
++  addDisabled,
++  index,
++  locale,
++  messages,
++  onAdd,
++  onChange,
++  onRemove,
++  value,
++}: VideoLinkRowProps): JSX.Element => {
+   const isFirstRow = index === 1;
+   const isInvalid = Boolean(value) && !isValidVideoLink(value);
+ 
+   return (
+     <div className="management-edit-video-row">
+-      <label htmlFor={`management-edit-video-${index}`}>視頻播放鏈接{index}</label>
++      <label htmlFor={`management-edit-video-${index}`}>
++        {appendLocalizedValue(messages.videoLink, index, locale)}
++      </label>
+       <input
+         aria-invalid={isInvalid}
+         id={`management-edit-video-${index}`}
+         inputMode="url"
+         onChange={(event) => onChange(event.target.value)}
+         spellCheck={false}
+-        title="請輸入有效的 http:// 或 https:// 視頻播放鏈接"
++        title={messages.videoLinkValidation}
+         type="url"
+         value={value}
+       />
+       <button
+-        aria-label={isFirstRow ? '新增視頻播放鏈接' : `刪除視頻播放鏈接${index}`}
++        aria-label={isFirstRow
++          ? messages.addVideoLink
++          : appendLocalizedValue(messages.deleteVideoLink, index, locale)}
+         disabled={isFirstRow && addDisabled}
+         onClick={isFirstRow ? onAdd : onRemove}
+         type="button"
+@@ -245,12 +267,18 @@ function VideoLinkRow({addDisabled, index, onAdd, onChange, onRemove, value}: Vi
+       </button>
+     </div>
+   );
+-}
++};
+ 
+-function ConfigurationSection() {
++const ConfigurationSection = ({
++  locale,
++  messages,
++}: {
++  locale: ManagementLocale;
++  messages: ManagementMessages;
++}): JSX.Element => {
+   const [videoLinks, setVideoLinks] = useState([{id: 1, value: ''}]);
+   const canAddVideoLink = videoLinks.every((link) => isValidVideoLink(link.value));
+-  const addVideoLink = () => {
++  const addVideoLink = (): void => {
+     setVideoLinks((currentLinks) => {
+       if (!currentLinks.every((link) => isValidVideoLink(link.value))) {
+         return currentLinks;
+@@ -261,10 +289,10 @@ function ConfigurationSection() {
+       return [...currentLinks, {id: nextId, value: ''}];
+     });
+   };
+-  const removeVideoLink = (id: number) => {
++  const removeVideoLink = (id: number): void => {
+     setVideoLinks((currentLinks) => currentLinks.filter((link) => link.id !== id));
+   };
+-  const updateVideoLink = (id: number, value: string) => {
++  const updateVideoLink = (id: number, value: string): void => {
+     setVideoLinks((currentLinks) => currentLinks.map((link) =>
+       link.id === id ? {...link, value} : link,
+     ));
+@@ -275,19 +303,19 @@ function ConfigurationSection() {
+       <div className="management-edit-config-column">
+         <div className="management-edit-section-heading">
+           <EditSectionIcon src={CLINIC_CONFIGURATION_ICON_SRC} />
+-          <h2>診所配置</h2>
++          <h2>{messages.clinicConfiguration}</h2>
+         </div>
+         <div className="management-edit-section-divider" />
+         <div className="management-edit-option-list">
+-          <CheckOption>中文名字</CheckOption>
+-          <CheckOption>英文名字</CheckOption>
+-          <CheckOption>時間顯示工具</CheckOption>
++          <CheckOption>{messages.chineseName}</CheckOption>
++          <CheckOption>{messages.englishName}</CheckOption>
++          <CheckOption>{messages.timeDisplayWidget}</CheckOption>
+           <div className="management-edit-promotion-row">
+-            <CheckOption>診所宣傳視頻</CheckOption>
+-            <label className="management-edit-switch"><input defaultChecked type="checkbox" /><span aria-hidden /><b>靜音</b></label>
++            <CheckOption>{messages.clinicPromotionVideo}</CheckOption>
++            <label className="management-edit-switch"><input defaultChecked type="checkbox" /><span aria-hidden /><b>{messages.mute}</b></label>
+           </div>
+           <div
+-            aria-label="視頻播放鏈接配置"
++            aria-label={messages.videoLinkConfiguration}
+             className="management-edit-video-list"
+             role="group"
+           >
+@@ -296,6 +324,8 @@ function ConfigurationSection() {
+                 addDisabled={!canAddVideoLink}
+                 index={index + 1}
+                 key={videoLink.id}
++                locale={locale}
++                messages={messages}
+                 onAdd={addVideoLink}
+                 onChange={(value) => updateVideoLink(videoLink.id, value)}
+                 onRemove={() => removeVideoLink(videoLink.id)}
+@@ -303,41 +333,50 @@ function ConfigurationSection() {
+               />
+             ))}
+           </div>
+-          <CheckOption>總排隊人數</CheckOption>
++          <CheckOption>{messages.totalQueueCount}</CheckOption>
+           <div className="management-edit-registration-row">
+-            <CheckOption>自助登記二維碼</CheckOption>
+-            <label><input defaultChecked name="registration-code" type="radio" />動態</label>
+-            <label><input name="registration-code" type="radio" />靜態</label>
++            <CheckOption>{messages.selfCheckInQrCode}</CheckOption>
++            <label><input defaultChecked name="registration-code" type="radio" />{messages.dynamic}</label>
++            <label><input name="registration-code" type="radio" />{messages.static}</label>
+           </div>
+         </div>
+       </div>
+       <div className="management-edit-config-column">
+         <div className="management-edit-section-heading">
+           <EditSectionIcon src={DOCTOR_CONFIGURATION_ICON_SRC} />
+-          <h2>醫生配置</h2>
++          <h2>{messages.doctorConfiguration}</h2>
+         </div>
+         <div className="management-edit-section-divider" />
+         <div className="management-edit-doctor-options">
+-          {['頭像', '線上診症圖標', '英文名稱', '中文名稱', '最新叫號', '下一位', '等候人數', '醫生簡介'].map((label) => (
++          {[
++            messages.doctorPhoto,
++            messages.onlineConsultationIcon,
++            messages.doctorEnglishName,
++            messages.doctorChineseName,
++            messages.latestCall,
++            messages.nextPatient,
++            messages.waitingCount,
++            messages.doctorBio,
++          ].map((label) => (
+             <CheckOption key={label}>{label}</CheckOption>
+           ))}
+         </div>
+       </div>
+     </section>
+   );
+-}
++};
+ 
+-function ThemeSection() {
++const ThemeSection = ({messages}: {messages: ManagementMessages}): JSX.Element => {
+   const [themeColor, setThemeColor] = useState('#1708FF');
+ 
+   return (
+-    <EditSection iconSrc={THEME_ICON_SRC} title="自定義主題色">
++    <EditSection iconSrc={THEME_ICON_SRC} title={messages.customThemeColor}>
+       <div className="management-edit-theme-content">
+-        <p>自選主題色</p>
+-        <div aria-label="預設主題色" className="management-edit-swatches" role="group">
++        <p>{messages.themeColor}</p>
++        <div aria-label={messages.presetThemeColors} className="management-edit-swatches" role="group">
+           {THEME_COLORS.map((color) => (
+             <button
+-              aria-label={`選擇主題色 ${color}`}
++              aria-label={`${messages.selectThemeColor} ${color}`}
+               key={color}
+               onClick={() => setThemeColor(color)}
+               style={{'--swatch-color': color} as CSSProperties}
+@@ -345,11 +384,11 @@ function ThemeSection() {
+             />
+           ))}
+         </div>
+-        <small>* 建議選擇較深的顏色，以確保文字清晰可辨</small>
+-        <label htmlFor="management-edit-theme-color">自由定義主題色</label>
++        <small>{messages.themeColorRecommendation}</small>
++        <label htmlFor="management-edit-theme-color">{messages.freeThemeColor}</label>
+         <div className="management-edit-color-input">
+           <input
+-            aria-label="選擇自由主題色"
++            aria-label={messages.freeThemeColor}
+             onChange={(event) => setThemeColor(event.target.value.toUpperCase())}
+             type="color"
+             value={themeColor}
+@@ -363,30 +402,37 @@ function ThemeSection() {
+       </div>
+     </EditSection>
+   );
+-}
++};
+ 
+-function EditContent({
++const EditContent = ({
+   clinicCode,
+   clinics,
+   displayConfig,
+   globalClinicCode,
+   globalClinicRevision,
++  locale,
++  messages,
+ }: {
+   clinicCode: string;
+   clinics: ClinicOption[];
+   displayConfig: DisplayConfig;
+   globalClinicCode: string;
+   globalClinicRevision: number;
+-}) {
++  locale: ManagementLocale;
++  messages: ManagementMessages;
++}): JSX.Element => {
+   const router = useRouter();
+ 
+   return (
+-    <main aria-label={`編輯${displayConfig.deviceName}`} className="management-edit-content">
++    <main
++      aria-label={appendLocalizedValue(messages.editDevice, displayConfig.deviceName, locale)}
++      className="management-edit-content"
++    >
+       <section className="management-edit-section management-edit-settings-section">
+         <header className="management-edit-page-header">
+           <div>
+-            <button aria-label="返回顯示屏配置" onClick={() => router.back()} type="button"><ChevronLeft /></button>
+-            <h1>編輯{displayConfig.deviceName}</h1>
++            <button aria-label={messages.backToDisplayScreenConfig} onClick={() => router.back()} type="button"><ChevronLeft /></button>
++            <h1>{appendLocalizedValue(messages.editDevice, displayConfig.deviceName, locale)}</h1>
+           </div>
+           <Button aria-keyshortcuts="S" className="management-edit-save" type="button">
+             <Image
+@@ -397,7 +443,7 @@ function EditContent({
+               src={SAVE_ICON_SRC}
+               width={16}
+             />
+-            <span>存儲</span><kbd>S</kbd>
++            <span>{messages.save}</span><kbd>S</kbd>
+           </Button>
+         </header>
+         <div className="management-edit-section-divider" />
+@@ -407,6 +453,7 @@ function EditContent({
+           clinics={clinics}
+           globalClinicCode={globalClinicCode}
+           globalClinicRevision={globalClinicRevision}
++          messages={messages}
+         />
+         <div className="management-edit-section-heading management-edit-settings-heading">
+           <Image
+@@ -417,42 +464,47 @@ function EditContent({
+             src={SETTINGS_ICON_SRC}
+             width={20}
+           />
+-          <h2>設定</h2>
++          <h2>{messages.settings}</h2>
+         </div>
+         <div className="management-edit-section-divider" />
+-        <DeviceSettings displayConfig={displayConfig} />
++        <DeviceSettings displayConfig={displayConfig} messages={messages} />
+         <span className="management-visually-hidden" data-testid="display-device-edit-clinic-code">{clinicCode}</span>
+         <span className="management-visually-hidden" data-testid="display-device-edit-device-id">{displayConfig.id}</span>
+       </section>
+-      <BasicDisplaySection />
+-      <ConfigurationSection />
+-      <ThemeSection />
++      <BasicDisplaySection messages={messages} />
++      <ConfigurationSection locale={locale} messages={messages} />
++      <ThemeSection messages={messages} />
+     </main>
+   );
+-}
++};
+ 
+-export function DisplayDeviceEditPage() {
++export const DisplayDeviceEditPage = (): JSX.Element => {
+   const searchParams = useSearchParams();
+   const clinicCode = searchParams.get('clinicCode')?.trim() ?? '';
+   const deviceId = searchParams.get('deviceId')?.trim() ?? '';
+-  const displayConfig = findDisplayConfig(clinicCode, deviceId);
+ 
+   return (
+     <ManagementFramework className="is-edit-page">
+-      {({clinics, globalClinicRevision, topbarSelectedClinicCode}) => displayConfig ? (
+-        <EditContent
+-          clinicCode={clinicCode}
+-          clinics={clinics}
+-          displayConfig={displayConfig}
+-          globalClinicCode={topbarSelectedClinicCode}
+-          globalClinicRevision={globalClinicRevision}
+-        />
+-      ) : (
+-        <main className="management-edit-content management-edit-not-found">
+-          <Clipboard aria-hidden />
+-          <h1>找不到顯示屏設備資料</h1>
+-        </main>
+-      )}
++      {({clinics, globalClinicRevision, locale, messages, topbarSelectedClinicCode}) => {
++        const displayConfig = findDisplayConfig(clinicCode, deviceId, locale);
++
++        return displayConfig ? (
++          <EditContent
++            clinicCode={clinicCode}
++            clinics={clinics}
++            displayConfig={displayConfig}
++            globalClinicCode={topbarSelectedClinicCode}
++            globalClinicRevision={globalClinicRevision}
++            locale={locale}
++            messages={messages}
++          />
++        ) : (
++          <main className="management-edit-content management-edit-not-found">
++            <Clipboard aria-hidden />
++            <h1>{messages.noDisplayDeviceData}</h1>
++          </main>
++        );
++      }}
+     </ManagementFramework>
+   );
+-}
++};
+diff --git a/src/features/display-management/DisplayManagementPage.tsx b/src/features/display-management/DisplayManagementPage.tsx
+index c71d503..7925254 100644
+--- a/src/features/display-management/DisplayManagementPage.tsx
++++ b/src/features/display-management/DisplayManagementPage.tsx
+@@ -1,15 +1,14 @@
+ 'use client';
+ 
+-import {useCallback, useEffect, useMemo, useRef, useState, type ReactNode} from 'react';
++import {useCallback, useEffect, useMemo, useRef, useState, type JSX, type ReactNode} from 'react';
+ import Image from 'next/image';
+ import {usePathname, useRouter} from 'next/navigation';
+ import {
+   CheckCircle2,
+   ChevronDown,
+-  ClipboardCopy,
++  ChevronRight,
+   LoaderCircle,
+   Monitor,
+-  Pencil,
+   ShieldAlert,
+   ShieldCheck,
+   X,
+@@ -37,13 +36,353 @@ import {buildDisplayConfigs} from './display-config-data';
+ const HEALS_ICON_SRC = withAppBasePath('/display/heals-icon.svg');
+ const MANAGEMENT_CLINIC_ICON_SRC = withAppBasePath('/display/Clinic.png');
+ const MANAGEMENT_USER_AVATAR_SRC = withAppBasePath('/display/avatar.png');
++const COPY_CONFIGURATION_ICON_SRC = withAppBasePath('/display/copy-configuration-icon.svg');
++const EDIT_CONFIGURATION_ICON_SRC = withAppBasePath('/display/edit-configuration-icon.svg');
+ const LOGIN_ROUTE = withAppBasePath('/login/');
+ const DISPLAY_DEVICE_EDIT_ROUTE = '/management-settings/program-settings/display-screen-config/edit/';
+ const FALLBACK_CLINIC_NAME = 'Heals Clinic';
+ const FALLBACK_CLINIC_CODE = 'HEALS';
+ const COPY_TOAST_DURATION_MS = 3000;
+-const TOP_NAV_LABEL_BY_ROUTE_MODULE: Record<string, string> = {
+-  'management-settings': '設定',
++const DEFAULT_MANAGEMENT_LOCALE: ManagementLocale = 'zh-HK';
++
++export type ManagementLocale = 'en' | 'zh-CN' | 'zh-HK';
++
++export interface ManagementMessages {
++  addVideoLink: string;
++  actions: string;
++  backToDisplayScreenConfig: string;
++  basicDisplay: string;
++  cancel: string;
++  chineseName: string;
++  clinic: string;
++  clinicConfiguration: string;
++  clinicLogo: string;
++  clinicPromotionVideo: string;
++  closeCopyConfig: string;
++  closeNotice: string;
++  copy: string;
++  copyConfig: string;
++  copyScreenLink: string;
++  currentClinic: string;
++  currentClinicLogo: string;
++  customThemeColor: string;
++  deleteFile: string;
++  deleteVideoLink: string;
++  deviceName: string;
++  displayScreenConfig: string;
++  displayScreenConfigList: string;
++  doctorBio: string;
++  doctorChineseName: string;
++  doctorConfiguration: string;
++  doctorEnglishName: string;
++  doctorPhoto: string;
++  dynamic: string;
++  edit: string;
++  editDevice: string;
++  englishName: string;
++  enteringDisplayScreenConfig: string;
++  exactlySame: string;
++  freeThemeColor: string;
++  from: string;
++  fromClinic: string;
++  imageUploadHint: string;
++  language: string;
++  latestCall: string;
++  linkCopiedMessage: string;
++  linkCopiedTitle: string;
++  loading: string;
++  managementSection: string;
++  managementTopbar: string;
++  mute: string;
++  name: string;
++  nextPatient: string;
++  noDisplayDeviceData: string;
++  onlineConsultationIcon: string;
++  presetThemeColors: string;
++  programSettings: string;
++  save: string;
++  screenLink: string;
++  screenOrientation: string;
++  selectPlaceholder: string;
++  selectThemeColor: string;
++  selfCheckInQrCode: string;
++  settings: string;
++  signedIn: string;
++  signedInNoProgramSettingsPermission: string;
++  static: string;
++  syncingCsxLogin: string;
++  syncingCsxLoginAria: string;
++  themeColor: string;
++  themeColorRecommendation: string;
++  timeDisplayWidget: string;
++  to: string;
++  toClinic: string;
++  totalQueueCount: string;
++  upload: string;
++  userMenu: string;
++  userNotSignedIn: string;
++  userPrefix: string;
++  videoLink: string;
++  videoLinkConfiguration: string;
++  videoLinkValidation: string;
++  waitingCount: string;
++  webAddress: string;
++  leftNavigation: string;
++}
++
++const MANAGEMENT_LOCALE_OPTIONS: ReadonlyArray<{label: string; value: ManagementLocale}> = [
++  {label: '中文繁體', value: 'zh-HK'},
++  {label: '中文简体', value: 'zh-CN'},
++  {label: 'English', value: 'en'},
++];
++
++const MANAGEMENT_MESSAGES: Record<ManagementLocale, ManagementMessages> = {
++  'zh-HK': {
++    actions: '操作',
++    cancel: '取消',
++    clinic: '診所',
++    closeCopyConfig: '關閉複製配置',
++    closeNotice: '關閉提示',
++    copy: '複製',
++    copyConfig: '複製配置',
++    currentClinic: '目前診所',
++    deviceName: '設備名稱',
++    displayScreenConfig: '顯示屏配置',
++    displayScreenConfigList: '顯示屏配置列表',
++    edit: '編輯',
++    enteringDisplayScreenConfig: '正在進入顯示屏配置',
++    exactlySame: '完全相同',
++    from: '從',
++    fromClinic: '從診所',
++    language: '語言',
++    linkCopiedMessage: '請將此連結貼至瀏覽器開啟，以顯示排隊叫號畫面。',
++    linkCopiedTitle: '連結已複製！',
++    loading: '載入中',
++    managementSection: '管理分區',
++    managementTopbar: 'CSX 管理頂欄',
++    programSettings: '程序設定',
++    screenOrientation: '螢幕方向',
++    selectPlaceholder: '請選擇',
++    settings: '設定',
++    signedIn: '已登入',
++    signedInNoProgramSettingsPermission: '已登入，未識別到程序設定權限',
++    syncingCsxLogin: '正在同步 CSX 登入資訊',
++    syncingCsxLoginAria: 'CSX 登入資訊同步中',
++    to: '至',
++    toClinic: '至診所',
++    userMenu: '使用者選單',
++    userNotSignedIn: '使用者未登入',
++    userPrefix: '使用者：',
++    webAddress: '網頁瀏覽地址',
++    leftNavigation: '左側導航',
++    addVideoLink: '新增視頻播放鏈接',
++    backToDisplayScreenConfig: '返回顯示屏配置',
++    basicDisplay: '基本顯示',
++    chineseName: '中文名字',
++    clinicConfiguration: '診所配置',
++    clinicLogo: '診所logo',
++    clinicPromotionVideo: '診所宣傳視頻',
++    copyScreenLink: '複製螢屏鏈接',
++    currentClinicLogo: '目前診所 logo',
++    customThemeColor: '自定義主題色',
++    deleteFile: '刪除',
++    deleteVideoLink: '刪除視頻播放鏈接',
++    doctorBio: '醫生簡介',
++    doctorChineseName: '中文名稱',
++    doctorConfiguration: '醫生配置',
++    doctorEnglishName: '英文名稱',
++    doctorPhoto: '頭像',
++    dynamic: '動態',
++    editDevice: '編輯',
++    englishName: '英文名字',
++    freeThemeColor: '自由定義主題色',
++    imageUploadHint: '請上傳圖片比例為1:1，jpg/png files with a size less than 500KB.',
++    latestCall: '最新叫號',
++    mute: '靜音',
++    name: '名稱',
++    nextPatient: '下一位',
++    noDisplayDeviceData: '找不到顯示屏設備資料',
++    onlineConsultationIcon: '線上診症圖標',
++    presetThemeColors: '預設主題色',
++    save: '存儲',
++    screenLink: '螢屏鏈接',
++    selectThemeColor: '選擇主題色',
++    selfCheckInQrCode: '自助登記二維碼',
++    static: '靜態',
++    themeColor: '自選主題色',
++    themeColorRecommendation: '* 建議選擇較深的顏色，以確保文字清晰可辨',
++    timeDisplayWidget: '時間顯示工具',
++    totalQueueCount: '總排隊人數',
++    upload: '點擊上傳',
++    videoLink: '視頻播放鏈接',
++    videoLinkConfiguration: '視頻播放鏈接配置',
++    videoLinkValidation: '請輸入有效的 http:// 或 https:// 視頻播放鏈接',
++    waitingCount: '等候人數',
++  },
++  'zh-CN': {
++    actions: '操作',
++    cancel: '取消',
++    clinic: '诊所',
++    closeCopyConfig: '关闭复制配置',
++    closeNotice: '关闭提示',
++    copy: '复制',
++    copyConfig: '复制配置',
++    currentClinic: '当前诊所',
++    deviceName: '设备名称',
++    displayScreenConfig: '显示屏配置',
++    displayScreenConfigList: '显示屏配置列表',
++    edit: '编辑',
++    enteringDisplayScreenConfig: '正在进入显示屏配置',
++    exactlySame: '完全相同',
++    from: '从',
++    fromClinic: '从诊所',
++    language: '语言',
++    linkCopiedMessage: '请将此链接粘贴至浏览器打开，以显示排队叫号页面。',
++    linkCopiedTitle: '链接已复制！',
++    loading: '加载中',
++    managementSection: '管理分区',
++    managementTopbar: 'CSX 管理顶栏',
++    programSettings: '程序设置',
++    screenOrientation: '屏幕方向',
++    selectPlaceholder: '请选择',
++    settings: '设置',
++    signedIn: '已登录',
++    signedInNoProgramSettingsPermission: '已登录，未识别到程序设置权限',
++    syncingCsxLogin: '正在同步 CSX 登录信息',
++    syncingCsxLoginAria: 'CSX 登录信息同步中',
++    to: '至',
++    toClinic: '至诊所',
++    userMenu: '用户菜单',
++    userNotSignedIn: '用户未登录',
++    userPrefix: '用户：',
++    webAddress: '网页浏览地址',
++    leftNavigation: '左侧导航',
++    addVideoLink: '新增视频播放链接',
++    backToDisplayScreenConfig: '返回显示屏配置',
++    basicDisplay: '基本显示',
++    chineseName: '中文名字',
++    clinicConfiguration: '诊所配置',
++    clinicLogo: '诊所 logo',
++    clinicPromotionVideo: '诊所宣传视频',
++    copyScreenLink: '复制显示屏链接',
++    currentClinicLogo: '当前诊所 logo',
++    customThemeColor: '自定义主题色',
++    deleteFile: '删除',
++    deleteVideoLink: '删除视频播放链接',
++    doctorBio: '医生简介',
++    doctorChineseName: '中文名称',
++    doctorConfiguration: '医生配置',
++    doctorEnglishName: '英文名称',
++    doctorPhoto: '头像',
++    dynamic: '动态',
++    editDevice: '编辑',
++    englishName: '英文名字',
++    freeThemeColor: '自由定义主题色',
++    imageUploadHint: '请上传图片比例为 1:1，JPG/PNG 文件必须小于 500 KB。',
++    latestCall: '最新叫号',
++    mute: '静音',
++    name: '名称',
++    nextPatient: '下一位',
++    noDisplayDeviceData: '找不到显示屏设备数据',
++    onlineConsultationIcon: '在线诊疗图标',
++    presetThemeColors: '预设主题色',
++    save: '保存',
++    screenLink: '显示屏链接',
++    selectThemeColor: '选择主题色',
++    selfCheckInQrCode: '自助登记二维码',
++    static: '静态',
++    themeColor: '自选主题色',
++    themeColorRecommendation: '* 建议选择较深的颜色，以确保文字清晰可辨',
++    timeDisplayWidget: '时间显示工具',
++    totalQueueCount: '总排队人数',
++    upload: '点击上传',
++    videoLink: '视频播放链接',
++    videoLinkConfiguration: '视频播放链接配置',
++    videoLinkValidation: '请输入有效的 http:// 或 https:// 视频播放链接',
++    waitingCount: '等候人数',
++  },
++  en: {
++    actions: 'Actions',
++    cancel: 'Cancel',
++    clinic: 'Clinic',
++    closeCopyConfig: 'Close copy configuration',
++    closeNotice: 'Close notification',
++    copy: 'Copy',
++    copyConfig: 'Copy Configuration',
++    currentClinic: 'Current clinic',
++    deviceName: 'Device Name',
++    displayScreenConfig: 'Display Screen Configuration',
++    displayScreenConfigList: 'Display Screen Configuration list',
++    edit: 'Edit',
++    enteringDisplayScreenConfig: 'Opening Display Screen Configuration',
++    exactlySame: 'Exactly the same',
++    from: 'From',
++    fromClinic: 'From clinic',
++    language: 'Language',
++    linkCopiedMessage: 'Paste this link into a browser to open the queue display.',
++    linkCopiedTitle: 'Link copied!',
++    loading: 'Loading',
++    managementSection: 'Management section',
++    managementTopbar: 'CSX management top bar',
++    programSettings: 'Program Settings',
++    screenOrientation: 'Screen Orientation',
++    selectPlaceholder: 'Please select',
++    settings: 'Settings',
++    signedIn: 'Signed in',
++    signedInNoProgramSettingsPermission: 'Signed in; Program Settings permission not detected',
++    syncingCsxLogin: 'Syncing CSX sign-in information',
++    syncingCsxLoginAria: 'Syncing CSX sign-in information',
++    to: 'To',
++    toClinic: 'To clinic',
++    userMenu: 'User menu',
++    userNotSignedIn: 'User not signed in',
++    userPrefix: 'User: ',
++    webAddress: 'Web Address',
++    leftNavigation: 'Left navigation',
++    addVideoLink: 'Add video link',
++    backToDisplayScreenConfig: 'Back to Display Screen Configuration',
++    basicDisplay: 'Basic Display',
++    chineseName: 'Chinese Name',
++    clinicConfiguration: 'Clinic Configuration',
++    clinicLogo: 'Clinic logo',
++    clinicPromotionVideo: 'Clinic Promotional Video',
++    copyScreenLink: 'Copy screen link',
++    currentClinicLogo: 'Current clinic logo',
++    customThemeColor: 'Custom Theme Colour',
++    deleteFile: 'Delete',
++    deleteVideoLink: 'Delete video link',
++    doctorBio: 'Doctor Bio',
++    doctorChineseName: 'Chinese Name',
++    doctorConfiguration: 'Doctor Configuration',
++    doctorEnglishName: 'English Name',
++    doctorPhoto: 'Photo',
++    dynamic: 'Dynamic',
++    editDevice: 'Edit',
++    englishName: 'English Name',
++    freeThemeColor: 'Custom theme colour',
++    imageUploadHint: 'Upload a 1:1 image. JPG/PNG files must be smaller than 500 KB.',
++    latestCall: 'Latest Call',
++    mute: 'Mute',
++    name: 'Name',
++    nextPatient: 'Next',
++    noDisplayDeviceData: 'Display device data not found',
++    onlineConsultationIcon: 'Online Consultation Icon',
++    presetThemeColors: 'Preset theme colours',
++    save: 'Save',
++    screenLink: 'Screen Link',
++    selectThemeColor: 'Select theme colour',
++    selfCheckInQrCode: 'Self Check-in QR Code',
++    static: 'Static',
++    themeColor: 'Theme Colour',
++    themeColorRecommendation: '* Choose a darker colour to keep text easy to read.',
++    timeDisplayWidget: 'Time Display Widget',
++    totalQueueCount: 'Total Queue Count',
++    upload: 'Click to upload',
++    videoLink: 'Video Link',
++    videoLinkConfiguration: 'Video Link Configuration',
++    videoLinkValidation: 'Enter a valid http:// or https:// video link',
++    waitingCount: 'Waiting Count',
++  },
+ };
+ 
+ const dayFormatter = new Intl.DateTimeFormat('en-GB', {day: '2-digit'});
+@@ -67,7 +406,21 @@ type CopyConfigDialogState = {
+   toClinicCode: string;
+ };
+ 
+-async function copyTextToClipboard(text: string) {
++interface CsxAuthState {
++  authContext: CsxAuthContext;
++  isResolved: boolean;
++}
++
++interface ClinicSelectionsState {
++  clinics: ClinicOption[];
++  contentSelectedClinicCode: string;
++  globalClinicRevision: number;
++  setContentSelectedClinicCode: (nextClinicCode: string) => void;
++  setTopbarSelectedClinicCode: (clinicCode: string) => void;
++  topbarSelectedClinicCode: string;
++}
++
++const copyTextToClipboard = async (text: string): Promise<void> => {
+   if (navigator.clipboard?.writeText) {
+     await navigator.clipboard.writeText(text);
+ 
+@@ -88,9 +441,9 @@ async function copyTextToClipboard(text: string) {
+   if (!isCopied) {
+     throw new Error('Unable to copy text to clipboard.');
+   }
+-}
++};
+ 
+-function formatDateTime(now: Date) {
++const formatDateTime = (now: Date): string => {
+   const day = dayFormatter.format(now);
+   const month = monthFormatter.format(now);
+   const year = yearFormatter.format(now);
+@@ -98,9 +451,31 @@ function formatDateTime(now: Date) {
+   const time = timeFormatter.format(now);
+ 
+   return `${day} ${month} ${year} (${weekday}) ${time}`;
+-}
++};
++
++const normalizeManagementLocale = (locale: string | null): ManagementLocale => {
++  const normalizedLocale = locale?.trim().toLowerCase();
++
++  if (normalizedLocale?.startsWith('en')) {
++    return 'en';
++  }
+ 
+-function getRouteModule(pathname: string) {
++  if (normalizedLocale === 'zh-cn' || normalizedLocale === 'zh-hans') {
++    return 'zh-CN';
++  }
++
++  return DEFAULT_MANAGEMENT_LOCALE;
++};
++
++const getBootstrapManagementLocale = (): ManagementLocale => {
++  if (typeof document === 'undefined') {
++    return DEFAULT_MANAGEMENT_LOCALE;
++  }
++
++  return normalizeManagementLocale(document.documentElement.dataset.managementLocale ?? null);
++};
++
++const getRouteModule = (pathname: string): string => {
+   const withoutQuery = pathname.split('?')[0] ?? '';
+   const normalizedPathname = withoutQuery.replace(/\/+$/g, '') || '/';
+   const normalizedBasePath = APP_BASE_PATH.replace(/\/+$/g, '');
+@@ -112,29 +487,29 @@ function getRouteModule(pathname: string) {
+         : normalizedPathname;
+ 
+   return routePath.split('/').filter(Boolean)[0] ?? null;
+-}
++};
+ 
+-function getTopNavLabel(pathname: string) {
++const getTopNavLabel = (pathname: string, messages: ManagementMessages): string | null => {
+   const routeModule = getRouteModule(pathname);
+ 
+-  return routeModule ? (TOP_NAV_LABEL_BY_ROUTE_MODULE[routeModule] ?? null) : null;
+-}
++  return routeModule === 'management-settings' ? messages.settings : null;
++};
+ 
+-function useHeaderClock() {
++const useHeaderClock = (): string | null => {
+   const [now, setNow] = useState<Date | null>(null);
+ 
+   useEffect(() => {
+-    const updateClock = () => setNow(new Date());
++    const updateClock = (): void => setNow(new Date());
+     updateClock();
+     const timer = window.setInterval(updateClock, 1000);
+ 
+     return () => window.clearInterval(timer);
+   }, []);
+ 
+-  return now ? formatDateTime(now) : 'Loading time';
+-}
++  return now ? formatDateTime(now) : null;
++};
+ 
+-function useCsxAuthState() {
++const useCsxAuthState = (): CsxAuthState => {
+   const {initializeGlobalClinic} = useGlobalClinicSelection();
+   const [authContext, setAuthContext] = useState<CsxAuthContext>(() => createEmptyCsxAuthContext());
+   const [isResolved, setIsResolved] = useState(false);
+@@ -142,7 +517,7 @@ function useCsxAuthState() {
+   useEffect(() => {
+     consumeCsxAuthTransfer();
+ 
+-    const refreshAuthContext = () => {
++    const refreshAuthContext = (): void => {
+       const nextAuthContext = getCsxAuthContext();
+ 
+       if (nextAuthContext.clinicCode) {
+@@ -164,26 +539,29 @@ function useCsxAuthState() {
+   }, [initializeGlobalClinic]);
+ 
+   return {authContext, isResolved};
+-}
++};
+ 
+-function buildFallbackClinicOption(clinicCode: string | null, clinicDisplayName: string | null): ClinicOption {
++const buildFallbackClinicOption = (clinicCode: string | null, clinicDisplayName: string | null): ClinicOption => {
+   const resolvedClinicCode = clinicCode ?? FALLBACK_CLINIC_CODE;
+ 
+   return {
+     clinicCode: resolvedClinicCode,
+     displayName: clinicCode ?? clinicDisplayName ?? resolvedClinicCode ?? FALLBACK_CLINIC_NAME,
+   };
+-}
++};
+ 
+-function resolveInitialClinicCode(clinics: ClinicOption[], preferredClinicCode: string | null) {
++const resolveInitialClinicCode = (clinics: ClinicOption[], preferredClinicCode: string | null): string => {
+   if (preferredClinicCode && clinics.some((clinic) => clinic.clinicCode === preferredClinicCode)) {
+     return preferredClinicCode;
+   }
+ 
+   return clinics[0]?.clinicCode ?? preferredClinicCode ?? FALLBACK_CLINIC_CODE;
+-}
++};
+ 
+-function useClinicSelections(authContext: CsxAuthContext, isEnabled: boolean) {
++const useClinicSelections = (
++  authContext: CsxAuthContext,
++  isEnabled: boolean,
++): ClinicSelectionsState => {
+   const {clinicCode, clinicDisplayName, token} = authContext;
+   const {
+     displayManagementClinicSelection,
+@@ -275,9 +653,9 @@ function useClinicSelections(authContext: CsxAuthContext, isEnabled: boolean) {
+     setTopbarSelectedClinicCode: selectGlobalClinic,
+     topbarSelectedClinicCode: resolvedGlobalClinicCode,
+   };
+-}
++};
+ 
+-export function ClinicSelect({
++export const ClinicSelect = ({
+   ariaLabel,
+   className,
+   clinics,
+@@ -293,7 +671,7 @@ export function ClinicSelect({
+   onChange: (clinicCode: string) => void;
+   selectedClinicCode: string;
+   showClinicIcon?: boolean;
+-}) {
++}): JSX.Element => {
+   const selectedClinicLabel =
+     clinics.find((clinic) => clinic.clinicCode === selectedClinicCode)?.displayName ?? selectedClinicCode;
+ 
+@@ -325,9 +703,9 @@ export function ClinicSelect({
+       <ChevronDown aria-hidden size={16} />
+     </div>
+   );
+-}
++};
+ 
+-function CopyConfigClinicSelect({
++const CopyConfigClinicSelect = ({
+   ariaLabel,
+   clinics,
+   id,
+@@ -341,7 +719,7 @@ function CopyConfigClinicSelect({
+   onChange: (clinicCode: string) => void;
+   placeholder?: string;
+   selectedClinicCode: string;
+-}) {
++}): JSX.Element => {
+   const selectedClinicLabel =
+     clinics.find((clinic) => clinic.clinicCode === selectedClinicCode)?.displayName ??
+     selectedClinicCode;
+@@ -374,11 +752,12 @@ function CopyConfigClinicSelect({
+       <ChevronDown aria-hidden size={16} />
+     </div>
+   );
+-}
++};
+ 
+-function CopyConfigDialog({
++const CopyConfigDialog = ({
+   clinics,
+   dialog,
++  messages,
+   onCancel,
+   onChangeFromClinic,
+   onChangeIsFullCopy,
+@@ -387,12 +766,13 @@ function CopyConfigDialog({
+ }: {
+   clinics: ClinicOption[];
+   dialog: CopyConfigDialogState | null;
++  messages: ManagementMessages;
+   onCancel: () => void;
+   onChangeFromClinic: (clinicCode: string) => void;
+   onChangeIsFullCopy: (isFullCopy: boolean) => void;
+   onChangeToClinic: (clinicCode: string) => void;
+   onConfirm: () => void;
+-}) {
++}): JSX.Element | null => {
+   const isConfirmDisabled =
+     !dialog?.toClinicCode || dialog.toClinicCode === dialog.fromClinicCode;
+ 
+@@ -401,7 +781,7 @@ function CopyConfigDialog({
+       return undefined;
+     }
+ 
+-    const handleShortcut = (event: KeyboardEvent) => {
++    const handleShortcut = (event: KeyboardEvent): void => {
+       if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+         return;
+       }
+@@ -444,9 +824,9 @@ function CopyConfigDialog({
+         role="dialog"
+       >
+         <header className="management-copy-config-header">
+-          <h2 id="management-copy-config-title">複製</h2>
++          <h2 id="management-copy-config-title">{messages.copy}</h2>
+           <button
+-            aria-label="關閉複製配置"
++            aria-label={messages.closeCopyConfig}
+             className="management-copy-config-close"
+             onClick={onCancel}
+             type="button"
+@@ -456,21 +836,21 @@ function CopyConfigDialog({
+         </header>
+         <div className="management-copy-config-content">
+           <div className="management-copy-config-form">
+-            <label htmlFor="management-copy-config-from-select">從</label>
++            <label htmlFor="management-copy-config-from-select">{messages.from}</label>
+             <CopyConfigClinicSelect
+-              ariaLabel="從診所"
++              ariaLabel={messages.fromClinic}
+               clinics={clinics}
+               id="management-copy-config-from-select"
+               onChange={onChangeFromClinic}
+               selectedClinicCode={dialog.fromClinicCode}
+             />
+-            <label htmlFor="management-copy-config-to-select">至</label>
++            <label htmlFor="management-copy-config-to-select">{messages.to}</label>
+             <CopyConfigClinicSelect
+-              ariaLabel="至診所"
++              ariaLabel={messages.toClinic}
+               clinics={clinics}
+               id="management-copy-config-to-select"
+               onChange={onChangeToClinic}
+-              placeholder="請選擇"
++              placeholder={messages.selectPlaceholder}
+               selectedClinicCode={dialog.toClinicCode}
+             />
+             <div className="management-copy-config-form-spacer" aria-hidden />
+@@ -481,7 +861,7 @@ function CopyConfigDialog({
+                 type="checkbox"
+               />
+               <span className="management-copy-config-checkbox-box" aria-hidden />
+-              <span>完全相同</span>
++              <span>{messages.exactlySame}</span>
+             </label>
+           </div>
+         </div>
+@@ -493,7 +873,7 @@ function CopyConfigDialog({
+             type="button"
+             variant="outline"
+           >
+-            <span>取消</span>
++            <span>{messages.cancel}</span>
+             <kbd>C</kbd>
+           </Button>
+           <Button
+@@ -504,45 +884,89 @@ function CopyConfigDialog({
+             type="button"
+             variant="default"
+           >
+-            <span>複製</span>
++            <span>{messages.copy}</span>
+             <kbd>I</kbd>
+           </Button>
+         </footer>
+       </section>
+     </div>
+   );
+-}
++};
+ 
+-function ManagementTopBar({
++const ManagementTopBar = ({
+   authContext,
+   clinics,
++  locale,
++  messages,
++  onLocaleChange,
+   selectedClinicCode,
+   setSelectedClinicCode,
+ }: {
+   authContext: CsxAuthContext;
+   clinics: ClinicOption[];
++  locale: ManagementLocale;
++  messages: ManagementMessages;
++  onLocaleChange: (locale: ManagementLocale) => void;
+   selectedClinicCode: string;
+   setSelectedClinicCode: (clinicCode: string) => void;
+-}) {
++}): JSX.Element => {
+   const pathname = usePathname();
+   const dateTime = useHeaderClock();
+-  const userName = authContext.userDisplayName ?? '未登入';
+-  const topNavLabel = getTopNavLabel(pathname);
++  const userButtonRef = useRef<HTMLButtonElement>(null);
++  const languageButtonRef = useRef<HTMLButtonElement>(null);
++  const userMenuRef = useRef<HTMLDivElement>(null);
++  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
++  const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
++  const userName = authContext.userDisplayName ?? messages.userNotSignedIn;
++  const topNavLabel = getTopNavLabel(pathname, messages);
++
++  useEffect(() => {
++    if (!isUserMenuOpen) {
++      return;
++    }
++
++    const handlePointerDown = (event: PointerEvent): void => {
++      if (!userMenuRef.current?.contains(event.target as Node)) {
++        setIsLanguageMenuOpen(false);
++        setIsUserMenuOpen(false);
++      }
++    };
++    const handleKeyDown = (event: KeyboardEvent): void => {
++      if (event.key === 'Escape') {
++        if (isLanguageMenuOpen) {
++          setIsLanguageMenuOpen(false);
++          languageButtonRef.current?.focus();
++          return;
++        }
++
++        setIsUserMenuOpen(false);
++        userButtonRef.current?.focus();
++      }
++    };
++
++    document.addEventListener('pointerdown', handlePointerDown);
++    document.addEventListener('keydown', handleKeyDown);
++
++    return () => {
++      document.removeEventListener('pointerdown', handlePointerDown);
++      document.removeEventListener('keydown', handleKeyDown);
++    };
++  }, [isLanguageMenuOpen, isUserMenuOpen]);
+ 
+   return (
+-    <header className="management-topbar" aria-label="CSX 管理頂欄">
++    <header className="management-topbar" aria-label={messages.managementTopbar}>
+       <div className="management-topbar-start">
+         <Image alt="Heals" className="management-logo" height={40} src={HEALS_ICON_SRC} width={40} />
+         <time className="management-current-time">{dateTime}</time>
+         {topNavLabel ? (
+-          <nav aria-label="管理分區" className="management-topnav">
++          <nav aria-label={messages.managementSection} className="management-topnav">
+             <span className="management-topnav-item">{topNavLabel}</span>
+           </nav>
+         ) : null}
+       </div>
+       <div className="management-topbar-actions">
+         <ClinicSelect
+-          ariaLabel="目前診所"
++          ariaLabel={messages.currentClinic}
+           className="management-clinic-switcher"
+           clinics={clinics}
+           id="management-topbar-clinic-select"
+@@ -550,49 +974,123 @@ function ManagementTopBar({
+           selectedClinicCode={selectedClinicCode}
+           showClinicIcon
+         />
+-        <Button
+-          aria-label={authContext.isAuthenticated ? `使用者：${userName}` : '使用者未登入'}
+-          className="management-user-button"
+-          type="button"
+-          variant="default"
+-        >
+-          <Image
+-            alt=""
+-            aria-hidden
+-            className="management-user-avatar-image"
+-            height={40}
+-            src={MANAGEMENT_USER_AVATAR_SRC}
+-            width={40}
+-          />
+-        </Button>
++        <div className="management-user-menu" ref={userMenuRef}>
++          <Button
++            aria-controls="management-user-popover"
++            aria-expanded={isUserMenuOpen}
++            aria-haspopup="dialog"
++            aria-label={authContext.isAuthenticated ? `${messages.userPrefix}${userName}` : messages.userNotSignedIn}
++            className="management-user-button"
++            onClick={() => {
++              setIsLanguageMenuOpen(false);
++              setIsUserMenuOpen((isOpen) => !isOpen);
++            }}
++            ref={userButtonRef}
++            type="button"
++            variant="default"
++          >
++            <Image
++              alt=""
++              aria-hidden
++              className="management-user-avatar-image"
++              height={40}
++              src={MANAGEMENT_USER_AVATAR_SRC}
++              width={40}
++            />
++          </Button>
++          {isUserMenuOpen ? (
++            <div
++              aria-label={messages.userMenu}
++              className="management-user-popover"
++              id="management-user-popover"
++              role="dialog"
++            >
++              <div className="management-user-profile">
++                <Image
++                  alt=""
++                  aria-hidden
++                  className="management-user-profile-avatar"
++                  height={40}
++                  src={MANAGEMENT_USER_AVATAR_SRC}
++                  width={40}
++                />
++                <strong>{userName}</strong>
++              </div>
++              <div className="management-user-language-control">
++                <button
++                  aria-controls="management-language-menu"
++                  aria-expanded={isLanguageMenuOpen}
++                  aria-haspopup="menu"
++                  className="management-user-language"
++                  onClick={() => setIsLanguageMenuOpen((isOpen) => !isOpen)}
++                  ref={languageButtonRef}
++                  type="button"
++                >
++                  <span>{messages.language}</span>
++                  <ChevronRight aria-hidden size={16} />
++                </button>
++                {isLanguageMenuOpen ? (
++                  <div
++                    aria-label={messages.language}
++                    className="management-language-menu"
++                    id="management-language-menu"
++                    role="menu"
++                  >
++                    {MANAGEMENT_LOCALE_OPTIONS.map((option) => (
++                      <button
++                        aria-checked={option.value === locale}
++                        className={`management-language-menu-item${option.value === locale ? ' is-selected' : ''}`}
++                        key={option.value}
++                        onClick={() => {
++                          onLocaleChange(option.value);
++                          setIsLanguageMenuOpen(false);
++                          setIsUserMenuOpen(false);
++                          userButtonRef.current?.focus();
++                        }}
++                        role="menuitemradio"
++                        type="button"
++                      >
++                        {option.label}
++                      </button>
++                    ))}
++                  </div>
++                ) : null}
++              </div>
++            </div>
++          ) : null}
++        </div>
+       </div>
+     </header>
+   );
+-}
++};
+ 
+-function ManagementSidebar() {
+-  return (
+-    <aside className="management-sidebar" aria-label="左側導航">
++const ManagementSidebar = ({messages}: {messages: ManagementMessages}): JSX.Element => (
++    <aside className="management-sidebar" aria-label={messages.leftNavigation}>
+       <div className="management-sidebar-panel">
+         <section className="management-menu-group" aria-labelledby="program-settings-title">
+-          <h2 id="program-settings-title">程序設定</h2>
++          <h2 id="program-settings-title">{messages.programSettings}</h2>
+           <button className="management-menu-item is-active" type="button">
+             <Monitor aria-hidden size={18} />
+-            <span>顯示屏配置</span>
++            <span>{messages.displayScreenConfig}</span>
+           </button>
+         </section>
+       </div>
+     </aside>
+   );
+-}
+ 
+-function ManagementAuthStatus({authContext}: {authContext: CsxAuthContext}) {
++const ManagementAuthStatus = ({
++  authContext,
++  messages,
++}: {
++  authContext: CsxAuthContext;
++  messages: ManagementMessages;
++}): JSX.Element => {
+   if (!authContext.hasProgramSettingsPermission) {
+     return (
+       <section className="management-auth-status is-warning" role="status">
+         <ShieldAlert aria-hidden size={18} />
+         <div>
+-          <strong>已登入，未識別到程序設定權限</strong>
++          <strong>{messages.signedInNoProgramSettingsPermission}</strong>
+           <span>{authContext.userDisplayName ?? authContext.userName}</span>
+         </div>
+       </section>
+@@ -603,50 +1101,68 @@ function ManagementAuthStatus({authContext}: {authContext: CsxAuthContext}) {
+     <section className="management-auth-status is-ready is-visually-hidden" role="status">
+       <ShieldCheck aria-hidden size={18} />
+       <div>
+-        <strong>已登入</strong>
++        <strong>{messages.signedIn}</strong>
+         <span>{authContext.userDisplayName ?? authContext.userName}</span>
+       </div>
+     </section>
+   );
+-}
+-
+-function ManagementAuthLoadingOverlay({authContext}: {authContext: CsxAuthContext}) {
+-  const message = authContext.isAuthenticated ? '正在進入顯示屏配置' : '正在同步 CSX 登入資訊';
++};
+ 
+-  return (
++const ManagementAuthLoadingOverlay = (): JSX.Element => (
+     <div
+-      aria-label="CSX 登入資訊同步中"
+       aria-live="polite"
+       className="management-auth-loading-overlay"
+       data-testid="management-auth-loading-overlay"
+       role="status"
+     >
+-      <div className="management-auth-loading-panel">
+-        <LoaderCircle aria-hidden className="management-auth-loading-icon" size={28} />
+-        <strong>載入中</strong>
+-        <span>{message}</span>
+-      </div>
++      {(Object.keys(MANAGEMENT_MESSAGES) as ManagementLocale[]).map((loadingLocale) => {
++        const loadingMessages = MANAGEMENT_MESSAGES[loadingLocale];
++
++        return (
++          <div
++            className="management-auth-loading-panel"
++            data-management-loading-locale={loadingLocale}
++            key={loadingLocale}
++            lang={loadingLocale}
++          >
++            <LoaderCircle aria-hidden className="management-auth-loading-icon" size={28} />
++            <strong>{loadingMessages.loading}</strong>
++            <span>{loadingMessages.syncingCsxLogin}</span>
++          </div>
++        );
++      })}
+     </div>
+   );
+-}
+ 
+ export interface ManagementFrameworkContext {
+   authContext: CsxAuthContext;
+   clinics: ClinicOption[];
+   contentSelectedClinicCode: string;
+   globalClinicRevision: number;
++  locale: ManagementLocale;
++  messages: ManagementMessages;
+   setContentSelectedClinicCode: (clinicCode: string) => void;
+   topbarSelectedClinicCode: string;
+ }
+ 
+-export function ManagementFramework({
++export const ManagementFramework = ({
+   children,
+   className = '',
+ }: {
+   children: (context: ManagementFrameworkContext) => ReactNode;
+   className?: string;
+-}) {
++}): JSX.Element => {
+   const {authContext, isResolved} = useCsxAuthState();
++  const [bootstrapLocale] = useState(getBootstrapManagementLocale);
++  const [localeOverride, setLocaleOverride] = useState<{
++    sourceLocale: string;
++    value: ManagementLocale;
++  } | null>(null);
++  const sourceLocale = authContext.locale ?? bootstrapLocale;
++  const locale = localeOverride?.sourceLocale === sourceLocale
++    ? localeOverride.value
++    : normalizeManagementLocale(sourceLocale);
++  const messages = MANAGEMENT_MESSAGES[locale];
+   const isManagementReady = isResolved && authContext.isAuthenticated;
+   const {
+     clinics,
+@@ -656,6 +1172,18 @@ export function ManagementFramework({
+     setTopbarSelectedClinicCode,
+     topbarSelectedClinicCode,
+   } = useClinicSelections(authContext, isManagementReady);
++  const handleLocaleChange = useCallback((nextLocale: ManagementLocale) => {
++    const normalizedLocale = normalizeManagementLocale(nextLocale);
++
++    window.localStorage.setItem('locale', JSON.stringify(normalizedLocale));
++    document.documentElement.dataset.managementLocale = normalizedLocale;
++    setLocaleOverride({sourceLocale, value: normalizedLocale});
++  }, [sourceLocale]);
++
++  useEffect(() => {
++    document.documentElement.lang = locale;
++    document.documentElement.dataset.managementLocale = locale;
++  }, [locale]);
+ 
+   useEffect(() => {
+     if (!isResolved || authContext.isAuthenticated) {
+@@ -668,7 +1196,7 @@ export function ManagementFramework({
+   if (!isManagementReady) {
+     return (
+       <div aria-busy className="management-shell is-auth-loading">
+-        <ManagementAuthLoadingOverlay authContext={authContext} />
++        <ManagementAuthLoadingOverlay />
+       </div>
+     );
+   }
+@@ -678,31 +1206,38 @@ export function ManagementFramework({
+       <ManagementTopBar
+         authContext={authContext}
+         clinics={clinics}
++        locale={locale}
++        messages={messages}
++        onLocaleChange={handleLocaleChange}
+         selectedClinicCode={topbarSelectedClinicCode}
+         setSelectedClinicCode={setTopbarSelectedClinicCode}
+       />
+       <div className="management-body">
+-        <ManagementSidebar />
++        <ManagementSidebar messages={messages} />
+         {children({
+           authContext,
+           clinics,
+           contentSelectedClinicCode,
+           globalClinicRevision,
++          locale,
++          messages,
+           setContentSelectedClinicCode,
+           topbarSelectedClinicCode,
+         })}
+       </div>
+     </div>
+   );
+-}
++};
+ 
+-function CopySuccessToast({
++const CopySuccessToast = ({
++  messages,
+   onDismiss,
+   toast,
+ }: {
++  messages: ManagementMessages;
+   onDismiss: () => void;
+   toast: CopyToastState | null;
+-}) {
++}): JSX.Element | null => {
+   useEffect(() => {
+     if (!toast) {
+       return undefined;
+@@ -727,13 +1262,13 @@ function CopySuccessToast({
+       <div className="management-copy-toast-wrapper">
+         <CheckCircle2 aria-hidden className="management-copy-toast-icon" fill="currentColor" />
+         <div className="management-copy-toast-content">
+-          <h2>連結已複製！</h2>
++          <h2>{messages.linkCopiedTitle}</h2>
+           <div className="management-copy-toast-divider" />
+-          <p>請將此連結貼至瀏覽器開啟，以顯示排隊叫號畫面。</p>
++          <p>{messages.linkCopiedMessage}</p>
+         </div>
+       </div>
+       <button
+-        aria-label="關閉提示"
++        aria-label={messages.closeNotice}
+         className="management-copy-toast-close"
+         onClick={onDismiss}
+         type="button"
+@@ -742,41 +1277,48 @@ function CopySuccessToast({
+       </button>
+     </section>
+   );
+-}
++};
+ 
+-function DisplayConfigTable({
++const DisplayConfigTable = ({
+   clinicCode,
++  locale,
++  messages,
+   onCopyConfig,
+   onCopyDisplayUrl,
+ }: {
+   clinicCode: string;
++  locale: ManagementLocale;
++  messages: ManagementMessages;
+   onCopyConfig: () => void;
+   onCopyDisplayUrl: (url: string) => void;
+-}) {
++}): JSX.Element => {
+   const router = useRouter();
+-  const displayConfigs = useMemo(() => buildDisplayConfigs(clinicCode), [clinicCode]);
++  const displayConfigs = useMemo(
++    () => buildDisplayConfigs(clinicCode, locale),
++    [clinicCode, locale],
++  );
+ 
+   return (
+-    <section aria-label={`顯示屏配置列表：${clinicCode}`} className="management-table-card">
++    <section aria-label={`${messages.displayScreenConfigList}: ${clinicCode}`} className="management-table-card">
+       <Table className="management-table">
+         <TableHeader>
+           <TableRow>
+-            <TableHead className="management-device-column">設備名稱</TableHead>
+-            <TableHead className="management-orientation-column">螢幕方向</TableHead>
+-            <TableHead>網頁瀏覽地址</TableHead>
+-            <TableHead className="management-actions-column">操作</TableHead>
++            <TableHead className="management-device-column">{messages.deviceName}</TableHead>
++            <TableHead className="management-orientation-column">{messages.screenOrientation}</TableHead>
++            <TableHead>{messages.webAddress}</TableHead>
++            <TableHead className="management-actions-column">{messages.actions}</TableHead>
+           </TableRow>
+         </TableHeader>
+         <TableBody>
+           {displayConfigs.map((config) => (
+             <TableRow key={config.id}>
+-              <TableCell className="management-device-column" data-label="設備名稱">
++              <TableCell className="management-device-column" data-label={messages.deviceName}>
+                 {config.deviceName}
+               </TableCell>
+-              <TableCell className="management-orientation-column" data-label="螢幕方向">
+-                {config.orientation}
++              <TableCell className="management-orientation-column" data-label={messages.screenOrientation}>
++                {config.orientationLabel}
+               </TableCell>
+-              <TableCell data-label="網頁瀏覽地址">
++              <TableCell data-label={messages.webAddress}>
+                 <button
+                   className="management-display-link"
+                   onClick={() => onCopyDisplayUrl(config.url)}
+@@ -785,7 +1327,7 @@ function DisplayConfigTable({
+                   {config.url}
+                 </button>
+               </TableCell>
+-              <TableCell className="management-actions-column" data-label="操作">
++              <TableCell className="management-actions-column" data-label={messages.actions}>
+                 <div className="management-table-actions">
+                   <Button
+                     className="management-table-action"
+@@ -793,8 +1335,15 @@ function DisplayConfigTable({
+                     type="button"
+                     variant="outline"
+                   >
+-                    <ClipboardCopy aria-hidden size={18} />
+-                    <span>複製配置</span>
++                    <Image
++                      alt=""
++                      aria-hidden
++                      className="management-table-action-icon"
++                      height={16}
++                      src={COPY_CONFIGURATION_ICON_SRC}
++                      width={16}
++                    />
++                    <span>{messages.copyConfig}</span>
+                   </Button>
+                   <Button
+                     className="management-table-action"
+@@ -809,8 +1358,15 @@ function DisplayConfigTable({
+                     type="button"
+                     variant="outline"
+                   >
+-                    <Pencil aria-hidden size={18} />
+-                    <span>編輯</span>
++                    <Image
++                      alt=""
++                      aria-hidden
++                      className="management-table-action-icon"
++                      height={16}
++                      src={EDIT_CONFIGURATION_ICON_SRC}
++                      width={16}
++                    />
++                    <span>{messages.edit}</span>
+                   </Button>
+                 </div>
+               </TableCell>
+@@ -820,11 +1376,13 @@ function DisplayConfigTable({
+       </Table>
+     </section>
+   );
+-}
++};
+ 
+-function DisplayManagementContent({
++const DisplayManagementContent = ({
+   authContext,
+   clinics,
++  locale,
++  messages,
+   onCopyConfig,
+   onCopyDisplayUrl,
+   selectedClinicCode,
+@@ -832,23 +1390,26 @@ function DisplayManagementContent({
+ }: {
+   authContext: CsxAuthContext;
+   clinics: ClinicOption[];
++  locale: ManagementLocale;
++  messages: ManagementMessages;
+   onCopyConfig: () => void;
+   onCopyDisplayUrl: (url: string) => void;
+   selectedClinicCode: string;
+   setSelectedClinicCode: (clinicCode: string) => void;
+-}) {
+-  return (
+-    <main aria-label="顯示屏配置" className="management-content-card">
++}): JSX.Element => (
++    <main aria-label={messages.displayScreenConfig} className="management-content-card">
+       <div className="management-content-heading">
+         <Monitor aria-hidden size={20} />
+-        <h1>顯示屏配置</h1>
++        <h1>{messages.displayScreenConfig}</h1>
+       </div>
+       <div className="management-divider" />
+-      {authContext.isAuthenticated ? <ManagementAuthStatus authContext={authContext} /> : null}
++      {authContext.isAuthenticated ? (
++        <ManagementAuthStatus authContext={authContext} messages={messages} />
++      ) : null}
+       <form className="management-filter-form">
+-        <label htmlFor="management-clinic-select">診所</label>
++        <label htmlFor="management-clinic-select">{messages.clinic}</label>
+         <ClinicSelect
+-          ariaLabel="診所"
++          ariaLabel={messages.clinic}
+           className="management-select"
+           clinics={clinics}
+           id="management-clinic-select"
+@@ -858,14 +1419,15 @@ function DisplayManagementContent({
+       </form>
+       <DisplayConfigTable
+         clinicCode={selectedClinicCode}
++        locale={locale}
++        messages={messages}
+         onCopyConfig={onCopyConfig}
+         onCopyDisplayUrl={onCopyDisplayUrl}
+       />
+     </main>
+   );
+-}
+ 
+-export function DisplayManagementPage() {
++export const DisplayManagementPage = (): JSX.Element => {
+   const [copyConfigDialog, setCopyConfigDialog] = useState<CopyConfigDialogState | null>(null);
+   const [copyToast, setCopyToast] = useState<CopyToastState | null>(null);
+   const copyToastRequestIdRef = useRef(0);
+@@ -936,11 +1498,20 @@ export function DisplayManagementPage() {
+ 
+   return (
+     <ManagementFramework>
+-      {({authContext, clinics, contentSelectedClinicCode, setContentSelectedClinicCode}) => (
++      {({
++        authContext,
++        clinics,
++        contentSelectedClinicCode,
++        locale,
++        messages,
++        setContentSelectedClinicCode,
++      }) => (
+         <>
+           <DisplayManagementContent
+             authContext={authContext}
+             clinics={clinics}
++            locale={locale}
++            messages={messages}
+             onCopyConfig={() => openCopyConfigDialog(contentSelectedClinicCode)}
+             onCopyDisplayUrl={handleCopyDisplayUrl}
+             selectedClinicCode={contentSelectedClinicCode}
+@@ -949,15 +1520,16 @@ export function DisplayManagementPage() {
+           <CopyConfigDialog
+             clinics={clinics}
+             dialog={copyConfigDialog}
++            messages={messages}
+             onCancel={closeCopyConfigDialog}
+             onChangeFromClinic={handleChangeCopyConfigFromClinic}
+             onChangeIsFullCopy={handleChangeCopyConfigFullCopy}
+             onChangeToClinic={handleChangeCopyConfigToClinic}
+             onConfirm={confirmCopyConfigDialog}
+           />
+-          <CopySuccessToast onDismiss={dismissCopyToast} toast={copyToast} />
++          <CopySuccessToast messages={messages} onDismiss={dismissCopyToast} toast={copyToast} />
+         </>
+       )}
+     </ManagementFramework>
+   );
+-}
++};
+diff --git a/src/features/display-management/DisplayManagementRoute.tsx b/src/features/display-management/DisplayManagementRoute.tsx
+index ca782bc..0dacc6f 100644
+--- a/src/features/display-management/DisplayManagementRoute.tsx
++++ b/src/features/display-management/DisplayManagementRoute.tsx
+@@ -1,6 +1,6 @@
+ 'use client';
+ 
+-import {useSyncExternalStore} from 'react';
++import {useSyncExternalStore, type JSX} from 'react';
+ import {DisplayScreenPage} from '@/features/display-screen';
+ import {DisplayManagementPage} from './DisplayManagementPage';
+ 
+@@ -16,28 +16,24 @@ const DISPLAY_SCREEN_QUERY_KEYS = [
+   'state',
+ ] as const;
+ 
+-function subscribeToLocation(onStoreChange: () => void) {
++const subscribeToLocation = (onStoreChange: () => void): (() => void) => {
+   window.addEventListener('popstate', onStoreChange);
+   window.queueMicrotask(onStoreChange);
+ 
+   return () => window.removeEventListener('popstate', onStoreChange);
+-}
++};
+ 
+-function getLocationSnapshot() {
+-  return window.location.search;
+-}
++const getLocationSnapshot = (): string => window.location.search;
+ 
+-function getServerLocationSnapshot() {
+-  return '';
+-}
++const getServerLocationSnapshot = (): string => '';
+ 
+-function shouldRenderDisplayScreen(search: string) {
++const shouldRenderDisplayScreen = (search: string): boolean => {
+   const query = new URLSearchParams(search);
+ 
+   return DISPLAY_SCREEN_QUERY_KEYS.some((key) => query.has(key));
+-}
++};
+ 
+-export function DisplayManagementRoute() {
++export const DisplayManagementRoute = (): JSX.Element => {
+   const search = useSyncExternalStore(
+     subscribeToLocation,
+     getLocationSnapshot,
+@@ -45,4 +41,4 @@ export function DisplayManagementRoute() {
+   );
+ 
+   return shouldRenderDisplayScreen(search) ? <DisplayScreenPage /> : <DisplayManagementPage />;
+-}
++};
+diff --git a/src/features/display-management/display-config-data.ts b/src/features/display-management/display-config-data.ts
+index 925a6d0..93dabe6 100644
+--- a/src/features/display-management/display-config-data.ts
++++ b/src/features/display-management/display-config-data.ts
+@@ -1,72 +1,91 @@
+-export type DisplayOrientation = '豎屏' | '橫屏';
++export type DisplayConfigLocale = 'en' | 'zh-CN' | 'zh-HK';
++export type DisplayOrientation = 'landscape' | 'portrait';
+ 
+ export interface DisplayConfig {
+   id: string;
+   deviceName: string;
+   orientation: DisplayOrientation;
++  orientationLabel: string;
+   url: string;
+ }
+ 
+-const displayConfigNames = [
+-  '前台觸摸屏-模板',
+-  '前台觸摸屏-01',
+-  '前台觸摸屏-02',
+-  '候診區顯示屏-01',
+-  '候診區顯示屏-02',
+-  '候診區顯示屏-03',
+-  '診症室門口屏-01',
+-  '診症室門口屏-02',
+-  '診症室門口屏-03',
+-  '診症室門口屏-04',
+-  '藥房顯示屏-01',
+-  '藥房顯示屏-02',
+-  '收費處顯示屏-01',
+-  '收費處顯示屏-02',
+-  '公共區域橫屏-01',
+-  '公共區域橫屏-02',
+-  '電視牆顯示屏-01',
+-  '電視牆顯示屏-02',
+-  '自助登記屏-01',
+-  '自助登記屏-02',
+-  '兒科候診屏-01',
+-  '專科候診屏-01',
+-  'VIP 候診屏-01',
+-  '後備顯示屏-01',
+-  '後備顯示屏-02',
+-  '後備顯示屏-03',
+-  '後備顯示屏-04',
+-  '復康區顯示屏-01',
+-  '復康區顯示屏-02',
+-  '體檢區顯示屏-01',
+-  '體檢區顯示屏-02',
+-  '疫苗區顯示屏-01',
+-  '疫苗區顯示屏-02',
+-  '影像中心顯示屏-01',
+-  '影像中心顯示屏-02',
+-  '護士站顯示屏-01',
+-  '護士站顯示屏-02',
+-  '走廊顯示屏-01',
+-  '走廊顯示屏-02',
+-  '後台測試顯示屏-01',
+-] as const;
++interface DisplayConfigDefinition {
++  names: Record<DisplayConfigLocale, string>;
++  orientation: DisplayOrientation;
++}
++
++const DISPLAY_ORIENTATION_LABELS: Record<
++  DisplayConfigLocale,
++  Record<DisplayOrientation, string>
++> = {
++  'zh-HK': {landscape: '橫屏', portrait: '豎屏'},
++  'zh-CN': {landscape: '横屏', portrait: '竖屏'},
++  en: {landscape: 'Landscape', portrait: 'Portrait'},
++};
+ 
+-export function buildDisplayConfigs(clinicCode: string): DisplayConfig[] {
+-  return displayConfigNames.map((deviceName, index) => {
++const displayConfigDefinitions: readonly DisplayConfigDefinition[] = [
++  {names: {'zh-HK': '前台觸摸屏-模板', 'zh-CN': '前台触摸屏-模板', en: 'Front Desk Touchscreen - Template'}, orientation: 'portrait'},
++  {names: {'zh-HK': '前台觸摸屏-01', 'zh-CN': '前台触摸屏-01', en: 'Front Desk Touchscreen - 01'}, orientation: 'portrait'},
++  {names: {'zh-HK': '前台觸摸屏-02', 'zh-CN': '前台触摸屏-02', en: 'Front Desk Touchscreen - 02'}, orientation: 'portrait'},
++  {names: {'zh-HK': '候診區顯示屏-01', 'zh-CN': '候诊区显示屏-01', en: 'Waiting Area Display - 01'}, orientation: 'portrait'},
++  {names: {'zh-HK': '候診區顯示屏-02', 'zh-CN': '候诊区显示屏-02', en: 'Waiting Area Display - 02'}, orientation: 'portrait'},
++  {names: {'zh-HK': '候診區顯示屏-03', 'zh-CN': '候诊区显示屏-03', en: 'Waiting Area Display - 03'}, orientation: 'portrait'},
++  {names: {'zh-HK': '診症室門口屏-01', 'zh-CN': '诊室门口屏-01', en: 'Consultation Room Door Display - 01'}, orientation: 'portrait'},
++  {names: {'zh-HK': '診症室門口屏-02', 'zh-CN': '诊室门口屏-02', en: 'Consultation Room Door Display - 02'}, orientation: 'portrait'},
++  {names: {'zh-HK': '診症室門口屏-03', 'zh-CN': '诊室门口屏-03', en: 'Consultation Room Door Display - 03'}, orientation: 'portrait'},
++  {names: {'zh-HK': '診症室門口屏-04', 'zh-CN': '诊室门口屏-04', en: 'Consultation Room Door Display - 04'}, orientation: 'portrait'},
++  {names: {'zh-HK': '藥房顯示屏-01', 'zh-CN': '药房显示屏-01', en: 'Pharmacy Display - 01'}, orientation: 'portrait'},
++  {names: {'zh-HK': '藥房顯示屏-02', 'zh-CN': '药房显示屏-02', en: 'Pharmacy Display - 02'}, orientation: 'portrait'},
++  {names: {'zh-HK': '收費處顯示屏-01', 'zh-CN': '收费处显示屏-01', en: 'Cashier Display - 01'}, orientation: 'portrait'},
++  {names: {'zh-HK': '收費處顯示屏-02', 'zh-CN': '收费处显示屏-02', en: 'Cashier Display - 02'}, orientation: 'portrait'},
++  {names: {'zh-HK': '公共區域橫屏-01', 'zh-CN': '公共区域横屏-01', en: 'Public Area Landscape Display - 01'}, orientation: 'landscape'},
++  {names: {'zh-HK': '公共區域橫屏-02', 'zh-CN': '公共区域横屏-02', en: 'Public Area Landscape Display - 02'}, orientation: 'landscape'},
++  {names: {'zh-HK': '電視牆顯示屏-01', 'zh-CN': '电视墙显示屏-01', en: 'Video Wall Display - 01'}, orientation: 'landscape'},
++  {names: {'zh-HK': '電視牆顯示屏-02', 'zh-CN': '电视墙显示屏-02', en: 'Video Wall Display - 02'}, orientation: 'landscape'},
++  {names: {'zh-HK': '自助登記屏-01', 'zh-CN': '自助登记屏-01', en: 'Self Check-in Display - 01'}, orientation: 'portrait'},
++  {names: {'zh-HK': '自助登記屏-02', 'zh-CN': '自助登记屏-02', en: 'Self Check-in Display - 02'}, orientation: 'portrait'},
++  {names: {'zh-HK': '兒科候診屏-01', 'zh-CN': '儿科候诊屏-01', en: 'Paediatric Waiting Display - 01'}, orientation: 'portrait'},
++  {names: {'zh-HK': '專科候診屏-01', 'zh-CN': '专科候诊屏-01', en: 'Specialist Waiting Display - 01'}, orientation: 'portrait'},
++  {names: {'zh-HK': 'VIP 候診屏-01', 'zh-CN': 'VIP 候诊屏-01', en: 'VIP Waiting Display - 01'}, orientation: 'portrait'},
++  {names: {'zh-HK': '後備顯示屏-01', 'zh-CN': '备用显示屏-01', en: 'Backup Display - 01'}, orientation: 'portrait'},
++  {names: {'zh-HK': '後備顯示屏-02', 'zh-CN': '备用显示屏-02', en: 'Backup Display - 02'}, orientation: 'portrait'},
++  {names: {'zh-HK': '後備顯示屏-03', 'zh-CN': '备用显示屏-03', en: 'Backup Display - 03'}, orientation: 'portrait'},
++  {names: {'zh-HK': '後備顯示屏-04', 'zh-CN': '备用显示屏-04', en: 'Backup Display - 04'}, orientation: 'portrait'},
++  {names: {'zh-HK': '復康區顯示屏-01', 'zh-CN': '康复区显示屏-01', en: 'Rehabilitation Area Display - 01'}, orientation: 'portrait'},
++  {names: {'zh-HK': '復康區顯示屏-02', 'zh-CN': '康复区显示屏-02', en: 'Rehabilitation Area Display - 02'}, orientation: 'portrait'},
++  {names: {'zh-HK': '體檢區顯示屏-01', 'zh-CN': '体检区显示屏-01', en: 'Health Screening Area Display - 01'}, orientation: 'portrait'},
++  {names: {'zh-HK': '體檢區顯示屏-02', 'zh-CN': '体检区显示屏-02', en: 'Health Screening Area Display - 02'}, orientation: 'portrait'},
++  {names: {'zh-HK': '疫苗區顯示屏-01', 'zh-CN': '疫苗区显示屏-01', en: 'Vaccination Area Display - 01'}, orientation: 'portrait'},
++  {names: {'zh-HK': '疫苗區顯示屏-02', 'zh-CN': '疫苗区显示屏-02', en: 'Vaccination Area Display - 02'}, orientation: 'portrait'},
++  {names: {'zh-HK': '影像中心顯示屏-01', 'zh-CN': '影像中心显示屏-01', en: 'Imaging Centre Display - 01'}, orientation: 'portrait'},
++  {names: {'zh-HK': '影像中心顯示屏-02', 'zh-CN': '影像中心显示屏-02', en: 'Imaging Centre Display - 02'}, orientation: 'portrait'},
++  {names: {'zh-HK': '護士站顯示屏-01', 'zh-CN': '护士站显示屏-01', en: 'Nurse Station Display - 01'}, orientation: 'portrait'},
++  {names: {'zh-HK': '護士站顯示屏-02', 'zh-CN': '护士站显示屏-02', en: 'Nurse Station Display - 02'}, orientation: 'portrait'},
++  {names: {'zh-HK': '走廊顯示屏-01', 'zh-CN': '走廊显示屏-01', en: 'Corridor Display - 01'}, orientation: 'portrait'},
++  {names: {'zh-HK': '走廊顯示屏-02', 'zh-CN': '走廊显示屏-02', en: 'Corridor Display - 02'}, orientation: 'portrait'},
++  {names: {'zh-HK': '後台測試顯示屏-01', 'zh-CN': '后台测试显示屏-01', en: 'Back-office Test Display - 01'}, orientation: 'portrait'},
++];
++
++export const buildDisplayConfigs = (
++  clinicCode: string,
++  locale: DisplayConfigLocale = 'zh-HK',
++): DisplayConfig[] => displayConfigDefinitions.map((definition, index) => {
+     const sequence = String(index + 1).padStart(2, '0');
+-    const isPortrait = index < 14 || index > 17;
+ 
+     return {
+       id: `${clinicCode}-display-config-${sequence}`,
+-      deviceName,
+-      orientation: isPortrait ? '豎屏' : '橫屏',
++      deviceName: definition.names[locale],
++      orientation: definition.orientation,
++      orientationLabel: DISPLAY_ORIENTATION_LABELS[locale][definition.orientation],
+       url:
+         index === 0
+           ? 'https://checkin-dev.heals.asia/f564830c-b310-4b56-8402-c0bd505b9caf/qr'
+           : `https://checkin-dev.heals.asia/mock-display-device-${sequence}/qr`,
+     };
+   });
+-}
+ 
+-export function findDisplayConfig(clinicCode: string, deviceId: string) {
+-  return buildDisplayConfigs(clinicCode).find((config) => config.id === deviceId) ?? null;
+-}
++export const findDisplayConfig = (
++  clinicCode: string,
++  deviceId: string,
++  locale: DisplayConfigLocale = 'zh-HK',
++): DisplayConfig | null => buildDisplayConfigs(clinicCode, locale).find((config) => config.id === deviceId) ?? null;
+diff --git a/src/features/display-management/display-management.css b/src/features/display-management/display-management.css
+index c9e9c5d..63c3304 100644
+--- a/src/features/display-management/display-management.css
++++ b/src/features/display-management/display-management.css
+@@ -26,10 +26,18 @@
+   --management-filter-control-width: clamp(360px, 50.56dvh, 546px);
+   --management-menu-title-font-size: clamp(15px, 1.83dvh, 17px);
+   --management-icon-size: clamp(16px, 1.67dvh, 18px);
++  --management-table-action-icon-size: clamp(14px, 1.48dvh, 16px);
+   --management-logo-size: clamp(36px, 3.7dvh, 40px);
+   --management-control-height: clamp(36px, 3.7dvh, 40px);
++  --management-topbar-inline-padding: clamp(12px, 1.48dvh, 16px);
+   --management-user-button-size: 40px;
+   --management-user-icon-size: clamp(14px, 1.48dvh, 16px);
++  --management-language-menu-width: clamp(150px, 15dvh, 162px);
++  --management-language-menu-radius: clamp(6px, 0.7408dvh, 8px);
++  --management-language-menu-padding-block: clamp(7px, 0.7408dvh, 8px);
++  --management-language-menu-item-padding-block: clamp(3px, 0.3704dvh, 4px);
++  --management-language-menu-item-padding-inline: clamp(12px, 1.4815dvh, 16px);
++  --management-language-menu-font-size: clamp(14px, 1.4815dvh, 16px);
+   --management-table-row-height: clamp(44px, 4.44dvh, 48px);
+   --management-copy-toast-inline-offset: clamp(12px, 1.25vw, 24px);
+   --management-copy-toast-block-offset: clamp(12px, 2.963dvh, 32px);
+@@ -102,7 +110,7 @@
+   align-items: center;
+   justify-content: space-between;
+   height: var(--management-topbar-height);
+-  padding: clamp(8px, 0.93dvh, 10px) clamp(12px, 1.48dvh, 16px);
++  padding: clamp(8px, 0.93dvh, 10px) var(--management-topbar-inline-padding);
+   gap: clamp(12px, 2.22dvh, 24px);
+ }
+ 
+@@ -219,16 +227,163 @@
+   border-radius: 50%;
+   background: transparent;
+   color: #ffffff;
++  cursor: pointer;
+   padding: 0;
+   overflow: hidden;
+ }
+ 
++.management-user-menu {
++  position: relative;
++  display: flex;
++  align-items: center;
++  flex: 0 0 auto;
++}
++
+ .management-user-avatar-image {
+   display: block;
+   width: 40px;
+   height: 40px;
+ }
+ 
++.management-user-popover {
++  box-sizing: border-box;
++  position: absolute;
++  top: 100%;
++  right: calc(0px - var(--management-topbar-inline-padding));
++  z-index: 70;
++  display: flex;
++  flex-direction: column;
++  width: min(324px, 100vw);
++  gap: 16px;
++  border-radius: 20px;
++  background: #ffffff;
++  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
++  padding: 16px;
++  color: var(--management-text);
++}
++
++.management-user-profile {
++  box-sizing: border-box;
++  display: flex;
++  align-items: center;
++  width: 100%;
++  height: 72px;
++  gap: 16px;
++  border-radius: 12px;
++  background: #f8f9fa;
++  padding: 16px;
++}
++
++.management-user-profile-avatar {
++  display: block;
++  flex: 0 0 auto;
++  width: 40px;
++  height: 40px;
++  border-radius: 50%;
++}
++
++.management-user-profile strong {
++  min-width: 0;
++  overflow: hidden;
++  color: var(--management-text);
++  font-size: 20px;
++  font-weight: 700;
++  line-height: 24px;
++  text-overflow: ellipsis;
++  white-space: nowrap;
++}
++
++.management-user-language-control {
++  position: relative;
++  width: 100%;
++}
++
++.management-user-language {
++  box-sizing: border-box;
++  display: flex;
++  align-items: center;
++  justify-content: space-between;
++  width: 100%;
++  height: 32px;
++  border: 0;
++  border-radius: 8px;
++  background: transparent;
++  color: var(--management-text);
++  cursor: pointer;
++  font: inherit;
++  font-size: 16px;
++  font-weight: 400;
++  line-height: 24px;
++  overflow: hidden;
++  padding: 4px 16px;
++  text-align: left;
++}
++
++.management-user-language > svg {
++  width: 16px;
++  height: 16px;
++  pointer-events: none;
++}
++
++.management-user-language:hover,
++.management-user-language:focus-visible {
++  background: var(--management-bg);
++  color: var(--management-text);
++}
++
++.management-user-language:focus-visible {
++  outline: 2px solid var(--management-primary);
++  outline-offset: 2px;
++}
++
++.management-language-menu {
++  box-sizing: border-box;
++  position: absolute;
++  top: calc(0px - clamp(3px, 0.3704dvh, 4px));
++  right: calc(100% + clamp(1px, 0.19dvh, 2px));
++  z-index: 71;
++  display: flex;
++  flex-direction: column;
++  width: var(--management-language-menu-width);
++  border: clamp(1px, 0.1dvh, 1px) solid rgba(0, 0, 0, 0.15);
++  border-radius: var(--management-language-menu-radius);
++  background: #ffffff;
++  overflow: hidden;
++  padding: var(--management-language-menu-padding-block) clamp(1px, 0.1dvh, 1px);
++}
++
++.management-language-menu-item {
++  box-sizing: border-box;
++  width: 100%;
++  border: 0;
++  border-radius: 0;
++  background: transparent;
++  color: var(--management-text);
++  cursor: pointer;
++  font: inherit;
++  font-size: var(--management-language-menu-font-size);
++  font-weight: 400;
++  line-height: 1.5;
++  padding: var(--management-language-menu-item-padding-block) var(--management-language-menu-item-padding-inline);
++  text-align: left;
++  white-space: nowrap;
++}
++
++.management-language-menu-item:hover,
++.management-language-menu-item:focus-visible,
++.management-language-menu-item.is-selected {
++  background: #f8f9fa;
++}
++
++.management-language-menu-item:focus-visible {
++  outline: 2px solid var(--management-primary);
++  outline-offset: -2px;
++}
++
++.management-language-menu-item.is-selected {
++  color: var(--management-primary);
++}
++
+ .management-body {
+   box-sizing: border-box;
+   display: grid;
+@@ -408,7 +563,7 @@
+ }
+ 
+ .management-auth-loading-panel {
+-  display: grid;
++  display: none;
+   justify-items: center;
+   gap: clamp(6px, 0.93dvh, 10px);
+   width: min(100%, 320px);
+@@ -420,6 +575,12 @@
+   text-align: center;
+ }
+ 
++html[data-management-locale="en"] .management-auth-loading-panel[data-management-loading-locale="en"],
++html[data-management-locale="zh-CN"] .management-auth-loading-panel[data-management-loading-locale="zh-CN"],
++html[data-management-locale="zh-HK"] .management-auth-loading-panel[data-management-loading-locale="zh-HK"] {
++  display: grid;
++}
++
+ .management-auth-loading-panel strong {
+   font-size: var(--management-body-font-size);
+   font-weight: 700;
+@@ -589,6 +750,10 @@
+   width: clamp(190px, 19.82dvh, 214px);
+ }
+ 
++html[lang="en"] .management-actions-column {
++  width: clamp(270px, 27dvh, 292px);
++}
++
+ .management-display-link {
+   display: block;
+   max-width: 100%;
+@@ -1016,6 +1181,13 @@
+   }
+ }
+ 
++@media (max-width: 480px) {
++  .management-language-menu {
++    top: calc(100% + clamp(1px, 0.19dvh, 2px));
++    right: 0;
++  }
++}
++
+ .management-table-actions {
+   display: flex;
+   align-items: center;
+@@ -1029,6 +1201,7 @@
+   border: 0;
+   background: transparent;
+   color: var(--management-primary);
++  cursor: pointer;
+   padding: 0;
+   font-size: var(--management-body-font-size);
+   font-weight: 400;
+@@ -1036,6 +1209,13 @@
+   white-space: nowrap;
+ }
+ 
++.management-table-action-icon {
++  display: block;
++  flex: 0 0 auto;
++  width: var(--management-table-action-icon-size);
++  height: var(--management-table-action-icon-size);
++}
++
+ .management-visually-hidden {
+   position: absolute !important;
+   width: 1px !important;
+@@ -1876,6 +2056,10 @@
+     max-width: 100%;
+   }
+ 
++  .management-user-menu {
++    align-self: flex-end;
++  }
++
+   .management-table td {
+     grid-template-columns: 1fr;
+   }
+diff --git a/src/features/display-screen/DisplayScreenPage.tsx b/src/features/display-screen/DisplayScreenPage.tsx
+index c5bee11..99344cf 100644
+--- a/src/features/display-screen/DisplayScreenPage.tsx
++++ b/src/features/display-screen/DisplayScreenPage.tsx
+@@ -1,6 +1,6 @@
+ 'use client';
+ 
+-import type { CSSProperties, SyntheticEvent } from 'react';
++import type { CSSProperties, JSX, SyntheticEvent } from 'react';
+ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+ import Image from 'next/image';
+ import { QRCodeSVG } from 'qrcode.react';
+@@ -49,31 +49,61 @@ const VIDEO_CONSULTATION_BADGE_STYLE: CSSProperties = {
+ 
+ type ScreenState = 'normal' | 'empty' | 'error' | 'video-error';
+ 
+-function appendAvatarCacheVersion(src: string, version: number) {
++interface DisplayOptions {
++  clinicCode: string;
++  doctorCount: number;
++  mock: boolean;
++  noLatestCallMock: boolean;
++  ready: boolean;
++  state: ScreenState;
++}
++
++interface ClockState {
++  date: string;
++  time: string;
++}
++
++type DisplayDoctorWithAvatarCacheVersion = DisplayDoctor & {
++  avatarCacheVersion: number;
++};
++
++interface AppointmentQueueDoctorsState {
++  canRequestApi: boolean;
++  clinicBrand: DisplayClinicBrand | null;
++  dataVersion: number;
++  doctors: DisplayDoctorWithAvatarCacheVersion[];
++  error: Error | null;
++  featuredDoctor: DisplayDoctorWithAvatarCacheVersion | null;
++  loading: boolean;
++  refresh: (options?: {background?: boolean}) => void;
++  selfServiceQr: DisplaySelfServiceQrSource | null;
++  showDoctorIntroduction: boolean;
++  totalPage: number;
++  totalQueued: number;
++  videoUrls: string[];
++}
++
++const appendAvatarCacheVersion = (src: string, version: number): string => {
+   if (!version || !/^https?:\/\//i.test(src)) {
+     return src;
+   }
+ 
+   const separator = src.includes('?') ? '&' : '?';
+   return `${src}${separator}csxAvatarVersion=${version}`;
+-}
++};
+ 
+-function subscribeToSearch(onStoreChange: () => void) {
++const subscribeToSearch = (onStoreChange: () => void): (() => void) => {
+   window.addEventListener('popstate', onStoreChange);
+   window.queueMicrotask(onStoreChange);
+ 
+   return () => window.removeEventListener('popstate', onStoreChange);
+-}
++};
+ 
+-function getSearchSnapshot() {
+-  return window.location.search;
+-}
++const getSearchSnapshot = (): string => window.location.search;
+ 
+-function getServerSearchSnapshot() {
+-  return '';
+-}
++const getServerSearchSnapshot = (): string => '';
+ 
+-function useDisplayOptions() {
++const useDisplayOptions = (): DisplayOptions => {
+   const search = useSyncExternalStore(subscribeToSearch, getSearchSnapshot, getServerSearchSnapshot);
+   const query = new URLSearchParams(search);
+   const state = query.get('state');
+@@ -105,13 +135,13 @@ function useDisplayOptions() {
+         : ('normal' as ScreenState),
+     doctorCount: Number.isFinite(doctorCount) && doctorCount >= 0 ? doctorCount : 6,
+   };
+-}
++};
+ 
+-function useClock() {
++const useClock = (): ClockState => {
+   const [now, setNow] = useState<Date | null>(null);
+ 
+   useEffect(() => {
+-    const updateClock = () => setNow(new Date());
++    const updateClock = (): void => setNow(new Date());
+     const firstTick = window.setTimeout(updateClock, 0);
+     const timer = window.setInterval(updateClock, 1000);
+ 
+@@ -137,13 +167,11 @@ function useClock() {
+       weekday: 'short',
+     }),
+   };
+-}
++};
+ 
+-function formatMockQueueNumber(prefix: string, value: number) {
+-  return `${prefix}${String(value).padStart(3, '0')}`;
+-}
++const formatMockQueueNumber = (prefix: string, value: number): string => `${prefix}${String(value).padStart(3, '0')}`;
+ 
+-function DoctorAvatar({ doctor }: { doctor: DisplayDoctor }) {
++const DoctorAvatar = ({ doctor }: { doctor: DisplayDoctor }): JSX.Element => {
+   const avatarSrc = doctor.avatarUrl
+     ? appendAvatarCacheVersion(doctor.avatarUrl, doctor.avatarCacheVersion ?? 0)
+     : DEFAULT_DOCTOR_AVATAR_SRC;
+@@ -170,9 +198,9 @@ function DoctorAvatar({ doctor }: { doctor: DisplayDoctor }) {
+       ) : null}
+     </div>
+   );
+-}
++};
+ 
+-function useAppointmentQueueDoctors(options: ReturnType<typeof useDisplayOptions>) {
++const useAppointmentQueueDoctors = (options: DisplayOptions): AppointmentQueueDoctorsState => {
+   const [apiDoctors, setApiDoctors] = useState<DisplayDoctor[]>([]);
+   const [apiTotalQueued, setApiTotalQueued] = useState(0);
+   const [apiTotalPage, setApiTotalPage] = useState(1);
+@@ -298,7 +326,7 @@ function useAppointmentQueueDoctors(options: ReturnType<typeof useDisplayOptions
+ 
+     const controller = new AbortController();
+ 
+-    async function loadData(isBackgroundRefresh: boolean) {
++    const loadData = async (isBackgroundRefresh: boolean): Promise<void> => {
+       fullLoadInFlightRef.current = true;
+ 
+       if (!isBackgroundRefresh) {
+@@ -337,7 +365,7 @@ function useAppointmentQueueDoctors(options: ReturnType<typeof useDisplayOptions
+           setLoading(false);
+         }
+       }
+-    }
++    };
+ 
+     const isBackgroundRefresh = backgroundRefreshRef.current;
+     backgroundRefreshRef.current = false;
+@@ -363,7 +391,7 @@ function useAppointmentQueueDoctors(options: ReturnType<typeof useDisplayOptions
+     let disposed = false;
+     let controller: AbortController | null = null;
+ 
+-    const pollFirstQueueDoctor = async () => {
++    const pollFirstQueueDoctor = async (): Promise<void> => {
+       if (
+         disposed ||
+         fullLoadInFlightRef.current ||
+@@ -489,19 +517,17 @@ function useAppointmentQueueDoctors(options: ReturnType<typeof useDisplayOptions
+     totalPage: shouldUseMockData ? mockQueue.totalPage : apiTotalPage,
+     videoUrls: shouldUseMockData ? [] : videoUrls,
+   };
+-}
++};
+ 
+-function formatDepartmentName(department: DisplayDoctor['departments'][number]) {
+-  return [department.nameZh, department.nameEn].filter(Boolean).join(' ');
+-}
++const formatDepartmentName = (department: DisplayDoctor['departments'][number]): string => [department.nameZh, department.nameEn].filter(Boolean).join(' ');
+ 
+-function DoctorTags({
++const DoctorTags = ({
+   doctor,
+   stackRoom = true,
+ }: {
+   doctor: DisplayDoctor;
+   stackRoom?: boolean;
+-}) {
++}): JSX.Element => {
+   const departments = doctor.departments;
+   const stacked = stackRoom && departments.length > 1;
+ 
+@@ -523,14 +549,14 @@ function DoctorTags({
+       {doctor.room ? <strong>{doctor.room}</strong> : null}
+     </div>
+   );
+-}
++};
+ 
+-function getVisibleCallNumber(callNumber: string) {
++const getVisibleCallNumber = (callNumber: string): string => {
+   const value = callNumber.trim();
+   return value && value !== '—' ? value : '-';
+-}
++};
+ 
+-function formatVideoTime(totalSeconds: number) {
++const formatVideoTime = (totalSeconds: number): string => {
+   const seconds = Math.max(0, Math.ceil(totalSeconds));
+   const hours = Math.floor(seconds / 3600);
+   const minutes = Math.floor((seconds % 3600) / 60);
+@@ -538,9 +564,9 @@ function formatVideoTime(totalSeconds: number) {
+   const parts = hours > 0 ? [hours, minutes, remainingSeconds] : [minutes, remainingSeconds];
+ 
+   return parts.map((part) => String(part).padStart(2, '0')).join(':');
+-}
++};
+ 
+-function getVideoRemainingTimeLabel(video: HTMLVideoElement) {
++const getVideoRemainingTimeLabel = (video: HTMLVideoElement): string => {
+   if (!Number.isFinite(video.duration) || video.duration <= 0) {
+     return '';
+   }
+@@ -549,9 +575,9 @@ function getVideoRemainingTimeLabel(video: HTMLVideoElement) {
+   const mediaSeconds = Math.max(0, video.duration - video.currentTime);
+ 
+   return formatVideoTime(mediaSeconds / playbackRate);
+-}
++};
+ 
+-function DoctorCard({ doctor, expanded }: { doctor: DisplayDoctor; expanded: boolean }) {
++const DoctorCard = ({ doctor, expanded }: { doctor: DisplayDoctor; expanded: boolean }): JSX.Element => {
+   const hasLimitedDepartments = doctor.departments.length > 1;
+   const hasManyDepartments = doctor.departments.length > 2;
+   const hasStackedTags = doctor.departments.length > 1;
+@@ -588,9 +614,9 @@ function DoctorCard({ doctor, expanded }: { doctor: DisplayDoctor; expanded: boo
+       </dl>
+     </article>
+   );
+-}
++};
+ 
+-function FeaturedDoctor({ doctor }: { doctor: DisplayDoctor | null }) {
++const FeaturedDoctor = ({ doctor }: { doctor: DisplayDoctor | null }): JSX.Element => {
+   if (!doctor) {
+     return (
+       <section
+@@ -649,9 +675,9 @@ function FeaturedDoctor({ doctor }: { doctor: DisplayDoctor | null }) {
+       </div>
+     </section>
+   );
+-}
++};
+ 
+-function DoctorGrid({
++const DoctorGrid = ({
+   doctors,
+   motion,
+   showDoctorIntroduction,
+@@ -661,7 +687,7 @@ function DoctorGrid({
+   motion?: 'incoming' | 'outgoing';
+   showDoctorIntroduction: boolean;
+   totalDoctorCount: number;
+-}) {
++}): JSX.Element => {
+   const pageSize = getDisplayQueuePageSize(showDoctorIntroduction);
+   const visibleDoctorCount = Math.min(doctors.length, pageSize);
+   const doctorCountClass =
+@@ -689,9 +715,9 @@ function DoctorGrid({
+       ))}
+     </div>
+   );
+-}
++};
+ 
+-function SelfServiceQr({ source }: { source: DisplaySelfServiceQrSource | null }) {
++const SelfServiceQr = ({ source }: { source: DisplaySelfServiceQrSource | null }): JSX.Element | null => {
+   const healsCoreId = source?.healsCoreId ?? '';
+   const [timestamp, setTimestamp] = useState(() => Date.now());
+ 
+@@ -732,7 +758,7 @@ function SelfServiceQr({ source }: { source: DisplaySelfServiceQrSource | null }
+       />
+     </div>
+   );
+-}
++};
+ 
+ interface VideoPlaybackState {
+   index: number;
+@@ -745,7 +771,7 @@ interface VideoRemainingTimeState {
+   videoKey: string;
+ }
+ 
+-function MediaPanel({
++const MediaPanel = ({
+   canRequestApi,
+   clinicCode,
+   failed,
+@@ -757,7 +783,7 @@ function MediaPanel({
+   failed: boolean;
+   initialVideoUrls: string[];
+   selfServiceQr: DisplaySelfServiceQrSource | null;
+-}) {
++}): JSX.Element => {
+   const [playbackState, setPlaybackState] = useState<VideoPlaybackState>(() => ({
+     index: 0,
+     playlist: [],
+@@ -954,11 +980,9 @@ function MediaPanel({
+     });
+   }, [clearActiveVideoElement, clinicCode, commitPlaybackState]);
+ 
+-  useEffect(() => {
+-    return () => {
++  useEffect(() => () => {
+       nextVideoRoundAbortRef.current?.abort();
+-    };
+-  }, []);
++    }, []);
+ 
+   useEffect(() => {
+     activeVideoKeyRef.current = activeVideoKey;
+@@ -983,12 +1007,12 @@ function MediaPanel({
+     video.muted = DISPLAY_VIDEO_DEFAULT_MUTED;
+     video.load();
+ 
+-    const markVideoReady = () => {
++    const markVideoReady = (): void => {
+       if (activeVideoKeyRef.current === activeVideoKey) {
+         video.classList.remove('media-video-loading');
+       }
+     };
+-    const updateRemainingTime = () => {
++    const updateRemainingTime = (): void => {
+       if (activeVideoKeyRef.current === activeVideoKey) {
+         setVideoRemainingTime({
+           label: getVideoRemainingTimeLabel(video),
+@@ -997,8 +1021,8 @@ function MediaPanel({
+       }
+     };
+ 
+-    const requestPlayback = async () => {
+-      const schedulePlaybackRetry = () => {
++    const requestPlayback = async (): Promise<void> => {
++      const schedulePlaybackRetry = (): void => {
+         if (
+           activeVideoPlaybackRetriesRef.current >= VIDEO_PLAYBACK_RETRY_LIMIT ||
+           cancelled ||
+@@ -1147,9 +1171,9 @@ function MediaPanel({
+       ) : null}
+     </section>
+   );
+-}
++};
+ 
+-function StatePanel({ type, onRetry }: { type: 'empty' | 'error' | 'loading'; onRetry?: () => void }) {
++const StatePanel = ({ type, onRetry }: { type: 'empty' | 'error' | 'loading'; onRetry?: () => void }): JSX.Element => {
+   const isError = type === 'error';
+   const title =
+     type === 'loading' ? '正在更新輪候資料' : isError ? '暫時未能取得輪候資料' : '目前未有當值醫生';
+@@ -1173,10 +1197,9 @@ function StatePanel({ type, onRetry }: { type: 'empty' | 'error' | 'loading'; on
+       ) : null}
+     </section>
+   );
+-}
++};
+ 
+-function DoctorEmptyState() {
+-  return (
++const DoctorEmptyState = (): JSX.Element => (
+     <section
+       aria-label="目前未有當值醫生"
+       className="doctor-empty-state"
+@@ -1200,9 +1223,8 @@ function DoctorEmptyState() {
+       </p>
+     </section>
+   );
+-}
+ 
+-export default function DisplayScreenPage() {
++const DisplayScreenPage = (): JSX.Element => {
+   const options = useDisplayOptions();
+   const clock = useClock();
+   const [pageIndex, setPageIndex] = useState(1);
+@@ -1316,7 +1338,7 @@ export default function DisplayScreenPage() {
+     return () => window.clearInterval(timer);
+   }, [pages, shouldRunDisplayCycle]);
+ 
+-  function retry() {
++  const retry = (): void => {
+     if (displayData.error) {
+       displayData.refresh();
+       return;
+@@ -1325,7 +1347,7 @@ export default function DisplayScreenPage() {
+     window.setTimeout(() => {
+       setErrorRecovered(true);
+     }, 700);
+-  }
++  };
+ 
+   return (
+     <main className="display-shell">
+@@ -1443,4 +1465,6 @@ export default function DisplayScreenPage() {
+       </div>
+     </main>
+   );
+-}
++};
++
++export default DisplayScreenPage;
+diff --git a/src/lib/api-client.ts b/src/lib/api-client.ts
+index 492932c..660c6c8 100644
+--- a/src/lib/api-client.ts
++++ b/src/lib/api-client.ts
+@@ -5,7 +5,7 @@ export interface ApiRequestOptions extends RequestInit {
+   skipAuth?: boolean;
+ }
+ 
+-export async function apiRequest<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
++export const apiRequest = async <T>(path: string, options: ApiRequestOptions = {}): Promise<T> => {
+   const {token, locale} = getCsxAuthContext();
+   const headers = new Headers(options.headers);
+ 
+@@ -34,4 +34,4 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
+   }
+ 
+   return response.json() as Promise<T>;
+-}
++};
+diff --git a/src/lib/app-base-path.ts b/src/lib/app-base-path.ts
+index 8851f59..3182e17 100644
+--- a/src/lib/app-base-path.ts
++++ b/src/lib/app-base-path.ts
+@@ -1,6 +1,6 @@
+ const DEFAULT_APP_BASE_PATH = '/display-screen-config';
+ 
+-function normalizeAppBasePath(value: string | undefined) {
++const normalizeAppBasePath = (value: string | undefined): string => {
+   const trimmed = value?.trim();
+ 
+   if (!trimmed) {
+@@ -10,10 +10,8 @@ function normalizeAppBasePath(value: string | undefined) {
+   const withoutEdges = trimmed.replace(/^\/+|\/+$/g, '');
+ 
+   return withoutEdges ? `/${withoutEdges}` : '';
+-}
++};
+ 
+ export const APP_BASE_PATH = normalizeAppBasePath(process.env.NEXT_PUBLIC_CSX_APP_BASE_PATH);
+ 
+-export function withAppBasePath(path: `/${string}`) {
+-  return `${APP_BASE_PATH}${path}`;
+-}
++export const withAppBasePath = (path: `/${string}`): string => `${APP_BASE_PATH}${path}`;
+diff --git a/src/lib/clinic-api.ts b/src/lib/clinic-api.ts
+index 26b7f80..c9d3717 100644
+--- a/src/lib/clinic-api.ts
++++ b/src/lib/clinic-api.ts
+@@ -10,11 +10,9 @@ interface ApiEnvelope<T> {
+   data?: T;
+ }
+ 
+-function isRecord(value: unknown): value is Record<string, unknown> {
+-  return typeof value === 'object' && value !== null && !Array.isArray(value);
+-}
++const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value);
+ 
+-function normalizeString(value: unknown) {
++const normalizeString = (value: unknown): string | null => {
+   if (typeof value === 'string') {
+     const trimmed = value.trim();
+ 
+@@ -26,9 +24,9 @@ function normalizeString(value: unknown) {
+   }
+ 
+   return null;
+-}
++};
+ 
+-function readString(record: Record<string, unknown>, keys: string[]) {
++const readString = (record: Record<string, unknown>, keys: string[]): string | null => {
+   for (const key of keys) {
+     const value = normalizeString(record[key]);
+ 
+@@ -38,9 +36,9 @@ function readString(record: Record<string, unknown>, keys: string[]) {
+   }
+ 
+   return null;
+-}
++};
+ 
+-function unwrapClinicArray(payload: unknown) {
++const unwrapClinicArray = (payload: unknown): unknown[] => {
+   if (Array.isArray(payload)) {
+     return payload;
+   }
+@@ -62,9 +60,9 @@ function unwrapClinicArray(payload: unknown) {
+   }
+ 
+   return [];
+-}
++};
+ 
+-export function normalizeClinicOptions(payload: unknown): ClinicOption[] {
++export const normalizeClinicOptions = (payload: unknown): ClinicOption[] => {
+   const seenClinicCodes = new Set<string>();
+ 
+   return unwrapClinicArray(payload).flatMap((item) => {
+@@ -97,9 +95,9 @@ export function normalizeClinicOptions(payload: unknown): ClinicOption[] {
+       },
+     ];
+   });
+-}
++};
+ 
+-export async function fetchClinicOptions(signal?: AbortSignal) {
++export const fetchClinicOptions = async (signal?: AbortSignal): Promise<ClinicOption[]> => {
+   const response = await apiRequest<ApiEnvelope<unknown>>('/api/Clinic/GetClinicsAsync', {signal});
+ 
+   if (typeof response.code === 'number' && response.code !== 0) {
+@@ -107,4 +105,4 @@ export async function fetchClinicOptions(signal?: AbortSignal) {
+   }
+ 
+   return normalizeClinicOptions(response.data ?? response);
+-}
++};
+diff --git a/src/lib/csx-api-env.ts b/src/lib/csx-api-env.ts
+index e8fd373..8f3b455 100644
+--- a/src/lib/csx-api-env.ts
++++ b/src/lib/csx-api-env.ts
+@@ -11,23 +11,19 @@ export interface CsxApiEnvironment {
+   system: CsxSystem;
+ }
+ 
+-function normalizeBaseUrl(url: string) {
+-  return url.trim().replace(/\/+$/, '');
+-}
++const normalizeBaseUrl = (url: string): string => url.trim().replace(/\/+$/, '');
+ 
+-function parseSystem(value: string | undefined): CsxSystem {
+-  return value === 'csx-k8' ? 'csx-k8' : 'csx';
+-}
++const parseSystem = (value: string | undefined): CsxSystem => value === 'csx-k8' ? 'csx-k8' : 'csx';
+ 
+-function parseEnv(value: string | undefined): CsxEnvironment {
++const parseEnv = (value: string | undefined): CsxEnvironment => {
+   if (value === 'prod' || value === 'uat' || value === 'poc' || value === 'dev') {
+     return value;
+   }
+ 
+   return process.env.NODE_ENV === 'production' ? 'prod' : 'poc';
+-}
++};
+ 
+-function resolveDefaultApiBaseUrl(system: CsxSystem, env: CsxEnvironment) {
++const resolveDefaultApiBaseUrl = (system: CsxSystem, env: CsxEnvironment): "" | "https://api.clinicsolution.hk" | "https://api-uat.clinicsolution.hk" | "https://api-poc.clinicsolution.hk" => {
+   if (system === 'csx-k8') {
+     if (env === 'prod') {
+       return CSX_K8_PROD_API_BASE_URL;
+@@ -41,9 +37,9 @@ function resolveDefaultApiBaseUrl(system: CsxSystem, env: CsxEnvironment) {
+   }
+ 
+   return '';
+-}
++};
+ 
+-export function getCsxApiEnvironment(): CsxApiEnvironment {
++export const getCsxApiEnvironment = (): CsxApiEnvironment => {
+   const system = parseSystem(process.env.NEXT_PUBLIC_CSX_SYSTEM);
+   const env = parseEnv(process.env.NEXT_PUBLIC_CSX_ENV);
+   const configuredBaseUrl = process.env.NEXT_PUBLIC_CSX_API_BASE_URL;
+@@ -55,9 +51,9 @@ export function getCsxApiEnvironment(): CsxApiEnvironment {
+     env,
+     system,
+   };
+-}
++};
+ 
+-export function resolveCsxApiUrl(path: string) {
++export const resolveCsxApiUrl = (path: string): string => {
+   if (/^https?:\/\//i.test(path)) {
+     return path;
+   }
+@@ -66,4 +62,4 @@ export function resolveCsxApiUrl(path: string) {
+   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+ 
+   return apiBaseUrl ? `${apiBaseUrl}${normalizedPath}` : normalizedPath;
+-}
++};
+diff --git a/src/lib/csx-auth.ts b/src/lib/csx-auth.ts
+index 4b235ea..4ab22ab 100644
+--- a/src/lib/csx-auth.ts
++++ b/src/lib/csx-auth.ts
+@@ -31,11 +31,9 @@ const emptyAuthContext: CsxAuthContext = {
+   doctorDisplayName: null,
+ };
+ 
+-export function createEmptyCsxAuthContext(): CsxAuthContext {
+-  return {...emptyAuthContext, permissions: []};
+-}
++export const createEmptyCsxAuthContext = (): CsxAuthContext => ({...emptyAuthContext, permissions: []});
+ 
+-function parseJson<T>(value: string | null, fallback: T): T {
++const parseJson = <T>(value: string | null, fallback: T): T => {
+   if (!value) {
+     return fallback;
+   }
+@@ -45,13 +43,11 @@ function parseJson<T>(value: string | null, fallback: T): T {
+   } catch {
+     return value as T;
+   }
+-}
++};
+ 
+-function isRecord(value: unknown): value is Record<string, unknown> {
+-  return typeof value === 'object' && value !== null && !Array.isArray(value);
+-}
++const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value);
+ 
+-function normalizeString(value: unknown): string | null {
++const normalizeString = (value: unknown): string | null => {
+   if (typeof value === 'string') {
+     const trimmed = value.trim();
+ 
+@@ -63,9 +59,9 @@ function normalizeString(value: unknown): string | null {
+   }
+ 
+   return null;
+-}
++};
+ 
+-function readString(record: Record<string, unknown> | null, keys: string[]) {
++const readString = (record: Record<string, unknown> | null, keys: string[]): string | null => {
+   if (!record) {
+     return null;
+   }
+@@ -79,9 +75,9 @@ function readString(record: Record<string, unknown> | null, keys: string[]) {
+   }
+ 
+   return null;
+-}
++};
+ 
+-function normalizeStringArray(value: unknown): string[] {
++const normalizeStringArray = (value: unknown): string[] => {
+   if (!Array.isArray(value)) {
+     const singleValue = normalizeString(value);
+ 
+@@ -91,17 +87,15 @@ function normalizeStringArray(value: unknown): string[] {
+   return value
+     .map((item) => normalizeString(item))
+     .filter((item): item is string => Boolean(item));
+-}
++};
+ 
+-function hasProgramSettingsAccess(permissions: string[]) {
+-  return permissions.some(
++const hasProgramSettingsAccess = (permissions: string[]): boolean => permissions.some(
+     (permission) =>
+       permission === PROGRAM_SETTINGS_PERMISSION ||
+       permission.startsWith(PROGRAM_SETTINGS_PERMISSION),
+   );
+-}
+ 
+-function decodeBase64UrlJson(value: string): unknown {
++const decodeBase64UrlJson = (value: string): unknown => {
+   const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
+   const paddingLength = (4 - (normalized.length % 4)) % 4;
+   const binary = window.atob(`${normalized}${'='.repeat(paddingLength)}`);
+@@ -109,13 +103,11 @@ function decodeBase64UrlJson(value: string): unknown {
+   const json = new TextDecoder().decode(bytes);
+ 
+   return JSON.parse(json) as unknown;
+-}
++};
+ 
+-function isLocalDevelopmentHost() {
+-  return ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
+-}
++const isLocalDevelopmentHost = (): boolean => ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
+ 
+-function getHashTransferPayload() {
++const getHashTransferPayload = (): string | null => {
+   const hash = window.location.hash.replace(/^#/, '');
+ 
+   if (!hash) {
+@@ -123,9 +115,9 @@ function getHashTransferPayload() {
+   }
+ 
+   return new URLSearchParams(hash).get(AUTH_TRANSFER_HASH_KEY);
+-}
++};
+ 
+-function clearHashTransferPayload() {
++const clearHashTransferPayload = (): void => {
+   if (!getHashTransferPayload()) {
+     return;
+   }
+@@ -135,17 +127,17 @@ function clearHashTransferPayload() {
+     document.title,
+     `${window.location.pathname}${window.location.search}`,
+   );
+-}
++};
+ 
+-function writeStoredValue(key: string, value: unknown) {
++const writeStoredValue = (key: string, value: unknown): void => {
+   if (value === undefined || value === null) {
+     return;
+   }
+ 
+   window.localStorage.setItem(key, JSON.stringify(value));
+-}
++};
+ 
+-function importAuthTransferPayload(payload: unknown) {
++const importAuthTransferPayload = (payload: unknown): boolean => {
+   if (!isRecord(payload)) {
+     return false;
+   }
+@@ -166,9 +158,9 @@ function importAuthTransferPayload(payload: unknown) {
+   writeStoredValue('locale', normalizeString(payload.locale));
+ 
+   return true;
+-}
++};
+ 
+-export function consumeCsxAuthTransfer() {
++export const consumeCsxAuthTransfer = (): boolean => {
+   if (typeof window === 'undefined' || !isLocalDevelopmentHost()) {
+     return false;
+   }
+@@ -206,9 +198,9 @@ export function consumeCsxAuthTransfer() {
+ 
+     return false;
+   }
+-}
++};
+ 
+-export function getCsxAuthContext(): CsxAuthContext {
++export const getCsxAuthContext = (): CsxAuthContext => {
+   if (typeof window === 'undefined') {
+     return createEmptyCsxAuthContext();
+   }
+@@ -257,9 +249,9 @@ export function getCsxAuthContext(): CsxAuthContext {
+     clinicCode,
+     doctorDisplayName,
+   };
+-}
++};
+ 
+-export function notifyParentAuthExpired() {
++export const notifyParentAuthExpired = (): void => {
+   if (typeof window === 'undefined') {
+     return;
+   }
+@@ -275,4 +267,4 @@ export function notifyParentAuthExpired() {
+     },
+     window.location.origin,
+   );
+-}
++};
+diff --git a/src/lib/display-api.ts b/src/lib/display-api.ts
+index 7efc442..eadf536 100644
+--- a/src/lib/display-api.ts
++++ b/src/lib/display-api.ts
+@@ -25,6 +25,17 @@ interface QueueListPayload {
+   totalPage?: number;
+ }
+ 
++interface QueueDoctorPage {
++  doctors: UnknownRecord[];
++  latestCallNumberDoctorProfile: DoctorProfilePayload | null | undefined;
++  totalPage: number;
++}
++
++interface QueuePayload {
++  doctors: UnknownRecord[];
++  latestCallNumberDoctorProfile: DoctorProfilePayload | null | undefined;
++}
++
+ interface ClinicInfoPayload extends UnknownRecord {
+   clinicId?: string;
+   healsCoreId?: string | null;
+@@ -94,21 +105,15 @@ export const DEFAULT_CLINIC_BRAND: DisplayClinicBrand = {
+   nameZh: '診寶',
+ };
+ 
+-function asString(value: unknown, fallback = '') {
+-  return typeof value === 'string' && value.trim() ? value.trim() : fallback;
+-}
++const asString = (value: unknown, fallback: string = ''): string => typeof value === 'string' && value.trim() ? value.trim() : fallback;
+ 
+-function isUnknownRecord(value: unknown): value is UnknownRecord {
+-  return typeof value === 'object' && value !== null && !Array.isArray(value);
+-}
++const isUnknownRecord = (value: unknown): value is UnknownRecord => typeof value === 'object' && value !== null && !Array.isArray(value);
+ 
+-function getQueueDoctorProfile(record: UnknownRecord): DoctorProfilePayload | undefined {
+-  return isUnknownRecord(record.doctorProfile) ? record.doctorProfile : undefined;
+-}
++const getQueueDoctorProfile = (record: UnknownRecord): DoctorProfilePayload | undefined => isUnknownRecord(record.doctorProfile) ? record.doctorProfile : undefined;
+ 
+-function getLatestCallNumberDoctorProfile(
++const getLatestCallNumberDoctorProfile = (
+   payload: QueueListPayload | null,
+-): DoctorProfilePayload | null | undefined {
++): DoctorProfilePayload | null | undefined => {
+   if (!payload || !('latestCallNumberDoctorProfile' in payload)) {
+     return undefined;
+   }
+@@ -116,9 +121,9 @@ function getLatestCallNumberDoctorProfile(
+   return isUnknownRecord(payload.latestCallNumberDoctorProfile)
+     ? payload.latestCallNumberDoctorProfile
+     : null;
+-}
++};
+ 
+-function asNumber(value: unknown, fallback = 0) {
++const asNumber = (value: unknown, fallback: number = 0): number => {
+   if (typeof value === 'number' && Number.isFinite(value)) {
+     return value;
+   }
+@@ -131,13 +136,11 @@ function asNumber(value: unknown, fallback = 0) {
+   }
+ 
+   return fallback;
+-}
++};
+ 
+-function asBoolean(value: unknown) {
+-  return value === true || value === 'true' || value === 1 || value === '1';
+-}
++const asBoolean = (value: unknown): boolean => value === true || value === 'true' || value === 1 || value === '1';
+ 
+-function asOptionalBoolean(value: unknown) {
++const asOptionalBoolean = (value: unknown): boolean | undefined => {
+   if (value === true || value === 'true' || value === 1 || value === '1') {
+     return true;
+   }
+@@ -147,9 +150,9 @@ function asOptionalBoolean(value: unknown) {
+   }
+ 
+   return undefined;
+-}
++};
+ 
+-function stableStringify(value: unknown): string {
++const stableStringify = (value: unknown): string => {
+   if (Array.isArray(value)) {
+     return `[${value.map((item) => stableStringify(item)).join(',')}]`;
+   }
+@@ -162,22 +165,20 @@ function stableStringify(value: unknown): string {
+   }
+ 
+   return JSON.stringify(value) ?? String(value);
+-}
++};
+ 
+-function getQueueSignature(records: UnknownRecord[]) {
+-  return stableStringify(records);
+-}
++const getQueueSignature = (records: UnknownRecord[]): string => stableStringify(records);
+ 
+-function pickString(record: UnknownRecord, keys: string[], fallback = '') {
++const pickString = (record: UnknownRecord, keys: string[], fallback: string = ''): string => {
+   for (const key of keys) {
+     const value = asString(record[key]);
+     if (value) return value;
+   }
+ 
+   return fallback;
+-}
++};
+ 
+-function pickNumber(record: UnknownRecord, keys: string[], fallback = 0) {
++const pickNumber = (record: UnknownRecord, keys: string[], fallback: number = 0): number => {
+   for (const key of keys) {
+     const value = record[key];
+     if (value !== undefined && value !== null && value !== '') {
+@@ -186,9 +187,9 @@ function pickNumber(record: UnknownRecord, keys: string[], fallback = 0) {
+   }
+ 
+   return fallback;
+-}
++};
+ 
+-function pickOptionalBoolean(record: UnknownRecord, keys: string[]) {
++const pickOptionalBoolean = (record: UnknownRecord, keys: string[]): boolean | undefined => {
+   for (const key of keys) {
+     const value = asOptionalBoolean(record[key]);
+     if (value !== undefined) {
+@@ -197,17 +198,17 @@ function pickOptionalBoolean(record: UnknownRecord, keys: string[]) {
+   }
+ 
+   return undefined;
+-}
++};
+ 
+-function buildDepartment(nameZh: string, nameEn: string): DisplayDoctorDepartment | null {
++const buildDepartment = (nameZh: string, nameEn: string): DisplayDoctorDepartment | null => {
+   if (!nameZh && !nameEn) {
+     return null;
+   }
+ 
+   return {nameEn, nameZh};
+-}
++};
+ 
+-function getLocalizedValue(items: UnknownRecord[], preferredLanguages: string[]) {
++const getLocalizedValue = (items: UnknownRecord[], preferredLanguages: string[]): string => {
+   for (const language of preferredLanguages) {
+     const exactMatch = items.find((item) => asString(item.lang).toLowerCase() === language);
+     const exactValue = asString(exactMatch?.value);
+@@ -229,16 +230,14 @@ function getLocalizedValue(items: UnknownRecord[], preferredLanguages: string[])
+   }
+ 
+   return '';
+-}
++};
+ 
+-function isLocalizedTextList(value: unknown): value is UnknownRecord[] {
+-  return (
++const isLocalizedTextList = (value: unknown): value is UnknownRecord[] => (
+     Array.isArray(value) &&
+     value.some((item) => isUnknownRecord(item) && ('lang' in item || 'value' in item))
+   );
+-}
+ 
+-function getLocalizedTextItems(value: unknown) {
++const getLocalizedTextItems = (value: unknown): UnknownRecord[] | null => {
+   if (isLocalizedTextList(value)) {
+     return value;
+   }
+@@ -248,9 +247,9 @@ function getLocalizedTextItems(value: unknown) {
+   }
+ 
+   return null;
+-}
++};
+ 
+-function parseLocalizedDepartment(value: unknown): DisplayDoctorDepartment | null {
++const parseLocalizedDepartment = (value: unknown): DisplayDoctorDepartment | null => {
+   const localizedItems = getLocalizedTextItems(value);
+ 
+   if (!localizedItems) {
+@@ -261,9 +260,9 @@ function parseLocalizedDepartment(value: unknown): DisplayDoctorDepartment | nul
+     getLocalizedValue(localizedItems, ['zh-hant']),
+     getLocalizedValue(localizedItems, ['en-us', 'en']),
+   );
+-}
++};
+ 
+-function parseDepartmentEntry(value: unknown): DisplayDoctorDepartment | null {
++const parseDepartmentEntry = (value: unknown): DisplayDoctorDepartment | null => {
+   const localizedDepartment = parseLocalizedDepartment(value);
+ 
+   if (localizedDepartment) {
+@@ -286,9 +285,9 @@ function parseDepartmentEntry(value: unknown): DisplayDoctorDepartment | null {
+     pickString(value, ['nameZh', 'departmentNameZh', 'specialtyZh', 'zhName', 'labelZh']),
+     pickString(value, ['nameEn', 'departmentNameEn', 'specialtyEn', 'enName', 'labelEn']),
+   );
+-}
++};
+ 
+-function parseDepartmentList(value: unknown): DisplayDoctorDepartment[] {
++const parseDepartmentList = (value: unknown): DisplayDoctorDepartment[] => {
+   const localizedDepartment = parseLocalizedDepartment(value);
+ 
+   if (localizedDepartment) {
+@@ -302,13 +301,11 @@ function parseDepartmentList(value: unknown): DisplayDoctorDepartment[] {
+   return value
+     .map((item) => parseDepartmentEntry(item))
+     .filter((department): department is DisplayDoctorDepartment => Boolean(department));
+-}
++};
+ 
+-function buildProfileDepartments(profile: DoctorProfilePayload) {
+-  return parseDepartmentList(profile.typeMultilingual);
+-}
++const buildProfileDepartments = (profile: DoctorProfilePayload): DisplayDoctorDepartment[] => parseDepartmentList(profile.typeMultilingual);
+ 
+-function resolveDoctorMode(record: UnknownRecord): DoctorMode {
++const resolveDoctorMode = (record: UnknownRecord): DoctorMode => {
+   const mode = pickString(record, [
+     'doctorMode',
+     'consultationMode',
+@@ -346,9 +343,9 @@ function resolveDoctorMode(record: UnknownRecord): DoctorMode {
+   }
+ 
+   return 'physical';
+-}
++};
+ 
+-function buildIntroduction(profile?: DoctorProfilePayload) {
++const buildIntroduction = (profile?: DoctorProfilePayload): string[] => {
+   const introduction = asString(profile?.introduction);
+   return introduction
+     ? introduction
+@@ -356,15 +353,13 @@ function buildIntroduction(profile?: DoctorProfilePayload) {
+         .map((item) => item.trim())
+         .filter(Boolean)
+     : [];
+-}
++};
+ 
+-export function getDisplayQueuePageSize(showDoctorIntroduction: boolean) {
+-  return showDoctorIntroduction
++export const getDisplayQueuePageSize = (showDoctorIntroduction: boolean): 2 | 4 => showDoctorIntroduction
+     ? DISPLAY_QUEUE_PAGE_SIZE_WITH_INTRODUCTION
+     : DISPLAY_QUEUE_PAGE_SIZE_WITHOUT_INTRODUCTION;
+-}
+ 
+-function mapClinicBrand(clinicInfo: ClinicInfoPayload | null): DisplayClinicBrand | null {
++const mapClinicBrand = (clinicInfo: ClinicInfoPayload | null): DisplayClinicBrand | null => {
+   if (!clinicInfo) {
+     return null;
+   }
+@@ -399,34 +394,30 @@ function mapClinicBrand(clinicInfo: ClinicInfoPayload | null): DisplayClinicBran
+   ]);
+ 
+   return iconUrl || nameEn || nameZh ? {iconUrl, nameEn, nameZh} : null;
+-}
++};
+ 
+-function getRegistrationQrBaseUrl() {
+-  return process.env.NEXT_PUBLIC_CSX_ENV === 'prod' ? CHECKIN_PROD_BASE_URL : CHECKIN_DEV_BASE_URL;
+-}
++const getRegistrationQrBaseUrl = (): "https://checkin.heals.asia" | "https://checkin-dev.heals.asia" => process.env.NEXT_PUBLIC_CSX_ENV === 'prod' ? CHECKIN_PROD_BASE_URL : CHECKIN_DEV_BASE_URL;
+ 
+-export function buildSelfServiceRegistrationQrUrl(healsCoreId: string, timestamp: number) {
++export const buildSelfServiceRegistrationQrUrl = (healsCoreId: string, timestamp: number): string => {
+   const payload = encodeURIComponent(JSON.stringify({t: timestamp}));
+   return `${getRegistrationQrBaseUrl()}/new/${healsCoreId}?d=${payload}`;
+-}
++};
+ 
+-function mapSelfServiceQr(clinicInfo: ClinicInfoPayload | null): DisplaySelfServiceQrSource | null {
++const mapSelfServiceQr = (clinicInfo: ClinicInfoPayload | null): DisplaySelfServiceQrSource | null => {
+   if (!clinicInfo) {
+     return null;
+   }
+ 
+   const healsCoreId = asString(clinicInfo.healsCoreId);
+   return healsCoreId ? {healsCoreId, type: 'registration'} : null;
+-}
++};
+ 
+-function parseVideoUrls(videoUrl: string) {
+-  return videoUrl
++const parseVideoUrls = (videoUrl: string): string[] => videoUrl
+     .split(';')
+     .map((item) => item.trim())
+     .filter(Boolean);
+-}
+ 
+-function mapClinicInfoSnapshot(clinicInfo: ClinicInfoPayload | null): DisplayClinicInfoSnapshot {
++const mapClinicInfoSnapshot = (clinicInfo: ClinicInfoPayload | null): DisplayClinicInfoSnapshot => {
+   const clinicBrand = mapClinicBrand(clinicInfo);
+   const videoUrl = asString(clinicInfo?.videoURL);
+ 
+@@ -439,9 +430,9 @@ function mapClinicInfoSnapshot(clinicInfo: ClinicInfoPayload | null): DisplayCli
+     videoUrlSignature: videoUrl,
+     videoUrls: parseVideoUrls(videoUrl),
+   };
+-}
++};
+ 
+-function mapQueueDoctor(record: UnknownRecord, index: number) {
++const mapQueueDoctor = (record: UnknownRecord, index: number): DisplayDoctor => {
+   const fallbackDoctor = displayDoctors[index % displayDoctors.length]!;
+   const doctorProfile = getQueueDoctorProfile(record);
+   const id = pickString(record, ['doctorId', 'csxDoctorId', 'id'], fallbackDoctor.id);
+@@ -483,11 +474,11 @@ function mapQueueDoctor(record: UnknownRecord, index: number) {
+     teleconsultationAvailable:
+       pickOptionalBoolean(doctorProfile ?? {}, ['teleconsultationAvailable']) ?? false,
+   } satisfies DisplayDoctor;
+-}
++};
+ 
+-function mapLatestCallDoctor(
++const mapLatestCallDoctor = (
+   latestProfile: DoctorProfilePayload | null | undefined,
+-) {
++): DisplayDoctor | null => {
+   if (!latestProfile) {
+     return null;
+   }
+@@ -537,9 +528,9 @@ function mapLatestCallDoctor(
+     teleconsultationAvailable:
+       pickOptionalBoolean(latestProfile, ['teleconsultationAvailable']) ?? false,
+   } satisfies DisplayDoctor;
+-}
++};
+ 
+-async function fetchClinicInfo(clinicCode: string, signal?: AbortSignal) {
++const fetchClinicInfo = async (clinicCode: string, signal?: AbortSignal): Promise<ClinicInfoPayload | null> => {
+   const params = new URLSearchParams({clinicCode});
+ 
+   try {
+@@ -557,13 +548,15 @@ async function fetchClinicInfo(clinicCode: string, signal?: AbortSignal) {
+   } catch {
+     return null;
+   }
+-}
++};
+ 
+-export async function fetchDisplayClinicInfoSnapshot(clinicCode: string, signal?: AbortSignal) {
+-  return mapClinicInfoSnapshot(await fetchClinicInfo(clinicCode, signal));
+-}
++export const fetchDisplayClinicInfoSnapshot = async (clinicCode: string, signal?: AbortSignal): Promise<DisplayClinicInfoSnapshot> => mapClinicInfoSnapshot(await fetchClinicInfo(clinicCode, signal));
+ 
+-async function fetchQueueDoctorPage(clinicCode: string, pageIndex: number, signal?: AbortSignal) {
++const fetchQueueDoctorPage = async (
++  clinicCode: string,
++  pageIndex: number,
++  signal?: AbortSignal,
++): Promise<QueueDoctorPage> => {
+   const params = new URLSearchParams({
+     clinicCode,
+     pageIndex: String(pageIndex),
+@@ -593,9 +586,12 @@ async function fetchQueueDoctorPage(clinicCode: string, pageIndex: number, signa
+     latestCallNumberDoctorProfile: getLatestCallNumberDoctorProfile(payload),
+     totalPage: payload.totalPage && payload.totalPage > 0 ? payload.totalPage : 1,
+   };
+-}
++};
+ 
+-async function fetchQueuePayload(clinicCode: string, signal?: AbortSignal) {
++const fetchQueuePayload = async (
++  clinicCode: string,
++  signal?: AbortSignal,
++): Promise<QueuePayload> => {
+   const firstPage = await fetchQueueDoctorPage(clinicCode, 1, signal);
+ 
+   if (firstPage.totalPage <= 1) {
+@@ -615,24 +611,24 @@ async function fetchQueuePayload(clinicCode: string, signal?: AbortSignal) {
+     doctors: [firstPage, ...remainingPages].flatMap((page) => page.doctors),
+     latestCallNumberDoctorProfile: firstPage.latestCallNumberDoctorProfile,
+   };
+-}
++};
+ 
+-export async function fetchQueueSnapshotSignature(
++export const fetchQueueSnapshotSignature = async (
+   clinicCode: string,
+   signal?: AbortSignal,
+-): Promise<DisplayQueueSnapshotSignature> {
++): Promise<DisplayQueueSnapshotSignature> => {
+   const queuePayload = await fetchQueuePayload(clinicCode, signal);
+ 
+   return {
+     queueCount: queuePayload.doctors.length,
+     queueSignature: getQueueSignature(queuePayload.doctors),
+   };
+-}
++};
+ 
+-function mapDisplayQueueData(
++const mapDisplayQueueData = (
+   queueDoctors: UnknownRecord[],
+   latestCallNumberDoctorProfile: DoctorProfilePayload | null | undefined,
+-): DisplayQueueData {
++): DisplayQueueData => {
+   const showDoctorIntroduction = DISPLAY_DOCTOR_INTRODUCTION_ENABLED;
+   const pageSize = getDisplayQueuePageSize(showDoctorIntroduction);
+   const mappedDoctors = queueDoctors.map((doctor, index) => mapQueueDoctor(doctor, index));
+@@ -650,25 +646,25 @@ function mapDisplayQueueData(
+     totalPage: Math.max(1, Math.ceil(mappedDoctors.length / pageSize)),
+     totalQueued: mappedDoctors.reduce((sum, doctor) => sum + doctor.queued, 0),
+   };
+-}
++};
+ 
+-export async function fetchDisplayQueueData(
++export const fetchDisplayQueueData = async (
+   clinicCode: string,
+   signal?: AbortSignal,
+-) {
++): Promise<DisplayQueueData> => {
+   const queuePayload = await fetchQueuePayload(clinicCode, signal);
+ 
+   return mapDisplayQueueData(
+     queuePayload.doctors,
+     queuePayload.latestCallNumberDoctorProfile,
+   );
+-}
++};
+ 
+-export async function fetchDisplayData(
++export const fetchDisplayData = async (
+   clinicCode: string,
+   signal?: AbortSignal,
+   onClinicInfo?: (snapshot: DisplayClinicInfoSnapshot) => void,
+-): Promise<DisplayData> {
++): Promise<DisplayData> => {
+   const clinicInfoPromise = fetchClinicInfo(clinicCode, signal);
+   const queuePayloadPromise = fetchQueuePayload(clinicCode, signal);
+   const clinicInfo = await clinicInfoPromise;
+@@ -685,4 +681,4 @@ export async function fetchDisplayData(
+       queuePayload.latestCallNumberDoctorProfile,
+     ),
+   };
+-}
++};
+diff --git a/src/lib/global-clinic.tsx b/src/lib/global-clinic.tsx
+index b7ea97f..2cc0931 100644
+--- a/src/lib/global-clinic.tsx
++++ b/src/lib/global-clinic.tsx
+@@ -6,6 +6,7 @@ import {
+   useContext,
+   useMemo,
+   useState,
++  type JSX,
+   type ReactNode,
+ } from 'react';
+ import {getCsxAuthContext} from '@/lib/csx-auth';
+@@ -31,7 +32,7 @@ interface GlobalClinicSelection {
+ 
+ const GlobalClinicContext = createContext<GlobalClinicContextValue | null>(null);
+ 
+-export function GlobalClinicProvider({children}: {children: ReactNode}) {
++export const GlobalClinicProvider = ({children}: {children: ReactNode}): JSX.Element => {
+   const [displayManagementClinicSelection, setDisplayManagementClinicSelection] =
+     useState<DisplayManagementClinicSelection | null>(null);
+   const [globalClinicSelection, setGlobalClinicSelection] = useState<GlobalClinicSelection>(() => ({
+@@ -76,9 +77,9 @@ export function GlobalClinicProvider({children}: {children: ReactNode}) {
+   );
+ 
+   return <GlobalClinicContext.Provider value={value}>{children}</GlobalClinicContext.Provider>;
+-}
++};
+ 
+-export function useGlobalClinicSelection() {
++export const useGlobalClinicSelection = (): GlobalClinicContextValue => {
+   const context = useContext(GlobalClinicContext);
+ 
+   if (!context) {
+@@ -86,4 +87,4 @@ export function useGlobalClinicSelection() {
+   }
+ 
+   return context;
+-}
++};
+diff --git a/src/lib/mock-data.ts b/src/lib/mock-data.ts
+index 936664f..34bc353 100644
+--- a/src/lib/mock-data.ts
++++ b/src/lib/mock-data.ts
+@@ -146,8 +146,6 @@ const modePriority: Record<DoctorMode, number> = {
+   physical: 2,
+ };
+ 
+-export function sortDisplayDoctors(doctors: DisplayDoctor[]) {
+-  return [...doctors].sort(
++export const sortDisplayDoctors = (doctors: DisplayDoctor[]): DisplayDoctor[] => [...doctors].sort(
+     (a, b) => modePriority[a.mode] - modePriority[b.mode] || a.queued - b.queued,
+   );
+-}
+diff --git a/src/lib/utils.ts b/src/lib/utils.ts
+index 1b288f0..d90c020 100644
+--- a/src/lib/utils.ts
++++ b/src/lib/utils.ts
+@@ -1,6 +1,4 @@
+ import {clsx, type ClassValue} from 'clsx';
+ import {twMerge} from 'tailwind-merge';
+ 
+-export function cn(...inputs: ClassValue[]) {
+-  return twMerge(clsx(inputs));
+-}
++export const cn = (...inputs: ClassValue[]): string => twMerge(clsx(inputs));

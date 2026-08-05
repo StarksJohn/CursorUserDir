@@ -1,0 +1,528 @@
+Codex CLI config.toml: Every Key Explained
+
+TL;DR. Codex CLI’s`config.toml` has grown past 150 documented keys across sandbox, approvals, permissions, MCP, providers, TUI, hooks, telemetry, and feature flags — most users only edit five of them, and miss the ones that actually matter (granular approvals, permission profiles,`shell_environment_policy`,`features.network_proxy`). This deep dive walks every section, calls out the surprising defaults, and ends with a layered config you can paste and trim. The default`~/.codex/config.toml` is empty for a reason: Codex ships sensible defaults, but the moment you put Codex in a sandbox tighter than your shell or a model cheaper than the flagship, you’ll touch ten settings — and seven of them aren’t in any blog post.
+
+## Where the file lives, and what gets ignored
+
+User-level config lives in`$CODEX_HOME/config.toml`, which defaults to`~/.codex/config.toml` on macOS and Linux and`%USERPROFILE%\.codex\config.toml` on Windows. Project-scoped overrides go in`.codex/config.toml` at the project root.
+
+The merge is layered: managed config (admin-pushed) → user config → project config → CLI flags. Profiles slot in between user and project config when`--profile NAME` is passed. A set of keys are deliberately ignored in project-local files for safety, and silently dropped if you put them there:
+
+- `openai_base_url`,`chatgpt_base_url`
+- `model_provider`,`model_providers`
+- `notify`,`profile`,`profiles`
+- `approval_policy`,`sandbox_mode`,`sandbox_workspace_write.*`
+- `experimental_realtime_ws_base_url`,`otel.*`,`apps_mcp_product_sku`
+
+If your project config “doesn’t seem to take effect” for one of those, move it to`~/.codex/config.toml`. This is the single most common WTF on the Codex CLI Discord.
+
+## The five keys most users actually set
+
+```
+model            = "gpt-5.4"          # or any id your provider exposes
+model_provider   = "openai"           # built-in: openai, ollama, lmstudio
+approval_policy  = "on-request"       # untrusted | on-request | never | { granular = {...} }
+sandbox_mode     = "workspace-write"  # read-only | workspace-write | danger-full-access
+file_opener      = "vscode"           # vscode | vscode-insiders | windsurf | cursor | none
+```
+
+That’s the 80% config. Everything below this section either tightens the sandbox, swaps the provider, layers a profile, or wires in MCP/hooks/OTEL.
+
+A note on the model field: Codex’s default refreshed to`gpt-5.4` recently, and`gpt-5.5` is currently surfaced through ChatGPT-login workflows in the TUI’s composer. For API-key workflows the available IDs vary by provider; check`codex models`(or your provider’s catalog) before pinning a value. The Codex CLI ships a built-in catalog plus the optional`model_catalog_json` key for loading your own JSON catalog on startup.
+
+## Sandbox and approvals — get this pair right or nothing else matters
+
+`sandbox_mode` is what Codex is technically allowed to touch.`approval_policy` is when Codex asks you first. They compose, and they default to safe-but-annoying.
+
+### sandbox_mode
+
+| Value | Filesystem | Network |
+| --- | --- | --- |
+| `read-only` | Read everywhere, write nowhere | Blocked |
+| `workspace-write` | Write inside cwd +`$TMPDIR`+`/tmp` | Blocked by default |
+| `danger-full-access` | Whatever your user can do | Whatever your user can do |
+
+Most teams should sit in`workspace-write`. The under-documented controls live under`[sandbox_workspace_write]`:
+
+```
+[sandbox_workspace_write]
+writable_roots         = ["~/work/notes"]   # extra dirs beyond cwd
+network_access         = false              # allow outbound HTTP inside sandbox
+exclude_tmpdir_env_var = false              # drop $TMPDIR from writable set
+exclude_slash_tmp      = false              # drop /tmp from writable set
+```
+
+`network_access = true` is the toggle people miss when their`pip install` or`npm install` mysteriously hangs.
+
+### approval_policy
+
+`untrusted` asks before almost everything.`on-request` asks when Codex hits something the sandbox blocks.`never` is fully autonomous (and shouldn’t be paired with`danger-full-access` unless you really mean it).
+
+For finer control, use the table form:
+
+```
+[approval_policy.granular]
+sandbox_approval     = true   # let Codex ask to escalate beyond sandbox
+request_permissions  = true   # let the request_permissions tool prompt
+rules                = true   # respect execpolicy prompt rules
+skill_approval       = true   # ask before running skill scripts
+mcp_elicitations     = false  # mute MCP-driven prompts
+```
+
+This is how you say “you may ask to escalate the sandbox, but stop asking me to confirm individual MCP elicitations.” Most users won’t need it, but for unattended runs in CI it matters.
+
+The companion key`approvals_reviewer` selects who handles eligible prompts:`user`(default) or`auto_review`(which delegates to a configured reviewer agent).
+
+## Reasoning, verbosity, and plan mode
+
+Four keys, all model-dependent. Use them with GPT-5 family models; older/non-reasoning models ignore them.
+
+```
+model_reasoning_effort     = "medium"  # minimal | low | medium | high | xhigh
+model_reasoning_summary    = "auto"    # auto | concise | detailed | none
+model_verbosity            = "medium"  # low | medium | high  (GPT-5 Responses API)
+plan_mode_reasoning_effort = "high"    # override applied only in /plan mode
+```
+
+`xhigh` exists but burns tokens; reserve it for the worst plan-mode problems.`hide_agent_reasoning = true` suppresses reasoning events in the TUI and`codex exec` output without changing what the model actually computes — useful for screenshots, log piping, and pair-programming sessions where the unedited chain-of-thought is more distracting than helpful.`show_raw_agent_reasoning = true` does the inverse: surface the raw reasoning content from the model when the provider exposes it.
+
+`model_supports_reasoning_summaries` is a force-override (true/false) for whether Codex sends reasoning metadata at all. Leave it unset unless you’re debugging a custom provider that lies about its capabilities.
+
+## Permissions profiles — the modern way to scope access
+
+The newer`[permissions.NAME]` block is more expressive than`sandbox_workspace_write` and is the way Codex is moving. You define named profiles (`:read-only`,`:workspace`,`:danger-full-access` ship built-in) and select one with`default_permissions = "my-profile"`.
+
+```
+[permissions.scoped]
+
+[permissions.scoped.workspace_roots]
+"~/code/oss"     = true
+"~/code/clients" = true
+
+[permissions.scoped.filesystem]
+glob_scan_max_depth = 3
+".env"            = "deny"
+"**/.git/**"      = "deny"
+"~/.ssh/**"       = "deny"
+
+[permissions.scoped.filesystem.":workspace_roots"]
+"."        = "write"
+"**/*.env" = "deny"
+
+[permissions.scoped.network]
+enabled              = true
+mode                 = "limited"     # limited | full
+allow_local_binding  = false
+
+[permissions.scoped.network.domains]
+"api.openai.com"      = "allow"
+"api.ofox.ai"         = "allow"
+"github.com"          = "allow"
+"*.internal.corp"     = "deny"
+```
+
+A few things worth knowing:
+
+- The`:workspace_roots` token is a special key that scopes the rules below it to any path declared in`workspace_roots`. Without that scoping wrapper,`**/*.env = "deny"` would apply globally.
+- `glob_scan_max_depth` exists because expanding a deny glob like`**/secret.json` across a giant repo is expensive — Codex caps it to keep startup fast.
+- `network.mode = "limited"` plus an explicit domain allowlist is the production-grade setup. Combine with`dangerously_allow_non_loopback_proxy = false`(the default) so the sandbox proxy only binds to loopback.
+
+## Network proxy — the feature flag most people skip
+
+If you ran into “but Codex can’t`pip install`”, you probably want this:
+
+```
+[features.network_proxy]
+enabled = true
+proxy_url  = "http://127.0.0.1:3128"
+socks_url  = "http://127.0.0.1:8081"
+enable_socks5     = true
+enable_socks5_udp = true
+allow_local_binding   = false
+allow_upstream_proxy  = true
+
+[features.network_proxy.domains]
+"pypi.org"             = "allow"
+"registry.npmjs.org"   = "allow"
+"github.com"           = "allow"
+"api.openai.com"       = "allow"
+```
+
+This gives the sandboxed subprocess an HTTP/SOCKS5 proxy with a domain allowlist, rather than the binary on/off of`sandbox_workspace_write.network_access`. The`dangerously_*` keys exist for niche bind/listener cases — leave them off unless you understand the failure mode.
+
+## MCP servers — the meatiest section
+
+MCP server configuration lives under`[mcp_servers.]`. The schema covers both stdio servers (`command`+`args`) and HTTP streamable servers (`url`+ headers).
+
+```
+[mcp_servers.docs]
+command = "uvx"
+args    = ["mcp-server-docs"]
+cwd     = "~/code/docs-server"
+env     = { DOCS_INDEX = "~/.cache/docs.idx" }
+startup_timeout_sec = 15
+tool_timeout_sec    = 90
+required            = false  # if true, Codex fails startup when this server can't init
+enabled             = true
+enabled_tools       = ["search", "fetch_section"]   # allowlist
+disabled_tools      = []                            # denylist
+default_tools_approval_mode = "auto"                # auto | prompt | approve
+
+[mcp_servers.github]
+url                  = "https://github-mcp.example.com/mcp"
+bearer_token_env_var = "GITHUB_TOKEN"
+http_headers         = { "X-Repo" = "ofoxai/blog" }
+env_http_headers     = { "X-User" = "GITHUB_USER" }   # populated from env
+oauth_resource       = "https://github-mcp.example.com"
+scopes               = ["repo", "issues"]
+
+[mcp_servers.github.tools.create_issue]
+approval_mode = "prompt"   # per-tool override
+```
+
+`startup_timeout_sec` is 10 by default — bump it for slow Node MCP servers that lazy-load on first request.`tool_timeout_sec` defaults to 60; long-running shell or database tools need more.`required = true` is the right call for a server your workflow depends on; you’d rather fail at boot than discover it half a session later.
+
+`default_tools_approval_mode` and`tools..approval_mode` are how you say “auto-approve`search`, prompt me for`delete_branch`” without writing custom approval hooks.
+
+## Model providers — custom endpoints, including ofox
+
+Built-in provider IDs (`openai`,`ollama`,`lmstudio`) are reserved. Everything else is a`[model_providers.]` block. For an ofox setup that routes Codex through one key across GPT/Claude/Gemini/DeepSeek/Qwen models:
+
+```
+[model_providers.ofox]
+name     = "ofox"
+base_url = "https://api.ofox.ai/v1"
+wire_api = "responses"
+env_key  = "OFOX_API_KEY"
+env_key_instructions = "Get a key from https://ofox.ai/keys"
+requires_openai_auth   = false
+request_max_retries     = 4
+stream_max_retries      = 5
+stream_idle_timeout_ms  = 300000
+```
+
+Then either flip the default:
+
+```
+model_provider = "ofox"
+model          = "gpt-5.4"     # or anthropic/claude-opus-4.6, google/gemini-3.1-pro-preview, etc.
+```
+
+…or scope it to a profile (next section). The full BYO walkthrough with auth-via-command, query-param-pinned Azure endpoints, and per-provider header injection is in How to Use Any Model with Codex CLI. The gateway rationale — why you’d want one provider entry that fans out to many models — is in the AI API aggregation guide.
+
+A few keys worth flagging:
+
+- `wire_api` only accepts`"responses"` as of Codex 0.59 (February 2026). The`"chat"` value and the`/chat/completions` path are gone — set it to`"responses"` or omit the key (the default). Third-party gateways that want to keep working with Codex now need to surface a`/v1/responses` endpoint; ofox.ai exposes one alongside`/v1/chat/completions`, so the same`https://api.ofox.ai/v1` base URL still routes to Codex correctly. Gateways without a`/responses` endpoint need a local translator (community bridges exist) or a different client.
+- `requires_openai_auth = false` removes Codex’s assumption that the key prefix is`sk-`— most non-OpenAI gateways need this explicitly. Leave it`true`(the default) only when the proxy mirrors OpenAI auth exactly.
+- `[model_providers..auth]` lets you run a command on a refresh schedule that returns a bearer token — for short-lived workforce tokens, sigv4-derived credentials, etc.
+
+If you’re sliding off vanilla OpenAI auth for the first time, the SDK migration guide for OpenAI clients to ofox is the companion piece.
+
+## Profiles — layer presets on top of your base config
+
+`[profiles.NAME]` is a flat overlay: any top-level key set inside the profile wins when you run`codex --profile NAME`.
+
+```
+[profiles.fast]
+model                   = "gpt-5.4-mini"
+model_reasoning_effort  = "low"
+model_verbosity         = "low"
+approval_policy         = "never"
+sandbox_mode            = "workspace-write"
+
+[profiles.deep]
+model                   = "gpt-5.4"
+model_reasoning_effort  = "high"
+plan_mode_reasoning_effort = "xhigh"
+model_verbosity         = "high"
+approval_policy         = "on-request"
+
+[profiles.review]
+model                   = "anthropic/claude-opus-4.6"   # via ofox provider
+model_provider          = "ofox"
+model_reasoning_effort  = "high"
+```
+
+This is also the place to set`model_provider` per profile so a`review` profile can hit Anthropic-via-ofox while your default profile stays on OpenAI. Remember:`model_provider` and`profile` keys themselves are ignored in project-local config — define them in`~/.codex/config.toml`.
+
+For practical patterns — fast/deep/review profiles paired with shell aliases — see the real-world Codex CLI workflow guide. The pricing tradeoffs behind picking fast/deep models live in the Codex CLI API configuration guide.
+
+## History, TUI, and the file_opener
+
+```
+[history]
+persistence = "save-all"   # save-all | none
+max_bytes   = 5_242_880    # 5 MB cap; drops oldest entries
+
+[tui]
+animations     = true
+show_tooltips  = true
+notifications  = true
+notification_condition = "unfocused"   # unfocused | always
+notification_method    = "auto"        # auto | osc9 | bel
+theme                  = "catppuccin-mocha"
+vim_mode_default       = false
+alternate_screen       = "auto"        # auto | always | never
+raw_output_mode        = false
+status_line            = ["model", "token-usage", "branch"]
+terminal_title         = ["spinner", "project"]
+
+[tui.keymap.composer]
+submit = ["enter"]
+newline = ["shift+enter"]
+```
+
+`tui.notifications` accepts either a boolean or an array of event types (`["new-message", "tool-output"]`) for finer control.`alternate_screen = "never"` is useful in tmux setups where the alternate screen swallows scrollback.`tui.theme` accepts kebab-case theme names —`catppuccin-mocha`,`gruvbox-dark`,`solarized-light`, and friends.
+
+`file_opener` controls the URI scheme Codex emits when citing files in output. The default is`vscode`;`cursor`,`windsurf`,`vscode-insiders`, and`none`(plain paths, no clickable links) are the alternatives.
+
+## shell_environment_policy — the leak you’ll only notice in OTEL
+
+By default Codex inherits your full shell environment when it spawns subprocesses. That’s convenient, until you realize every`AWS_*`,`GITHUB_*`, and`OPENAI_*` variable in your env is reachable by every shell tool the model runs.
+
+```
+[shell_environment_policy]
+inherit                 = "core"          # all | core | none
+ignore_default_excludes = false           # if false, KEY/SECRET/TOKEN names are stripped first
+include_only            = ["PATH", "HOME", "TMPDIR", "LANG", "LC_*"]
+exclude                 = ["AWS_*", "GITHUB_*", "*_TOKEN", "*_SECRET", "*_KEY"]
+set                     = { "CI" = "1", "NO_COLOR" = "1" }
+experimental_use_profile = false
+```
+
+`inherit = "core"` keeps a minimal POSIX-ish set and drops the rest.`ignore_default_excludes = false`(the default) means anything with`KEY`,`SECRET`, or`TOKEN` in the name is filtered before your custom`include_only`/`exclude` runs — leave that on.
+
+`experimental_use_profile = true` invokes your shell’s user profile (`.zshrc`, etc.) when spawning subprocesses. Cleaner output if your profile defines aliases the model relies on; slower startup either way.
+
+## Features flags — the boolean grab-bag
+
+Most defaults are sensible. The ones worth knowing:
+
+```
+[features]
+shell_tool                    = true   # default tool for running commands
+hooks                         = true   # lifecycle hooks (hooks.json or [hooks] block)
+codex_git_commit              = false  # let Codex make git commits attributed to "Codex"
+multi_agent                   = true   # spawn_agents_on_csv & friends
+unified_exec                  = true   # PTY-backed exec (off on Windows by default)
+shell_snapshot                = true   # snapshot env to speed up tool calls
+skill_mcp_dependency_install  = true   # prompt to install missing MCP deps
+fast_mode                     = true   # service-tier picker in TUI
+network_proxy                 = false  # see "Network proxy" section above
+prevent_idle_sleep            = false  # keep machine awake during active turn
+memories                      = false  # opt into Memories
+undo                          = false  # opt into Undo
+personality                   = true   # personality picker
+apps                          = false  # ChatGPT Apps/connectors support
+```
+
+`codex_git_commit = true` pairs with the top-level`commit_attribution` string (default [email protected]`"Codex <>"`) — set that to a meaningful identity before turning the feature on.
+
+`memories = true` activates the`[memories]` block (thread eligibility, consolidation cadence, raw memory caps). Defaults are conservative: max age 30 days, min idle 6 hours, max 16 rollouts per startup.
+
+## Hooks — lifecycle events without leaving config.toml
+
+You can keep hooks in a sidecar`hooks.json`, or inline them under`[hooks]`. Inline form:
+
+```
+[hooks]
+
+[[hooks.SessionStart]]
+matcher = "*"
+
+  [[hooks.SessionStart.hooks]]
+  type    = "command"
+  command = ["sh", "-c", "echo 'session started' >> ~/.codex.log"]
+
+[[hooks.PreToolUse]]
+matcher = "Bash"
+
+  [[hooks.PreToolUse.hooks]]
+  type    = "command"
+  command = ["python3", "~/bin/codex_audit.py"]
+  commandWindows = ["py", "C:/bin/codex_audit.py"]
+```
+
+The matcher table groups handlers by event. The documented events are`SessionStart`,`UserPromptSubmit`,`PreToolUse`,`PostToolUse`,`PermissionRequest`,`PreCompact`,`PostCompact`,`SubagentStart`,`SubagentStop`, and`Stop`. Each hook entry has a`type` plus the relevant fields — for command hooks, that’s`command` and the optional`commandWindows` override for Windows shells.
+
+If your team needs to force hooks across every developer machine, the`allow_managed_hooks_only = true` flag in`requirements.toml`(admin-distributed) makes user and project hooks no-ops, leaving only managed ones. The Claude Code equivalent — and a similar safety story — is covered in the Claude Code hooks, subagents, and skills guide.
+
+## Telemetry: otel and analytics
+
+OpenTelemetry support ships built-in:
+
+```
+[otel]
+environment       = "prod"
+log_user_prompt   = false                   # opt in to exporting raw prompts
+exporter          = "otlp-http"             # none | otlp-http | otlp-grpc
+trace_exporter    = "otlp-grpc"
+metrics_exporter  = "statsig"               # none | statsig | otlp-http | otlp-grpc
+
+[otel.exporter."otlp-http"]
+endpoint = "https://collector.example.com/v1/logs"
+protocol = "binary"                         # binary | json
+headers  = { "x-api-key" = "${OTEL_KEY}" }
+
+[otel.exporter."otlp-http".tls]
+ca-certificate     = "~/certs/ca.pem"
+client-certificate = "~/certs/client.pem"
+client-private-key = "~/certs/client.key"
+```
+
+`otel.*` keys are user-level only (ignored in project config).`log_user_prompt = false` is the safe default — flip it only when you’ve sanitized your collector pipeline.
+
+`analytics.enabled = true/false` controls the OpenAI-side analytics opt-in.`feedback.enabled = true` keeps the`/feedback` TUI command available.
+
+## Projects, trust, and the AGENTS.md story
+
+```
+project_root_markers         = ["pyproject.toml", "Cargo.toml", "pnpm-workspace.yaml"]
+project_doc_fallback_filenames = ["AGENTS.md", "CLAUDE.md", "CONTRIBUTING.md"]
+project_doc_max_bytes        = 32_768
+
+[projects."/Users/me/code/risky-repo"]
+trust_level = "untrusted"
+
+[projects."/Users/me/code/oss-i-maintain"]
+trust_level = "trusted"
+```
+
+`project_doc_fallback_filenames` is how you get Codex to read`CLAUDE.md`(or your team’s equivalent) when there’s no`AGENTS.md`.`model_instructions_file` is the heavier hammer: a path to a file that replaces the built-in instructions entirely, not just augments them.
+
+Trust level interacts with the approval and sandbox machinery —`untrusted` projects get more conservative defaults regardless of your global settings.
+
+## A complete, layered config you can adapt
+
+Here’s a realistic`~/.codex/config.toml` that combines everything above. Read it as a menu, not a recipe — most teams should delete two-thirds of it.
+
+```
+# ----- Core -----
+model              = "gpt-5.4"
+model_provider     = "ofox"
+approval_policy    = "on-request"
+sandbox_mode       = "workspace-write"
+default_permissions = ":workspace"
+file_opener        = "vscode"
+personality        = "pragmatic"
+service_tier       = "flex"
+
+model_reasoning_effort     = "medium"
+model_reasoning_summary    = "auto"
+model_verbosity            = "medium"
+plan_mode_reasoning_effort = "high"
+
+hide_agent_reasoning           = false
+check_for_update_on_startup    = true
+web_search                     = "cached"
+commit_attribution             = "Codex (ofox) <[email protected]>"
+
+# ----- Providers -----
+[model_providers.ofox]
+name     = "ofox"
+base_url = "https://api.ofox.ai/v1"
+wire_api = "responses"
+env_key  = "OFOX_API_KEY"
+requires_openai_auth = false
+
+# ----- Sandbox -----
+[sandbox_workspace_write]
+network_access = false
+writable_roots = ["~/work/scratch"]
+
+[permissions.tight]
+[permissions.tight.workspace_roots]
+"~/code" = true
+
+[permissions.tight.filesystem]
+glob_scan_max_depth = 3
+".env"            = "deny"
+"**/.git/**"      = "deny"
+"~/.ssh/**"       = "deny"
+
+[permissions.tight.network]
+enabled = true
+mode    = "limited"
+
+[permissions.tight.network.domains]
+"api.ofox.ai"        = "allow"
+"github.com"         = "allow"
+"registry.npmjs.org" = "allow"
+"pypi.org"           = "allow"
+
+# ----- Env hygiene -----
+[shell_environment_policy]
+inherit  = "core"
+include_only = ["PATH", "HOME", "TMPDIR", "LANG", "LC_*", "OFOX_API_KEY"]
+exclude  = ["AWS_*", "GITHUB_*", "*_SECRET", "*_TOKEN"]
+set      = { CI = "1", NO_COLOR = "1" }
+
+# ----- History & TUI -----
+[history]
+persistence = "save-all"
+max_bytes   = 10_485_760
+
+[tui]
+animations     = true
+notifications  = true
+notification_condition = "unfocused"
+theme          = "catppuccin-mocha"
+status_line    = ["model", "token-usage", "branch", "approval"]
+
+# ----- MCP -----
+[mcp_servers.fs]
+command = "uvx"
+args    = ["mcp-server-filesystem", "~/code"]
+startup_timeout_sec = 10
+default_tools_approval_mode = "auto"
+
+[mcp_servers.docs]
+url                  = "https://docs-mcp.your.team/mcp"
+bearer_token_env_var = "DOCS_MCP_TOKEN"
+
+# ----- Profiles -----
+[profiles.fast]
+model                  = "gpt-5.4-mini"
+model_reasoning_effort = "low"
+approval_policy        = "never"
+
+[profiles.deep]
+model_reasoning_effort     = "high"
+plan_mode_reasoning_effort = "xhigh"
+
+[profiles.review]
+model = "anthropic/claude-opus-4.6"
+model_reasoning_effort = "high"
+
+# ----- Telemetry (opt in) -----
+[analytics]
+enabled = false
+
+[otel]
+environment    = "dev"
+metrics_exporter = "none"
+```
+
+https://ofox.ai/cdn-cgi/l/email-protection
+
+Drop it in, run`codex --profile fast`, and you have a sandboxed, network-allowlisted, env-scrubbed setup that hits ofox for budget runs and switches to Anthropic-via-ofox for review passes.
+
+## Gotchas that bite people in week two
+
+A short list, all real, all painful:
+
+1. `model_provider` set in a project-local`.codex/config.toml` silently ignored. Move it to`~/.codex/config.toml`.
+2. `network_access = false` plus a tool that needs the network. Hangs with no clear error; switch to`[features.network_proxy]`+ a domain allowlist instead.
+3. `approval_policy = "never"` plus`sandbox_mode = "danger-full-access"`— there is no safety net, the model can`rm -rf $HOME`. The Claude Code safety guide has the same warning for the Claude side; same lesson applies.
+4. `startup_timeout_sec` defaulting to 10. Slow MCP servers fail to register and Codex silently drops them; bump to 30 for Node-based servers that lazy-load.
+5. `hide_agent_reasoning = true` paired with debugging an agent loop — you’ll waste an hour wondering why the model “did nothing” when it actually spent 4k tokens thinking off-screen.
+6. `shell_environment_policy.inherit = "all"`(the default) leaks your full env to every tool call. The fix is 5 lines of config, the audit case it prevents is enormous.
+7. `[permissions.NAME.filesystem]` glob patterns at the top level apply globally. Scope them under`":workspace_roots"` if you only mean “inside the workspace.”
+
+## Where to go next
+
+If you’re picking a model to slot into`model = "..."`, the best LLM for coding ranked by real use compares the realistic options. If you’re weighing Codex CLI against the alternatives, the Claude Code vs Codex CLI vs Cursor vs DeepSeek TUI comparison is the head-to-head. For BYO model providers with weird auth shapes, the custom OAI-compatible provider setup guide is the most detailed.
+
+The most useful thing in this file isn't a setting — it's the realization that Codex CLI's sandbox is a default-on, default-narrow safety net, and most "why doesn't this work" tickets are someone fighting that net instead of configuring it.
+
+← All posts
