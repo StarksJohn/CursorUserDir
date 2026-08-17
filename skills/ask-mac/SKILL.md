@@ -96,6 +96,16 @@ description: >-
 | 需要浏览器自动化读取页面 | `chrome-devtools` 可用时按全局 MCP 规则执行 |
 | 代码审查或专项工作流 | 对应 `code-review` / `bmad-*`，先补读 skill 及依赖 |
 
+## 当前 Mac VPN / 代理优先级（2026-08-11 复核）
+
+1. Cursor、Cursor 内 Codex 插件、`/Applications/Codex.app`、Git 的统一 HTTP(S) 入口是 `127.0.0.1:4782`；路由脚本为 `/Users/stark/.local/libexec/cursor-vpn-proxy-router.py`，LaunchAgent 为 `/Users/stark/Library/LaunchAgents/com.stark.cursor-vpn-proxy-router.plist`。
+2. `4782` 优先使用 Clash Verge mixed HTTP/SOCKS 代理 `127.0.0.1:7897`，并以目标 HTTPS `CONNECT` 成功作为可用判据；Clash 不可用时改走当前 macOS 系统路由。PrivateVPN 连接并以 `utun*` 接管默认公网路由时，系统回退自然经过 PrivateVPN；两个 VPN 都未连接时则普通直连。
+3. 持久控制点统一为 `4782`：Cursor 使用 `http.proxy = http://127.0.0.1:4782` / `http.proxySupport = override`，Git 全局 `http.proxy` 与 GUI `launchctl` 的 `HTTP_PROXY` / `HTTPS_PROXY` 使用同一地址；为覆盖 Chrome 等 GUI 应用，`Wi-Fi` 与“深圳办公室 VPN”的 HTTP/HTTPS 系统代理也启用为 `127.0.0.1:4782`，SOCKS 关闭，私网地址保留 bypass。无需依赖 Clash 自己的 System Proxy 开关。
+4. 终端层由 `~/.zprofile`、`~/.zshrc`、`~/.profile`、`~/.bashrc` 显式设置大小写 `HTTP_PROXY/HTTPS_PROXY = http://127.0.0.1:4782`，`~/.bash_profile` 从 `~/.profile` 继承；清除 `ALL_PROXY`，并在 `NO_PROXY/no_proxy` 中保留精确主机 `192.168.99.29` 和私网网段，确保新开的 macOS Terminal、Cursor 集成终端、zsh 和 bash 使用同一逻辑且深圳内网继续经 `ppp0`。
+5. `/Users/stark/.cursor/scripts/sync-gui-proxy-env.sh` 先写 GUI 环境再启动并等待路由器，以消除登录启动竞态；它只能同步外部 GUI 环境，禁止修改 Cursor/Codex 签名 App 包内的 `Info.plist`。修改配置后须完全退出并重开 Cursor/Codex，让现有进程继承新环境。
+6. 验收必须包含 `7897/4782` 监听、`route -n get 1.1.1.1`、`4782` 正常与故障回退、清空继承环境的新 zsh/bash 登录与非登录 shell、公网/深圳内网/Git 实际请求、Cursor/Codex 到 `4782` 的真实连接、Codex app-server `model/list`，以及 Cursor/Codex 的 `codesign` / `spctl` 结果。两个 VPN 都关闭时，本机 `4782` 仍存在，但对外应为普通直连；运行时端口、路由和模型列表仍需现场复核。
+7. Cursor `3.15.6` 不接受 OpenAI Codex 的 Secondary Side Bar 容器；本机兼容扩展 `/Users/stark/.cursor/extensions/stark-local.codex-cursor-compat-1.0.0` 会把 Codex 固定到 Activity Bar、重映射原生打开命令，并在 OpenAI 扩展更新后重新修正扩展清单和清除对应用户扩展缓存。不得通过修改 `/Applications/Cursor.app` 处理此问题。
+
 ## 执行工作流
 
 1. 确认当前工作区或用户指定路径，并用双平台路径表理解当前机器路径。
