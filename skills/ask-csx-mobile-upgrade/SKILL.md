@@ -1,183 +1,124 @@
 ---
 name: ask-csx-mobile-upgrade
-description: 作为 CS Mobile（csx-mobile-upgrade）项目入口 skill：恢复项目上下文、收敛需求、按最小上下文读代码，并将任务路由到 RN、TypeScript、Figma、代码审查等专项 skills。适用于用户提及 csx-mobile、CS Mobile、csx-mobile-upgrade、`/ask-csx-mobile-upgrade`，工作区为 Windows `D:/work/RN/csx-mobile-upgrade` 或 Mac `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`，或需要导航、API、i18n、推送、原生构建、健康数据、RN 实现等本仓库级引导时。
+description: >-
+  Cursor 侧 CS Mobile（csx-mobile-upgrade）项目入口：恢复最少必要上下文，
+  区分需求、实现、排障、审查、Figma、API、i18n、推送、原生构建、健康数据与发布任务，
+  路由到对应专项 Skill，并维护无法从源码恢复的项目阶段、外部阻塞和最小下一步。
+  用户输入 /ask-csx-mobile-upgrade、提及 CS Mobile / csx-mobile / csx-mobile-upgrade，
+  当前工作区为 Windows D:/work/RN/csx-mobile-upgrade 或 macOS
+  /Users/{username}/Desktop/work/RN/csx-mobile，或需要继续该仓库任务时使用。
 ---
 
 # ask-csx-mobile-upgrade
 
-## 目的
+## 入口、路径与事实源
 
-本 skill 是 **CS Mobile**（`csx-mobile-upgrade`）的默认入口，用于：
+- Cursor 入口：Windows `%USERPROFILE%\.cursor\skills\ask-csx-mobile-upgrade\SKILL.md`；macOS `~/.cursor/skills/ask-csx-mobile-upgrade/SKILL.md`。
+- Codex 对照入口：Windows `%USERPROFILE%\.codex\skills\csx-mobile-upgrade\SKILL.md`；macOS `~/.codex/skills/csx-mobile-upgrade/SKILL.md`。两端保持同一执行语义，不要求逐字同步。
+- 项目根：Windows `D:\work\RN\csx-mobile-upgrade`；macOS `/Users/<用户名>/Desktop/work/RN/csx-mobile`。若实际路径不同，以当前机器为准。
+- 业务行为、API 映射、组件交互和错误处理以当前源码、测试和真实运行证据为准。
+- 技术栈、脚本、依赖、构建和发布方式以 `.cursor/rules/project-context.mdc`、`package.json`、项目配置和 `README.md` 为准。
+- 当前阶段、无法从源码恢复的外部阻塞和最小下一步以本 Skill 的「项目状态恢复快照」为准。
 
-- 在作答前恢复**最少必要**的项目事实与约束
-- 区分**需求澄清**与**实现 / 排障 / 审查**
-- 将任务路由到合适的仓库规则或专项 skill
-- 在 1～3 个聚焦文件足够时，避免整仓大范围浏览
+发生冲突时，优先采用当前仓库文件、真实设备、Network、构建产物和外部平台的实时证据，不用旧快照覆盖事实。
 
-## 何时使用
+## 新会话最小读取顺序
 
-满足以下任一情况时启用本 skill：
+在实现、排障、审查、改配置或给出专项结论前，依次执行：
 
-- 用户显式输入 `/ask-csx-mobile-upgrade`
-- 对话明确围绕 **CS Mobile / csx-mobile / csx-mobile-upgrade**
-- 工作区为本仓库且需要**项目级**引导
-- 任务横跨导航、登录、API、i18n、Agora、健康数据、推送、Android/iOS 构建或医疗相关文案等
+1. 完整读取本文件，包括未注释的「当前活跃需求」。
+2. 读取 `{workspace}/.cursor/rules/project-context.mdc`、`{workspace}/README.md` 和 `{workspace}/package.json`；只提取与任务相关的规则、命令与依赖，不复述其中的敏感信息。
+3. 读取任务直接相关的 1～3 个源码、配置或测试文件；范围不足时再扩大，不默认扫描整棵 `src/`。
+4. 若入口、项目文档或当前任务路由到其它 Skill，先完整读取对应 `SKILL.md` 及其明确要求的 `workflow.md`、`checklist.md` 或 `reference.md`。
+5. 若引用 `![image](image)`，先按引用该 Markdown 文件的同目录精确路径读取所有直接相关图片；精确路径失败后才搜索。
 
-默认不要一次性加载过大范围代码；从最小有用上下文开始。
+任一必读文件读取失败时，明确报告精确路径和降级范围，再决定继续或请求用户补充。
 
-## 快速开始
+## 项目约束与默认切入位置
 
-1. 确认任务针对 `csx-mobile-upgrade` 或其 fork。
-2. 按顺序读取最小上下文：
-   - `{workspace}/.cursor/rules/project-context.mdc`
-   - `{workspace}/README.md`
-   - `{workspace}/package.json`
-   - 仅与问题直接相关的代码文件
-3. 归类请求类型：需求澄清 / 实现 / 排障 / 审查 / i18n 文案 / 原生构建与环境 / 架构讨论。
-4. 给出可执行的下一步，或调用对应专项 skill。
-5. 需要长期保留的结论优先写入项目文档或规则，而非仅留在对话里。
+- 当前基线是 React Native、TypeScript strict、React Navigation、Redux Toolkit、Metro、SVG 和多语言；精确版本与可用脚本以仓库为准。
+- 非华为设备推送使用 FCM；华为 / 鸿蒙设备使用 HMS Push。修改共享推送逻辑前核对双端字段和平台限制。
+- 第三方原生库字段、方法或参数在实现前核对当前类型定义或官方平台说明；平台专属 API 必须显式分支并提供另一端处理。
+- 医疗健康文案避免确诊式、替代医嘱式表述。
+- 不写入或输出账号、密码、token、证书、私钥、签名材料和环境密钥。
 
-`{workspace}` 按当前系统取值：Windows 默认为 `D:\work\RN\csx-mobile-upgrade`；Mac 默认为 `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`（若实际路径不同，以用户本机为准）。
+| 主题 | 默认切入位置 |
+| --- | --- |
+| 导航 | `src/csxRoutes/`、`src/csxRoutes/csxRouter.ts` |
+| API / DTO | `src/api/`、`src/tools/` |
+| i18n | `src/i18n/`、`src/i18n/locale/` |
+| 推送 | `src/tools/pushManager.ts`、`src/tools/hmsPush.ts`、`src/firebase/` |
+| 健康数据 | `src/pages/HealthDataPage/`、`src/pages/EditHealthDataPage/` 及相关 hooks / services |
+| 通用 UI / 主题 | `src/components/`、`src/components/theme/`、`src/styles/` |
+| 原生构建与发布 | `android/`、`ios/`、`global.ts`、项目脚本和原生配置 |
 
-## 工作区路径
+## 实施工作流
 
-| 平台    | 路径                                                                               |
-| ------- | ---------------------------------------------------------------------------------- |
-| Windows | `D:\work\RN\csx-mobile-upgrade`                                                    |
-| Mac     | `/Users/<你的用户名>/Desktop/work/RN/csx-mobile`（若实际路径不同，以用户本机为准） |
+1. 确认仓库身份、目标平台、环境和交付物，区分本应用与关联系统。
+2. 按最小读取顺序恢复上下文，并把请求归类为需求、实现、运行时缺陷、审查、i18n、Figma、构建 / 发布或架构任务。
+3. 优先读取真实截图、设备状态、Network、构建设置和直接相关代码，再作判断。
+4. 可由真实页面触发 API 时，先读取实际请求与响应；权限或流程阻塞后才退回 Swagger、OpenAPI 或源码，并明确证据边界。
+5. 收到 Figma URL、节点或设计还原任务时，先用 Figma MCP 读取节点；未成功读取前暂停依赖设计事实的实现或验收。
+6. 代码任务依次完成项目内业务实现、项目内定向测试，再更新项目外 Skill 或恢复文档。若验证要求再次改代码，先回到业务实现阶段。
+7. 开发阶段优先运行单文件、单用例、单平台或单设备验证；阶段收尾时再按风险扩大范围。
+8. 完成项目相关任务后，按「状态与文档维护规则」覆盖更新恢复快照和最小下一步。
 
-## 本 skill 文件路径
+## 专项 Skill 路由
 
-| 平台    | 路径                                                                                                                              |
-| ------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| Windows | `C:\Users\Stark8964911\.cursor\skills\ask-csx-mobile-upgrade\SKILL.md`                                                            |
-| Mac     | `~/.cursor/skills/ask-csx-mobile-upgrade/SKILL.md`（等价于 `/Users/<你的用户名>/.cursor/skills/ask-csx-mobile-upgrade/SKILL.md`） |
+按当前机器实际存在的目录选择并读取专项 Skill；不要只凭名称执行。
 
-## Codex 对照文件路径
+| 任务 | 默认路由 |
+| --- | --- |
+| 创建或刷新项目规则 | `init-project` |
+| RN Hooks、跨端、列表、键盘与图片 | `react-native-patterns` |
+| DTO、API 边界和严格类型 | `typescript-strict` |
+| 代码审查 | `code-review`；需要 BMAD 对抗审查时用 `bmad-code-review` |
+| 翻译、术语与多语言 | `chinese-english-translation`，并同步所有必需 locale |
+| Figma 到 RN | `ask-figma-to-rn-toolkit`、`figma-implement-design`；写入画布时再用 `figma-use` |
+| 已澄清规格的快速实现 | `bmad-quick-dev` |
+| 已有 story 文件的开发 | `bmad-dev-story` |
+| 模块边界与架构演进 | `architecture-review` 或 `bmad-agent-architect` |
 
-| 平台    | 路径                                                                                                                    |
-| ------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Windows | `C:\Users\Stark8964911\.codex\skills\csx-mobile-upgrade\SKILL.md`                                                       |
-| Mac     | `~/.codex/skills/csx-mobile-upgrade/SKILL.md`（等价于 `/Users/<你的用户名>/.codex/skills/csx-mobile-upgrade/SKILL.md`） |
+默认顺序是澄清事实、读取最小代码切片、选择专项流程、实施和验证。需求模糊时不要直接进入 `bmad-quick-dev`。
 
-## Cursor / Codex 用户目录分工（Win / Mac）
+### BMAD 执行门禁
 
-本 skill 与对照 skill 路径表中的 **Cursor**、**Codex** 为不同产品目录；**Mac** 上 Cursor 常见为两处（分工不同，勿混用）：
+任务、文档、恢复快照或上轮结论明确指向任一 `bmad-*` 且本轮要按其步骤产出时，先读取当前系统下 `~/.cursor/skills/<bmad-identifier>/SKILL.md`（Windows 为 `%USERPROFILE%\.cursor\skills\<bmad-identifier>\SKILL.md`），再读取它要求的同目录附属文件。读取失败时停止该专项步骤并报告精确路径，不依据历史经验代替。
 
-| 用途                                                               | Windows                            | macOS                                                                   |
-| ------------------------------------------------------------------ | ---------------------------------- | ----------------------------------------------------------------------- |
-| **Cursor**：Agent Skills（`skills/` 树，含本文件）                 | `%USERPROFILE%\.cursor\skills\...` | `~/.cursor/skills/...`（等价 `/Users/<你的用户名>/.cursor/skills/...`） |
-| **Cursor**：应用用户数据、扩展全局状态、部分缓存（具体以本机为准） | 常见为 `%APPDATA%\Cursor\`         | `~/Library/Application Support/Cursor/`                                 |
-| **Codex**：`AGENTS.md`、`skills/`、`config.toml` 等                | `%USERPROFILE%\.codex\...`         | `~/.codex/...`（等价 `/Users/<你的用户名>/.codex/...`）                 |
+## 状态与文档维护规则
 
-## 图片资源路径
+- 本 Skill 只保存无法从源码快速恢复的当前阶段、外部阻塞、最近关键证据和最小下一步；不复制业务规则、API 字段、测试数量、完整日志或发布流水。
+- 每次项目相关任务结束时，直接替换「项目状态恢复快照」中的过期事实，删除已完成下一步；不要按日期追加 chat 历史。
+- 只有阶段、外部阻塞、关键产物或下一步发生实质变化时才更新快照。普通解释、未验证推测或可从代码恢复的改动不写入。
+- 稳定工程规则写入 `{workspace}/.cursor/rules/project-context.mdc`；运行、构建、依赖和部署事实写入 `README.md`；临时状态不写入这些文件。
+- 「当前活跃需求（不要修改这部分的子内容）」由用户维护。除非用户明确授权，否则保持其子内容逐字不变；未注释条目是新会话应优先继续的方向。
+- 更新 Cursor 本 Skill 后，只在确有必要时同步 Codex 对照入口；不得为追求逐字一致复制平台专属说明或冗长参考。
 
-本文中的 `![img_xxx.png](img_xxx.png)` 视为与本文件同目录：Windows 为 `C:\Users\Stark8964911\.cursor\skills\ask-csx-mobile-upgrade\`；Mac 为 `~/.cursor/skills/ask-csx-mobile-upgrade/`（等价于 `/Users/<你的用户名>/.cursor/skills/ask-csx-mobile-upgrade/`）。
+## 项目状态恢复快照
 
-## 稳定项目事实（摘要）
+### 当前阶段
 
-本节仅作**记忆锚点**；**以仓库内规则与源码为准**。
+- 最新已知发布基线来自 Codex 对照入口的 2026-06-21 快照：iOS `1.1.9 (20260621190308)` 已由 `{workspace}/ios-release-upload-testflight.sh` 完成 archive、IPA 校验和 TestFlight 上传。该外部平台状态可能已变化，相关任务开始时必须实时复核。
+- 当前未完成范围以本文件未注释的「当前活跃需求」为准：在 macOS 项目根构建 release IPA，安装并运行到所示 iPad 真机，再交付以后可复用的命令。
 
-- **业务域**：诊所流程、患者管理、诊断、预约、健康数据、Agora 视频，及与 clinic / health-passport 等相关后端的对接
-- **技术栈**：React Native、TypeScript strict、React Navigation、Redux Toolkit、Metro、SVG 工作流、多语言
-- **推送**：非华为设备 FCM（Firebase）；华为/鸿蒙 HMS Push
-- **事实源**：`{workspace}/.cursor/rules/project-context.mdc`
+### 外部阻塞与证据缺口
 
-若本 skill 与仓库文件冲突，**以仓库为准**。
+- 尚无本文件可证明的目标 iPad 安装和真实运行结果；archive、IPA 导出或 TestFlight 上传不能替代真机运行验收。
+- TestFlight build 当前是否仍为 processing / valid 未在本轮核验；只有任务依赖该状态时才访问 App Store Connect 实时确认。
 
-医疗健康类表述须避免**确诊式**、**替代医嘱式**措辞；除非用户明确要求且语境恰当。
+### 最小下一步
 
-## 最小上下文来源
+1. 执行未注释的 macOS / iOS 活跃需求，先核对 workspace、scheme、签名、连接设备和目标环境，再构建 release IPA。
+2. 将产物安装并运行到截图所示 iPad，在东八区设备上验证应用可启动和目标环境正确，记录实际成功命令与必要前置条件。
+3. 完成后覆盖更新本快照，删除已完成条目，仅保留新的阻塞和最小下一步。
 
-| 优先级 | 来源                                            | 用途                                     |
-| ------ | ----------------------------------------------- | ---------------------------------------- |
-| 1      | `{workspace}/.cursor/rules/project-context.mdc` | 技术栈、脚本、目录、架构、推送与构建要点 |
-| 2      | `{workspace}/README.md`                         | 环境、内部流程、发布与集成说明           |
-| 3      | `{workspace}/package.json`                      | scripts、engines、依赖核对               |
-| 4      | 具体代码文件                                    | 仅与用户任务直接相关的文件               |
+## 输出与边界
 
-按主题的默认切入位置：
-
-| 主题           | 常见位置                                                                           |
-| -------------- | ---------------------------------------------------------------------------------- |
-| 导航           | `src/csxRoutes/`、`src/csxRoutes/csxRouter.ts`                                     |
-| API / DTO      | `src/api/`、`src/tools/`                                                           |
-| i18n           | `src/i18n/`、`src/i18n/locale/`                                                    |
-| 推送           | `src/tools/pushManager.ts`、`src/tools/hmsPush.ts`、`src/firebase/`                |
-| 健康数据       | `src/pages/HealthDataPage/`、`src/pages/EditHealthDataPage/` 及相关 hooks/services |
-| 通用 UI / 主题 | `src/components/`、`src/components/theme/`、`src/styles/`                          |
-| 原生构建       | `android/`、`ios/`、`global.ts`、配置文件                                          |
-
-除非任务确有需要，否则不要扫描整棵 `src/` 目录树。
-
-## 路由规则（关联 skills）
-
-按任务类型选择专项能力（名称与本机 Cursor skill 目录一致：Windows 为 `%USERPROFILE%\.cursor\skills`，Mac 为 `~/.cursor/skills`）：
-
-### 规则缺失或过期
-
-- 生成或刷新 `{workspace}/.cursor/rules/project-context.mdc`：`init-project`
-
-### React Native 实现与体验
-
-- Hooks、跨端差异、列表性能、键盘与图片：`react-native-patterns`
-
-### 类型安全
-
-- 收紧接口、减少 `any`、理顺 DTO 与 API 边界：`typescript-strict`
-
-### 代码审查
-
-- 常规审查：`code-review`
-- 更对抗或更深入的审查：`bmad-code-review`
-
-### 国际化与文案
-
-- 翻译、术语、命名旁注：`chinese-english-translation`
-- 代码中新增文案需同步各必需 locale 文件
-
-### Figma 到 RN
-
-- 工具链与流程入口：`ask-figma-to-rn-toolkit`
-- 按设计实现 UI：`figma-implement-design`
-- 写入 Figma 画布需配合：`figma-use`
-
-### 以交付为目标的执行
-
-- 规格已清、偏执行：`bmad-quick-dev`
-- 已有 story 文件：`bmad-dev-story`
-
-### 架构讨论
-
-- 模块边界与技术演进：`architecture-review` 或 `bmad-agent-architect`
-
-**默认优先级**：澄清事实 → 读最小相关代码切片 → 再实现或给出建议。
-
-需求仍模糊时，不要盲目使用 `bmad-quick-dev`。
-
-## 执行工作流
-
-1. 确认仓库身份，以及用户问的是本应用还是关联系统。
-2. 只拉取最小有用上下文。
-3. 识别请求形态：产品/需求、实现、缺陷/运行时问题、代码审查、翻译/措辞、构建/环境、架构。
-4. 在扩大范围前，先指向最相关的文件或 skill。
-5. 实现类任务可提示可能改动的区域，例如 `src/pages/`、`src/components/`、`src/tools/`、`src/api/` 或原生目录。
-6. 若产生需长期保留的项目知识，优先更新已有文档或规则，而非仅留在对话中。
-
-## 输出约定
-
-- 对用户说明使用**简体中文**（除非用户要求其他语言）
-- **代码与代码注释**使用英文
-- 引用仓库代码时使用 Cursor 兼容的代码引用块
-- 不向 skill 或对话写入真实密钥；环境变量、keystore、签名、token、证书、API 密钥等用占位符并指向安全配置
-
-## 边界
-
-- 不把医学表述写成确诊或处方替代
-- 不擅自扩大范围（无关重构、用户未要求的文档）
-- 不假设其他 Heals 仓库与本仓库路径、模块、约定相同
-- 除非用户明确要求，默认不替用户运行应用或真机测试
-- 不以陈旧笔记覆盖当前仓库文件
+- 使用简体中文说明；代码和代码注释使用英文。
+- 只报告已验证、部分验证和外部阻塞，不把端口、环境变量、编译成功或上传成功冒充真实页面 / 真机验收。
+- 不擅自扩大到无关重构、其它 Heals 仓库、生产发布或用户未授权的外部变更。
+- 除非用户明确要求运行、构建、发布或真机验证，否则默认提供可执行步骤并由用户手动验证。
+- 项目相关任务结束时说明恢复快照是已更新还是无需更新，并给出当前阻塞和最近可执行动作。
 
 ## 当前活跃需求(不要修改这部分的子内容)
 
