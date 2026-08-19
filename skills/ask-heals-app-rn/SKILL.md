@@ -82,6 +82,21 @@ description: >-
 - 不把医学建议写成确诊或处方替代，不混入其它项目假设，不创建无关文档或脚本。
 
 ## 当前活跃需求(不要修改这部分的子内容)
-- WIN:
-  <!-- - 当前电脑已经在 Windows 项目根 目录`D:\work\RN\heals-app-rn`执行了 `npm run android:dev:win` 把当前项目的debug模式的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区` -->
-  <!-- - 在 `D:\work\RN\heals-app-rn\src\screens\login\login-screen\login-screen.tsx`页面,一开始显示![img_185014.png](img_185014.png),点击`renderMobileNumber`函数绘制的输入框后, 键盘弹起, 如图 ![img_185100.png](img_185100.png), 输入框的下半部分内容被遮挡了, 测试用屏幕更小的机型也发现了更明显的这个问题![img_185145.png](img_185145.png),并且提了BUG: `Problem Statement -->
+- IOS:
+  - 为当前 checkout 构建 `dev` 环境的 Release 模式 IPA，并真实上传到 Heals (Dev) 的 TestFlight：`https://appstoreconnect.apple.com/teams/1f49f429-f33a-4c15-b357-7025b5e32451/apps/6740129703/testflight/ios`。本任务明确授权构建和上传，但不授权自动提交 Git、push、分配测试群组、回答出口合规问题或发布到 App Store。
+    1. 先确认项目根、当前分支、HEAD 和工作树；保留已有未提交改动，不执行 clean/reset，不覆盖无关文件。读取当前 Dev scheme、iOS build settings、`Info.plist`、`Podfile` 和相关发布说明，以源码和真实构建结果为准。
+    2. 目标营销版本优先使用用户本轮明确指定的 version；用户未指定时，读取 Dev Release target 当前 `MARKETING_VERSION` 并保持不变，不擅自升级版本。目标必须是 Dev scheme/configuration，Bundle ID 必须为 `com.healshealthcare.healspass.dev`，Team ID 必须为 `HS8K5BGDV7`；不得误改或误上传 Prod/Debug target。
+    3. 构建前通过当前登录态的 App Store Connect 真实页面读取该 App 的 iOS TestFlight 构建列表和详情；核对目标 version 下以及历史列表中已使用的 build number，选择未使用、严格递增且符合 Apple 当前 `CFBundleVersion` 格式的 build number。优先使用比已确认最大值大 1 的纯十进制正整数；不得只根据本地工程、截图日期或历史摘要猜测。若登录、权限或页面读取失败，停止在上传前并明确报告阻塞。
+    4. 只更新 Dev Release target 对应的 `MARKETING_VERSION` 和 `CURRENT_PROJECT_VERSION`，然后通过 `xcodebuild -showBuildSettings` 再次核对 version、build、Bundle ID、configuration 和 Team；不要连带修改 Prod 或无关 Debug 配置。
+    5. 归档前执行 `xcode-select -p`、`xcodebuild -version`、`xcrun --sdk iphoneos --show-sdk-version`，确认默认 Xcode/SDK 满足 Apple 当前上传门禁。本机应优先使用 `/Applications/Xcode.app/Contents/Developer`；若默认仍指向旧 Xcode，在获得系统管理员授权后切换并复核。不得继续上传由不满足当前门禁的旧 SDK 生成的 Archive/IPA。
+    6. 检查是否已有其它 `xcodebuild` 正在使用相同 DerivedData、Archive 或 `build.db`；只保留一个归档任务，并为本次 version/build 使用唯一、可追溯的 DerivedData 和 Archive 路径，避免并发构建互相锁库或污染产物。
+    7. 从项目根使用 `.env.development`、Dev scheme、Dev Release configuration、generic iOS destination、automatic signing 和正确 Team 归档；禁用 Sentry 自动上传，保留符号上传警告供结果判断。推荐命令骨架：`ENVFILE=.env.development SENTRY_DISABLE_AUTO_UPLOAD=true xcodebuild -workspace ios/Heals.xcworkspace -scheme Dev -configuration Dev -destination 'generic/platform=iOS' -derivedDataPath <unique-derived-data> -archivePath <unique-archive>.xcarchive CODE_SIGN_STYLE=Automatic DEVELOPMENT_TEAM=HS8K5BGDV7 -allowProvisioningUpdates archive`。
+    8. Archive 成功后先独立核验归档内 App 的 `CFBundleIdentifier`、`CFBundleShortVersionString`、`CFBundleVersion`、`DTSDKName`、`DTXcode`、TeamIdentifier 和 `codesign --verify --deep --strict`；任一值不符时不得导出或上传。
+    9. 使用 `method=app-store-connect`、automatic signing、正确 Team、`manageAppVersionAndBuildNumber=false` 的 ExportOptions 导出本地 IPA。再次解包核对 Bundle ID、version/build、SDK、Apple Distribution 证书、Store provisioning profile、`get-task-allow=false`、`beta-reports-active=true` 和深度签名，并记录 IPA 绝对路径、字节数和 SHA-256；不得用未经验证的旧 IPA 代替本次产物。
+    10. 仅在 IPA 校验通过后，通过 Xcode/App Store Connect 正式上传。成功标准必须同时满足：上传工具明确返回 `Upload succeeded`，并且 App Store Connect “构建版本上传”或目标 version 列表真实出现本次 version/build。等待 Apple 处理到可辨识的最终状态；若显示“缺少出口合规证明”，只报告并交回用户决定，不代替用户作合规声明。Agora/Hermes 等 dSYM 缺失警告与上传失败分开报告，不得把有警告的成功上传写成失败，也不得隐瞒其对原生崩溃符号化的影响。
+    11. 上传或网络异常时，先判断 Apple 是否已收到该 version/build，再决定是否重试；Apple 已接收或正在处理时不得重复上传相同构建。网络超时按当前 Mac 的 VPN/代理规则排查；Apple 明确拒绝时保留错误原文和 request/response ID，修复根因后重新归档并使用未占用的 build number。
+    12. 最终报告目标 App、version/build、Xcode/SDK、Archive 和 IPA 路径、IPA 大小/SHA-256、签名与 provisioning 校验、上传回执、App Store Connect 实际状态、dSYM/合规风险和未覆盖范围。除非用户明确要求，不提交或 push；完成项目产物和验证后，仅把新增或变化的通用工程/环境/发布事实更新到项目 `README_stark.md`，不写单次状态流水或秘密。
+    <!-- - 运行到如图![img_190329.png](img_190329.png)型号的真机上,真机所在的时区是 `东八区` -->
+- android:
+  <!-- -  你执行`npm run android:dev`,把当前项目的dev环境的debug模式的apk运行到如图![img_214733.png](img_214733.png)![img_214749.png](img_214749.png)型号的真机上,真机所在的时区是 `东八区` -->
+  <!-- - 需要你在当前项目根目录执行一条命令(比如 `cd android && ENVFILE=.env.development SENTRY_DISABLE_AUTO_UPLOAD=true ./gradlew assembleDevRelease`),构建出当前项目在`1.2.2`版本的的`dev`环境的release模式的 apk; -->
