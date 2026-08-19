@@ -192,5 +192,20 @@ description: >-
 - 不擅自扩大任务范围，也不把其它仓库的路径、模块或约定套用到本项目。
 
 ## 最新待继续问题（不要修改这部分的子内容）
-
-<!-- 在此追加跨会话任务；路径写双平台：Windows D:\work\csx-web / macOS /Users/<你的用户名>/Desktop/work/csx-web（当前 Mac：/Users/stark/Desktop/work/csx-web） -->
+<!-- - 帮我英文总结下 `csx-web` 项目的 git commit message -->
+- 把工作目录切换到 `/Users/stark/Desktop/work/csx-web`;你在`csx-web`项目里新增或修改的任何代码,都要符合项目里现有的代码风格(命名规范、目录组织、import 顺序等),项目结构,样式方案,技术栈等;尽量复用项目里现有的通用公共组件或工具函数;
+<!-- - 不能直接把dev分支的代码merge到某个需求分支(比如`TECH-8713`),而是在发poc之前,本地切换到dev分支然后更新到最新代码, 然后把需求分支merge到最新的dev分支,没冲突后push本地dev分支;发prod之前,可以把最新master分支 merge 到需求分支,然后再把需求分支merge到本地master,没冲突之后再push 本地master; 也就是需求分支只能和最新的master分支的代码保持一致,不能和dev分支最新的代码保持一致 ; 已经实现一个功能,禁止把本地或远程的dev分支merge到本地的任何分支; -->
+- <!-- - 我已经把本地`TECH-8713` 分支 merge 到了 本地的 `dev` 分支, 如果有代码冲突你帮我直接解决,然后检查这次 Merge 是否有问题,发现问题直接解决-->
+<!-- - 我只负责`csx-web`项目的前端开发,不负责 后端API 和 部署运维的开发; -->
+- 你先确认深圳办公室 VPN 已连接、`192.168.99.29` 实际走 `ppp0`，并确认 `http://192.168.99.29:8083/ui/index.html#/login` 和 `[GetAppSettingsAsync](http://192.168.99.29:8083/api/CsxVersion/GetAppSettingsAsync)` 可访问；然后停止仅属于本次`csx-web`和`csx-web-react`两个项目的旧本地开发进程，重新启动 `/Users/stark/Desktop/work/csx-web` 在旧 `csx` 系统的内网 dev (`http://192.168.99.29:8083`) 环境：使用 `PORT=1024`，明确把 webpack `/api/**` 代理目标设为 `http://192.168.99.29:8083`，打开 `http://localhost:1024/#/login`，通过浏览器 Network 验证浏览器请求为同源 `http://localhost:1024/api/**`，并由本地 webpack 代理最终转发到 `http://192.168.99.29:8083/api/**`。成功后重新启动 `/Users/stark/Desktop/work/csx-web-react` 在旧 `csx` 系统的内网 dev (`http://192.168.99.29:8083`) 环境，运行态必须使用 `NEXT_PUBLIC_CSX_SYSTEM=csx`、`NEXT_PUBLIC_CSX_ENV=dev`，打开 `http://localhost:3000/display-screen-config/`；通过本地 `127.0.0.1:3100` API 代理把 `/api/**` 最终转发到 `http://192.168.99.29:8083/api/**`，并把上游 `Origin/Referer` 保持为 29 旧 CSX 站点。如果现有代理脚本仍硬编码 `csx-k8/poc`，先做最小且向后兼容的参数化，不能直接以错误环境启动，也不能影响旧 `csx` POC/Prod 或 `csx-k8` 的已有配置。最终必须用浏览器 Network 和实际响应证明两个本地项目请求的都是 29 内网 dev API，不能只依据端口监听、环境变量或启动日志判断；不得出现 Dev Tunnel、`poc.demo.clinicsolution.hk`、`api-poc.clinicsolution.hk` 或 Prod API。
+<!-- - 你先重新本地启动`csx-web`项目在旧`csx`系统的公网`dev`环境,然后访问登录页面`http://localhost:1024/#/login`,确保请求的API代理到`lj3cs48f-8083.jpe1.devtunnels.ms`,保证和在`https://lj3cs48f-8083.jpe1.devtunnels.ms/ui/index.html#/login`页面请求的API都是`csx`系统的dev环境的API;再重新本地启动`csx-web-react`项目在`csx`系统的dev环境 ,确保浏览器访问的`http://localhost:3000/display-screen-config/`项目也实际请求了`csx`系统的dev环境的API(`http://127.0.0.1:3100/api/...`,本地代理转发到同一 dev tunnel) -->
+<!-- - 你先重新本地启动`csx-web`项目在旧`csx`系统的`poc`环境,然后访问登录页面`http://localhost:1024/#/login`,确保请求的API代理到`https://poc.demo.clinicsolution.hk/api`,保证和在`https://poc.demo.clinicsolution.hk/ui/index.html#/`页面请求的API都是旧`csx`系统的poc环境的API;再重新本地启动`csx-web-react`项目在旧`csx`系统的poc环境 ,确保浏览器访问的`http://localhost:3000/display-screen-config/`项目也实际请求了旧`csx`系统的poc环境的API(`https://poc.demo.clinicsolution.hk/api`) -->
+<!-- - 你先重新本地启动`csx-web`项目在`csx-K8`系统的dev(也是poc)环境 ,请求 `https://api-poc.clinicsolution.hk/api`,i'yinimage.png然后你访问 `http://localhost:1024/`页面然后登录, 保证API没问题 -->
+<!-- - 修改当前项目的样式布局代码时,不要照搬 Figma 返回的 React/Tailwind，而是复用 csx-web 现有的 Element UI、page-large、el-form、el-select、el-input、el-table、主题变量和响应式高度规则；Figma只作为字段、尺寸和信息层级依据 -->
+- 大屏需求(TECH-8713)相关:
+  <!-- - 旧版大屏显示页面: `https://poc.demo.clinicsolution.hk/ui/index.html#/tvScreenNew/TESTCLINIC` -->
+  <!-- - 当前项目在`csx-k8` 系统的 dev / POC 环境的页面页面入口是`https://csx-poc.clinicsolution.hk/` -->
+  <!-- - 在`http://localhost:1024/#/ManagementSettings/ProgramSettings`页面 -->
+    <!-- - 点击新增的这个`显示屏配置`入口后,如果当前页面是从本地 localhost 启动的, 比如 `http://localhost:1024/#/ManagementSettings/ProgramSettings`,则新增浏览器标签跳转到`http://localhost:3000/display-screen-config/management-settings/program-settings/display-screen-config/`;如果当前页面是部署后的release页面,比如csx-k8系统的poc环境域名`https://csx-poc.clinicsolution.hk/#/ManagementSettings/ProgramSettings`,则点击这个`显示屏配置`入口后,新增浏览器标签跳转到`https://csx-poc.clinicsolution.hk/display-screen-config/management-settings/program-settings/display-screen-config/`;csx-k8系统的本地和部署后的prod环境,以及csx系统的本地和部署后的poc和prod环境,也都按这个跳转逻辑 -->
+- 部署相关
+  <!-- - 帮我调研下当前项目在csx-k8系统的poc环境的部署流程,部署后的Poc页面是`https://csx-poc.clinicsolution.hk/#/login` -->
