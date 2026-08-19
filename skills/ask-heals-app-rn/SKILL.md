@@ -1,200 +1,85 @@
 ---
 name: ask-heals-app-rn
 description: >-
-  Cursor：Heals React Native 医疗应用（heals-app-rn）的项目会话入口；name 为
-  ask-heals-app-rn，口令 /ask-heals-app-rn。用于恢复项目上下文、收敛任务范围、读取项目规则、
-  路由 RN/i18n/API/导航/原生构建/代码审查/BMAD 等专项 skills。Use when the user works
-  on heals-app-rn, mentions Heals App, invokes /ask-heals-app-rn, or the workspace is
-  Windows D:\work\RN\heals-app-rn / macOS /Users/<username>/Desktop/work/RN/heals-app-rn.
+  Cursor：Heals React Native 医疗应用（heals-app-rn）的项目入口。用于恢复项目路径、
+  事实源、工程约束和最小下一步，并路由 RN、TypeScript、API、i18n、导航、Figma、
+  原生构建、代码审查或 BMAD 工作流。用户消息含 /ask-heals-app-rn、提及 Heals App，
+  当前工作区为 Windows D:\work\RN\heals-app-rn 或 macOS
+  $HOME/Desktop/work/RN/heals-app-rn，或需要继续该项目任务时使用。
 ---
 
 # ask-heals-app-rn（Cursor）
 
-## 与 Codex 入口的区别（分别维护）
+## 路径与事实源
 
-| 客户端           | `SKILL.md`                                                                                                                                      | `name`             | 口令                |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ------------------- |
-| Cursor（本文件） | **Windows** `%USERPROFILE%\.cursor\skills\ask-heals-app-rn\SKILL.md` / **macOS** `/Users/<你的用户名>/.cursor/skills/ask-heals-app-rn/SKILL.md` | `ask-heals-app-rn` | `/ask-heals-app-rn` |
-| Codex（OpenAI）  | **Windows** `%USERPROFILE%\.codex\skills\heals-app-rn\SKILL.md` / **macOS** `/Users/<你的用户名>/.codex/skills/heals-app-rn/SKILL.md`           | `heals-app-rn`     | `/heals-app-rn`     |
+- 项目根：Windows `D:\work\RN\heals-app-rn`；macOS `/Users/<你的用户名>/Desktop/work/RN/heals-app-rn`，当前 Mac 为 `/Users/stark/Desktop/work/RN/heals-app-rn`。
+- Cursor 入口：Windows `%USERPROFILE%\.cursor\skills\ask-heals-app-rn\SKILL.md`；macOS `/Users/<你的用户名>/.cursor/skills/ask-heals-app-rn/SKILL.md`。
+- Codex 对照入口：Windows `%USERPROFILE%\.codex\skills\heals-app-rn\SKILL.md`；macOS `/Users/<你的用户名>/.codex/skills/heals-app-rn/SKILL.md`。
+- 业务逻辑、API 映射、导航、i18n、UI 行为和错误处理：以当前 `src/`、`ios/`、`android/` 和测试为准。
+- 稳定项目事实与工程约束：以 `.cursor/rules/project-context.mdc` 和实际存在的项目规则为准。
+- 技术栈、脚本、依赖、环境、构建和发布方式：以 `package.json`、项目配置和 `README*` 为准。
+- 当前任务、外部状态和最小下一步：以用户本轮消息、受保护的“当前活跃需求”和实时证据为准，不在入口正文复制状态流水。
+- `README_stark.md` 可能含敏感信息；只按任务读取相关段落，不复述或新增账号、密码、token、Cookie、私钥、keystore 密码和生产密钥。
 
-两处不要求逐句同步；但围绕 **`heals-app-rn`** 工作区的任务入口、必读顺序、上下文门禁、路由规则与输出约定必须保持一致。在 Cursor 的 Codex 插件中输入 **`/heals-app-rn`**，应与 Cursor 输入框中执行 **`/ask-heals-app-rn`** 达到同一任务推进效果。
+发生冲突时，当前源码、Git、ADB/Xcode/Gradle/Metro、真实页面和外部系统实时结果优先于历史摘要；产品范围、医疗合规和外部 contract 以负责人最新确认优先。
 
-## 目的
+## 与 Codex 入口对齐
 
-本 skill 是 **`heals-app-rn`（Heals React Native）** 的默认分析入口，用于在新会话或跨工具切换时，把任务拉回到项目事实与最小必要上下文上。
+- 两份入口分别维护，但事实源优先级、最小读取顺序、上下文门禁、授权边界、实施流程和输出约定保持一致。
+- 在 Cursor 的 Codex 插件中输入 `/heals-app-rn`，应与 Cursor 输入框中执行 `/ask-heals-app-rn` 对同一明确任务达到相同推进效果。
+- 两份“当前活跃需求”由用户分别维护，不自动同步或改写；用户本轮明确任务始终优先。
 
-- **恢复项目事实**：先读项目规则、依赖与直接相关源码，避免只凭历史记忆或旧摘要行动。
-- **收敛任务范围**：区分「需求澄清 / 架构讨论 / 实现 / 排障 / 审查 / i18n / 原生构建」，按任务读取最小文件集合。
-- **路由专项能力**：将 React Native、TypeScript、API、导航、Figma、BMAD、代码审查等任务指向对应 skills 或项目规则。
-- **保证上下文完整**：若入口 skill 又指向其它 skill、ask、command、BMAD 工作流或同目录资源，先补读其依赖文件，再执行。
-- **沉淀项目结论**：需要长期保留的项目事实优先更新仓库内规则或既有文档，不把阶段性结论塞进通用 skill。
+## 启用与最小读取顺序
 
-**非目标**：不在本文件维护易过期的版本号清单、接口字段清单、临时 TODO 或一次性需求结论；这些内容以仓库文件、接口定义、官方文档和当次用户材料为准。
+1. 完整读取本 `SKILL.md`；已在当前 chat 实际加载且未变化的文件不重复读取。
+2. 读取仓库实际存在的项目规则：`AGENTS.md`、`.cursor/rules/project-context.mdc` 及与任务直接相关的 `.cursor/rules/*`。
+3. 读取任务直接相关的源码、测试和原生配置；需要脚本、依赖或环境事实时，再读取 `package.json`、`README.md`、`README_stark.md`、`CLAUDE.md` 中实际存在者。
+4. 普通实现、排障和审查不默认读取 Codex 对照入口；仅在用户调用 `/heals-app-rn`、两份入口需要对齐，或任务事实只存在于对照入口时读取。
+5. 用户只有入口口令而没有新任务时，执行本文件“当前活跃需求”中第一个未注释且可行动的事项；已有明确新任务时，不自动展开无关活跃项。
+6. 路由到其它 Skill、ask、command 或 `bmad-*` 前，先完整读取对应 `SKILL.md` 及其明确要求的 `workflow.md`、`checklist.md`、`reference.md`。
+7. 当前任务涉及 Markdown 图片引用时，先按引用文件同目录精确读取全部相关图片；读取失败后再搜索，不得用文字摘要代替图片事实。
 
-## 何时使用
+不要默认通读仓库、全部 README 或另一客户端入口，也不要把历史摘要当成已加载的当前事实。
 
-- 用户显式 `@ask-heals-app-rn`、`/ask-heals-app-rn` 或自然语言提及 `ask-heals-app-rn`。
-- 用户提到 `heals-app-rn`、Heals App、Heals React Native、健康护照、远程医疗、预约、用药、健康计划等本仓库相关任务。
-- 当前工作区根目录为 **Windows** `D:\work\RN\heals-app-rn` 或 **macOS** `/Users/<你的用户名>/Desktop/work/RN/heals-app-rn`（当前 Mac：`/Users/stark/Desktop/work/RN/heals-app-rn`），且需要项目级引导。
-- 需求涉及多模块（导航、Auth、API、i18n、原生构建、推送、健康数据、Figma 还原）且需先定范围。
-- 用户未指定文件，但明显在本仓库内工作时，优先按本 skill 的加载顺序取上下文。
+## 实施工作流
 
-## 工作区与本 skill 路径
+1. 确认实际工作区、Git 分支、工作树和任务授权边界；保留用户已有改动，不扩大到无关重构、提交、push、部署或外部系统写操作。
+2. 按实现、排障、API、i18n、导航、原生构建、真机、审查或设计还原分类，只读取能决定下一步的高价值文件。
+3. 代码任务依次完成真实业务实现、同项目内测试/验证；确认无需继续改代码后，再更新项目文档或项目外入口资料。
+4. API contract 可由真实页面触发时，先读取实际请求与响应；受登录、权限或页面状态阻塞后，再查源码、Swagger 或 OpenAPI。
+5. Figma URL、节点或设计还原任务必须先通过 Figma MCP 读取节点事实；截图和浏览器 DOM 只能补充验证。
+6. 开发阶段优先单文件、单用例、单平台或单设备验证；阶段收尾再按风险扩大矩阵。未运行的测试、应用或真机流程必须明确说明。
+7. 不因普通代码改动更新本 Skill；只有入口、事实源、跨客户端对齐、长期门禁或受保护活跃需求由用户授权变更时才更新。
 
-| 用途                                           | Windows                                                                                                                                | macOS                                                                                                                               |
-| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| 工作区根                                       | `D:\work\RN\heals-app-rn`                                                                                                              | `/Users/<你的用户名>/Desktop/work/RN/heals-app-rn`（当前 Mac：`/Users/stark/Desktop/work/RN/heals-app-rn`）                         |
-| 本 skill 文件                                  | `%USERPROFILE%\.cursor\skills\ask-heals-app-rn\SKILL.md`（本机示例：`C:\Users\Stark8964911\.cursor\skills\ask-heals-app-rn\SKILL.md`） | `/Users/<你的用户名>/.cursor/skills/ask-heals-app-rn/SKILL.md`（当前 Mac：`/Users/stark/.cursor/skills/ask-heals-app-rn/SKILL.md`） |
-| Codex 对口 skill（`name: heals-app-rn`）       | `%USERPROFILE%\.codex\skills\heals-app-rn\SKILL.md`（本机示例：`C:\Users\Stark8964911\.codex\skills\heals-app-rn\SKILL.md`）           | `/Users/<你的用户名>/.codex/skills/heals-app-rn/SKILL.md`（当前 Mac：`/Users/stark/.codex/skills/heals-app-rn/SKILL.md`）           |
-| Cursor skills 根                               | `%USERPROFILE%\.cursor\skills`                                                                                                         | `/Users/<你的用户名>/.cursor/skills`（当前 Mac：`/Users/stark/.cursor/skills`）                                                     |
-| Cursor 应用配置与用户数据                      | `%APPDATA%\Cursor`                                                                                                                     | `~/Library/Application Support/Cursor`                                                                                              |
-| Codex 全局规则（Codex / Cursor 内 Codex 插件） | `%USERPROFILE%\.codex\AGENTS.md`                                                                                                       | `/Users/<你的用户名>/.codex/AGENTS.md`（当前 Mac：`/Users/stark/.codex/AGENTS.md`）                                                 |
-| Codex 配置、规则、skills、归档                 | `%USERPROFILE%\.codex`                                                                                                                 | `/Users/<你的用户名>/.codex`（当前 Mac：`/Users/stark/.codex`）                                                                     |
+## 项目工程约束
 
-若用户明确给出 fork、分支工作区或临时路径，以用户指定路径为准；否则按上表定位。
+- React Native、React、TypeScript、React Navigation、依赖版本、scripts 和 locale 清单的精确值以当前仓库为准。
+- API 复用 `src/api` 既有 client、endpoint 和 DTO/type；导航改动同步 screen 注册、参数类型、深链和回退行为。
+- 新增用户可见文案时同步项目当前约定的全部 locale；不从历史 Skill 猜测语言清单。
+- 跨平台逻辑优先使用公共字段；第三方 API 标记 `iOS ONLY`、`ANDROID ONLY`、deprecated 或 experimental 时，先核对类型定义或官方文档，并显式处理另一平台。
+- 医疗健康文案避免确诊式、保证疗效式或替代医生建议式表达。
+- 非必要不新增依赖；不写入或输出 token、Cookie、密码、私钥、证书、keystore 密码、生产密钥和测试账号明文。
 
-在正文、项目规则或任务文档中需要表达项目根时，统一写成双平台形式：
+## 运行、发布与外部系统门禁
 
-- **Windows** `D:\work\RN\heals-app-rn`
-- **macOS** `/Users/<你的用户名>/Desktop/work/RN/heals-app-rn`（当前 Mac：`/Users/stark/Desktop/work/RN/heals-app-rn`）
+- Android 真机任务：先从 `package.json` 核对脚本和 flavor/env，再用 `adb devices -l` 锁定设备；只处理属于本项目且阻塞本次运行的旧进程。成功至少需要构建/安装/启动结果、目标包进程和前台 Activity 证据，不能只看端口或 Gradle 成功。
+- iOS/TestFlight 任务：先核对 scheme、configuration、Bundle ID、Team、version/build、Xcode/SDK 和签名；上传、测试群组、出口合规和 App Store 发布分别授权。外部页面上的 build、tester、group 和处理状态必须实时复核。
+- Git/release 任务：先检查远端 refs、完整拓扑、工作树、提交差异和最终树；“方向看起来安全”或只询问是否应合并，不等于授权 merge、删分支、push 或发布。
+- 浏览器和外部代码平台任务：使用当前已授权的真实会话并验证完整数据，不把可见列表或编辑器 viewport 当作完整源码；外部 Web 项目与本地 React Native checkout 分开判断。
 
-后续步骤中的 `{workspace}` 均指当前实际工作区根；不要把用户目录下的 skill 路径误当成业务仓库根。
+## 文档维护规则
 
-## 新会话必读顺序（恢复上下文）
+- `.cursor/rules/project-context.mdc` 只保存稳定项目事实与长期工程约束；`README.md` 保存通用工程说明；`README_stark.md` 只保存无秘密、可复用且不能从源码直接恢复的环境、构建、发布和验证方法。
+- 不把字段清单、业务规则、默认值、单次分支/commit/PID、构建结果、测试数量、当前阻塞或聊天流水写入入口 Skill 或 README。
+- 有新的可复用事实时，先完成项目代码和测试，再更新现有对应章节；直接修正过期内容并去重，不按日期追加。
+- “当前活跃需求（不要修改这部分的子内容）”由用户维护；除非用户明确授权，否则保持其子内容原文。
+- 最终回复默认只报告产出、验证、风险和必要下一步；仅在用户要求、审查/排障、上下文缺失或慢任务复盘时列出关键加载文件。
 
-新 chat 或首次进入本仓库任务时，按以下顺序读取；已有上下文中已实际加载的文件可不重复读，但不能只凭文件名或历史摘要假设已加载。
+## 输出与边界
 
-1. **本 skill 文件**：确认入口目标、路径规则、路由规则与当前活跃需求。
-2. **项目规则文件**（按实际存在读取）
-   - `{workspace}/AGENTS.md`
-   - `{workspace}/.cursor/rules/project-context.mdc`
-   - `{workspace}/.cursor/rules/*` 中与当前任务直接相关的规则
-3. **项目锚点文件**（按实际存在读取）
-   - `{workspace}/README.md`
-   - `{workspace}/README_stark.md`
-   - `{workspace}/CLAUDE.md`
-   - `{workspace}/package.json`
-4. **任务直接相关文件**
-   - 导航：`src/navigation/`、路由常量、screen 注册处
-   - API：`src/api/`、DTO/type、请求封装、错误处理
-   - i18n：`src/i18n/locale/` 及相关文案调用处
-   - Auth / 全局状态：AppContext、Auth、storage、启动流程
-   - 原生构建：`ios/`、`android/`、Podfile、Gradle、Info.plist、Manifest、权限配置
-
-| 优先级 | 来源                                        | 用途                                  |
-| ------ | ------------------------------------------- | ------------------------------------- |
-| 1      | 本 skill + 项目规则                         | 入口、长期项目事实、约束与加载门禁    |
-| 2      | `package.json`、README、CLAUDE/README_stark | 脚本、依赖、环境与团队约定            |
-| 3      | 任务直接相关源码/配置                       | 实现、排障、审查、验证                |
-| 4      | 官方文档或第三方类型定义                    | 核对易变 API、平台差异、弃用/实验标记 |
-
-不要默认通读 `src/` 全文；先根据用户问题定位 1-3 个高价值文件，再决定是否扩大范围。
-
-## 稳定背景（项目事实优先读仓库规则）
-
-以下摘要仅为触发记忆；**详情以仓库内规则为准**，避免在本 skill 中复制易过期版本号列表：
-
-- **业务**：健康护照、远程医疗、预约、用药、健康计划等；多区域（HK、中国大陆、SEA 等）
-- **技术**：React Native + TypeScript；React Navigation；全局状态以 AppContext / Auth 为主；API 经 `src/api`；多语言 `src/i18n/locale`
-- **事实源**：项目根目录 `.cursor/rules/project-context.mdc`（`alwaysApply` 时应已加载；若缺失则用 `init-project` 重建）
-
-涉及 **合规与表述**：面向用户的医疗健康文案需避免确诊式、替代医嘱式措辞；保持与产品/法务一致。
-
-## 子 skill / 子任务上下文完整性门禁
-
-当本入口、用户请求、项目规则或「当前活跃需求」指向其它 skill、ask、command、BMAD 工作流或专项子任务时，必须先完成以下检查，再开始实现、审查、改代码、改文档或按模板产出。
-
-1. **建立加载账本**：先列出当前 chat 已经实际读取的入口 skill、项目规则、项目锚点、当前任务文件、相关截图/图片、以及已路由的子 skill 文件；未实际读取的文件不能视为已加载。
-2. **识别触发源**：同时检查用户输入框、本文件「当前活跃需求」、`/Users/stark/.codex/skills/heals-app-rn/SKILL.md` 对口入口、仓库项目规则与任务直接相关文件；任一来源点名其它 skill、ask、command、BMAD、模板、checklist、reference 或图片，都纳入必读范围。
-3. **确认是否已读**：当前 chat 中必须已经实际读取对应 `SKILL.md`、`workflow.md`、`checklist.md`、`reference.md`、项目文档、同目录图片或其它明确依赖文件；不能只凭文件名、历史摘要、上轮结论或用户转述继续。
-4. **缺什么补什么**：缺失时按当前 OS 的精确路径读取；已知路径直接读取，不先搜索。读取失败时说明精确路径读取失败，再按需搜索或请用户附上文件。
-5. **按平台取路径**：Cursor skills 统一写作 **Windows** `%USERPROFILE%\.cursor\skills` / **macOS** `/Users/<你的用户名>/.cursor/skills`；Codex skills 统一写作 **Windows** `%USERPROFILE%\.codex\skills` / **macOS** `/Users/<你的用户名>/.codex/skills`。当前 Mac 示例分别为 `/Users/stark/.cursor/skills` 与 `/Users/stark/.codex/skills`。
-6. **BMAD 硬门禁**：若将执行任意 `bmad-*`，先读取 **Windows** `%USERPROFILE%\.cursor\skills\<bmad-identifier>\SKILL.md` / **macOS** `/Users/<你的用户名>/.cursor/skills/<bmad-identifier>/SKILL.md`；若该 skill 要求或同目录存在任务所需的 `workflow.md`、`checklist.md`、`reference.md`，继续读取后再执行。
-7. **图片门禁**：若本 skill、项目规则、ask/command/skill 或用户材料引用同目录图片，先按引用源 `.md` 所在目录拼接图片名精确读取；读取失败再搜索，不得跳过。
-8. **执行前复核**：在开始主任务实现前，用一句话确认已加载的关键上下文是否足够；若不足，先补读，不要进入实现。
-9. **记录加载事实**：最终回复列出「当前 chat 已加载的关键文件」与「本轮新增读取/加载的文件」，只列对判断、修改或验证有实际影响的文件。
-
-## 路由规则（关联 skills）
-
-按任务类型选用专项能力（名称与 **Windows** `%USERPROFILE%\.cursor\skills` / **macOS** `/Users/<你的用户名>/.cursor/skills` 下文件夹一致）。路由到某个 skill 后，必须按上一节门禁读取其文件与依赖。
-
-### 1. 初始化或规则缺失
-
-- 需要生成/刷新 `.cursor/rules/project-context.mdc`：`init-project`
-
-### 2. React Native 实现与体验
-
-- Hooks、跨端差异、列表性能、键盘与图片：`react-native-patterns`
-
-### 3. 类型与接口
-
-- 收紧类型、减少 `any`、API/DTO 类型边界：`typescript-strict`
-
-### 4. 代码审查
-
-- PR/变更质量与安全：`code-review` 或 `bmad-code-review`（需更对抗性审查时）
-
-### 5. 国际化与中英文案
-
-- 文案翻译、术语、变量命名旁注：`chinese-english-translation`  
-- **代码要求**：新增文案需同步各 locale 文件（以 `project-context.mdc` 中语言列表为准）
-
-### 6. 设计还原（Figma → RN）
-
-- 工具链与流程：`ask-figma-to-rn-toolkit`  
-- 按设计实现 UI：`figma-implement-design`（插件 skills）；写入 Figma 需配合 `figma-use`
-
-### 7. 快速交付Story/需求实现
-
-- 已清楚规格、偏执行：`bmad-quick-dev` 或 `bmad-dev-story`（有现成 story 文件时）
-
-### 8. 架构级讨论
-
-- 模块边界与演进：`architecture-review` 或 `bmad-agent-architect`
-
-### 9. Codex 插件 / 全局规则 / MCP 配置
-
-- 若任务讨论 Cursor 内 Codex 插件、Codex 全局规则、MCP 配置或 slash 入口对齐，需同时参考 **Windows** `%USERPROFILE%\.codex\AGENTS.md` / **macOS** `/Users/<你的用户名>/.codex/AGENTS.md`、相关 Codex skill，以及用户明确指定的配置文件。
-
-**默认优先级**：事实澄清 -> 小步读代码 -> 再改；产品范围未清时，不要盲目进入 `bmad-quick-dev`。
-
-## 执行工作流（默认）
-
-1. 确认工作区是否为 `heals-app-rn`（默认 **Windows** `D:\work\RN\heals-app-rn` / **macOS** `/Users/<你的用户名>/Desktop/work/RN/heals-app-rn`；当前 Mac：`/Users/stark/Desktop/work/RN/heals-app-rn`），或用户指定的 fork 路径
-2. 按「新会话必读顺序」读取最小上下文；若 `project-context.mdc` 与 `package.json` 冲突，以当前仓库文件为准，并在答复中说明
-3. 分类任务：需求/架构/实现/排障/i18n/构建
-4. 若需要专项 skill 或 BMAD，先完成「子 skill / 子任务上下文完整性门禁」
-5. 实现类任务先定位直接相关文件；修改前说明要编辑的文件与意图
-6. 完成后给出验证方式；若未运行测试或应用，明确说明
-7. 需要长期保存的结论，优先更新仓库内已有规则或文档；不新建无关 `.md` 或脚本
-
-## 任务类型补充
-
-- **React Native 跨平台**：使用公共字段与平台分支；第三方库若标记 `iOS ONLY` / `ANDROID ONLY` / deprecated / experimental，先核对类型定义或官方文档。
-- **API / DTO**：优先使用项目既有请求封装与类型；避免在 screen 中散落临时拼接逻辑。
-- **i18n**：新增用户可见文案时，同步所有项目约定 locale；语言列表以 `project-context.mdc` 或当前 locale 目录为准。
-- **导航**：改路由前确认 screen 注册、参数类型、深链/回退行为及调用点。
-- **医疗健康文案**：避免确诊式、保证疗效式、替代医生建议式表达。
-- **依赖变更**：先检查项目已有依赖与原生影响；非必要不新增依赖。
-
-## 输出约定
-
-- 对用户说明：**简体中文**（除非用户要求其他语言）
-- **代码与代码注释**：英文
-- 引用仓库代码时使用路径与行号；路径、命令、标识符保持原文
-- 涉及 env、keystore、签名、API 密钥：禁止写入 skill 或聊天中的真实秘密；使用占位符并指向安全配置
-- 完成任务后必须说明：
-  - 当前 chat 已加载的关键文件
-  - 本轮新增读取/加载的文件
-
-## 边界
-
-- 不把医学建议写成确诊或处方替代
-- 不擅自扩大需求范围（无关重构、额外文档）
-- 默认不替用户运行应用/真机测试；涉及代码变更时可运行轻量静态检查或用户要求的验证，并说明结果
-- 不把其他项目（如 MyStartup、figma-to-rn-toolkit）的假设混入本仓库
-- 不把临时会话结论、旧任务记录或易过期外部信息固化进本 skill
-- 不在本 skill 中保存 token、密码、Cookie、私钥、keystore 密码等敏感信息
+- 对用户使用简体中文；代码与代码注释使用英文；引用真实文件时给出路径和必要行号。
+- 诚实区分已验证、部分验证、外部阻塞和未执行；不把构建成功写成真机功能验收完成。
+- 不把医学建议写成确诊或处方替代，不混入其它项目假设，不创建无关文档或脚本。
 
 ## 当前活跃需求(不要修改这部分的子内容)
 - WIN:
