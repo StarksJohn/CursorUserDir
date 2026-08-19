@@ -1,15 +1,20 @@
 ---
 name: ask-csx-mobile-upgrade
 description: >-
-  Cursor 侧 CS Mobile（csx-mobile-upgrade）项目入口：恢复最少必要上下文，
-  区分需求、实现、排障、审查、Figma、API、i18n、推送、原生构建、健康数据与发布任务，
-  路由到对应专项 Skill，并维护无法从源码恢复的项目阶段、外部阻塞和最小下一步。
-  用户输入 /ask-csx-mobile-upgrade、提及 CS Mobile / csx-mobile / csx-mobile-upgrade，
-  当前工作区为 Windows D:/work/RN/csx-mobile-upgrade 或 macOS
-  /Users/{username}/Desktop/work/RN/csx-mobile，或需要继续该仓库任务时使用。
+  CS Mobile 私有恢复与专项路由入口。仅在用户显式使用
+  /ask-csx-mobile-upgrade 或 @ask-csx-mobile-upgrade，或明确要求继续受保护待办、
+  恢复跨会话状态、处理外部构建发布阻塞时使用。每个新 chat 先调用本入口；随后
+  强制读取 Codex 对口 Skill 同目录 AGENTS.md 作为共享仓库规则。
 ---
 
 # ask-csx-mobile-upgrade
+
+## 调用策略
+
+- 激活本 Skill 后，先完整读取本 `SKILL.md`，再立即完整读取 `$HOME/.codex/skills/csx-mobile-upgrade/AGENTS.md`（Windows：`%USERPROFILE%\.codex\skills\csx-mobile-upgrade\AGENTS.md`）；读取失败时停止项目实现并报告精确路径，不得跳过。
+- 每个新 chat 先显式调用本入口，再从共享 `AGENTS.md` 与当前源码开始普通实现、排障、审查和测试；项目根不维护第二份 `AGENTS.md`。
+- 本 Skill 只处理私有恢复快照、受保护待办、专项工作流路由和外部构建/发布上下文。
+- 用户给出具体任务时，该任务优先；只有仅调用入口或明确要求“继续”时，才解析未注释待办。
 
 ## 入口、路径与事实源
 
@@ -17,7 +22,7 @@ description: >-
 - Codex 对照入口：Windows `%USERPROFILE%\.codex\skills\csx-mobile-upgrade\SKILL.md`；macOS `~/.codex/skills/csx-mobile-upgrade/SKILL.md`。两端保持同一执行语义，不要求逐字同步。
 - 项目根：Windows `D:\work\RN\csx-mobile-upgrade`；macOS `/Users/<用户名>/Desktop/work/RN/csx-mobile`。若实际路径不同，以当前机器为准。
 - 业务行为、API 映射、组件交互和错误处理以当前源码、测试和真实运行证据为准。
-- 技术栈、脚本、依赖、构建和发布方式以 `.cursor/rules/project-context.mdc`、`package.json`、项目配置和 `README.md` 为准。
+- 稳定工程约束只维护在 Codex 对口目录的 `AGENTS.md`；技术栈、脚本、依赖、构建和发布方式以 `package.json`、项目配置和 `README.md` 为准。不创建仓库根 `AGENTS.md` 或 `.cursor/rules/project-context.mdc`。
 - 当前阶段、无法从源码恢复的外部阻塞和最小下一步以本 Skill 的「项目状态恢复快照」为准。
 
 发生冲突时，优先采用当前仓库文件、真实设备、Network、构建产物和外部平台的实时证据，不用旧快照覆盖事实。
@@ -27,7 +32,7 @@ description: >-
 在实现、排障、审查、改配置或给出专项结论前，依次执行：
 
 1. 完整读取本文件，包括未注释的「当前活跃需求」。
-2. 读取 `{workspace}/.cursor/rules/project-context.mdc`、`{workspace}/README.md` 和 `{workspace}/package.json`；只提取与任务相关的规则、命令与依赖，不复述其中的敏感信息。
+2. 确认 Codex 对口目录 `AGENTS.md` 已读取，再按任务读取 `{workspace}/README.md`、`{workspace}/package.json` 和相关配置；只提取与任务相关的规则、命令与依赖，不复述其中的敏感信息。
 3. 读取任务直接相关的 1～3 个源码、配置或测试文件；范围不足时再扩大，不默认扫描整棵 `src/`。
 4. 若入口、项目文档或当前任务路由到其它 Skill，先完整读取对应 `SKILL.md` 及其明确要求的 `workflow.md`、`checklist.md` 或 `reference.md`。
 5. 若引用 `![image](image)`，先按引用该 Markdown 文件的同目录精确路径读取所有直接相关图片；精确路径失败后才搜索。
@@ -90,7 +95,8 @@ description: >-
 - 本 Skill 只保存无法从源码快速恢复的当前阶段、外部阻塞、最近关键证据和最小下一步；不复制业务规则、API 字段、测试数量、完整日志或发布流水。
 - 每次项目相关任务结束时，直接替换「项目状态恢复快照」中的过期事实，删除已完成下一步；不要按日期追加 chat 历史。
 - 只有阶段、外部阻塞、关键产物或下一步发生实质变化时才更新快照。普通解释、未验证推测或可从代码恢复的改动不写入。
-- 稳定工程规则写入 `{workspace}/.cursor/rules/project-context.mdc`；运行、构建、依赖和部署事实写入 `README.md`；临时状态不写入这些文件。
+- 若本次任务改变稳定架构、命令工作流或仓库边界，在代码与定向验证稳定后自动最小更新 Codex 对口目录 `AGENTS.md`；否则不全仓扫描。外部合并造成的大规模变化使用 `/init-project` 刷新。
+- 运行、构建、依赖和部署事实写入 `README.md`；临时状态不写入这些文件。
 - 「当前活跃需求（不要修改这部分的子内容）」由用户维护。除非用户明确授权，否则保持其子内容逐字不变；未注释条目是新会话应优先继续的方向。
 - 更新 Cursor 本 Skill 后，只在确有必要时同步 Codex 对照入口；不得为追求逐字一致复制平台专属说明或冗长参考。
 

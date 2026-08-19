@@ -1,14 +1,20 @@
 ---
 name: ask-MyStartupProject1
 description: >-
-  Cursor：MyStartupProject1 项目入口、BMAD 总控与市场推广持续执行器。用于恢复项目、
-  路由产品/开发/测试/发布任务，并在 market-promotion 阶段从第一个未完成门禁继续推进
-  隐私漏斗、Production 验收、合规获客、真实反馈和增长决策，直到形成可核验的
-  go/hold/stop 闭环。用户消息含 /ask-MyStartupProject1、要求继续该项目或市场推广、
-  当前工作区为 D:/work/MyStartupProject1 或 $HOME/Desktop/work/MyStartupProject1 时使用。
+  MyStartupProject1 私有恢复、BMAD 总控与市场推广持续执行入口。仅在用户显式使用
+  /ask-MyStartupProject1 或 @ask-MyStartupProject1，或明确要求恢复项目阶段、继续
+  BMAD/市场推广检查点时使用。每个新 chat 先调用本入口；随后强制读取 Codex 对口
+  Skill 同目录 AGENTS.md 作为共享仓库规则。
 ---
 
 # ask-MyStartupProject1
+
+## 调用策略
+
+- 激活本 Skill 后，先完整读取本 `SKILL.md`，再立即完整读取 `$HOME/.codex/skills/MyStartupProject1/AGENTS.md`（Windows：`%USERPROFILE%\.codex\skills\MyStartupProject1\AGENTS.md`）；读取失败时停止项目实现并报告精确路径，不得跳过。
+- 每个新 chat 先显式调用本入口，再从共享 `AGENTS.md`、当前源码与聚焦测试开始普通实现、排障、审查和测试；项目根不维护第二份 `AGENTS.md`。
+- 本 Skill 只补充项目阶段、BMAD/市场推广状态机、外部阻塞和受保护待办。
+- 用户给出具体任务时，该任务优先；只有仅调用入口或明确要求“继续”时，才从未完成门禁续跑。
 
 ## 路径与事实源
 
@@ -26,7 +32,8 @@ description: >-
 
 ## 启用与最小读取顺序
 
-用户消息含 `/ask-MyStartupProject1`、工作区是本项目或任务明确属于本项目时启用。
+仅在用户显式使用 `/ask-MyStartupProject1` / `@ask-MyStartupProject1`，
+或明确要求恢复项目阶段、继续 BMAD / 市场推广检查点时启用；项目名或工作区本身不触发。
 
 1. 完整读取本 `SKILL.md`。
 2. 读取 `<项目根>/项目主档案.md` 和 `<项目根>/stories/sprint-status.yaml`。
@@ -123,6 +130,7 @@ description: >-
 - 项目代码任务必须先闭环业务实现，再补测试，最后才更新项目外的 Cursor/Codex Skill 或恢复文档；若验证又发现代码问题，先回到业务实现。
 - 稳定需求事实、产品边界或业务下一步变化时，更新 `项目主档案.md`；不要每轮机械写“本轮结论”。
 - 工程命令、架构、环境或部署方式变化时，更新 `README.md`；Story / Epic 状态变化时，更新 `stories/sprint-status.yaml`。
+- 若本次任务改变稳定架构、命令工作流或仓库边界，在代码与定向验证稳定后自动最小更新 Codex 对口目录 `AGENTS.md`；否则不全仓扫描。外部合并造成的大规模变化使用 `/init-project` 刷新。
 - 本 Skill 的快照只保存当前阶段、最近生产结论、当前阻塞、推广检查点和最小下一步；可从源码、测试、README 或主档案恢复的规则、字段、测试数量和历史流水不写入。
 - 本 Skill 快照发生实质变化时，同步核对 Codex 对照入口的阶段、阻塞和最小下一步，避免两侧恢复结果冲突。
 - “最新待继续问题”由用户维护；除非用户明确授权修改，否则保持标题及全部子内容原样。已确认完成的条目不自动重做，只有用户本轮重新点名时才执行。

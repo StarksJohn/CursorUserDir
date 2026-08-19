@@ -1,13 +1,20 @@
 ---
 name: ask-newtownapp
 description: >-
-  Cursor：newtownapp / New Town Medical React Native 仓库的会话入口；name 为 ask-newtownapp，口令
-  /ask-newtownapp。用于恢复项目上下文、收敛任务范围、读取项目规则，并路由 RN、TypeScript、Figma、代码审查、BMAD、
-  i18n、原生构建与发布等专项 skills。工作区为 Windows `D:\work\RN\newtownapp` 或 macOS
-  `/Users/<你的用户名>/Desktop/work/RN/newtownapp`（当前 Mac 示例：`/Users/stark/Desktop/work/RN/newtownapp`）。
+  New Town Medical 私有恢复与专项路由入口。仅在用户显式使用
+  /ask-newtownapp 或 @ask-newtownapp，或明确要求继续受保护待办、恢复跨会话状态、
+  处理外部构建发布阻塞时使用。每个新 chat 先调用本入口；随后强制读取 Codex
+  对口 Skill 同目录 AGENTS.md 作为共享仓库规则。
 ---
 
 # ask-newtownapp（Cursor）
+
+## 调用策略
+
+- 激活本 Skill 后，先完整读取本 `SKILL.md`，再立即完整读取 `$HOME/.codex/skills/newtownapp/AGENTS.md`（Windows：`%USERPROFILE%\.codex\skills\newtownapp\AGENTS.md`）；读取失败时停止项目实现并报告精确路径，不得跳过。
+- 每个新 chat 先显式调用本入口，再从共享 `AGENTS.md` 与当前源码开始普通实现、排障、审查和测试；项目根不维护第二份 `AGENTS.md`。
+- 本 Skill 只处理私有恢复状态、受保护待办、跨客户端对齐和外部构建/发布上下文。
+- 用户给出具体任务时，该任务优先；只有仅调用入口或明确要求“继续”时，才解析未注释待办。
 
 ## 与 Codex 入口（分别维护）
 
@@ -31,11 +38,9 @@ description: >-
 
 ## 何时使用
 
-- 用户显式 `@ask-newtownapp`、`/ask-newtownapp` 或自然语言提及本 name。
-- 用户提到 newtownapp、New Town Medical、新都医疗、new-town-medical、newTownMedical、本仓库任务。
-- 当前工作区根目录为 **Windows** `D:\work\RN\newtownapp` 或 **macOS** `/Users/<你的用户名>/Desktop/work/RN/newtownapp`（当前 Mac：`/Users/stark/Desktop/work/RN/newtownapp`），且需要项目级引导。
-- 任务涉及导航、登录、API、i18n、Agora、Firebase Push、Health Pass / membership、Android/iOS 构建、AAB、Google Play、App Store、Figma 设计实现等。
-- 用户未指定文件，但明显在本仓库内工作时，优先按本 skill 的加载顺序取上下文。
+- 用户显式使用 `/ask-newtownapp` 或 `@ask-newtownapp`。
+- 用户明确要求继续受保护待办、恢复私有跨会话状态，或处理外部构建/发布上下文。
+- 项目名、路径、工作区或普通仓库任务本身不触发本 Skill。
 
 ## 工作区与本 skill 路径
 
@@ -69,9 +74,8 @@ description: >-
 1. **本 skill**：入口目标、路径规则、路由、上下文门禁与「当前活跃需求」。
 2. **Codex 对照 skill（存在则读）**：**Windows** `%USERPROFILE%\.codex\skills\newtownapp\SKILL.md` / **macOS** `/Users/<你的用户名>/.codex/skills/newtownapp/SKILL.md`，用于核对 `/newtownapp` 与 `/ask-newtownapp` 的必读顺序、上下文门禁与活跃需求解释是否一致。
 3. **项目规则与锚点**（存在则读）
-   - `{workspace}/.cursor/rules/project-context.mdc`
    - `{workspace}/.cursorrules`
-   - `{workspace}/AGENTS.md`
+   - Codex 对口 Skill 同目录 `AGENTS.md`
    - `{workspace}/package.json`
    - `{workspace}/README.md`、`{workspace}/CLAUDE.md`（与任务相关时）
    - `{workspace}/app.json`、`{workspace}/babel.config.js`、`{workspace}/tsconfig.json`（与入口名、别名、TS 或构建问题相关时）
@@ -79,7 +83,7 @@ description: >-
 
 | 优先级 | 来源 | 用途 |
 |--------|------|------|
-| 1 | 本 skill + `{workspace}/.cursor/rules/project-context.mdc` | 入口、长期事实、加载门禁 |
+| 1 | 本 skill + Codex 对口 Skill 同目录 `AGENTS.md` | 入口、长期规则、加载门禁 |
 | 2 | `package.json`、`app.json`、README、CLAUDE | 脚本、依赖、环境和发布说明 |
 | 3 | 具体代码与配置 | 实现、排障、审查 |
 
@@ -87,7 +91,7 @@ description: >-
 
 ## 当前 chat 上下文加载门禁（必读）
 
-- **入口恢复自检**：通过 `/ask-newtownapp` 进入后，执行任务前须已实际读取本 `SKILL.md`、Codex 对照 `SKILL.md`（若存在）、`{workspace}/.cursor/rules/project-context.mdc`、`{workspace}/package.json`，以及任务相关项目规则；读取失败时说明精确路径并用最小替代来源继续。
+- **入口恢复自检**：通过 `/ask-newtownapp` 进入后，执行任务前须已实际读取本 `SKILL.md`、Codex 对照 `SKILL.md`（若存在）、Codex 对口目录 `AGENTS.md`、`{workspace}/package.json` 以及任务相关项目规则；不要读取或创建 `project-context.mdc`。
 - **双入口一致性自检**：若 `/ask-newtownapp` 与 `/newtownapp` 的路径表、必读顺序、路由或活跃需求解释出现冲突，以更具体、更新且更贴近当前工作区的条目为准，并在最终回复说明取舍。
 - **任务相关文件自检**：列出本步必须依赖的文件（设计、API、目标 screen、Gradle、Podfile、环境说明、测试文件等），逐项判断是否已在当前 chat 读取；未读则先 `ReadFile`。
 - **子 skill 自检**：下一步若执行任意其它 skill（含 `bmad-*`、`react-native-patterns`、`typescript-strict`、`code-review` 等），须判断当前 chat 是否已读取该 skill 的 `SKILL.md` 及其要求的 `workflow.md` / `checklist.md` / `reference.md` 等；缺一则按 **Windows** `%USERPROFILE%\.cursor\skills\<id>\` / **macOS** `/Users/<你的用户名>/.cursor/skills/<id>/` 补读后再执行。
@@ -98,7 +102,7 @@ description: >-
 
 ## 稳定项目事实（摘要）
 
-本节为记忆锚点；以仓库内 `.cursor/rules/project-context.mdc`、`package.json`、源码和原生工程为准。
+本节为记忆锚点；以 Codex 对口目录 `AGENTS.md`、仓库 `package.json`、源码和原生工程为准。
 
 - **产品**：`new-town-medical` / `newTownMedical` 是新都医疗患者侧 React Native app，覆盖登录、Health Pass / membership、预约、视频问诊、账单、Profile、通知与 wallet pass 相关能力。
 - **技术栈**：React Native `0.76.3`、React `18.3.1`、TypeScript strict、React Navigation v7、axios、`i18n-js`、`react-native-extended-stylesheet`。
@@ -107,7 +111,7 @@ description: >-
 - **导航与状态**：`src/navigation/` 管理 stack / tabs；全局状态在 `src/store/AppContext.tsx`，通过 `useAppState()` / `getGlobalAppState()` 使用。
 - **原生与构建**：Android `applicationId` 为 `com.newTownMedical`，flavor 为 `dev` / `prod`；iOS workspace 为 `ios/newTownMedical.xcworkspace`，脚本 scheme 为 `newTownMedicalAppDev` / `newTownMedicalAppProd`。
 - **补丁与资源**：`patch-package` 当前包含 `react-native-snap-carousel+3.9.1.patch`；SVG 通过 `react-native-svg-transformer`；BootSplash 资源在根 `assets/`。
-- **文档取舍**：README 中可能包含历史 Amber 命名和敏感账号/令牌示例；实现与命令优先以 `package.json`、`.cursor/rules/project-context.mdc`、源码和原生工程现状为准，回复时不要复述真实凭据。
+- **文档取舍**：README 中可能包含历史 Amber 命名和敏感账号/令牌示例；实现与命令优先以 `package.json`、源码和原生工程现状为准，回复时不要复述真实凭据。
 
 医疗健康类用户可见文案避免确诊式、替代医嘱式措辞。
 
@@ -151,7 +155,7 @@ description: >-
 
 | 场景 | Skill |
 |------|--------|
-| 规则缺失或刷新 `project-context.mdc` | `init-project` |
+| 唯一 `AGENTS.md` 缺失或重大结构刷新 | `/init-project` |
 | RN 实现与体验 | `react-native-patterns` |
 | 类型安全 | `typescript-strict` |
 | 代码审查 | `code-review` / `bmad-code-review` |
@@ -166,11 +170,12 @@ description: >-
 ## 执行工作流
 
 1. 确认工作区为本仓库（或用户声明的 fork），并确认双平台路径表中哪一侧对应当前机器。
-2. 按「新会话必读顺序」与「上下文加载门禁」拉取最小有用上下文；核对 `project-context.mdc` 与 `package.json` 是否一致。
+2. 按「新会话必读顺序」与「上下文加载门禁」拉取最小有用上下文；若唯一 `AGENTS.md` 缺失，使用 `/init-project`，不得创建仓库内规则副本。
 3. 识别请求形态，并合并用户输入与「当前活跃需求」中未注释条目为验收清单。
 4. 扩大范围前，先指向最相关的文件或 skill；需子 skill 时先补读子 skill。
 5. 实现类任务优先最小改动，遵循项目现有 RN / TS / 原生工程约定。
-6. 需长期保留的结论优先更新仓库文档或 `.cursor/rules`，而非仅留在对话中。
+6. 若本次任务改变稳定架构、命令工作流或仓库边界，在代码与定向验证稳定后自动最小更新 Codex 对口目录 `AGENTS.md`；否则不全仓扫描。外部合并造成的大规模变化使用 `/init-project` 刷新。
+7. 运行、构建和发布事实继续维护在现有仓库文档，而非仅留在对话中。
 
 ## 输出约定
 

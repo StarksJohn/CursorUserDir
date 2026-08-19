@@ -1,13 +1,20 @@
 ---
 name: ask-csx-web
 description: >-
-  Cursor：csx-web / ClinicSolution Web Vue 2 前端项目入口。用于在用户输入
-  /ask-csx-web、当前工作区为 csx-web，或任务明确属于旧 Vue 系统时恢复路径、
-  读取项目规则、收敛范围，并按需路由到关联 React 项目和专项 skills。用户只调用
-  入口而没有另给具体任务时，自动解析并继续执行“最新待继续问题”中未被注释的任务。
+  csx-web 私有恢复、旧 CSX 发布与跨仓路由入口。仅在用户显式使用
+  /ask-csx-web 或 @ask-csx-web，或明确要求继续受保护待办、恢复 29/POC 发布状态、
+  协调 csx-web-react 时使用。每个新 chat 先调用本入口；随后强制读取 Codex 对口
+  Skill 同目录 AGENTS.md 作为共享仓库规则。
 ---
 
 # ask-csx-web
+
+## 调用策略
+
+- 激活本 Skill 后，先完整读取本 `SKILL.md`，再立即完整读取 `$HOME/.codex/skills/csx-web/AGENTS.md`（Windows：`%USERPROFILE%\.codex\skills\csx-web\AGENTS.md`）；读取失败时停止项目实现并报告精确路径，不得跳过。
+- 每个新 chat 先显式调用本入口，再从共享 `AGENTS.md` 与当前源码开始普通 Vue 实现、排障、审查和测试；项目根不维护第二份 `AGENTS.md`。
+- 本 Skill 只处理受保护待办、旧 CSX 发布恢复事实、外部阻塞和跨仓协调。
+- 用户给出具体任务时，该任务优先；只有仅调用入口或明确要求“继续”时，才解析未注释队列。
 
 ## 路径与事实源
 
@@ -24,7 +31,7 @@ description: >-
 
 1. 完整读取本 `SKILL.md`。
 2. 确认实际工作区、分支和未提交改动，保留用户已有修改。
-3. 读取实际存在且与任务相关的项目规则：`AGENTS.md`、`.cursor/rules/project-context.mdc`、`.cursor/rules/*`。
+3. 确认 Codex 对口 Skill 同目录 `AGENTS.md` 已读取，再按任务读取相关 `.cursor/rules/*`；不要读取或创建 `project-context.mdc`。
 4. 读取当前任务直接相关的源码与测试；需要命令或环境信息时再读 `package.json`、`README.md` 和对应配置。
 5. 仅在需要对齐 Codex 工作流或恢复其未注释活跃需求时读取 Codex 对照入口。
 6. 修改关联 React 仓库或处理 TECH-8458、显示屏配置、公开大屏时，先读取 `ask-csx-web-react` Skill，并由它决定后续上下文。
@@ -81,7 +88,8 @@ description: >-
 
 - 不把可从源码或测试读取的业务规则、API 字段清单、默认值、修复过程、测试数量和验收流水写入本 Skill。
 - 普通代码任务结束不强制更新本 Skill；只有入口、加载门禁、跨仓边界、外部阻塞或无法从代码恢复的下一步发生实质变化时才更新。
-- 稳定工程事实通常写入仓库既有规则、`README.md` 或 `docs/`；用户明确要求归档的跨团队部署恢复事实、私有流程和外部协调状态可保留在项目外 Skill。
+- 若本次任务改变稳定架构、命令工作流或仓库边界，在代码与定向验证稳定后自动最小更新 Codex 对口目录 `AGENTS.md`；否则不全仓扫描。外部合并造成的大规模变化使用 `/init-project` 刷新。
+- 运行、构建和部署事实写入 `README.md` 或 `docs/`；用户明确要求归档的跨团队部署恢复事实、私有流程和外部协调状态可保留在项目外 Skill。
 - 禁止按日期或 chat 追加流水；更新时直接替换过期结论并去重。
 - “最新待继续问题（不要修改这部分的子内容）”由用户维护，除非用户明确授权修改，否则保持原文。
 

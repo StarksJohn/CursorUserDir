@@ -1,13 +1,18 @@
 ---
 name: ask-ps5pro
 description: >-
-  Cursor：PS5 Pro 项目与资料库的会话入口；name 为 ask-ps5pro，口令 /ask-ps5pro。
-  用于恢复当前项目上下文、读取项目 context.md 与规则、收敛 PS5 Pro 相关咨询/资料整理/购买决策/使用排障任务，
-  并与 Codex 侧 /ps5pro 保持同一执行流程。工作区为 Windows `D:\work\ps5 pro` 或 macOS
-  `/Users/<你的用户名>/Desktop/work/ps5 pro`（当前 Mac：`/Users/stark/Desktop/work/ps5 pro`）。
+  PS5 Pro 私有资料库与跨会话恢复入口。仅在用户显式使用
+  /ask-ps5pro 或 @ask-ps5pro，或明确要求恢复 context.md、继续受保护待办与既有
+  设备/账号/网络排障时使用。普通独立 PlayStation 问题不加载本 Skill。
 ---
 
 # ask-ps5pro（Cursor）
+
+## 调用策略
+
+- 本 Skill 只用于私有资料库、个人设备上下文、受保护待办和跨会话恢复。
+- 用户给出具体问题时先处理该问题；只有仅调用入口或明确要求“继续”时，才合并归档与未注释待办。
+- 价格、订阅、游戏支持、固件和政策属于易变事实，回答时必须以当天官方资料为准。
 
 ## 与 Codex 入口（分别维护）
 
@@ -30,10 +35,9 @@ description: >-
 
 ## 何时使用
 
-- 用户显式 `@ask-ps5pro`、`/ask-ps5pro`，或自然语言提及 ask-ps5pro / PS5 Pro 项目入口。
-- 当前工作区根目录为 **Windows** `D:\work\ps5 pro` 或 **macOS** `/Users/<你的用户名>/Desktop/work/ps5 pro`（当前 Mac：`/Users/stark/Desktop/work/ps5 pro`）。
-- 任务涉及 PS5 Pro、PlayStation 5 Pro、主机购买/对比、配件、游戏兼容与增强、显示设置、账号/订阅、保修、售后、官方网页或截图资料整理。
-- 用户未指定文件，但明显在本项目内工作时，优先按本 skill 的加载顺序取上下文。
+- 用户显式使用 `/ask-ps5pro` 或 `@ask-ps5pro`。
+- 用户明确要求恢复个人 `context.md`、继续受保护待办，或复用既有设备/账号/网络排障状态。
+- 单纯提及 PS5 Pro、路径或工作区不触发本私有资料库入口。
 
 ## 工作区与路径
 
@@ -136,4 +140,3 @@ description: >-
 - 我买了`PS5 PRO`国行数字版,然后刷了 港版系统,外接了![img_152447.png](img_152447.png)![img_152503.png](img_152503.png)显示器;我住在上海,`PS5 PRO`使用的上海移动家庭宽带wifi网络;已使用UU加速器 ![img_152129.png](img_152129.png) 加速了 游戏
   - 我也安装了 youtube 为什么打开之后黑屏了几秒,然后提示 未连接到互联网
   <!-- - PS5 pro 里的 <战锤40K 星际战士2>游戏能否支持 键盘鼠标? 还有其它哪些游戏支持 键鼠? -->
-

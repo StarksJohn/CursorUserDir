@@ -1,15 +1,20 @@
 ---
 name: ask-amber-medical-app-rn
 description: >-
-  Cursor：Amber Medical / Heals Pass React Native 项目入口。用于恢复 amber-medical-app-rn
-  的工作区、项目规则、当前活跃需求和最小下一步，并路由 RN、TypeScript、API、i18n、
-  导航、Figma、原生构建、代码审查或 BMAD 工作流。用户输入
-  /ask-amber-medical-app-rn、提及 Amber Medical App / Heals Pass、当前工作区为 Windows
-  D:\work\RN\amber-medical-app-rn 或 macOS
-  $HOME/Desktop/work/RN/amber-medical-app-rn，或需要继续该仓库任务时使用。
+  Amber Medical 私有恢复与专项路由入口。仅在用户显式使用
+  /ask-amber-medical-app-rn 或 @ask-amber-medical-app-rn，或明确要求继续受保护待办、
+  恢复跨会话状态、处理外部构建发布阻塞时使用。每个新 chat 先调用本入口；随后
+  强制读取 Codex 对口 Skill 同目录 AGENTS.md 作为共享仓库规则。
 ---
 
 # ask-amber-medical-app-rn
+
+## 调用策略
+
+- 激活本 Skill 后，先完整读取本 `SKILL.md`，再立即完整读取 `$HOME/.codex/skills/amber-medical-app-rn/AGENTS.md`（Windows：`%USERPROFILE%\.codex\skills\amber-medical-app-rn\AGENTS.md`）；读取失败时停止项目实现并报告精确路径，不得跳过。
+- 每个新 chat 先显式调用本入口，再从共享 `AGENTS.md` 与当前源码开始普通实现、排障、审查和测试；项目根不维护第二份 `AGENTS.md`。
+- 本 Skill 只处理私有恢复状态、受保护待办、跨客户端对齐和外部构建/发布上下文。
+- 用户给出具体任务时，该任务优先；只有仅调用入口或明确要求“继续”时，才解析未注释待办。
 
 ## 路径与事实源
 
@@ -18,14 +23,14 @@ description: >-
 - Codex 对照入口：**Windows** `%USERPROFILE%\.codex\skills\amber-medical-app-rn\SKILL.md`；**macOS** `/Users/<你的用户名>/.codex/skills/amber-medical-app-rn/SKILL.md`。
 - 业务逻辑、API 映射、导航、校验、交互和错误处理以当前源码、测试及真实运行证据为准。
 - 技术栈、依赖、命令、环境与构建以 `package.json`、原生工程、项目配置和 `README.md` 为准。
-- 长期项目约束以 `.cursor/rules/project-context.mdc` 和实际存在的项目规则为准；当前活跃方向以本文件的受保护区块为准。
+- 长期工程约束只维护在 Codex 对口目录的 `AGENTS.md`；不创建仓库根 `AGENTS.md` 或 `.cursor/rules/project-context.mdc`。当前活跃方向以本文件的受保护区块为准。
 
 发生冲突时，当前源码、配置与真实运行证据优先于历史摘要；外部 contract、产品范围与发布结论以负责人最新确认优先。README 可能含敏感账号或凭证，只读取任务必要信息，不复制、输出或沉淀敏感值。
 
 ## 新会话读取顺序
 
 1. 完整读取本 `SKILL.md`；只跳过当前 chat 已实际读取成功的文件。
-2. 读取项目内实际存在的 `AGENTS.md`、`.cursor/rules/project-context.mdc`、任务相关 `.cursor/rules/*`、`README*`、`CLAUDE.md` 和 `package.json`。
+2. 确认 Codex 对口 Skill 同目录 `AGENTS.md` 已读取，再按任务读取相关 `.cursor/rules/*`、`README*`、`CLAUDE.md` 和 `package.json`；不要读取或创建 `project-context.mdc`。
 3. 读取当前任务直接相关的源码、测试、配置、原生工程、截图或文档；不要通读 `src/`。
 4. 仅在用户要求两端对齐、当前活跃需求明确引用 Codex 入口或需要核对 Codex 专属行为时，读取 Codex 对照入口。
 5. 仅在需要平台差异、弃用状态或第三方 contract 时读取当前类型定义和官方文档。
@@ -59,7 +64,7 @@ description: >-
 
 ## 专项路由与硬门禁
 
-- 规则缺失或需刷新 `project-context.mdc`：使用 `init-project`。
+- 唯一 `AGENTS.md` 缺失或重大结构变化需要刷新：使用 `/init-project`。
 - RN 实现、类型、i18n、架构等专项任务：读取当前环境中匹配的专项 Skill 后执行；不要仅凭 Skill 名称或历史摘要代替正文。
 - 精确 PR/commit 审查：使用当前已安装的 `code-review` 或 `bmad-code-review`，只审指定已提交 diff，并遵守其输出契约。
 - 任意 `bmad-<identifier>`：先读取 **Windows** `%USERPROFILE%\.cursor\skills\<bmad-identifier>\SKILL.md` / **macOS** `/Users/<你的用户名>/.cursor/skills/<bmad-identifier>/SKILL.md`，再按要求读取 `workflow.md`、`checklist.md`、`reference.md`。
@@ -69,7 +74,7 @@ description: >-
 
 ## 文档维护边界
 
-- `project-context.mdc` 只保存跨会话稳定且不能廉价从源码恢复的项目事实与长期约束。
+- 若本次任务改变稳定架构、命令工作流或仓库边界，在代码与定向验证稳定后自动最小更新 Codex 对口目录 `AGENTS.md`；否则不全仓扫描。外部合并造成的大规模变化使用 `/init-project` 刷新。
 - `README.md` 只维护工程、运行、构建和发布事实；不得把账号、凭证或一次性会话状态复制到新文档。
 - 本 Skill 只保存入口、事实源、加载门禁、恢复状态和最小下一步；不复制业务规则、API 字段、版本清单、测试数量或修复流水。
 - 只有恢复状态、外部阻塞、最小下一步或非代码事实实质变化时才更新 Skill；普通代码修改不触发 Skill 改写。

@@ -1,14 +1,20 @@
 ---
 name: ask-heals-app-rn
 description: >-
-  Cursor：Heals React Native 医疗应用（heals-app-rn）的项目入口。用于恢复项目路径、
-  事实源、工程约束和最小下一步，并路由 RN、TypeScript、API、i18n、导航、Figma、
-  原生构建、代码审查或 BMAD 工作流。用户消息含 /ask-heals-app-rn、提及 Heals App，
-  当前工作区为 Windows D:\work\RN\heals-app-rn 或 macOS
-  $HOME/Desktop/work/RN/heals-app-rn，或需要继续该项目任务时使用。
+  Heals App 私有恢复与专项路由入口。仅在用户显式使用
+  /ask-heals-app-rn 或 @ask-heals-app-rn，或明确要求继续受保护待办、恢复跨会话状态、
+  处理 TestFlight/App Store 外部阻塞时使用。每个新 chat 先调用本入口；随后强制
+  读取 Codex 对口 Skill 同目录 AGENTS.md 作为共享仓库规则。
 ---
 
 # ask-heals-app-rn（Cursor）
+
+## 调用策略
+
+- 激活本 Skill 后，先完整读取本 `SKILL.md`，再立即完整读取 `$HOME/.codex/skills/heals-app-rn/AGENTS.md`（Windows：`%USERPROFILE%\.codex\skills\heals-app-rn\AGENTS.md`）；读取失败时停止项目实现并报告精确路径，不得跳过。
+- 每个新 chat 先显式调用本入口，再从共享 `AGENTS.md` 与当前源码开始普通实现、排障、审查和测试；项目根不维护第二份 `AGENTS.md`。
+- 本 Skill 只处理私有恢复状态、受保护待办、专项路由和外部构建/发布上下文。
+- 用户给出具体任务时，该任务优先；只有仅调用入口或明确要求“继续”时，才解析未注释待办。
 
 ## 路径与事实源
 
@@ -16,7 +22,7 @@ description: >-
 - Cursor 入口：Windows `%USERPROFILE%\.cursor\skills\ask-heals-app-rn\SKILL.md`；macOS `/Users/<你的用户名>/.cursor/skills/ask-heals-app-rn/SKILL.md`。
 - Codex 对照入口：Windows `%USERPROFILE%\.codex\skills\heals-app-rn\SKILL.md`；macOS `/Users/<你的用户名>/.codex/skills/heals-app-rn/SKILL.md`。
 - 业务逻辑、API 映射、导航、i18n、UI 行为和错误处理：以当前 `src/`、`ios/`、`android/` 和测试为准。
-- 稳定项目事实与工程约束：以 `.cursor/rules/project-context.mdc` 和实际存在的项目规则为准。
+- 稳定工程约束只维护在 Codex 对口目录的 `AGENTS.md`；不创建仓库根 `AGENTS.md` 或 `.cursor/rules/project-context.mdc`。
 - 技术栈、脚本、依赖、环境、构建和发布方式：以 `package.json`、项目配置和 `README*` 为准。
 - 当前任务、外部状态和最小下一步：以用户本轮消息、受保护的“当前活跃需求”和实时证据为准，不在入口正文复制状态流水。
 - `README_stark.md` 可能含敏感信息；只按任务读取相关段落，不复述或新增账号、密码、token、Cookie、私钥、keystore 密码和生产密钥。
@@ -32,7 +38,7 @@ description: >-
 ## 启用与最小读取顺序
 
 1. 完整读取本 `SKILL.md`；已在当前 chat 实际加载且未变化的文件不重复读取。
-2. 读取仓库实际存在的项目规则：`AGENTS.md`、`.cursor/rules/project-context.mdc` 及与任务直接相关的 `.cursor/rules/*`。
+2. 确认 Codex 对口 Skill 同目录 `AGENTS.md` 已读取，再按任务读取相关 `.cursor/rules/*`；不要读取或创建 `project-context.mdc`。
 3. 读取任务直接相关的源码、测试和原生配置；需要脚本、依赖或环境事实时，再读取 `package.json`、`README.md`、`README_stark.md`、`CLAUDE.md` 中实际存在者。
 4. 普通实现、排障和审查不默认读取 Codex 对照入口；仅在用户调用 `/heals-app-rn`、两份入口需要对齐，或任务事实只存在于对照入口时读取。
 5. 用户只有入口口令而没有新任务时，执行本文件“当前活跃需求”中第一个未注释且可行动的事项；已有明确新任务时，不自动展开无关活跃项。
@@ -69,7 +75,8 @@ description: >-
 
 ## 文档维护规则
 
-- `.cursor/rules/project-context.mdc` 只保存稳定项目事实与长期工程约束；`README.md` 保存通用工程说明；`README_stark.md` 只保存无秘密、可复用且不能从源码直接恢复的环境、构建、发布和验证方法。
+- 若本次任务改变稳定架构、命令工作流或仓库边界，在代码与定向验证稳定后自动最小更新 Codex 对口目录 `AGENTS.md`；否则不全仓扫描。外部合并造成的大规模变化使用 `/init-project` 刷新。
+- `README.md` 保存通用工程说明；`README_stark.md` 只保存无秘密、可复用且不能从源码直接恢复的环境、构建、发布和验证方法。
 - 不把字段清单、业务规则、默认值、单次分支/commit/PID、构建结果、测试数量、当前阻塞或聊天流水写入入口 Skill 或 README。
 - 有新的可复用事实时，先完成项目代码和测试，再更新现有对应章节；直接修正过期内容并去重，不按日期追加。
 - “当前活跃需求（不要修改这部分的子内容）”由用户维护；除非用户明确授权，否则保持其子内容原文。

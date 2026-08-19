@@ -1,21 +1,27 @@
 ---
 name: ask-CircleAppNew
 description: >-
-  Cursor：CircleApp（仓库名 circleapp，历史目录名 CircleAppNew）React Native 项目入口。
-  用户消息含 /ask-CircleAppNew、提及 CircleApp / CircleAppNew / circleapp、当前工作区为
-  Windows `D:\work\RN\CircleAppNew` 或 macOS `$HOME/Desktop/work/RN/circleapp`，
-  或需要继续本仓库的导航、API、i18n、健康设备、原生构建、Google Play / 16 KB
-  等任务时使用。恢复项目事实，读取 Codex 对口入口与最小相关文件，并按任务路由专项 Skill。
+  CircleApp 私有恢复与专项路由入口。仅在用户显式使用独立入口词
+  /ask-CircleAppNew 或 @ask-CircleAppNew，或明确要求继续受保护待办、恢复跨会话状态、
+  处理外部构建发布阻塞时使用。每个新 chat 先调用本入口；随后强制读取 Codex
+  对口 Skill 同目录 AGENTS.md 作为共享仓库规则。
 ---
 
 # ask-CircleAppNew（Cursor）
+
+## 调用策略
+
+- 激活本 Skill 后，先完整读取本 `SKILL.md`，再立即完整读取 `$HOME/.codex/skills/CircleAppNew/AGENTS.md`（Windows：`%USERPROFILE%\.codex\skills\CircleAppNew\AGENTS.md`）；读取失败时停止项目实现并报告精确路径，不得跳过。
+- 每个新 chat 先显式调用本入口，再从共享 `AGENTS.md` 与当前源码开始普通实现、排障、审查和测试；项目根不维护第二份 `AGENTS.md`。
+- 本 Skill 只处理私有恢复状态、受保护待办、跨客户端对齐和外部构建/发布上下文。
+- 用户给出具体任务时，该任务优先；只有仅调用入口或明确要求“继续”时，才解析未注释待办。
 
 ## 路径与事实源
 
 - 项目根：Windows `D:\work\RN\CircleAppNew`；macOS `$HOME/Desktop/work/RN/circleapp`，当前 Mac 为 `/Users/stark/Desktop/work/RN/circleapp`。用户给出 fork、worktree 或其它路径时以用户路径为准。
 - 本入口：Windows `%USERPROFILE%\.cursor\skills\ask-CircleAppNew\SKILL.md`；macOS `$HOME/.cursor/skills/ask-CircleAppNew/SKILL.md`。
 - Codex 对口入口：Windows `%USERPROFILE%\.codex\skills\CircleAppNew\SKILL.md`；macOS `$HOME/.codex/skills/CircleAppNew/SKILL.md`。
-- 稳定项目事实与目录索引：以 `{workspace}/.cursor/rules/project-context.mdc` 为准。
+- 稳定工程约束只维护在 Codex 对口目录的 `AGENTS.md`；不创建仓库根 `AGENTS.md` 或 `.cursor/rules/project-context.mdc`。
 - 依赖、脚本、环境与工具版本：以 `{workspace}/package.json`、项目配置和原生工程为准。
 - 业务逻辑、API、导航、交互与错误处理：以当前源码、测试、真实页面 / 真机和实际请求响应为准。
 - 工程、构建与发布说明：仅在任务需要时读取 `{workspace}/README.md`、`CLAUDE.md` 或专项指南。
@@ -27,7 +33,7 @@ description: >-
 
 1. 完整读取本 `SKILL.md`。
 2. 完整读取 Codex 对口 `SKILL.md`，核对共同门禁、受保护活跃需求和其同目录图片引用。
-3. 确认实际 `{workspace}`，读取 `.cursor/rules/project-context.mdc` 和 `package.json`；不存在时明确缺口，再用最小替代来源恢复。
+3. 确认实际 `{workspace}`，读取 Codex 对口目录 `AGENTS.md` 和 `{workspace}/package.json`；只从当前任务需要的源码、配置和原生工程继续恢复事实。
 4. 只读取当前任务直接相关的源码、测试、配置或指南；需要命令、原生构建或发布事实时再扩大范围。
 5. 图片引用按引用源 `.md` 的目录精确解析并先读取图片；精确路径读取失败后才搜索。
 6. 路由到其它 Skill、ask、command 或 BMAD 时，先完整读取对应 `SKILL.md` 及其要求的 `workflow.md`、`checklist.md`、`reference.md` 或图片。
@@ -56,7 +62,8 @@ description: >-
 ## 文档与双入口维护
 
 - 不把可从源码、测试、`package.json` 或项目规则恢复的版本、依赖表、命令表、目录地图、业务规则、API 字段和测试流水重复写入入口 Skill。
-- 稳定项目事实写入 `.cursor/rules/project-context.mdc`；运行、构建和发布事实写入 `README.md` 或现有专项指南；阶段性结论不追加为 chat 流水。
+- 若本次任务改变稳定架构、命令工作流或仓库边界，在代码与定向验证稳定后自动最小更新 Codex 对口目录 `AGENTS.md`；否则不全仓扫描。外部合并造成的大规模变化使用 `/init-project` 刷新。
+- 运行、构建和发布事实写入 `README.md` 或现有专项指南；阶段性结论不追加为 chat 流水。
 - Cursor 与 Codex 入口的共同门禁、事实源优先级、执行范围和文档边界保持一致；只保留客户端名称、口令和用户目录路径差异。
 - “当前活跃需求（不要修改这部分的子内容）”由用户维护；除非用户明确授权，不修改其文字、注释状态、层级或图片引用。
 - 最终回复默认只说明产出、验证、风险和下一步；仅在用户要求、审查 / 排障需溯源、上下文缺失或慢任务复盘时列文件加载清单。

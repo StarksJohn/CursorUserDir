@@ -1,14 +1,18 @@
 ---
 name: ask-mac
 description: >-
-  Cursor 侧 MAC 系统问题入口 skill；口令 /ask-mac。适用于 MacBook、macOS、
-  Mac 维修/回收、Apple 官方支持、VPN/代理/Git 网络、Cursor 与 Codex 在 Mac 上的
-  配置协作等问题。进入新 chat 时先恢复 MAC 工作区上下文文件
-  `MAC系统相关问题解决方案.md`，并与 Codex 侧 `/mac` 保持同一文件加载顺序、
-  上下文门禁、子任务补读规则与交付效果。
+  私有 Mac 系统恢复与专项排障入口。仅在用户显式使用 /ask-mac 或 @ask-mac，
+  或明确要求恢复 MAC 工作区历史、继续 VPN/代理/Cursor/Codex 等跨会话排障时使用。
+  普通独立 macOS 问题不加载整份私有恢复上下文。
 ---
 
 # ask-mac（Cursor）
+
+## 调用策略
+
+- 本 Skill 只用于私有跨会话恢复、受保护待办和复杂系统排障；普通独立 macOS 问题直接按当前证据处理。
+- 用户给出具体任务时，该任务优先；只有仅调用入口或明确要求“继续”时，才合并两端未注释待办。
+- 易变的网络、版本、价格、政策和进程状态必须现场复核，历史基线只用于定位。
 
 ## 与 Codex 入口（分别维护）
 
@@ -32,10 +36,9 @@ description: >-
 
 ## 何时使用
 
-- 用户显式输入 `/ask-mac`、`@ask-mac`，或自然语言点名 ask-mac / mac / MAC 系统问题。
-- 当前工作区为 **Windows** `D:\work\MAC` 或 **macOS** `/Users/<你的用户名>/Desktop/work/MAC`（当前 Mac：`/Users/stark/Desktop/work/MAC`）。
-- 任务涉及 MacBook、macOS、VPN/代理/GitHub 网络、Cursor Git、SourceTree、终端网络、Apple 支持、维修、回收、系统配置、Cursor/Codex 在 Mac 上的配置协作。
-- 用户希望 Cursor 与 Cursor 内 Codex 插件中的执行效果对齐。
+- 用户显式使用 `/ask-mac` 或 `@ask-mac`。
+- 用户明确要求恢复 MAC 工作区历史、继续受保护待办，或复用既有 VPN/代理/Cursor/Codex 排障状态。
+- 单纯提及 macOS、路径或工作区不触发本私有恢复入口；普通独立问题直接按当前事实处理。
 
 ## 工作区与本 skill 路径
 
