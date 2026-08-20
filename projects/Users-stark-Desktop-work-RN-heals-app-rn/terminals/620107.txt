@@ -1,0 +1,31 @@
+---
+pid: 9210
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "npx react-native start --port 8081"
+title: "Start Metro bundler on port 8081"
+status: failed   
+started_at: 2026-08-20T06:43:01.424Z
+running_for_ms: 4247     
+---
+
+Welcome to React Native v0.81
+Starting dev server on http://localhost:8081
+
+error listen EADDRINUSE: address already in use :::8081.
+Error: listen EADDRINUSE: address already in use :::8081
+    at Server.setupListenHandle [as _listen2] (node:net:1908:16)
+    at listenInCluster (node:net:1965:12)
+    at Server.listen (node:net:2067:7)
+    at /Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/index.flow.js:455:14
+    at new Promise (<anonymous>)
+    at earlyPortCheck (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/index.flow.js:451:11)
+    at Object.runServer (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/index.flow.js:201:9)
+    at Object.runServer [as func] (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/community-cli-plugin/dist/commands/start/runServer.js:150:63)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Command.handleAction (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native-community/cli/build/index.js:139:9)
+
+---
+exit_code: 1
+elapsed_ms: 4247
+ended_at: 2026-08-20T06:43:05.671Z
+---
