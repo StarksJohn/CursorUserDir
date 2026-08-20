@@ -13,8 +13,10 @@ description: >-
 
 - 激活本 Skill 后，先完整读取本 `SKILL.md`，再立即完整读取 `$HOME/.codex/skills/csx-web-react/AGENTS.md`（Windows：`%USERPROFILE%\.codex\skills\csx-web-react\AGENTS.md`）；读取失败时停止项目实现并报告精确路径，不得跳过。
 - 每个新 chat 先显式调用本入口，再从共享 `AGENTS.md`、当前源码与聚焦测试开始普通实现、排障、审查和测试；项目根不维护第二份 `AGENTS.md`。
+- 本 chat 首次激活时，在主任务前执行共享 `AGENTS.md` 的 “First-chat structural drift gate”；发现重大冲突时立即完整读取并执行 macOS `$HOME/.cursor/skills/init-project/SKILL.md` / Windows `%USERPROFILE%\.cursor\skills\init-project\SKILL.md`，刷新后重新读取共享 `AGENTS.md` 并继续原任务，不要求用户再次输入 `/init-project`。
 - 本 Skill 只补充无法安全放进仓库的受保护待办、私有需求索引、外部阻塞和跨仓路由。
 - 用户给出具体任务时，该任务优先；只有仅调用入口或明确要求“继续”时，才解析未注释待办。
+- 普通一次性任务优先在新 chat 第一条消息中同时写 `/ask-csx-web-react` 和任务正文；只有需要跨 chat、跨设备或长周期恢复时，才把任务放入本文件受保护区后仅输入入口词继续。
 - Cursor 入口 `/ask-csx-web-react` 与 Codex 显式入口 `$csx-web-react` 保持事实优先级和授权边界一致，但不复制客户端专属说明。
 
 ## 路径与事实优先级

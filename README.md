@@ -14,12 +14,17 @@ Cursor 用户级命令、技能、MCP 主目录:
 
 ## 跨机器同步
 
-在 Mac 的 `~/.cursor` 目录内用 **`git pull origin main`** 同步本仓库（**仅 `git fetch` 不会更新 Finder 里的工作区文件**，须 `pull` 或 `fetch` 后再 `merge`；见 Roaming 指南 **§2.1a 问题 16**）。**进 Git 的只有可移植目录**（见根目录 `.gitignore`）：`skills/`、`commands/`、`rules/`、`plans/`、`subagents/`、`config/`、`skills-cursor/`，以及 `README.md`、`sync-cursor-config.ps1` 等根文件。**`projects/`、`plugins/` 缓存不入库**（路径随机器变、体积大）；两端 Cursor 会在本地各自生成。
+在 Mac 的 `~/.cursor` 目录内用 **`git pull origin main`** 同步本仓库（**仅 `git fetch` 不会更新 Finder 里的工作区文件**，须 `pull` 或 `fetch` 后再 `merge`；见 Roaming 指南 **§2.1a 问题 16**）。**进 Git 的只有可移植目录**（见根目录 `.gitignore`）：`skills/`、`commands/`、`rules/`、`hooks/`、`plans/`、`subagents/`、`config/`、`skills-cursor/`，以及 `hooks.json`、`Cursor AI 规则.md`、`README.md`、`sync-cursor-config.ps1` 等根文件。**`projects/`、`plugins/` 缓存不入库**（路径随机器变、体积大）；两端 Cursor 会在本地各自生成。
 
 ## 目录结构
 
 ```
 ~/.cursor  (或 C:\Users\Stark8964911\.cursor)
+├── Cursor AI 规则.md          # 唯一的 Cursor 全局规则正文
+├── hooks.json                 # 注册全局 sessionStart 自动加载
+├── hooks/
+│   └── load-global-user-rules.js
+│                              # 把规则正文注入每个本地新 Chat
 ├── config/                     # Cursor 全局配置备份（入 Git）
 │   ├── settings.json          # 全局设置
 │   ├── keybindings.json       # 快捷键
@@ -31,12 +36,21 @@ Cursor 用户级命令、技能、MCP 主目录:
 ├── commands/                  # 自定义 slash 命令
 ├── skills-cursor/             # 内置技能
 ├── skills/                    # 个人技能
-├── rules/                     # 用户规则
+├── rules/                     # Cursor 用户级文件规则
 ├── projects/                  # 项目级数据（本地-only，不进本仓库）
 └── plugins/                   # 扩展/插件缓存（本地-only，不进本仓库）
 ```
 
 ## 使用方式
+
+### Cursor 全局 User Rules
+
+`~/.cursor/Cursor AI 规则.md` 是唯一规则正文。`~/.cursor/hooks.json` 注册官方用户级 `sessionStart` Hook；每个本地新 Chat 创建时，`hooks/load-global-user-rules.js` 会读取该文件并通过 `additional_context` 注入初始系统上下文。
+
+- 首次同步本方案后，执行一次 `Developer: Reload Window` 或重启 Cursor，并在 `Cursor Settings > Hooks` / Hook Output 确认 `sessionStart` 成功。
+- 此后修改规则或 `git pull` 只需新开 Chat，不再把全文粘贴到 `Cursor Settings > Rules`；若那里已有旧全文，应清空以避免重复和漂移。
+- Hook 依赖 PATH 中可用的 Node.js；可用 `node --version` 检查。
+- 用户级 `~/.cursor/hooks.json` 只适用于本机 Cursor 会话，Cursor Cloud Agents 无法访问本机用户目录。
 
 ### Windows: 备份配置到 Git
 
