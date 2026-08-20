@@ -30,6 +30,22 @@ description: Runs evidence-based post-change verification for React Native imple
 
 ## Verification Gate
 
+### 0. Detect Capability Levels
+
+先运行：
+
+```bash
+python3 "$HOME/.cursor/skills/react-native-ui-verification/scripts/check_toolchain.py" "$PROJECT_ROOT"
+```
+
+严格区分三层：
+
+1. `globalAvailable`：CLI/Driver 在本机可启动，不构成项目测试证据。
+2. `projectConfigured`：仓库已有本地依赖、配置、flow 或测试，不代表当前版本通过。
+3. `currentRunVerified`：针对当前构建、设备和目标状态实际执行并通过，才可作为本次 E2E 证据。
+
+任何全局安装都不得冒充 `projectConfigured` 或 `currentRunVerified`。检测脚本始终将本次运行标记为 false，实际测试命令的结果由当前任务单独记录。
+
 ### 1. Classify the Change
 
 按风险选择最小充分矩阵：
@@ -66,12 +82,12 @@ Android 使用指定 serial 的 `adb -s`，多设备时禁止依赖默认设备�
 
 ### 5. Exercise the User Flow
 
-优先级不是固定品牌排名，而是证据质量：
+优先级不是固定品牌排名，而是当前项目的集成程度和证据质量：
 
-1. 运行项目已经配置且稳定的 E2E/集成流程。
-2. React Native 专项且需要同步应用状态时优先现有 Detox。
-3. 需要低侵入、跨平台黑盒流程时优先现有 Maestro。
-4. 企业 WebDriver/device-farm 流程已存在时使用 Appium。
+1. 运行项目已经配置、与当前验收范围匹配且本次可实际执行的 E2E/集成流程。
+2. React Native 专项且需要同步应用状态时优先项目已集成的 Detox。
+3. 需要低侵入、跨平台黑盒流程时优先项目已有 Maestro flow。
+4. 企业 WebDriver/device-farm 流程已存在时使用项目已集成的 Appium client/config。
 5. 都不存在时，用 `adb`/`simctl` 执行可复现的最小交互，并结合控件树断言；不能把坐标点击当成稳定 E2E。
 
 断言用户可观察结果：元素可见、文案、选中/禁用状态、页面跳转、输入结果和返回行为。必要时为后续正式自动化建议稳定的 `testID`/accessibility label，但不为单次验证擅自改业务接口。
@@ -130,4 +146,6 @@ Android 使用指定 serial 的 `adb -s`，多设备时禁止依赖默认设备�
 - Android Studio Layout Inspector、Xcode View Debugger 和人工 GUI 检查可作为补充；未实际执行时不得列为证据。
 - Chrome Browser DevTools 不支持替代 React Native DevTools；WebView 内容例外。
 - E2E 重点覆盖关键用户旅程，非关键逻辑优先使用更快的 JS/组件测试。
+- 全局 Maestro、Appium、Detox CLI 和 Appium Driver 只提供可用能力；没有项目 flow/config/test 和当前成功运行结果时，不得写成稳定 E2E。
+- Detox 全局 CLI 只转发到项目本地 `detox`，没有本地依赖和原生 build configuration 时不可运行。
 - 未经用户授权，不自动安装 Maestro/Detox/Appium，不创建长期 E2E 基础设施，不写入生产系统。

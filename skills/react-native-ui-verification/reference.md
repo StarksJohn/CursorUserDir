@@ -69,11 +69,20 @@ xcrun simctl get_app_container "$UDID" "$BUNDLE_ID" app
 
 ## Existing E2E Tools
 
+每个 React Native 项目任务先检测能力层级：
+
+```bash
+python3 "$HOME/.cursor/skills/react-native-ui-verification/scripts/check_toolchain.py" \
+  "$PROJECT_ROOT"
+```
+
+输出中的 `globalAvailable` 只表示命令可用，`projectConfigured` 只表示仓库存在集成材料。检测脚本不会把任何工具标记为 `currentRunVerified`；只有本次针对当前构建执行相应测试并成功，才能在最终证据报告中人工记录为已验证。
+
 先读取项目配置和脚本，不猜命令：
 
-- Detox：适合已配置的 React Native 灰盒流程和自动同步。
-- Maestro：适合无需 app instrumentation 的 accessibility 黑盒流程，可使用 `assertVisible`、`takeScreenshot`、录屏和 artifacts。
-- Appium：适合已有 WebDriver、device farm 或跨技术栈基础设施的项目。
+- Detox：全局 `detox-cli` 只转发到项目本地 `detox`；需要仓库依赖、`.detoxrc`、原生 build configuration 和测试。
+- Maestro：全局 CLI 可直接驱动 accessibility，但稳定 E2E 仍需要项目内针对 app ID、状态和断言编写的 flow。
+- Appium：全局 server/Driver 仍需要项目 client、capabilities、测试数据和断言；只启动 server 不是 E2E。
 
 若项目没有 E2E，不因单次 UI 修改擅自引入框架。关键流程需要长期回归时，向用户说明维护成本、目标平台和测试数据后再安装。
 

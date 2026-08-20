@@ -1,0 +1,34 @@
+---
+pid: 52601
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "appium --address 127.0.0.1 --port 4723"
+title: "Start local Appium server for driver smoke test"
+status: running  
+started_at: 2026-08-20T08:58:18.054Z
+running_for_ms: 10007    
+---
+[38;5;112m[Appium][0m Welcome to Appium v3.6.0 (REV bab86d5de571015b63fd8fc30b47bbe072a1290e)
+[38;5;112m[Appium][0m Non-default server args:
+[38;5;112m[Appium][0m { address: [32m'127.0.0.1'[39m }
+[38;5;112m[Appium][0m The autodetected Appium home path: /Users/stark/.appium
+[38;5;112m[Appium][0m Attempting to load driver uiautomator2...
+[38;5;112m[Appium][0m Attempting to load driver xcuitest...
+[38;5;112m[Appium][0m Requiring driver at /Users/stark/.appium/node_modules/appium-uiautomator2-driver/build/lib/index.js
+[38;5;112m[Appium][0m Requiring driver at /Users/stark/.appium/node_modules/appium-xcuitest-driver/build/lib/index.js
+[38;5;112m[Appium][0m XCUITestDriver has been successfully loaded in 1.360s
+[38;5;112m[Appium][0m AndroidUiautomator2Driver has been successfully loaded in 1.997s
+[38;5;112m[Appium][0m Appium REST http interface listener started on http://127.0.0.1:4723
+[38;5;112m[Appium][0m Available drivers:
+[38;5;112m[Appium][0m   - uiautomator2@8.4.0 (automationName 'UiAutomator2')
+[38;5;112m[Appium][0m   - xcuitest@12.5.0 (automationName 'XCUITest')
+[38;5;112m[Appium][0m No plugins have been installed. Use the "appium plugin" command to install the one(s) you want to use.
+[38;5;86m[HTTP][0m --> GET / 
+[38;5;86m[HTTP][0m <-- GET / 404 9 ms - 139
+[38;5;86m[HTTP][0m --> GET /json/version 
+[38;5;86m[HTTP][0m No route found for /json/version
+[38;5;86m[HTTP][0m <-- GET /json/version 404 7 ms - 3812
+[38;5;86m[HTTP][0m --> GET / 
+[38;5;86m[HTTP][0m <-- GET / 404 1 ms - 139
+[38;5;86m[HTTP][0m --> GET /json/version 
+[38;5;86m[HTTP][0m No route found for /json/version
+[38;5;86m[HTTP][0m <-- GET /json/version 404 1 ms - 3812
