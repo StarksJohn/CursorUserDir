@@ -152,7 +152,7 @@ description: >-
 ### 当前阶段
 
 - 项目为 `Fracture Recovery AI Companion`；`project_phase` 为 `market-promotion`。Epic 1-7 已完成；Epic 8 为 `in-progress`，Story 8.1-8.2 与 Story 8.4-8.6 为 `done`，Story 8.3 与 Story 8.7 为 `in-progress`。
-- 研究、隐私安全第一方漏斗、Production 全链路、三条高意图 SEO 入口、Article JSON-LD、Search Console 请求、Reddit 归因与唯一版主许可申请均已完成。Story 8.7 的代码、测试、审查、Production 验收、唯一 IndexNow batch、安全社交分享预览和 LinkedIn 网页 onboarding 均已完成。Chrome 登录态与 Day 7 authenticated checkpoint 已恢复完成。Authorization C 的 LinkedIn 当前账号/资料/公开 composer 已复核，只剩用户确认职业资料、人工粘贴/点击 Post 与结果核验；Authorization D 已把 Bing 推进到 CNAME 验证，Spaceship 会话过期待用户重新登录后新增唯一记录。不使用 X，不重发 Reddit 申请或 IndexNow batch。
+- 研究、隐私安全第一方漏斗、Production 全链路、三条高意图 SEO 入口、Article JSON-LD、Search Console 请求、Reddit 归因与唯一版主许可申请均已完成。Story 8.7 的代码、测试、审查、Production 验收、唯一 IndexNow batch、安全社交分享预览和 LinkedIn 网页 onboarding 均已完成。Chrome 登录态、Day 7 authenticated checkpoint 与 Authorization D 的 Bing/Spaceship 单条 CNAME 所有权验证均已完成。Authorization C 的 LinkedIn 当前账号/资料/公开 composer 已复核，用户已确认职业资料准确并人工粘贴精确 draft；最终预览已通过，只剩用户人工点击 Post 与结果核验。不使用 X，不重发 Reddit 申请、IndexNow batch 或 Bing 验证。
 
 ### Production 基线
 
@@ -164,29 +164,28 @@ description: >-
 
 ### 市场推广执行检查点
 
-- 当前状态：`observation-active/external-user-actions-pending`。Reddit 为 `permission-request-sent/pending`，截至 `2026-08-20T07:52:11Z` 私信归档为空、通知页只有无关成就提醒，没有版主回复且未重发；IndexNow 为 `validation-pending`；LinkedIn 为 `live-profile-and-anyone-composer-verified/authorization-c-granted/not-posted`；Bing Webmaster Tools 为 `site-added/cname-issued/spaceship-session-expired/not-verified`。旧文章 Search Console 为 `verified-crawled-indexing-pending`，两条新文章为 `discovery-requested-indexing-pending`。自然 `direct` 只表示无受控来源参数，不得写成 organic search。
+- 当前状态：`observation-active/external-linkedin-post-click-pending`。Reddit 为 `permission-request-sent/pending`，截至 `2026-08-20T08:27:14Z` 私信归档为空、通知页只有无关成就提醒，没有版主回复且未重发；IndexNow 为 `validation-pending`；LinkedIn 为 `profile-confirmed/anyone-final-preview-verified/authorization-c-granted/not-posted`；Bing Webmaster Tools 为 `verified/ownership-complete`。旧文章 Search Console 为 `verified-crawled-indexing-pending`，两条新文章为 `discovery-requested-indexing-pending`。自然 `direct` 只表示无受控来源参数，不得写成 organic search。
 - Search Console 的“网页会自动重定向”当前只有 `http://fracturerecoverycoach.com/` 一条示例；真实 Production 为一次 `308` 到 `https://fracturerecoverycoach.com/` 后返回 200，HTTPS 根页 URL Inspection 显示“网址已收录到 Google”和“网页采用 HTTPS 协议”。sitemap、canonical、Open Graph 与源码公共 origin 均只使用 HTTPS；这是预期 HTTP -> HTTPS canonicalization，不修改代码、不点击“验证修正情况”，也不解释为文章已收录或新增流量。
 - 观察窗从 `2026-08-13T04:29:00Z` 开始。Day 1 截止为 0 次相关 landing occurrence；Day 3 截止为 1 次相关 landing、0 次同入口 CTA、0 activation、0 Day 完成、0 feedback、0 safety signal。该 landing 是非唯一 occurrence，可能含自动化流量，不是已验证真实用户。
 - Day 7 authenticated aggregate 于 `2026-08-20T07:42:29Z` 返回 HTTP 200、`private, no-store`：5 次 raw stiffness landing 中包含 1 次预先记录的 `build_in_public` operator QA，故决策使用 4 次 adjusted relevant `direct:stiffness_after_cast` landing；相关 CTA、activation、Day 1/3/7/14、feedback、safety 与 verified business outcomes 全部为 0。观察窗 Vercel Production error-level 与 5xx 查询均为 0。样本低于 50，只能定性记录，不得调整为 `go` 或宣称转化率；`direct` 也不证明 organic search。
 - 全站同期为 11 次 landing / 1 次 CTA，9.1% 仅是站点背景，不能冒充 stiffness 实验转化率。已知 QA occurrence 只在分析中排除，不删除数据库聚合；修复后的最终 Production metadata/PNG 验收没有新增 analytics 请求。
 - 固定门禁：Day 7 为 `2026-08-20T04:29:00Z`，Day 14 为 `2026-08-27T04:29:00Z`；50/100 次相关 landing occurrence 是动态检查点。最终决策必须同时达到至少 14 天与至少 100 次相关 landing occurrence；若 90 天保留边界先到且仍不足 100，只能 `hold` 或 `stop`。
-- `next_eligible_check_at`：同一 authenticated summary 的下一个固定时间门禁为 `2026-08-27T04:29:00Z`；LinkedIn 人工发布和 Spaceship 重新登录后的 Bing 单记录验证仍可立即推进，不受 Day 14 节流。
+- `next_eligible_check_at`：同一 authenticated summary 的下一个固定时间门禁为 `2026-08-27T04:29:00Z`；LinkedIn 用户人工点击 Post 与结果核验仍可立即推进，不受 Day 14 节流。
 
 ### 当前阻塞与进入条件
 
 - 当前没有已确认的 Production 故障，也没有满足立即停止条件；Day 7 authenticated summary 与 Production 日志均已完成，结果仍不足以形成转化或增长结论。
 - 用户已明确给出 Authorization B：只允许当前登录 Reddit 账号以透明 maker 身份向 `r/brokenbones` moderator 发送至多一条 permission request，并仅在明确获批后发布一次。该许可申请已于 2026-08-19 发送且不得重发；X、`r/HandSurgery`、其它社区、跨社区复制、陌生用户私信、健康细节收集及诊断/疗效/结果声明继续禁止。
-- LinkedIn 尚未公开发布。真实登录态已复核公开账号 `Stark zhang`；编辑表单为姓名 `Stark` / `zhang`、行业 `IT 服务与咨询`、现任职位 `CSX - 首席技术官`、地点 `中国 上海市`。公开 composer 已打开且正文为空。用户已给出 Authorization C 并声明公开姓名准确；仍需用户确认职业资料真实准确，人工粘贴最终 draft，Cursor 只读核验预览后再由用户点击 Post。若出现 CAPTCHA、新条款、权限或 restriction，记录真实状态并停止。
-- Bing 已手工添加精确 property `https://fracturerecoverycoach.com/` 并发出一条 CNAME 验证要求；Spaceship 当前识别既有账号但显示 session expired。用户重新登录后，先读取 UI 全量记录和检查同名冲突，再只新增 Bing 当页的一条记录，验证两台权威 NS 与既有 A/MX/TXT/`www` CNAME 均保留，然后回 Bing 验证。不连接 GSC/Domain Connect，不提交 sitemap/URL，不重复 IndexNow；出现新条款、CAPTCHA、权限扩大或 DNS 冲突即停止。
+- LinkedIn 尚未公开发布。真实登录态已复核公开账号 `Stark zhang`；编辑表单为姓名 `Stark` / `zhang`、行业 `IT 服务与咨询`、现任职位 `CSX - 首席技术官`、地点 `中国 上海市`，用户已确认职业资料准确并人工粘贴精确 draft。Cursor 只读最终预览确认四段正文、controlled URL、`Anyone` 与预期文章分享卡正确，没有额外上传、tag、group、boost 或定时发布；下一步仅由用户点击一次 Post。若出现 CAPTCHA、新条款、权限或 restriction，记录真实状态并停止。
+- Authorization D 已完成：只添加精确 Bing apex property 与 Bing 当页要求的一条 Spaceship CNAME。UI 由 10 项变为 11 项，原 A/`www` CNAME/MX/DMARC/Google verification/DKIM/SPF 均保留；两台权威 NS 都精确返回新 CNAME，Google DoH 的新记录与基线均为 NOERROR。Bing 明确显示 `Congratulations! Site addition successful`。未执行 GSC import/Domain Connect、sitemap/URL 提交、Clarity、付费或重复 IndexNow；不回显或保存验证值，也不重复验证。
 - Chrome DevTools 已恢复且 Day 7 operator API 已读取；此前失败的本地/Vercel-injected Supabase 直连凭据不再重试，也不作为 Production 故障证据。任何 Network/会话核验都只输出必要的状态、计数和响应字段，不读取或回显 Cookie、Authorization、session token 或 DNS 验证值。
 - Production 结论继续只来自 authenticated operator API、aggregate-only 数据库、live 页面/Network 与当前日志查询；不得把测试账号、QA 事件、搜索结果缺失或开发者访问写成用户转化。
 
 ### 最小下一步
 
-1. 用户在已打开的 Spaceship 登录页手动输入密码并恢复既有会话。Cursor 随后读取该域 UI 全量 DNS、确认无同名冲突，只新增 Bing 已发出的唯一 CNAME，核验 UI 与两台权威 NS，再回 Bing 点击 Verify；不回显验证值，不执行其它搜索或 DNS 动作。
-2. 用户确认当前 LinkedIn 职业资料真实准确并人工粘贴 Story 8.7 精确 draft；Cursor 只读复核账号、`Anyone`、正文和 controlled URL，之后由用户人工点击 Post。Cursor 再只读记录公开 URL/visibility/UTC；不代填身份、保存资料或点击 Post，不私信、tag、group、boost、复制到 X 或重复发布。
-3. 只读监看 `r/brokenbones` moderator 回复，不重发许可申请。仅在明确批准且满足其文案/flair/时间条件后，由用户完成其要求的人工发布边界；拒绝、条件不可满足或仍 pending 时均不发帖。
-4. LinkedIn 实际结果确定后完成 Story 8.7 的正式 `bmad-code-review -> done` 收尾；Story 8.3 下一次同类聚合读取不早于 `2026-08-27T04:29:00Z`，继续等待 Day 14 与 100 次相关 landing 双门禁，或 90 天不足样本的 `hold/stop` 边界。
+1. 用户在已通过最终预览的 LinkedIn `Anyone` composer 中人工点击一次 Post，随后回复“已发布”。Cursor 再只读记录公开 URL/visibility/UTC。不代填身份、保存资料或点击 Post，不私信、tag、group、boost、复制到 X 或重复发布。
+2. 只读监看 `r/brokenbones` moderator 回复，不重发许可申请。仅在明确批准且满足其文案/flair/时间条件后，由用户完成其要求的人工发布边界；拒绝、条件不可满足或仍 pending 时均不发帖。
+3. LinkedIn 实际结果确定后完成 Story 8.7 的正式 `bmad-code-review -> done` 收尾；Story 8.3 下一次同类聚合读取不早于 `2026-08-27T04:29:00Z`，继续等待 Day 14 与 100 次相关 landing 双门禁，或 90 天不足样本的 `hold/stop` 边界。
 
 ## 最新待继续问题(不要修改这部分的子内容)
 - 根据 `<项目根目录>` 目录下的 `<项目根目录>/项目主档案.md` 文档恢复这个项目的上下文，继续执行下一步的任务

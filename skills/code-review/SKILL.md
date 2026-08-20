@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: 审查当前 chat 指定或当前分支最新 PR/commit 的已提交精确 diff，追踪其对已提交历史调用者、类型、配置与测试的直接影响，并仅报告合并前必须修复的 Critical。适用于 GitHub/Bitbucket PR、commit、commit range 与 code review，重点覆盖用户 8 个项目中的 Next.js、React、React Native、Vue 2、TypeScript、Node.js、Prisma、原生 iOS/Android，同时兼容 Vue 3、Flutter、微信小程序和 HTML/CSS；排除未提交代码、基线旧问题、Suggestions 和 PR 外备注。
+description: 审查当前 chat 指定的 PR/commit/range，或当前本地分支相对目标基线的完整变更；本地分支范围包含 committed、staged、unstaged 与未忽略的 untracked 文件，并追踪对历史调用者、类型、配置和测试的直接影响，只报告合并前必须修复的 Critical。适用于 GitHub/Bitbucket PR、commit、commit range、目标分支与 code review，重点覆盖用户 8 个项目中的 Next.js、React、React Native、Vue 2、TypeScript、Node.js、Prisma、原生 iOS/Android，同时兼容 Vue 3、Flutter、微信小程序和 HTML/CSS；排除基线旧问题、Suggestions 和 PR 外备注。
 ---
 
 # Code Review
@@ -8,9 +8,10 @@ description: 审查当前 chat 指定或当前分支最新 PR/commit 的已提�
 ## 结果契约
 
 - 把 code review 作为只读任务；除非用户明确要求，否则不修改业务代码、不提交、不推送、不发布，也不在 PR 平台发评论。
-- 只审查一个已提交目标的精确 diff。工作区 staged、unstaged、untracked 内容只用于识别污染，绝不纳入 finding。
-- 只输出由该 diff 直接引入或扩大、且合并前必须修复的 `[Critical]`。不输出 Suggestions、Nice to have、风格偏好、顺带发现或无因果关系的旧问题。
-- 以 diff 行或 hunk 作为每条 finding 的根因锚点；若根因破坏了未修改的已提交历史代码，在同一 Critical 中列出所有已确认的受影响位置。
+- 只审查一个明确目标。当前本地分支是目标或待合入对象时，审查相对基线的完整工作树快照，必须包含 committed、staged、unstaged 和 `git ls-files --others --exclude-standard` 返回的 untracked 文件。
+- 明确指定 PR、commit 或 commit range 时，默认只审查其不可变精确 diff；只有用户同时明确要求本地改动时才叠加当前工作树，避免把无关工作区污染混入远端或历史目标。
+- 只输出由当前精确范围直接引入或扩大、且合并前必须修复的 `[Critical]`。不输出 Suggestions、Nice to have、风格偏好、顺带发现或无因果关系的旧问题。
+- 以范围内的 diff 行或 hunk 作为每条 finding 的根因锚点；若根因破坏了未修改的历史代码，在同一 Critical 中列出所有已确认的受影响位置。
 
 ## 读取项目规则
 
@@ -38,28 +39,32 @@ description: 审查当前 chat 指定或当前分支最新 PR/commit 的已提�
 按以下优先级选定一次，随后不混入其它范围：
 
 1. 当前 chat 最后一次明确要求审查的 PR 号、PR 链接、commit SHA 或 commit range。
-2. 当前分支对应的 open 或最近更新 PR。
-3. 无法确定 PR 时审查最新 commit：普通 commit 使用 `HEAD^..HEAD`，merge commit 使用 `HEAD^1..HEAD`。
+2. 用户明确说“当前分支”“本地分支”，或把某分支写成目标/合并基线时，审查当前 checkout 相对该基线的完整本地快照；命名目标分支是 base，不是要孤立审查的 head。
+3. 用户只点名另一分支并明确要求审查该分支本身时，审查该 ref 的已提交内容，不叠加当前 checkout 的工作树。
+4. 未明确目标且当前工作树有改动时，审查当前本地分支完整快照：优先使用当前分支 PR 的 base；没有 PR 时以最新 commit 的真实父提交为基线，把最新 commit 与工作树改动一起纳入。
+5. 未明确目标且工作树干净时，优先审查当前分支对应的 open 或最近更新 PR；无法确定 PR 时审查最新 commit，普通 commit 使用 `HEAD^..HEAD`，merge commit 使用 `HEAD^1..HEAD`。
 
 - 当前 chat 同时出现多个目标时，只取最后一次明确目标；仅当用户明确要求批量审查时分别建立范围并分别输出。
 - “最新 PR”只指当前分支对应的 PR，不得选择仓库中无关的最新 PR。
-- 用户指定目标后若无法取得精确 diff，报告范围阻塞；不得悄然改审工作区、另一个 PR 或最新 commit。
+- “目标 `<branch>`”“准备合入 `<branch>`”默认表示以该分支为 base 审查当前 checkout；“审查 `<branch>` 分支本身”才表示该分支是不可变 head。
+- 用户指定目标后若无法取得精确范围，报告范围阻塞；不得悄然改审另一个 PR、分支或 commit。
 - Cursor 当前推荐用 `/code-review` 激活；已有客户端若仍以 `@code-review` 选择同一 Skill，执行语义保持一致。可附加 PR、commit、range 或目标分支。
 
-## 建立精确 diff
+## 建立精确审查范围
 
 1. 执行只读检查：`git rev-parse --show-toplevel`、`git status --short`、`git branch --show-current`、`git remote -v`。
 2. PR 优先使用平台返回的 PR 标识、base SHA、head SHA、changed files 和 patch。需要当前远端状态时 fetch 对应 refs，但不 checkout 用户分支。
 3. 只有证明本地 `HEAD` 等于 PR head SHA，且目标 ref 对应该 PR base 时，才允许用 `git diff origin/base...HEAD` 代替平台范围。
 4. 指定 commit 使用其真实父提交：普通 commit 为 `sha^..sha`，merge commit 为 `sha^1..sha`。Squash/rebase merge 优先平台 patch 或用户提供的精确 range。
-5. 记录范围账本：目标类型和标识、base/head 或 commit range、merge-base、changed files、diff hunks、内容不可用项。
-6. 后续读取文件和标注行号时以目标 head tree 为准；工作区有同文件未提交修改时，使用 `git show`、`git grep` 或等价对象库读取，不按磁盘工作区版本报 finding。
+5. 当前本地分支模式先解析 base 和 merge-base，再分别记录：`merge-base...HEAD` 的 committed diff、`git diff HEAD --` 的 staged/unstaged tracked diff，以及 `git ls-files --others --exclude-standard` 的 untracked 文件。用 `git diff <merge-base> --` 审查 tracked 文件的最终工作树状态，并把每个 untracked 文件视为完整新增内容；不得只审查其中一层。
+6. 记录范围账本：目标模式和标识、base/head 或 commit range、merge-base、committed/staged/unstaged/untracked 各层 changed files、最终去重文件集、diff hunks 和内容不可用项。
+7. 不可变 PR/commit/range 以目标 head tree 读取和标注行号；当前本地分支模式以磁盘工作树的最终快照读取和标注行号。后者遇到同一文件既有 committed 又有未提交修改时，必须审查合并后的当前文件，不得退回 `git show HEAD:path` 覆盖本地状态。
 
 不得为了审查执行 `checkout`、`reset`、`clean`、`stash` 或覆盖用户文件。浅克隆、LFS、submodule、权限或网络导致目标内容不完整时，明确写入验证边界。
 
 ## 追踪直接影响
 
-从 diff 构建变更符号和契约清单，至少覆盖：
+从当前精确范围构建变更符号和契约清单，至少覆盖：
 
 - 函数/方法签名、组件 props、Hook、DTO/interface、泛型、返回值、导出和公共 helper。
 - API schema、鉴权、导航参数、全局状态、缓存、持久化、数据库 schema/migration 和序列化格式。
@@ -68,18 +73,18 @@ description: 审查当前 chat 指定或当前分支最新 PR/commit 的已提�
 
 对每项变更：
 
-1. 在目标 head 的已提交代码中搜索所有调用者、实现、覆盖/重载、类型使用方和相关测试，不只阅读 changed files。
+1. 不可变目标在 head tree 中搜索调用者；当前本地分支目标在最终工作树快照中搜索调用者，并同时覆盖未跟踪的新文件，不只阅读 changed files。
 2. 证明因果关系：若恢复 base 契约或撤销根因 hunk 后错误仍存在，则它是基线问题，不得报告。
-3. 对类型、构建、lint 或测试诊断尽量做 base 与 head 的同命令差分，只保留 head 新增或扩大的失败。
-4. 同一根因造成多个历史位置失败时合并为一条 Critical，但逐个列出文件、head 行号、错误代码/失败条件和表达式；不得只给数量或代表性样例。
-5. 不扩展到无因果关系的全仓旧问题。只有 diff 改变了明确的跨仓接口且另一仓库被用户纳入范围时，才检查跨仓影响。
+3. 对类型、构建、lint 或测试诊断尽量做基线与目标快照的同命令差分，只保留目标新增或扩大的失败；本地分支模式的目标快照必须保留工作树改动。
+4. 同一根因造成多个历史位置失败时合并为一条 Critical，但逐个列出文件、对应目标快照行号、错误代码/失败条件和表达式；不得只给数量或代表性样例。
+5. 不扩展到无因果关系的全仓旧问题。只有当前范围改变了明确的跨仓接口且另一仓库被用户纳入范围时，才检查跨仓影响。
 
 ## Critical 证据门禁
 
 报告 finding 前必须全部满足：
 
-1. 根因位于当前精确 diff 的新增、修改或删除 hunk。
-2. 问题是该 diff 新引入或明确扩大的，不是目标分支已有问题。
+1. 根因位于当前精确范围的新增、修改或删除 hunk；本地分支模式包括 committed、staged、unstaged 和未忽略 untracked 内容。
+2. 问题是当前范围新引入或明确扩大的，不是目标基线已有问题。
 3. 存在具体失败路径、契约冲突、可复现风险或差异化诊断，不以“可能”“建议确认”代替证据。
 4. 影响正确性、安全性、数据、隐私、类型契约、跨平台行为、资源生命周期、关键可用性或构建/发布，达到合并前必须修复。
 5. 所有列出的历史位置都与根因有直接可验证的因果关系。
@@ -88,11 +93,11 @@ description: 审查当前 chat 指定或当前分支最新 PR/commit 的已提�
 
 ## 按改动路由审查
 
-只执行命中当前 diff 和项目规则的检查，不机械扫描所有技术栈。
+只执行命中当前精确范围和项目规则的检查，不机械扫描所有技术栈。
 
 ### TypeScript、React 与 Next.js
 
-- 对新增或修改的命名函数、组件、Hook、方法和模块 helper，执行用户的显式类型契约：参数和返回值明确，async 使用 `Promise<...>`；禁止新增或扩大 `any`。该契约是当前用户的合并硬门禁，diff 违反时按 Critical；安全可推断的内联回调不因缺少冗余注解单独报错。
+- 对新增或修改的命名函数、组件、Hook、方法和模块 helper，执行用户的显式类型契约：参数和返回值明确，async 使用 `Promise<...>`；禁止新增或扩大 `any`。该契约是当前用户的合并硬门禁，当前范围违反时按 Critical；安全可推断的内联回调不因缺少冗余注解单独报错。
 - 对公共接口、props、API DTO、导航、全局状态、表单、持久化或平台字段中的 `any`，若掩盖真实契约或违反项目硬规则，报 Critical 并给出具体 interface、泛型或 `unknown` + type guard。
 - 检查 Hook 依赖、旧闭包、函数式 state 更新、稳定 key、渲染期副作用、监听/定时器清理和异步竞态。
 - Next.js 项目按实际路由模式检查 server/client 边界、hydration、导航与鉴权、缓存、静态导出/base path、资源路径及 public/server 环境变量泄漏。
@@ -129,7 +134,7 @@ description: 审查当前 chat 指定或当前分支最新 PR/commit 的已提�
 ## 验证策略
 
 - 优先运行项目 manifest 和唯一 `AGENTS.md` 声明的最小相关静态检查或测试；不发明平行命令，不安装依赖，不修改 lockfile。
-- 对疑似新增诊断，使用完全相同的命令、环境和范围比较 base 与 head；无法隔离时不得把基线失败归因于 diff。
+- 对疑似新增诊断，使用完全相同的命令、环境和范围比较基线与目标快照；无法隔离时不得把基线失败归因于当前范围。
 - 先做类型/静态/定向测试，只有 finding 依赖真实页面、设备或后端契约且环境可用时才扩展运行验证。
 - 对可由真实页面触发的 API 契约，Network 实际请求/响应优先于 Swagger 推断；不得泄露认证信息。
 - 不把 lint、类型检查、构建、测试、浏览器或设备验证“未运行”写成“通过”。完整测试未运行不自动构成 Critical。
@@ -139,8 +144,8 @@ description: 审查当前 chat 指定或当前分支最新 PR/commit 的已提�
 按根因位置排序，每条使用：
 
 1. `[Critical] 标题`
-2. `本次修改位置：` 至少一个精确 diff 内的 `文件:head行号`
-3. `受影响历史代码：` 逐个列出 `文件:head行号`、错误代码/失败条件和表达式；没有时写“无”
+2. `本次修改位置：` 至少一个精确范围内的 `文件:行号`；本地分支模式标明 committed/staged/unstaged/untracked 来源，行号取最终工作树快照
+3. `受影响历史代码：` 逐个列出 `文件:行号`、错误代码/失败条件和表达式；没有时写“无”
 4. `问题：` 触发条件、错误结果和影响
 5. `证据：` diff、base/head 差分、类型/测试/运行时或契约依据
 6. `修改建议：` 覆盖根因及所有需同步位置的最小可落地代码、before/after 或伪补丁
@@ -152,13 +157,13 @@ description: 审查当前 chat 指定或当前分支最新 PR/commit 的已提�
 ## 输出模板
 
 ````markdown
-# Code Review: [PR/commit]
+# Code Review: [PR/commit/local branch]
 
 ## 摘要
 
-- 范围：[PR 标识或 commit range]
-- 端点：[base/parent] -> [head]
-- Changed files：[数量]
+- 范围：[PR 标识、commit range 或 local branch snapshot]
+- 端点：[base/parent] -> [head 或 working tree]
+- Changed files：[总数；本地模式列出 committed/staged/unstaged/untracked 分层计数]
 - 结论：[Critical 数量或无]
 
 ## Critical
@@ -193,13 +198,13 @@ description: 审查当前 chat 指定或当前分支最新 PR/commit 的已提�
 - 未执行：[项目及原因]
 ````
 
-没有 Critical 时写“无”，并明确“未发现当前精确 diff 引入的合并阻塞问题”。仍需列出验证边界，不补充 Suggestions。
+没有 Critical 时写“无”，并明确“未发现当前精确范围引入的合并阻塞问题”。仍需列出验证边界，不补充 Suggestions。
 
 ## 输出前复核
 
-- 范围账本、changed files、hunks、head 行号是否一致。
-- 每条根因是否位于 diff，历史位置是否全部由该根因直接影响。
-- base 已有问题是否已排除，未提交工作区是否未混入。
+- 范围账本、各层 changed files、hunks 和行号来源是否一致。
+- 每条根因是否位于当前精确范围，历史位置是否全部由该根因直接影响。
+- 基线已有问题是否已排除；本地分支模式是否确实纳入 staged、unstaged、未忽略 untracked，且不可变 PR/commit/range 是否未混入未授权工作区。
 - 项目唯一 `AGENTS.md` 的技术栈、跨平台、隐私、发布和验证边界是否已应用。
 - 每条是否真正阻塞合并；证据不足或仅为偏好者是否已删除。
 - 是否只输出 Critical、摘要与验证边界，没有 Suggestions 或 PR 外备注。

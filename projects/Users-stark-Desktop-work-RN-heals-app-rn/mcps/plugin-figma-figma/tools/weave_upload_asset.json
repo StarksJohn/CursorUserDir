@@ -1,0 +1,12 @@
+{
+  "name": "weave_upload_asset",
+  "description": "Uploads a local image or video file to Weave and returns the asset object to pass as the value for an image/video input in weave_run_tool. Returns a `submitUrl` and a `token`: POST the file to the submitUrl as multipart/form-data with a `file` field and the token in an `X-Weave-Upload-Token` header (e.g. `curl -F \"file=@/path/to/image.png\" -H \"X-Weave-Upload-Token: <token>\" \"<submitUrl>\"`); that POST returns the asset object. If you already have a reachable https URL, do not upload it — pass it directly to weave_run_tool. If the media exists only in this conversation (you have no path or URL for it), ask the user to save it and give you a path or URL. The token expires in about 10 minutes.",
+  "arguments": {
+    "type": "object",
+    "properties": {}
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

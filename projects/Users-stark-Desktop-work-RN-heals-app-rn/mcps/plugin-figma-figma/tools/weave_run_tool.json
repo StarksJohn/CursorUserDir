@@ -1,0 +1,60 @@
+{
+  "name": "weave_run_tool",
+  "description": "Runs a Weave tool (a published Weave workflow) and returns run ids; poll them with weave_get_tool_run_output. A pasted Weave URL (app.weavy.ai/tool/<id> or app.weavy.ai/flow/<id>) is enough — never open a browser or use browser automation for Weave. Call weave_get_tool_inputs first to learn the inputs. This tool spends the user's Weave credits, so it is gated: it returns `status: \"inputs_required\"` or `cost_confirmation_required` with instructions to follow. Always show the user the cost and get an explicit Approve/Cancel (a structured prompt, not free text) before echoing `acknowledgedCost` to run — every run, including reruns — and confirm any auto-filled inputs (values you did not set that the run will use). Include the response's `costDisclosure` string as its own sentence after the question, not folded into it, the first time you quote a cost in a conversation; omit it after that. For an image/video input, pass a reachable https URL directly; only upload a local file with weave_upload_asset and pass the asset object it returns. If the user wants an input you did not get from weave_get_tool_inputs, do not omit it or fold it into another input like the prompt — re-fetch weave_get_tool_inputs (its inputs can change) and set it.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "recipeId": {
+        "type": "string",
+        "description": "The id of the Weave tool to run — from weave_list_tools, or the `<id>` in a pasted Weave URL (app.weavy.ai/tool/<id> or app.weavy.ai/flow/<id>), which is the recipeId."
+      },
+      "version": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991,
+        "description": "The tool `version` from weave_get_tool_inputs; omit to run the latest."
+      },
+      "inputs": {
+        "default": [],
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "nodeId": {
+              "type": "string",
+              "description": "The input's `nodeId` from weave_get_tool_inputs."
+            },
+            "value": {
+              "description": "The value for this input, in the shape for its `type` (from weave_get_tool_inputs): text→string, integer→number, boolean→true/false, select→one of its `options`, seed→a number (or omit this input for random), image/video→a reachable https URL, color→a hex string like \"#RRGGBB\" (or a list of them), an iterator→an array of values (runs once per item)."
+            }
+          },
+          "required": [
+            "nodeId"
+          ],
+          "additionalProperties": false
+        },
+        "description": "Values for the inputs you want to set. Omit an input to keep its current value."
+      },
+      "numberOfRuns": {
+        "default": 1,
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 10,
+        "description": "How many times to run the tool (1–10)."
+      },
+      "acknowledgedCost": {
+        "type": "number",
+        "description": "The credit `cost` the tool quoted in its `cost_confirmation_required` response, echoed back after the user approves to confirm the spend and run. For a dynamic-cost tool (the response had `isDynamicCost: true` and `cost: null`), pass `-1` to confirm a variable charge."
+      }
+    },
+    "required": [
+      "recipeId"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

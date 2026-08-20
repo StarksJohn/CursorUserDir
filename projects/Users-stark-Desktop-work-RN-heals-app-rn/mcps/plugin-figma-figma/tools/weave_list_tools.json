@@ -1,0 +1,12 @@
+{
+  "name": "weave_list_tools",
+  "description": "Lists the authenticated user's Weave tools — published Weave workflows they can run — in their active Weave workspace. Here \"tool\" means a Weave tool (a published Weave workflow), not an agent/MCP tool. Use this when the user wants to see, browse, or choose from their Weave tools. Returns each tool's name, creation date, and a link to open it in Weave. If the user already pasted a specific Weave URL (app.weavy.ai/tool/<id> or app.weavy.ai/flow/<id>), you already have its recipeId — that `<id>` — so skip this and go straight to weave_get_tool_inputs/weave_run_tool instead of opening a browser.",
+  "arguments": {
+    "type": "object",
+    "properties": {}
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

@@ -1,0 +1,549 @@
+Maestro: Next-Generation Mobile UI Testing Framework (Appium alternative?) | by Sahil Tiwari | Medium
+
+Sitemap
+
+Sign up
+
+Sign in
+
+Get app
+
+Write
+
+Search
+
+Sign up
+
+Sign in
+
+Appium
+
+Maestro
+
+Mobile Automation Testing
+
+# Maestro: Next-Generation Mobile UI Testing Framework (Appium alternative?)
+
+Sahil Tiwari
+
+16 min read
+
+May 30, 2025
+
+https://medium.com/m/signin?actionUrl=https%3A%2F%2Fmedium.com%2F_%2Fvote%2Fp%2Ffcd3c4727771&operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40sahiltiwari_66376%2Fmaestro-next-generation-mobile-ui-testing-framework-appium-alternative-fcd3c4727771&user=Sahil+Tiwari&userId=5ba9abc27c16
+
+--
+
+3
+
+https://medium.com/m/signin?actionUrl=https%3A%2F%2Fmedium.com%2F_%2Frepost%2Fp%2Ffcd3c4727771&operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40sahiltiwari_66376%2Fmaestro-next-generation-mobile-ui-testing-framework-appium-alternative-fcd3c4727771&user=Sahil+Tiwari&userId=5ba9abc27c16
+
+https://medium.com/m/signin?actionUrl=https%3A%2F%2Fmedium.com%2F_%2Fbookmark%2Fp%2Ffcd3c4727771&operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40sahiltiwari_66376%2Fmaestro-next-generation-mobile-ui-testing-framework-appium-alternative-fcd3c4727771
+
+Listen
+
+Share
+
+Press enter or click to view image in full size
+
+AI Generated image of Maestro vs Appium
+
+Maestro is an open-source mobile UI automation framework designed for simplicity and effectiveness. It uses a flow-based model, where each Flow is a sequence of user actions (taps, swipes, inputs, etc.) that navigate through an app. Flows are defined in plain YAML files (no programming required), making tests declarative and easy to read. For example, a simple Android flow to add a new contact might look like:
+
+```
+appId: com.android.contacts---- launchApp- tapOn: "Create new contact"- tapOn: "First Name"- inputText: "John"- tapOn: "Last Name"- inputText: "Snow"- tapOn: "Save"
+```
+
+This YAML (`flow_contacts_android.yaml`) launches the Contacts app and performs the steps to add “John Snow”. Maestro’s declarative syntax and built-in UI commands let anyone (even non-programmers) define end-to-end scenarios with minimal learning curve. Internally, Maestro continuously watches your flow files and interprets them on the device – there is no compilation step, so iteration is blazingly fast.
+
+Here’s an example that I tried in 15 minutes to show how easy and seamless it is:
+
+I Installed Maestro on my Mac
+
+```
+curl -L https://get.maestro.mobile.dev | bash
+```
+
+Press enter or click to view image in full size
+
+I opened my Android Studio and ran an emulator.
+
+Then I downloaded their samples folder, which had a Wikipedia apk and .yaml file for automation.
+
+Press enter or click to view image in full size
+
+And just like that, it was up and running like magic! 🪄
+
+I added a couple of lines, and I was able to runthe automated flow of :
+
+- Launching the application
+- Click on the search bar
+- search for something
+- Click on the searched result
+
+To run the .yaml file, I ran below command given in their documentation:
+
+```
+maestro test android-flow.yaml
+```
+
+Press enter or click to view image in full size
+
+## Flow-Based Testing and YAML Syntax
+
+In Maestro, a Flow models a user journey or feature (e.g. “login”, “checkout”, “browse gallery”). Each flow begins with a device or app context (using`appId` or a URL) and then lists a series of high-level commands. Because flows are just YAML, you don’t write code – you choose actions like`launchApp`,`tapOn`,`inputText`,`assertVisible`, etc. Maestro provides many built-in commands for interactions and checks (see the [Commands reference]). This “no-code” approach means tests are concise and maintainable. For example, the above flow is entirely YAML – no scripting or IDE is needed. As the Maestro team notes, this declarative style lets anyone immediately dive in and update a Flow, even if they aren’t the original author.
+
+Because each flow is self-contained, you can organise your test suite into multiple YAML files, one per feature or scenario. Best practice is to keep flows small and focused, mirroring distinct user interactions in the app. Maestro also supports more advanced constructs like variables, tags, and even JavaScript/GraalVM injection or HTTP requests (for complex logic) in case you need programmability beyond the built-in commands. However, the core model remains simple: write YAML flows, run them, and let Maestro handle the details.
+
+## Cross-Platform Mobile Support
+
+Maestro is truly cross-platform. It runs on both Android and iOS (simulators/emulators) and supports native and hybrid UI frameworks alike. Officially supported platforms include Android Views and Jetpack Compose, iOS UIKit and SwiftUI, plus cross-platform toolkits like React Native and Flutter. It also works with WebViews embedded in mobile apps. This broad support means you can write a single set of flows to test the same functionality on Android and iOS, even for React Native or Flutter apps. (The [Platform Support] docs list all supported OS/UI combinations; as of writing even .NET MAUI is supported.) In practice, QA teams use Maestro to automate user flows in diverse app ecosystems without maintaining separate test codebases. For example, one team can write login and signup flows once and run them on both an Android emulator and an iOS simulator.
+
+## Resilience to Flakiness and Delays
+
+Mobile UI tests notoriously suffer from flakiness (elements not ready or visible) and asynchronous delays. Maestro is designed to handle these gracefully. It has built-in tolerance to flakiness: it will retry taps or waits under the hood if an element isn’t immediately present. Likewise, Maestro has built-in tolerance to delays: you do not need to sprinkle`sleep()` calls in your flows. It automatically waits for the UI to settle (e.g. after network loads or animations) before proceeding, but never longer than necessary. In other words, the test logic stays clean and declarative, while Maestro handles timeouts and retries intelligently. This greatly reduces brittle failures in tests. In practice, teams report that Maestro “embraces the instability of mobile apps and counters it under the hood”, meaning fewer false negatives and more reliable end-to-end tests.
+
+## Maestro Studio: Interactive Recorder & REPL
+
+To help QA engineers write flows, Maestro provides an interactive Maestro Studio (a web UI launched via the CLI). Running`maestro studio` opens a browser-based tool that connects to your device or simulator. In Studio, you see a live screenshot of the app. You can click on UI elements in that screenshot to automatically generate suggested Maestro commands for that element. For example, clicking on a button might show you the YAML snippet to tap it, or the selectors to use. These examples appear in a list, and you can double-click or copy them directly into your flow. The Studio also has a REPL mode: you can type Maestro commands (in YAML form) into a console and run them immediately. Any command you run in the REPL executes on the device, so you can experiment with actions and see live results before adding them to your flow. In summary, Maestro Studio is like an interactive “flow recorder” and playground: it instantly discovers the exact commands needed for any UI element, helping you build and debug flows more efficiently.
+
+## CLI Tooling and Debugging
+
+Maestro is distributed as a single CLI binary that works on macOS, Linux, or Windows. The primary command is`maestro test <flow.yaml>` which runs one or more flows against a connected device (specified via`--device`). There are many useful subcommands and flags:
+
+- Continuous mode (`--continuous` or`-c`): Maestro can watch your flow files and automatically rerun them on every save, giving instant feedback during development.
+- Device management:`maestro view-hierarchy` prints the UI tree of the current screen for debugging selectors, and`maestro start-device` can launch an emulator.
+- Tagging and filtering: You can assign tags to steps and filter which flows/steps to run, aiding organization of large test suites.
+- Test suites & reports: You can point`maestro test` at a folder of flows (a suite), and Maestro will execute them in sequence and generate a report. By default, it outputs a JUnit XML report, but recent versions also support an easy-to-read HTML summary (`--format HTML`).
+- Debug output: When tests run, Maestro saves logs, screenshots, and recordings (if enabled) to`~/.maestro/` for post-mortem analysis. This makes it easier to investigate failures.
+
+Because Maestro tests are YAML, there is no IDE to autocomplete them. However, the simplicity of the commands and the help shown in Studio/REPL makes writing them straightforward. As one guide notes, commands are easy to remember and even someone inexperienced in programming can start writing test flows right away. For debugging failures, the combination of verbose CLI logs, saved screenshots, and Maestro’s resilience to timing issues typically leads to faster root cause analysis than traditional UI frameworks.
+
+## CI/CD and Cloud Integration
+
+Maestro is designed to integrate smoothly into modern CI/CD pipelines. There are two main modes for running tests in CI:
+
+- Local CI using Maestro CLI: You can install the Maestro CLI in your CI agents (macOS runners for iOS, any OS with ADB for Android) and run`maestro test` as part of the build. Since Maestro requires only a device/emulator and the app binary, there is no complicated setup. In your CI job you might build the app, launch simulators, and then execute flows. Maestro’s quick startup and interpreter mean CI jobs start running tests immediately.
+- Maestro Cloud (Hosted infrastructure): Alternatively, Maestro offers a managed cloud service (with free trials and paid plans) where your flows run on Maestro’s own devices/emulators. Pushing tests to the cloud offloads the device management and gives instant parallelism. As the docs state, “The easiest way to test your flows in CI is to run your flows on Maestro’s enterprise-grade hosted cloud infrastructure”. Because flows run in the cloud, you don’t need to configure any simulators on your end. Maestro Cloud supports guaranteed parallel execution (sharding tests across devices), unlimited test runs/users, automated CI triggers, and detailed test suite reports. It is SOC‑2 compliant and tightly integrated with major CI systems: there are ready-made GitHub Actions, Bitrise steps, Bitbucket Pipes, CircleCI orbs, etc. In short, you can either drive tests locally via Maestro CLI or leverage Maestro Cloud for scalable, parallel CI testing.
+
+Because of these options, Maestro works with virtually any CI/CD platform. You can simply add a step like`maestro test --shards 3 ./flows` to a GitHub Actions workflow (using the mobile-dev GitHub Action), or configure a cloud trigger after each commit. The official docs provide guides for GitHub Actions, Bitrise, Bitbucket, CircleCI, and generic scripts. The end result is fully automated end-to-end testing: as soon as a new build is ready, Maestro runs your YAML flows and reports pass/fail in your CI dashboard.
+
+## Use Cases
+
+Maestro is most effective for end-to-end UI testing of mobile app flows. Typical use cases include testing critical user journeys such as login/logout, sign-up flows, form submissions, navigation through tabs, and purchase or checkout processes. Any scenario where a user performs a sequence of actions in the app can be encoded as a Flow. For example, a “Contacts” app test (see above) or a shopping cart “Add to Cart” and “Checkout” flow. Because Maestro is cross-platform, the same flow file can often be reused or slightly adapted to run on both Android and iOS versions of an app.
+
+Maestro is also a good fit when you need to quickly onboard new testers or when your team has limited coding resources. Since tests are YAML, a QA engineer can write tests without learning a new programming language or dealing with IDE complexities. It shines in continuous development environments: as features land, the corresponding flows can be added or updated on the fly. Companies using Maestro report that even teams who had never done UI automation before could get a solid testing strategy in place because “Maestro is so easy to use and get started with.”
+
+Additionally, Maestro supports testing hybrid apps with web content (WebViews) and can even run against web (desktop) browsers via its Web support, making it versatile for any app with a UI. In practice, teams use Maestro for everything from consumer mobile apps (e.g. social or shopping apps) to enterprise tools. Anywhere there is a user interface to validate on Android/iOS, Maestro can likely automate it.
+
+## Performance and Limitations
+
+Maestro is built for speed in both test creation and execution. Because it is interpreted, there is no compile time, and flows start running immediately. The team claims Maestro can reduce the time to build a functioning UI test by over 10× compared to traditional frameworks. In September 2024 (v1.37.0) Maestro added support for parallel execution: the`--shards` flag lets you split a suite across multiple connected devices or simulators. For example, with 3 emulators, you can shard 9 tests to run 3-in-parallel, dramatically cutting CI time. Maestro also now offers HTML-formatted test reports (in addition to JUnit XML) for quick result visualization.
+
+However, there are some trade-offs and limitations to be aware of. As one third-party review notes, Maestro’s YAML DSL is simple but not as flexible as a full programming language. Very complex test logic must be done with workarounds (GraalJS scripting or HTTP calls) and Maestro does not support all of JavaScript’s capabilities in-flows. Currently, Maestro primarily drives simulators/emulators; real iOS device support is limited (the team is working on it). Similarly, on Maestro Cloud, each flow execution is limited to a 7-minute timeout (after which the flow aborts). In earlier versions, reporting was limited to XML only, but as noted, HTML reports are now available. Finally, because Maestro is relatively new, the ecosystem of community examples and documentation is growing, but not as extensive as older tools.
+
+## Get Sahil Tiwari’s stories in your inbox
+
+Join Medium for free to get updates from this writer.
+
+Subscribe
+
+Subscribe
+
+Remember me for faster sign in
+
+In summary, Maestro offers extremely fast iteration and robust handling of flakiness, at the cost of a more constrained DSL environment. For many QA teams (especially those focused on standard UI flows), the benefits outweigh the limitations. It excels when you need cross-platform mobile coverage with minimal maintenance.
+
+## Maestro VS Appium 🤼‍♂️ :
+
+All this is boiled down to the alternatives. In my experience, I have worked with Appium for all of my mobile automation needs. Comparing Maestro with Appium, I have below thoughts:
+
+## Ease of Setup & Usage
+
+- Maestro: Installation is very easy — a single CLI binary works on macOS, Linux, and Windows. You write tests in YAML (no programming required) and run them on a connected device/emulator. It was noted to be “simpler to install and use” than Appium. The trade-off is that by default you must have a device or emulator attached locally (Appium also requires SDKs, but supports remote clouds).
+- Appium: Requires installing the Appium server (Node.js), platform SDKs (Android SDK/Xcode), and client libraries in a programming language (Java, Python, etc.). This setup is more involved. On the plus side, Appium’s WebDriver server allows you to target emulators, real devices, or remote clouds. Appium can run tests in parallel on Selenium grids or device farms, whereas Maestro’s built-in CLI is designed for sequential flows (parallelism is possible only via external orchestration).
+
+## Cross-Platform Support
+
+- Maestro: Officially supports Android and iOS mobile apps. It automates native UI as well as hybrid React Native or Flutter apps maestro.dev. Maestro can even drive WebViews and mobile browsers by specifying a URL (it will launch the app or browser and execute the flow). Cross-platform here means one tool can handle both OSs and multiple UI frameworks.
+- Appium: Also supports Android and iOS (native, hybrid, and mobile web) out of the box. Appium has many drivers (e.g. XCUITest for iOS, UiAutomator2/Espresso for Android). In addition, Appium’s ecosystem even covers other platforms (Windows, macOS desktop, etc.) via community drivers.
+
+In practice for mobile UI testing, both tools cover the main platforms, but Maestro’s first-class support for ReactNative/Flutter is a plus if you use those.
+
+## Test Writing Experience:
+
+- Maestro: Tests are authored in a declarative YAML format. For simple user flows (taps, swipes, text input, assertions), this is very accessible. Maestro Studio helps by letting you click on an element and automatically inserting the right YAML command. However, the DSL is limited: you can’t easily write loops, functions, or complex logic in YAML. As one reviewer noted, Maestro “only supports simple actions” and more advanced logic (e.g. reading a 2FA code and reusing it) isn’t possible with just YAML. There are no user-defined keywords — you must use the built-in commands.
+
+Maestro Studio: An interactive recorder/REPL that shows a live device screenshot and generates Maestro commands for UI elements. This makes flow development visual and immediate.
+
+- Appium: Tests are written in code (Java, Python, JavaScript, etc.) using the WebDriver-style API. You have full programming power (loops, conditionals, page objects, etc.) and can integrate any logic or external libraries. Appium’s Inspector GUI helps find element locators (view hierarchy) and can even generate code snippets. There are well-known frameworks on top of Appium (WebdriverIO, RobotFramework, etc.) for higher-level DSLs.
+
+In short, Appium offers maximum flexibility for complex tests, but requires coding skills. Maestro trades that flexibility for simplicity.
+
+## Speed and Performance
+
+- Maestro: Because Maestro is a lightweight, interpreted CLI, it often has a faster startup than Appium. In one benchmark, Maestro took about 12 seconds to launch an app to the home screen, versus 24 seconds with Appium. The binary approach and minimal drivers reduce overhead. Maestro also automatically waits for UI elements, which improves reliability but can add a second or two of latency per action if the UI is slow. Overall, Maestro can feel more responsive for quick dev-test cycles.
+- Appium: Launching the Appium server and session is usually slower, especially for large apps. However, once running, Appium’s actions (taps, swipes) operate at the speed of the underlying UI automation (XCTest/UiAutomator), without additional waits. In situations where you want every action executed as soon as possible (and you manage waits manually), Appium can match or exceed Maestro’s per-step speed.
+
+In practice, Maestro’s optimized cold-starts are a win for iterative testing, but heavy test suites may see only modest performance gains.
+
+## CI/CD Integration:
+
+- Maestro: Offers native CI integrations. For example, there are official GitHub Actions for running Maestro on Android, iOS, or Flutter apps, as well as setup instructions for Bitrise, Bitbucket Pipelines, CircleCI, etc. Maestro can also run on its own cloud testing platform where you upload your app and flows. The tight CLI integration means you simply invoke`maestro test ...` in your pipelines.
+- Appium: Lacks “official” CI plugins, but it’s commonly used in CI by running the Appium server and tests via scripts. Teams routinely set up Appium on Jenkins, GitHub Actions, or Azure Pipelines by installing Node/Appium and desired SDKs. Parallel execution on CI is typically handled via Selenium Grid or cloud device farms (BrowserStack, SauceLabs) which fully support Appium.
+
+In summary, Appium requires more custom CI setup, whereas Maestro provides first-party actions and cloud support out of the box.
+
+## Debugging and Logging
+
+- Maestro: By design, Maestro’s console output is concise — it only shows high-level steps and errors. As noted by one reviewer, the “console is not spammed with useless logs”, which makes flows easier to read. The downside is that failures can be opaque: if a step fails you only get a brief error message (you “know a step failed but you don’t know why”). Also, Maestro does not automatically capture screenshots on failure (unless you script it). On the other hand, when running on a device cloud, Maestro can be configured to collect screenshots, videos, network logs, and device logs for each test, aiding post-mortem debugging.
+- Appium: Produces verbose logs by default (WebDriver commands, device logcat, etc.), which can clutter output but contain detailed diagnostic information. Test frameworks usually add explicit screenshots on failure or build that into the page object framework. Appium’s Inspector and logs (including stack traces) generally give more insight into why a step failed.
+
+Overall, Appium is more “show me everything” — which can help debugging at the cost of noise — whereas Maestro keeps it minimal unless you opt-in to additional logging.
+
+## Community and Ecosystem
+
+- Maestro: A relatively new open-source project (launched in 2022) backed by the mobile.dev team. It has a growing community (GitHub repo, public Slack channel). The number of available plugins or third-party libraries is still small. Documentation and examples are improving over time, and a few blog posts/tutorials have appeared. In short, Maestro’s ecosystem is young but active.
+- Appium: A mature, widely-adopted framework (originally released 2012). It has large community support — hundreds of contributors, thousands of questions on forums/StackOverflow, and broad vendor support. There are many client libraries, helper frameworks (like WebdriverIO or Robot), and device farms built specifically for Appium.
+
+QA teams considering Appium benefit from abundant online resources and a proven track record, whereas Maestro has less history but is rapidly evolving.
+
+## Pros and Cons:
+
+## Maestro
+
+Pros:
+
+- Very quick to get started (single binary, YAML flows).
+- Fast feedback loop (interpreted tests, no compile).
+- Built-in flakiness/delay handling makes tests more stable.
+- Simple, declarative syntax (no coding) and visual tooling (Studio) for non-developers.
+- Cross-platform support for Android/iOS and multiple UI frameworks.
+- Active development (open-source) with CI integrations and cloud testing support.
+
+Cons:
+
+- Limited test logic: no custom control flow or variables in YAML, making complex scenarios hard.
+- Minimal failure diagnostics: errors are terse and no automatic screenshots/videos on error.
+- Primarily runs on emulators/simulators (e.g. iOS simulators only, not real devices).
+- Younger tool — smaller community and ecosystem than Appium. Some features (partial text match, advanced gestures) are still maturing.
+
+## Appium
+
+Pros:
+
+- Extremely flexible: write tests in full programming languages with loops, libraries, and robust frameworks.
+- Supports parallel execution and scaling (Grids, device farms).
+- Mature ecosystem: many client libraries and community-built tools/frameworks.
+- Comprehensive debugging: Inspector GUI and detailed logs help diagnose failures (and you can script screenshots easily).
+- Broad platform support (mobile web, desktop apps, etc.) in addition to native iOS/Android.
+
+Cons:
+
+- More complex setup: needs server, SDKs, drivers, and development environment.
+- Verbose logging can be overwhelming (noise in console).
+- Slower initial startup (Appium sessions can take longer).
+- Steeper learning curve (requires coding skills and managing language-specific tooling).
+
+## Use Cases and Recommendations:
+
+When to prefer Maestro:
+
+- You need to quickly automate simple mobile flows (login, signup, checkout) without heavy coding.
+- Your team has limited programming resources or wants a keyword-driven approach.
+- You work with React Native or Flutter apps (Maestro has built-in support).
+- Rapid iteration is important and flakiness must be minimized out-of-the-box.
+- You want easy CI integration or an all-in-one cloud testing experience.
+- For example: A small QA team wants to automate smoke tests nightly with minimal maintenance, or a team new to E2E testing wants a gentle ramp-up.
+
+When to prefer Appium:
+
+- You need complex, data-driven or non-standard tests that require custom logic (e.g. loops, external data).
+- You have experienced developers available and can maintain a code-based framework.
+- You plan to scale up with many devices in parallel (on-premise or cloud) and integrate with existing Selenium/Web pipelines.
+- Advanced gestures or integrations (e.g. image recognition, OCR, native extensions) are needed.
+- For example: An enterprise product with a large UI test suite that must integrate with in-house tools and run across hundreds of devices simultaneously.
+
+“Maestro may be useful if you need an easy to start solution and have simple automation needs. Appium… might be preferred if you wish to invest in a strong and scalable automation test suite.” In practice, many teams may begin with Maestro for rapid prototyping and later adopt Appium as their test requirements grow.
+
+Performance Note: In at least one benchmark, Maestro started an app about 2× faster than Appium (12s vs. 24s) diogonunes.com. This indicates Maestro’s efficiency on cold start, though actual results will vary. The trade-off is that Maestro’s built-in waiting adds delay per action, whereas Appium’s raw protocol can be faster for each interaction. QA teams should consider which trade-offs (startup speed vs. fine-grained control) matter most for their workflow.
+
+Sources: Official Maestro docs and blog docs.maestro.dev maestro.dev docs.maestro.dev docs.maestro.dev, as well as independent reviews and QA community discussions diogonunes.com reddit.com diogonunes.com appium.github.io, were used to compare features, pros/cons, and real-world usage of Maestro and Appium. All insights are aimed at helping QA engineers choose the right mobile testing framework for their needs.
+
+Appium
+
+Maestro
+
+Mobile Automation Testing
+
+## Written by Sahil Tiwari
+
+https://medium.com/@sahiltiwari_66376
+
+41 followers
+
+3 following
+
+Quality Engineer Lead with over 10+ years of experience in QA Automation Testing (Selenium, Rest API, BDD, Rest Assured, Appium), Datadog and CICD (Jenkins).
+
+## Responses (3)
+
+https://policy.medium.com/medium-rules-30e5502c4eb4
+
+Om Narayan
+
+Dec 4, 2025 (edited)
+
+```
+Saw this iOS real device limitation come up a lot — built a workaround: https://github.com/devicelab-dev/maestro-ios-device
+```
+
+https://medium.com/m/signin?actionUrl=https%3A%2F%2Fmedium.com%2F_%2Fvote%2Fp%2Fc33425be41a7&amp;operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40om_narayan%2Fhttps-github-com-devicelab-dev-maestro-ios-device-c33425be41a7&user=Om+Narayan&userId=4daf1aaba91a
+
+--
+
+1 reply
+
+Reply
+
+Leon
+
+Sep 11, 2025
+
+```
+I tried the tool during my POC for native app...but we choose Appium. Maestro is good tool I like it. But, for simple app. Our app is complicated one with a lot of diff dependency and it doesn't support third-party libs. Additionally it has limited JS .
+```
+
+https://medium.com/m/signin?actionUrl=https%3A%2F%2Fmedium.com%2F_%2Fvote%2Fp%2F252e5270e851&operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40leon_lm%2Fi-tried-the-tool-during-my-poc-for-native-app-but-252e5270e851&user=Leon&userId=d3dafa0562b7
+
+--
+
+Reply
+
+Adrian Pothuaudhe/him
+
+Sep 23, 2025
+
+```
+Very detailed and interesting comparison. I followed Maestro since its beginning and personally never chose it because of the lack of deep control (in favor of Appium with Webdriver.IO for example). But I am looking forward to its evolution and upcoming features. Appreciate the read. Thanks for sharing.
+```
+
+https://medium.com/m/signin?actionUrl=https%3A%2F%2Fmedium.com%2F_%2Fvote%2Fp%2F70e2ecd798cd&operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40adrianpothuaud%2Fvery-detailed-and-interesting-comparison-70e2ecd798cd&user=Adrian+Pothuaud&userId=73db18d1c271
+
+--
+
+Reply
+
+## More from Sahil Tiwari
+
+Sahil Tiwari
+
+·
+
+Jul 5, 2020
+
+## IntelliJ Idea Integrated with Bitbucket Repository
+
+### By the end of this article, you will be able to create a Bitbucket repository and Integrate it with IntelliJ IDE. We’ll see the first time…
+
+https://medium.com/@sahiltiwari_66376/intellij-idea-integrated-with-bitbucket-repository-33331bcde924
+
+A response icon1
+
+https://medium.com/m/signin?operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40sahiltiwari_66376%2Fmaestro-next-generation-mobile-ui-testing-framework-appium-alternative-fcd3c4727771
+
+https://medium.com/m/signin?actionUrl=https%3A%2F%2Fmedium.com%2F_%2Fbookmark%2Fp%2F33331bcde924&operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40sahiltiwari_66376%2Fintellij-idea-integrated-with-bitbucket-repository-33331bcde924
+
+Sahil Tiwari
+
+·
+
+Jun 26, 2020
+
+## Rest-Assured Framework from scratch including GIT Repository integration for Continous Integration
+
+### By the end of this article, you will be able to set up and understand Rest API, Eclipse with TestNG and create Rest Assured Framework from…
+
+https://medium.com/@sahiltiwari_66376/rest-assured-framework-from-scratch-including-git-repository-integration-for-continous-integration-478038c5c3cc
+
+https://medium.com/@sahiltiwari_66376/rest-assured-framework-from-scratch-including-git-repository-integration-for-continous-integration-478038c5c3cc
+
+https://medium.com/m/signin?operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40sahiltiwari_66376%2Fmaestro-next-generation-mobile-ui-testing-framework-appium-alternative-fcd3c4727771
+
+https://medium.com/m/signin?actionUrl=https%3A%2F%2Fmedium.com%2F_%2Fbookmark%2Fp%2F478038c5c3cc&operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40sahiltiwari_66376%2Frest-assured-framework-from-scratch-including-git-repository-integration-for-continous-integration-478038c5c3cc
+
+Sahil Tiwari
+
+·
+
+Jun 27, 2020
+
+## How To Install And Use Git On Windows End to End
+
+### By the end of this article, you will be able to install and setup GIT SCM with your repository (GIT/Bitbucket) and will be able to Commit…
+
+https://medium.com/@sahiltiwari_66376/how-to-install-and-use-git-on-windows-end-to-end-2bd4fedade21
+
+https://medium.com/@sahiltiwari_66376/how-to-install-and-use-git-on-windows-end-to-end-2bd4fedade21
+
+https://medium.com/m/signin?operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40sahiltiwari_66376%2Fmaestro-next-generation-mobile-ui-testing-framework-appium-alternative-fcd3c4727771
+
+https://medium.com/m/signin?actionUrl=https%3A%2F%2Fmedium.com%2F_%2Fbookmark%2Fp%2F2bd4fedade21&operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40sahiltiwari_66376%2Fhow-to-install-and-use-git-on-windows-end-to-end-2bd4fedade21
+
+Sahil Tiwari
+
+·
+
+Apr 2, 2024
+
+## Jenkins — End to End (Part 1)
+
+### In this article we are going to discuss:
+
+https://medium.com/@sahiltiwari_66376/jenkins-end-to-end-part-1-438bb7836bcb
+
+https://medium.com/@sahiltiwari_66376/jenkins-end-to-end-part-1-438bb7836bcb
+
+https://medium.com/m/signin?operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40sahiltiwari_66376%2Fmaestro-next-generation-mobile-ui-testing-framework-appium-alternative-fcd3c4727771
+
+https://medium.com/m/signin?actionUrl=https%3A%2F%2Fmedium.com%2F_%2Fbookmark%2Fp%2F438bb7836bcb&operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40sahiltiwari_66376%2Fjenkins-end-to-end-part-1-438bb7836bcb
+
+See all from Sahil Tiwari
+
+## Recommended from Medium
+
+Courtney Zhan
+
+·
+
+Jun 7
+
+## Appium Browser Test Case Study: Pull-to-Refresh (UI Gesture)
+
+### Introduction to three different ways to perform Pull To Refresh in Appium for XCUITest.
+
+https://medium.com/@courtneyzhan/appium-browser-test-case-study-pull-to-refresh-ui-gesture-9623fdb5be6a
+
+A response icon1
+
+https://medium.com/m/signin?operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40sahiltiwari_66376%2Fmaestro-next-generation-mobile-ui-testing-framework-appium-alternative-fcd3c4727771
+
+https://medium.com/m/signin?actionUrl=https%3A%2F%2Fmedium.com%2F_%2Fbookmark%2Fp%2F9623fdb5be6a&operation=register&redirect=https%3A%2F%2Fcourtneyzhan.medium.com%2Fappium-browser-test-case-study-pull-to-refresh-ui-gesture-9623fdb5be6a
+
+Halil Özel
+
+·
+
+4d ago
+
+## Maestro for Android & iOS UI Testing: Write Once, Test Everywhere (2026 Guide)
+
+### User Interface testing has always been one of the most expensive parts of mobile development.
+
+https://medium.com/@halilozel1903/maestro-for-android-ios-ui-testing-write-once-test-everywhere-2026-guide-812524834163
+
+https://medium.com/@halilozel1903/maestro-for-android-ios-ui-testing-write-once-test-everywhere-2026-guide-812524834163
+
+https://medium.com/m/signin?operation=register&amp;redirect=https%3A%2F%2Fmedium.com%2F%40sahiltiwari_66376%2Fmaestro-next-generation-mobile-ui-testing-framework-appium-alternative-fcd3c4727771
+
+https://medium.com/m/signin?actionUrl=https%3A%2F%2Fmedium.com%2F_%2Fbookmark%2Fp%2F812524834163&operation=register&redirect=https%3A%2F%2Fhalilozel1903.medium.com%2Fmaestro-for-android-ios-ui-testing-write-once-test-everywhere-2026-guide-812524834163
+
+In
+
+CodeToDeploy
+
+by
+
+Jerry PM
+
+·
+
+Mar 26
+
+## Advanced Gesture Handling in SwiftUI: Complex Interactions
+
+### Part 77 of 100 in the SwiftUI Zero to Expert Series
+
+https://medium.com/codetodeploy/advanced-gesture-handling-in-swiftui-complex-interactions-dfd6de23aa9c
+
+https://medium.com/codetodeploy/advanced-gesture-handling-in-swiftui-complex-interactions-dfd6de23aa9c
+
+https://medium.com/m/signin?operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40sahiltiwari_66376%2Fmaestro-next-generation-mobile-ui-testing-framework-appium-alternative-fcd3c4727771
+
+https://medium.com/m/signin?actionUrl=https%3A%2F%2Fmedium.com%2F_%2Fbookmark%2Fp%2Fdfd6de23aa9c&operation=register&redirect=https%3A%2F%2Fmedium.com%2Fcodetodeploy%2Fadvanced-gesture-handling-in-swiftui-complex-interactions-dfd6de23aa9c
+
+Digitalrishabh
+
+·
+
+Mar 10
+
+## Best Tools for Mobile Testing
+
+### Automation is key in effective mobile application testing. With cutthroat competition in the market, automated tests are essential for…
+
+https://medium.com/@digitalrishabh01/best-tools-for-mobile-testing-83285893793a
+
+A response icon1
+
+https://medium.com/m/signin?operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40sahiltiwari_66376%2Fmaestro-next-generation-mobile-ui-testing-framework-appium-alternative-fcd3c4727771
+
+https://medium.com/m/signin?actionUrl=https%3A%2F%2Fmedium.com%2F_%2Fbookmark%2Fp%2F83285893793a&operation=register&redirect=https%3A%2F%2Fdigitalrishabh01.medium.com%2Fbest-tools-for-mobile-testing-83285893793a
+
+Varsha
+
+·
+
+Jul 2
+
+## What Is New In Appium 2.0?
+
+### Appium 2.0 beta version was launched in 2021 and Now Appium has officially released version 2.0. With this release, major changes have been…
+
+https://medium.com/@varsha13/what-is-new-in-appium-2-0-a062873ff176
+
+https://medium.com/@varsha13/what-is-new-in-appium-2-0-a062873ff176
+
+https://medium.com/m/signin?operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40sahiltiwari_66376%2Fmaestro-next-generation-mobile-ui-testing-framework-appium-alternative-fcd3c4727771
+
+https://medium.com/m/signin?actionUrl=https%3A%2F%2Fmedium.com%2F_%2Fbookmark%2Fp%2Fa062873ff176&operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40varsha13%2Fwhat-is-new-in-appium-2-0-a062873ff176
+
+In
+
+Trendyol Tech
+
+by
+
+Gokberk Ince
+
+·
+
+Mar 4
+
+## From 5 Minutes to 30 Seconds: Decoupling iOS UI Tests from the App Build
+
+### Our iOS codebase has hundreds of modules managed by Tuist, with UI tests covering multiple domains and regions. Running a UI test meant…
+
+https://medium.com/trendyol-tech/from-5-minutes-to-30-seconds-decoupling-ios-ui-tests-from-the-app-build-7ad81f4dedfb
+
+https://medium.com/trendyol-tech/from-5-minutes-to-30-seconds-decoupling-ios-ui-tests-from-the-app-build-7ad81f4dedfb
+
+https://medium.com/m/signin?operation=register&redirect=https%3A%2F%2Fmedium.com%2F%40sahiltiwari_66376%2Fmaestro-next-generation-mobile-ui-testing-framework-appium-alternative-fcd3c4727771
+
+https://medium.com/m/signin?actionUrl=https%3A%2F%2Fmedium.com%2F_%2Fbookmark%2Fp%2F7ad81f4dedfb&operation=register&redirect=https%3A%2F%2Fmedium.com%2Ftrendyol-tech%2Ffrom-5-minutes-to-30-seconds-decoupling-ios-ui-tests-from-the-app-build-7ad81f4dedfb
+
+Help
+
+About
+
+Careers
+
+Press (pressinquiries@medium.com)
+
+Store
+
+Privacy
+
+Rules
+
+Terms
