@@ -96,9 +96,11 @@
 - React / React Native 使用函数组件和 Hooks；共享原生逻辑不得直接使用第三方库标记为单平台的字段或 API，除非有明确 `Platform.OS` 分支、另一端 fallback 和对应验证。
 - Vue 遵循项目实际版本：Vue 3 优先 Composition API；Vue 2 保持既有风格；`v-for` 提供稳定 `key`。Node 服务统一输入校验、错误处理和中间件顺序。
 - 新功能补行为测试，Bug 修复补回归测试；优先确定性、局部、直接相关的测试。开发中运行定向用例，完整套件只在收尾、高风险公共逻辑变更、提交前或用户明确要求时运行一次。
-- 完成任何 React Native 实现或修复后、最终回复前，必须读取并执行 `$HOME/.cursor/skills/react-native-ui-verification/SKILL.md` 的风险分层验证门禁。UI、导航、交互、动画或原生改动默认需要目标真机/模拟器的运行证据；优先项目已有 E2E，缺失时组合应用进程/前台页面、accessibility 控件树、原始截图或录屏、必要的视觉差异和范围化日志。设备、目标状态或设计基准缺失时只能报告“部分通过”或“阻塞”，不得用 lint、构建成功或肉眼截图宣称完全正确。
-- React Native 设计还原有 Figma 节点时仍先执行 Figma MCP 硬门禁，再按上述 Skill 对真实渲染做对照；跨平台共享改动未覆盖 Android 与 iOS 两端时不得报告完整通过。纯解释、只读审查、文档或注释修改可将设备 UI 判为不适用并说明依据。
-- 默认由用户做最终手动验收；用户明确要求验证或任务本身包含验证时，主动运行与风险匹配的检查，并清楚区分静态校验、模拟结果、真实运行和外部验收。
+- 完成任何 React Native 实现或修复后、最终回复前，必须读取并执行 `$HOME/.cursor/skills/react-native-ui-verification/SKILL.md` 的风险分层验证门禁；该门禁是 React Native 代码、资源和原生配置修改的默认主动验证授权，除非用户明确禁止运行。它不授权新增第三方依赖、清空 App 数据、停止无关进程、提交 / push、上传或发布。
+- React Native 完整阶段固定为：确认项目规则、改动面与目标平台/环境/设备 -> 复现或建立测试与验收基线 -> 最小实现 -> 定向 lint/typecheck/单元或组件测试 -> 目标构建/安装/启动与前台进程证明 -> 真实主流程及关键边界状态 -> UI 五层证据链（适用时）-> 发现问题回到实现并重验 -> 复核最终 diff 与证据报告。纯解释、只读审查、文档或注释修改可将设备 UI 判为不适用并说明依据。
+- React Native UI 五层证据链固定为：Figma MCP / 明确参考图确定预期 -> React Native DevTools 与 UI Automator / 平台 Inspector 检查组件、语义状态和坐标边界 -> 真机原始截图或录屏做对齐后的叠图 / pixel diff -> 项目既有 E2E 或 UI Automator / XCUITest 配合 ADB / simctl 执行真实交互 -> 按目标进程范围读取 logcat / iOS / React Native 日志。各层必须使用当前真实可用且证据最强的组合，未实际操控的 GUI 工具不得列为证据，Chrome Browser DevTools 不得替代 React Native DevTools 或原生 Inspector。
+- React Native 设计还原有 Figma 节点时必须先执行 Figma MCP 硬门禁，再进入实现判断和真实渲染对照；共享跨平台改动未覆盖 Android 与 iOS 两端，或缺少设备、目标状态、与本任务验收目标相称的设计 / 行为基准、关键交互 / 结构 / 视觉 / 日志任一适用层时，只能报告“部分通过”或“阻塞”，不得用 lint、构建成功、单元测试、UI XML 或肉眼截图宣称完全正确。
+- 默认由用户做最终手动验收；用户明确要求验证、任务本身包含验证或命中上述 React Native 主动验证门禁时，主动运行与风险匹配的检查，并清楚区分静态校验、模拟结果、真实运行和外部验收。
 - Git 使用 Conventional Commits；不使用 `--no-verify`。未明确要求时不创建 commit、push、PR 或发布。
 
 ## 9. 浏览器、Figma、网络与真实证据

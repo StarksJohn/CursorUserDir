@@ -41,11 +41,19 @@ description: Runs evidence-based post-change verification for React Native imple
 - 原生、权限、深链、平台 API：受影响平台真实构建、安装、启动和平台专项行为。
 - 共享跨平台代码：Android 与 iOS 都应覆盖；缺少一端时只能判定“部分通过”。
 
-### 2. Run Focused Static Checks
+### 2. Establish the Expected Baseline
+
+在运行验收前先确定“正确”意味着什么：
+
+- 有 Figma 页面/节点或任务要求按 Figma 还原时，先执行全局 Figma MCP 硬门禁，读取节点元数据、设计上下文、变量、设计系统信息和截图，再进入实现判断或 UI 验收。
+- 没有 Figma 时，使用用户参考图、明确验收标准、项目设计 token、资产和同产品已确认组件建立基线，并明确记录“无精确 Figma 节点”。没有可核对基线时只能验证项目一致性和运行健康，不能宣称与目标设计完全一致。
+- 列出要核对的文案、图标、状态、尺寸、间距、颜色、字体、可点击区域、滚动/键盘/弹窗行为和平台差异；只覆盖本次改动直接影响的范围。
+
+### 3. Run Focused Static Checks
 
 优先运行项目已有的定向类型检查、lint、Jest/组件测试和受影响模块测试。不要用全仓历史错误掩盖当前结果，也不要把静态通过写成 UI 已通过。
 
-### 3. Prove the Runtime Target
+### 4. Prove the Runtime Target
 
 运行 UI 前记录并核对：
 
@@ -56,7 +64,7 @@ description: Runs evidence-based post-change verification for React Native imple
 
 Android 使用指定 serial 的 `adb -s`，多设备时禁止依赖默认设备。iOS 使用明确 simulator UDID 或已授权真机。
 
-### 4. Exercise the User Flow
+### 5. Exercise the User Flow
 
 优先级不是固定品牌排名，而是证据质量：
 
@@ -68,7 +76,7 @@ Android 使用指定 serial 的 `adb -s`，多设备时禁止依赖默认设备�
 
 断言用户可观察结果：元素可见、文案、选中/禁用状态、页面跳转、输入结果和返回行为。必要时为后续正式自动化建议稳定的 `testID`/accessibility label，但不为单次验证擅自改业务接口。
 
-### 5. Inspect Structure and Rendering
+### 6. Inspect Structure and Rendering
 
 对每个关键状态同时收集：
 
@@ -76,13 +84,13 @@ Android 使用指定 serial 的 `adb -s`，多设备时禁止依赖默认设备�
 - Android `uiautomator` 或 iOS accessibility 层级中的文本、identifier、bounds、enabled、clickable/selected。
 - 必要时录屏以检查动画、键盘、弹窗、滚动和短暂闪烁。
 
-`uiautomator` 读取的是 Android accessibility/native 视图，不是完整 React 组件树；不可访问的 React Native View 可能缺失。React Native DevTools Components Inspector 可补充 React 树，但不能代替最终像素和原生层验证。
+`uiautomator` 读取的是 Android accessibility/native 视图，不是完整 React 组件树；不可访问的 React Native View 可能缺失。React Native DevTools Components Inspector 可补充 React 树；Android Studio Layout Inspector 可补充原生组件树、属性、快照和参考图 Overlay；iOS Accessibility Inspector 与 Xcode View Debugger 可补充无障碍和平台层级。只有当前代理实际操控或读取到结果时才能列为证据，这些工具都不能代替最终像素和真实交互。
 
-有 Figma 节点时必须先用 Figma MCP 读取节点元数据、变量和截图，再比较尺寸、间距、颜色、字体和状态。只有普通基准图时，先对齐设备、尺寸、主题、语言、动态内容、系统栏和裁剪区域，再运行视觉差异。阈值必须由项目或验收标准确定，不得自行用任意阈值宣称像素级通过。
+比较视觉结果前先对齐设备、尺寸、主题、语言、动态内容、系统栏和裁剪区域。阈值必须由项目或验收标准确定，不得自行用任意阈值宣称像素级通过。
 
 视觉差异可使用 `scripts/compare_images.py` 生成差异指标和差异图；命令与平台操作见 [reference.md](reference.md)。
 
-### 6. Check Runtime Health
+### 7. Check Runtime Health
 
 围绕本次操作收集有时间边界、应用进程范围的日志，检查：
 
@@ -93,7 +101,7 @@ Android 使用指定 serial 的 `adb -s`，多设备时禁止依赖默认设备�
 
 日志清洁不能证明业务正确，但发现相关错误时验证不得判为通过。
 
-### 7. Iterate Until Stable
+### 8. Iterate Until Stable
 
 发现问题后回到实现，修复并重跑失败步骤和直接相关回归。不要只替换截图或降低阈值。运行环境、数据或权限阻塞时停止伪验证并报告精确阻塞。
 
