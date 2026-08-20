@@ -86,6 +86,18 @@ python3 "$HOME/.cursor/skills/react-native-ui-verification/scripts/check_toolcha
 
 若项目没有 E2E，不因单次 UI 修改擅自引入框架。关键流程需要长期回归时，向用户说明维护成本、目标平台和测试数据后再安装。
 
+跨项目验证 Appium server、Driver、应用启动和 UI source 时可运行无重置探针：
+
+```bash
+python3 "$HOME/.cursor/skills/react-native-ui-verification/scripts/appium_probe.py" \
+  --platform android \
+  --device "$SERIAL" \
+  --app-id "$APP_ID" \
+  --activity "$APP_ACTIVITY"
+```
+
+该工具输出固定包含 `probeOnly: true` 和 `stableE2E: false`。它只证明 Appium 能连接当前构建并读取结构，不包含业务旅程断言，不能写成 E2E 通过。`--screenshot` 为可选项，产物可能含用户数据。
+
 ### Maestro physical-device gate
 
 Maestro 首次连接 Android 会安装 companion driver APK。若 OPPO/Realme/企业受管设备返回 `Failure [-99]` 或 companion APK 安装失败：
