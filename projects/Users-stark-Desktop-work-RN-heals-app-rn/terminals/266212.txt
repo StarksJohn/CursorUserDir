@@ -1,0 +1,48 @@
+---
+pid: 54023
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "set -o pipefail && zsh -lic 'maestro --udid 4ae24c72 --no-ansi hierarchy' | python3 -c 'import json, sys; data=sys.stdin.read(); assert len(data) > 100, \"empty hierarchy\"; print(json.dumps({\"hierarchyCaptured\": True, \"characters\": len(data), \"nodeMarkers\": data.count(\"attributes=\")}))'"
+title: "Smoke-test Maestro against connected Android device"
+status: failed   
+started_at: 2026-08-20T08:59:09.536Z
+running_for_ms: 190072   
+---
+Failure [-99]
+
+
+The stack trace was:
+maestro.android.AndroidOperationFailedException: Failure [-99]
+
+	at maestro.android.AndroidDeviceConnectionModelKt.orThrowOnFailure(AndroidDeviceConnectionModel.kt:138)
+	at maestro.drivers.AndroidDriver.install(AndroidDriver.kt:1309)
+	at maestro.drivers.AndroidDriver.installMaestroDriverApp$lambda$86(AndroidDriver.kt:1242)
+	at maestro.utils.Metrics.measured(Metrics.kt:48)
+	at maestro.drivers.AndroidDriver.installMaestroDriverApp(AndroidDriver.kt:1227)
+	at maestro.drivers.AndroidDriver.installMaestroApks(AndroidDriver.kt:1273)
+	at maestro.drivers.AndroidDriver.open(AndroidDriver.kt:107)
+	at maestro.Maestro$Companion.android(Maestro.kt:792)
+	at maestro.cli.session.MaestroSessionManager.createAndroid(MaestroSessionManager.kt:347)
+	at maestro.cli.session.MaestroSessionManager.createMaestro(MaestroSessionManager.kt:210)
+	at maestro.cli.session.MaestroSessionManager.newSession(MaestroSessionManager.kt:108)
+	at maestro.cli.session.MaestroSessionManager.newSession$default(MaestroSessionManager.kt:66)
+	at maestro.cli.command.PrintHierarchyCommand.run(PrintHierarchyCommand.kt:130)
+	at picocli.CommandLine.executeUserObject(CommandLine.java:1939)
+	at picocli.CommandLine.access$1300(CommandLine.java:145)
+	at picocli.CommandLine$RunLast.executeUserObjectOfLastSubcommandWithSameParent(CommandLine.java:2358)
+	at picocli.CommandLine$RunLast.handle(CommandLine.java:2352)
+	at picocli.CommandLine$RunLast.handle(CommandLine.java:2314)
+	at picocli.CommandLine$AbstractParseResultHandler.execute(CommandLine.java:2179)
+	at picocli.CommandLine$RunLast.execute(CommandLine.java:2316)
+	at maestro.cli.DisableAnsiMixin$Companion.executionStrategy(DisableAnsiMixin.kt:25)
+	at picocli.CommandLine.execute(CommandLine.java:2078)
+	at maestro.cli.AppKt.main(App.kt:184)
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+AssertionError: empty hierarchy
+
+---
+exit_code: 1
+elapsed_ms: 190071
+ended_at: 2026-08-20T09:02:19.607Z
+---

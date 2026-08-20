@@ -86,6 +86,14 @@ python3 "$HOME/.cursor/skills/react-native-ui-verification/scripts/check_toolcha
 
 若项目没有 E2E，不因单次 UI 修改擅自引入框架。关键流程需要长期回归时，向用户说明维护成本、目标平台和测试数据后再安装。
 
+### Maestro physical-device gate
+
+Maestro 首次连接 Android 会安装 companion driver APK。若 OPPO/Realme/企业受管设备返回 `Failure [-99]` 或 companion APK 安装失败：
+
+1. 将该设备标记为 Maestro `currentRunVerified: false`，不要重复等待或冒充 E2E。
+2. 按 Maestro 官方 known issues 在设备“开发者选项”中检查 `Verify apps over USB` 和 `Disable permission monitoring`；ColorOS 新版本可能显示为 `Disable system optimization`。这些安全设置需要用户在真机确认，不通过 ADB 静默关闭。
+3. 未解除限制前使用已验证的 Appium UiAutomator2、ADB/UIAutomator，或切换标准 Android Emulator；明确这是工具降级。
+
 ## Visual Difference
 
 当前 Skill 提供 Pillow 工具：

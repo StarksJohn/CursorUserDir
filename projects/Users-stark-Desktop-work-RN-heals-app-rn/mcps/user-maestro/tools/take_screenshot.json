@@ -1,0 +1,16 @@
+{
+  "name": "take_screenshot",
+  "description": "Take a screenshot of the current device screen",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "device_id": {
+        "type": "string",
+        "description": "The ID of the device to take a screenshot from"
+      }
+    },
+    "required": [
+      "device_id"
+    ]
+  }
+}
