@@ -98,6 +98,7 @@ description: 审查当前 chat 指定的 PR/commit/range，或当前本地分支
 ### TypeScript、React 与 Next.js
 
 - 对新增或修改的命名函数、组件、Hook、方法和模块 helper，执行用户的显式类型契约：参数和返回值明确，async 使用 `Promise<...>`；禁止新增或扩大 `any`。该契约是当前用户的合并硬门禁，当前范围违反时按 Critical；安全可推断的内联回调不因缺少冗余注解单独报错。
+- 对新增或修改的 import、属性、调用签名和第三方符号，检查目标版本类型声明中的 `@deprecated` 及 TypeScript suggestion 诊断。当前范围新增 TS6385、TS6387 或等价弃用诊断时按 Critical；不得因 `tsc` CLI 默认不显示 suggestion diagnostics、构建成功或 API 仍可运行而漏报。
 - 对公共接口、props、API DTO、导航、全局状态、表单、持久化或平台字段中的 `any`，若掩盖真实契约或违反项目硬规则，报 Critical 并给出具体 interface、泛型或 `unknown` + type guard。
 - 检查 Hook 依赖、旧闭包、函数式 state 更新、稳定 key、渲染期副作用、监听/定时器清理和异步竞态。
 - Next.js 项目按实际路由模式检查 server/client 边界、hydration、导航与鉴权、缓存、静态导出/base path、资源路径及 public/server 环境变量泄漏。
@@ -134,6 +135,10 @@ description: 审查当前 chat 指定的 PR/commit/range，或当前本地分支
 ## 验证策略
 
 - 优先运行项目 manifest 和唯一 `AGENTS.md` 声明的最小相关静态检查或测试；不发明平行命令，不安装依赖，不修改 lockfile。
+- 对范围内每个新增或修改的 `.ts` / `.tsx` 文件建立“文件 -> 编译覆盖 -> 诊断归属”账本，并使用项目本地 TypeScript、当前 `tsconfig` 及项目命令完成编译覆盖。Gradle、Metro、Babel、ESLint、Jest 或运行成功都不能替代 TypeScript 编译检查。
+- 普通 `tsc` 诊断之外，必须使用项目本地 TypeScript Compiler API 的 `Program.getSuggestionDiagnostics(sourceFile)`、Language Service 的等价能力或可证明覆盖相同诊断的 IDE 接口，对每个 changed `.ts` / `.tsx` 获取 suggestion diagnostics，并与目标版本声明中的 `@deprecated` 交叉核对。若该层无法执行，必须标记“弃用诊断覆盖阻塞”，不得把未显示 TS6385/TS6387 写成已通过。
+- TypeScript 命令被配置级错误提前阻断，或全仓基线错误很多时，不得停在首个错误、只看进程退出码或只抽查熟悉文件。先读取当前 `tsconfig` 和 scripts，使用不改变项目语义的最小兼容参数让编译器继续产出诊断，再把完整诊断路径与精确范围内全部 `.ts` / `.tsx`（含 untracked）逐一求交；禁止因为无关错误很多而漏掉 changed-file 诊断，也禁止直接用脱离项目 `tsconfig` 的单文件 `tsc file.ts` 制造假结论。
+- 新增或 untracked TypeScript 文件没有基线版本，其目标诊断直接属于当前范围；修改文件的诊断使用相同编译器、配置和命令比较 base 与 target。若没有任何可行命令能覆盖某个 changed TypeScript 文件，验证边界必须标记“类型覆盖阻塞”，不得给出“无 Critical”的完整结论。
 - 对疑似新增诊断，使用完全相同的命令、环境和范围比较基线与目标快照；无法隔离时不得把基线失败归因于当前范围。
 - 先做类型/静态/定向测试，只有 finding 依赖真实页面、设备或后端契约且环境可用时才扩展运行验证。
 - 对可由真实页面触发的 API 契约，Network 实际请求/响应优先于 Swagger 推断；不得泄露认证信息。
@@ -203,6 +208,8 @@ description: 审查当前 chat 指定的 PR/commit/range，或当前本地分支
 ## 输出前复核
 
 - 范围账本、各层 changed files、hunks 和行号来源是否一致。
+- 每个 changed `.ts` / `.tsx`（尤其 untracked 新文件）是否都已与完整 TypeScript 诊断逐一核对；是否错误地用构建、lint、测试通过或全仓基线噪音替代了编译覆盖。
+- 每个 changed `.ts` / `.tsx` 是否都已读取 suggestion diagnostics 并核对 `@deprecated` 声明；是否因普通 `tsc` 未显示 TS6385/TS6387 而把覆盖误写为通过。
 - 每条根因是否位于当前精确范围，历史位置是否全部由该根因直接影响。
 - 基线已有问题是否已排除；本地分支模式是否确实纳入 staged、unstaged、未忽略 untracked，且不可变 PR/commit/range 是否未混入未授权工作区。
 - 项目唯一 `AGENTS.md` 的技术栈、跨平台、隐私、发布和验证边界是否已应用。
