@@ -93,10 +93,12 @@
 - 错误处理应快速失败、描述清晰、分层处理；异步边界处理异常；关键节点保留必要且不泄密的日志。
 - 禁止硬编码密钥；严格校验外部输入；涉及权限时同时检查身份验证与授权；安全通信优先 HTTPS。
 - TypeScript 优先 `interface`、明确类型和 `const` 箭头函数；禁用 `any`。新增或修改的参数、返回值和异步 `Promise` 类型应显式。只有声明提升、重载、生成器、构造函数或动态 `this` 等语义需要时保留 `function`。
-- React / React Native 使用函数组件和 Hooks；共享原生逻辑不得直接使用第三方库标记为单平台的字段或 API，除非有明确 `Platform.OS` 分支、另一端 fallback 和对应验证。
+- React / React Native 使用函数组件和 Hooks。
+- React Native 双端实现门禁：修改 React Native 项目的 JS/TS、组件、样式、资源、依赖或原生配置前，必须分别检查 iOS 与 Android 的 API / 字段支持、权限、生命周期、布局 / 安全区 / 键盘、文件格式及构建配置差异。共享改动默认同时提供双端可运行路径；平台专属能力必须用 `Platform.OS`、`.ios.*` / `.android.*` 或 `ios/` / `android/` 原生边界隔离，并为另一端保留等价实现或明确的安全 fallback。不得让单平台字段、方法、资源或配置进入另一端运行 / 构建路径，也不得仅因 TypeScript 类型存在就假定双端均支持。
 - Vue 遵循项目实际版本：Vue 3 优先 Composition API；Vue 2 保持既有风格；`v-for` 提供稳定 `key`。Node 服务统一输入校验、错误处理和中间件顺序。
 - 新功能补行为测试，Bug 修复补回归测试；优先确定性、局部、直接相关的测试。开发中运行定向用例，完整套件只在收尾、高风险公共逻辑变更、提交前或用户明确要求时运行一次。
 - 完成任何 React Native 实现或修复后、最终回复前，必须读取并执行 `$HOME/.cursor/skills/react-native-ui-verification/SKILL.md` 的风险分层验证门禁；该门禁是 React Native 代码、资源和原生配置修改的默认主动验证授权，除非用户明确禁止运行。它不授权新增第三方依赖、清空 App 数据、停止无关进程、提交 / push、上传或发布。
+- React Native 双端验证门禁：最终复核必须基于实际 diff 分别判断 iOS 与 Android 的影响，不得用一端通过推断另一端。共享运行时、UI、依赖或原生配置改动必须按风险覆盖两端的构建、安装、启动与关键流程；已通过 `.ios.*` / `.android.*` 或 `ios/` / `android/` 隔离的单平台改动，至少验证目标端真实运行，并验证另一端的编译、依赖解析或明确的不受影响边界。任一端因设备、环境或外部条件无法验证时，只能报告“部分通过”或“阻塞”，并写明未验证平台和缺失证据。
 - React Native 完整阶段固定为：确认项目规则、改动面与目标平台/环境/设备 -> 复现或建立测试与验收基线 -> 最小实现 -> 定向 lint/typecheck/单元或组件测试 -> 目标构建/安装/启动与前台进程证明 -> 真实主流程及关键边界状态 -> UI 五层证据链（适用时）-> 发现问题回到实现并重验 -> 复核最终 diff 与证据报告。纯解释、只读审查、文档或注释修改可将设备 UI 判为不适用并说明依据。
 - React Native UI 五层证据链固定为：Figma MCP / 明确参考图确定预期 -> React Native DevTools 与 UI Automator / 平台 Inspector 检查组件、语义状态和坐标边界 -> 真机原始截图或录屏做对齐后的叠图 / pixel diff -> 项目既有 E2E 或 UI Automator / XCUITest 配合 ADB / simctl 执行真实交互 -> 按目标进程范围读取 logcat / iOS / React Native 日志。各层必须使用当前真实可用且证据最强的组合，未实际操控的 GUI 工具不得列为证据，Chrome Browser DevTools 不得替代 React Native DevTools 或原生 Inspector。
 - React Native 设计还原有 Figma 节点时必须先执行 Figma MCP 硬门禁，再进入实现判断和真实渲染对照；共享跨平台改动未覆盖 Android 与 iOS 两端，或缺少设备、目标状态、与本任务验收目标相称的设计 / 行为基准、关键交互 / 结构 / 视觉 / 日志任一适用层时，只能报告“部分通过”或“阻塞”，不得用 lint、构建成功、单元测试、UI XML 或肉眼截图宣称完全正确。
