@@ -90,7 +90,7 @@ description: >-
 - 不把医学建议写成确诊或处方替代，不混入其它项目假设，不创建无关文档或脚本。
 
 ## 当前活跃需求(不要修改这部分的子内容)
-<!-- - 帮我英文总结下 `heals-app-rn` 项目的 git commit message  -->
+<!-- - 帮我英文总结下 `heals-app-rn` 项目的 git commit message ,然后帮我 commit+push  -->
 <!-- - 我以后如果在 cursor 侧执行 `heals-app-rn`项目的相关任务, 是不是只需要把具体任务写到`/Users/stark/.cursor/skills/ask-heals-app-rn/SKILL.md`的 `当前活跃需求`这部分里,然后在 cursor 的 新 chat 里执行 `/ask-heals-app-rn`,目前这是不是最完美的使用 cursor 工作流来执行 某个项目的任务? -->
 
 - IOS:
@@ -112,4 +112,4 @@ description: >-
   <!-- -  你执行`npm run android:dev`,把当前项目的dev环境的debug模式的apk运行到如图![img_143139.png](img_143139.png) ![img_143147.png](img_143147.png)型号的真机上,直到你用 adb 截取真机当前画面(遇到类似如图![img_154323.png](img_154323.png)这种警告或者报错,直接解决),检查完毕真机上运行的 APP 没问题为止; 真机所在的时区是 `东八区` -->
   <!-- - 需要你在当前项目根目录执行一条命令(比如 `cd android && ENVFILE=.env.development SENTRY_DISABLE_AUTO_UPLOAD=true ./gradlew assembleDevRelease`),构建出当前项目在`1.2.2`版本的的`dev`环境的release模式的 apk; -->
 - TECH-8757
-  - 你读取 `https://ais-pre-hce4mtkty7p4aewqsgaizl-663605729382.us-west2.run.app/`页面的UI节点数据,以及 `https://aistudio.google.com/apps/c068b31c-3b5b-42e7-b660-02eea479db8a?showAssistant=true&showCode=true`页面里`code`区域的项目源码;帮我修改`heals-app-rn`项目
+  - 你读取 `https://ais-pre-hce4mtkty7p4aewqsgaizl-663605729382.us-west2.run.app/`页面的UI节点数据,借鉴 `https://aistudio.google.com/apps/c068b31c-3b5b-42e7-b660-02eea479db8a?showAssistant=true&showCode=true`页面里`code`区域的项目源码;帮我实现`heals-app-rn`项目的以下需求:
