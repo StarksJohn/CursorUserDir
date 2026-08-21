@@ -32,7 +32,9 @@ description: Runs evidence-based post-change verification for React Native imple
 
 ### 0. Detect Capability Levels
 
-先运行：
+先读取同目录 `local-policy.json`（存在时）。匹配当前 device ID 的安全和工具策略优先于自动重试；只有用户明确变更策略或设备条件时才覆盖。
+
+再运行：
 
 ```bash
 python3 "$HOME/.cursor/skills/react-native-ui-verification/scripts/check_toolchain.py" "$PROJECT_ROOT"

@@ -102,9 +102,16 @@ python3 "$HOME/.cursor/skills/react-native-ui-verification/scripts/appium_probe.
 
 Maestro 首次连接 Android 会安装 companion driver APK。若 OPPO/Realme/企业受管设备返回 `Failure [-99]` 或 companion APK 安装失败：
 
-1. 将该设备标记为 Maestro `currentRunVerified: false`，不要重复等待或冒充 E2E。
-2. 按 Maestro 官方 known issues 在设备“开发者选项”中检查 `Verify apps over USB` 和 `Disable permission monitoring`；ColorOS 新版本可能显示为 `Disable system optimization`。这些安全设置需要用户在真机确认，不通过 ADB 静默关闭。
-3. 未解除限制前使用已验证的 Appium UiAutomator2、ADB/UIAutomator，或切换标准 Android Emulator；明确这是工具降级。
+1. 先通过标准 ADB 预安装 Maestro 官方发布包中的两个 companion APK：
+
+   ```bash
+   python3 "$HOME/.cursor/skills/react-native-ui-verification/scripts/install_maestro_companions.py" \
+     --device "$SERIAL"
+   ```
+
+2. 重启长驻 Maestro MCP，重新执行 `list_devices -> inspect_screen`；CLI 则重新运行 `maestro --udid "$SERIAL" hierarchy`。预安装成功只修复工具链，不是业务 E2E 证据。
+3. 只有标准 ADB 预安装仍失败时，才按 Maestro 官方 known issues 在设备“开发者选项”中检查 `Verify apps over USB` 和 `Disable permission monitoring`；ColorOS 新版本可能显示为 `Disable system optimization`。这些安全设置需要用户在真机确认，不通过 ADB 静默关闭。
+4. 仍未解除限制时使用 Appium UiAutomator2、ADB/UIAutomator 或标准 Android Emulator，并标记 Maestro `currentRunVerified: false`。
 
 ## Visual Difference
 

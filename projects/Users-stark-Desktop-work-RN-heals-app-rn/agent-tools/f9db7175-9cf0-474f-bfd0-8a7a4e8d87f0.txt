@@ -1,0 +1,530 @@
+# [v1.33.1] Exception in thread "pool-4-thread-1" java.io.IOException: Command failed (host:transport:emulator-5554): device 'emulator-5554' not found/device offline
+
+- State: open
+- Author: DavidREntwistle
+- Created: 2023-10-13T08:46:03Z
+- Updated: 2026-01-18T18:04:52Z
+- Repository: mobile-dev-inc/Maestro
+- Number: #1525
+
+## Labels
+
+- bug
+- platform: android
+
+---
+
+**Describe the bug** 
+Whilst running our android test folder containing 70~ flows taking around 40mins on CI, the below `Exception in thread "pool-4-thread-1"` occurs. This then causes an execution timeout, stopping the build on agent. 
+```
+  Exception in thread "pool-4-thread-1" java.io.IOException: Command failed (host:transport:emulator-5554): device 'emulator-5554' not found
+    at dadb.adbserver.AdbServer.send$dadb(AdbServer.kt:99)
+    at dadb.adbserver.AdbServerDadb.open(AdbServer.kt:137)
+    at dadb.forwarding.TcpForwarder.handleForwarding$lambda-1(TcpForwarder.kt:64)
+    at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+    at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+    at java.base/java.lang.Thread.run(Thread.java:833)
+```
+**To Reproduce** 
+1. Running the emulator headless on CI 
+2. Run a test folder containing a large number of flows 
+3. The Flow fails around the 40 min mark because of the `Exception in thread "pool-4-thread-1" java.io.IOException: Command failed (host:transport:emulator-5554): device 'emulator-5554' not found` 
+ 
+**Expected behaviour** 
+The adb server to continue running after lengthy execution times. 
+ 
+**Environment information:** 
+- Maestro version [v1.33.1] 
+- Platform: [Android 13] 
+- Framework: [Native Android] 
+- Emulator - headless 
+- Host [AWS linux-x86_64] 
+
+## Timeline
+
+- DavidREntwistle added label "bug"
+
+- Referenced by issue #1495: [v1.33.0] Exception in thread `pool-4-thread-1` with Github actions
+
+- Referenced by issue #1304: [Maestro version, e.g. v1.30.4] - Exception in thread while running ui test
+
+- Referenced by issue #1570: [v1.34.0] Android driver unreachable whilst running flow
+
+- Referenced by issue #1289: [BUG] - Exception in thread "pool-4-thread-1" java.io.IOException: Command failed (host:transport:emulator-5554): device offline
+
+**DavidREntwistle** commented on 2023-11-17T11:27:01Z:
+
+> Update: 
+> 
+> The error now appears to display as:
+> ```
+> [Passed] test_flow29 (14s)
+> [Failed] test_flow30 (1m 29s) (Android driver unreachable)
+> [Failed] test_flow31 (41s) (Android driver unreachable)
+> Exception in thread "pool-4-thread-1" java.io.IOException: Command failed (host:transport:emulator-5554): device offline
+> at dadb.adbserver.AdbServer.send$dadb(AdbServer.kt:99)
+> at dadb.adbserver.AdbServerDadb.open(AdbServer.kt:137)
+> at dadb.forwarding.TcpForwarder.handleForwarding$lambda-1(TcpForwarder.kt:64)
+> at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+> at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+> at java.base/java.lang.Thread.run(Thread.java:833)
+> [Failed] test_flow32 (1m 20s) (Android driver unreachable)
+> [Failed] test_flow33 (1m 20s) (Android driver unreachable)
+> ```
+> 
+> It appears that now in v1.34.0 after this issue occurs, the flows continue to run with the "Android driver unreachable" message as the reason (this I feel is better).
+> 
+> I can't think of any reason why the device would go offline mid-execution. 
+> 
+> Possibly the related to the issue what I've raised here https://github.com/mobile-dev-inc/maestro/issues/1570
+
+**sanyar123** commented on 2024-01-04T11:58:25Z:
+
+> Hi @DavidREntwistle, I am also facing the same issue. Did you find any workaround for this issue? 
+
+- DavidREntwistle mentioned
+
+- DavidREntwistle subscribed
+
+**DavidREntwistle** commented on 2024-01-04T12:08:55Z:
+
+> > Hi @DavidREntwistle, I am also facing the same issue. Did you find any workaround for this issue?
+> 
+> @sanyar123 Sadly not yet.
+> 
+> I did add some logging and handling at the start of the flows to check if an ANR/Crash occurred in my test app on the previous flow. But this doesn't seem to be the cause of the issue. 
+
+- DavidREntwistle mentioned
+
+- DavidREntwistle subscribed
+
+- sanyar123 mentioned
+
+- sanyar123 subscribed
+
+**DavidREntwistle** commented on 2024-01-12T13:22:16Z:
+
+> I have been able to simulate this issue consistently, here are some steps to reproduce:
+> 
+> 1. Run a flows folder containing any valid flow (for example purposes).
+> 2. Allow the 1st flow to pass (for example purposes).
+> 3. Run `adb reconnect device` whilst the second flow is running.
+> 4. Observe the below failure in terminal:
+> ```
+> Exception in thread "pool-4-thread-1" java.io.IOException: Command failed (host:transport:emulator-5554): device 'emulator-5554' not found
+> at dadb.adbserver.AdbServer.send$dadb(AdbServer.kt:99) 
+> at dadb.adbserver.AdbServerDadb.open(AdbServer.kt:137) 
+> at dadb.forwarding.TcpForwarder.handleForwarding$lambda-1(TcpForwarder.kt:64) 
+> at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+> at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+> at java.base/java.lang.Thread.run(Thread.java:840) 
+> ```
+> 5. Observe the 2nd flow fail after 2 minutes with `Android driver unreachable`.
+> 7. Run `adb reconnect device` after the second flow fails with `Android driver unreachable`. 
+> 8. Observe then the 3rd & 4th flow each fail after 2 minutes with `Android driver unreachable`.
+> 9. Observe then the 5th flow run and pass with no error.
+> 
+> See the error in the mastro test log:
+> ```
+> [ERROR] maestro.cli.runner.TestRunner - Failed to run flow
+> io.grpc.StatusRuntimeException: UNAVAILABLE: Network closed for unknown reason
+> at io.grpc.stub.ClientCalls.toStatusRuntimeException(ClientCalls.java:271)
+> at io.grpc.stub.ClientCalls.getUnchecked(ClientCalls.java:252)
+> at io.grpc.stub.ClientCalls.blockingUnaryCall(ClientCalls.java:165)
+> at maestro_android.MaestroDriverGrpc$MaestroDriverBlockingStub.deviceInfo(MaestroDriverGrpc.java:634)
+> at maestro.drivers.AndroidDriver$deviceInfo$1.invoke(AndroidDriver.kt:170)
+> at maestro.drivers.AndroidDriver$deviceInfo$1.invoke(AndroidDriver.kt:169)
+> at maestro.drivers.AndroidDriver.runDeviceCall(AndroidDriver.kt:989)
+> at maestro.drivers.AndroidDriver.deviceInfo(AndroidDriver.kt:169)
+> at maestro.ViewHierarchy$Companion.from-8JJjmZI(ViewHierarchy.kt:28)
+> at maestro.Maestro.viewHierarchy-c1iYVAs(Maestro.kt:416)
+> at maestro.Maestro.viewHierarchy-c1iYVAs$default(Maestro.kt:415)
+> at maestro.Maestro$findElementWithTimeout$element$1.invoke(Maestro.kt:445)
+> at maestro.Maestro$findElementWithTimeout$element$1.invoke(Maestro.kt:444)
+> at maestro.utils.MaestroTimer.withTimeout(MaestroTimer.kt:16)
+> at maestro.Maestro.findElementWithTimeout-AE3g2Tc(Maestro.kt:444)
+> at maestro.Maestro.findElementWithTimeout-AE3g2Tc$default(Maestro.kt:438)
+> at maestro.orchestra.Orchestra.findElement(Orchestra.kt:863)
+> at maestro.orchestra.Orchestra.access$findElement(Orchestra.kt:44)
+> at maestro.orchestra.Orchestra$evaluateCondition$3$result$1.invoke(Orchestra.kt:521)
+> at maestro.orchestra.Orchestra$evaluateCondition$3$result$1.invoke(Orchestra.kt:519)
+> at maestro.utils.MaestroTimer.withTimeout(MaestroTimer.kt:16)
+> at maestro.orchestra.Orchestra.evaluateCondition(Orchestra.kt:519)
+> at maestro.orchestra.Orchestra.evaluateCondition$default(Orchestra.kt:496)
+> at maestro.orchestra.Orchestra.runFlowCommand(Orchestra.kt:489)
+> at maestro.orchestra.Orchestra.executeCommand(Orchestra.kt:268)
+> at maestro.orchestra.Orchestra.executeCommands(Orchestra.kt:201)
+> at maestro.orchestra.Orchestra.runFlow(Orchestra.kt:103)
+> at maestro.orchestra.Orchestra.runFlow$default(Orchestra.kt:75)
+> at maestro.cli.runner.MaestroCommandRunner.runCommands(MaestroCommandRunner.kt:185)
+> at maestro.cli.runner.TestRunner$runSingle$result$1.invoke(TestRunner.kt:54)
+> at maestro.cli.runner.TestRunner$runSingle$result$1.invoke(TestRunner.kt:51)
+> at maestro.cli.runner.TestRunner.runCatching(TestRunner.kt:145)
+> at maestro.cli.runner.TestRunner.runSingle(TestRunner.kt:51)
+> at maestro.cli.command.TestCommand$call$1.invoke(TestCommand.kt:177)
+> at maestro.cli.command.TestCommand$call$1.invoke(TestCommand.kt:136)
+> at maestro.cli.session.MaestroSessionManager.newSession(MaestroSessionManager.kt:101)
+> at maestro.cli.session.MaestroSessionManager.newSession$default(MaestroSessionManager.kt:58)
+> at maestro.cli.command.TestCommand.call(TestCommand.kt:136)
+> at maestro.cli.command.TestCommand.call(TestCommand.kt:46)
+> at picocli.CommandLine.executeUserObject(CommandLine.java:1933)
+> at picocli.CommandLine.access$1200(CommandLine.java:145)
+> at picocli.CommandLine$RunLast.executeUserObjectOfLastSubcommandWithSameParent(CommandLine.java:2332)
+> at picocli.CommandLine$RunLast.handle(CommandLine.java:2326)
+> at picocli.CommandLine$RunLast.handle(CommandLine.java:2291)
+> at picocli.CommandLine$AbstractParseResultHandler.execute(CommandLine.java:2159)
+> at maestro.cli.DisableAnsiMixin$Companion.executionStrategy(DisableAnsiMixin.kt:22)
+> at picocli.CommandLine.execute(CommandLine.java:2058)
+> at maestro.cli.AppKt.main(App.kt:117)
+> 
+> ```
+
+- Referenced by issue #1573: [v1.34.0][BUG] - Exception in thread "pool-4-thread-1" java.io.IOException: Command failed (host:transport:emulator-5554): device offline
+
+**DavidREntwistle** commented on 2024-01-12T14:32:06Z:
+
+> @sanyar123 are you able to [reproduce](https://github.com/mobile-dev-inc/maestro/issues/1525#issuecomment-1889192728) this issue with these steps above?
+
+- sanyar123 mentioned
+
+- sanyar123 subscribed
+
+**sanyar123** commented on 2024-01-12T18:29:12Z:
+
+> @DavidREntwistle I haven't replicated the same steps but I am getting the same error that you have shared
+
+- DavidREntwistle mentioned
+
+- DavidREntwistle subscribed
+
+**simon-gilmurray** commented on 2024-01-16T11:41:16Z:
+
+> @axelniklasson Also hitting this issue on v1.35.0
+> 
+> ```
+> Exception in thread "pool-4-thread-1" java.io.IOException: Command failed (host:transport:emulator-5554): device offline
+> at dadb.adbserver.AdbServer.send$dadb(AdbServer.kt:99)
+> at dadb.adbserver.AdbServerDadb.open(AdbServer.kt:137)
+> at dadb.forwarding.TcpForwarder.handleForwarding$lambda-1(TcpForwarder.kt:64)
+> at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+> at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+> at java.base/java.lang.Thread.run(Thread.java:829)
+> ```
+
+- axelniklasson mentioned
+
+- axelniklasson subscribed
+
+- Renamed from "[v1.33.1] Exception in thread "pool-4-thread-1" java.io.IOException: Command failed (host:transport:emulator-5554): device 'emulator-5554' not found - running flow folder in CI" to "[v1.33.1] Exception in thread "pool-4-thread-1" java.io.IOException: Command failed (host:transport:emulator-5554): device 'emulator-5554' not found"
+
+- Referenced by issue #62: When one of the devices is offline, Exception has been throwed
+
+**yuseiatlas** commented on 2024-01-19T10:55:20Z:
+
+> A temporary fix that worked for me on https://github.com/mobile-dev-inc/maestro/issues/1573#issuecomment-1900179357. TL;DR: I set the emulator API level to 32. 
+
+- Renamed from "[v1.33.1] Exception in thread "pool-4-thread-1" java.io.IOException: Command failed (host:transport:emulator-5554): device 'emulator-5554' not found" to "[v1.33.1] Exception in thread "pool-4-thread-1" java.io.IOException: Command failed (host:transport:emulator-5554): device 'emulator-5554' not found/device offline"
+
+- Referenced by issue #1647: [v1.35.0] "io.grpc.StatusRuntimeException: UNKNOWN" Failed to take screenshot on android flow failure
+
+- Referenced by issue #998: Android Driver - io.grpc.StatusRuntimeException: UNAVAILABLE: io exception
+
+**DavidREntwistle** commented on 2024-01-29T09:35:20Z:
+
+> I found the `Exception in thread "pool-4-thread-1" java.io.IOException: Command failed (host:transport:emulator-5554): device offline` was being caused by our CI build timing out because of the length of execution. But I also think emulator crashes could still be a factor.
+
+**DavidREntwistle** commented on 2024-07-15T12:22:29Z:
+
+> As of 15th July 2024, this remains an issue.
+
+**DavidREntwistle** commented on 2024-07-15T15:48:49Z:
+
+> I believe [this PR](https://github.com/mobile-dev-inc/maestro/pull/1733) could resolve this issue.
+
+**KeunwooPark** commented on 2024-09-22T13:46:37Z:
+
+> Still seeing this error with Android API 31 on 22nd Sep 2024
+
+**gy6543721** commented on 2024-11-14T08:50:49Z:
+
+> Issue still exists in 2024/11
+> https://github.com/mobile-dev-inc/maestro/pull/1733#issuecomment-2475751664
+
+**DavidREntwistle** commented on 2025-01-21T15:53:18Z:
+
+> Issue still exists 21st Jan 2025
+
+**woelmer** commented on 2025-01-29T18:21:23Z:
+
+> Has anyone found a viable workaround other than retrying the tests 10 times?
+
+**DavidREntwistle** commented on 2025-01-30T12:39:26Z:
+
+> I've looked into this a lot more, so in advance for the long comment...
+> 
+> What have I tried so far:
+> Changing the Android System Image API version had varying results, not consistent with one API version causing more of an issue than the next. I feel it's not a specific system image issue.
+> Increasing the emulator's memory seemed to help, but maybe this was a bit of a red herring and did not actually help too much.
+> 
+> What more have I found out:
+> - This seems to be a long-standing Android ADB server issue - e.g. [this](https://stackoverflow.com/questions/3152681/android-emulator-5554-offline) from 14 years ago...
+> - This doesn't seem to be a specific app issue.
+> 
+> Steps to reproduce manually:
+> 1. Kick off the Maestro tests and then run `adb detach` (ignoring the `adb: failed to detach: transport type doesn't support detach` message), followed by `adb devices` displaying the `emulator-5554 offline`.
+> 2. This then triggers this same `Exception in thread "pool-4-thread-1" java.io.IOException: Command failed (host:transport:emulator-5554): device offline` error we experience on CI raised in this issue, with the following test marked as `(Android driver unreachable)`.
+> 3. Run `adb kill-server && adb start-server` turns the offline device "`* daemon not running; starting now at tcp:5037" back online` (as expected).
+> 4. Note: Maestro does seem to initially force close the app/interact again with the re-connected device (`Unable to launch app com.yourAppName.android.test: am force-stop com.yourAppName.android.test)`, closing the app, returning to the Android home screen.
+> 5. After the above error, each flow fails with `(Unable to launch app com.yourAppName.android.test: Android driver unreachable)` taking ~6 minutes to fail.
+> 
+> What do I think?
+> The Maestro connection to the previous server doesn't reconnect to the new one. @felipevolpone Maybe Maestro could try regaining the connection again? Or end throw the exception and stop running all the flows. My preference would be for Maestro to try restarting the adb server and regain connection, continuing the Maestro test.
+> 
+> What I'm trying next:
+> - I'm experimenting with different Android SDK platform tool versions, not a surprise, that different versions have varying differences with the Android system images.
+> - Additionally, I'm going to try including the `Exception in thread "pool-4-thread-1" java.io.IOException: Command failed (host:transport:emulator-5554): device offline` as a build exception in our TeamCity script, failing the build and automatically triggering a new build.
+
+- felipevolpone mentioned
+
+- felipevolpone subscribed
+
+- Referenced by issue #1412: Exception in thread "pool-4-thread-1, v1.31.0
+
+- evanheisler unsubscribed
+
+- julienqueffelec subscribed
+
+**julienqueffelec** commented on 2025-02-18T12:02:43Z:
+
+> > I've looked into this a lot more, so in advance for the long comment...
+> > 
+> > What have I tried so far: Changing the Android System Image API version had varying results, not consistent with one API version causing more of an issue than the next. I feel it's not a specific system image issue. Increasing the emulator's memory seemed to help, but maybe this was a bit of a red herring and did not actually help too much.
+> > 
+> > What more have I found out:
+> > 
+> > * This seems to be a long-standing Android ADB server issue - e.g. [this](https://stackoverflow.com/questions/3152681/android-emulator-5554-offline) from 14 years ago...
+> > * This doesn't seem to be a specific app issue.
+> > 
+> > Steps to reproduce manually:
+> > 
+> > 1. Kick off the Maestro tests and then run `adb detach` (ignoring the `adb: failed to detach: transport type doesn't support detach` message), followed by `adb devices` displaying the `emulator-5554 offline`.
+> > 2. This then triggers this same `Exception in thread "pool-4-thread-1" java.io.IOException: Command failed (host:transport:emulator-5554): device offline` error we experience on CI raised in this issue, with the following test marked as `(Android driver unreachable)`.
+> > 3. Run `adb kill-server && adb start-server` turns the offline device "`* daemon not running; starting now at tcp:5037" back online` (as expected).
+> > 4. Note: Maestro does seem to initially force close the app/interact again with the re-connected device (`Unable to launch app com.yourAppName.android.test: am force-stop com.yourAppName.android.test)`, closing the app, returning to the Android home screen.
+> > 5. After the above error, each flow fails with `(Unable to launch app com.yourAppName.android.test: Android driver unreachable)` taking ~6 minutes to fail.
+> > 
+> > What do I think? The Maestro connection to the previous server doesn't reconnect to the new one. [ @felipevolpone](https://github.com/felipevolpone) Maybe Maestro could try regaining the connection again? Or end throw the exception and stop running all the flows. My preference would be for Maestro to try restarting the adb server and regain connection, continuing the Maestro test.
+> > 
+> > What I'm trying next:
+> > 
+> > * I'm experimenting with different Android SDK platform tool versions, not a surprise, that different versions have varying differences with the Android system images.
+> > * Additionally, I'm going to try including the `Exception in thread "pool-4-thread-1" java.io.IOException: Command failed (host:transport:emulator-5554): device offline` as a build exception in our TeamCity script, failing the build and automatically triggering a new build.
+> 
+> Hello, I have the same problem, do you have any news on it? Thanks for your help
+
+- ubuntudroid subscribed
+
+**DavidREntwistle** commented on 2025-02-20T15:18:32Z:
+
+> @julienqueffelec sadly not
+
+- julienqueffelec mentioned
+
+- julienqueffelec subscribed
+
+**DavidREntwistle** commented on 2025-02-21T13:07:10Z:
+
+> I think this [issue](https://github.com/mobile-dev-inc/maestro/issues/1525) could be caused by the Android System Image being in a read-only state and not a writable state.
+> 
+> This emulator launch command on CI seems to have resolved this issue for us:
+> `"${ANDROID_HOME}/emulator/emulator" -avd "yourEmulatorDeviceNameHere" -cores 4 -memory 8192 -camera-front emulated -camera-back emulated -gpu swiftshader_indirect -no-window -verbose -no-audio -show-kernel -no-boot-anim -writable-system &` 
+> 
+> Main flags:
+> - By default, the emulators use x2 cores, doubling the CPU to try to help - `-cores 4`
+> - Ensure that we have a reasonable amount of RAM, most modern pixel devices are around this - `-memory 8192`
+> - Ensure that the system image is in a writable state, even with `-read-only` omitted, the emulator would launch in a `-read-only` state. Enabling this `-writable-system` should allow app caching, and data persistence on the Android emulator's local storage, possibly resulting in emulator issues if this isn't the case.
+
+- woelmer mentioned
+
+- woelmer subscribed
+
+- KeunwooPark mentioned
+
+- KeunwooPark subscribed
+
+- julienqueffelec mentioned
+
+- julienqueffelec subscribed
+
+- gy6543721 mentioned
+
+- gy6543721 subscribed
+
+- sanyar123 mentioned
+
+- sanyar123 subscribed
+
+**gy6543721** commented on 2025-02-21T13:21:19Z:
+
+> > On my above comment, tagging a few who've also experienced this issue to try [this](https://github.com/mobile-dev-inc/Maestro/issues/1525#issuecomment-2674510875) also @julienqueffelec @woelmer @gy6543721 @KeunwooPark @sanyar123 🤞 
+> 
+> Thanks, but it’s not working in my case.
+> 
+> I have SDK versions 28, 33, and 34 set up, but only 28 successfully completes the test flows without exceptions. Meanwhile, 33 and 34 always fail with an exception, even though all tests have passed and I have set up the configuration as you provided.
+> 
+> Logs as below: 
+> https://github.com/mobile-dev-inc/Maestro/pull/1733#issuecomment-2475751664
+> 
+> I believe the issue lies deeper in the core of the executor and cannot be fixed simply by changing the configuration.
+> 
+> Thanks for your workaround, though.
+
+- woelmer mentioned
+
+- woelmer subscribed
+
+- KeunwooPark mentioned
+
+- KeunwooPark subscribed
+
+- julienqueffelec mentioned
+
+- julienqueffelec subscribed
+
+- gy6543721 mentioned
+
+- gy6543721 subscribed
+
+- sanyar123 mentioned
+
+- sanyar123 subscribed
+
+- Fishbowler added label "platform: android"
+
+**DavidREntwistle** commented on 2025-03-03T10:42:43Z:
+
+> Sadly, I'm still experiencing this issue. After trying to resolve this, it looks like the Maestro driver might be causing the device to crash.
+
+**woelmer** commented on 2025-03-10T05:57:17Z:
+
+> > I have SDK versions 28, 33, and 34 set up, but only 28 successfully completes the test flows without exceptions. Meanwhile, 33 and 34 always fail with an exception, even though all tests have passed and I have set up the configuration as you provided.
+> > 
+> 
+> Time will tell, but SDK 28 is working for me so far.
+
+**lucaslannes** commented on 2025-03-20T21:18:46Z:
+
+> Hello, everyone!
+> 
+> I spent about 2 to 3 weeks setting up Azure Pipelines to run an Android emulator and execute automated tests using Maestro.
+> 
+> As some have already mentioned, it is possible to run an Android emulator with API 28 (I also managed to do it with API 26).
+> 
+> However, in the project I am working on, it was necessary to run automated tests on a more recent Android version (API 30 or higher, preferably).
+> 
+> After many attempts and errors, we managed to stabilize the pipeline using API 33 by implementing the following changes:
+> 
+> 1. We used a lower-resolution emulator, 4.65in 720p (Galaxy Nexus).
+> 2. We removed the `google_apis` package when creating the emulator.
+> 
+> The final sequence of commands is:
+> 
+> ```sh
+> # Install required packages to create and run the Android emulator
+> echo "y" | sdkmanager --install 'system-images;android-33;default;x86_64'
+> 
+> # Create the Android emulator
+> echo "y" | avdmanager create avd -n android -d "4.65in 720p (Galaxy Nexus)" -k 'system-images;android-33;default;x86_64' --force
+> 
+> # Run the Android emulator
+> nohup emulator -avd android -no-snapshot -no-window -no-audio -no-boot-anim -camera-back none -camera-front none -qemu -m 2048 > /dev/null 2>&1 &
+> ```
+> 
+> You can check out a more detailed step-by-step guide in an article I wrote:
+> 
+> https://codenergy.dev/articles/running-the-android-emulator-on-cicd-pipelines
+
+**lucaslannes** commented on 2025-03-21T23:15:09Z:
+
+> Unfortunately, what I mentioned earlier stopped working this Thursday, and we are once again facing the "device offline" issue.
+> 
+> However, I have a theory for those of you running this on non-self-hosted agents, like me.
+> 
+> When it first started working, it was Monday between 9:00 AM and 10:00 AM, right at the beginning of the business day.
+> 
+> Then, on Thursday, a teammate tried to run the pipeline again, and it stopped working.
+> 
+> Now, I'm running the pipeline again on Android API 35 with 2048 MB of RAM, and it's working. But, interestingly, it's Friday night.
+> 
+> So perhaps, in my case, the Microsoft-hosted agents in Azure Pipelines are overloaded most of the time, which causes the Android emulator to stop working randomly.
+> 
+> It's just a theory, but maybe it makes sense to someone.
+
+**scott-zap** commented on 2025-03-24T15:44:18Z:
+
+> > > I have SDK versions 28, 33, and 34 set up, but only 28 successfully completes the test flows without exceptions. Meanwhile, 33 and 34 always fail with an exception, even though all tests have passed and I have set up the configuration as you provided.
+> > 
+> > Time will tell, but SDK 28 is working for me so far.
+> 
+> Hows it going for you with SDK 28? So far so good?
+
+- KeunwooPark unsubscribed
+
+- Fishbowler issue_type_added
+
+**woelmer** commented on 2025-04-01T16:19:06Z:
+
+> > > > I have SDK versions 28, 33, and 34 set up, but only 28 successfully completes the test flows without exceptions. Meanwhile, 33 and 34 always fail with an exception, even though all tests have passed and I have set up the configuration as you provided.
+> > > 
+> > > 
+> > > Time will tell, but SDK 28 is working for me so far.
+> > 
+> > Hows it going for you with SDK 28? So far so good?
+> 
+> I no longer get this error, but have run into other issues with the app not starting up.
+
+- DocSnyder0815 subscribed
+
+- cmargonis subscribed
+
+- Referenced by issue #50: GH Actions E2E tests runner instability
+
+**mkhbragg** commented on 2025-09-16T23:57:32Z:
+
+> +1 for the Overloaded Agent Hypothesis, because my android tests have started failing (triggered from Expo Workflow) without any changes to sdk version or new dependencies.
+> 
+> `android` section of `app.config.ts`:
+> ```
+> android: {
+> usesCleartextTraffic: true,
+> compileSdkVersion: 35,
+> targetSdkVersion: 35,
+> buildToolsVersion: '35.0.0',
+> kotlinVersion: '2.0.0',
+> },
+> ```
+> 
+> Profile I'm using in eas.json:
+> ```
+> "e2e-test": {
+> "extends": "base",
+> "withoutCredentials": true,
+> "distribution": "internal",
+> "resourceClass": "large",
+> "ios": {
+> "simulator": true,
+> "image": "sdk-52"
+> },
+> "android": {
+> "buildType": "apk",
+> "image": "sdk-52"
+> },
+> "environment": "preview"
+> }
+> ```
+> 
+> Note that the result is the same even if I leave off the `image` attributes from the `e2e-test` profile.
+
+- cdschneider subscribed
+
+- angelofallars subscribed

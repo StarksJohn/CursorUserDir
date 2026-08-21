@@ -41,6 +41,17 @@ def load_package_json(project_root: Path) -> Dict[str, Any]:
         raise ValueError(f"cannot read {package_path}: {error}") from error
 
 
+def load_local_policy() -> Dict[str, Any]:
+    policy_path = Path(__file__).resolve().parents[1] / "local-policy.json"
+    if not policy_path.is_file():
+        return {}
+
+    try:
+        return json.loads(policy_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError(f"cannot read {policy_path}: {error}") from error
+
+
 def dependencies(package: Dict[str, Any]) -> Dict[str, str]:
     merged: Dict[str, str] = {}
     for key in ("dependencies", "devDependencies", "peerDependencies"):
@@ -132,6 +143,7 @@ def main() -> int:
 
     try:
         package = load_package_json(project_root)
+        local_policy = load_local_policy()
     except ValueError as error:
         print(str(error), file=sys.stderr)
         return 2
@@ -192,6 +204,7 @@ def main() -> int:
     report = {
         "projectRoot": str(project_root),
         "reactNativeProject": "react-native" in deps,
+        "localPolicy": local_policy,
         "levels": {
             "globalAvailable": (
                 "the CLI can start; this is not project E2E evidence"

@@ -111,8 +111,3 @@ description: >-
   <!-- - 需要你在当前项目根目录执行一条命令(比如 `cd android && ENVFILE=.env.development SENTRY_DISABLE_AUTO_UPLOAD=true ./gradlew assembleDevRelease`),构建出当前项目在`1.2.2`版本的的`dev`环境的release模式的 apk; -->
 - TECH-8757
   - 你读取 `https://ais-pre-hce4mtkty7p4aewqsgaizl-663605729382.us-west2.run.app/`页面的UI节点数据,以及 `https://aistudio.google.com/apps/c068b31c-3b5b-42e7-b660-02eea479db8a?showAssistant=true&showCode=true`页面里`code`区域的项目源码;帮我修改当前项目
-    - 把 如图![img_151806.png](img_151806.png)红框处改成和`https://ais-pre-hce4mtkty7p4aewqsgaizl-663605729382.us-west2.run.app/`显示的![img_151844.png](img_151844.png)一致,需要修改多语言的tab的文字和icon
-- 你对当前项目的修改,要求：
-    - 匹配当前项目的代码风格（命名规范、目录组织、import 顺序等）,项目结构和技术栈
-    - 复用当前项目中已有的公共组件和工具函数
-    - 使用当前项目里一致的样式方案（Tailwind CSS / 现有本地组件等）

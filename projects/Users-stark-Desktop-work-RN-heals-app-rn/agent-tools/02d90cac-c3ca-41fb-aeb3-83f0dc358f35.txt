@@ -1,0 +1,380 @@
+# LaunchApp works only the first time when using Maestro MCP
+
+- State: open
+- Author: alex-boards
+- Created: 2025-11-19T16:09:05Z
+- Updated: 2026-06-25T09:11:41Z
+- Repository: mobile-dev-inc/Maestro
+- Number: #2839
+
+## Labels
+
+- maestro cli
+- maestro ai
+
+---
+
+### Is there an existing issue for this?
+
+- [x] I have searched the existing issues and didn't find mine.
+
+### Steps to reproduce
+
+When instructing Junie or Firebender to integrate Maestro MCP into our workflow for some task (and hopefully for all tasks in the future) I've come into the strangest issue on two different machines with Maestro version `2.0.10`, the latest IMHO.
+
+The issue is that only on the first run of the yaml test, `launchApp` works out fine as expected. From now on, every run fails to run `launchApp`.
+
+To solve the issue I have to: 
+- Go into the MCP Servers list in Android Studio
+- Disable the Maestro MCP Server
+- Enable the Meastro MCP Server
+
+Then again I have one run where it works only :(
+
+### Actual results
+
+Failure to run the tests using `launchApp` command.
+
+### Expected results
+
+All runs of tests should work.
+
+### About app
+
+- Android App.
+
+### About environment
+
+Mac OS 15.6.1 (24G90)
+Reproduced issue on different macs as well
+
+### Logs
+
+ 
+ Logs 
+
+```
+18:25:29.659 [ INFO] maestro.cli.report.TestDebugReporter.logSystemInfo: Debug output path: /Users/alexandergherschon/.maestro/tests/2025-11-19_182529
+18:25:29.660 [ INFO] MAESTRO.logSystemInfo: ---- System Info ----
+18:25:29.660 [ INFO] MAESTRO.logSystemInfo: Maestro Version: 2.0.10
+18:25:29.661 [ INFO] MAESTRO.logSystemInfo: CI: Undefined
+18:25:29.661 [ INFO] MAESTRO.logSystemInfo: OS Name: Mac OS X
+18:25:29.661 [ INFO] MAESTRO.logSystemInfo: OS Version: 15.6.1
+18:25:29.661 [ INFO] MAESTRO.logSystemInfo: Architecture: aarch64
+18:25:29.661 [ INFO] MAESTRO.logSystemInfo: Java Version: 17
+18:25:29.716 [ INFO] MAESTRO.logSystemInfo: Xcode Version: 26.0.1
+18:25:29.718 [ INFO] MAESTRO.logSystemInfo: Flutter Version: Undefined
+18:25:29.720 [ INFO] MAESTRO.logSystemInfo: Flutter Channel: Undefined
+18:25:29.720 [ INFO] MAESTRO.logSystemInfo: ---------------------
+18:25:29.894 [DEBUG] io.micrometer.common.util.internal.logging.InternalLoggerFactory.newDefaultFactory: Using SLF4J as the default logging framework
+18:25:30.172 [ INFO] maestro.cli.command.TestCommand.runShardSuite: [shard 1] Selected device 19181FDF600E9W using port 7001 with execution plan ExecutionPlan(flowsToRun=[/Users/alexandergherschon/work/boards-android/maestro/auth/login.yaml], sequence=FlowSequence(flows=[], continueOnFailure=true), workspaceConfig=WorkspaceConfig(flows=null, includeTags=null, excludeTags=null, local=null, executionOrder=null, baselineBranch=null, notifications=null, disableRetries=false, platform=PlatformConfiguration(android=AndroidConfiguration(disableAnimations=false), ios=IOSConfiguration(disableAnimations=false, snapshotKeyHonorModalViews=null)), testOutputDir=null))
+18:25:30.368 [ INFO] maestro.cli.runner.TestRunner.runSingle$lambda$0: Running flow login.yaml...
+18:25:30.386 [ INFO] maestro.Maestro.cachedDeviceInfo_delegate$lambda$0: Getting device info
+18:25:30.535 [ INFO] maestro.Maestro.cachedDeviceInfo_delegate$lambda$0: Got device info: DeviceInfo(platform=ANDROID, widthPixels=1080, heightPixels=2400, widthGrid=1080, heightGrid=2400)
+18:25:30.560 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Define variables RUNNING
+18:25:30.564 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Define variables metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(defineVariablesCommand=DefineVariablesCommand(env={USERNAME=roman.zubchynskyi+2@boards.com, PASSWORD=RDev10, MAESTRO_EMAIL=alex.gherschon@boards.com, MAESTRO_PASSWORD=Boards8481-, MAESTRO_FILENAME=login}, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+18:25:30.565 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Define variables COMPLETED
+18:25:30.566 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Apply configuration RUNNING
+18:25:30.567 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Apply configuration metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(applyConfigurationCommand=ApplyConfigurationCommand(config=MaestroConfig(appId=co.heybliss.blisskeyboard, name=null, tags=[], ext={}, onFlowStart=null, onFlowComplete=null), label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+18:25:30.567 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Apply configuration COMPLETED
+18:25:30.568 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Launch app "co.heybliss.blisskeyboard" with clear state RUNNING
+18:25:30.570 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Launch app "co.heybliss.blisskeyboard" with clear state metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(launchAppCommand=LaunchAppCommand(appId=co.heybliss.blisskeyboard, clearState=true, clearKeychain=null, stopApp=null, permissions=null, launchArguments=null, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+18:25:30.571 [ INFO] maestro.Maestro.clearAppState: Clearing app state co.heybliss.blisskeyboard
+18:25:32.644 [ INFO] maestro.Maestro.launchApp: Launching app co.heybliss.blisskeyboard
+18:25:32.645 [ INFO] maestro.Maestro.launchApp: Stopping co.heybliss.blisskeyboard app during launch
+18:25:37.745 [ERROR] maestro.orchestra.Orchestra.launchAppCommand: Failed to launch app
+java.util.concurrent.TimeoutException: null
+	at dadb.forwarding.TcpForwarder.waitFor(TcpForwarder.kt:153) ~[dadb-1.2.10.jar:?]
+	at dadb.forwarding.TcpForwarder.start(TcpForwarder.kt:49) ~[dadb-1.2.10.jar:?]
+	at dadb.Dadb$DefaultImpls.tcpForward(Dadb.kt:244) ~[dadb-1.2.10.jar:?]
+	at dadb.adbserver.AdbServerDadb.tcpForward(AdbServer.kt:122) ~[dadb-1.2.10.jar:?]
+	at maestro.drivers.AndroidDriver.allocateForwarder(AndroidDriver.kt:150) ~[maestro-client.jar:?]
+	at maestro.drivers.AndroidDriver.open(AndroidDriver.kt:99) ~[maestro-client.jar:?]
+	at maestro.drivers.AndroidDriver.launchApp$lambda$7(AndroidDriver.kt:223) ~[maestro-client.jar:?]
+	at maestro.utils.Metrics.measured(Metrics.kt:48) ~[maestro-utils.jar:?]
+	at maestro.drivers.AndroidDriver.launchApp(AndroidDriver.kt:221) ~[maestro-client.jar:?]
+	at maestro.Maestro.launchApp(Maestro.kt:68) ~[maestro-client.jar:?]
+	at maestro.orchestra.Orchestra.launchAppCommand(Orchestra.kt:1007) ~[maestro-orchestra.jar:?]
+	at maestro.orchestra.Orchestra.executeCommand(Orchestra.kt:346) ~[maestro-orchestra.jar:?]
+	at maestro.orchestra.Orchestra.executeCommands(Orchestra.kt:255) ~[maestro-orchestra.jar:?]
+	at maestro.orchestra.Orchestra.runFlow(Orchestra.kt:173) ~[maestro-orchestra.jar:?]
+	at maestro.cli.runner.MaestroCommandRunner.runCommands(MaestroCommandRunner.kt:196) ~[maestro-cli-2.0.10.jar:?]
+	at maestro.cli.runner.TestRunner$runSingle$result$1$1.invokeSuspend(TestRunner.kt:75) ~[maestro-cli-2.0.10.jar:?]
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33) ~[kotlin-stdlib-2.2.0.jar:2.2.0-release-294]
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:104) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:277) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at maestro.cli.runner.TestRunner.runSingle$lambda$0(TestRunner.kt:74) ~[maestro-cli-2.0.10.jar:?]
+	at maestro.cli.runner.TestRunner.runCatching-ta8aW1Q(TestRunner.kt:200) ~[maestro-cli-2.0.10.jar:?]
+	at maestro.cli.runner.TestRunner.runSingle(TestRunner.kt:65) ~[maestro-cli-2.0.10.jar:?]
+	at maestro.cli.command.TestCommand.runSingleFlow(TestCommand.kt:520) ~[maestro-cli-2.0.10.jar:?]
+	at maestro.cli.command.TestCommand.runShardSuite$lambda$10(TestCommand.kt:489) ~[maestro-cli-2.0.10.jar:?]
+	at maestro.cli.session.MaestroSessionManager.newSession(MaestroSessionManager.kt:129) [maestro-cli-2.0.10.jar:?]
+	at maestro.cli.session.MaestroSessionManager.newSession$default(MaestroSessionManager.kt:65) [maestro-cli-2.0.10.jar:?]
+	at maestro.cli.command.TestCommand.runShardSuite(TestCommand.kt:454) [maestro-cli-2.0.10.jar:?]
+	at maestro.cli.command.TestCommand.access$runShardSuite(TestCommand.kt:80) [maestro-cli-2.0.10.jar:?]
+	at maestro.cli.command.TestCommand$handleSessions$1$results$1$1.invokeSuspend(TestCommand.kt:413) [maestro-cli-2.0.10.jar:?]
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33) [kotlin-stdlib-2.2.0.jar:2.2.0-release-294]
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:104) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:111) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:99) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:585) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:802) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:706) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:693) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+18:25:37.752 [ERROR] maestro.orchestra.Orchestra.executeCommands: [Command execution] CommandFailed: Unable to launch app co.heybliss.blisskeyboard
+18:25:37.755 [ INFO] maestro.Maestro.takeScreenshot: Taking screenshot
+18:25:37.756 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+18:25:38.339 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$4: Launch app "co.heybliss.blisskeyboard" with clear state FAILED
+18:25:38.587 [ INFO] maestro.cli.report.TestDebugReporter.deleteOldFiles: Performing purge of logs older than 14 days from /Users/alexandergherschon/.maestro/tests
+
+```
+
+ 
+
+### Maestro version
+
+2.0.10
+
+### How did you install Maestro?
+
+install script (https://get.maestro.mobile.dev)
+
+### Anything else?
+
+_No response_
+
+## Timeline
+
+**linear[bot]** commented on 2025-11-19T16:09:08Z:
+
+> MAE-327 
+
+- Fishbowler added label "maestro cli"
+
+- Fishbowler issue_type_added
+
+- Fishbowler added label "maestro ai"
+
+**alex-boards** commented on 2025-12-16T11:40:29Z:
+
+> Hello, any updates on this? 
+
+**leonam13** commented on 2026-03-05T18:07:39Z:
+
+> Hi, I'd like to flag that I'm facing the same issue. This has been a blocker for my company to adhere maestro and close a deal for maestro cloud.
+> We use Android Studio as IDE and Firebender as our AI editor with Claude models.
+> While executing our workflow, maestro mcp always disconnects and we cannot complete, unless we pause the workflow and we manually disconnect/connect the MCP like mentioned by @alex-boards, which is not viable when the workflow is executed by an agent.
+> 
+> The MCP logs are not showing any error, but the model is
+> ```
+> [14:31:20.427] [event] Calling tool: list_devices
+> [14:31:34.317] Resolved tool mcp_maestro_list_devices, originalTool=list_devices
+> [14:31:34.317] [event] Calling tool: list_devices
+> [14:35:41.337] Resolved tool mcp_maestro_list_devices, originalTool=list_devices
+> [14:35:41.337] [event] Calling tool: list_devices
+> [14:36:26.370] Resolved tool mcp_maestro_inspect_view_hierarchy, originalTool=inspect_view_hierarchy
+> [14:36:26.370] [event] Calling tool: inspect_view_hierarchy
+> ```
+> 
+> 
+> 
+> cc: @Fishbowler 
+> 
+> 
+
+- Fishbowler mentioned
+
+- Fishbowler subscribed
+
+- alex-boards mentioned
+
+- alex-boards subscribed
+
+- TweedBeetle subscribed
+
+- simon-gilmurray subscribed
+
+- kristiansvenssontrimble subscribed
+
+**musaozkan** commented on 2026-04-21T09:28:32Z:
+
+> I'm having the same issue too, and this is a great deal for most of the business users needs to be solved immediately.
+
+**Fishbowler** commented on 2026-04-21T10:06:02Z:
+
+> We're working on a bunch of MCP improvements for the next release.
+> 
+> Would be interested to hear folks experience of trying out what's in main (check out code, run installLocally.sh to replace your installed version)
+
+- Fishbowler marked_as_duplicate
+
+- TimVee subscribed
+
+**dybarsky** commented on 2026-04-22T15:57:36Z:
+
+> I am facing the same issue. AI agent goes into rabbit hole trying to figure out why app is not starting. 
+
+**Fishbowler** commented on 2026-06-08T21:17:48Z:
+
+> Does this issue still persist?
+
+- Fishbowler added label "waiting for customer response"
+
+**github-actions[bot]** commented on 2026-06-24T12:38:34Z:
+
+> Without additional information, we can't resolve this issue. We're therefore reluctantly going to close it.
+> 
+> Feel free to open a new issue with all the required information provided, including a [minimal, reproducible sample]. When creating a new issue, please make sure to diligently fill out the issue template.
+> 
+> Thank you for your contribution to our open-source community!
+> 
+> [minimal, reproducible sample]: https://stackoverflow.com/help/minimal-reproducible-example
+
+- github-actions[bot] closed
+
+- github-actions[bot] removed label "waiting for customer response"
+
+- github-actions[bot] reopened
+
+- Referenced by PR #3385: fix(mcp): rebuild a dead device session instead of failing forever
+
+**alex-boards** commented on 2026-06-25T08:48:05Z:
+
+> This still reproduces on the current release (2.6.1) when driving Maestro through the `maestro mcp` server, and I've opened a fix: #3385.
+> 
+> ### Root cause
+> 
+> The MCP server caches **one device session per device** (`McpMaestroSessionManager`) and reuses it for every `run` / `inspect_screen` / `take_screenshot`. That session wraps a live connection to the on-device driver (`dev.mobile.maestro`). If the on-device driver dies **out-of-band** while the session is cached — e.g. a second Maestro process (Maestro Studio, another CLI) reinstalls/restarts the shared driver, or the device reboots — the connection goes permanently `DEAD`. The server kept handing back the dead session, so the **first** `launchApp` succeeds and **every** call after the eviction fails (`Unable to launch app`, `inspect_screen` → `UNAVAILABLE`) until the server is manually restarted/reconnected. `maestro test` from the CLI never shows it because it's a fresh process per run; only the long-lived `maestro mcp` server caches across calls.
+> 
+> ### Reproducer (self-contained, uses the docs' Wikipedia sample app)
+> 
+> It needs no second Maestro install: it drives the real `maestro mcp` server over stdio JSON-RPC, launches once (establishes the cached session), then simulates the eviction deterministically with `adb uninstall dev.mobile.maestro` — exactly the state a competing Maestro process leaves behind — then launches again.
+> 
+> - Affected build → 2nd launch fails, exit **1**.
+> - Fixed build (#3385) → MCP detects the dead session, rebuilds it (reinstalling the driver), 2nd launch succeeds, exit **0**.
+> 
+> **Prereqs:** an Android emulator + `adb` on PATH, a `maestro` CLI, and the Wikipedia sample app:
+> ```sh
+> maestro download-samples
+> adb install -r ~/.maestro/samples/apps/wikipedia.apk
+> # or: curl -LO https://storage.googleapis.com/mobile.dev/cli_e2e/wikipedia.apk && adb install -r wikipedia.apk
+> ```
+> 
+> **`flow/launch.yaml`**
+> ```yaml
+> appId: org.wikipedia
+> ---
+> - launchApp:
+> clearState: true
+> ```
+> 
+> **`reproduce.sh`**
+> ```bash
+> #!/usr/bin/env bash
+> # Reproducer for #2839 — launchApp works only the first time via maestro mcp.
+> # Drives the real `maestro mcp` over stdio JSON-RPC: launch once (succeeds,
+> # caches the session), simulate the out-of-band eviction by uninstalling the
+> # on-device driver via adb (what a 2nd Maestro process leaves behind), launch
+> # again. Affected build -> 2nd launch fails (exit 1). Fixed build -> self-heals
+> # (exit 0). Requires: bash, adb, a maestro CLI, python3 (only to frame JSON).
+> # ./reproduce.sh | MAESTRO_BIN=/path/to/maestro ./reproduce.sh | ANDROID_SERIAL=emulator-5554 ./reproduce.sh
+> set -u
+> MAESTRO_BIN="${MAESTRO_BIN:-maestro}"
+> APP_ID="org.wikipedia"
+> DRIVER_PKG="dev.mobile.maestro"
+> FLOW_FILE="$(cd "$(dirname "$0")" && pwd)/flow/launch.yaml"
+> 
+> DEVICE_ID="${ANDROID_SERIAL:-}"
+> [ -z "$DEVICE_ID" ] && DEVICE_ID="$(adb devices | awk 'NR>1 && $2=="device"{print $1; exit}')"
+> [ -z "$DEVICE_ID" ] && { echo "ERROR: no Android device via adb. Boot an emulator." >&2; exit 2; }
+> echo ">> device: $DEVICE_ID"
+> adb -s "$DEVICE_ID" shell pm list packages 2>/dev/null | grep -q "package:$APP_ID" \
+> || { echo "ERROR: $APP_ID not installed. Run 'maestro download-samples' and install apps/wikipedia.apk." >&2; exit 2; }
+> 
+> YAML="$(cat "$FLOW_FILE")"
+> WORKDIR="$(mktemp -d)"; REQ="$WORKDIR/req"; RES="$WORKDIR/res"; mkfifo "$REQ"
+> trap 'rm -rf "$WORKDIR"; [ -n "${SRV_PID:-}" ] && kill "$SRV_PID" 2>/dev/null' EXIT
+> "$MAESTRO_BIN" mcp <"$REQ" >"$RES" 2>"$WORKDIR/server.stderr" & SRV_PID=$!
+> exec 3>"$REQ"
+> send() { printf '%s\n' "$1" >&3; }
+> read_reply() { # $1 = json-rpc id
+> local want="$1" line deadline; deadline=$(( $(date +%s) + 90 ))
+> while :; do
+> if IFS= read -r line; then
+> case "$line" in *"\"id\":$want"*|*"\"id\": $want"*) printf '%s\n' "$line"; return 0 ;; *) : ;; esac
+> else [ "$(date +%s)" -ge "$deadline" ] && { echo "TIMEOUT id=$want" >&2; return 1; }; sleep 0.2; fi
+> done <"$RES"
+> }
+> ESC_YAML="$(printf '%s' "$YAML" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))')"
+> run_launch() { send "{\"jsonrpc\":\"2.0\",\"id\":$1,\"method\":\"tools/call\",\"params\":{\"name\":\"run\",\"arguments\":{\"device_id\":\"$DEVICE_ID\",\"yaml\":$ESC_YAML}}}"; read_reply "$1"; }
+> succeeded() { grep -q '"isError":false' <<<"$1" || grep -q '"success":true' <<<"$1" || ! grep -q '"isError":true' <<<"$1"; }
+> 
+> echo ">> initializing MCP session..."
+> send '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"repro","version":"1.0"}}}'
+> read_reply 1 >/dev/null || { echo "ERROR: MCP did not initialize:"; cat "$WORKDIR/server.stderr"; exit 2; }
+> send '{"jsonrpc":"2.0","method":"notifications/initialized"}'
+> 
+> echo ">> [1/3] launchApp #1 (cold) ..."
+> R1="$(run_launch 10)"
+> succeeded "$R1" && echo " OK: first launch succeeded." || { echo " UNEXPECTED first-launch failure -> $R1"; exit 2; }
+> 
+> echo ">> [2/3] simulating eviction: adb uninstall $DRIVER_PKG (what a 2nd Maestro process leaves behind)"
+> adb -s "$DEVICE_ID" uninstall "$DRIVER_PKG" >/dev/null 2>&1 || true
+> adb -s "$DEVICE_ID" uninstall "$DRIVER_PKG.test" >/dev/null 2>&1 || true
+> 
+> echo ">> [3/3] launchApp #2 on the SAME MCP session ..."
+> R2="$(run_launch 11)"; echo " server reply: $R2"; echo
+> if succeeded "$R2"; then
+> echo "PASS: 2nd launch SUCCEEDED -> build self-heals the dead session. #2839 fixed."; exit 0
+> else
+> echo "BUG REPRODUCED (#2839): 2nd launch FAILED on the same MCP session after the driver was evicted."; exit 1
+> fi
+> ```
+> 
+> ### Result (same script, two builds)
+> 
+> ```
+> # current main
+> >> [1/3] launchApp #1 (cold) ...
+> OK: first launch succeeded.
+> >> [2/3] simulating eviction: adb uninstall dev.mobile.maestro ...
+> >> [3/3] launchApp #2 on the SAME MCP session ...
+> server reply: {"id":11,"result":{"content":[{"text":"Failed to run flow: Unable to launch app org.wikipedia","type":"text"}],"isError":true},"jsonrpc":"2.0"}
+> BUG REPRODUCED (#2839) # exit 1
+> 
+> # with #3385
+> >> [3/3] launchApp #2 on the SAME MCP session ...
+> server reply: {"id":11,"result":{"content":[{"text":"{\"success\":true,\"commands_executed\":2,\"message\":\"Flow executed successfully\"}","type":"text"}],"isError":false},"jsonrpc":"2.0"}
+> PASS: 2nd launch SUCCEEDED # exit 0
+> ```
+> 
+> ### Fix (#3385)
+> 
+> `McpMaestroSessionManager.withSession(...)` now self-heals: if the block throws and the cached session's driver reports `isShutdown()` (connection `DEAD`), it evicts + closes the stale session, rebuilds it (re-running `driver.open()`, which reinstalls the on-device driver) and retries once. Web sessions are skipped from the probe (`CdpWebDriver.isShutdown()` closes the browser as a side effect); a normal flow failure leaves the driver alive and is re-thrown unchanged, so only genuine transport deaths trigger the one-shot rebuild.
+
+**Fishbowler** commented on 2026-06-25T08:52:37Z:
+
+> I'm not sure about the `adb uninstall` as part of the repro. I think it loses something by surfacing a point-in-time implementation detail. Wouldn't `maestro test flow.yaml` be more representative in terms of reproduction?
+
+**alex-boards** commented on 2026-06-25T09:11:41Z:
+
+> Fair point on `adb uninstall` — it hard-codes an internal package name, I only used it as a deterministic, headless stand-in.
+> 
+> I did try `maestro test`, and it doesn't reproduce: it's a fresh process (fresh session) per run, and run concurrently it just loses the race for the driver port and fails itself — the MCP's cached session survives.
+> 
+> The real trigger is a second *persistent* Maestro session taking over the driver — i.e. **Maestro Studio open on the same device**, which is the original report here. So a repro with no internal details:
+> 
+> 1. `maestro mcp` → `launchApp` on a device → works
+> 2. open Maestro Studio on the **same** device
+> 3. `launchApp` again via MCP → fails, and stays broken until you restart the MCP
+> 
+> The only catch is step 2 is a GUI, so it's not a clean CI script — hence the `adb` shortcut. Happy to make the reproducer lead with the Studio steps and keep `adb` as an optional CI variant.
+> 
+> Either way the fix in #3385 is independent of *how* the session dies — it rebuilds whenever the cached driver reports `isShutdown()`.
+
+- Referenced in commit 8747ff9

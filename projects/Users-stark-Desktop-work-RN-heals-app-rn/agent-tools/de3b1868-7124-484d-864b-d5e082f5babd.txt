@@ -1,0 +1,413 @@
+# Android emulator crashes during UI assertions on Bitrise CI (Linux Stack)
+
+- State: closed
+- Author: zerotomas
+- Created: 2025-10-03T19:54:53Z
+- Updated: 2026-05-25T13:19:10Z
+- Repository: mobile-dev-inc/Maestro
+- Number: #2757
+
+## Labels
+
+- upstream issue
+
+---
+
+### Is there an existing issue for this?
+
+- [x] I have searched the existing issues and didn't find mine.
+
+### Steps to reproduce
+
+**Device:** Android Emulator (tested on multiple configurations)
+- Pixel profile, x86_64 architecture
+- API levels tested: 26, 30, 33, 34
+- OS versions: Android 8.0, 11, 13, 14
+
+**Reproduction Steps:**
+
+1. Set up Bitrise CI workflow on `linux-docker-android-22.04` stack with `g2.linux.large` machine type
+
+2. Create Android emulator using `avd-manager@2` step:
+  ```yaml
+  - avd-manager@2:
+      inputs:
+      - api_level: "33"
+      - tag: google_apis
+      - profile: pixel
+      - abi: x86_64
+  ```
+
+ 3. Wait for emulator boot:
+  ```yaml
+  - wait-for-android-emulator@1: {}
+  ```
+
+ 4. Install Flutter debug APK:
+  ```bash
+  adb install -r app-debug.apk
+  ```
+
+ 5. Create minimal Maestro flow (login.yaml):
+  ```yaml
+  appId: com.example.app
+  ---
+  - launchApp
+  - runScript: sleep30.js  # 30-second passive wait (tried this when waitForAnimationToEnd didn't work)
+  - assertVisible: "Welcome"  # Crashes here
+  ```
+
+ 6. Create sleep30.js file:
+  ```javascript
+  const start = Date.now();
+  while (Date.now() - start < 30000) {}
+  ```
+
+ 7. Run Maestro test:
+  ```bash
+  maestro test login.yaml
+  ```
+
+### Actual results
+
+Emulator crashes with "device 'emulator-5554' not found" error during `assertVisible` command:
+```
+Running login test...
+Running on emulator
+ > Flow login
+Launch app "com.likelabs.favorited"... COMPLETED
+Run ../scripts/sleep30.js... COMPLETED
+Assert that "join the community." is visible...Exception in thread "pool-5-thread-1" java.io.IOException: Command failed (host:transport:emulator-5554): device 'emulator-5554' not found
+	at dadb.adbserver.AdbServer.send$dadb(AdbServer.kt:103)
+	at dadb.adbserver.AdbServerDadb.open(AdbServer.kt:148)
+	at dadb.forwarding.TcpForwarder.handleForwarding$lambda$1(TcpForwarder.kt:64)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+ FAILED
+Exception in thread "pool-5-thread-3" java.io.IOException: Command failed (host:transport:emulator-5554): device 'emulator-5554' not found
+	at dadb.adbserver.AdbServer.send$dadb(AdbServer.kt:103)
+	at dadb.adbserver.AdbServerDadb.open(AdbServer.kt:148)
+	at dadb.forwarding.TcpForwarder.handleForwarding$lambda$1(TcpForwarder.kt:64)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Android driver unreachable
+==== Debug output (logs & screenshots) ====
+/root/.maestro/tests/2025-10-03_190011
+❌ Login test failed
+  adding: 2025-10-03_190011/ (stored 0%)
+  adding: 2025-10-03_190011/ai-(login).json (deflated 15%)
+  adding: 2025-10-03_190011/ai-report-login.html (deflated 61%)
+  adding: 2025-10-03_190011/commands-(login.yaml).json (deflated 87%)
+  adding: 2025-10-03_190011/maestro.log (deflated 81%)
+```
+
+### Expected results
+
+Assertion completes successfully
+
+### About app
+
+- This is a closed source Flutter app
+- Cross-platform app (iOS and Android), but issue only occurs on Android
+- Flutter version: 3.24.5
+- Android minSdk: 21, targetSdk: 34 (tested on emulators with API 26, 30, 33, and 34)
+
+### About environment
+
+- Java version: 17
+- OS: Linux (Ubuntu 22.04 via linux-docker-android-22.04 stack)
+- Processor architecture: amd64
+
+### Logs
+
+ 
+ Logs 
+```
+19:00:11.114 [ INFO] maestro.cli.report.TestDebugReporter.logSystemInfo: Debug output path: /root/.maestro/tests/2025-10-03_190011
+19:00:11.118 [ INFO] MAESTRO.logSystemInfo: ---- System Info ----
+19:00:11.118 [ INFO] MAESTRO.logSystemInfo: Maestro Version: 2.0.3
+19:00:11.119 [ INFO] MAESTRO.logSystemInfo: CI: bitrise
+19:00:11.120 [ INFO] MAESTRO.logSystemInfo: OS Name: Linux
+19:00:11.120 [ INFO] MAESTRO.logSystemInfo: OS Version: 5.15.0-138-generic
+19:00:11.120 [ INFO] MAESTRO.logSystemInfo: Architecture: amd64
+19:00:11.122 [ INFO] MAESTRO.logSystemInfo: Java Version: 17
+19:00:11.133 [ INFO] MAESTRO.logSystemInfo: Xcode Version: null
+19:00:11.258 [DEBUG] io.micrometer.common.util.internal.logging.InternalLoggerFactory.newDefaultFactory: Using SLF4J as the default logging framework
+19:00:11.329 [ INFO] MAESTRO.logSystemInfo: Flutter Version: 3.24.5
+19:00:11.457 [ INFO] MAESTRO.logSystemInfo: Flutter Channel: [user-branch]
+19:00:11.457 [ INFO] MAESTRO.logSystemInfo: ---------------------
+19:00:12.104 [ INFO] maestro.cli.command.TestCommand.runShardSuite: [shard 1] Selected device emulator-5554 using port 7001 with execution plan ExecutionPlan(flowsToRun=[/bitrise/src/maestro-tests/flutter/auth/login.yaml], sequence=FlowSequence(flows=[], continueOnFailure=true), workspaceConfig=WorkspaceConfig(flows=null, includeTags=null, excludeTags=null, local=null, executionOrder=null, baselineBranch=null, notifications=null, disableRetries=false, platform=PlatformConfiguration(android=AndroidConfiguration(disableAnimations=false), ios=IOSConfiguration(disableAnimations=false, snapshotKeyHonorModalViews=null)), testOutputDir=null))
+19:00:16.262 [ INFO] maestro.cli.runner.TestRunner.runSingle$lambda$0: Running flow login.yaml...
+19:00:16.282 [ INFO] maestro.Maestro.cachedDeviceInfo_delegate$lambda$0: Getting device info
+19:00:16.551 [ INFO] maestro.Maestro.cachedDeviceInfo_delegate$lambda$0: Got device info: DeviceInfo(platform=ANDROID, widthPixels=1080, heightPixels=1920, widthGrid=1080, heightGrid=1920)
+19:00:16.642 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Define variables RUNNING
+19:00:16.650 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Define variables metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(defineVariablesCommand=DefineVariablesCommand(env={MAESTRO_USERNAME=USERNAME, MAESTRO_PASSWORD=PASSWORD, MAESTRO_DRIVER_STARTUP_TIMEOUT=180000, MAESTRO_FILENAME=login}, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+19:00:16.652 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Define variables COMPLETED
+19:00:16.652 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Define variables RUNNING
+19:00:16.653 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Define variables metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(defineVariablesCommand=DefineVariablesCommand(env={USERNAME=USERNAME, PASSWORD=PASSWORD}, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+19:00:16.653 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Define variables COMPLETED
+19:00:16.653 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Apply configuration RUNNING
+19:00:16.654 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Apply configuration metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(applyConfigurationCommand=ApplyConfigurationCommand(config=MaestroConfig(appId=com.likelabs.favorited, name=null, tags=[], ext={}, onFlowStart=null, onFlowComplete=null), label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+19:00:16.654 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Apply configuration COMPLETED
+19:00:16.655 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Launch app "com.likelabs.favorited" RUNNING
+19:00:16.659 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Launch app "com.likelabs.favorited" metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(launchAppCommand=LaunchAppCommand(appId=com.likelabs.favorited, clearState=null, clearKeychain=null, stopApp=null, permissions=null, launchArguments=null, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+19:00:24.894 [ INFO] maestro.Maestro.launchApp: Launching app com.likelabs.favorited
+19:00:24.895 [ INFO] maestro.Maestro.launchApp: Stopping com.likelabs.favorited app during launch
+19:00:25.210 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Launch app "com.likelabs.favorited" COMPLETED
+19:00:25.211 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Run ../scripts/sleep30.js RUNNING
+19:00:25.214 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Run ../scripts/sleep30.js metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(runScriptCommand=RunScriptCommand(script=// Passive sleep for 30 seconds without querying the UI
+const start = Date.now();
+while (Date.now() - start < 30000) {
+  // Wait without stressing the emulator
+}
+, env={}, sourceDescription=../scripts/sleep30.js, condition=null, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+19:00:56.562 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Run ../scripts/sleep30.js COMPLETED
+19:00:56.562 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Assert that "join the community." is visible RUNNING
+19:00:56.574 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Assert that "join the community." is visible metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(assertConditionCommand=AssertConditionCommand(condition=Condition(platform=null, visible=ElementSelector(textRegex=join the community., idRegex=null, size=null, below=null, above=null, leftOf=null, rightOf=null, containsChild=null, containsDescendants=null, traits=null, index=null, enabled=null, optional=false, selected=null, checked=null, focused=null, childOf=null, css=null), notVisible=null, scriptCondition=null, label=null), timeout=null, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+19:02:56.617 [ERROR] maestro.drivers.AndroidDriver.runDeviceCall: Device call failed on android with Status{code=DEADLINE_EXCEEDED, description=deadline exceeded after 119.998517233s. [closed=[], open=[[buffered_nanos=120032308765, waiting_for_connection]]], cause=null}
+io.grpc.StatusRuntimeException: DEADLINE_EXCEEDED: deadline exceeded after 119.998517233s. [closed=[], open=[[buffered_nanos=120032308765, waiting_for_connection]]]
+	at io.grpc.stub.ClientCalls.toStatusRuntimeException(ClientCalls.java:275) ~[grpc-stub-1.57.2.jar:1.57.2]
+	at io.grpc.stub.ClientCalls.getUnchecked(ClientCalls.java:256) ~[grpc-stub-1.57.2.jar:1.57.2]
+	at io.grpc.stub.ClientCalls.blockingUnaryCall(ClientCalls.java:169) ~[grpc-stub-1.57.2.jar:1.57.2]
+	at maestro_android.MaestroDriverGrpc$MaestroDriverBlockingStub.deviceInfo(MaestroDriverGrpc.java:740) ~[maestro-client.jar:?]
+	at maestro.drivers.AndroidDriver.deviceInfo$lambda$5(AndroidDriver.kt:219) ~[maestro-client.jar:?]
+	at maestro.drivers.AndroidDriver.runDeviceCall(AndroidDriver.kt:1250) ~[maestro-client.jar:?]
+	at maestro.drivers.AndroidDriver.deviceInfo(AndroidDriver.kt:218) ~[maestro-client.jar:?]
+	at maestro.ViewHierarchy$Companion.from-8JJjmZI(ViewHierarchy.kt:28) ~[maestro-client.jar:?]
+	at maestro.Maestro.viewHierarchy-c1iYVAs(Maestro.kt:413) ~[maestro-client.jar:?]
+	at maestro.Maestro.viewHierarchy-c1iYVAs$default(Maestro.kt:412) ~[maestro-client.jar:?]
+	at maestro.Maestro.findElementWithTimeout_AE3g2Tc$lambda$9(Maestro.kt:423) ~[maestro-client.jar:?]
+	at maestro.utils.MaestroTimer.withTimeout(MaestroTimer.kt:16) ~[maestro-utils.jar:?]
+	at maestro.Maestro.findElementWithTimeout-AE3g2Tc(Maestro.kt:422) ~[maestro-client.jar:?]
+	at maestro.Maestro.findElementWithTimeout-AE3g2Tc$default(Maestro.kt:416) ~[maestro-client.jar:?]
+	at maestro.orchestra.Orchestra.findElement(Orchestra.kt:1172) ~[maestro-orchestra.jar:?]
+	at maestro.orchestra.Orchestra.evaluateCondition(Orchestra.kt:790) ~[maestro-orchestra.jar:?]
+	at maestro.orchestra.Orchestra.assertConditionCommand(Orchestra.kt:415) ~[maestro-orchestra.jar:?]
+	at maestro.orchestra.Orchestra.executeCommand(Orchestra.kt:337) ~[maestro-orchestra.jar:?]
+	at maestro.orchestra.Orchestra.executeCommands(Orchestra.kt:252) ~[maestro-orchestra.jar:?]
+	at maestro.orchestra.Orchestra.runFlow(Orchestra.kt:170) ~[maestro-orchestra.jar:?]
+	at maestro.cli.runner.MaestroCommandRunner.runCommands(MaestroCommandRunner.kt:196) ~[maestro-cli-2.0.3.jar:?]
+	at maestro.cli.runner.TestRunner$runSingle$result$1$1.invokeSuspend(TestRunner.kt:75) ~[maestro-cli-2.0.3.jar:?]
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33) ~[kotlin-stdlib-2.2.0.jar:2.2.0-release-294]
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:104) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:277) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at maestro.cli.runner.TestRunner.runSingle$lambda$0(TestRunner.kt:74) ~[maestro-cli-2.0.3.jar:?]
+	at maestro.cli.runner.TestRunner.runCatching-ta8aW1Q(TestRunner.kt:200) ~[maestro-cli-2.0.3.jar:?]
+	at maestro.cli.runner.TestRunner.runSingle(TestRunner.kt:65) ~[maestro-cli-2.0.3.jar:?]
+	at maestro.cli.command.TestCommand.runSingleFlow(TestCommand.kt:433) ~[maestro-cli-2.0.3.jar:?]
+	at maestro.cli.command.TestCommand.runShardSuite$lambda$7(TestCommand.kt:407) ~[maestro-cli-2.0.3.jar:?]
+	at maestro.cli.session.MaestroSessionManager.newSession(MaestroSessionManager.kt:129) [maestro-cli-2.0.3.jar:?]
+	at maestro.cli.session.MaestroSessionManager.newSession$default(MaestroSessionManager.kt:65) [maestro-cli-2.0.3.jar:?]
+	at maestro.cli.command.TestCommand.runShardSuite(TestCommand.kt:372) [maestro-cli-2.0.3.jar:?]
+	at maestro.cli.command.TestCommand.access$runShardSuite(TestCommand.kt:65) [maestro-cli-2.0.3.jar:?]
+	at maestro.cli.command.TestCommand$handleSessions$1$results$1$1.invokeSuspend(TestCommand.kt:336) [maestro-cli-2.0.3.jar:?]
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33) [kotlin-stdlib-2.2.0.jar:2.2.0-release-294]
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:104) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:111) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:99) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:585) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:802) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:706) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:693) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+19:02:56.619 [ERROR] maestro.orchestra.Orchestra.executeCommands: [Command execution] CommandFailed: Android driver unreachable
+19:02:56.622 [ INFO] maestro.Maestro.takeScreenshot: Taking screenshot
+19:02:56.622 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+19:03:16.675 [ERROR] maestro.drivers.AndroidDriver.runDeviceCall: Received UNAVAILABLE status with message: UNAVAILABLE: Keepalive failed. The connection is likely gone while doing android device call
+io.grpc.StatusRuntimeException: UNAVAILABLE: Keepalive failed. The connection is likely gone
+	at io.grpc.stub.ClientCalls.toStatusRuntimeException(ClientCalls.java:275) ~[grpc-stub-1.57.2.jar:1.57.2]
+	at io.grpc.stub.ClientCalls.getUnchecked(ClientCalls.java:256) ~[grpc-stub-1.57.2.jar:1.57.2]
+	at io.grpc.stub.ClientCalls.blockingUnaryCall(ClientCalls.java:169) ~[grpc-stub-1.57.2.jar:1.57.2]
+	at maestro_android.MaestroDriverGrpc$MaestroDriverBlockingStub.screenshot(MaestroDriverGrpc.java:754) ~[maestro-client.jar:?]
+	at maestro.drivers.AndroidDriver.takeScreenshot$lambda$30$lambda$29(AndroidDriver.kt:548) ~[maestro-client.jar:?]
+	at maestro.drivers.AndroidDriver.runDeviceCall(AndroidDriver.kt:1250) ~[maestro-client.jar:?]
+	at maestro.drivers.AndroidDriver.takeScreenshot$lambda$30(AndroidDriver.kt:547) ~[maestro-client.jar:?]
+	at maestro.utils.Metrics.measured(Metrics.kt:48) ~[maestro-utils.jar:?]
+	at maestro.drivers.AndroidDriver.takeScreenshot(AndroidDriver.kt:546) ~[maestro-client.jar:?]
+	at maestro.utils.ScreenshotUtils$Companion.takeScreenshot(ScreenshotUtils.kt:19) ~[maestro-client.jar:?]
+	at maestro.Maestro.takeScreenshot(Maestro.kt:511) ~[maestro-client.jar:?]
+	at maestro.cli.util.ScreenshotUtils.takeDebugScreenshot(ScreenshotUtils.kt:24) ~[maestro-cli-2.0.3.jar:?]
+	at maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$4(MaestroCommandRunner.kt:138) ~[maestro-cli-2.0.3.jar:?]
+	at maestro.orchestra.Orchestra.executeCommands(Orchestra.kt:271) ~[maestro-orchestra.jar:?]
+	at maestro.orchestra.Orchestra.runFlow(Orchestra.kt:170) ~[maestro-orchestra.jar:?]
+	at maestro.cli.runner.MaestroCommandRunner.runCommands(MaestroCommandRunner.kt:196) ~[maestro-cli-2.0.3.jar:?]
+	at maestro.cli.runner.TestRunner$runSingle$result$1$1.invokeSuspend(TestRunner.kt:75) ~[maestro-cli-2.0.3.jar:?]
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33) ~[kotlin-stdlib-2.2.0.jar:2.2.0-release-294]
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:104) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:277) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source) ~[kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at maestro.cli.runner.TestRunner.runSingle$lambda$0(TestRunner.kt:74) ~[maestro-cli-2.0.3.jar:?]
+	at maestro.cli.runner.TestRunner.runCatching-ta8aW1Q(TestRunner.kt:200) ~[maestro-cli-2.0.3.jar:?]
+	at maestro.cli.runner.TestRunner.runSingle(TestRunner.kt:65) ~[maestro-cli-2.0.3.jar:?]
+	at maestro.cli.command.TestCommand.runSingleFlow(TestCommand.kt:433) ~[maestro-cli-2.0.3.jar:?]
+	at maestro.cli.command.TestCommand.runShardSuite$lambda$7(TestCommand.kt:407) ~[maestro-cli-2.0.3.jar:?]
+	at maestro.cli.session.MaestroSessionManager.newSession(MaestroSessionManager.kt:129) [maestro-cli-2.0.3.jar:?]
+	at maestro.cli.session.MaestroSessionManager.newSession$default(MaestroSessionManager.kt:65) [maestro-cli-2.0.3.jar:?]
+	at maestro.cli.command.TestCommand.runShardSuite(TestCommand.kt:372) [maestro-cli-2.0.3.jar:?]
+	at maestro.cli.command.TestCommand.access$runShardSuite(TestCommand.kt:65) [maestro-cli-2.0.3.jar:?]
+	at maestro.cli.command.TestCommand$handleSessions$1$results$1$1.invokeSuspend(TestCommand.kt:336) [maestro-cli-2.0.3.jar:?]
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33) [kotlin-stdlib-2.2.0.jar:2.2.0-release-294]
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:104) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:111) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:99) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:585) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:802) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:706) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:693) [kotlinx-coroutines-core-jvm-1.8.0.jar:?]
+19:03:16.677 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$4: Assert that "join the community." is visible FAILED
+19:03:17.084 [ INFO] maestro.cli.report.TestDebugReporter.deleteOldFiles: Performing purge of logs older than 14 days from /root/.maestro/tests
+```
+
+ 
+
+[maestro-test-artifacts (9).zip](https://github.com/user-attachments/files/22687342/maestro-test-artifacts.9.zip)
+
+### Maestro version
+
+2.0.3
+
+### How did you install Maestro?
+
+install script (https://get.maestro.mobile.dev)
+
+### Anything else?
+
+_No response_
+
+## Timeline
+
+**linear[bot]** commented on 2025-10-03T19:54:57Z:
+
+> MAE-306 
+
+**Fishbowler** commented on 2025-10-06T08:59:38Z:
+
+> This feels pretty machine-specific. Have you been able to establish whether the emulator is actually stopped?
+
+- Fishbowler added label "waiting for customer response"
+
+**zerotomas** commented on 2025-10-07T01:00:49Z:
+
+> Yes, confirmed the emulator fully crashes/stops. Evidence:
+> 
+> 1. Error explicitly states device 'emulator-5554' not found
+> 2. ADB server throws `IOException: Command failed (host:transport:emulator-5554): device 'emulator-5554'` not found
+> 3. Maestro reports "Android driver unreachable"
+> 
+> The crash is reproducible across different Bitrise builds. Interestingly, the same emulator configuration successfully runs native Android instrumented tests via Gradle's connectedAndroidTest without any crashes, which suggests the issue is specific to how Maestro interacts with the emulator.
+
+- github-actions[bot] removed label "waiting for customer response"
+
+**Fishbowler** commented on 2025-10-07T13:08:59Z:
+
+> Just because Maestro can't communicate with an emulator doesn't mean that the emulator isn't running. Have you been able to do something like `adb devices` after the test fails?
+
+- Fishbowler added label "waiting for customer response"
+
+**zerotomas** commented on 2025-10-07T18:18:12Z:
+
+> Confirmed - the emulator is actually stopped. After the test failure, I added diagnostics:
+> 
+> ```
+> adb devices -l
+> ps aux | grep emulator
+> ```
+> 
+> Results:
+> ```
+> === Checking emulator status after failure ===
+> List of devices attached
+> 
+> === Checking if emulator process is running ===
+> root 22567 0.0 0.0 6624 2444 ? S 18:03 0:00 grep emulator
+> ```
+> 
+> The emulator list is empty and no emulator process is running (only the grep command itself appears). The emulator fully crashes during the `assertVisible` command.
+
+- github-actions[bot] removed label "waiting for customer response"
+
+**Fishbowler** commented on 2025-10-09T17:33:30Z:
+
+> I wouldn't expect Maestro to exert that level of control over an emulator. Perhaps there are logs you can salvage from the machine? My natural instinct would be OOM, but the machine you're running on has 32GB of RAM, so seems a tad unlilkely!
+
+**Fishbowler** commented on 2025-10-11T20:15:07Z:
+
+> I had a play on a Linux machine today, and was able to reproduce this. From the logs, I can't tell if this is a recent qemu-kvm or Android Emulator release causing this. I was able to do it by launching the emulator then doing this in the Maestro source (running the e2e tests)
+> 
+> ```
+> cd e2e
+> download_apps android
+> install_apps android
+> run_tests android
+> ```
+> 
+> Part way through the tests, the Android emulator disappeared.
+> 
+> Logs gave:
+> 
+> ```
+> [26185.397818] perf: interrupt took too long (4970 > 4963), lowering kernel.perf_event_max_sample_rate to 40000
+> [27286.415797] nouveau 0000:01:00.0: qemu-system-x86[31092]: job timeout, channel 32 killed!
+> [28187.429955] kvm: kvm [131177]: vcpu0, guest rIP: 0xffffffffac803a51 Unhandled WRMSR(0xc2) = 0xffff
+> [28206.472813] workqueue: acpi_ec_event_processor hogged CPU for >10000us 131 times, consider switching to WQ_UNBOUND
+> ```
+> 
+> I've included the context, in case those lines are relevant, although given the gap in timestamps, I suspect not.
+
+**Fishbowler** commented on 2025-10-11T20:43:23Z:
+
+> Flipping my emulator's GPU from Automatic to Manual seems to be much more stable.
+> 
+> I've no idea how you'd do this in CI 😬 
+
+**zerotomas** commented on 2025-10-15T01:59:27Z:
+
+> So I tried passing the following flags to the `avd-manager`'s `start_command_flags`:
+> 
+> Option 1: swiftshader_indirect (software rendering)
+> - start_command_flags: "-gpu swiftshader_indirect"
+> 
+> Option 2: host (use host GPU)
+> - start_command_flags: "-gpu host"
+> 
+> Option 3: off (disable GPU entirely)
+> - start_command_flags: "-gpu off
+> 
+> None of these GPU modes are fixing it on Bitrise. Are there other workarounds or this a known incompatibility with your Docker-based Linux environment?
+
+**Fishbowler** commented on 2025-10-16T13:58:07Z:
+
+> On my Linux environment, it wasn't Maestro related at all. The emulator was terminating even if I left it alone.
+
+- Fishbowler added label "upstream issue"
+
+**Fishbowler** commented on 2025-12-01T10:55:22Z:
+
+> Were you able to find a set of emulator options that worked for this configuration?
+
+- Fishbowler issue_type_added
+
+- andre-de-carvalho_DPGMEDIA subscribed
+
+**Fishbowler** commented on 2026-05-18T12:59:37Z:
+
+> We don't have agency to resolve this - it's an upstream tooling problem (potentially resolved now?) and we don't have enough information to contribute an upstream issue.
+
+- Fishbowler closed
+
+**github-actions[bot]** commented on 2026-05-25T13:19:09Z:
+
+> This issue has been automatically locked since there has not been any recent activity after it was closed. If you are still experiencing a similar problem, please file a new issue. Make sure to follow the template and provide all the information necessary to reproduce the issue.
+> Thank you for helping keep us our issue tracker clean!
+
+- github-actions[bot] locked
