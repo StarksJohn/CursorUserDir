@@ -81,8 +81,8 @@ python3 "$HOME/.cursor/skills/react-native-ui-verification/scripts/check_toolcha
 先读取项目配置和脚本，不猜命令：
 
 - Detox：全局 `detox-cli` 只转发到项目本地 `detox`；需要仓库依赖、`.detoxrc`、原生 build configuration 和测试。
-- Maestro：全局 CLI 可直接驱动 accessibility，但稳定 E2E 仍需要项目内针对 app ID、状态和断言编写的 flow。
 - Appium：全局 server/Driver 仍需要项目 client、capabilities、测试数据和断言；只启动 server 不是 E2E。
+- Maestro 默认禁用：检测脚本和自动验证均不探测、不启动、不执行，也不安装 companion APK；只有用户在当前任务中明确要求时才可例外使用。
 
 若项目没有 E2E，不因单次 UI 修改擅自引入框架。关键流程需要长期回归时，向用户说明维护成本、目标平台和测试数据后再安装。
 
@@ -97,21 +97,6 @@ python3 "$HOME/.cursor/skills/react-native-ui-verification/scripts/appium_probe.
 ```
 
 该工具输出固定包含 `probeOnly: true` 和 `stableE2E: false`。它只证明 Appium 能连接当前构建并读取结构，不包含业务旅程断言，不能写成 E2E 通过。`--screenshot` 为可选项，产物可能含用户数据。
-
-### Maestro physical-device gate
-
-Maestro 首次连接 Android 会安装 companion driver APK。若 OPPO/Realme/企业受管设备返回 `Failure [-99]` 或 companion APK 安装失败：
-
-1. 先通过标准 ADB 预安装 Maestro 官方发布包中的两个 companion APK：
-
-   ```bash
-   python3 "$HOME/.cursor/skills/react-native-ui-verification/scripts/install_maestro_companions.py" \
-     --device "$SERIAL"
-   ```
-
-2. 重启长驻 Maestro MCP，重新执行 `list_devices -> inspect_screen`；CLI 则重新运行 `maestro --udid "$SERIAL" hierarchy`。预安装成功只修复工具链，不是业务 E2E 证据。
-3. 只有标准 ADB 预安装仍失败时，才按 Maestro 官方 known issues 在设备“开发者选项”中检查 `Verify apps over USB` 和 `Disable permission monitoring`；ColorOS 新版本可能显示为 `Disable system optimization`。这些安全设置需要用户在真机确认，不通过 ADB 静默关闭。
-4. 仍未解除限制时使用 Appium UiAutomator2、ADB/UIAutomator 或标准 Android Emulator，并标记 Maestro `currentRunVerified: false`。
 
 ## Visual Difference
 

@@ -34,6 +34,8 @@ description: Runs evidence-based post-change verification for React Native imple
 
 先读取同目录 `local-policy.json`（存在时）。匹配当前 device ID 的安全和工具策略优先于自动重试；只有用户明确变更策略或设备条件时才覆盖。
 
+默认不得探测、启动或执行 Maestro CLI / MCP / flow / hierarchy，也不得安装或修复 Maestro companion APK。即使本机已安装或项目已有 flow，也只有用户在当前任务中明确要求使用 Maestro 时才可例外执行。
+
 再运行：
 
 ```bash
@@ -86,11 +88,10 @@ Android 使用指定 serial 的 `adb -s`，多设备时禁止依赖默认设备�
 
 优先级不是固定品牌排名，而是当前项目的集成程度和证据质量：
 
-1. 运行项目已经配置、与当前验收范围匹配且本次可实际执行的 E2E/集成流程。
+1. 运行项目已经配置、与当前验收范围匹配且本次可实际执行的非 Maestro E2E/集成流程。
 2. React Native 专项且需要同步应用状态时优先项目已集成的 Detox。
-3. 需要低侵入、跨平台黑盒流程时优先项目已有 Maestro flow。
-4. 企业 WebDriver/device-farm 流程已存在时使用项目已集成的 Appium client/config。
-5. 都不存在时，用 `adb`/`simctl` 执行可复现的最小交互，并结合控件树断言；不能把坐标点击当成稳定 E2E。
+3. 企业 WebDriver/device-farm 流程已存在时使用项目已集成的 Appium client/config。
+4. 都不存在时，用 `adb`/`simctl` 执行可复现的最小交互，并结合控件树断言；不能把坐标点击当成稳定 E2E。
 
 断言用户可观察结果：元素可见、文案、选中/禁用状态、页面跳转、输入结果和返回行为。必要时为后续正式自动化建议稳定的 `testID`/accessibility label，但不为单次验证擅自改业务接口。
 
@@ -148,6 +149,6 @@ Android 使用指定 serial 的 `adb -s`，多设备时禁止依赖默认设备�
 - Android Studio Layout Inspector、Xcode View Debugger 和人工 GUI 检查可作为补充；未实际执行时不得列为证据。
 - Chrome Browser DevTools 不支持替代 React Native DevTools；WebView 内容例外。
 - E2E 重点覆盖关键用户旅程，非关键逻辑优先使用更快的 JS/组件测试。
-- 全局 Maestro、Appium、Detox CLI 和 Appium Driver 只提供可用能力；没有项目 flow/config/test 和当前成功运行结果时，不得写成稳定 E2E。
+- 全局 Appium、Detox CLI 和 Appium Driver 只提供可用能力；没有项目 config/test 和当前成功运行结果时，不得写成稳定 E2E。
 - Detox 全局 CLI 只转发到项目本地 `detox`，没有本地依赖和原生 build configuration 时不可运行。
-- 未经用户授权，不自动安装 Maestro/Detox/Appium，不创建长期 E2E 基础设施，不写入生产系统。
+- 不自动探测、启动、执行或修复 Maestro；未经用户授权，不自动安装 Detox/Appium，不创建长期 E2E 基础设施，不写入生产系统。

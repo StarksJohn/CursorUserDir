@@ -82,17 +82,7 @@ def count_matches(project_root: Path, patterns: Iterable[str]) -> int:
 
 
 def resolve_tool(name: str) -> Optional[str]:
-    path = shutil.which(name)
-    if path:
-        return path
-
-    fallback_paths = {
-        "maestro": Path.home() / ".maestro" / "bin" / "maestro",
-    }
-    fallback = fallback_paths.get(name)
-    if fallback and fallback.is_file():
-        return str(fallback)
-    return None
+    return shutil.which(name)
 
 
 def tool_info(name: str, version_command: Optional[List[str]], cwd: Path) -> Dict[str, Any]:
@@ -151,10 +141,6 @@ def main() -> int:
     deps = dependencies(package)
     global_versions = npm_global_versions(project_root)
 
-    maestro_flows = count_matches(
-        project_root,
-        (".maestro/**/*.yaml", ".maestro/**/*.yml"),
-    )
     detox_configs = count_matches(
         project_root,
         (
@@ -221,12 +207,6 @@ def main() -> int:
         "tools": {
             "adb": tool_info("adb", ["adb", "version"], project_root),
             "xcrun": tool_info("xcrun", None, project_root),
-            "maestro": {
-                **tool_info("maestro", ["maestro", "--version"], project_root),
-                "projectConfigured": maestro_flows > 0,
-                "flowCount": maestro_flows,
-                "currentRunVerified": False,
-            },
             "appium": {
                 **tool_info("appium", ["appium", "--version"], project_root),
                 "globalPackageVersion": global_versions.get("appium"),

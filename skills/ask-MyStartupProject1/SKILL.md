@@ -152,19 +152,19 @@ description: >-
 ### 当前阶段
 
 - 项目为 `Fracture Recovery AI Companion`；`project_phase` 为 `market-promotion`。Epic 1-7 已完成；Epic 8 为 `in-progress`，Story 8.1-8.2 与 Story 8.4-8.7 为 `done`，Story 8.3 与 Story 8.8 为 `in-progress`。
-- 研究、隐私安全第一方漏斗、Production 全链路、三条高意图 SEO 入口、Article JSON-LD、Search Console 请求、Reddit 归因与唯一版主许可申请、唯一 IndexNow batch、Bing/Spaceship 所有权验证、Day 7 authenticated checkpoint、用户授权的 2026-08-21 提前汇总和 Authorization C 的唯一 LinkedIn 公开帖均已完成。Authorization E 的 YouTube 归因代码、Production 零污染验证、原创长视频与独立频道创建均已完成，功能验证/上传/公开核验未完成。不使用 X，不重发 Reddit 申请、IndexNow batch、Bing 验证或 LinkedIn 帖子。
+- 研究、隐私安全第一方漏斗、Production 全链路、三条高意图 SEO 入口、Article JSON-LD、Search Console 请求、Reddit 归因与唯一版主许可申请、唯一 IndexNow batch、Bing/Spaceship 所有权验证、Day 7 authenticated checkpoint、用户授权的 2026-08-21 提前汇总和 Authorization C 的唯一 LinkedIn 公开帖均已完成。Authorization E 的 YouTube 归因代码、Production 零污染验证、原创长视频、独立频道和唯一上传草稿均已完成；最终公开确认与公开核验未完成。不使用 X，不重发 Reddit 申请、IndexNow batch、Bing 验证、LinkedIn 帖子或 YouTube 上传。
 
 ### Production 基线
 
 - 生产入口为 `https://fracturerecoverycoach.com/`；发布路径为 GitHub `main` -> Vercel Production。Story 8.3 观察窗基线仍为提交 `e218aa1` / deployment `dpl_9jq8UqLbSxUsoSRB1QVhyXafTGbg`。Story 8.7 正式审查修复提交 `22a3744` 由 deployment `dpl_2J8w4aD4aexPbAMesb7zxvsrUZ2H` 精确构建并 Ready；server-only `/indexnow-key.txt`、三篇文章 200/self-canonical/sitemap/robots/单一 Article JSON-LD/安全免费文案、`www` 永久重定向和无污染 LinkedIn controlled URL 均通过真实 Production 验收，Prisma schema/migrations 未变化。
 - 社交预览业务提交 `15da940` 已由 deployment `dpl_5gzrrzfiXAoGAc1RbPREwSc8cx8y` 精确构建并 Ready；三篇文章共用由 `force-static` ImageResponse route 生成的 apex `/share-card`，真实 HTML 的 Open Graph/Twitter image 无 query，PNG 为 200、`image/png`、1200×630、93,615 bytes，文案只表达免费教育支持且 clinician guidance 优先。
-- Story 8.8 业务提交 `f9443863d3538884c41b45e4b35b1411a774af4d` 由 Production deployment `dpl_7nTViognkWs2ukDYS4k3kB8LUjDK` 精确构建并 Ready；只新增 `youtube:stiffness_after_cast` 受控 pair。公网拦截式 Playwright 1/1 通过，前后 authenticated operator summary 的 YouTube landing/CTA/entry 均为 0，Prisma schema/migrations 未变化。最新状态提交 `8b96074145954d37202208bccaa545846db3db1d` 已推送且 GitHub Production deployment 为 `success`；本地与 `origin/main` 相同且 `0 0` divergence，项目仓库 clean。
+- Story 8.8 业务提交 `f9443863d3538884c41b45e4b35b1411a774af4d` 由 Production deployment `dpl_7nTViognkWs2ukDYS4k3kB8LUjDK` 精确构建并 Ready；只新增 `youtube:stiffness_after_cast` 受控 pair。公网拦截式 Playwright 1/1 通过，前后 authenticated operator summary 的 YouTube landing/CTA/entry 均为 0，Prisma schema/migrations 未变化。最新状态提交 `c7c05d7800c01af11e9eb784580a690bb4eba700` 已推送且 GitHub Production deployment 为 `success`；本地与 `origin/main` 相同且 `0 0` divergence，项目仓库 clean。
 - 唯一 IndexNow POST 于 `2026-08-20T02:13:35.991Z` 发起、`02:13:37.926Z` 完成，global endpoint 返回 HTTP `202` / `validation-pending`，三条 URL 均为无 query 的 apex canonical，`attemptCount=1`。回执为 `stories/8-7-indexnow-submission-receipt.json`，不含 key；不得重试，也不得解释为抓取、收录、排名、流量或转化。
 - 当前 release 免费开通 14 天计划；真实付费 checkout 延后到 v2，AI recovery chat 当前暂停但保留底层代码资产。
 
 ### 市场推广执行检查点
 
-- 当前状态：`observation-active/accelerated-interim-read-recorded/linkedin-posted-public/reddit-permission-pending/youtube-phone-verification-user-gate`。Reddit 于 `2026-08-21T03:01:40Z` 只读复核时，私信归档仍只显示一条两年前的无关 Reddit Admin 安全通知，没有 `r/brokenbones` 版主回复且未重发；IndexNow 为 `validation-pending`；LinkedIn 为 `authorization-c/posted-public/verified`；Bing Webmaster Tools 为 `verified/ownership-complete`。旧文章 Search Console 为 `verified-crawled-indexing-pending`，两条新文章为 `discovery-requested-indexing-pending`。自然 `direct` 只表示无受控来源参数，不得写成 organic search。
+- 当前状态：`observation-active/accelerated-interim-read-recorded/linkedin-posted-public/reddit-permission-pending/youtube-public-draft-ready/final-publish-user-action/nonclickable-description-accepted`。Reddit 于 `2026-08-21T03:01:40Z` 只读复核时，私信归档仍只显示一条两年前的无关 Reddit Admin 安全通知，没有 `r/brokenbones` 版主回复且未重发；IndexNow 为 `validation-pending`；LinkedIn 为 `authorization-c/posted-public/verified`；Bing Webmaster Tools 为 `verified/ownership-complete`。旧文章 Search Console 为 `verified-crawled-indexing-pending`，两条新文章为 `discovery-requested-indexing-pending`。自然 `direct` 只表示无受控来源参数，不得写成 organic search。
 - Search Console 的“网页会自动重定向”当前只有 `http://fracturerecoverycoach.com/` 一条示例；真实 Production 为一次 `308` 到 `https://fracturerecoverycoach.com/` 后返回 200，HTTPS 根页 URL Inspection 显示“网址已收录到 Google”和“网页采用 HTTPS 协议”。sitemap、canonical、Open Graph 与源码公共 origin 均只使用 HTTPS；这是预期 HTTP -> HTTPS canonicalization，不修改代码、不点击“验证修正情况”，也不解释为文章已收录或新增流量。
 - 观察窗从 `2026-08-13T04:29:00Z` 开始。Day 1 截止为 0 次相关 landing occurrence；Day 3 截止为 1 次相关 landing、0 次同入口 CTA、0 activation、0 Day 完成、0 feedback、0 safety signal。该 landing 是非唯一 occurrence，可能含自动化流量，不是已验证真实用户。
 - Day 7 authenticated aggregate 于 `2026-08-20T07:42:29Z` 返回 5 次 raw / 4 次 adjusted relevant landing。用户于 2026-08-21 明确授权一次提前汇总：`2026-08-13..2026-08-21` authenticated API 返回 HTTP 200、`private, no-store`，6 次 raw stiffness landing 排除 1 次已知 operator QA 后为 5 次 adjusted occurrence；相关 CTA、activation、Day 1/3/7/14、feedback、safety 与 verified business outcomes 全部为 0。截至 `2026-08-21T02:51:09Z`，观察窗 Vercel Production error-level 与 5xx 查询均为 0。这是提前中期读取，不是 Day 14；样本低于 50，只能定性记录。
@@ -175,7 +175,7 @@ description: >-
 ### 当前阻塞与进入条件
 
 - 当前没有已确认的 Production 故障，也没有满足立即停止条件；Day 7 与用户授权的 2026-08-21 提前汇总/日志查询均已完成，5 次 adjusted occurrence 且 0 下游结果仍不足以形成转化或增长结论。
-- Authorization E 的最终原创上传资产为 `/Users/stark/Movies/Fracture Recovery Companion/finger-stiffness-after-cast-removal-free-recovery-companion-final.webm`，已验证 70.24 秒、1920×1080、VP8 WebM、无音轨且逐帧文字可读。用户已亲自接受条款并创建 `Fracture Recovery Companion` / `@FractureRecoveryCompanion`（`UCJdaksf1t2-tHyU-IabrW4w`）；account switcher 仍显示 `Bignature` / `@stark5921` 为 137 位订阅者且未变，活动账号页与 Studio 均指向新频道。实时功能资格为标准功能已启用、中级功能待手机验证、高级功能待中级启用后的视频/身份证件/频道历史记录验证；高级面板明确包含视频说明外部链接。官方两步手机验证页已打开，国家、号码和验证码必须由用户本人输入，不读取或保存验证数据。
+- Authorization E 的最终原创上传资产为 `/Users/stark/Movies/Fracture Recovery Companion/finger-stiffness-after-cast-removal-free-recovery-companion-final.webm`，已验证 70.24 秒、1920×1080、VP8 WebM、无音轨且逐帧文字可读。用户已亲自接受条款并创建 `Fracture Recovery Companion` / `@FractureRecoveryCompanion`（`UCJdaksf1t2-tHyU-IabrW4w`）；account switcher 仍显示 `Bignature` / `@stark5921` 为 137 位订阅者且未变，活动账号页与 Studio 均指向新频道。手机验证已完成且标准/中级功能已启用。用户于 2026-08-24 明确选择暂不申请高级功能、只发布视频；Studio 已建立唯一私享草稿 `yREcPU7Q7A0`，保存精确标题/说明、非儿童、无付费宣传、无逼真合成内容、英语、评论关闭、立即 Public 且非 Premiere，版权检查未发现问题，并停在最终 `Publish` 按钮前。说明中的受控 URL 明确不可点击；这是当前接受的范围限制，不能写成 AC7 已完成。未读取号码/验证码，也未修改其它账号设置。
 - 用户已明确给出 Authorization B：只允许当前登录 Reddit 账号以透明 maker 身份向 `r/brokenbones` moderator 发送至多一条 permission request，并仅在明确获批后发布一次。该许可申请已于 2026-08-19 发送且不得重发；X、`r/HandSurgery`、其它社区、跨社区复制、陌生用户私信、健康细节收集及诊断/疗效/结果声明继续禁止。
 - LinkedIn Authorization C 已完成：用户确认当前公开身份/职业资料准确、人工粘贴并亲自发布唯一一帖。公开动态 `https://www.linkedin.com/feed/update/urn:li:share:7496122748025470979/` 于 `2026-08-20T08:37:36Z` 首次核验，`2026-08-21T03:01:40Z` 仍可直接读取；精确正文、controlled URL 和公开可见性均正确。当前显示 7 次平台展示、无可见公开评论或回应计数；这些不是独立用户、first-party landing 或转化。只读监看，不点赞、回复、私信、tag、boost、复制到 X 或重复发布；若评论含健康/身份细节，只做去身份化主题计数，不复制原文。
 - Authorization D 已完成：只添加精确 Bing apex property 与 Bing 当页要求的一条 Spaceship CNAME。UI 由 10 项变为 11 项，原 A/`www` CNAME/MX/DMARC/Google verification/DKIM/SPF 均保留；两台权威 NS 都精确返回新 CNAME，Google DoH 的新记录与基线均为 NOERROR。Bing 明确显示 `Congratulations! Site addition successful`。未执行 GSC import/Domain Connect、sitemap/URL 提交、Clarity、付费或重复 IndexNow；不回显或保存验证值，也不重复验证。
@@ -184,9 +184,9 @@ description: >-
 
 ### 最小下一步
 
-1. 用户在已打开的 YouTube 手机验证页选择真实国家/地区、输入自己的手机号、接收并提交验证码，然后回复“手机验证已完成”；不得代填、读取或保存号码/验证码。
-2. 恢复后回到新频道 feature eligibility，确认中级功能已启用；再打开高级功能入口，由用户本人选择并完成视频验证、有效身份证件或频道历史记录流程。只有高级功能实际启用且外部链接资格可用后，才继续上传。
-3. 上传前再次重开 account/channel switcher，证明活动频道精确为 `Fracture Recovery Companion` 且 `Bignature` 未变；只上传上述最终 WebM，填写 Story 8.8 的精确 title/description，设为非儿童、无付费推广、评论关闭、立即 Public，并停在最终公开确认前由用户亲点。发布后核验唯一公开 watch URL、可点击受控链接、设置与无重复上传。
+1. 用户在当前 YouTube Studio 公开范围页亲自点击唯一一次 `Publish`；不要申请高级功能、不要重新上传、不要创建第二个草稿，也不要点击 Premiere。
+2. 用户回复“已发布”后，只读核验 `https://youtu.be/yREcPU7Q7A0` 为公开、标题/说明/频道/设置准确、说明 URL 保持不可点击、无平台限制且没有重复上传。
+3. 记录“暂不申请高级功能”的范围偏差；公开核验完成前 Story 8.8 保持 `in-progress`，且不得把不可点击说明链接写成原 AC7 已满足。
 4. 只读监看 `r/brokenbones` moderator 回复和已发布 LinkedIn 帖子的公开反馈；不重发、不互动、不保存身份/健康详情，也不把平台 occurrence 写成 first-party landing、用户或转化。
 5. Story 8.3 的下一次固定 authenticated aggregate 读取仍为 `2026-08-27T04:29:00Z` Day 14，同时等待 100 次相关 landing；未来时间不阻塞上述已授权 YouTube 动作。若 90 天保留边界先到且仍不足 100，只能按证据 `hold` 或 `stop`。
 

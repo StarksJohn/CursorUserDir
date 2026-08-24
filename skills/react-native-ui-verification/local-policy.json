@@ -4,13 +4,7 @@
     "4ae24c72": {
       "platform": "android",
       "model": "PJJ110",
-      "maestro": {
-        "status": "verified-with-companion-preinstall",
-        "resolution": "Extract the official maestro-app.apk and maestro-server.apk from maestro-client.jar and install both with adb install -r -t before Maestro starts.",
-        "verification": "Both Maestro CLI hierarchy and Maestro MCP inspect_screen completed successfully without changing ColorOS security settings."
-      },
       "preferredRuntimeTools": [
-        "maestro",
         "appium-uiautomator2",
         "adb-uiautomator"
       ],
