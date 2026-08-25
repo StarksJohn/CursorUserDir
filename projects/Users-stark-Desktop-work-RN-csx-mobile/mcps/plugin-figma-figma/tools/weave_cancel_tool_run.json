@@ -1,0 +1,30 @@
+{
+  "name": "weave_cancel_tool_run",
+  "description": "Cancels one or more in-progress runs of a Weave tool (a published Weave workflow). Pass the `recipeId` of the tool and, optionally, the `runIds` to cancel (from weave_run_tool); omit `runIds` to cancel all of the user's currently running runs for that tool. Use this to stop a run the user no longer wants. Cancellation cannot be undone.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "recipeId": {
+        "type": "string",
+        "description": "The id of the Weave tool whose runs to cancel (from weave_list_tools)."
+      },
+      "runIds": {
+        "minItems": 1,
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "The run ids to cancel (from weave_run_tool). Omit to cancel all of the user's currently running runs for this tool."
+      }
+    },
+    "required": [
+      "recipeId"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

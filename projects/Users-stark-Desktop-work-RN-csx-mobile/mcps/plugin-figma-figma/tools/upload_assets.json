@@ -1,0 +1,51 @@
+{
+  "name": "upload_assets",
+  "description": "Upload assets (images and SVGs) into a Figma file. Call with a \"count\" to get that many single-use upload URLs. POST raw asset bytes to each URL with the correct Content-Type header (e.g. image/png, image/jpeg, image/svg+xml). Each upload URL handles storage, BlobStore commit, and canvas placement automatically. For a single raster image with nodeId, sets it as a fill on that existing node. Without nodeId, creates new frames with image fills on the current page. SVGs (image/svg+xml) are imported as editable vector node trees on the current page; nodeId and scaleMode do not apply to SVGs. Supports PNG, JPG, GIF, WebP, and SVG. Max 10MB per asset. Works on Figma design files (URL path `/design/`), FigJam boards (`/board/`), and Figma Slides (`/slides/`).",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "fileKey": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[0-9a-zA-Z]{22,128}$",
+        "description": "The key of the Figma file to use. If the URL is provided, extract the file key from the URL. The given URL must be in the format https://figma.com/design/:fileKey/:fileName?node-id=:int1-:int2. The extracted fileKey would be `:fileKey`."
+      },
+      "count": {
+        "default": 1,
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 9007199254740991,
+        "description": "Number of assets to upload (default 1, no maximum). Returns that many single-use upload URLs. POST raw asset bytes to each URL with the correct Content-Type header (e.g. image/png, image/jpeg); the URLs can be POSTed in parallel. By default, each upload URL handles storage, BlobStore commit, and canvas placement automatically."
+      },
+      "batchCommit": {
+        "default": false,
+        "type": "boolean",
+        "description": "Optional. Set to true only if you can call the returned commitUrl exactly once after all uploads complete. When enabled server-side, this commits and places all assets in one file operation. If omitted, each upload URL commits and places its asset automatically."
+      },
+      "nodeId": {
+        "type": "string",
+        "pattern": "^\\d+[:-]\\d+$",
+        "description": "Optional. If provided, sets the uploaded raster image as a fill on this existing node. Can only be used when count is 1. Ignored for SVGs, which are imported as vector node trees."
+      },
+      "scaleMode": {
+        "default": "FILL",
+        "type": "string",
+        "enum": [
+          "FILL",
+          "FIT",
+          "TILE"
+        ],
+        "description": "How a raster image fills the node. Default: FILL. Ignored for SVGs."
+      }
+    },
+    "required": [
+      "fileKey"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}
