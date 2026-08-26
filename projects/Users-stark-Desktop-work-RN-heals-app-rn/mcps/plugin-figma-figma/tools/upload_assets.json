@@ -15,7 +15,7 @@
         "type": "integer",
         "minimum": 1,
         "maximum": 9007199254740991,
-        "description": "Number of assets to upload (default 1, no maximum). Returns that many single-use upload URLs. POST raw asset bytes to each URL with the correct Content-Type header (e.g. image/png, image/jpeg); the URLs can be POSTed in parallel. By default, each upload URL handles storage, BlobStore commit, and canvas placement automatically."
+        "description": "Number of assets to upload. Returns that many single-use upload URLs. POST raw asset bytes to each URL with the correct Content-Type header (e.g. image/png, image/jpeg); the URLs can be POSTed in parallel. By default, each upload URL handles storage, BlobStore commit, and canvas placement automatically."
       },
       "batchCommit": {
         "default": false,

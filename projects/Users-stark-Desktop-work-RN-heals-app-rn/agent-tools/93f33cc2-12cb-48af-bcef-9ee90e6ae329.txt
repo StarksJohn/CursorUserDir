@@ -1,0 +1,1447 @@
+ __tests__/activate-modal.test.tsx                  |  37 ++-
+ __tests__/api-client-logout.test.ts                |  78 ++++-
+ __tests__/profile-screen.test.tsx                  |  50 +++
+ src/api/api-client.ts                              |  15 +-
+ src/api/api-types.ts                               |  12 +-
+ src/components/activate-modal/activate-modal.tsx   |  26 +-
+ .../profile-row-item/profile-row-item.styles.ts    |  16 +-
+ .../profile-row-item/profile-row-item.tsx          |  44 +--
+ src/i18n/locale/Indonesia.ts                       |   4 +
+ src/i18n/locale/Melayu.ts                          |   4 +
+ src/i18n/locale/en.ts                              |   5 +
+ src/i18n/locale/ph.ts                              |   4 +
+ src/i18n/locale/th.ts                              |   4 +
+ src/i18n/locale/vn.ts                              |   4 +
+ src/i18n/locale/zh.ts                              |   4 +
+ src/i18n/locale/zh_tw.ts                           |   4 +
+ src/navigation/types.ts                            |   7 +-
+ .../profile-dependants.styles.ts                   | 175 +++++++++-
+ .../profile-dependants/profile-dependants.tsx      | 352 ++++++++++-----------
+ .../profile/profile-screen/profile-screen.tsx      |  57 +++-
+ 20 files changed, 630 insertions(+), 272 deletions(-)
+diff --git a/__tests__/activate-modal.test.tsx b/__tests__/activate-modal.test.tsx
+index de6880e0..cc8b2281 100644
+--- a/__tests__/activate-modal.test.tsx
++++ b/__tests__/activate-modal.test.tsx
+@@ -2,6 +2,8 @@ import React, {type ReactNode} from 'react';
+ import TestRenderer, {act} from 'react-test-renderer';
+ import ActivateModal from '../src/components/activate-modal/activate-modal';
+ 
++let mockShowActivateModal = false;
++
+ jest.mock('../src/components/activate-modal/activate-modal.style', () => ({
+   __esModule: true,
+   default: {},
+@@ -13,7 +15,7 @@ jest.mock('../src/store/AppContext', () => ({
+     commonModalKey: 'MyDependantsScreen',
+     setActivationCodes: jest.fn(),
+     setShowActivateModal: jest.fn(),
+-    showActivateModal: false,
++    showActivateModal: mockShowActivateModal,
+   }),
+ }));
+ 
+@@ -21,9 +23,9 @@ jest.mock('react-native-toast-notifications', () => {
+   const ReactModule = require('react');
+ 
+   return {
++    Toast: {show: jest.fn()},
+     ToastProvider: ({children}: {children: ReactNode}) =>
+-      ReactModule.createElement(ReactModule.Fragment, null, children),
+-    useToast: () => ({show: jest.fn()}),
++      ReactModule.createElement('MockToastProvider', null, children),
+   };
+ });
+ 
+@@ -57,6 +59,10 @@ jest.mock('../src/constants', () => ({
+ }));
+ 
+ describe('ActivateModal', () => {
++  beforeEach(() => {
++    mockShowActivateModal = false;
++  });
++
+   test('renders its modal siblings without a missing key warning', () => {
+     Object.defineProperty(globalThis, '$i18n', {
+       configurable: true,
+@@ -84,4 +90,29 @@ describe('ActivateModal', () => {
+     act(() => renderer!.unmount());
+     consoleError.mockRestore();
+   });
++
++  test('does not mount the toast overlay while activation is closed', () => {
++    let renderer: TestRenderer.ReactTestRenderer;
++
++    act(() => {
++      renderer = TestRenderer.create(
++        <ActivateModal tag="MyDependantsScreen" />,
++      );
++    });
++
++    expect(renderer!.root.findAllByType('MockToastProvider')).toHaveLength(0);
++  });
++
++  test('mounts the toast provider while activation is open', () => {
++    mockShowActivateModal = true;
++    let renderer: TestRenderer.ReactTestRenderer;
++
++    act(() => {
++      renderer = TestRenderer.create(
++        <ActivateModal tag="MyDependantsScreen" />,
++      );
++    });
++
++    expect(renderer!.root.findAllByType('MockToastProvider')).toHaveLength(1);
++  });
+ });
+diff --git a/__tests__/api-client-logout.test.ts b/__tests__/api-client-logout.test.ts
+index 1752ecfa..8d02c1c0 100644
+--- a/__tests__/api-client-logout.test.ts
++++ b/__tests__/api-client-logout.test.ts
+@@ -1,14 +1,20 @@
+ import NavigationActions, {
+   navigationRef,
+ } from '../src/navigation/global-navigation';
+-import {handleLogout} from '../src/api/api-client';
++import {
++  getRequest,
++  handleLogout,
++  handleRequestError,
++} from '../src/api/api-client';
+ 
+ const mockRemoveAllExcept = jest.fn<Promise<void>, [string]>();
+ 
+ jest.mock('axios', () => {
++  const mockApiClientGet = jest.fn();
++  const mockIsAxiosError = jest.fn(() => false);
+   const client = Object.assign(jest.fn(), {
+     delete: jest.fn(),
+-    get: jest.fn(),
++    get: mockApiClientGet,
+     interceptors: {
+       request: {use: jest.fn()},
+       response: {use: jest.fn()},
+@@ -21,11 +27,22 @@ jest.mock('axios', () => {
+     __esModule: true,
+     default: {
+       create: jest.fn(() => client),
+-      isAxiosError: jest.fn(() => false),
++      isAxiosError: mockIsAxiosError,
+     },
++    mockApiClientGet,
++    mockIsAxiosError,
+   };
+ });
+ 
++interface MockAxiosModule {
++  mockApiClientGet: jest.Mock;
++  mockIsAxiosError: jest.Mock;
++}
++
++const {mockApiClientGet, mockIsAxiosError} = jest.requireMock(
++  'axios',
++) as MockAxiosModule;
++
+ jest.mock('@react-native-async-storage/async-storage', () => ({
+   __esModule: true,
+   default: {
+@@ -110,6 +127,61 @@ describe('expired-session logout navigation', () => {
+   });
+ });
+ 
++describe('api client logging', () => {
++  beforeEach(() => {
++    jest.clearAllMocks();
++    mockApiClientGet.mockReset();
++    mockIsAxiosError.mockReturnValue(false);
++  });
++
++  test('does not log successful response bodies', async () => {
++    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
++    const response = {
++      patientHealthRecord: {
++        medicalNote: 'sensitive medical data',
++      },
++    };
++    mockApiClientGet.mockResolvedValue(response);
++
++    await expect(getRequest('/health-record')).resolves.toEqual({
++      data: response,
++    });
++
++    expect(consoleLogSpy).not.toHaveBeenCalled();
++    consoleLogSpy.mockRestore();
++  });
++
++  test('logs an HTTP status without response or credential data', () => {
++    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
++    const error = {
++      config: {
++        headers: {
++          Authorization: 'Bearer sensitive-access-token',
++        },
++      },
++      response: {
++        data: {
++          refreshToken: 'sensitive-refresh-token',
++        },
++        status: 500,
++      },
++    };
++    mockIsAxiosError.mockReturnValue(true);
++
++    expect(handleRequestError(error)).toEqual(error.response.data);
++    expect(consoleErrorSpy).toHaveBeenCalledWith(
++      'api-client.ts Request failed with status 500.',
++    );
++    expect(JSON.stringify(consoleErrorSpy.mock.calls)).not.toContain(
++      'sensitive-access-token',
++    );
++    expect(JSON.stringify(consoleErrorSpy.mock.calls)).not.toContain(
++      'sensitive-refresh-token',
++    );
++    consoleErrorSpy.mockRestore();
++  });
++});
++
+ describe('global reset navigation', () => {
+   afterEach(() => {
+     (navigationRef as unknown as {current: null}).current = null;
+diff --git a/__tests__/profile-screen.test.tsx b/__tests__/profile-screen.test.tsx
+index 19f34104..0dd69412 100644
+--- a/__tests__/profile-screen.test.tsx
++++ b/__tests__/profile-screen.test.tsx
+@@ -16,6 +16,10 @@ const mockGetHealthRecord = jest.fn().mockResolvedValue({
+     healthStatus: 'uu',
+   },
+ });
++const mockDependants = jest.fn().mockResolvedValue({
++  success: true,
++  data: [],
++});
+ const mockNavigate = jest.fn();
+ let mockNewPushNotificationCounter = 0;
+ let mockFocusEffectCallback:
+@@ -23,6 +27,7 @@ let mockFocusEffectCallback:
+   | undefined;
+ const mockTranslations: Record<string, string> = {
+   edit: 'Edit',
++  'dsi.common.dependants': 'Dependants',
+   'health_info.allergic_reaction': 'Allergies',
+   'health_info.blood_type': 'Blood Type',
+   'health_info.health_status': 'Health Status',
+@@ -93,6 +98,7 @@ jest.mock('../src/constants/index.ts', () => ({
+ }));
+ 
+ jest.mock('../src/api/api.ts', () => ({
++  dependants: () => mockDependants(),
+   getHealthRecord: () => mockGetHealthRecord(),
+   getUser: () => mockGetUser(),
+ }));
+@@ -175,6 +181,10 @@ describe('ProfileScreen summary card', () => {
+         healthStatus: 'uu',
+       },
+     });
++    mockDependants.mockResolvedValue({
++      success: true,
++      data: [],
++    });
+   });
+ 
+   test('uses the reference UI and preserves health record free-text values', async () => {
+@@ -242,6 +252,44 @@ describe('ProfileScreen summary card', () => {
+     ).toBe('contact@example.com');
+   });
+ 
++  test('renders dependant data and opens the existing dependant manager', async () => {
++    const dependant = {
++      contact: '+86-15921952796',
++      id: 'dependant-1',
++      name: '磨磨唧唧',
++      type: 'Dependant',
++    };
++    mockDependants.mockResolvedValueOnce({
++      success: true,
++      data: [dependant],
++    });
++    let renderer: TestRenderer.ReactTestRenderer;
++
++    await act(async () => {
++      renderer = TestRenderer.create(
++        <ProfileScreen navigation={{ navigate: mockNavigate } as never} />,
++      );
++      await Promise.resolve();
++      await Promise.resolve();
++      await Promise.resolve();
++    });
++
++    const dependantRow = renderer!.root
++      .findAllByType('MockProfileItem')
++      .find((item) => item.props.data.id === 0);
++
++    expect(mockDependants).toHaveBeenCalledTimes(1);
++    expect(dependantRow?.props.data).toEqual({
++      exData: [dependant],
++      id: 0,
++      title: 'Dependants',
++    });
++
++    act(() => dependantRow?.props.onClick());
++
++    expect(mockNavigate).toHaveBeenCalledWith('MyDependantsScreen');
++  });
++
+   test('requests and renders fresh data whenever the screen focuses', async () => {
+     let renderer: TestRenderer.ReactTestRenderer;
+ 
+@@ -255,6 +303,7 @@ describe('ProfileScreen summary card', () => {
+ 
+     expect(mockGetUser).toHaveBeenCalledTimes(1);
+     expect(mockGetHealthRecord).toHaveBeenCalledTimes(1);
++    expect(mockDependants).toHaveBeenCalledTimes(1);
+ 
+     mockGetUser.mockResolvedValueOnce({
+       name: 'Updated Person',
+@@ -281,6 +330,7 @@ describe('ProfileScreen summary card', () => {
+ 
+     expect(mockGetUser).toHaveBeenCalledTimes(2);
+     expect(mockGetHealthRecord).toHaveBeenCalledTimes(2);
++    expect(mockDependants).toHaveBeenCalledTimes(2);
+     expect(
+       renderer!.root.findByProps({ accessibilityLabel: 'Profile UP' }),
+     ).toBeTruthy();
+diff --git a/src/api/api-client.ts b/src/api/api-client.ts
+index 488f84ff..b8c22c6e 100644
+--- a/src/api/api-client.ts
++++ b/src/api/api-client.ts
+@@ -1,9 +1,9 @@
+-import axios, {InternalAxiosRequestConfig, AxiosResponse, AxiosError, AxiosRequestConfig} from 'axios';
++import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError, AxiosRequestConfig } from 'axios';
+ import urls from '@api/urls';
+-import {getGlobalAppState} from '@store/AppContext';
++import { getGlobalAppState } from '@store/AppContext';
+ import AsyncStorage from '@react-native-async-storage/async-storage';
+ import { removeAllExcept } from '@helper/async-storage-utils';
+-import {jwtDecode} from "jwt-decode";
++import { jwtDecode } from "jwt-decode";
+ import Config from 'react-native-config';
+ 
+ const apiClient = axios.create({
+@@ -32,8 +32,8 @@ apiClient.interceptors.request.use(
+ 
+     if (memberData?.accessToken) {
+       const decoded = jwtDecode(memberData?.accessToken);
+-      config.headers['Authorization'] = `Bearer ${memberData?.accessToken}`;
+-      config.headers['username'] = decoded.username;
++      config.headers.Authorization = `Bearer ${memberData?.accessToken}`;
++      config.headers.username = decoded.username;
+     }
+     config.headers['Accept-Language'] = globalAppState.AcceptLanguage();
+ 
+@@ -171,13 +171,16 @@ export const deleteRequest = async <T>(url: string, config?: AxiosRequestConfig)
+   }
+ };
+ 
+-export const handleRequestError = (error: unknown) => {
++export const handleRequestError = (error: unknown): unknown => {
+   if (axios.isAxiosError(error)) {
+     console.error('api-client.ts An error occurred with the request:', JSON.stringify(error));
+     if (error.response) {
+       console.error('api-client.ts Server returned an error message:', error.response.data);
+       return error.response.data;
+     }
++
++    console.error('api-client.ts Request failed without a server response.');
++    return error;
+   } else {
+     console.error('api-client.ts Unknown error:', error);
+     return error;
+diff --git a/src/api/api-types.ts b/src/api/api-types.ts
+index a0340236..5404709e 100644
+--- a/src/api/api-types.ts
++++ b/src/api/api-types.ts
+@@ -630,7 +630,15 @@ export interface Dependants {
+   id: string;
+   name: string;
+   contact: string;
+-  type: | string;
++  type: string;
++  gender?: string;
++  birthDate?: string;
++  idNumberRegistrationCountry?: string;
++  idNumber?: string;
++  passportNumber?: string;
++  bloodType?: string;
++  allergies?: string;
++  allergicReaction?: string;
+ }
+ 
+ interface MemberAddressesField {
+@@ -1027,4 +1035,4 @@ export interface LineItem {
+   quantity: number
+   price: number
+   isSelected: boolean
+-}
+\ No newline at end of file
++}
+diff --git a/src/components/activate-modal/activate-modal.tsx b/src/components/activate-modal/activate-modal.tsx
+index 0d241f50..c08cf36a 100644
+--- a/src/components/activate-modal/activate-modal.tsx
++++ b/src/components/activate-modal/activate-modal.tsx
+@@ -5,7 +5,7 @@ import {
+   Modal,
+   DeviceEventEmitter,
+ } from "react-native";
+-import { ToastProvider, useToast } from "react-native-toast-notifications";
++import { Toast, ToastProvider } from "react-native-toast-notifications";
+ import { ActivateModalProps } from "./activate-modal.props.ts";
+ import { ThemeContext } from "@style/theme/theme-context.tsx";
+ import styles from "./activate-modal.style.ts";
+@@ -32,8 +32,6 @@ const ActivateModal: React.FC<ActivateModalProps> = (
+   const [activationResultModal, setActivationResultModal] =
+     useState<boolean>(false);
+   const [isActivating, setIsActivating] = useState<boolean>(false);
+-  const toast = useToast();
+-
+   useEffect(() => {
+     setActivationCode(activationCodes);
+   }, [activationCodes]);
+@@ -47,7 +45,7 @@ const ActivateModal: React.FC<ActivateModalProps> = (
+       DeviceEventEmitter.emit("needReload");
+       setActivationResultModal(true);
+     } else {
+-      toast.show(
++      Toast.show(
+         <AppText 
+           style={{
+             textAlign: "center",
+@@ -288,16 +286,16 @@ const ActivateModal: React.FC<ActivateModalProps> = (
+   };
+ 
+   return (
+-    <ToastProvider>
+-      <ThemeContext.Consumer>
+-        {() => (
+-          <>
+-            {renderModal()}
+-            {renderActivationResultmodal()}
+-          </>
+-        )}
+-      </ThemeContext.Consumer>
+-    </ToastProvider>
++    <ThemeContext.Consumer>
++      {() => (
++        <>
++          {showActivateModal && props.tag === commonModalKey && (
++            <ToastProvider>{renderModal()}</ToastProvider>
++          )}
++          {renderActivationResultmodal()}
++        </>
++      )}
++    </ThemeContext.Consumer>
+   );
+ };
+ export default ActivateModal;
+diff --git a/src/components/profile-row-item/profile-row-item.styles.ts b/src/components/profile-row-item/profile-row-item.styles.ts
+index 387dad1e..7c44dc58 100644
+--- a/src/components/profile-row-item/profile-row-item.styles.ts
++++ b/src/components/profile-row-item/profile-row-item.styles.ts
+@@ -10,6 +10,9 @@ export const styles = StyleSheet.create({
+     borderTopColor:'rgba(236, 245, 245, 1)',
+     borderTopWidth:1
+   },
++  firstContainer: {
++    borderTopWidth: 0,
++  },
+   contentContainer: {
+     flex: 1,
+     padding: 36,
+@@ -30,6 +33,12 @@ export const styles = StyleSheet.create({
+     flexDirection: 'row',
+     alignItems: 'center'
+   },
++  itemTitle: {
++    color: 'rgba(15, 22, 23, 1)',
++    fontSize: 14,
++    fontWeight: '700',
++    lineHeight: 20,
++  },
+   contactContainer:{
+     height: 73,
+     minWidth: 100,
+@@ -38,6 +47,11 @@ export const styles = StyleSheet.create({
+     backgroundColor: 'rgba(243, 250, 250, 1)',
+     borderRadius: 8,
+     padding: 16
++  },
++  contactDetail: {
++    color: 'rgba(141, 151, 150, 1)',
++    fontSize: 12,
++    fontWeight: '400',
++    lineHeight: 20,
+   }
+ });
+-  
+\ No newline at end of file
+diff --git a/src/components/profile-row-item/profile-row-item.tsx b/src/components/profile-row-item/profile-row-item.tsx
+index ab926013..6d8a79d1 100644
+--- a/src/components/profile-row-item/profile-row-item.tsx
++++ b/src/components/profile-row-item/profile-row-item.tsx
+@@ -12,16 +12,9 @@ const ProfileItemComponent = (props: ProfileItemComponentProps) => {
+   if(!props.data.id) {
+     return (
+       <View>
+-        <TouchableOpacity style={[styles.container,{borderTopWidth: 0}]} key={props.data.id} onPress={onClick}>
+-          <View style={{flex:1,height:55,flexDirection:'row',alignItems:'center'}}>
+-            <AppText 
+-              style={{
+-                fontSize: 14,
+-                color: "rgba(15, 22, 23, 1)",
+-                fontWeight: 700,
+-                lineHeight: 20,
+-              }}
+-            >
++        <TouchableOpacity style={[styles.container, styles.firstContainer]} key={props.data.id} onPress={onClick}>
++          <View style={styles.leftComponent}>
++            <AppText style={styles.itemTitle}>
+               {props.data.title}
+             </AppText>
+           </View>
+@@ -31,26 +24,12 @@ const ProfileItemComponent = (props: ProfileItemComponentProps) => {
+           />
+         </TouchableOpacity>
+         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+-          {props.data.exData.map((item, index)=>(
++          {(props.data.exData ?? []).map((item, index)=>(
+             <View style={styles.contactContainer} key={index}>
+-              <AppText 
+-                style={{
+-                  fontSize: 14,
+-                  color: "rgba(15, 22, 23, 1)",
+-                  fontWeight: 700,
+-                  lineHeight: 20,
+-                }}
+-              >
++              <AppText style={styles.itemTitle}>
+                 {item.name}
+               </AppText>
+-              <AppText 
+-                style={{
+-                  fontSize: 12,
+-                  color: "rgba(141, 151, 150, 1)",
+-                  fontWeight: 400,
+-                  lineHeight: 20,
+-                }}
+-              >
++              <AppText style={styles.contactDetail}>
+                 {item.contact}
+               </AppText>
+             </View>
+@@ -66,14 +45,7 @@ const ProfileItemComponent = (props: ProfileItemComponentProps) => {
+             source={props.data.image}
+             style={styles.itemImage}
+           />
+-          <AppText 
+-            style={{
+-              fontSize: 14,
+-              color: "rgba(15, 22, 23, 1)",
+-              fontWeight: 700,
+-              lineHeight: 20,
+-            }}
+-          >
++          <AppText style={styles.itemTitle}>
+             {props.data.title}
+           </AppText>
+         </View>
+@@ -86,4 +58,4 @@ const ProfileItemComponent = (props: ProfileItemComponentProps) => {
+   }
+ }
+ 
+-export default ProfileItemComponent;
+\ No newline at end of file
++export default ProfileItemComponent;
+diff --git a/src/i18n/locale/Indonesia.ts b/src/i18n/locale/Indonesia.ts
+index eb7e2b65..f704ded2 100644
+--- a/src/i18n/locale/Indonesia.ts
++++ b/src/i18n/locale/Indonesia.ts
+@@ -533,6 +533,10 @@ export default {
+       "title": "Cakupan Polis"
+     },
+     "my_dependants": "Anggota Keluarga",
++    "allergies": "Alergi",
++    "no_dependants": "Belum ada anggota keluarga",
++    "no_dependants_description": "Tambahkan anggota keluarga agar mudah membuat janji dan mengelola rekam kesehatan mereka.",
++    "add_dependant": "Tambah anggota keluarga",
+     "no_transactions": "Tidak ada transaksi untuk pengguna ini",
+     "not_available": "Tidak tersedia",
+     "page_profile_desc": "Untuk mengubah/memperbarui informasi pribadi Anda, silakan hubungi DSI Hotline",
+diff --git a/src/i18n/locale/Melayu.ts b/src/i18n/locale/Melayu.ts
+index 05fc665d..96332128 100644
+--- a/src/i18n/locale/Melayu.ts
++++ b/src/i18n/locale/Melayu.ts
+@@ -532,6 +532,10 @@ export default {
+       "title": "Liputan Polisi"
+     },
+     "my_dependants": "Ahli Keluarga",
++    "allergies": "Alahan",
++    "no_dependants": "Tiada ahli keluarga",
++    "no_dependants_description": "Tambah ahli keluarga untuk menempah janji temu dan mengurus rekod kesihatan mereka dengan mudah.",
++    "add_dependant": "Tambah ahli keluarga",
+     "no_transactions": "Tiada Transaksi untuk pengguna ini",
+     "not_available": "Tidak Tersedia",
+     "page_profile_desc": "Untuk menukar/mengemas kini maklumat peribadi anda, sila hubungi Hotline DSI",
+diff --git a/src/i18n/locale/en.ts b/src/i18n/locale/en.ts
+index a618f2ea..0ae0ccfa 100644
+--- a/src/i18n/locale/en.ts
++++ b/src/i18n/locale/en.ts
+@@ -615,6 +615,11 @@ export default {
+       title: 'Policy Coverage',
+     },
+     my_dependants: 'Dependents',
++    allergies: 'Allergies',
++    no_dependants: 'No Dependants',
++    no_dependants_description:
++      'Add your family members to easily book appointments and manage their health records.',
++    add_dependant: 'Add Dependant',
+     no_transactions: 'There are no Transactions for this user',
+     not_available: 'Not Available',
+     page_profile_desc:
+diff --git a/src/i18n/locale/ph.ts b/src/i18n/locale/ph.ts
+index 1b6d181f..6c59581c 100644
+--- a/src/i18n/locale/ph.ts
++++ b/src/i18n/locale/ph.ts
+@@ -466,6 +466,10 @@ export default {
+     "medical_helpdesk_note": "Ang aming serbisyo sa customer ay pinangangasiwaan ng aming pinagkakatiwalaang kasosyo, ang Heals Healthcare. Ire-redirect ka sa kanilang concierge team para sa anumang mga katanungan.",
+     "medical_helpdesk_note_hours": "Lunes hanggang Biyernes: 9:00 am - 6:00 pm \nSabado: 9:00 am – 1:00 pm\n (Maliban sa Linggo at Pampublikong Piyesta Opisyal)",
+     "my_dependants": "Miyembro ng Pamilya",
++    "allergies": "Mga Allergy",
++    "no_dependants": "Walang Miyembro ng Pamilya",
++    "no_dependants_description": "Idagdag ang mga miyembro ng iyong pamilya upang madaling mag-book ng appointment at pamahalaan ang kanilang mga rekord ng kalusugan.",
++    "add_dependant": "Magdagdag ng Miyembro",
+     "no_transactions": "Walang mga Transaksyon para sa user na ito",
+     "not_available": "Hindi Magagamit",
+     "payment_for_consult": "Mayroon kang bagong pagbabayad pagkatapos ng konsultasyon na nakabinbin.",
+diff --git a/src/i18n/locale/th.ts b/src/i18n/locale/th.ts
+index 5d9d0fb0..ad6135d5 100644
+--- a/src/i18n/locale/th.ts
++++ b/src/i18n/locale/th.ts
+@@ -681,6 +681,10 @@ export default {
+     },
+ 
+     "my_dependants": "Family Member",
++    "allergies": "อาการแพ้",
++    "no_dependants": "ไม่มีสมาชิกในครอบครัว",
++    "no_dependants_description": "เพิ่มสมาชิกในครอบครัวเพื่อให้จองนัดหมายและจัดการประวัติสุขภาพได้อย่างง่ายดาย",
++    "add_dependant": "เพิ่มสมาชิกในครอบครัว",
+     "no_transactions": "There are no Transactions for this user",
+     "not_available": "Not Available",
+     "page_profile_desc": "To change/update your personal information, please contact DSI Hotline",
+diff --git a/src/i18n/locale/vn.ts b/src/i18n/locale/vn.ts
+index 9544fef3..f33f14d6 100644
+--- a/src/i18n/locale/vn.ts
++++ b/src/i18n/locale/vn.ts
+@@ -544,6 +544,10 @@ export default {
+       "title": "Chính sách bao gồm"
+     },
+     "my_dependants": "Thành viên gia đình",
++    "allergies": "Dị ứng",
++    "no_dependants": "Chưa có thành viên gia đình",
++    "no_dependants_description": "Thêm thành viên gia đình để dễ dàng đặt lịch hẹn và quản lý hồ sơ sức khỏe của họ.",
++    "add_dependant": "Thêm thành viên",
+     "no_transactions": "Không có lịch sử giao dịch",
+     "not_available": "Không có sẵn",
+     "page_profile_desc": "Để thay đổi hoặc cập nhật thông tin cá nhân của bạn, vui lòng liên hệ với DSI Hotline.",
+diff --git a/src/i18n/locale/zh.ts b/src/i18n/locale/zh.ts
+index f5b71e89..884a010f 100644
+--- a/src/i18n/locale/zh.ts
++++ b/src/i18n/locale/zh.ts
+@@ -552,6 +552,10 @@ export default {
+       title: '保单覆盖范围',
+     },
+     my_dependants: '家属',
++    allergies: '过敏反应',
++    no_dependants: '暂无家属',
++    no_dependants_description: '添加家人，方便预约并管理他们的健康记录。',
++    add_dependant: '添加家属',
+     no_transactions: '此用户没有交易数据',
+     not_available: '无法使用',
+     page_profile_desc: '如需更改/更新您的个人信息，请联络DSI热线',
+diff --git a/src/i18n/locale/zh_tw.ts b/src/i18n/locale/zh_tw.ts
+index 69c9f7c4..a100fdc6 100644
+--- a/src/i18n/locale/zh_tw.ts
++++ b/src/i18n/locale/zh_tw.ts
+@@ -553,6 +553,10 @@ export default {
+       title: '保障範圍',
+     },
+     my_dependants: '家屬',
++    allergies: '過敏反應',
++    no_dependants: '暫無家屬',
++    no_dependants_description: '新增家人，方便預約並管理他們的健康紀錄。',
++    add_dependant: '新增家屬',
+     no_transactions: '此用戶沒有交易數據',
+     not_available: '無法使用',
+     page_profile_desc: '如需更改/更新您的個人信息，請聯絡DSI熱線',
+diff --git a/src/navigation/types.ts b/src/navigation/types.ts
+index 228c6886..791a9554 100644
+--- a/src/navigation/types.ts
++++ b/src/navigation/types.ts
+@@ -1,9 +1,14 @@
+ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+ import {RouteProp} from '@react-navigation/native';
+-import {QueueItem} from "@api/api-types.ts";
++import {Dependants, QueueItem} from "@api/api-types.ts";
+ import Pdf, { Source } from 'react-native-pdf';
+ 
+ export type RootStackParamList = {
++  [$routeNames.addDependantsScreen]: undefined;
++  [$routeNames.editDependantsScreen]: {
++    item: Dependants;
++  };
++  [$routeNames.myDependantsScreen]: undefined;
+   [$routeNames.doctorDetailScreen]: {
+     provider: QueueItem;
+   };
+diff --git a/src/screens/profile/profile-dependants/profile-dependants.styles.ts b/src/screens/profile/profile-dependants/profile-dependants.styles.ts
+index ab57a05e..508e1c40 100644
+--- a/src/screens/profile/profile-dependants/profile-dependants.styles.ts
++++ b/src/screens/profile/profile-dependants/profile-dependants.styles.ts
+@@ -6,11 +6,165 @@ export const styles = ScaledSheet.create({
+     backgroundColor: '#fff'
+   },
+   itemContainer: {
+-    marginTop: '8@s',
+-    padding: '16@s',
+-    borderColor: '#E1EBEC',
++    marginBottom: '16@s',
++    padding: '20@s',
++    backgroundColor: '#FFFFFF',
++    borderColor: '#F3F4F6',
+     borderWidth: 1,
+-    borderRadius: 16,
++    borderRadius: '16@s',
++    shadowColor: '#000000',
++    shadowOffset: {width: 0, height: 1},
++    shadowOpacity: 0.08,
++    shadowRadius: 3,
++    elevation: 2,
++  },
++  itemHeader: {
++    flexDirection: 'row',
++    alignItems: 'flex-start',
++    justifyContent: 'space-between',
++  },
++  itemIdentityRow: {
++    flex: 1,
++    flexDirection: 'row',
++    alignItems: 'center',
++  },
++  avatar: {
++    width: '48@s',
++    height: '48@s',
++    alignItems: 'center',
++    justifyContent: 'center',
++    backgroundColor: '#ECFDF5',
++    borderRadius: '24@s',
++  },
++  avatarText: {
++    color: '#00A378',
++    fontSize: '18@s',
++    lineHeight: '24@s',
++    fontWeight: '700',
++  },
++  itemIdentityText: {
++    flex: 1,
++    marginLeft: '12@s',
++    paddingRight: '8@s',
++  },
++  editButton: {
++    width: '40@s',
++    height: '40@s',
++    alignItems: 'center',
++    justifyContent: 'center',
++    borderRadius: '20@s',
++  },
++  detailsRow: {
++    flexDirection: 'row',
++    marginTop: '16@s',
++    paddingTop: '16@s',
++    borderTopColor: '#F9FAFB',
++    borderTopWidth: 1,
++  },
++  detailColumn: {
++    flex: 1,
++  },
++  allergiesColumn: {
++    marginLeft: '16@s',
++  },
++  detailLabel: {
++    marginBottom: '2@s',
++    color: '#9CA3AF',
++    fontSize: '10@s',
++    lineHeight: '14@s',
++    fontWeight: '700',
++    textTransform: 'uppercase',
++  },
++  detailValue: {
++    color: '#374151',
++    fontSize: '14@s',
++    lineHeight: '20@s',
++    fontWeight: '500',
++  },
++  listContainer: {
++    flex: 1,
++    backgroundColor: '#F7F9F8',
++    paddingHorizontal: '16@s',
++    paddingTop: '16@s',
++  },
++  listContentContainer: {
++    paddingBottom: '32@s',
++  },
++  emptyListContentContainer: {
++    flexGrow: 1,
++  },
++  emptyStateCard: {
++    width: '100%',
++    minHeight: '300@s',
++    padding: '32@s',
++    alignItems: 'center',
++    justifyContent: 'center',
++    backgroundColor: '#FFFFFF',
++    borderColor: '#F3F4F6',
++    borderWidth: 1,
++    borderRadius: '16@s',
++    shadowColor: '#000000',
++    shadowOffset: {width: 0, height: 1},
++    shadowOpacity: 0.08,
++    shadowRadius: 3,
++    elevation: 2,
++  },
++  emptyStateIconContainer: {
++    width: '64@s',
++    height: '64@s',
++    marginBottom: '16@s',
++    alignItems: 'center',
++    justifyContent: 'center',
++    backgroundColor: '#ECFDF5',
++    borderRadius: '32@s',
++  },
++  emptyStateTitle: {
++    marginBottom: '8@s',
++    color: '#1F2937',
++    fontSize: '18@s',
++    lineHeight: '24@s',
++    fontWeight: '700',
++    textAlign: 'center',
++  },
++  emptyStateDescription: {
++    marginBottom: '24@s',
++    color: '#6B7280',
++    fontSize: '14@s',
++    lineHeight: '22@s',
++    textAlign: 'center',
++  },
++  emptyStateButton: {
++    minHeight: '44@s',
++    paddingHorizontal: '24@s',
++    paddingVertical: '10@s',
++    flexDirection: 'row',
++    alignItems: 'center',
++    justifyContent: 'center',
++    backgroundColor: '#00AC86',
++    borderRadius: '22@s',
++  },
++  emptyStateButtonText: {
++    marginLeft: '8@s',
++    color: '#FFFFFF',
++    fontSize: '14@s',
++    lineHeight: '20@s',
++    fontWeight: '700',
++  },
++  floatingAddButton: {
++    position: 'absolute',
++    right: '24@s',
++    bottom: '24@s',
++    width: '56@s',
++    height: '56@s',
++    alignItems: 'center',
++    justifyContent: 'center',
++    backgroundColor: '#0BA376',
++    borderRadius: '28@s',
++    shadowColor: '#000000',
++    shadowOffset: {width: 0, height: 4},
++    shadowOpacity: 0.2,
++    shadowRadius: 6,
++    elevation: 6,
+   },
+   flatListContainer: {
+     flex: 1,
+@@ -67,15 +221,16 @@ export const styles = ScaledSheet.create({
+     marginTop: '24@s',
+   },
+   itemName: {
+-    fontSize: '16@s',
+-    lineHeight: '18@s',
+-    color: '#0F1617',
++    fontSize: '17@s',
++    lineHeight: '24@s',
++    color: '#111827',
+     fontWeight: '700',
+   },
+   itemContact: {
+-    marginTop: '8@s',
+-    fontSize: '12@s',
+-    color: '#8D9796',
++    marginTop: '2@s',
++    fontSize: '14@s',
++    lineHeight: '20@s',
++    color: '#6B7280',
+     fontWeight: '400',
+   },
+   editBtn: {
+diff --git a/src/screens/profile/profile-dependants/profile-dependants.tsx b/src/screens/profile/profile-dependants/profile-dependants.tsx
+index c53e4352..1192c64b 100644
+--- a/src/screens/profile/profile-dependants/profile-dependants.tsx
++++ b/src/screens/profile/profile-dependants/profile-dependants.tsx
+@@ -1,25 +1,27 @@
+-import React, {useCallback, useState, useRef} from 'react';
++import React, {useCallback, useState} from 'react';
+ import {
+   View,
+   TouchableOpacity,
+   FlatList,
+   Modal,
+-  TextStyle,
+ } from 'react-native';
+-import {styles} from './profile-dependants.styles';
+-import {ThemeContext} from "@style/theme/theme-context.tsx";
+-import type { Theme } from "@types/Theme.ts";
++import type {ListRenderItemInfo, TextStyle} from 'react-native';
++import { styles } from './profile-dependants.styles';
+ import *as api from '@api/api.ts';
+ import AppText from '@components/app-text/app-text';
+ import NavigationBar from '@components/navigation-bar/navigation-bar.tsx';
+ import PageRightBt from '@components/page-right-bt/page-right-bt.tsx';
+-import {useFocusEffect} from '@react-navigation/native';
++import {useLoading} from '@components/loading-modal/loading-context.tsx';
++import { useFocusEffect } from '@react-navigation/native';
++import Feather from 'react-native-vector-icons/Feather';
++import type { Dependants } from '@api/api-types.ts';
+ 
+ 
+-const MyDependantsScreen = (props: any) => {
+-  const { navigation, scene, route } = props
+-  const flatListRef = useRef();
+-  const [dependents, setDependents] = useState<[]>([]);
++const MyDependantsScreen = (): React.ReactElement => {
++  const [dependents, setDependents] = useState<Dependants[]>([]);
++  const [hasCompletedDependantsRequest, setHasCompletedDependantsRequest] =
++    useState<boolean>(false);
++  const {setLoading, setLoadingText} = useLoading();
+   const [currentSelectedDependent, setCurrentSelectedDependent] = useState<{
+     id: string,
+     name: string
+@@ -29,194 +31,204 @@ const MyDependantsScreen = (props: any) => {
+   });
+   const [isShowDeleteModal, setIsShowDeleteModal] = useState<boolean>(false);
+ 
++  const getDependents = useCallback(
++    async (): Promise<void> => {
++      setHasCompletedDependantsRequest(false);
++      setLoadingText($i18n.t('loading'));
++      setLoading(true);
++
++      try {
++        const response = await api.dependants();
++        if (response?.success && !$fake) {
++          setDependents(Array.isArray(response.data) ? response.data : []);
++        } else {
++          setDependents([]);
++        }
++      } catch (error) {
++        setDependents([]);
++        console.error('Exception encountered @ getDependents', error);
++      } finally {
++        setHasCompletedDependantsRequest(true);
++        setLoading(false);
++      }
++    },
++    [setLoading, setLoadingText],
++  );
++
+   useFocusEffect(
+     useCallback(() => {
+-      getDependents();
+-    }, [isShowDeleteModal])
++      if (!isShowDeleteModal) {
++        getDependents();
++      }
++    }, [getDependents, isShowDeleteModal])
+   );
+ 
+-  const getDependents = async () => {
+-    const response = await api.dependants();
++  const navigateToAddDependant = (): void => {
++    $NavigationActions.navigate($routeNames.addDependantsScreen);
++  };
+ 
+-    if (response?.success) {
+-      console.log(`@@@@@ ${JSON.stringify(response.data)}`);
+-      setDependents(response.data);
+-    }
+-  }
++  const renderItems = ({
++    item,
++  }: ListRenderItemInfo<Dependants>): React.ReactElement => {
++    const initial = item.name.trim().charAt(0).toUpperCase() || '?';
++    const bloodType = item.bloodType?.trim() || '-';
++    const allergies =
++      item.allergies?.trim() || item.allergicReaction?.trim() || '-';
+ 
+-
+-  const renderItem = useCallback(
+-    ({ item, index }: { item: any; index: number }) => {
+-      console.log(`[item.type] ${JSON.stringify(item)}`);
+-      return (
+-        <>
+-          {item.type === 'Dependant'
+-          ? <View
+-              style={{
+-                height: 120,
+-                width: 120,
+-                marginTop: 8,
+-                padding: 16,
+-                borderColor: '#E1EBEC',
+-                borderWidth: 1,
+-                borderRadius: 16,
+-                backgroundColor: 'red',
+-              }}
+-              key={item.id}
+-            >
+-              {/* 
++    return (
++      <View
++        style={styles.itemContainer}
++        testID={`dependant-card-${item.id}`}
++      >
++        <View style={styles.itemHeader}>
++          <View style={styles.itemIdentityRow}>
++            <View style={styles.avatar}>
++              <AppText style={styles.avatarText as TextStyle}>{initial}</AppText>
++            </View>
++            <View style={styles.itemIdentityText}>
+               <AppText style={styles.itemName as TextStyle}>
+                 {item.name}
+               </AppText>
+               <AppText style={styles.itemContact as TextStyle}>
+                 {item.contact}
+               </AppText>
+-              <View
+-                style={{
+-                  alignSelf: 'flex-end',
+-                  flexDirection: 'row',
+-                }}
+-              >
+-                <TouchableOpacity
+-                  style={styles.editBtn}
+-                  onPress={() => $NavigationActions.navigate($routeNames.editDependantsScreen, {item})}
+-                >
+-                  <AppText
+-                    size='small'
+-                    style={{
+-                      alignSelf: 'center',
+-                      color: $themeColorsPalette.$appThemeGreen
+-                    }}
+-                  >
+-                    {$i18n.t('edit')}
+-                  </AppText>
+-                </TouchableOpacity>
+-                <TouchableOpacity
+-                  style={styles.deleteBtn}
+-                  onPress={async () => {
+-                    setCurrentSelectedDependent({
+-                      id: item.id,
+-                      name: item.name,
+-                    });
+-                    setIsShowDeleteModal(true);
+-                  }}
+-                >
+-                  <AppText
+-                    size='small'
+-                    style={{
+-                      alignSelf: 'center',
+-                      color: $themeColorsPalette.$redColor
+-                    }}
+-                  >
+-                    {$i18n.t('delete')}
+-                  </AppText>
+-                </TouchableOpacity>
+-              </View> */}
+             </View>
+-          : null
+-          }
+-        </>
+-      );
+-    },
+-    [],
+-  );
+-
+-  const renderItems =  ({ item, index }: { item: any; index: number }) => {
+-    return (
+-      <View
+-        style={styles.itemContainer}
+-      >
+-        <AppText style={styles.itemName as TextStyle}>
+-          {item.name}
+-        </AppText>
+-        <AppText style={styles.itemContact as TextStyle}>
+-          {item.contact}
+-        </AppText>
+-        <View
+-          style={{
+-            alignSelf: 'flex-end',
+-            flexDirection: 'row',
+-          }}
+-        >
+-          {/* <TouchableOpacity
+-            style={styles.editBtn}
+-            onPress={() => $NavigationActions.navigate($routeNames.editDependantsScreen, {item})}
++          </View>
++          <TouchableOpacity
++            accessibilityRole="button"
++            accessibilityLabel={`${$i18n.t('edit')} ${item.name}`}
++            testID={`edit-dependant-${item.id}`}
++            style={styles.editButton}
++            onPress={() =>
++              $NavigationActions.navigate($routeNames.editDependantsScreen, {
++                item,
++              })
++            }
+           >
+-            <AppText
+-              size='small'
+-              style={{
+-                alignSelf: 'center',
+-                color: $themeColorsPalette.$appThemeGreen
+-              }}
+-            >
+-              {$i18n.t('edit')}
++            <Feather name="edit-3" size={18} color="#9CA3AF" />
++          </TouchableOpacity>
++        </View>
++        <View style={styles.detailsRow}>
++          <View
++            style={styles.detailColumn}
++            testID={`dependant-blood-type-${item.id}`}
++          >
++            <AppText style={styles.detailLabel as TextStyle}>
++              {$i18n.t('health_info.blood_type')}
+             </AppText>
+-          </TouchableOpacity> */}
+-          {/* <TouchableOpacity
+-            style={styles.deleteBtn}
+-            onPress={async () => {
+-              setCurrentSelectedDependent({
+-                id: item.id,
+-                name: item.name,
+-              });
+-              setIsShowDeleteModal(true);
+-            }}
++            <AppText style={styles.detailValue as TextStyle}>{bloodType}</AppText>
++          </View>
++          <View
++            style={[styles.detailColumn, styles.allergiesColumn]}
++            testID={`dependant-allergies-${item.id}`}
+           >
++            <AppText style={styles.detailLabel as TextStyle}>
++              {$i18n.t('dsi.allergies')}
++            </AppText>
+             <AppText
+-              size='small'
+-              style={{
+-                alignSelf: 'center',
+-                color: $themeColorsPalette.$redColor
+-              }}
++              style={styles.detailValue as TextStyle}
++              numberOfLines={1}
+             >
+-              {$i18n.t('delete')}
++              {allergies}
+             </AppText>
+-          </TouchableOpacity> */}
++          </View>
+         </View>
+       </View>
+-    )
+-  }
++    );
++  };
++
++  const renderDependents = (): React.ReactElement => {
++    if (!hasCompletedDependantsRequest) {
++      return <View style={styles.listContainer} />;
++    }
+ 
+-  const renderDependents = () => {
+     return (
+-      <View
+-        style={{
+-          flex: 1,
+-          paddingHorizontal: 16,
+-        }}
+-      >
++      <View style={styles.listContainer}>
+         <FlatList
+           data={dependents}
+           decelerationRate="fast"
+           showsVerticalScrollIndicator={false}
+           renderItem={renderItems}
+-          contentContainerStyle={{
+-            paddingBottom: 32
+-          }}
++          keyExtractor={(item: Dependants): string => item.id}
++          ListEmptyComponent={renderEmptyState}
++          contentContainerStyle={[
++            styles.listContentContainer,
++            dependents.length === 0 && styles.emptyListContentContainer,
++          ]}
+         />
+       </View>
+     );
+   }
+ 
+-  const renderDeleteModal = () => {
++  const renderEmptyState = (): React.ReactElement => {
++    return (
++      <View style={styles.emptyStateCard} testID="dependants-empty-state">
++        <View style={styles.emptyStateIconContainer}>
++          <Feather
++            name="user"
++            size={32}
++            color={$themeColorsPalette.$appThemeGreen}
++          />
++        </View>
++        <AppText style={styles.emptyStateTitle as TextStyle}>
++          {$i18n.t('dsi.no_dependants')}
++        </AppText>
++        <AppText style={styles.emptyStateDescription as TextStyle}>
++          {$i18n.t('dsi.no_dependants_description')}
++        </AppText>
++        <TouchableOpacity
++          accessibilityRole="button"
++          accessibilityLabel={$i18n.t('dsi.add_dependant')}
++          testID="add-dependant-button"
++          style={styles.emptyStateButton}
++          onPress={navigateToAddDependant}
++        >
++          <Feather name="plus" size={18} color={$themeColorsPalette.$white} />
++          <AppText style={styles.emptyStateButtonText as TextStyle}>
++            {$i18n.t('dsi.add_dependant')}
++          </AppText>
++        </TouchableOpacity>
++      </View>
++    );
++  }
++
++  const renderFloatingAddButton = (): React.ReactElement | null => {
++    if (!hasCompletedDependantsRequest || dependents.length === 0) {
++      return null;
++    }
++
++    return (
++      <TouchableOpacity
++        accessibilityRole="button"
++        accessibilityLabel={$i18n.t('dsi.add_dependant')}
++        testID="floating-add-dependant-button"
++        style={styles.floatingAddButton}
++        onPress={navigateToAddDependant}
++      >
++        <Feather name="plus" size={24} color={$themeColorsPalette.$white} />
++      </TouchableOpacity>
++    );
++  };
++
++  const renderDeleteModal = (): React.ReactElement => {
+     return (
+       <Modal
+         animationType="slide"
+         transparent={true}
+         visible={isShowDeleteModal}
+-        onRequestClose={() => {setIsShowDeleteModal(false)}}
++        onRequestClose={() => { setIsShowDeleteModal(false) }}
+       >
+         <View style={styles.deleteModal} >
+           <View style={styles.deleteModalView}>
+             <AppText
+               size='xlarge'
+-              style={styles.deleteDependentTitle}
++              style={styles.deleteDependentTitle as TextStyle}
+             >
+               {'Delete Dependent'}
+             </AppText>
+             <AppText
+               size='medium'
+-              style={styles.description}
++              style={styles.description as TextStyle}
+             >
+               {`Do you want to delete the dependent "${currentSelectedDependent.name}"`}
+             </AppText>
+@@ -236,7 +248,7 @@ const MyDependantsScreen = (props: any) => {
+                   setIsShowDeleteModal(false);
+                 }}
+               >
+-                <AppText size='small' style={{color: $themeColorsPalette.$white}}>
++                <AppText size='small' style={{ color: $themeColorsPalette.$white }}>
+                   {$i18n.t('delete')}
+                 </AppText>
+               </TouchableOpacity>
+@@ -248,35 +260,15 @@ const MyDependantsScreen = (props: any) => {
+   }
+ 
+   return (
+-    <ThemeContext.Consumer>
+-      {(theme: Theme) => {
+-        return (
+-          <View style={styles.container}>
+-            <NavigationBar title={$i18n.t('dsi.my_dependants')}
+-              rightBt={<PageRightBt tag={$routeNames.myDependantsScreen} />}
+-            />
+-            {renderDependents()}
+-            {/* <View style={styles.addDependantsContainer}>
+-              <TouchableOpacity
+-                style={styles.addDependentBtn}
+-                onPress={() => $NavigationActions.navigate($routeNames.addDependantsScreen)}
+-              >
+-                <AppText
+-                  size='medium'
+-                  style={{
+-                    color: $themeColorsPalette.$appThemeGreen,
+-                    alignSelf: 'center',
+-                  }}
+-                >
+-                  {$i18n.t('Add New Dependents')}
+-                </AppText>
+-              </TouchableOpacity>
+-            </View> */}
+-            {renderDeleteModal()}
+-          </View>
+-        );
+-      }}
+-    </ThemeContext.Consumer >
++    <View style={styles.container}>
++      <NavigationBar
++        title={$i18n.t('dsi.my_dependants')}
++        rightBt={<PageRightBt tag={$routeNames.myDependantsScreen} />}
++      />
++      {renderDependents()}
++      {renderFloatingAddButton()}
++      {renderDeleteModal()}
++    </View>
+   );
+ };
+ 
+diff --git a/src/screens/profile/profile-screen/profile-screen.tsx b/src/screens/profile/profile-screen/profile-screen.tsx
+index e5a6841c..80cf7387 100644
+--- a/src/screens/profile/profile-screen/profile-screen.tsx
++++ b/src/screens/profile/profile-screen/profile-screen.tsx
+@@ -14,7 +14,7 @@ import type { Theme } from "@types/Theme.ts";
+ import assets from "@assets";
+ import constants from '@constants';
+ import *as api from '@api/api.ts';
+-import type { User } from '@api/api-types';
++import type { Dependants, User } from '@api/api-types';
+ import { useAppState } from '@store/AppContext';
+ import AppPageHeader, {
+   getAvatarInitials,
+@@ -199,6 +199,7 @@ const ProfileScreen = ({ navigation }: ProfileScreenProps): ReactElement => {
+   const [healthRecord, setHealthRecord] = useState<ProfileHealthRecord | null>(
+     user?.value?.patientHealthRecord ?? null,
+   );
++  const [dependants, setDependants] = useState<Dependants[]>([]);
+   const profileName = profileUser?.name ?? user?.name;
+   const profileEmail =
+     getProfileEmail(profileUser) || getProfileEmail(user);
+@@ -232,6 +233,20 @@ const ProfileScreen = ({ navigation }: ProfileScreenProps): ReactElement => {
+       } catch (error) {
+         console.error('profile-screen.tsx refresh health record failed', error);
+       }
++
++      try {
++        const latestDependants = await api.dependants();
++
++        if (
++          isScreenActive() &&
++          latestDependants?.success &&
++          Array.isArray(latestDependants.data)
++        ) {
++          setDependants(latestDependants.data);
++        }
++      } catch (error) {
++        console.error('profile-screen.tsx refresh dependants failed', error);
++      }
+     },
+     []
+   );
+@@ -249,31 +264,38 @@ const ProfileScreen = ({ navigation }: ProfileScreenProps): ReactElement => {
+   );
+ 
+   const profileArray = [
+-    // {
+-    //   id: 1,
+-    //   title: constants.i18n.t('my_wallet_title'),
+-    //   image: assets.profile_wallet(),
+-    // },
++    {
++      id: 0,
++      title: constants.i18n.t('dsi.common.dependants'),
++      exData: dependants,
++    },
++    {
++      id: 1,
++      title: constants.i18n.t('my_wallet_title'),
++      image: assets.profile_wallet(),
++    },
+     {
+       id: 2,
+       title: constants.i18n.t('setting.manageAddress'),
+       image: assets.profile_location(),
+     },
+-    // {
+-    //   id: 3,
+-    //   title: constants.i18n.t('setting.wallet'),
+-    //   image: assets.profile_card(),
+-    // },
++    {
++      id: 3,
++      title: constants.i18n.t('setting.wallet'),
++      image: assets.profile_card(),
++    },
+     // {
+     //   id: 4,
+     //   title: constants.i18n.t('my_info'),
+     //   image: assets.profile_info(),
+     // },
+-    {
+-      id: 5,
+-      title: constants.i18n.t('setting.title'),
+-      image: assets.profile_setting(),
+-    },
++
++    // https://app.clickup.com/t/8553538/TECH-8757?comment=90180249633984&threadedComment=90180250027117
++    // {
++    //   id: 5,
++    //   title: constants.i18n.t('setting.title'),
++    //   image: assets.profile_setting(),
++    // },
+   ]
+ 
+   const handleEditProfilePress = (): void => {
+@@ -390,6 +412,9 @@ const ProfileScreen = ({ navigation }: ProfileScreenProps): ReactElement => {
+ 
+   const onClickWithId = (id: number): void => {
+     switch (id) {
++      case 0:
++        navigation.navigate($routeNames.myDependantsScreen)
++        break;
+       case 1:
+         navigation.navigate($routeNames.transactionHistory)
+         break;
