@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: 审查当前 chat 指定的 PR/commit/range，或当前本地分支相对目标基线的完整变更；本地分支范围包含 committed、staged、unstaged 与未忽略的 untracked 文件，并追踪对历史调用者、类型、配置和测试的直接影响，只报告合并前必须修复的 Critical。适用于 GitHub/Bitbucket PR、commit、commit range、目标分支与 code review，重点覆盖用户 8 个项目中的 Next.js、React、React Native、Vue 2、TypeScript、Node.js、Prisma、原生 iOS/Android，同时兼容 Vue 3、Flutter、微信小程序和 HTML/CSS；排除基线旧问题、Suggestions 和 PR 外备注。
+description: 审查当前 chat 指定的 PR/commit/range，或当前本地分支相对目标基线的完整变更；本地分支范围包含 committed、staged、unstaged 与未忽略的 untracked 文件，并对范围内 merge 的相关父提交执行目标分支保留审计，防止端点净 diff 漏掉合入后删除或覆盖的目标分支既有代码；同时追踪对历史调用者、类型、配置和测试的直接影响，只报告合并前必须修复的 Critical。适用于 GitHub/Bitbucket PR、commit、commit range、目标分支与 code review，重点覆盖用户 8 个项目中的 Next.js、React、React Native、Vue 2、TypeScript、Node.js、Prisma、原生 iOS/Android，同时兼容 Vue 3、Flutter、微信小程序和 HTML/CSS；排除基线旧问题、Suggestions 和 PR 外备注。
 ---
 
 # Code Review
@@ -9,9 +9,10 @@ description: 审查当前 chat 指定的 PR/commit/range，或当前本地分支
 
 - 把 code review 作为只读任务；除非用户明确要求，否则不修改业务代码、不提交、不推送、不发布，也不在 PR 平台发评论。
 - 只审查一个明确目标。当前本地分支是目标或待合入对象时，审查相对基线的完整工作树快照，必须包含 committed、staged、unstaged 和 `git ls-files --others --exclude-standard` 返回的 untracked 文件。
+- 端点净 diff 不是唯一证据：只要精确范围内含 merge commit，或当前分支曾合入目标分支，必须检查目标侧父提交和后续删除历史。目标代码“先合入、后删除或覆盖”即使在基线到 head 的净 diff 中抵消，也不得漏审。
 - 明确指定 PR、commit 或 commit range 时，默认只审查其不可变精确 diff；只有用户同时明确要求本地改动时才叠加当前工作树，避免把无关工作区污染混入远端或历史目标。
 - 只输出由当前精确范围直接引入或扩大、且合并前必须修复的 `[Critical]`。不输出 Suggestions、Nice to have、风格偏好、顺带发现或无因果关系的旧问题。
-- 以范围内的 diff 行或 hunk 作为每条 finding 的根因锚点；若根因破坏了未修改的历史代码，在同一 Critical 中列出所有已确认的受影响位置。
+- 以端点 diff，或同一精确范围内的父提交到 merge 结果、后续 commit、staged/unstaged 删除 hunk 作为 finding 的根因锚点；若根因破坏了未修改的历史代码，在同一 Critical 中列出所有已确认的受影响位置。
 
 ## 读取项目规则
 
@@ -55,12 +56,24 @@ description: 审查当前 chat 指定的 PR/commit/range，或当前本地分支
 1. 执行只读检查：`git rev-parse --show-toplevel`、`git status --short`、`git branch --show-current`、`git remote -v`。
 2. PR 优先使用平台返回的 PR 标识、base SHA、head SHA、changed files 和 patch。需要当前远端状态时 fetch 对应 refs，但不 checkout 用户分支。
 3. 只有证明本地 `HEAD` 等于 PR head SHA，且目标 ref 对应该 PR base 时，才允许用 `git diff origin/base...HEAD` 代替平台范围。
-4. 指定 commit 使用其真实父提交：普通 commit 为 `sha^..sha`，merge commit 为 `sha^1..sha`。Squash/rebase merge 优先平台 patch 或用户提供的精确 range。
-5. 当前本地分支模式先解析 base 和 merge-base，再分别记录：`merge-base...HEAD` 的 committed diff、`git diff HEAD --` 的 staged/unstaged tracked diff，以及 `git ls-files --others --exclude-standard` 的 untracked 文件。用 `git diff <merge-base> --` 审查 tracked 文件的最终工作树状态，并把每个 untracked 文件视为完整新增内容；不得只审查其中一层。
-6. 记录范围账本：目标模式和标识、base/head 或 commit range、merge-base、committed/staged/unstaged/untracked 各层 changed files、最终去重文件集、diff hunks 和内容不可用项。
-7. 不可变 PR/commit/range 以目标 head tree 读取和标注行号；当前本地分支模式以磁盘工作树的最终快照读取和标注行号。后者遇到同一文件既有 committed 又有未提交修改时，必须审查合并后的当前文件，不得退回 `git show HEAD:path` 覆盖本地状态。
+4. 指定 commit 使用其真实父提交：普通 commit 为 `sha^..sha`。merge commit 用 `sha^1..sha` 建立第一父提交变更，但必须先用 `git show -s --format=%P <sha>` 列出全部父提交，再对每个相关非第一父提交检查 `<sha>^N..<sha>`；不得只看 `^1`。Squash/rebase merge 优先平台 patch 或用户提供的精确 range。
+5. 当前本地分支模式先解析精确 target tip 和 `git merge-base --all <target-tip> HEAD`，再分别记录 committed 端点 diff、`git diff HEAD --` 的 staged/unstaged tracked diff，以及 `git ls-files --others --exclude-standard` 的 untracked 文件。只有一个 merge-base 时，用它到 `HEAD`/工作树建立主 diff；返回多个时逐一记录并优先使用平台精确 patch，无法唯一化时标记范围阻塞，不任意挑选其一。把每个 untracked 文件视为完整新增内容；不得只审查其中一层。
+6. 记录范围账本：目标模式和标识、base/head 或 commit range、target tip、全部 merge-base、范围内 merge commit 及其父提交、committed/staged/unstaged/untracked 各层 changed files、最终去重文件集、端点与目标保留 hunks、内容不可用项。
+7. 不可变 PR/commit/range 以目标 head tree 读取和标注行号；当前本地分支模式以磁盘工作树的最终快照读取和标注行号。后者遇到同一文件既有 committed 又有未提交修改时，必须审查合并后的当前文件，不得退回 `git show HEAD:path` 覆盖本地状态。已删除代码无最终行号时，标注删除侧的 `path:line`、根因 commit 或 working-tree 层级和 hunk，不得因最终文件中已无该行而丢弃 finding。
 
 不得为了审查执行 `checkout`、`reset`、`clean`、`stash` 或覆盖用户文件。浅克隆、LFS、submodule、权限或网络导致目标内容不完整时，明确写入验证边界。
+
+## 目标分支保留审计
+
+此审计补充端点 diff，只检查精确目标内对目标分支既有内容的删除或语义覆盖，不得借此混入无关分支或工作树。
+只有当精确范围含 merge commit，或已确认当前分支合入过指定目标分支时才触发；不含 merge 且没有目标分支语义的普通 commit/range 标记为“不适用”。
+
+1. 对范围内每个 merge commit，用 `git rev-list --parents --merges <range>` 和 `git show -s --format=%P <merge-sha>` 列出父提交；根据拓扑和目标 ref 识别 target-side parent，不盲猜它一定是 `^2`。
+2. 对每个已确认的 target-side parent `P` 与 merge 结果 `M`，检查 `git diff --find-renames P M --` 的全文，包括整文件删除、行级删除、rename 后内容丢失、export/config/test 移除和用旧实现覆盖新逻辑。这一 parent-to-merge hunk 属于 merge commit 的精确审查范围。
+3. 找出当前 head 实际已合入的最新目标快照 `I`：若 target tip 是 `HEAD` 祖先则使用 target tip；否则使用拓扑证据确认的最新 target-side parent 或 merge-base。比较 `I` 到 `HEAD` 及最终工作树，再沿合入后的 commit、staged 和 unstaged hunks 定位具体删除或覆盖根因；不得只看最终文件列表。
+4. 若当前 target tip 比 `I` 更新，“target tip 有、head 没有”只是候选差异。只有找到当前范围内的主动删除/覆盖 hunk，或只读 merge 模拟证明合并结果会丢失该内容时，才能归因于当前分支；不得把尚未合入的 target-only 新代码误报为删除。
+5. 删除本身不自动构成 Critical。先从 `P`/`I` 恢复被删符号和契约，再检查最终快照中的调用者、导出、路由、配置、migration、测试与运行路径；只在达到 Critical 证据门禁时报告。
+6. 无法取得 target-side parent、相关对象或可信拓扑时，写明“目标分支保留审计阻塞”和缺失证据；不得宣称该维度“无 Critical”。
 
 ## 追踪直接影响
 
@@ -74,20 +87,22 @@ description: 审查当前 chat 指定的 PR/commit/range，或当前本地分支
 对每项变更：
 
 1. 不可变目标在 head tree 中搜索调用者；当前本地分支目标在最终工作树快照中搜索调用者，并同时覆盖未跟踪的新文件，不只阅读 changed files。
-2. 证明因果关系：若恢复 base 契约或撤销根因 hunk 后错误仍存在，则它是基线问题，不得报告。
-3. 对类型、构建、lint 或测试诊断尽量做基线与目标快照的同命令差分，只保留目标新增或扩大的失败；本地分支模式的目标快照必须保留工作树改动。
-4. 同一根因造成多个历史位置失败时合并为一条 Critical，但逐个列出文件、对应目标快照行号、错误代码/失败条件和表达式；不得只给数量或代表性样例。
-5. 不扩展到无因果关系的全仓旧问题。只有当前范围改变了明确的跨仓接口且另一仓库被用户纳入范围时，才检查跨仓影响。
+2. 目标保留候选必须同时读取 target-side parent/已合入快照和最终快照，逐个追踪被删或被覆盖的符号、契约及直接使用者。端点净 diff 没有该文件不是跳过理由。
+3. 证明因果关系：若恢复 base 契约或撤销根因 hunk 后错误仍存在，则它是基线问题，不得报告。
+4. 对类型、构建、lint 或测试诊断尽量做基线与目标快照的同命令差分，只保留目标新增或扩大的失败；本地分支模式的目标快照必须保留工作树改动。
+5. 同一根因造成多个历史位置失败时合并为一条 Critical，但逐个列出文件、对应目标快照行号、错误代码/失败条件和表达式；不得只给数量或代表性样例。
+6. 不扩展到无因果关系的全仓旧问题。只有当前范围改变了明确的跨仓接口且另一仓库被用户纳入范围时，才检查跨仓影响。
 
 ## Critical 证据门禁
 
 报告 finding 前必须全部满足：
 
-1. 根因位于当前精确范围的新增、修改或删除 hunk；本地分支模式包括 committed、staged、unstaged 和未忽略 untracked 内容。
+1. 根因位于当前精确范围的新增、修改或删除 hunk；包含范围内 merge commit 相对目标侧父提交的结果 hunk，以及本地分支的 committed、staged、unstaged 和未忽略 untracked 内容。
 2. 问题是当前范围新引入或明确扩大的，不是目标基线已有问题。
 3. 存在具体失败路径、契约冲突、可复现风险或差异化诊断，不以“可能”“建议确认”代替证据。
 4. 影响正确性、安全性、数据、隐私、类型契约、跨平台行为、资源生命周期、关键可用性或构建/发布，达到合并前必须修复。
 5. 所有列出的历史位置都与根因有直接可验证的因果关系。
+6. 目标分支保留 finding 还必须证明内容确实存在于已确认的 target-side parent/已合入快照，且当前范围的根因 hunk 使最终结果丢失代码或语义；不能只以两个 tree 不同作为证据。
 
 未通过任一条件就删除 finding；不得降级成 Suggestion 或放入 PR 外备注。
 
@@ -149,13 +164,14 @@ description: 审查当前 chat 指定的 PR/commit/range，或当前本地分支
 按根因位置排序，每条使用：
 
 1. `[Critical] 标题`
-2. `本次修改位置：` 至少一个精确范围内的 `文件:行号`；本地分支模式标明 committed/staged/unstaged/untracked 来源，行号取最终工作树快照
-3. `受影响历史代码：` 逐个列出 `文件:行号`、错误代码/失败条件和表达式；没有时写“无”
-4. `问题：` 触发条件、错误结果和影响
-5. `证据：` diff、base/head 差分、类型/测试/运行时或契约依据
-6. `修改建议：` 覆盖根因及所有需同步位置的最小可落地代码、before/after 或伪补丁
-7. `手动自测：` 前置条件、步骤、修复前/后预期；无稳定路径时说明原因并给最小 mock/插桩
-8. React Native finding 追加 Android 与 iOS 的已验证/未验证结论
+2. `本次修改位置：` 至少一个精确范围内的 `文件:行号`；本地分支模式标明 committed/staged/unstaged/untracked 来源。已删除代码标注删除侧行号、根因 commit/工作树层级和 hunk
+3. `目标分支来源：` 目标保留 finding 列出 target ref、target-side parent 或已合入快照 SHA，以及被删内容原 `文件:行号`；其他 finding 省略
+4. `受影响历史代码：` 逐个列出 `文件:行号`、错误代码/失败条件和表达式；没有时写“无”
+5. `问题：` 触发条件、错误结果和影响
+6. `证据：` 端点 diff、parent-to-merge/后续删除 hunk、base/head 差分、类型/测试/运行时或契约依据
+7. `修改建议：` 覆盖根因及所有需同步位置的最小可落地代码、before/after 或伪补丁
+8. `手动自测：` 前置条件、步骤、修复前/后预期；无稳定路径时说明原因并给最小 mock/插桩
+9. React Native finding 追加 Android 与 iOS 的已验证/未验证结论
 
 无法安全确定唯一修复时，说明缺失上下文，给出最可能方向、待确认事实和尽可能接近可用的代码骨架。修复说明属于 Critical，不是 Suggestions。
 
@@ -169,12 +185,14 @@ description: 审查当前 chat 指定的 PR/commit/range，或当前本地分支
 - 范围：[PR 标识、commit range 或 local branch snapshot]
 - 端点：[base/parent] -> [head 或 working tree]
 - Changed files：[总数；本地模式列出 committed/staged/unstaged/untracked 分层计数]
+- 目标分支保留审计：[target tip/已合入快照、范围内 merge commit 数、完成/阻塞/不适用]
 - 结论：[Critical 数量或无]
 
 ## Critical
 
 - [Critical] [标题]
   本次修改位置：[path:line]
+  目标分支来源（适用时）：[target ref、parent/snapshot SHA、path:line]
   受影响历史代码：
 
     - [path:line] [错误代码/失败条件与表达式]
@@ -208,6 +226,8 @@ description: 审查当前 chat 指定的 PR/commit/range，或当前本地分支
 ## 输出前复核
 
 - 范围账本、各层 changed files、hunks 和行号来源是否一致。
+- 是否检查了范围内全部 merge commit 的父提交，而非只看端点 diff 或 `^1`；已合入目标代码的后续删除/覆盖是否已定位到具体 hunk。
+- 是否把 target tip 比已合入快照更新所产生的 target-only 差异误当删除；目标保留审计阻塞时是否避免宣称该维度已通过。
 - 每个 changed `.ts` / `.tsx`（尤其 untracked 新文件）是否都已与完整 TypeScript 诊断逐一核对；是否错误地用构建、lint、测试通过或全仓基线噪音替代了编译覆盖。
 - 每个 changed `.ts` / `.tsx` 是否都已读取 suggestion diagnostics 并核对 `@deprecated` 声明；是否因普通 `tsc` 未显示 TS6385/TS6387 而把覆盖误写为通过。
 - 每条根因是否位于当前精确范围，历史位置是否全部由该根因直接影响。

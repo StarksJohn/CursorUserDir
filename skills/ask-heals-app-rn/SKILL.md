@@ -100,6 +100,10 @@ description: >-
 <!-- - 帮我用英文尽可能详细的总结下 `heals-app-rn` 项目下所有未 commit 文件的 git commit message , 然后帮我 commit+push   -->
 <!-- - 你重新执行 '/Users/stark/.cursor/skills/ask-heals-app-rn/SKILL.md'里的 112 行开始的任务 -->
 <!-- - 我以后如果在 cursor 侧执行 `heals-app-rn`项目的相关任务, 是不是只需要把通用和可重复的任务写到`/Users/stark/.cursor/skills/ask-heals-app-rn/SKILL.md`的 `当前活跃需求`这部分里,然后在 cursor 的 新 chat 里一开始执行一次 `/ask-heals-app-rn`,然后等第一个任务执行完后,如果有新任务,则直接在 chat 里输入具体任务; 目前这是不是最完美最高效最正确的使用 cursor 工作流来执行某个项目任务的最优流程? -->
+<!-- - xx 页面的列表使用我自定义的 "react-native-advanced-flatlist"库的最新版本来布局 -->
+<!-- - 我已经打开了 `/Users/stark/Desktop/work/RN/heals-app-rn/src/constants/index.ts` 的 `$fake: true` -->
+<!-- - 继续之前的任务,完成后,再 执行以下任务:  -->
+<!-- - 我已经手动检查完成了, 你可以 不用检查了 -->
 - IOS:
   <!-- - 为当前 checkout 构建 `dev` 环境的 Release 模式 IPA，并真实上传到 Heals (Dev) 的 TestFlight：`https://appstoreconnect.apple.com/teams/1f49f429-f33a-4c15-b357-7025b5e32451/apps/6740129703/testflight/ios`。本任务明确授权构建和上传，但不授权自动提交 Git、push、分配测试群组、回答出口合规问题或发布到 App Store。
     1. 先确认项目根、当前分支、HEAD 和工作树；保留已有未提交改动，不执行 clean/reset，不覆盖无关文件。读取当前 Dev scheme、iOS build settings、`Info.plist`、`Podfile` 和相关发布说明，以源码和真实构建结果为准。
@@ -116,7 +120,7 @@ description: >-
     12. 最终报告目标 App、version/build、Xcode/SDK、Archive 和 IPA 路径、IPA 大小/SHA-256、签名与 provisioning 校验、上传回执、App Store Connect 实际状态、dSYM/合规风险和未覆盖范围。除非用户明确要求，不提交或 push；完成项目产物和验证后，仅把新增或变化的通用工程/环境/发布事实更新到项目 `README_stark.md`，不写单次状态流水或秘密。 -->
     <!-- - 运行到如图![img_190329.png](img_190329.png)型号的真机上,真机所在的时区是 `东八区` -->
 - android:
-  <!-- -  你执行`npm run android:dev`,把当前项目的dev环境的debug模式的apk运行到如图![img_143139.png](img_143139.png) ![img_143147.png](img_143147.png)型号的真机上,直到你用 adb 截取真机当前画面(遇到类似如图![img_154323.png](img_154323.png)这种警告或者报错,直接解决),检查完毕真机上运行的 APP 没问题为止; 真机所在的时区是 `东八区` -->
+  -  你执行`npm run android:dev`,把当前项目的dev环境的debug模式的apk运行到如图![img_143139.png](img_143139.png) ![img_143147.png](img_143147.png)型号的真机上,直到你用 adb 截取真机当前画面(遇到类似如图![img_154323.png](img_154323.png)这种警告或者报错,直接解决),检查完毕真机上运行的 APP 没问题为止; 真机所在的时区是 `东八区`
   <!-- - 需要你在当前项目根目录执行一条命令(比如 `cd android && ENVFILE=.env.development SENTRY_DISABLE_AUTO_UPLOAD=true ./gradlew assembleDevRelease`),构建出当前项目在`1.2.2`版本的的`dev`环境的release模式的 apk; -->
 - TECH-8757
   - 你读取 `https://ais-pre-hce4mtkty7p4aewqsgaizl-663605729382.us-west2.run.app/`页面的UI节点数据,借鉴 `https://aistudio.google.com/apps/c068b31c-3b5b-42e7-b660-02eea479db8a?showAssistant=true&showCode=true`页面里`code`区域的项目源码;帮我实现`heals-app-rn`项目的以下需求:
