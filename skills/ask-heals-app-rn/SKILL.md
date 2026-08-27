@@ -103,7 +103,8 @@ description: >-
 <!-- - xx 页面的列表使用我自定义的 "react-native-advanced-flatlist"库的最新版本来布局 -->
 <!-- - 我已经打开了 `/Users/stark/Desktop/work/RN/heals-app-rn/src/constants/index.ts` 的 `$fake: true` -->
 <!-- - 继续之前的任务,完成后,再 执行以下任务:  -->
-<!-- - 我已经手动检查完成了, 你可以 不用检查了 -->
+<!-- - 我已经手动检查完成了, 你不用检查了 -->
+<!-- - 对 `/Users/stark/Desktop/work/RN/heals-app-rn/src/screens/my-appointment-screen/my-appointment-screen.tsx`页面使用 '/Users/stark/Desktop/work/RN/heals-app-rn/src/style/theme/theme-common.ts'里定义的 新主题色 'APP_THEME_COLOR'进行 UI改版, 包括页面里所有使用了'#00AC86'颜色的UI元素,比如`TouchableOpacity` 的背景色或者`Text`的字体颜色等; -->
 - IOS:
   <!-- - 为当前 checkout 构建 `dev` 环境的 Release 模式 IPA，并真实上传到 Heals (Dev) 的 TestFlight：`https://appstoreconnect.apple.com/teams/1f49f429-f33a-4c15-b357-7025b5e32451/apps/6740129703/testflight/ios`。本任务明确授权构建和上传，但不授权自动提交 Git、push、分配测试群组、回答出口合规问题或发布到 App Store。
     1. 先确认项目根、当前分支、HEAD 和工作树；保留已有未提交改动，不执行 clean/reset，不覆盖无关文件。读取当前 Dev scheme、iOS build settings、`Info.plist`、`Podfile` 和相关发布说明，以源码和真实构建结果为准。
