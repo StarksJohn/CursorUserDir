@@ -1,0 +1,609 @@
+Calling on all workspace Admins - Connect your Bit... - Atlassian Community
+
+Forums
+
+Sign up Log in
+
+Forums
+
+Sign up Log in
+
+Forums
+
+Sign up Log in
+
+## Forums
+
+https://community.atlassian.com/forums Q&A Discussion groups Articles
+
+cancel
+
+Auto-suggest helps you quickly narrow down your search results by suggesting possible matches as you type.
+
+Showing results for
+
+Search instead for
+
+Did you mean:
+
+##### Q&A
+
+##### Community resources
+
+##### Support
+
+- Documentation and support
+- Atlassian Community Events
+- Atlassian Learning
+
+##### Top groups
+
+##### Community resources
+
+##### Support
+
+- Documentation and support
+- Atlassian Community Events
+- Atlassian Learning
+
+##### Learn
+
+##### Community resources
+
+##### Support
+
+- Documentation and support
+- Atlassian Community Events
+- Atlassian Learning
+
+##### Events
+
+- Live learning
+- Local meet ups
+- Community led conferences
+
+##### Community resources
+
+##### Support
+
+- Documentation and support
+- Atlassian Community Events
+- Atlassian Learning
+
+- Community
+- Q&A
+- Bitbucket
+- Articles
+- Calling on all workspace Admins - Connect your Bitbucket workspace to an Atlassian organization
+
+# Calling on all workspace Admins - Connect your Bitbucket workspace to an Atlassian organization
+
+July 7, 2025 edited
+
+Update August 21, 2026
+
+Hi all,
+
+As of today, all Bitbucket workspaces on paid plan are eligible to be linked to an Atlassian Org of your choice. As a reminder, to perform the Org linking, the user must be an Admin of Bitbucket workspace and the Atlassian org.
+
+---
+
+Update May 11, 2026
+
+Hi Bitbucket Community,
+
+We’ve started linking Bitbucket workspaces on paid plans (Standard and Premium) to Atlassian organizations. If your workspace wasn’t already linked to an organization, we’re creating a new Atlassian organization for you and completing the linking automatically by choosing one of your Workspace Admins as an actor for this action.
+
+This step sets the foundation for unified billing, centralized user management, and a consistent experience across Bitbucket and other Atlassian apps. Our goal is to give organization admins a single place to manage users, billing, and app access for all Atlassian apps.
+
+If you’re a workspace admin, primary billing contact, or technical contact, you can access your new organization at admin.atlassian.com. The organization name matches your Bitbucket workspace ID (the name in your Bitbucket repository URLs).
+
+Administrators can chance the name of the newly created Organization at any time, by following the steps outlined in this help document.
+
+What to expect:
+
+Audit logs: Workspace admins can find the linked organization ID in the Bitbucket workspace audit log. The audit log will reflect what user Atlassian team used as an actor. This is done to make sure that one of the workspaces Admins becomes an admin of a newly created Organization to be able to manage it.
+
+Notifications: Users added as organization admins later, will receive an email notification below.
+
+Next, we’ll begin migrating these workspaces to our new billing engine, followed by centralized user management towards the end of calendar year.
+
+| Moving a Bitbucket app between organizations isn’t supported at this time. To follow progress on this feature, watch the following public request: https://jira.atlassian.com/browse/BCLOUD-23320 |
+| --- |
+
+---
+
+Update as of November 3rd, 2025
+
+Bitbucket is moving to a new billing platform and we are retiring our old billing system.
+
+To keep your workspace running smoothly, all Bitbucket workspaces must be linked to an Atlassian organization by March 15, 2026.
+
+What happens if you don’t link your workspace by the deadline?
+
+If your workspace isn’t linked by March 15, 2026, Atlassian will create an organization for you and link your Bitbucket workspace to it. Your billing information, users, and groups will be migrated to this new organization. After that, you won’t be able to move your workspace to a different Atlassian organization.
+
+----------------------------------------------------------------------------------
+
+Hello Bitbucket Community,
+
+We are significantly enhancing Bitbucket Cloud by deepening its integration with the Atlassian platform, providing our customers with a more unified experience across all Atlassian cloud products. Our primary goal is to enable administrators within your Atlassian organization to manage Bitbucket Cloud users, permissions, and billing alongside your other Atlassian flagship products, all directly within Atlassian Administration. Furthermore, this centralizes your organization's content to unlock enhanced benefits with Atlassian AI.
+
+Who needs to take action?
+
+If you’re an admin of a Bitbucket Cloud workspace, please link your workspace to your company’s Atlassian organization.
+
+Note: To link your workspace to an Atlassian organization, you need to be a Bitbucket workspace admin and an Atlassian organization admin.
+
+## Steps to link your workspace to an Atlassian Org
+
+Please follow the steps in Add a new Atlassian app to your organization | Atlassian Support or use the steps provided below to complete the linking process.
+
+#### If you are a Bitbucket workspace admin and an Atlassian organization admin
+
+Go to admin.atlassian.com.
+
+Select the organization you would want to link your workspace to. (Note: Please only select the workspaces that you want to be part of your organization as you will not be able unlink them later.)
+
+Once inside the organization, select Apps
+
+OR
+
+Under Apps, click Atlassian apps
+
+4. In the upper-right corner, click "..." and then select Link Bitbucket from the dropdown menu
+
+5. Click Next on the screen
+
+6. Select the workspace you want to link to your Atlassian organization. Note: You can only link one workspace at a time.
+
+7. Confirm that this is the workspace you would want to link and click Link
+
+8. Refresh the Apps view to see the newly added workspace on the list of available apps.
+
+#### If you are a Bitbucket workspace admin but not an Atlassian organization admin
+
+You will need to reach out to your organization’s admin.
+
+Either ask them to make you an org admin, or follow the steps provided below to add them as a workspace admin to your workspace so they can complete the linking process.
+
+Go to Workspace settings.
+
+Select User groups.
+
+Select the group with the Admin lozenge associated with it.
+
+Select Add members in the upper-right corner.
+
+Enter the user’s email (or multiple emails if sending to multiple administrators).
+
+Select Confirm.
+
+The user(s) will receive an invitation email to join the workspace as an admin, they must accept the invitation to join the workspace.
+
+Once those steps are completed, they can follow the steps outlined in the “If you are a Bitbucket workspace admin and an Organization admin” section above to link your workspace to an Atlassian organization.
+
+#### Not sure if you already have an Atlassian organization?
+
+You can verify whether or not your company already has an Atlassian organization by going to https://admin.atlassian.com/.
+
+1. If you are not part of any organization, you will see a prompt to create one
+
+you can also follow the steps outlined in our help documentation.
+
+3. When prompted, you can take a tour or close it
+
+4. From the Atlassian Guard Standard screen, select a trial or click X to skip.
+
+5. Once the org is created, follow the steps outlined in the section “If you are a Bitbucket workspace admin and an Organization admin” to link your workspace to an Atlassian organization.
+
+Eligibility
+
+Only workspaces that are eligible to be linked will appear in the list under ‘Select a workspace to link’.
+
+If your workspace isn’t listed, it’s not yet eligible. Don’t worry—you’ll receive a notification when it becomes eligible.
+
+| For our customers with Atlassian organizations that are still on separate user management (or original user management), please follow this public feature request AX-472 to get progress updates on when your organization will be able to benefit from managing your users across all your Atlassian Cloud products in a unified manner. |
+| --- |
+
+---
+
+FAQ
+
+Is this step mandatory to continue using BB ?Linking your Bitbucket workspace to an Atlassian organization is required. Taking action now will also help you maintain uninterrupted access to the product and benefit from new upcoming enhancements. Deadline to complete the linking is March 15, 2026.
+
+What happens if I don't link my workspace ?
+
+If your workspace isn’t linked by March 15, 2026, Atlassian will create an organization for you and link your Bitbucket workspace to it. Your billing information, users, and groups will be migrated to this new organization. After that, you won’t be able to move your workspace to a different Atlassian organization.
+
+If my company has multiple Atlassian Organizations, which Organization should I pick to link my workspace to?To best support centralized user and billing management across your Atlassian suite, we recommend selecting an Atlassian organization that already serves as your primary hub for flagship products like Jira and Confluence Cloud, and where you have existing integrations with Active Directory for user management. Consolidating your cloud products under a single Atlassian organization not only streamlines user and billing administration, but also unlocks advanced capabilities such as Atlassian AI, powered by the Atlassian Teamwork graph.Administrators should also consider active integration between Jira Cloud and Bitbucket workspace when making a decision about which Atlassian Org to choose. Consolidating all your cloud products under a single organizational umbrella will greatly simplify the daily responsibilities of administrators.
+
+Will we lose any Bitbucket features or have impact on users access by linking our workspace to Atlassian Administration? No, no features or user access will be impacted by taking this step.
+
+What is the role of Atlassian Organization Admin?Within Atlassian Organization, Admins have multiple roles, please refer to https://support.atlassian.com/user-management/docs/what-are-the-different-types-of-admin-roles/ to learn more.
+
+What are the benefits from linking my workspace to an Atlassian Org?
+
+Workspaces linked to an Atlassian org will be able to benefit from
+
+Centralized user management
+
+A unified billing experience. To learn more, please visit this blog post
+
+Rovo Dev AI capabilities to streamline development
+
+Set up Rovo Dev Agents
+
+The upcoming Bitbucket Packages feature includes support for Docker images via a built-in container registry
+
+This new feature will enable smooth storage, management, and deployment of containerized applications, all from within Bitbucket Cloud – avoiding the need for expensive third party solutions
+
+Workspaces not linked to an Org will not be able to install Forge Apps
+
+Like# people like this
+
+Share
+
+- LinkedIn
+- Email
+- Copy Link
+
+332972 views
+
+## 137 comments
+
+Community Champion
+
+July 7, 2025 edited
+
+Very nice!
+
+Like• # people like this
+
+Contributor
+
+July 15, 2025 edited
+
+where can I find this "In the upper-right corner, select ..."?
+
+Like• # people like this
+
+I'm New Here
+
+I'm New Here
+
+Those new to the Atlassian Community have posted less than three times. Give them a warm welcome!
+
+July 16, 2025 edited
+
+For people that cannot find it with the instructions above:
+
+I found it under Products -> ... (next to Add product) -> Link Bitbucket
+
+Like• # people like this
+
+Atlassian Team
+
+Atlassian Team members are employees working across the company in a wide variety of roles.
+
+July 16, 2025 edited
+
+When you access your Atlassian Org from admin.atlassian.com > Navigate to Apps or Products on the horizontal navigation menu and you should see a "..." per screen shot below. Hope this helps clarify.
+
+Thank you.
+
+Like• juanba likes this
+
+I'm New Here
+
+I'm New Here
+
+Those new to the Atlassian Community have posted less than three times. Give them a warm welcome!
+
+July 16, 2025 edited
+
+Why exactly is there a specified date of September 2nd to link the two? Will you not be able to do this after Sept 2nd? What if you become a new customer after this date? It seems strange that Atlassian would set and arbitrary time limit to link to of their products.
+
+Contributor
+
+July 16, 2025 edited
+
+@Yana good news is I found it, bad news it I found it on the wrong organization... and linked it to that wrong organization! so the UI display in two of my organizations are different, only one of them has that ... button and the other simply doesn't. Moreover when I was searching on web to find out where that ... button is, one link directly took me to the page that has the ... button, without letting me select organization, it's just so subtle that I didn't notice the fact it's not the intended org.
+
+To make it worse, Atlassian even deliberately made it an one-way trip, now I'm stuck with this wrong linkage. The overall UI design in the admin area is a nightmare, I found it hard to believe that a company with a reputation in software engineering can make such a mess of it.
+
+Like• Ted Stresen-Reuter likes this
+
+Atlassian Team
+
+Atlassian Team members are employees working across the company in a wide variety of roles.
+
+July 17, 2025 edited
+
+I'm sorry to hear that you linked your Bitbucket workspace to a wrong Atlassian Organization.
+
+let me ask our Support team to help you get untangled and get you on the right track.
+
+Please look out for a ticket from us.
+
+Thank you
+
+Like• Ulrich Kuhnhardt _IzymesCo_ likes this
+
+Contributor
+
+July 17, 2025 edited
+
+I've reached out to support team and they've successfully unlinked my workspace, many thanks@Yana!
+
+Like• # people like this
+
+Atlassian Team
+
+Atlassian Team members are employees working across the company in a wide variety of roles.
+
+July 18, 2025 edited
+
+Thank you for your question, I have updated my post to add an FAQ, that should help answer your question.
+
+Thank you
+
+I'm New Here
+
+I'm New Here
+
+Those new to the Atlassian Community have posted less than three times. Give them a warm welcome!
+
+July 20, 2025 edited
+
+we use atlassian admin to enforce SSO for jira/confluence/etc
+
+if we onboard bitbucket, will those SSO authentication requirements be automatically applied to the bitbucket environment?
+
+Like• Jamie Spatz likes this
+
+Atlassian Team
+
+Atlassian Team members are employees working across the company in a wide variety of roles.
+
+July 21, 2025 edited
+
+Authentication via SSO is done through Atlassian account, so this applies to all users regardless of product access. However product access and groups synching with your AD provider will not yet be supported with this initial step of linking your Bitbucket workspace with Atlassian Org. As a followup step, our team will be onboarding your Bitbucket workspace to Atlassian Administration for centralized user management.
+
+If you would like to join our EAP program to fully onboard your workspace to Atlassian Administration, please fill out this form and we will reach out to you separately.
+
+Thank you
+
+I'm New Here
+
+I'm New Here
+
+Those new to the Atlassian Community have posted less than three times. Give them a warm welcome!
+
+August 4, 2025 edited
+
+Does this mean that if users are part of two different Bitbucket workspaces, and then both workspaces are linked to the Atlassian organization, that the same user still gets billed twice, once for each workspace?
+
+Atlassian Team
+
+Atlassian Team members are employees working across the company in a wide variety of roles.
+
+August 4, 2025 edited
+
+Bitbucket billing doesn't change with either linking of the workspace or migrating users to Atlassian Administration. Each user is billed based on product access and license they consume within each workspace.
+
+If you have 2 separate workspaces right now, they are billed separately and linking both to the same Atlassian Organization doesn't change that.
+
+And by linking both Bitbucket workspaces to the same Atlassian Org will soon allow you to see billing across all your Atlassian products in Atlassian Administration without having to navigate to multiple workspaces.
+
+Like• Jack likes this
+
+I'm New Here
+
+I'm New Here
+
+Those new to the Atlassian Community have posted less than three times. Give them a warm welcome!
+
+August 5, 2025 edited
+
+Hi Atlassian Team!If I do not want to manage users and payment through Atlassian do I need to pay extra for Atlassian and need to link my bitbucket workspace?All we need is to keep using Bitbucket, our paid plan with this is more than enough for how we use it.In the FAQ above it mentions we need to link our Bitbucket workspace to avoid 'temporary interruption in our ability to administer our workspace until the linking process is completed'. When i go to link it though, I am prompted to select another payment plan with Atlassian even though I have no use for any of the changes apart from using Bitbucket (which we already pay for).
+
+Like• # people like this
+
+Atlassian Team
+
+Atlassian Team members are employees working across the company in a wide variety of roles.
+
+August 5, 2025 edited
+
+Linking your workspace to Atlassian organization is completely Free, you do not need to pay anything extra.
+
+Signing up for an Atlassian org for your company, if you do not already have one, is also free and doesn't require a payment method.
+
+Please reach out to our Support team if you need help with any of the steps and they will be happy to assist you.
+
+Like• EC likes this
+
+August 5, 2025 edited
+
+Our company got the Email directing us to link Bitbucket to our organization which currently has JIRA.During the process though I see this concerning message:
+
+## Link Bitbucket
+
+You won't be able to administer users, groups, and access for this workspace in Atlassian Administration. You also can't unlink this workspace or transfer it to another organization once it's linked.The link at the end of the message doesn't explain how an administrator can manage users after linking Bitbucket.
+
+We don't have a high turnover of Bitbucket users here but loosing the ability to manage users seems to be a non-starter.
+
+Would you care to comment on this?
+
+I'm New Here
+
+I'm New Here
+
+Those new to the Atlassian Community have posted less than three times. Give them a warm welcome!
+
+August 5, 2025 edited
+
+I found that on creating an organization we are entered into a free trial of Atlassian Guard. What happens when that expires if we don't sign up for it?
+
+We only use Bitbucket, we're a small team of developers at a busy agency and our primary concern is business continuity.
+
+Like• # people like this
+
+Community Champion
+
+August 5, 2025 edited
+
+Hi Atlassian Community,
+
+First of all, thank you for this great feature update! It’s exciting to see Bitbucket evolving steadily toward more enterprise-ready capabilities.
+
+One of our customers currently manages Jira/Confluence and Bitbucket with separate administrators; their Corporate IT team manages Jira/Confluence, while Bitbucket is managed by their engineering department responsible for development activities. In this organization, users are not managed in an external Idp and are managed in Atlassian's internal directory.
+
+With the upcoming requirement to link Bitbucket workspaces to an Atlassian Organization, they have the following concerns:
+
+Does linking require that Bitbucket workspace admins also become Organization admins?If so, there is a concern that Bitbucket workspace administrators might be granted excessive privileges—such as permissions to configure organization-wide security policies or manage access to other Atlassian products—which may not align with their intended scope of responsibility.
+
+Is it possible to continue operating with separated user and admin management (i.e. without linking), even after the September 2, 2025 deadline?
+
+If linking is mandatory, is there a way to restrict admin capabilities so that administrators can only manage users and settings related to the specific product (e.g. Bitbucket), without broader organization-level access?
+
+I'd also really appreciate hearing from others who are currently managing Bitbucket and Jira/Confluence separately—especially if you’ve been considering (or have recently gone through) the process of linking and unifying administration under an Atlassian Organization.
+
+If you have any insights or ideas about how to maintain a clean separation of responsibilities after linking, I’d love to hear your thoughts!
+
+Thank you in advance!
+
+Like• # people like this
+
+August 6, 2025 edited
+
+Okay - so you want us to jump through some more hoops. Whatever.
+
+But we already pay on a per seat basis for our use of Bitbucket. By creating an organisation it looks like we have to sign up to pay for another per seat charge of $4 per month per user.
+
+Please tell me I've got this wrong?
+
+Like• Mike Lamatrice likes this
+
+I'm New Here
+
+I'm New Here
+
+Those new to the Atlassian Community have posted less than three times. Give them a warm welcome!
+
+August 6, 2025 edited
+
+More pointless nonesense from Atlassian.
+
+We just want to get work done. Why do we have to jump through all of these steps for zero benefit?
+
+Like• # people like this
+
+Atlassian Team
+
+Atlassian Team members are employees working across the company in a wide variety of roles.
+
+August 6, 2025 edited
+
+Hi there,
+
+By linking your workspace to an Atlassian org, you will not lose the ability to manage users in Bitbucket and at this time everything will remain the same.
+
+However by taking this fist and critical step you are:
+
+1. Creating a map to allow our team to then migrate your users and group to this Org that you chose, for centralized user management. Admins will be able to benefit from IDP integration for easy user management across all your Atlassian apps. Currently Bitbucket users are managed separately and we do not have a native integration with IDP. (if you are interested you can also join our EAP program to migrate your workspace users and group to Atlassian Administration by filling out this EAP participation form)
+
+2. Creating a map to allow our team to enable new billing experience for your team, to manage all your Atlassian apps, including Bitbucket from centralized billing in Atlassian Administration.
+
+3. Benefit from the value of Teamwork Graph by contextualizing content across all products within your Organization and for your team to benefit from improved visibility and efficiency.
+
+Please feel free to reach out to our Support team if you have further questions or need help.
+
+Atlassian Team
+
+Atlassian Team members are employees working across the company in a wide variety of roles.
+
+August 6, 2025 edited
+
+You do not require a payment method to try our product. Once the trial runs out, and you do not wish to use the product, you'll just lose the features that Guard offers. It will not have an impact on your Bitbucket operation or workflows.
+
+Atlassian Team
+
+Atlassian Team members are employees working across the company in a wide variety of roles.
+
+August 6, 2025 edited
+
+Hi there and appreciate your questions.
+
+Here are the answers:
+
+Does linking require that Bitbucket workspace admins also become Organization admins?If so, there is a concern that Bitbucket workspace administrators might be granted excessive privileges—such as permissions to configure organization-wide security policies or manage access to other Atlassian products—which may not align with their intended scope of responsibility.
+
+In order to link your workspace to an Atlassian Org, the user must be an Org Admin and a workspace Admin. However that doesn't require then for the workspace Admins to become Org Admins. Atlassian Administration has a role of User Access Admin, this role allows users to manage product access but not have access to the product and doesn't require Org Admin role. To learn more please refer to this help document.
+
+Is it possible to continue operating with separated user and admin management (i.e. without linking), even after the September 2, 2025 deadline?
+
+By linking your workspace, you will still continue managing users separately. Please see my response above to Joe for more details.
+
+If linking is mandatory, is there a way to restrict admin capabilities so that administrators can only manage users and settings related to the specific product (e.g. Bitbucket), without broader organization-level access?
+
+Yes, please refer to the following help documents: https://support.atlassian.com/user-management/docs/what-are-the-different-types-of-admin-roles/
+
+Thank you and please feel free to reach out to our Support team for help
+
+Atlassian Team
+
+Atlassian Team members are employees working across the company in a wide variety of roles.
+
+August 6, 2025 edited
+
+Hi there,
+
+Creating an Atlassian Org is free and you do not pay for users in the Org.
+
+That might have been for a Guard subscription, which your team gets a free trial of for 30 days and you do not have to signup for it after the trial runs out.
+
+To learn more about an Atlassian Org please refer to
+
+and
+
+Thank you
+
+August 7, 2025 edited
+
+@yana Okay, moving on from the Guard debacle - You appear to be saying that I have now to add every user onto the organisational panel by physically typing their email address? Doesn't bitbucket already have this information? Why do I have to enter it again?
+
+Like• zachary_laraman likes this
+
+### Comment
+
+Log in or Sign up to comment
+
+### Was this helpful?
+
+Yes No
+
+##### Thanks!
+
+×
+
+Yana
+
+Atlassian Team
+
+Atlassian Team
+
+Atlassian Team members are employees working across the company in a wide variety of roles.
+
+#### About this author
+
+2 accepted answers
+
+###### TAGS
+
+## Atlassian Community Events
+
+Copyright © 2026 Atlassian
+
+Privacy Policy Notice at Collection Terms Security
