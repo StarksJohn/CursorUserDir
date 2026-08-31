@@ -103,11 +103,12 @@ description: >-
 <!-- - xx 页面的列表使用我自定义的 "react-native-advanced-flatlist"库的最新版本来布局 -->
 <!-- - 我已经打开了 `/Users/stark/Desktop/work/RN/heals-app-rn/src/constants/index.ts` 的 `$fake: true` -->
 <!-- - 继续之前的任务,完成后,再 执行以下任务:  -->
-<!-- - 我已经手动检查完成了, 你不用检查了 -->
+<!-- - 我已经手动完成了在安卓真机上的操作流程检查, 所以你不用再检查安卓真机的UI显示和操作流程了,只需要继续检查其它方面的内容和功能 -->
 <!-- - 对 `/Users/stark/Desktop/work/RN/heals-app-rn/src/screens/my-appointment-screen/my-appointment-screen.tsx`页面使用 '/Users/stark/Desktop/work/RN/heals-app-rn/src/style/theme/theme-common.ts'里定义的 新主题色 'APP_THEME_COLOR'进行 UI改版, 包括页面里所有使用了'#00AC86'颜色的UI元素,比如`TouchableOpacity` 的背景色或者`Text`的字体颜色等; -->
-<!-- - /code-review-codex 目标 `1.1.8`, PR `https://bitbucket.org/healshealthcare/csx-mobile/pull-requests/538#comment-842954588`, commit `` -->
-<!-- -  pls conduct a code review of this PR '',and addressing the 'Requested changes' I provided in your PR ''.  -->
+<!-- - $code-review-codex 目标 `1.2.3`, PR ``, commit ``, 帮我直接解决遇到的问题 -->
+<!-- - ls conduct a code review of this PR '',and addressing the 'Requested changes' I provided in your PR ''.  -->
 <!-- - 以 `https://ais-pre-hce4mtkty7p4aewqsgaizl-663605729382.us-west2.run.app/` 网页当前 DOM/可访问性节点和计算样式为事实源，读取`图x`红框里的尺寸、间距、圆角、阴影、图标容器、字号/颜色和点击区域等UI元素节点数据来进行UI布局,按这些节点值映射到项目现有的样式系统；不只凭截图目测 -->
+<!-- - Reload 没有加载到最新 bundle，仍显示旧 JS -->
 - IOS:
   <!-- - 为当前 checkout 构建 `dev` 环境的 Release 模式 IPA，并真实上传到 Heals (Dev) 的 TestFlight：`https://appstoreconnect.apple.com/teams/1f49f429-f33a-4c15-b357-7025b5e32451/apps/6740129703/testflight/ios`。本任务明确授权构建和上传，但不授权自动提交 Git、push、分配测试群组、回答出口合规问题或发布到 App Store。
     1. 先确认项目根、当前分支、HEAD 和工作树；保留已有未提交改动，不执行 clean/reset，不覆盖无关文件。读取当前 Dev scheme、iOS build settings、`Info.plist`、`Podfile` 和相关发布说明，以源码和真实构建结果为准。
