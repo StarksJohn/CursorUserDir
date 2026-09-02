@@ -1,0 +1,58 @@
+---
+pid: 31317
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "node -e 'const ts=require(\"typescript\"),cp=require(\"child_process\"),path=require(\"path\");const root=process.cwd();const changed=cp.execFileSync(\"git\",[\"diff\",\"--name-only\",\"--diff-filter=ACMR\",\"a95f28724e7629b524f9f8fdd6aefa8fb0c86fef...c7d8992921ed012b103f7d3c6a8716dac677eeb4\",\"--\",\"*.ts\",\"*.tsx\"],{encoding:\"utf8\"}).trim().split(/\\n/).filter(Boolean).map(f=>path.resolve(root,f));const cfg=ts.readConfigFile(path.join(root,\"tsconfig.json\"),ts.sys.readFile);const parsed=ts.parseJsonConfigFileContent(cfg.config,ts.sys,root);const versions=new Map(parsed.fileNames.map(f=>[f,\"0\"]));const service=ts.createLanguageService({getScriptFileNames:()=>parsed.fileNames,getScriptVersion:f=>versions.get(f)||\"0\",getScriptSnapshot:f=>{if(!ts.sys.fileExists(f))return;return ts.ScriptSnapshot.fromString(ts.sys.readFile(f)||\"\")},getCurrentDirectory:()=>root,getCompilationSettings:()=>parsed.options,getDefaultLibFileName:o=>ts.getDefaultLibFilePath(o),fileExists:ts.sys.fileExists,readFile:ts.sys.readFile,readDirectory:ts.sys.readDirectory,directoryExists:ts.sys.directoryExists,getDirectories:ts.sys.getDirectories});let count=0;for(const f of changed){const rel=path.relative(root,f);if(!parsed.fileNames.includes(f)){console.log(`UNCOVERED ${rel}`);continue}const ds=service.getSuggestionDiagnostics(f);console.log(`FILE ${rel} SUGGESTIONS ${ds.length}`);for(const d of ds){count++;const lc=d.file&&d.start!=null?d.file.getLineAndCharacterOfPosition(d.start):null;console.log(`${rel}:${lc?lc.line+1:0}:${lc?lc.character+1:0} TS${d.code} ${ts.flattenDiagnosticMessageText(d.messageText,\" \")}`)}}console.log(`TOTAL_CHANGED_TS ${changed.length}`);console.log(`TOTAL_SUGGESTIONS ${count}`);'"
+title: "Collect changed-file TypeScript suggestions"
+status: succeeded
+started_at: 2026-09-02T06:53:20.178Z
+running_for_ms: 5095     
+---
+UNCOVERED App.tsx
+FILE src/assets/svg/drawer-activate-icon.tsx SUGGESTIONS 0
+FILE src/assets/svg/drawer-dependants-icon.tsx SUGGESTIONS 0
+FILE src/assets/svg/drawer-heals-pass-icon.tsx SUGGESTIONS 0
+FILE src/assets/svg/drawer-heals-plans-icon.tsx SUGGESTIONS 0
+FILE src/assets/svg/drawer-help-icon.tsx SUGGESTIONS 0
+FILE src/assets/svg/drawer-medical-records-icon.tsx SUGGESTIONS 0
+FILE src/assets/svg/drawer-medications-icon.tsx SUGGESTIONS 0
+FILE src/assets/svg/drawer-signout-icon.tsx SUGGESTIONS 0
+FILE src/assets/svg/drawer-transactions-icon.tsx SUGGESTIONS 0
+FILE src/assets/svg/index.ts SUGGESTIONS 0
+FILE src/assets/svg/tab-concierge-icon.tsx SUGGESTIONS 0
+FILE src/assets/svg/tab-consult-icon.tsx SUGGESTIONS 0
+FILE src/assets/svg/tab-home-icon.tsx SUGGESTIONS 0
+FILE src/components/drawer-row-item/drawer-row-item.props.ts SUGGESTIONS 0
+FILE src/components/drawer-row-item/drawer-row-item.styles.ts SUGGESTIONS 0
+FILE src/components/drawer-row-item/drawer-row-item.tsx SUGGESTIONS 1
+src/components/drawer-row-item/drawer-row-item.tsx:2:34 TS6133 'StyleSheet' is declared but its value is never read.
+FILE src/components/name-avatar-component/name-avatar-component.props.ts SUGGESTIONS 1
+src/components/name-avatar-component/name-avatar-component.props.ts:1:1 TS6133 'React' is declared but its value is never read.
+FILE src/components/name-avatar-component/name-avatar-component.styles.ts SUGGESTIONS 0
+FILE src/components/name-avatar-component/name-avatar-component.tsx SUGGESTIONS 1
+src/components/name-avatar-component/name-avatar-component.tsx:2:22 TS6133 'StyleSheet' is declared but its value is never read.
+FILE src/i18n/locale/en.ts SUGGESTIONS 0
+FILE src/i18n/locale/zh.ts SUGGESTIONS 0
+FILE src/i18n/locale/zh_tw.ts SUGGESTIONS 0
+FILE src/navigation/main-tab/main-tab-navigator.styles.ts SUGGESTIONS 0
+FILE src/navigation/main-tab/main-tab-navigator.tsx SUGGESTIONS 5
+src/navigation/main-tab/main-tab-navigator.tsx:13:1 TS6133 'SafeAreaView' is declared but its value is never read.
+src/navigation/main-tab/main-tab-navigator.tsx:21:15 TS6196 'UITheme' is declared but never used.
+src/navigation/main-tab/main-tab-navigator.tsx:79:11 TS6133 'navigation' is declared but its value is never read.
+src/navigation/main-tab/main-tab-navigator.tsx:383:70 TS6133 'match' is declared but its value is never read.
+src/navigation/main-tab/main-tab-navigator.tsx:570:50 TS6133 'size' is declared but its value is never read.
+FILE src/navigation/route-names.ts SUGGESTIONS 0
+FILE src/screens/concierge-screen/concierge-screen.props.ts SUGGESTIONS 0
+FILE src/screens/concierge-screen/concierge-screen.styles.ts SUGGESTIONS 0
+FILE src/screens/concierge-screen/concierge-screen.tsx SUGGESTIONS 1
+src/screens/concierge-screen/concierge-screen.tsx:4:3 TS6133 'Text' is declared but its value is never read.
+FILE src/screens/consult-screen/consult-screen.props.ts SUGGESTIONS 0
+FILE src/screens/consult-screen/consult-screen.styles.ts SUGGESTIONS 0
+FILE src/screens/consult-screen/consult-screen.tsx SUGGESTIONS 0
+TOTAL_CHANGED_TS 32
+TOTAL_SUGGESTIONS 9
+
+---
+exit_code: 0
+elapsed_ms: 5095
+ended_at: 2026-09-02T06:53:25.273Z
+---
