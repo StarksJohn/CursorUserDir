@@ -15,7 +15,7 @@
 
 ## 2. 项目入口与唯一项目规则
 
-- 已登记的 8 个业务项目，每个新 Chat 第一条消息优先同时写 Cursor 入口和具体任务，例如第一行 `/ask-csx-web-react`，随后直接写任务。只有需要跨 Chat、跨设备或长期恢复时，才把任务写入入口 Skill 的“最新待继续问题 / 当前活跃需求”受保护区。
+- 已登记的 9 个业务项目，每个新 Chat 第一条消息优先同时写 Cursor 入口和具体任务，例如第一行 `/ask-csx-web-react`，随后直接写任务。只有需要跨 Chat、跨设备或长期恢复时，才把任务写入入口 Skill 的“最新待继续问题 / 当前活跃需求”受保护区。
 - Cursor 项目入口位于 `$HOME/.cursor/skills/<cursor-entry>/SKILL.md`；入口必须完整读取配对 Codex 项目 Skill 同目录的 `AGENTS.md`。该文件是 Codex/Cursor 唯一项目规则源。
 - 已登记项目不得在仓库根创建 `AGENTS.md`，也不得创建 `.cursor/rules/project-context.mdc` 副本。未登记仓库仍读取实际存在且可同步的仓库级 `AGENTS.md`。
 
@@ -29,6 +29,7 @@
 | `csx-mobile-upgrade` | `ask-csx-mobile-upgrade` |
 | `heals-app-rn` | `ask-heals-app-rn` |
 | `newtownapp` | `ask-newtownapp` |
+| `react-native-advanced-flatlist` | `ask-react-native-advanced-flatlist` |
 
 - 项目入口在新 Chat 首次激活时只做一次轻量漂移检查：核对当前任务相关源码、manifest、关键配置和主目录。若它们与唯一 `AGENTS.md` 存在重大冲突，自动完整读取并执行 `$HOME/.cursor/skills/init-project/SKILL.md`，刷新后重读 `AGENTS.md` 并继续原任务；无需用户再次输入 `/init-project`。无重大冲突时立即继续，不做全仓扫描。
 - 只有稳定架构、命令工作流、关键目录或仓库边界确实变化时才更新唯一 `AGENTS.md`；可从源码恢复的版本、完整目录树、一次性任务和临时结论不写入其中。

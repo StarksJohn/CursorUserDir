@@ -101,7 +101,7 @@ description: >-
 <!-- - 帮我用英文尽可能详细的总结下 `heals-app-rn` 项目下所有未 commit 文件的 git commit message , 然后帮我 commit+push   -->
 <!-- - 你重新执行 '/Users/stark/.cursor/skills/ask-heals-app-rn/SKILL.md'里的 112 行开始的任务 -->
 <!-- - 我以后如果在 cursor 侧执行 `heals-app-rn`项目的相关任务, 是不是只需要把通用和可重复的任务写到`/Users/stark/.cursor/skills/ask-heals-app-rn/SKILL.md`的 `当前活跃需求`这部分里,然后在 cursor 的 新 chat 里一开始执行一次 `/ask-heals-app-rn`,然后等第一个任务执行完后,如果有新任务,则直接在 chat 里输入具体任务; 目前这是不是最完美最高效最正确的使用 cursor 工作流来执行某个项目任务的最优流程? -->
-<!-- - xx 页面的列表使用我自定义的 "react-native-advanced-flatlist"库的最新版本来布局 -->
+<!-- - `xx` 页面的列表使用我自定义的 "react-native-advanced-flatlist"库的最新版本来布局,仓库源码在 `/Users/stark/Desktop/work/RN/react-native-advanced-flatlist` -->
 <!-- - 我已经打开了 `/Users/stark/Desktop/work/RN/heals-app-rn/src/constants/index.ts` 的 `$fake: true` -->
 <!-- - 继续之前的任务,完成后,再 执行以下任务:  -->
 <!-- - 我已经手动完成了在安卓真机上的操作流程检查, 所以你不用再检查安卓真机的UI显示和操作流程了,只需要继续检查其它方面的内容和功能 -->

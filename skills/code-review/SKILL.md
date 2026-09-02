@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: 审查当前 chat 指定的 PR/commit/range，或当前本地分支相对目标基线的完整变更；本地分支范围包含 committed、staged、unstaged 与未忽略的 untracked 文件，并对范围内 merge 的相关父提交执行目标分支保留审计，防止端点净 diff 漏掉合入后删除或覆盖的目标分支既有代码；同时追踪对历史调用者、类型、配置和测试的直接影响，只报告合并前必须修复的 Critical。适用于 GitHub/Bitbucket PR、commit、commit range、目标分支与 code review，重点覆盖用户 8 个项目中的 Next.js、React、React Native、Vue 2、TypeScript、Node.js、Prisma、原生 iOS/Android，同时兼容 Vue 3、Flutter、微信小程序和 HTML/CSS；排除基线旧问题、Suggestions 和 PR 外备注。
+description: 审查当前 chat 指定的 PR/commit/range，或当前本地分支相对目标基线的完整变更；本地分支范围包含 committed、staged、unstaged 与未忽略的 untracked 文件，并对范围内 merge 的相关父提交执行目标分支保留审计，防止端点净 diff 漏掉合入后删除或覆盖的目标分支既有代码；同时追踪对历史调用者、类型、配置和测试的直接影响，只报告合并前必须修复的 Critical。适用于 GitHub/Bitbucket PR、commit、commit range、目标分支与 code review，重点覆盖用户 9 个项目中的 Next.js、React、React Native、Vue 2、TypeScript、Node.js、Prisma、原生 iOS/Android，同时兼容 Vue 3、Flutter、微信小程序和 HTML/CSS；排除基线旧问题、Suggestions 和 PR 外备注。
 ---
 
 # Code Review
@@ -28,6 +28,7 @@ description: 审查当前 chat 指定的 PR/commit/range，或当前本地分支
 | `csx-mobile` / `csx-mobile-upgrade` | `$HOME/.codex/skills/csx-mobile-upgrade/AGENTS.md` |
 | `heals-app-rn` | `$HOME/.codex/skills/heals-app-rn/AGENTS.md` |
 | `newtownapp` | `$HOME/.codex/skills/newtownapp/AGENTS.md` |
+| `react-native-advanced-flatlist` | `$HOME/.codex/skills/react-native-advanced-flatlist/AGENTS.md` |
 
 - Windows 将 `$HOME/.codex/skills` 解析为 `%USERPROFILE%\.codex\skills`。
 - 用仓库根目录名、manifest 和 remote URL 交叉确认身份；不因相似命名套用另一个项目规则。

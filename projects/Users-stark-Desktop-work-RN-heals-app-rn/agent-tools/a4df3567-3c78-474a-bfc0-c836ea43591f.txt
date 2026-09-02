@@ -1,0 +1,1775 @@
+diff --git a/App.tsx b/App.tsx
+index f72115c9..b7029395 100644
+--- a/App.tsx
++++ b/App.tsx
+@@ -13,71 +13,71 @@ import { AppState, Linking, Platform } from 'react-native';
+ import { ToastProvider } from 'react-native-toast-notifications';
+ import DeviceInfo from 'react-native-device-info';
+ import AsyncStorage from '@react-native-async-storage/async-storage';
+ import { AuthProvider } from './src/hooks/auth-hook-context';
+ import AuthStack from './src/navigation/auth-stack';
+ import { AppProvider } from './src/store/AppContext';
+ import { getGlobalAppState } from './src/store/AppContext';
+ import BootSplash from 'react-native-bootsplash';
+ import ErrorBoundary from './src/utils/ErrorBoundary';
+ // import * as Sentry from "@sentry/react-native";
+ import {useInitialUrl} from './src/utils/links';
+ import LinkingHelper from './src/helper/linking-helper';
+ import SplashScreen from './src/screens/splash-screen/splash-screen';
+ import {useAppState} from './src/store/AppContext';
+ import styles from './App.styles';
+ 
+ 
+ // process.env.NODE_ENV === 'production' &&
+ // Sentry.init({
+ //   dsn: "https://b626fbb526bbf94edc28658bd95f0812@o4508260362747904.ingest.us.sentry.io/4508330509533184",
+ // });
+ 
+ const App = (): React.ReactElement => {
+   const isDarkMode = useColorScheme() === 'dark';
+ 
+   return (
+     <GestureHandlerRootView
+       style={styles.app}
+       unstable_forceActive={Platform.OS === 'android'}
+     >
+-      <SafeAreaProvider>
++      {/* <SafeAreaProvider> */}
+         <ToastProvider>
+           <AppProvider>
+             <ErrorBoundary>
+               <AuthProvider>
+                 <AppContent />
+               </AuthProvider>
+             </ErrorBoundary>
+           </AppProvider>
+         </ToastProvider>
+-      </SafeAreaProvider>
++      {/* </SafeAreaProvider> */}
+     </GestureHandlerRootView>
+   );
+ };
+ 
+ function AppContent() {
+   const {}: AppState = getGlobalAppState();
+   const {setMagicLoginLoading} = useAppState();
+ 
+   const [forceUpdate, setIsForceUpdate] = useState<boolean>(false);
+   const [hasLocation, setHasLocation] = useState<boolean>();
+   const [ready, setReady] = useState(false);
+   const {url: initialUrl, isProcessing: isInitialUrlProcessing} = useInitialUrl();
+   const [hasEnabledBiometric, setHasEnabledBiometric] = useState<boolean>(false);
+   const [hasMemberData, setHasMemberData] = useState<boolean>(false);
+ 
+   useEffect(() => {
+     if (ready && initialUrl && !isInitialUrlProcessing) {
+       LinkingHelper.handleDeeplink(initialUrl, setMagicLoginLoading);
+     }
+   }, [ready, isInitialUrlProcessing, initialUrl, setMagicLoginLoading]);
+ 
+   useEffect(() => {
+     const subscription = Linking.addEventListener('url', ({url}) => {
+       LinkingHelper.handleDeeplink(url, setMagicLoginLoading);
+     });
+ 
+     return () => subscription.remove();
+   }, [setMagicLoginLoading]);
+ 
+   useEffect(() => {
+diff --git a/src/assets/svg/drawer-activate-icon.tsx b/src/assets/svg/drawer-activate-icon.tsx
+new file mode 100644
+index 00000000..2bade648
+--- /dev/null
++++ b/src/assets/svg/drawer-activate-icon.tsx
+@@ -0,0 +1,37 @@
++import React from 'react';
++import Svg, { Path, Circle, SvgProps } from 'react-native-svg';
++
++interface IconProps extends SvgProps {
++  width?: number;
++  height?: number;
++  color?: string;
++  strokeWidth?: number;
++}
++
++const SVGComponent: React.FC<IconProps> = ({
++  width = 24,
++  height = 24,
++  color = '#364153',
++  strokeWidth = 2,
++  ...props
++}) => {
++  return (
++    <Svg
++      width={width}
++      height={height}
++      viewBox="0 0 24 24"
++      fill="none"
++      stroke={color}
++      strokeWidth={strokeWidth}
++      strokeLinecap="round"
++      strokeLinejoin="round"
++      {...props}
++    >
++      <Path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4" />
++      <Path d="m21 2-9.6 9.6" />
++      <Circle cx={7.5} cy={15.5} r={5.5} />
++    </Svg>
++  );
++};
++
++export default SVGComponent;
+diff --git a/src/assets/svg/drawer-dependants-icon.tsx b/src/assets/svg/drawer-dependants-icon.tsx
+new file mode 100644
+index 00000000..d2161835
+--- /dev/null
++++ b/src/assets/svg/drawer-dependants-icon.tsx
+@@ -0,0 +1,38 @@
++import React from 'react';
++import Svg, { Path, Circle, SvgProps } from 'react-native-svg';
++
++interface IconProps extends SvgProps {
++  width?: number;
++  height?: number;
++  color?: string;
++  strokeWidth?: number;
++}
++
++const SVGComponent: React.FC<IconProps> = ({
++  width = 24,
++  height = 24,
++  color = '#364153',
++  strokeWidth = 2,
++  ...props
++}) => {
++  return (
++    <Svg
++      width={width}
++      height={height}
++      viewBox="0 0 24 24"
++      fill="none"
++      stroke={color}
++      strokeWidth={strokeWidth}
++      strokeLinecap="round"
++      strokeLinejoin="round"
++      {...props}
++    >
++      <Path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
++      <Path d="M16 3.128a4 4 0 0 1 0 7.744" />
++      <Path d="M22 21v-2a4 4 0 0 0-3-3.87" />
++      <Circle cx={9} cy={7} r={4} />
++    </Svg>
++  );
++};
++
++export default SVGComponent;
+diff --git a/src/assets/svg/drawer-heals-pass-icon.tsx b/src/assets/svg/drawer-heals-pass-icon.tsx
+new file mode 100644
+index 00000000..8ff36c06
+--- /dev/null
++++ b/src/assets/svg/drawer-heals-pass-icon.tsx
+@@ -0,0 +1,36 @@
++import React from 'react';
++import Svg, { Rect, Line, SvgProps } from 'react-native-svg';
++
++interface IconProps extends SvgProps {
++  width?: number;
++  height?: number;
++  color?: string;
++  strokeWidth?: number;
++}
++
++const SVGComponent: React.FC<IconProps> = ({
++  width = 24,
++  height = 24,
++  color = '#137963',
++  strokeWidth = 2,
++  ...props
++}) => {
++  return (
++    <Svg
++      width={width}
++      height={height}
++      viewBox="0 0 24 24"
++      fill="none"
++      stroke={color}
++      strokeWidth={strokeWidth}
++      strokeLinecap="round"
++      strokeLinejoin="round"
++      {...props}
++    >
++      <Rect width={20} height={14} x={2} y={5} rx={2} />
++      <Line x1={2} x2={22} y1={10} y2={10} />
++    </Svg>
++  );
++};
++
++export default SVGComponent;
+diff --git a/src/assets/svg/drawer-heals-plans-icon.tsx b/src/assets/svg/drawer-heals-plans-icon.tsx
+new file mode 100644
+index 00000000..35c808d2
+--- /dev/null
++++ b/src/assets/svg/drawer-heals-plans-icon.tsx
+@@ -0,0 +1,35 @@
++import React from 'react';
++import Svg, { Path, SvgProps } from 'react-native-svg';
++
++interface IconProps extends SvgProps {
++  width?: number;
++  height?: number;
++  color?: string;
++  strokeWidth?: number;
++}
++
++const SVGComponent: React.FC<IconProps> = ({
++  width = 24,
++  height = 24,
++  color = '#364153',
++  strokeWidth = 2,
++  ...props
++}) => {
++  return (
++    <Svg
++      width={width}
++      height={height}
++      viewBox="0 0 24 24"
++      fill="none"
++      stroke={color}
++      strokeWidth={strokeWidth}
++      strokeLinecap="round"
++      strokeLinejoin="round"
++      {...props}
++    >
++      <Path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
++    </Svg>
++  );
++};
++
++export default SVGComponent;
+diff --git a/src/assets/svg/drawer-help-icon.tsx b/src/assets/svg/drawer-help-icon.tsx
+new file mode 100644
+index 00000000..abb6df29
+--- /dev/null
++++ b/src/assets/svg/drawer-help-icon.tsx
+@@ -0,0 +1,37 @@
++import React from 'react';
++import Svg, { Path, Circle, SvgProps } from 'react-native-svg';
++
++interface IconProps extends SvgProps {
++  width?: number;
++  height?: number;
++  color?: string;
++  strokeWidth?: number;
++}
++
++const SVGComponent: React.FC<IconProps> = ({
++  width = 24,
++  height = 24,
++  color = '#6A7282',
++  strokeWidth = 2,
++  ...props
++}) => {
++  return (
++    <Svg
++      width={width}
++      height={height}
++      viewBox="0 0 24 24"
++      fill="none"
++      stroke={color}
++      strokeWidth={strokeWidth}
++      strokeLinecap="round"
++      strokeLinejoin="round"
++      {...props}
++    >
++      <Circle cx={12} cy={12} r={10} />
++      <Path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
++      <Path d="M12 17h.01" />
++    </Svg>
++  );
++};
++
++export default SVGComponent;
+diff --git a/src/assets/svg/drawer-medical-records-icon.tsx b/src/assets/svg/drawer-medical-records-icon.tsx
+new file mode 100644
+index 00000000..cb04d894
+--- /dev/null
++++ b/src/assets/svg/drawer-medical-records-icon.tsx
+@@ -0,0 +1,39 @@
++import React from 'react';
++import Svg, { Path, SvgProps } from 'react-native-svg';
++
++interface IconProps extends SvgProps {
++  width?: number;
++  height?: number;
++  color?: string;
++  strokeWidth?: number;
++}
++
++const SVGComponent: React.FC<IconProps> = ({
++  width = 24,
++  height = 24,
++  color = '#137963',
++  strokeWidth = 2,
++  ...props
++}) => {
++  return (
++    <Svg
++      width={width}
++      height={height}
++      viewBox="0 0 24 24"
++      fill="none"
++      stroke={color}
++      strokeWidth={strokeWidth}
++      strokeLinecap="round"
++      strokeLinejoin="round"
++      {...props}
++    >
++      <Path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
++      <Path d="M14 2v4a2 2 0 0 0 2 2h4" />
++      <Path d="M10 9H8" />
++      <Path d="M16 13H8" />
++      <Path d="M16 17H8" />
++    </Svg>
++  );
++};
++
++export default SVGComponent;
+diff --git a/src/assets/svg/drawer-medications-icon.tsx b/src/assets/svg/drawer-medications-icon.tsx
+new file mode 100644
+index 00000000..e9e0e8b4
+--- /dev/null
++++ b/src/assets/svg/drawer-medications-icon.tsx
+@@ -0,0 +1,36 @@
++import React from 'react';
++import Svg, { Path, SvgProps } from 'react-native-svg';
++
++interface IconProps extends SvgProps {
++  width?: number;
++  height?: number;
++  color?: string;
++  strokeWidth?: number;
++}
++
++const SVGComponent: React.FC<IconProps> = ({
++  width = 24,
++  height = 24,
++  color = '#137963',
++  strokeWidth = 2,
++  ...props
++}) => {
++  return (
++    <Svg
++      width={width}
++      height={height}
++      viewBox="0 0 24 24"
++      fill="none"
++      stroke={color}
++      strokeWidth={strokeWidth}
++      strokeLinecap="round"
++      strokeLinejoin="round"
++      {...props}
++    >
++      <Path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z" />
++      <Path d="m8.5 8.5 7 7" />
++    </Svg>
++  );
++};
++
++export default SVGComponent;
+diff --git a/src/assets/svg/drawer-signout-icon.tsx b/src/assets/svg/drawer-signout-icon.tsx
+new file mode 100644
+index 00000000..dde3db8b
+--- /dev/null
++++ b/src/assets/svg/drawer-signout-icon.tsx
+@@ -0,0 +1,37 @@
++import React from 'react';
++import Svg, { Path, SvgProps } from 'react-native-svg';
++
++interface IconProps extends SvgProps {
++  width?: number;
++  height?: number;
++  color?: string;
++  strokeWidth?: number;
++}
++
++const SVGComponent: React.FC<IconProps> = ({
++  width = 24,
++  height = 24,
++  color = '#E70E08',
++  strokeWidth = 2,
++  ...props
++}) => {
++  return (
++    <Svg
++      width={width}
++      height={height}
++      viewBox="0 0 24 24"
++      fill="none"
++      stroke={color}
++      strokeWidth={strokeWidth}
++      strokeLinecap="round"
++      strokeLinejoin="round"
++      {...props}
++    >
++      <Path d="m16 17 5-5-5-5" />
++      <Path d="M21 12H9" />
++      <Path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
++    </Svg>
++  );
++};
++
++export default SVGComponent;
+diff --git a/src/assets/svg/drawer-transactions-icon.tsx b/src/assets/svg/drawer-transactions-icon.tsx
+new file mode 100644
+index 00000000..6c8eea2f
+--- /dev/null
++++ b/src/assets/svg/drawer-transactions-icon.tsx
+@@ -0,0 +1,37 @@
++import React from 'react';
++import Svg, { Path, SvgProps } from 'react-native-svg';
++
++interface IconProps extends SvgProps {
++  width?: number;
++  height?: number;
++  color?: string;
++  strokeWidth?: number;
++}
++
++const SVGComponent: React.FC<IconProps> = ({
++  width = 24,
++  height = 24,
++  color = '#364153',
++  strokeWidth = 2,
++  ...props
++}) => {
++  return (
++    <Svg
++      width={width}
++      height={height}
++      viewBox="0 0 24 24"
++      fill="none"
++      stroke={color}
++      strokeWidth={strokeWidth}
++      strokeLinecap="round"
++      strokeLinejoin="round"
++      {...props}
++    >
++      <Path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" />
++      <Path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" />
++      <Path d="M12 17.5v-11" />
++    </Svg>
++  );
++};
++
++export default SVGComponent;
+diff --git a/src/assets/svg/index.ts b/src/assets/svg/index.ts
+index 1aa61a21..6f194a30 100644
+--- a/src/assets/svg/index.ts
++++ b/src/assets/svg/index.ts
+@@ -1,30 +1,44 @@
++import SVGTabHomeIcon from './tab-home-icon';
++import SVGTabConsultIcon from './tab-consult-icon';
++import SVGTabConciergeIcon from './tab-concierge-icon';
++import SVGDrawerMedicalRecordsIcon from './drawer-medical-records-icon';
++import SVGDrawerMedicationsIcon from './drawer-medications-icon';
++import SVGDrawerHealsPassIcon from './drawer-heals-pass-icon';
++import SVGDrawerActivateIcon from './drawer-activate-icon';
++import SVGDrawerDependantsIcon from './drawer-dependants-icon';
++import SVGDrawerTransactionsIcon from './drawer-transactions-icon';
++import SVGDrawerHealsPlansIcon from './drawer-heals-plans-icon';
++import SVGDrawerHelpIcon from './drawer-help-icon';
++import SVGDrawerSignOutIcon from './drawer-signout-icon';
++
++
+ import SVGVideoComponent from './video';
+ import SVGHealsLogoComponent from './healsLogo';
+ import SVGGlobeComponent from './globe';
+ import SVGRedAlertComponent from './redalert';
+ import SVGInfoComponent from './info';
+ import SVGSVideoIconComponent from './small-video-icon';
+ import SVGTeleconsultPinComponent from './teleconsult-pin';
+ import SVGRowWaitingComponent from './row-waiting';
+ import SVGCameraComponent from './camera';
+ import SVGMicOffComponent from './mic-off';
+ import SVGVideoCallComponent from './video-call';
+ import SVGBlurrOffComponent from './blur-off';
+ import SVGBlurrOnComponent from './blur-on';
+ import SVGMicOnComponent from './mic-on';
+ import SVGEndCallComponent from './end-call';
+ import SVGVideoOffComponent from './video-off';
+ import SVGWhatsAppComponent from './whatsapp';
+ import SVGLockComponent from './lock';
+ import SVGEditComponent from './edit';
+ import SVGChevronRightComponent from './chevron-right';
+ import SVGAssignmentComponent from './assignment';
+ import SVGDownloadComponent from './download';
+ import SVGCheckSquareComponent from './check-square';
+ import SVGNotCheckSquareComponent from './not-check-square';
+ import SVGArrowWhiteComponent from './arrow-white';
+ import SVGInfoDarkComponent from './info-dark';
+ import SVGAntiCoagulantComponent from './anticoagulant';
+ import SVGMedicationPlaceHolderComponent from './medication-place-holder';
+ import SVGClottingComponent from './clotting';
+ import SVGAntiHypertensiveComponent from './antihypertensive';
+@@ -110,60 +124,74 @@ import SVGPeopleIcon from './people-icon';
+ import SVGPhoneDarkIcon from './phone-icon';
+ import SVGLocationPinIcon from './location-pin-icon';
+ import SVGChevronRightGreenIcon from './chevron-right-green-icon';
+ import SVGEmptyAddressIcon from './empty-address-icon';
+ import SVGTruckGreenIcon from './truck-icon-green';
+ import SVGBigTree from './BigTree';
+ import LogoTreeComponent from './LogoTree';
+ import SVGDoctorsInYourLangIcon from './doctors-in-your-lang';
+ import SVGRedPinIcon from './red-pin';
+ import SVGArrowLeftWhiteIcon from './arrow-left-white.tsx';
+ import SVGYellowInfoIcon from './yellow-info-icon';
+ import SVGInfoSmalliIcon from './info-small-i-icon';
+ import SVGPlanListBG1_Icon from './plan-list-bg-1';
+ import SVGPlanListBG2_Icon from './plan-list-bg-2';
+ import SVGPlanListBG3_Icon from './plan-list-bg-3';
+ import SVGPlanListBG4_Icon from './plan-list-bg-4';
+ import SVGPlanListBG5_Icon from './plan-list-bg-5';
+ import SVGPaymentIcon1 from './payment-icon-1';
+ import SVGPaymentIcon2 from './payment-icon-2';
+ import SVGPaymentIcon3 from './payment-icon-3';
+ import SVGPaymentIcon4 from './payment-icon-4';
+ import SVGPaymentIcon5 from './payment-icon-5';
+ import SVGPaymentIcon6 from './payment-icon-6';
+ import SVGPaymentIcon7 from './payment-icon-7';
+ import SVGPaymentIcon8 from './payment-icon-8';
+ import SVGPaymentIcon9 from './payment-icon-9';
+ import SVGYedPayWithText from './yed-pay-icon-with-text';
+ import SVGTabProfileIcon from './tab-profile-icon';
+ 
+ export {
++  SVGTabHomeIcon,
++  SVGTabConsultIcon,
++  SVGTabConciergeIcon,
++  SVGDrawerMedicalRecordsIcon,
++  SVGDrawerMedicationsIcon,
++  SVGDrawerHealsPassIcon,
++  SVGDrawerActivateIcon,
++  SVGDrawerDependantsIcon,
++  SVGDrawerTransactionsIcon,
++  SVGDrawerHealsPlansIcon,
++  SVGDrawerHelpIcon,
++  SVGDrawerSignOutIcon,
++
++
+   SVGVideoComponent, SVGBigTree, LogoTreeComponent,
+   SVGHealsLogoComponent,
+   SVGGlobeComponent,
+   SVGRedAlertComponent,
+   SVGInfoComponent,
+   SVGSVideoIconComponent,
+   SVGTeleconsultPinComponent,
+   SVGRowWaitingComponent,
+   SVGCameraComponent,
+   SVGMicOffComponent,
+   SVGVideoCallComponent,
+   SVGBlurrOffComponent,
+   SVGBlurrOnComponent,
+   SVGMicOnComponent,
+   SVGEndCallComponent,
+   SVGVideoOffComponent,
+   SVGWhatsAppComponent,
+   SVGLockComponent,
+   SVGEditComponent,
+   SVGChevronRightComponent,
+   SVGAssignmentComponent,
+   SVGDownloadComponent,
+   SVGCheckSquareComponent,
+   SVGNotCheckSquareComponent,
+   SVGArrowWhiteComponent,
+   SVGInfoDarkComponent,
+   SVGAntiCoagulantComponent,
+   SVGMedicationPlaceHolderComponent,
+   SVGClottingComponent,
+   SVGAntiHypertensiveComponent,
+diff --git a/src/assets/svg/tab-concierge-icon.tsx b/src/assets/svg/tab-concierge-icon.tsx
+new file mode 100644
+index 00000000..4bcbd57d
+--- /dev/null
++++ b/src/assets/svg/tab-concierge-icon.tsx
+@@ -0,0 +1,34 @@
++import React from 'react';
++import Svg, { Path, SvgProps } from 'react-native-svg';
++
++interface TabProfileIconProps extends SvgProps {
++  focused?: boolean;
++}
++
++const TabConciergeIcon = ({
++  width = 20,
++  height = 20,
++  color = '#A0ACAB',
++  focused = false,
++  ...props
++}: TabProfileIconProps): React.ReactElement => {
++  const strokeWidth: number = focused ? 2.25 : 1.75;
++
++  return (
++    <Svg
++      width={width}
++      height={height}
++      viewBox="0 0 24 24"
++      fill="none"
++      stroke={color}
++      strokeWidth={strokeWidth}
++      strokeLinecap="round"
++      strokeLinejoin="round"
++      {...props}
++    >
++      <Path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3" />
++    </Svg>
++  );
++};
++
++export default TabConciergeIcon;
+diff --git a/src/assets/svg/tab-consult-icon.tsx b/src/assets/svg/tab-consult-icon.tsx
+new file mode 100644
+index 00000000..08f14933
+--- /dev/null
++++ b/src/assets/svg/tab-consult-icon.tsx
+@@ -0,0 +1,35 @@
++import React from 'react';
++import Svg, { Path, Rect, SvgProps } from 'react-native-svg';
++
++interface TabProfileIconProps extends SvgProps {
++  focused?: boolean;
++}
++
++const TabConsultIcon = ({
++  width = 20,
++  height = 20,
++  color = '#A0ACAB',
++  focused = false,
++  ...props
++}: TabProfileIconProps): React.ReactElement => {
++  const strokeWidth: number = focused ? 2.25 : 1.75;
++
++  return (
++    <Svg
++      width={width}
++      height={height}
++      viewBox="0 0 24 24"
++      fill="none"
++      stroke={color}
++      strokeWidth={strokeWidth}
++      strokeLinecap="round"
++      strokeLinejoin="round"
++      {...props}
++    >
++      <Path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5" />
++      <Rect x="2" y="6" width="14" height="12" rx="2" />
++    </Svg>
++  );
++};
++
++export default TabConsultIcon;
+diff --git a/src/assets/svg/tab-home-icon.tsx b/src/assets/svg/tab-home-icon.tsx
+new file mode 100644
+index 00000000..6982105d
+--- /dev/null
++++ b/src/assets/svg/tab-home-icon.tsx
+@@ -0,0 +1,37 @@
++import React from 'react';
++import Svg, { Rect, SvgProps } from 'react-native-svg';
++
++interface TabProfileIconProps extends SvgProps {
++  focused?: boolean;
++}
++
++const TabHomeIcon = ({
++  width = 20,
++  height = 20,
++  color = '#A0ACAB',
++  focused = false,
++  ...props
++}: TabProfileIconProps): React.ReactElement => {
++  const strokeWidth: number = focused ? 2.25 : 1.75;
++
++  return (
++    <Svg
++      width={width}
++      height={height}
++      viewBox="0 0 24 24"
++      fill="none"
++      stroke={color}
++      strokeWidth={strokeWidth}
++      strokeLinecap="round"
++      strokeLinejoin="round"
++      {...props}
++    >
++      <Rect x="3" y="3" width="7" height="7" rx="1" />
++      <Rect x="14" y="3" width="7" height="7" rx="1" />
++      <Rect x="14" y="14" width="7" height="7" rx="1" />
++      <Rect x="3" y="14" width="7" height="7" rx="1" />
++    </Svg>
++  );
++};
++
++export default TabHomeIcon;
+diff --git a/src/components/drawer-row-item/drawer-row-item.props.ts b/src/components/drawer-row-item/drawer-row-item.props.ts
+new file mode 100644
+index 00000000..eff49c30
+--- /dev/null
++++ b/src/components/drawer-row-item/drawer-row-item.props.ts
+@@ -0,0 +1,17 @@
++import React from 'react';
++import { ViewStyle, TextStyle } from 'react-native';
++
++export interface DrawerItemProps {
++  /** 左侧图标组件 (必传) */
++  LeftIcon: React.ReactNode;
++  /** 显示文本 (必传) */
++  text: string;
++  /** 右侧图标组件 (可选) */
++  RightIcon?: React.ReactNode;
++  /** 点击回调方法 */
++  onPress?: () => void;
++  /** 自定义容器样式 */
++  containerStyle?: ViewStyle;
++  /** 自定义文本样式 */
++  textStyle?: TextStyle;
++}
+\ No newline at end of file
+diff --git a/src/components/drawer-row-item/drawer-row-item.styles.ts b/src/components/drawer-row-item/drawer-row-item.styles.ts
+new file mode 100644
+index 00000000..691d3ab4
+--- /dev/null
++++ b/src/components/drawer-row-item/drawer-row-item.styles.ts
+@@ -0,0 +1,17 @@
++import EStyleSheet from "react-native-extended-stylesheet";
++
++export default EStyleSheet.create({
++  drawerItem: {
++    flexDirection: 'row',
++    alignItems: 'center',
++    paddingHorizontal: '10rem',
++    paddingVertical: '15rem',
++  },
++  drawerItemText: {
++    flex: 1,
++    marginHorizontal: '10rem',
++    fontSize: '14rem',
++    fontWeight: '700',
++    color: '#1F2937',
++  },
++});
+diff --git a/src/components/drawer-row-item/drawer-row-item.tsx b/src/components/drawer-row-item/drawer-row-item.tsx
+new file mode 100644
+index 00000000..d7a4b38e
+--- /dev/null
++++ b/src/components/drawer-row-item/drawer-row-item.tsx
+@@ -0,0 +1,34 @@
++import React from 'react';
++import { TouchableOpacity, Text, StyleSheet } from 'react-native';
++import styles from './drawer-row-item.styles';
++import { DrawerItemProps } from "./drawer-row-item.props";
++const DrawerItem: React.FC<DrawerItemProps> = ({
++  LeftIcon,
++  text,
++  RightIcon,
++  onPress,
++  containerStyle,
++  textStyle,
++}) => {
++  return (
++    <TouchableOpacity
++      onPress={onPress}
++      style={[styles.drawerItem, containerStyle]}
++      activeOpacity={0.7}
++    >
++      {LeftIcon}
++      <Text
++        style={[
++          styles.drawerItemText,
++          textStyle
++        ]}
++        numberOfLines={1}
++      >
++        {text}
++      </Text>
++      {RightIcon && RightIcon}
++    </TouchableOpacity>
++  );
++};
++
++export default DrawerItem;
+\ No newline at end of file
+diff --git a/src/components/name-avatar-component/name-avatar-component.props.ts b/src/components/name-avatar-component/name-avatar-component.props.ts
+new file mode 100644
+index 00000000..fe4daa15
+--- /dev/null
++++ b/src/components/name-avatar-component/name-avatar-component.props.ts
+@@ -0,0 +1,13 @@
++import React from 'react';
++import { ViewStyle } from 'react-native';
++
++export interface AvatarProps {
++  /** 用户名 */
++  username: string;
++  /** 背景颜色 */
++  backgroundColor?: string;
++  /** 文字颜色 */
++  textColor?: string;
++  /** 自定义样式 */
++  style?: ViewStyle;
++}
+\ No newline at end of file
+diff --git a/src/components/name-avatar-component/name-avatar-component.styles.ts b/src/components/name-avatar-component/name-avatar-component.styles.ts
+new file mode 100644
+index 00000000..965c8303
+--- /dev/null
++++ b/src/components/name-avatar-component/name-avatar-component.styles.ts
+@@ -0,0 +1,13 @@
++import EStyleSheet from "react-native-extended-stylesheet";
++
++export default EStyleSheet.create({
++  avatar: {
++    justifyContent: 'center',
++    alignItems: 'center',
++  },
++  text: {
++    fontWeight: '600',
++    textAlign: 'center',
++    fontSize: '14rem',
++  },
++});
+diff --git a/src/components/name-avatar-component/name-avatar-component.tsx b/src/components/name-avatar-component/name-avatar-component.tsx
+new file mode 100644
+index 00000000..fcaed5fe
+--- /dev/null
++++ b/src/components/name-avatar-component/name-avatar-component.tsx
+@@ -0,0 +1,40 @@
++import React from 'react';
++import { View, Text, StyleSheet } from 'react-native';
++import styles from './name-avatar-component.styles';
++import { AvatarProps } from "./name-avatar-component.props";
++import { getAvatarInitials } from '@components/app-page-header/app-page-header';
++const Avatar: React.FC<AvatarProps> = ({
++  username,
++  backgroundColor = '#EAEFE9',
++  textColor = '#137963',
++  style,
++}) => {
++
++  const initials = getAvatarInitials(username);
++
++  return (
++    <View
++      style={[
++        styles.avatar,
++        {
++          backgroundColor,
++        },
++        style,
++      ]}
++    >
++      <Text
++        style={[
++          styles.text,
++          {
++            color: textColor,
++          },
++        ]}
++        numberOfLines={1}
++      >
++        {initials}
++      </Text>
++    </View>
++  );
++};
++
++export default Avatar;
+\ No newline at end of file
+diff --git a/src/i18n/locale/en.ts b/src/i18n/locale/en.ts
+index a1ec0c77..d4d03b97 100644
+--- a/src/i18n/locale/en.ts
++++ b/src/i18n/locale/en.ts
+@@ -1,31 +1,79 @@
+ export default {
++  onboard: {
++    slide1: {
++      title: 'Consult Doctors Anytime',
++      desc: 'Connect with licensed doctors through video calls from anywhere. Get professional medical advice without leaving your home, whether you are in Hong Kong, travelling abroad, or based in Mainland China.',
++    },
++    slide2: {
++      title: 'Your Health, Protected',
++      desc: 'All consultations are private and encrypted. Your medical records, prescriptions, and health data stay secure. Access them anytime through your personal dashboard.',
++    },
++    slide3: {
++      title: 'One App, Complete Care',
++      desc: 'Manage appointments, medications, records, and messages in one place. Choose from flexible subscription plans that fit your lifestyle — from local Hong Kong coverage to global telehealth.',
++    },
++  },
++  get_started: 'Get Started',
++  by_continuing: 'By continuing, you agree to our ',
++  terms_of_service: 'Terms of Service',
++  privacy_policy: 'Privacy Policy',
++  welcome_back: 'Welcome back',
++  enter_mobile_to_continue: 'Enter your mobile number to continue',
++  or_continue_with: 'or continue with',
++  apple: 'Apple',
++  google: 'Google',
++  sms_fees_may_apple: '.SMS fees may apply',
++  no_results_found: 'No results found',
++  sending_code: 'Sending code...',
++  change_number: 'Change number',
++  resend_verification_code: 'Resend verification code',
++  resend_code_in: 'Resend code in',
++  or: 'or',
++  send_magic_link_instead: 'Send magic link instead',
++  verifying: 'Verifying...',
++  verified: 'Verified!',
++  search_country: 'Search country...',
++  enter_verification_code: 'Enter verification code',
++  we_sent_digit_code_to: 'We sent a 6-digit code to',
++  consult: 'Consult',
++  concierge: 'Concierge',
++  dashboard: 'Dashboard',
++  dr_consult_now: 'Consult Doctor Now',
++  my_concierge: 'My Concierge',
++  profile_and_health: 'Profile & Health',
++  medical_records: 'Medical Records',
++  medications: 'Medications',
++  heals_pass_membership: 'Heals Pass Membership',
++  transaction_history: 'Transaction History',
++  sign_out: 'Sign Out',
++
+   teleconsultLocalDoctors:
+     '1 time teleconsult (local GP doctors) within 12 months',
+   annualBasicCheckup: 'annualBasicCheckup',
+   '1 x Annual basic checkup': '1 x Annual basic checkup',
+   dnaTest: 'dnaTest',
+   basicPlan: 'basicPlan',
+   BenefitExpired: 'Benefit Expired',
+   BenefitExpiredDesc:
+     'Your benefits have expired. You may be charged a fee for the services.',
+   chinaPlan: 'chinaPlan',
+   'Excludes medication and delivery fees':
+     'Excludes medication and delivery fees',
+   'First 3 teleconsults include 3-days basic medication and delivery':
+     'First 3 teleconsults include 3-days basic medication and delivery',
+   '1 x DNA test': '1 x DNA test',
+   'First 6 teleconsults include 3-days basic medication and delivery':
+     'First 6 teleconsults include 3-days basic medication and delivery',
+   'First teleconsult includes 3-days basic medication and delivery':
+     'First teleconsult includes 3-days basic medication and delivery',
+   'Global Plan - Asia 1': 'Global Plan - Asia 1',
+   'Global Plan - Asia 2': 'Global Plan - Asia 2',
+   'Global Plan - EMEA': 'Global Plan - EMEA',
+   'Heals China Plan': 'Heals China Plan',
+   'Global Plan EMEA': 'Global Plan EMEA',
+   'HK drugs delivered to China': 'HK drugs delivered to China',
+   HOLD: 'Standard Delivery',
+   'Heals Plan International Student': 'Heals Plan International Student',
+   'Heals Plan International Worker': 'Heals Plan International Worker',
+   'Health Plan 365': 'Health Plan 365',
+   'Medication from Hong Kong': 'Medication from Hong Kong',
+diff --git a/src/i18n/locale/zh.ts b/src/i18n/locale/zh.ts
+index 68eb3c79..a25216b7 100644
+--- a/src/i18n/locale/zh.ts
++++ b/src/i18n/locale/zh.ts
+@@ -1,31 +1,80 @@
+ export default {
++  onboard: {
++    slide1: {
++      title: '随时咨询医生',
++      desc: '无论身在何处，您都可以通过视频通话联系持证医生。无论您身处香港、海外旅行还是在中国内地，都无需出门即可获得专业的医疗建议。',
++    },
++    slide2: {
++      title: '您的健康，由我们守护',
++      desc: '所有咨询都是私密且加密的。您的病历、处方和健康数据均安全无忧，您可随时通过个人仪表板进行查看。',
++    },
++    slide3: {
++      title: '一款应用，全面守护',
++      desc: '集中管理预约、药物、病历及消息。贴合您的生活方式灵活选择订阅计划——涵盖范围从香港本地服务到全球远程医疗，任您选择。',
++    },
++  },
++  get_started: '开始使用',
++  by_continuing: '继续操作即表示您同意我们的 ',
++  terms_of_service: '服务条款',
++  privacy_policy: '隐私政策',
++  welcome_back: '欢迎回来',
++  enter_mobile_to_continue: '请输入您的手机号码以继续',
++  or_continue_with: '或继续使用',
++  apple: 'Apple账户',
++  google: 'Google账户',
++  sms_fees_may_apple: '。可能会产生短信费用',
++  no_results_found: '未找到结果',
++  sending_code: '正在发送验证码……',
++  change_number: '更改号码',
++  resend_verification_code: '重新发送验证码',
++  resend_code_in: '重新发送验证码，剩余时间：',
++  or: '或',
++  send_magic_link_instead: '发送邮件一键登录链接',
++  verifying: '正在验证……',
++  verified: '已验证！',
++  search_country: '搜索国家……',
++  enter_verification_code: '请输入验证码',
++  we_sent_digit_code_to: '我们发送了一个6位数的验证码到',
++  consult: '问医生',
++  concierge: '礼宾服务',
++  dashboard: '仪表盘',
++  dr_consult_now: '立即问医生',
++  my_concierge: '我的礼宾服务',
++  profile_and_health: '健康资料',
++  medical_records: '医疗记录',
++  medications: '用药记录',
++  heals_pass_membership: 'Heals计划',
++  transaction_history: '账单记录',
++  sign_out: '登出',
++
++
+   teleconsultLocalDoctors: '12个月内1次远程咨询（当地全科医生）',
+   annualBasicCheckup: '1 次年度基本检查',
+   '1 x Annual basic checkup': '1 次年度基本检查',
+   dnaTest: '1 次 DNA 测试',
+   '1 x DNA test': '1 次 DNA 测试',
+   basicPlan: '基本计划',
+   BenefitExpired: '权益计划已过期',
+   BenefitExpiredDesc: '您的权益计划已到期。您可选择重新购买服务。',
+   chinaPlan: '中国计划',
+   'Excludes medication and delivery fees': '不包括药物费和送货费',
+   'First 3 teleconsults include 3-days basic medication and delivery':
+     '前 3 次远程咨询包括 3 天的基本药物和送药',
+   'First 6 teleconsults include 3-days basic medication and delivery':
+     '前 6 次远程咨询包括 3 天的基本药物和送药',
+   'First teleconsult includes 3-days basic medication and delivery':
+     '首次远程咨询包括 3 天的基本药物治疗和送药',
+   'Global Plan - Asia 1': '全球计划-亚洲区1',
+   'Global Plan - Asia 2': '全球计划-亚洲区2',
+   'Global Plan - EMEA': '全球计划-欧洲中东区',
+   'Heals China Plan': '中国计划',
+   'Global Plan EMEA': '全球计划（欧洲中东区）',
+   'HK drugs delivered to China': '一站式含清关，全国各地，港药直送到家',
+   'Heals Plan International Student': 'Heals 福利权益计划国际学生',
+   'Heals Plan International Worker': 'Heals 福利权益计划国际工人',
+   'Health Plan 365': '标准计划',
+   'Medication from Hong Kong': '来自香港的药物',
+   'Meds + delivery not included': '不包括药物+送货',
+   'Premium Plan 365': '尊尚计划',
+   'Premium Plan Gold': '尊尚金卡计划',
+   'Premium Plan Platinum': '尊尚白金卡计划',
+diff --git a/src/i18n/locale/zh_tw.ts b/src/i18n/locale/zh_tw.ts
+index 8a763455..3a6ccbcf 100644
+--- a/src/i18n/locale/zh_tw.ts
++++ b/src/i18n/locale/zh_tw.ts
+@@ -1,31 +1,80 @@
+ export default {
++  onboard: {
++    slide1: {
++      title: '隨時諮詢醫生',
++      desc: '無論身在何處，您都可以通過視像通話聯繫持證醫生。無論您身處香港、海外旅行還是在中國內地，都無需出門即可獲得專業的醫療建議。',
++    },
++    slide2: {
++      title: '您的健康，由我們守護',
++      desc: '所有諮詢都是私密且加密的。 您的病歷、處方和健康數據均安全無憂，您可隨時通過個人儀錶板進行查看。',
++    },
++    slide3: {
++      title: '一款應用，全面守護',
++      desc: '集中管理預約、藥物、病歷及消息。 貼合您的生活方式靈活選擇訂閱計畫——涵蓋範圍從香港本地服務到全球遠端醫療，任您選擇。',
++    },
++  },
++  get_started: '開始使用',
++  by_continuing: '繼續操作即表示您同意我們的 ',
++  terms_of_service: '服務條款',
++  privacy_policy: '隱私政策',
++  welcome_back: '歡迎回來',
++  enter_mobile_to_continue: '請輸入您的手機號碼以繼續',
++  or_continue_with: '或繼續使用',
++  apple: 'Apple帳戶',
++  google: 'Google帳戶',
++  sms_fees_may_apple: '。可能會產生短信費用',
++  no_results_found: '未找到結果',
++  sending_code: '正在發送驗證碼……',
++  change_number: '更改號碼',
++  resend_verification_code: '重新發送驗證碼',
++  resend_code_in: '重新發送驗證碼，剩餘時間：',
++  or: '或',
++  send_magic_link_instead: '發送郵件一鍵登入連結',
++  verifying: '正在驗證……',
++  verified: '已驗證！',
++  search_country: '搜索國家……',
++  enter_verification_code: '請輸入驗證碼',
++  we_sent_digit_code_to: '我們發送了一個6位數的驗證碼到',
++  consult: '問醫生',
++  concierge: '禮賓服務',
++  dashboard: '儀錶盤',
++  dr_consult_now: '立即問醫生',
++  my_concierge: '我的禮賓服務',
++  profile_and_health: '健康資料',
++  medical_records: '醫療記錄',
++  medications: '用藥記錄',
++  heals_pass_membership: 'Heals計畫',
++  transaction_history: '帳單記錄',
++  sign_out: '登出',
++
++
+   teleconsultLocalDoctors: '12個月內1次遠距諮詢（當地全科醫生）',
+   annualBasicCheckup: '1 次年度基本檢查',
+   '1 x Annual basic checkup': '1 次年度基本檢查',
+   dnaTest: '1 次 DNA 測試',
+   '1 x DNA test': '1 次 DNA 測試',
+   basicPlan: '基本計劃',
+   BenefitExpired: '福利計劃已到期',
+   BenefitExpiredDesc: '您的福利計劃已到期。您可選擇重新購買服務。',
+   chinaPlan: '中國計劃',
+   'Excludes medication and delivery fees': '不包括藥物費和送貨費',
+   'First 3 teleconsults include 3-days basic medication and delivery':
+     '前 3 次遠距諮詢包括 3 天的基本藥物和送藥',
+   'First 6 teleconsults include 3-days basic medication and delivery':
+     '前 6 次遠距諮詢包括 3 天的基本藥物和送藥',
+   'First teleconsult includes 3-days basic medication and delivery':
+     '首次遠距諮詢包括 3 天的基本藥物治療和送藥',
+   'Global Plan - Asia 1': '全球計劃-亞洲區1',
+   'Global Plan - Asia 2': '全球計劃-亞洲區2',
+   'Global Plan - EMEA': '全球計劃-歐洲中東區',
+   'Heals China Plan': '中國計劃',
+   'Global Plan EMEA': '全球計劃（歐洲中東區）',
+   'HK drugs delivered to China': '一站式連清關，全國各地，港藥直送到家',
+   'Heals Plan International Student': 'Heals 福利計劃國際學生',
+   'Heals Plan International Worker': 'Heals 福利計劃國際工人',
+   'Health Plan 365': '標準計劃',
+   'Medication from Hong Kong': '來自香港的藥物',
+   'Meds + delivery not included': '不包括藥物+送貨',
+   'Premium Plan 365': '尊尚計劃',
+   'Premium Plan Gold': '尊尚金咭計劃',
+   'Premium Plan Platinum': '尊尚白金咭計劃',
+diff --git a/src/navigation/main-tab/main-tab-navigator.styles.ts b/src/navigation/main-tab/main-tab-navigator.styles.ts
+index f8c56018..c307700e 100644
+--- a/src/navigation/main-tab/main-tab-navigator.styles.ts
++++ b/src/navigation/main-tab/main-tab-navigator.styles.ts
+@@ -298,41 +298,47 @@ export default EStyleSheet.create({
+   },
+   thePressAndHold: {
+     position: 'absolute',
+     top: 18,
+     alignSelf: 'center',
+     alignContent: 'center',
+     alignItems: 'center',
+   },
+   commonDialogContainer: {
+     flex: 1,
+     backgroundColor: 'rgba(34, 36, 38, 0.6)',
+     alignItems: 'center',
+     justifyContent: 'center',
+   },
+   tabBarTextStylePosition: {
+     // Adjusted bottom position for better spacing between icon and label
+     bottom: Platform.OS === 'ios' ? '4rem' : '6rem'
+   },
+   tabBarTitleText: {
+     fontSize: '12rem',
+     fontWeight: '400',
+     lineHeight: '14rem',
+     paddingTop: '4rem',
+   },
+   commonPaddingTab: {
+     paddingBottom: '26rem',
+   },
+   androidNavBarButton: {
+     paddingBottom: '-126rem',
+   },
++  iosTabIcon: {
++    marginTop: '16rem',
++  },
++  iosActiveTabIcon: {
++    marginTop: '6rem',
++  },
+   activeSelected: {
+     color: '#00AC86',
+     paddingTop: '16rem',
+   },
+   androidTabIcon: {
+     marginTop: '16rem',
+   },
+   androidActiveTabIcon: {
+     marginTop: '6rem',
+   }
+ });
+diff --git a/src/navigation/main-tab/main-tab-navigator.tsx b/src/navigation/main-tab/main-tab-navigator.tsx
+index 94a7c831..4ac58e20 100644
+--- a/src/navigation/main-tab/main-tab-navigator.tsx
++++ b/src/navigation/main-tab/main-tab-navigator.tsx
+@@ -1,71 +1,76 @@
+ import React, { useEffect, useState } from 'react'
+ import { 
+   View, 
+   Image, 
+   TouchableOpacity, 
+   Linking, 
+   ActivityIndicator,
+   Modal as NativeModal,
+   Platform} from 'react-native';
+ import Svg, {Path, Rect} from 'react-native-svg';
+ import Modal from 'react-native-modal';
+ import ReactNativeBiometrics from "react-native-biometrics";
+ import { SafeAreaView } from 'react-native-safe-area-context';
+ import constants from '@constants';
+ import Animated, {FadeInRight, FadeInUp, FadeOutDown} from 'react-native-reanimated';
+ import { NavigationProp, RouteProp } from '@react-navigation/native';
+ import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs';
+ import styles, {
+   getTabBarSafeAreaInsets,
+ } from './main-tab-navigator.styles';
+ import type { UITheme, Theme } from '@types/Theme.ts';
+ import { ThemeContext } from "@style/theme/theme-context.tsx";
+ import assets from '@assets';
+ import AppointmentsScreen from '@screens/appointments-screen/appointments-screen';
+ import HomeScreen from '@screens/home/home-screen/home-screen';
++import ConsultScreen from '@screens/consult-screen/consult-screen';
++import ConciergeScreen from '@screens/concierge-screen/concierge-screen';
+ import ProfileScreen from '@screens/profile/profile-screen/profile-screen';
+-import PassScreen from '@screens/pass/pass-screen';
+ import AppText from '@components/app-text/app-text';
+ import {
+   SVGCloseTransparentComponent,
+   SVGCloseComponent,
+   SVGFaceIDComponent,
+   SVGRedTimerComponent,
+   SVGBackBtnNumberPadComponent,
++  SVGTabHomeIcon,
++  SVGTabConsultIcon,
++  SVGTabConciergeIcon,
+   SVGTabProfileIcon,
+ } from '../../assets/svg/index';
+ import NumberPad from '@components/number-pad/number-pad';
+ import GradientButtonComponent from '@components/gradient-button-component/gradient-button-component';
+ import { useAppState } from "@store/AppContext.tsx";
+ import {APP_NAVIGATION_BAR_BACKGROUND_COLOR} from '@style/theme/theme-common';
+ import FullSizeTabBarButton from './full-size-tab-bar-button';
++import Config from 'react-native-config';
+ 
+ const Tab = createBottomTabNavigator();
+ const APPOINTMENTS_TAB_INACTIVE_COLOR = '#6B7280';
+ 
+ interface AppointmentsTabLabelProps {
+   color: string;
+   focused: boolean;
+ }
+ 
+ const AppointmentsTabLabel = ({
+   color,
+   focused,
+ }: AppointmentsTabLabelProps): React.ReactElement => (
+   <AppText
+     numberOfLines={1}
+     style={[
+       styles.tabAppointmentsLabel,
+       focused && styles.tabAppointmentsLabelActive,
+       {color},
+     ]}
+   >
+     {$i18n.t('appointments_tab')}
+   </AppText>
+ );
+ 
+ export interface Props {
+   initialRouteName?: string;
+   navigation?: NavigationProp<any>;
+   route?: RouteProp<any>;
+   scene?: BottomTabBarProps;
+@@ -519,233 +524,290 @@ const MainTabNavigator: React.FC<Props> = (Props) => {
+                     //   setShowGlobalAssist(false);
+                     //   setShowLoginFaceID(true);
+                     // }}
+                     // delayLongPress={3000}
+                     // onPressIn={() => setIsRunning(true)}
+                     onLongPress={handleLongPress}
+                     onPressOut={handlePressOut}
+                 >
+                   <Image source={assets.tab_home_select()}
+                     style={[styles.tabbarIconImg,styles.tabbarIconImgActive]}
+                   />
+                   <AppText
+                     size='small'
+                     style={{
+                       color: '#FFFFFF',
+                       marginTop: 8,
+                     }}
+                   >
+                       {constants.i18n.t('global_assistance')}
+                   </AppText>
+                 </TouchableOpacity>
+                 </View>
+               </View>
+             </View>
+           </Animated.View>
+         </View>
+       </Modal>
+     )
+   }
+   
+-  const androidTabIconStyle = Platform.OS === 'android'
++  const tabIconStyle = Platform.OS === 'android'
+     ? styles.androidTabIcon
+-    : undefined;
+-  const androidActiveTabIconStyle = Platform.OS === 'android'
++    : styles.iosTabIcon;
++  const activeTabIconStyle = Platform.OS === 'android'
+     ? styles.androidActiveTabIcon
+-    : undefined;
++    : styles.iosActiveTabIcon;
+ 
+   return (
+     <ThemeContext.Consumer>
+       {
+         (theme: Theme) => {
+           return (
+             <>
+               <Tab.Navigator
+                 initialRouteName={initialRouteName}
+                 safeAreaInsets={getTabBarSafeAreaInsets(Platform.OS)}
+                 screenOptions={({ route: tabRoute }) => ({
+                   tabBarIcon: ({ focused, color, size }) => {
+                     let icon;
+                     if (tabRoute.name === constants.routeNames.home) {
+-                      icon = <View style={[styles.tabbarIconBox, styles.commonPaddingTab]}>
+-                                <Image 
+-                                  source={focused ? assets.tab_home_select() : assets.tab_home_unselect()}
++                      icon = (
++                        <View style={styles.tabProfileIconContainer}>
++                          <View
++                            style={[
++                              styles.tabbarIconBox,
++                              !focused && tabIconStyle,
++                              focused && activeTabIconStyle,
++                            ]}
++                          >
++                            <View style={styles.tabProfileIconWrap}>
++                              <SVGTabHomeIcon
++                                focused={focused}
++                                color={color}
++                                width={20}
++                                height={20}
++                              />
++                              {focused ? (
++                                <View
++                                  style={[
++                                    styles.tabProfileActiveDot,
++                                    { backgroundColor: color },
++                                  ]}
++                                />
++                              ) : null}
++                            </View>
++                          </View>
++                        </View>
++                      );
++                    } else if (tabRoute.name === constants.routeNames.consult) {
++                      icon = (
++                        <View style={styles.tabProfileIconContainer}>
++                          <View
++                            style={[
++                              styles.tabbarIconBox,
++                              !focused && tabIconStyle,
++                              focused && activeTabIconStyle,
++                            ]}
++                          >
++                            <View style={styles.tabProfileIconWrap}>
++                              <SVGTabConsultIcon
++                                focused={focused}
++                                color={color}
++                                width={20}
++                                height={20}
++                              />
++                              {focused ? (
++                                <View
++                                  style={[
++                                    styles.tabProfileActiveDot,
++                                    { backgroundColor: color },
++                                  ]}
++                                />
++                              ) : null}
++                            </View>
++                          </View>
++                        </View>
++                      );
++                    } else if (tabRoute.name === constants.routeNames.concierge) {
++                      icon = (
++                        <View style={styles.tabProfileIconContainer}>
++                          <View
++                            style={[
++                              styles.tabbarIconBox,
++                              !focused && tabIconStyle,
++                              focused && activeTabIconStyle,
++                            ]}
++                          >
++                            <View style={styles.tabProfileIconWrap}>
++                              <SVGTabConciergeIcon
++                                focused={focused}
++                                color={color}
++                                width={20}
++                                height={20}
++                              />
++                              {focused ? (
++                                <View
+                                   style={[
+-                                    styles.tabbarIconImg, 
+-                                    focused && styles.tabbarIconImgActive,
+-                                    !focused && androidTabIconStyle,
+-                                    focused && androidActiveTabIconStyle,
++                                    styles.tabProfileActiveDot,
++                                    { backgroundColor: color },
+                                   ]}
+                                 />
+-                              </View>
++                              ) : null}
++                            </View>
++                          </View>
++                        </View>
++                      );
+                     } else if (tabRoute.name === constants.routeNames.appointments) {
+                       icon = (
+                         <View style={styles.tabAppointmentsIconContainer}>
+                           <View
+                             style={[
+                               styles.tabbarIconBox,
+-                              !focused && androidTabIconStyle,
+-                              focused && androidActiveTabIconStyle,
++                              !focused && tabIconStyle,
++                              focused && activeTabIconStyle,
+                             ]}
+                           >
+                             <View
+                               style={styles.tabAppointmentsIconWrap}
+                               testID="appointments-tab-icon"
+                             >
+                               <Svg
+                                 fill="none"
+                                 height={focused ? 22 : 20}
+                                 stroke={color}
+                                 strokeLinecap="round"
+                                 strokeLinejoin="round"
+                                 strokeWidth={focused ? 2.25 : 1.75}
+                                 viewBox="0 0 24 24"
+                                 width={focused ? 22 : 20}
+                               >
+                                 <Path d="M8 2v4" />
+                                 <Path d="M16 2v4" />
+                                 <Rect height={18} rx={2} width={18} x={3} y={4} />
+                                 <Path d="M3 10h18" />
+                               </Svg>
+                               {focused ? (
+                                 <View
+                                   style={[
+                                     styles.tabAppointmentsActiveDot,
+                                     {backgroundColor: color},
+                                   ]}
+                                   testID="appointments-tab-active-dot"
+                                 />
+                               ) : null}
+                             </View>
+                           </View>
+                         </View>
+                       );
+                     } else if (tabRoute.name === constants.routeNames.profile) {
+                       icon = (
+                         <View style={styles.tabProfileIconContainer}>
+                           <View
+                             style={[
+                               styles.tabbarIconBox,
+-                              !focused && androidTabIconStyle,
+-                              focused && androidActiveTabIconStyle,
++                              !focused && tabIconStyle,
++                              focused && activeTabIconStyle,
+                             ]}
+                           >
+                             <View style={styles.tabProfileIconWrap}>
+                               <SVGTabProfileIcon
+                                 focused={focused}
+                                 color={color}
+                                 width={20}
+                                 height={20}
+                               />
+                               {focused ? (
+                                 <View
+                                   style={[
+                                     styles.tabProfileActiveDot,
+                                     { backgroundColor: color },
+                                   ]}
+                                 />
+                               ) : null}
+                             </View>
+                           </View>
+                         </View>
+                       );
+-                    } else if (tabRoute.name === constants.routeNames.pass) {
+-                      icon = <View 
+-                        style={[
+-                          styles.commonPaddingTab, 
+-                          ]}>
+-                        {focused 
+-                          ? <View style={styles.tabbarIconBox}>
+-                              <View style={styles.profile_tab_focused_container}>
+-                                <Image
+-                                  source={assets.tab_profile_select_0()}
+-                                  style={[styles.tab_profile_select_0, androidActiveTabIconStyle]}
+-                                />
+-                                <View style={styles.tab_profile_select_1}>
+-                                  <Image
+-                                    source={assets.tab_pass_select_1()}
+-                                    style={[styles.tab_profile_select_0, androidActiveTabIconStyle]}
+-                                  />
+-                                </View>
+-                              </View>
+-                            </View> 
+-                          : <View style={styles.tabbarIconBox}>
+-                              <Image 
+-                                source={assets.tab_pass_unselect()}
+-                                style={[styles.tabbarIconImg, androidTabIconStyle]}
+-                              />
+-                            </View>
+-                        }
+-                      </View>
+                     }
+                     return icon;
+                   },
+                   headerShown: false,
+                   tabBarStyle: styles.tabBarStyle,
+                   tabBarActiveTintColor: theme.uiTheme?.colors.$tabBarActiveTintColor,
+                   tabBarInactiveTintColor: theme.uiTheme?.colors.$tabBarInActiveTintColor,
+                   tabBarLabelStyle: styles.tabBarLabelStyle,
+                   tabBarButton: FullSizeTabBarButton,
+                 })}
+               >
+-                <Tab.Screen
+-                  key={$routeNames.pass}
+-                  name={$routeNames.pass}
+-                  initialParams={{}}
+-                  component={PassScreen}
+-                  options={{
+-                    tabBarLabel: $i18n.t('my_pass'),
+-                    tabBarLabelStyle: styles.tabBarTextStylePosition,
+-                  }}
+-                />
+                 <Tab.Screen
+                   key={$routeNames.home}
+                   name={$routeNames.home}
+                   
+                   initialParams={{
+                     isExistingUser: route?.params?.isExistingUser ?? true
+                   }}
+                   component={HomeScreen}
+                   listeners={{
+                     tabLongPress: () => {
+                       setShowGlobalAssist(true)
+                       setTimeout(() => {
+                         setTimeLeft(3);
+                         setIsRunning(true)
+                       }, 300)
+                     },
+                   }}
+                   options={{
+                     tabBarLabel: $i18n.t('index.home'),
+                     tabBarLabelStyle: styles.tabBarTextStylePosition,
+                   }}
+                 />
++                <Tab.Screen
++                  key={$routeNames.consult}
++                  name={$routeNames.consult}
++                  component={ConsultScreen}
++                  options={{
++                    tabBarLabel: $i18n.t('consult'),
++                    tabBarLabelStyle: styles.tabBarTextStylePosition,
++                  }}
++                />
++                {Config.CONCIERGE_URL && (
++                  <Tab.Screen
++                    key={$routeNames.concierge}
++                    name={$routeNames.concierge}
++                    component={ConciergeScreen}
++                    options={{
++                      tabBarLabel: $i18n.t('concierge'),
++                      tabBarLabelStyle: styles.tabBarTextStylePosition,
++                    }}
++                  />
++                )}
+                 <Tab.Screen
+                   key={$routeNames.appointments}
+                   name={$routeNames.appointments}
+                   initialParams={{}}
+                   component={AppointmentsScreen}
+                   options={{
+                     tabBarAccessibilityLabel: $i18n.t('appointments'),
+                     tabBarActiveTintColor: APP_NAVIGATION_BAR_BACKGROUND_COLOR,
+                     tabBarInactiveTintColor: APPOINTMENTS_TAB_INACTIVE_COLOR,
+                     tabBarItemStyle: styles.tabAppointmentsItem,
+                     tabBarLabel: AppointmentsTabLabel,
+                   }}
+                 />
+                 <Tab.Screen
+                   key={$routeNames.profile}
+                   name={$routeNames.profile}
+                   initialParams={{}}
+                   component={ProfileScreen}
+                   options={{
+                     tabBarLabel: $i18n.t('my_profile'),
+                     tabBarLabelStyle: styles.tabBarTextStylePosition,
+                   }}
+                 />
+               </Tab.Navigator>
+               {showGlobalAssist && handleRenderGlobalAssist()}
+               {showLoginFaceID && handleRenderFaceID()}
+               {showDialPad && handleRenderDialPad()}
+               {showContactDialog && handleRenderContactDialog()}
+             </>
+           )
+diff --git a/src/navigation/route-names.ts b/src/navigation/route-names.ts
+index 979f968c..1380bade 100644
+--- a/src/navigation/route-names.ts
++++ b/src/navigation/route-names.ts
+@@ -1,32 +1,34 @@
+ export default Object.freeze({
+   home: 'HomeScreen',
++  consult: 'ConsultScreen',
++  concierge: 'ConciergeScreen',
+   appointments: 'AppointmentsScreen',
+   login: 'LoginScreen',
+   mainTabNavigator: 'MainTabNavigator',
+   profile: 'ProfileScreen',
+   pass: 'PassScreen',
+   doctorListScreen: 'DoctorListScreen',
+   otpLogin: 'OTPScreen',
+   questionnaireScreen: 'QuestionnaireScreen',
+   addressScreen: 'AddressScreen',
+   addressEditScreen: 'AddressEditScreen',
+   forgotPassword: 'ForgotPasswordScreen',
+   register: 'RegisterScreen',
+   healthInfo: 'HealthInfoScreen',
+   doctorDetailScreen: 'DoctorDetailScreen',
+   myAppointmentScreen: 'MyAppointmentScreen',
+   myPlansScreen: 'MyPlansScreen',
+   healsPlanMembership: 'HealsPlanMembershipScreen',
+   productWaitingRoom: 'ProductWaitingRoomScreen',
+   myAppointmentListScreen: 'MyAppointmentListScreen',
+   healsPlanScreen: 'HealsPlanScreen',
+   teleconsultScreen: 'TeleconsultScreen',
+   transactionHistory: 'TransactionHistoryScreen',
+   myDependantsScreen: 'MyDependantsScreen',
+   settingsScreen: 'SettingsScreen',
+   changePasswordScreen: 'ChangePasswordScreen',
+   profileEditScreen: 'ProfileEditScreen',
+   healsGuideScreen: 'HealsGuideScreen',
+   healthInfoEditScreen: 'HealthInfoEditScreen',
+   notificationScreen: 'NotificationScreen',
+   medicationListScreen: 'MedicationListScreen',
+diff --git a/src/screens/concierge-screen/concierge-screen.props.ts b/src/screens/concierge-screen/concierge-screen.props.ts
+new file mode 100644
+index 00000000..e69de29b
+diff --git a/src/screens/concierge-screen/concierge-screen.styles.ts b/src/screens/concierge-screen/concierge-screen.styles.ts
+new file mode 100644
+index 00000000..8752c097
+--- /dev/null
++++ b/src/screens/concierge-screen/concierge-screen.styles.ts
+@@ -0,0 +1,22 @@
++import EStyleSheet from "react-native-extended-stylesheet";
++
++export default EStyleSheet.create({
++  container: {
++    flex: 1,
++    backgroundColor: '#F2F4F5',
++  },
++  loadingContainer: {
++    position: 'absolute',
++    top: 0,
++    left: 0,
++    right: 0,
++    bottom: 0,
++    justifyContent: 'center',
++    alignItems: 'center',
++    backgroundColor: '#ffffff',
++  },
++  webview: {
++    flex: 1,
++    // width: '100%',
++  },
++});
+diff --git a/src/screens/concierge-screen/concierge-screen.tsx b/src/screens/concierge-screen/concierge-screen.tsx
+new file mode 100644
+index 00000000..5dced29c
+--- /dev/null
++++ b/src/screens/concierge-screen/concierge-screen.tsx
+@@ -0,0 +1,37 @@
++import React from 'react';
++import {
++  View,
++  Text,
++  ActivityIndicator,
++} from 'react-native';
++import styles from "./concierge-screen.styles";
++import { WebView } from 'react-native-webview';
++import Config from 'react-native-config';
++const ConciergeScreen = (): React.ReactElement => {
++  if (!Config.CONCIERGE_URL) {
++    return (
++      <View style={styles.container}>
++        <Text>Configuration Error: CONCIERGE_URL not set</Text>
++      </View>
++    );
++  }
++
++  return (
++    <View style={styles.container}>
++      <WebView
++        source={{ uri: Config.CONCIERGE_URL }}
++        style={styles.webview}
++        // scrollEnabled={false}
++        // scalesPageToFit={false}
++        startInLoadingState={true}
++        renderLoading={() => (
++          <View style={styles.loadingContainer}>
++            <ActivityIndicator size="large" color="#00AC86" />
++          </View>
++        )}
++      />
++    </View>
++  );
++};
++
++export default ConciergeScreen;
+\ No newline at end of file
+diff --git a/src/screens/consult-screen/consult-screen.props.ts b/src/screens/consult-screen/consult-screen.props.ts
+new file mode 100644
+index 00000000..e69de29b
+diff --git a/src/screens/consult-screen/consult-screen.styles.ts b/src/screens/consult-screen/consult-screen.styles.ts
+new file mode 100644
+index 00000000..000f9414
+--- /dev/null
++++ b/src/screens/consult-screen/consult-screen.styles.ts
+@@ -0,0 +1,10 @@
++import EStyleSheet from "react-native-extended-stylesheet";
++
++export default EStyleSheet.create({
++  container: {
++    flex: 1,
++    backgroundColor: '#F2F4F5',
++    alignItems: 'center',
++    justifyContent: 'center'
++  },
++});
+diff --git a/src/screens/consult-screen/consult-screen.tsx b/src/screens/consult-screen/consult-screen.tsx
+new file mode 100644
+index 00000000..60d50f18
+--- /dev/null
++++ b/src/screens/consult-screen/consult-screen.tsx
+@@ -0,0 +1,16 @@
++import React from 'react';
++import {
++  View,
++  Text,
++} from 'react-native';
++import styles from "./consult-screen.styles";
++
++const ConsultScreen = (): React.ReactElement => {
++  return (
++    <View style={styles.container}>
++      <Text>Consult空白页面</Text>
++    </View>
++  );
++};
++
++export default ConsultScreen;
+\ No newline at end of file
