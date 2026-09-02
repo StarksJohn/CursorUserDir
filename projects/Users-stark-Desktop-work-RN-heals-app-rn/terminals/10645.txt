@@ -1,0 +1,37 @@
+---
+pid: 884
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "python3 - <<'PY'\nimport subprocess, time, re, os\nfrom pathlib import Path\n\nserial='4ae24c72'\nout=Path('/tmp/heals-android-verify')\nout.mkdir(exist_ok=True)\n\ndef adb(*args, check=True):\n    return subprocess.run(['adb','-s',serial,*args], check=check, capture_output=True)\n\ndef tap(x,y,name, wait=2.2):\n    print(f'TAP {name} {x},{y}', flush=True)\n    adb('shell','input','tap',str(x),str(y))\n    time.sleep(wait)\n\ndef capture(name):\n    png=out/f'{name}.png'\n    xml=out/f'{name}.xml'\n    with open(png,'wb') as f:\n        subprocess.check_call(['adb','-s',serial,'exec-out','screencap','-p'], stdout=f)\n    adb('shell','uiautomator','dump','--compressed','/sdcard/heals.xml')\n    adb('pull','/sdcard/heals.xml', str(xml))\n    adb('shell','rm','/sdcard/heals.xml')\n    text=xml.read_text(errors='replace')\n    texts=re.findall(r'text=\"([^\"]+)\"', text)\n    descs=re.findall(r'content-desc=\"([^\"]+)\"', text)\n    logbox=any(any(k in t for k in ['Open debugger','forwardRef','LogBox']) for t in texts+descs)\n    print(f'CAPTURE {name} bytes={png.stat().st_size} logbox={logbox} texts={texts[:20]}', flush=True)\n    return text, texts, descs\n\ndef bounds_for(xml, label, prefer_bottom=False):\n    hits=[]\n    for attr in ('content-desc','text'):\n        for m in re.finditer(rf'{attr}=\"{re.escape(label)}\"[^>]*bounds=\"\\[(\\d+),(\\d+)\\]\\[(\\d+),(\\d+)\\]\"', xml):\n            x1,y1,x2,y2=map(int,m.groups())\n            hits.append((x1,y1,x2,y2,(x1+x2)//2,(y1+y2)//2))\n    if not hits:\n        return None\n    if prefer_bottom:\n        hits.sort(key=lambda h: h[1], reverse=True)\n    return hits[0]\n\n# bottom tabs\ntabs={\n    'consult': (324,2325),\n    'concierge': (540,2325),\n    'appointments': (756,2325),\n    'profile': (972,2325),\n    'home': (108,2325),\n}\n\n# consult\ntap(*tabs['consult'], 'consult-tab')\nxml,_,_=capture('tab-consult')\n# concierge\ntap(*tabs['concierge'], 'concierge-tab')\nxml,_,_=capture('tab-concierge')\n# appointments\ntap(*tabs['appointments'], 'appointments-tab', wait=3.0)\nxml,texts,descs=capture('tab-appointments')\n\n# try open country picker\ncountry=bounds_for(xml,'香港特别行政区') or bounds_for(xml,'Hong Kong')\nif country:\n    tap(country[4], country[5], 'country-filter', wait=2.5)\n    xml2,texts2,_=capture('appointments-country')\n    # dismiss overlay by tapping near top overlay if present\n    overlay=bounds_for(xml2,'')\n    # tap slightly above dialog or left overlay\n    tap(540, 400, 'dismiss-country', wait=1.2)\n    capture('appointments-after-country-dismiss')\nelse:\n    print('NO country filter found', texts[:30])\n\n# reopen appointments in case dismiss closed something\ntap(*tabs['appointments'], 'appointments-tab-again', wait=1.5)\nxml,_,_=capture('tab-appointments-2')\nservice=bounds_for(xml,'所有服务')\nif service:\n    # prefer the right filter, not a large button\n    hits=[]\n    for m in re.finditer(r'(?:text|content-desc)=\"所有服务\"[^>]*bounds=\"\\[(\\d+),(\\d+)\\]\\[(\\d+),(\\d+)\\]\"', xml):\n        x1,y1,x2,y2=map(int,m.groups())\n        hits.append((x1,y1,x2,y2,(x1+x2)//2,(y1+y2)//2,x2-x1,y2-y1))\n    hits.sort(key=lambda h: (h[7], h[6]))  # smallest first likely filter chip\n    print('service hits', hits)\n    h=hits[0]\n    tap(h[4], h[5], 'service-filter', wait=2.8)\n    xml3,texts3,_=capture('appointments-service')\n    tap(540, 400, 'dismiss-service', wait=1.2)\n    capture('appointments-after-service-dismiss')\nelse:\n    print('NO service filter found')\n\n# profile\ntap(*tabs['profile'], 'profile-tab')\ncapture('tab-profile')\n# home\ntap(*tabs['home'], 'home-tab')\ncapture('tab-home-final')\nprint('DONE')\nPY"
+title: "Smoke-test main tabs and appointment pickers"
+status: succeeded
+started_at: 2026-09-02T10:54:59.121Z
+running_for_ms: 52075    
+---
+TAP consult-tab 324,2325
+CAPTURE tab-consult bytes=56859 logbox=False texts=['Consult空白页面', '主页', '问医生', '礼宾服务', '预约', '个人资料']
+TAP concierge-tab 540,2325
+CAPTURE tab-concierge bytes=300544 logbox=False texts=['主页', '问医生', '礼宾服务', '预约', '个人资料']
+TAP appointments-tab 756,2325
+CAPTURE tab-appointments bytes=108853 logbox=False texts=['预约', 'CN', 'JU', '尊尚计划', '更改', '服务时间', '香港特别行政区', '所有服务', '主页', '问医生', '礼宾服务', '预约', '个人资料']
+TAP country-filter 284,767
+CAPTURE appointments-country bytes=122884 logbox=False texts=['香港特别行政区']
+TAP dismiss-country 540,400
+CAPTURE appointments-after-country-dismiss bytes=109177 logbox=False texts=['预约', 'CN', 'JU', '尊尚计划', '更改', '服务时间', '香港特别行政区', '所有服务', '主页', '问医生', '礼宾服务', '预约', '个人资料']
+TAP appointments-tab-again 756,2325
+CAPTURE tab-appointments-2 bytes=109157 logbox=False texts=['预约', 'CN', 'JU', '尊尚计划', '更改', '服务时间', '香港特别行政区', '所有服务', '主页', '问医生', '礼宾服务', '预约', '个人资料']
+service hits [(603, 739, 924, 794, 763, 766, 321, 55), (557, 715, 1037, 820, 797, 767, 480, 105)]
+TAP service-filter 763,766
+CAPTURE appointments-service bytes=129944 logbox=False texts=['普通科', '外科', '肠胃肝脏科', '心脏科']
+TAP dismiss-service 540,400
+CAPTURE appointments-after-service-dismiss bytes=108908 logbox=False texts=['预约', 'CN', 'JU', '尊尚计划', '更改', '服务时间', '香港特别行政区', '所有服务', '主页', '问医生', '礼宾服务', '预约', '个人资料']
+TAP profile-tab 972,2325
+CAPTURE tab-profile bytes=190599 logbox=False texts=['5']
+TAP home-tab 108,2325
+CAPTURE tab-home-final bytes=157973 logbox=False texts=['Log 5 of 5', 'Console Error', 'Source', '\u200e  519 |       } catch (error) {', "\u200e  520 |         console.error('profile-screen.tsx refresh health record failed', error);", '\u200e&gt; 521 |       }', '\u200e      |       ^', '\u200e  522 |', '\u200e  523 |       try {', '\u200e  524 |         const latestDependants = await api.dependants();', 'profile-screen.tsx (521:7)', 'Call Stack', 'refreshProfileData', 'profile-screen.tsx:521:7', 'See 6 more frames', 'Dismiss', 'Minimize']
+DONE
+
+---
+exit_code: 0
+elapsed_ms: 52075
+ended_at: 2026-09-02T10:55:51.196Z
+---

@@ -1,0 +1,526 @@
+npm Maintainer Account Security & 2FA Enforcement in 2026: Mastra Post-Mortem, Staged Publishing & Offboarding Guide — CVE OptiBot Blog
+
+On June 17, 2026, an attacker publishing as ehindero — a former Mastra contributor who had not been active for 16 months — republished all 143 packages in the`@mastra` npm scope in a burst spanning 01:12 to 02:36 UTC. Each package gained a single new dependency: easy-day-js, a malicious clone of the dayjs date library that downloaded and executed a cross-platform remote access trojan on installation.`@mastra/core`, with approximately 4 million monthly downloads, was among the packages compromised. The attacker had laid the groundwork the previous day by publishing a clean version of easy-day-js, then quietly flipping it malicious minutes before the scope-wide republish.
+
+Le 17 juin 2026, un attaquant publiant sous le nom ehindero — un ancien contributeur de Mastra qui n'avait pas été actif depuis 16 mois — a republié les 143 packages du scope npm`@mastra` en une rafale allant de 01h12 à 02h36 UTC. Chaque package a reçu une nouvelle dépendance unique : easy-day-js, un clone malveillant de la bibliothèque de dates dayjs qui téléchargeait et exécutait un cheval de Troie d'accès à distance multiplateforme lors de l'installation.`@mastra/core`, avec environ 4 millions de téléchargements mensuels, faisait partie des packages compromis. L'attaquant avait préparé le terrain la veille en publiant une version propre d'easy-day-js, puis en la rendant silencieusement malveillante quelques minutes avant la republication à l'échelle du scope.
+
+This attack required zero technical sophistication. No session hijack. No pipeline compromise. No OIDC token theft. The attacker simply used credentials that the Mastra project had forgotten to revoke when the contributor left 16 months earlier. npm does not expire scope publish permissions on inactivity — permission hygiene is entirely the responsibility of maintainers, and most projects never do it.
+
+Cette attaque n'a nécessité aucune sophistication technique. Pas de détournement de session. Pas de compromission de pipeline. Pas de vol de token OIDC. L'attaquant a simplement utilisé des credentials que le projet Mastra avait oublié de révoquer quand le contributeur est parti 16 mois plus tôt. npm n'expire pas les permissions de publication de scope sur inactivité — l'hygiène des permissions est entièrement de la responsabilité des mainteneurs, et la plupart des projets ne le font jamais.
+
+This guide covers the full picture of npm maintainer account security in 2026: what the Mastra attack reveals about account hygiene, how GitHub's new staged publishing with mandatory 2FA (GA: May 22, 2026) and the mandatory 2FA rollout for high-impact packages (announced June 12, 2026) change the threat model, the timeline for TOTP deprecation and FIDO/passkey migration, a step-by-step contributor offboarding playbook, and how to use npm organization audit logs to detect unauthorized publish events before they cause harm.
+
+Ce guide couvre l'image complète de la sécurité des comptes mainteneurs npm en 2026 : ce que l'attaque Mastra révèle sur l'hygiène des comptes, comment la nouvelle publication par étapes de GitHub avec 2FA obligatoire (GA : 22 mai 2026) et le déploiement de la 2FA obligatoire pour les packages à fort impact (annoncé le 12 juin 2026) changent le modèle de menace, le calendrier de dépréciation TOTP et migration vers FIDO/passkey, un playbook étape par étape pour la désinscription des contributeurs, et comment utiliser les journaux d'audit d'organisation npm pour détecter les événements de publication non autorisés avant qu'ils causent des dommages.
+
+143
+
+@mastra packages compromised via one stale contributor account inactive for 16 months (June 17, 2026)
+
+packages @mastra compromis via un seul compte contributeur inactif depuis 16 mois (17 juin 2026)
+
+Source: Snyk Security Blog & Microsoft Security Blog, June 17, 2026
+
+500+
+
+npm packages poisoned across 20 attack waves in 2026 by TeamPCP — blocked by staged publishing 2FA gate (May 22, 2026)
+
+packages npm empoisonnés sur 20 vagues d'attaques en 2026 par TeamPCP — bloqués par le portail 2FA de publication par étapes (22 mai 2026)
+
+Source: TechTimes / The Hacker News, May 26, 2026
+
+90
+
+day maximum lifetime enforced on all npm granular tokens with write permissions since February 3, 2026
+
+jours de durée de vie maximale imposée sur tous les tokens npm granulaires avec permissions d'écriture depuis le 3 février 2026
+
+Source: GitHub Changelog, November 5, 2025
+
+1M+
+
+weekly downloads threshold that now triggers mandatory 2FA enrollment for npm package maintainers (June 12, 2026)
+
+seuil de téléchargements hebdomadaires qui déclenche désormais l'inscription obligatoire à la 2FA pour les mainteneurs de packages npm (12 juin 2026)
+
+Source: Rescana / GitHub Security Announcement, June 12, 2026
+
+## Mastra Post-Mortem: Anatomy of a Stale Credential Attack
+
+## Post-Mortem Mastra : Anatomie d’une Attaque par Credentials Obsolètes
+
+The Mastra attack timeline provides a textbook case of how negligent account hygiene translates directly into a supply chain compromise. Understanding the mechanics clarifies exactly which controls would have prevented it.
+
+Le calendrier de l'attaque Mastra fournit un cas d'école de la façon dont une hygiène de compte négligente se traduit directement par une compromission de la chaîne d'approvisionnement. Comprendre les mécanismes clarifie exactement quels contrôles l'auraient empêchée.
+
+- November 2024 – February 2025: The npm account ehindero published 15 alpha versions of`@mastra/core` as a legitimate contributor. The account was granted publish rights to the entire`@mastra` scope during this period.
+- Novembre 2024 – Février 2025 : Le compte npm ehindero a publié 15 versions alpha de`@mastra/core` en tant que contributeur légitime. Le compte a obtenu des droits de publication sur l'intégralité du scope`@mastra` pendant cette période.
+- February 2025 – June 2026 (16 months): The contributor stopped contributing. The Mastra project grew substantially —`@mastra/core` reaching ~4 million monthly downloads — but nobody removed ehindero from the npm publishing team. npm never flagged the dormant account.
+- Février 2025 – Juin 2026 (16 mois) : Le contributeur a arrêté de contribuer. Le projet Mastra a considérablement grandi —`@mastra/core` atteignant ~4 millions de téléchargements mensuels — mais personne n'a retiré ehindero de l'équipe de publication npm. npm n'a jamais signalé le compte inactif.
+- June 16, 2026: The attacker (who had acquired or compromised the ehindero credentials) published a clean, unsuspicious version of the`easy-day-js` package to npm. This "warm-up" publish was designed to avoid triggering security scanners before the actual attack.
+- 16 juin 2026 : L'attaquant (qui avait acquis ou compromis les credentials ehindero) a publié une version propre et inoffensive du package`easy-day-js` sur npm. Cette publication de "mise en chauffe" était conçue pour éviter de déclencher les scanners de sécurité avant l'attaque réelle.
+- June 17, 2026, 01:12 – 02:36 UTC: The attacker published a malicious version of`easy-day-js`, then immediately republished all 143 packages in the`@mastra` scope — each with`easy-day-js` added as a dependency. The automated burst took 84 minutes. The malicious payload was a cross-platform RAT (Remote Access Trojan) that executed on`npm install` via postinstall hooks.
+- 17 juin 2026, 01h12 – 02h36 UTC : L'attaquant a publié une version malveillante d'`easy-day-js`, puis a immédiatement republié les 143 packages du scope`@mastra`— chacun avec`easy-day-js` ajouté comme dépendance. La rafale automatisée a pris 84 minutes. Le payload malveillant était un RAT (Remote Access Trojan) multiplateforme qui s'exécutait lors de`npm install` via des hooks postinstall.
+- June 17, 2026 (hours later): npm revoked the ehindero account, removed the malicious easy-day-js package, and the Mastra team published clean forward-rolled versions of all 143 packages. The window of exposure lasted several hours during which any developer running`npm install` with the compromised versions could have had malware installed.
+- 17 juin 2026 (quelques heures plus tard) : npm a révoqué le compte ehindero, supprimé le package malveillant easy-day-js, et l'équipe Mastra a publié des versions propres de tous les 143 packages. La fenêtre d'exposition a duré plusieurs heures pendant lesquelles tout développeur exécutant`npm install` avec les versions compromises aurait pu avoir du malware installé.
+
+What would have stopped it: A single annual maintainer audit that removed inactive npm team members. That's it. No technical control, no token rotation, no SLSA provenance would have prevented this attack — only the most basic account hygiene.
+
+Ce qui l'aurait stoppé : Un simple audit annuel des mainteneurs qui aurait retiré les membres inactifs de l'équipe npm. C'est tout. Aucun contrôle technique, aucune rotation de token, aucune provenance SLSA n'aurait empêché cette attaque — seulement l'hygiène de compte la plus basique.
+
+## The 2026 npm 2FA Landscape: Three Overlapping Enforcement Layers
+
+## Le Paysage 2FA npm 2026 : Trois Couches d’Application Qui Se Chevauchent
+
+GitHub has shipped three distinct 2FA enhancements for npm in 2025–2026. Each targets a different attack vector. Understanding all three — and how they interact — is essential for a complete security posture.
+
+GitHub a livré trois améliorations 2FA distinctes pour npm en 2025–2026. Chacune cible un vecteur d'attaque différent. Comprendre les trois — et la façon dont elles interagissent — est essentiel pour une posture de sécurité complète.
+
+### Layer 1 — Mandatory 2FA for High-Impact Packages (June 12, 2026)
+
+### Couche 1 — 2FA Obligatoire pour les Packages à Fort Impact (12 juin 2026)
+
+GitHub announced on June 12, 2026 that maintainers of packages with more than 1 million weekly downloads or more than 500 dependents are now required to enroll a 2FA device. Accounts with publish rights to the top-100 packages by dependents are also covered. Maintainers receive 15 days advance notice; after the deadline, accounts without 2FA face restricted registry access. This builds on the 2022 rollout that covered the top-100 packages — the June 2026 announcement dramatically expands the scope to thousands of additional packages.
+
+GitHub a annoncé le 12 juin 2026 que les mainteneurs de packages avec plus d'un million de téléchargements hebdomadaires ou plus de 500 dépendants doivent désormais inscrire un appareil 2FA. Les comptes avec des droits de publication sur les 100 packages principaux par dépendants sont également couverts. Les mainteneurs reçoivent un préavis de 15 jours ; après la date limite, les comptes sans 2FA font face à un accès restreint au registry. Cela s'appuie sur le déploiement de 2022 qui couvrait les 100 packages principaux — l'annonce de juin 2026 élargit considérablement la portée à des milliers de packages supplémentaires.
+
+Important limitation: Mandatory 2FA at login does not protect against the Mastra attack pattern. The ehindero account almost certainly had 2FA enabled — the attacker either compromised the credentials AND the 2FA device, or acquired a pre-authenticated session token. Account-level 2FA is not sufficient when an attacker has stolen a session token, because a stolen token can perform publish actions without re-authenticating.
+
+Limitation importante : La 2FA obligatoire à la connexion ne protège pas contre le pattern d'attaque Mastra. Le compte ehindero avait très probablement la 2FA activée — l'attaquant a soit compromis les credentials ET l'appareil 2FA, soit acquis un token de session pré-authentifié. La 2FA au niveau du compte n'est pas suffisante quand un attaquant a volé un token de session, car un token volé peut effectuer des actions de publication sans se ré-authentifier.
+
+### Layer 2 — Staged Publishing with a 2FA Approval Gate (GA: May 22, 2026)
+
+### Couche 2 — Publication par Étapes avec Portail d’Approbation 2FA (GA : 22 mai 2026)
+
+Staged publishing is the most significant supply chain protection npm has shipped. When you run`npm publish`(or`npm stage publish`), the built tarball goes into a staging queue — it is not immediately available to the public. A human maintainer must then separately authenticate with 2FA and issue an explicit approval before the package version goes live. Automated CI/CD pipelines and OIDC tokens cannot complete the approval step.
+
+La publication par étapes est la protection supply chain la plus significative que npm ait livrée. Quand vous exécutez`npm publish`(ou`npm stage publish`), le tarball construit va dans une file d'attente de staging — il n'est pas immédiatement disponible au public. Un mainteneur humain doit ensuite s'authentifier séparément avec la 2FA et émettre une approbation explicite avant que la version du package soit mise en ligne. Les pipelines CI/CD automatisés et les tokens OIDC ne peuvent pas compléter l'étape d'approbation.
+
+This is shipped in npm CLI v11.15.0. To enable it for your package:
+
+Cela est livré dans npm CLI v11.15.0. Pour l'activer pour votre package :
+
+```
+# Enable staged publishing for your package
+npm config set publish-requires-approval true
+
+# Publish to staging queue (not live yet)
+npm publish
+
+# From another terminal/device, authenticate with 2FA and approve
+npm stage publish --approve [staged-version-id]
+
+# View pending staged versions
+npm stage list
+```
+
+What this blocks: The TeamPCP attack pattern — stolen CI/CD OIDC tokens being used to publish immediately. Even if an attacker has a valid write token, they cannot complete the approval step without the maintainer's 2FA device. This is why TeamPCP's 500+ poisoned packages across 20 attack waves became blocked after May 22 — the attack relied on immediate publish, which staged publishing eliminates.
+
+Ce que cela bloque : Le pattern d'attaque TeamPCP — tokens OIDC CI/CD volés utilisés pour publier immédiatement. Même si un attaquant possède un token d'écriture valide, il ne peut pas compléter l'étape d'approbation sans l'appareil 2FA du mainteneur. C'est pourquoi les 500+ packages empoisonnés de TeamPCP sur 20 vagues d'attaques ont été bloqués après le 22 mai — l'attaque reposait sur la publication immédiate, que la publication par étapes élimine.
+
+What this does NOT block: The Mastra attack, where the attacker had full account access (session tokens, not just OIDC publish tokens). If an attacker can complete the 2FA step on the approval portal — either because they have the physical 2FA device or have an active authenticated session — staged publishing will not stop them.
+
+Ce que cela ne bloque PAS : L'attaque Mastra, où l'attaquant avait un accès complet au compte (tokens de session, pas seulement des tokens de publication OIDC). Si un attaquant peut compléter l'étape 2FA sur le portail d'approbation — parce qu'il a le dispositif 2FA physique ou une session authentifiée active — la publication par étapes ne l'arrêtera pas.
+
+### Layer 3 — Token Lifecycle Enforcement (Classic Tokens Dead, 90-Day Cap)
+
+### Couche 3 — Application du Cycle de Vie des Tokens (Tokens Classiques Morts, Plafond 90 Jours)
+
+As of December 9, 2025, npm permanently disabled all Classic Tokens. New classic tokens cannot be created. All existing classic tokens expired on February 3, 2026. All granular access tokens with write permissions are now capped at a 90-day maximum lifetime, and new write tokens require 2FA by default.
+
+Depuis le 9 décembre 2025, npm a définitivement désactivé tous les tokens Classiques. Aucun nouveau token classique ne peut être créé. Tous les tokens classiques existants ont expiré le 3 février 2026. Tous les tokens d'accès granulaires avec permissions d'écriture sont désormais plafonnés à une durée de vie maximale de 90 jours, et les nouveaux tokens d'écriture exigent la 2FA par défaut.
+
+The recommended replacement for long-lived tokens in CI/CD is OIDC Trusted Publishing, which eliminates tokens entirely by using job-specific short-lived credentials:
+
+Le remplacement recommandé pour les tokens longue durée dans le CI/CD est la Publication de Confiance OIDC, qui élimine complètement les tokens en utilisant des credentials de courte durée spécifiques au job :
+
+```
+# .github/workflows/publish.yml
+name: Publish to npm
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  id-token: write  # required for OIDC
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm-publish  # environment protection gate
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm ci
+      - run: npm publish --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # With OIDC Trusted Publishing configured on npmjs.com,
+          # this uses a job-scoped token — no long-lived secret needed
+```
+
+## FIDO/Passkey Migration: npm Is Deprecating TOTP
+
+## Migration FIDO/Passkey : npm Déprécie TOTP
+
+GitHub has announced the deprecation of TOTP (time-based one-time passwords, i.e., Google Authenticator-style 6-digit codes) for npm 2FA. New TOTP setups are being disabled, and GitHub is migrating npm maintainers to FIDO-based 2FA: WebAuthn and passkeys (hardware security keys like YubiKey, or device-bound passkeys on phones).
+
+GitHub a annoncé la dépréciation de TOTP (mots de passe à usage unique basés sur le temps, c'est-à-dire les codes à 6 chiffres style Google Authenticator) pour la 2FA npm. Les nouvelles configurations TOTP sont désactivées, et GitHub migre les mainteneurs npm vers la 2FA basée sur FIDO : WebAuthn et passkeys (clés de sécurité matérielles comme YubiKey, ou passkeys liés à l'appareil sur les téléphones).
+
+Why TOTP is weaker than FIDO for supply chain attacks: TOTP codes can be phished in real time. An attacker who can lure a maintainer to a convincing fake npm login page can intercept the TOTP code and use it within its 30-second validity window. FIDO passkeys are origin-bound — a passkey registered for`npmjs.com` cannot be used on a phishing site. The full account takeover of a Mastra contributor (which may have involved TOTP phishing) would be much harder with FIDO.
+
+Pourquoi TOTP est plus faible que FIDO pour les attaques supply chain : Les codes TOTP peuvent être hameçonnés en temps réel. Un attaquant qui peut attirer un mainteneur vers une fausse page de connexion npm convaincante peut intercepter le code TOTP et l'utiliser dans sa fenêtre de validité de 30 secondes. Les passkeys FIDO sont liés à l'origine — un passkey enregistré pour`npmjs.com` ne peut pas être utilisé sur un site de phishing. La prise de contrôle totale du compte d'un contributeur Mastra (qui a peut-être impliqué du phishing TOTP) serait beaucoup plus difficile avec FIDO.
+
+To migrate your npm 2FA from TOTP to a FIDO passkey:
+
+Pour migrer votre 2FA npm de TOTP vers un passkey FIDO :
+
+```
+# Step 1: Log in to npmjs.com → Account settings → Two-Factor Authentication
+# Step 2: Click "Add security key" (WebAuthn / passkey)
+# Step 3: Follow the browser prompt to register your hardware key or device passkey
+# Step 4: Once FIDO device is registered, remove your TOTP authenticator app
+# Note: npm CLI will prompt for WebAuthn during publish if FIDO-only mode is set
+
+# Alternatively, via npm CLI (future support):
+npm profile set --auth-type webauthn
+```
+
+For organizations managing multiple npm accounts, consider hardware security keys (YubiKey 5 series supports WebAuthn/FIDO2) that can be shared across team members — though individual passkeys per developer is the more secure approach.
+
+Pour les organisations gérant plusieurs comptes npm, envisagez des clés de sécurité matérielles (la série YubiKey 5 supporte WebAuthn/FIDO2) qui peuvent être partagées entre les membres de l'équipe — bien que les passkeys individuels par développeur soit l'approche plus sécurisée.
+
+## The Contributor Offboarding Playbook: Preventing the Next Mastra
+
+## Le Playbook de Désinscription des Contributeurs : Prévenir le Prochain Mastra
+
+The root cause of the Mastra attack — stale contributor accounts with publish rights — is preventable with a simple, repeatable offboarding process. Most open-source projects and development teams do not have one. Here is a complete playbook.
+
+La cause profonde de l'attaque Mastra — des comptes contributeurs obsolètes avec des droits de publication — est évitable avec un processus de désinscription simple et répétable. La plupart des projets open-source et des équipes de développement n'en ont pas. Voici un playbook complet.
+
+### Step 1 — Immediate Offboarding Checklist
+
+### Étape 1 — Checklist de Désinscription Immédiate
+
+When a contributor leaves (or their involvement ends), perform these actions within 24 hours:
+
+Quand un contributeur part (ou que son implication se termine), effectuez ces actions dans les 24 heures :
+
+```
+# 1. Remove them from the npm publishing team
+npm team rm <org>:developers <username>
+
+# 2. Verify they no longer appear as a package maintainer
+npm owner ls <package-name>
+
+# 3. Remove direct package ownership if granted individually
+npm owner rm <username> <package-name>
+
+# 4. Check all packages in your scope
+npm search --scope=@yourorg | grep "maintainer"
+
+# 5. Revoke any tokens they may have created with org access
+# (npm org audit log → filter by username → identify active tokens)
+
+# 6. Remove GitHub repository access (Settings → Collaborators)
+# gh api repos/:owner/:repo/collaborators/:username -X DELETE
+```
+
+### Step 2 — Quarterly Maintainer Audit
+
+### Étape 2 — Audit Trimestriel des Mainteneurs
+
+Do not rely on manual offboarding alone. Run a quarterly audit to catch accounts that slipped through:
+
+Ne vous fiez pas uniquement à la désinscription manuelle. Effectuez un audit trimestriel pour détecter les comptes qui ont échappé à la vigilance :
+
+```
+#!/bin/bash
+# quarterly-npm-audit.sh — Run every 3 months
+
+SCOPE="yourorg"
+TEAM="$SCOPE:developers"
+
+echo "=== npm Team Members ==="
+npm team ls "$TEAM"
+
+echo ""
+echo "=== Last 90 days of publish activity ==="
+# For each package in scope, check last publish date and publisher
+npm search --scope="@$SCOPE" --json | jq -r '.[].name' | while read pkg; do
+  last_maintainer=$(npm show "$pkg" --json 2>/dev/null | jq -r '._npmUser.name // "unknown"')
+  last_date=$(npm show "$pkg" --json 2>/dev/null | jq -r '.time.modified // "unknown"')
+  echo "$pkg: last published by $last_maintainer on $last_date"
+done
+
+echo ""
+echo "=== Cross-reference: team members vs recent publishers ==="
+echo "Action required: any team member with no publish in 6+ months should be reviewed"
+```
+
+### Step 3 — Automate Offboarding with GitHub SAML SSO
+
+### Étape 3 — Automatiser la Désinscription avec GitHub SAML SSO
+
+If your organization uses GitHub Enterprise with SAML SSO (enforced via your IdP — Okta, Azure AD, Google Workspace), offboarding from your IdP automatically removes the user from your GitHub organization. This indirectly protects your npm scope because:
+
+Si votre organisation utilise GitHub Enterprise avec SAML SSO (appliqué via votre IdP — Okta, Azure AD, Google Workspace), la désinscription de votre IdP supprime automatiquement l'utilisateur de votre organisation GitHub. Cela protège indirectement votre scope npm car :
+
+- GitHub SAML enforcement removes members who haven't authenticated via the IdP from the GitHub org
+- L'application SAML GitHub supprime les membres qui ne se sont pas authentifiés via l'IdP de l'org GitHub
+- Team membership in GitHub flows to npm org membership for GitHub-linked npm organizations
+- L'appartenance à l'équipe dans GitHub se transfère à l'appartenance à l'org npm pour les organisations npm liées à GitHub
+- SCIM provisioning (if configured) can automatically deprovision access when HR systems mark an employee as departed
+- Le provisionnement SCIM (si configuré) peut automatiquement déprovisionner l'accès quand les systèmes RH marquent un employé comme parti
+
+Important caveat: npm scope publish rights and GitHub organization membership are not the same thing. A user removed from GitHub can still have direct npm package ownership (`npm owner`) if it was granted independently. Always perform both the GitHub and npm-level cleanup.
+
+Mise en garde importante : Les droits de publication de scope npm et l'appartenance à l'organisation GitHub ne sont pas la même chose. Un utilisateur retiré de GitHub peut encore avoir la propriété directe d'un package npm (`npm owner`) si elle a été accordée indépendamment. Effectuez toujours le nettoyage au niveau GitHub ET npm.
+
+## Enforcing 2FA Across Your npm Organization
+
+## Appliquer la 2FA à Votre Organisation npm
+
+npm organizations can enforce 2FA as a requirement for all members. When enabled, any member without 2FA configured loses access to the organization and its packages until they enroll. This is the organizational-level control that should accompany the package-level controls.
+
+Les organisations npm peuvent imposer la 2FA comme obligation pour tous les membres. Quand elle est activée, tout membre sans 2FA configurée perd l'accès à l'organisation et à ses packages jusqu'à ce qu'il s'inscrive. C'est le contrôle au niveau organisationnel qui doit accompagner les contrôles au niveau du package.
+
+```
+# Enable 2FA requirement for your npm organization
+# Via npm website: npmjs.com → Your org → Settings → Security → Require 2FA
+
+# Via npm CLI:
+npm org set-2fa <org-name> --level auth-and-writes
+
+# Three 2FA enforcement levels:
+# auth-only    — required to log in, not for publish
+# auth-and-writes — required for login AND publishing (recommended)
+# disabled     — no 2FA requirement (default, not recommended)
+```
+
+Choosing`auth-and-writes` means every publish event from any member of your organization requires a 2FA challenge. Combined with staged publishing, this creates a two-step human approval process for every package version: a 2FA-verified publish intent, and a separate 2FA-verified approval.
+
+Choisir`auth-and-writes` signifie que chaque événement de publication de n'importe quel membre de votre organisation nécessite un défi 2FA. Combiné avec la publication par étapes, cela crée un processus d'approbation humaine en deux étapes pour chaque version de package : une intention de publication vérifiée par 2FA, et une approbation séparée vérifiée par 2FA.
+
+### Requiring 2FA on Individual Packages
+
+### Exiger la 2FA sur des Packages Individuels
+
+For packages not under an npm organization (individual maintainer packages), you can still require 2FA for all publish and settings changes at the package level:
+
+Pour les packages qui ne sont pas sous une organisation npm (packages de mainteneur individuel), vous pouvez quand même exiger la 2FA pour toutes les publications et modifications de paramètres au niveau du package :
+
+```
+# Require 2FA for publishing and settings on a specific package
+npm access set 2fa-required <package-name>
+
+# Verify the 2FA requirement is set
+npm access get status <package-name>
+```
+
+## Audit Log Monitoring: Detecting Unauthorized Publishes Before Harm
+
+## Surveillance des Journaux d’Audit : Détecter les Publications Non Autorisées Avant les Dégâts
+
+The Mastra attack ran for 84 minutes before human detection. A proper audit log monitoring setup would have flagged it within minutes: a burst of 143 package publishes from a single account that had been dormant for 16 months is an extremely high-signal anomaly.
+
+L'attaque Mastra a duré 84 minutes avant la détection humaine. Une configuration de surveillance des journaux d'audit adéquate l'aurait signalée en quelques minutes : une rafale de 143 publications de packages depuis un seul compte qui avait été inactif pendant 16 mois est une anomalie de signal extrêmement élevé.
+
+npm organizations have access to audit logs in the npm web UI (`npmjs.com/org/ /audit-log`) and via the npm API. Key events to monitor:
+
+Les organisations npm ont accès aux journaux d'audit dans l'interface web npm (`npmjs.com/org/ /audit-log`) et via l'API npm. Événements clés à surveiller :
+
+- publish — a new package version was published. Alert on: burst publishes (5+ in 10 minutes), publishes from accounts inactive for 30+ days, unexpected new package names added to your scope.
+- publish — une nouvelle version de package a été publiée. Alerte sur : les publications en rafale (5+ en 10 minutes), les publications depuis des comptes inactifs depuis 30+ jours, les nouveaux noms de packages inattendus ajoutés à votre scope.
+- owner rm / owner add — a maintainer was added or removed. Alert on: any owner changes not preceded by a GitHub PR/issue discussion.
+- owner rm / owner add — un mainteneur a été ajouté ou supprimé. Alerte sur : tout changement de propriétaire non précédé d'une discussion PR/issue GitHub.
+- deprovision — a package version was unpublished. Alert on: any unpublish within 24 hours of a fresh publish (classic pattern of malicious publish → rapid cleanup).
+- deprovision — une version de package a été dépubliée. Alerte sur : toute dépublication dans les 24 heures suivant une nouvelle publication (pattern classique de publication malveillante → nettoyage rapide).
+- 2fa change — a maintainer's 2FA settings were modified. Alert on: any 2FA removal or device change (a common attacker action after account takeover).
+- 2fa change — les paramètres 2FA d'un mainteneur ont été modifiés. Alerte sur : toute suppression de 2FA ou changement d'appareil (action classique d'un attaquant après prise de contrôle d'un compte).
+
+```
+#!/bin/bash
+# monitor-npm-audit.sh — Run via cron or CI/CD on a schedule
+
+ORG="yourorg"
+ALERT_EMAIL="security@yourcompany.com"
+
+# Fetch audit log via npm API (requires org admin token)
+curl -s "https://registry.npmjs.org/-/npm/v1/audit-log?org=$ORG&limit=100" \
+  -H "Authorization: Bearer $NPM_ORG_TOKEN" | \
+  jq '.entries[] | select(.type == "publish") |
+    {name, version, publisher: .user.name, date: .date}' | \
+  # Flag burst publishes: same user, 5+ events in 10 minutes
+  python3 -c "
+import sys, json, datetime
+entries = [json.loads(l) for l in sys.stdin if l.strip()]
+from collections import defaultdict
+user_times = defaultdict(list)
+for e in entries:
+    user_times[e['publisher']].append(e['date'])
+for user, times in user_times.items():
+    if len(times) >= 5:
+        print(f'ALERT: {user} published {len(times)} packages — investigate')
+"
+```
+
+Consider integrating npm audit log events into your SIEM (Splunk, Datadog, Elastic Security). For high-value scopes, a real-time webhook notification for any publish event allows security teams to review before your CI/CD pipelines pick up the new versions.
+
+Envisagez d'intégrer les événements du journal d'audit npm dans votre SIEM (Splunk, Datadog, Elastic Security). Pour les scopes à haute valeur, une notification webhook en temps réel pour tout événement de publication permet aux équipes de sécurité de réviser avant que vos pipelines CI/CD ne récupèrent les nouvelles versions.
+
+## Complete npm Maintainer Security Checklist for 2026
+
+## Checklist Complète de Sécurité des Mainteneurs npm pour 2026
+
+Use this checklist to harden your npm publishing security against all three attack vectors active in 2026 (stale accounts, stolen tokens, pipeline hijack):
+
+Utilisez cette checklist pour durcir la sécurité de publication npm contre les trois vecteurs d'attaque actifs en 2026 (comptes obsolètes, tokens volés, détournement de pipeline) :
+
+### Account Hygiene (prevents Mastra-style attacks)
+
+### Hygiène des Comptes (prévient les attaques style Mastra)
+
+- ☐ Audit npm team membership quarterly — remove anyone inactive for 3+ months
+- ☐ Auditer l'appartenance à l'équipe npm trimestriellement — supprimer tout inactif depuis 3+ mois
+- ☐ Run`npm team ls:developers` and compare against active contributors
+- ☐ Exécuter`npm team ls:developers` et comparer avec les contributeurs actifs
+- ☐ Run`npm owner ls ` for each package and cross-check against your team roster
+- ☐ Exécuter`npm owner ls ` pour chaque package et vérifier contre votre liste d'équipe
+- ☐ Offboard departing contributors within 24 hours (both GitHub and npm level)
+- ☐ Désinscrire les contributeurs qui partent dans les 24 heures (niveau GitHub ET npm)
+- ☐ Enforce SAML SSO at GitHub org level if using GitHub Enterprise
+- ☐ Appliquer SAML SSO au niveau de l'org GitHub si vous utilisez GitHub Enterprise
+
+### 2FA Enforcement (prevents credential phishing)
+
+### Application de la 2FA (prévient le phishing de credentials)
+
+- ☐ Enable`auth-and-writes` 2FA requirement on your npm organization
+- ☐ Activer l'obligation 2FA`auth-and-writes` sur votre organisation npm
+- ☐ Migrate all maintainers from TOTP to FIDO/WebAuthn (hardware key or device passkey)
+- ☐ Migrer tous les mainteneurs de TOTP vers FIDO/WebAuthn (clé matérielle ou passkey d'appareil)
+- ☐ Require`npm access set 2fa-required` on your highest-impact packages
+- ☐ Exiger`npm access set 2fa-required` sur vos packages à plus fort impact
+- ☐ Enable staged publishing with approval gate (`npm config set publish-requires-approval true`)
+- ☐ Activer la publication par étapes avec portail d'approbation (`npm config set publish-requires-approval true`)
+
+### Token Security (prevents stolen-token publishes)
+
+### Sécurité des Tokens (prévient les publications avec tokens volés)
+
+- ☐ Migrate all CI/CD publishing to OIDC Trusted Publishing (no long-lived tokens)
+- ☐ Migrer toute publication CI/CD vers la Publication de Confiance OIDC (pas de tokens longue durée)
+- ☐ Verify all granular tokens have`<= 90 day` expiry (enforced since Feb 3, 2026, but audit for older tokens)
+- ☐ Vérifier que tous les tokens granulaires ont une expiration`<= 90 jours`(appliqué depuis le 3 fév 2026, mais auditer les tokens plus anciens)
+- ☐ Confirm no classic tokens remain (all should have expired Feb 3, 2026)
+- ☐ Confirmer qu'aucun token classique ne subsiste (tous auraient dû expirer le 3 fév 2026)
+- ☐ Scope all tokens to minimum required permissions (use package-scoped tokens, not org-wide)
+- ☐ Limiter tous les tokens aux permissions minimales requises (utiliser des tokens scopés au package, pas à l'org entière)
+
+### Monitoring (detects attacks in progress)
+
+### Surveillance (détecte les attaques en cours)
+
+- ☐ Set up npm audit log monitoring for burst publish events (5+ packages, same account, 10-min window)
+- ☐ Configurer la surveillance des journaux d'audit npm pour les événements de publication en rafale (5+ packages, même compte, fenêtre 10 min)
+- ☐ Alert on publishes from accounts inactive for 30+ days
+- ☐ Alerter sur les publications depuis des comptes inactifs depuis 30+ jours
+- ☐ Integrate npm audit logs into SIEM for correlation with GitHub Events and CI/CD logs
+- ☐ Intégrer les journaux d'audit npm dans le SIEM pour corrélation avec les événements GitHub et les logs CI/CD
+- ☐ Use CVE OptiBot to monitor your`package-lock.json` for unexpected dependency changes between releases
+- ☐ Utiliser CVE OptiBot pour surveiller votre`package-lock.json` pour les changements de dépendances inattendus entre les versions
+
+## Frequently Asked Questions
+
+## Questions Fréquentes
+
+### Does enabling 2FA on npm prevent the Mastra attack pattern?
+
+### L'activation de la 2FA sur npm prévient-elle le pattern d'attaque Mastra ?
+
+Account-level 2FA alone does not prevent stale-account attacks. The ehindero account likely had 2FA — the attacker either compromised both the credentials and the 2FA device, or obtained a pre-authenticated session token. 2FA protects the login step, but a stolen session token can publish without re-authenticating. The most effective defense against the Mastra attack is account hygiene: removing inactive contributors from the npm publishing team before an attacker exploits their credentials.
+
+La 2FA au niveau du compte seul ne prévient pas les attaques par compte obsolète. Le compte ehindero avait probablement la 2FA — l'attaquant a soit compromis les credentials ET l'appareil 2FA, soit obtenu un token de session pré-authentifié. La 2FA protège l'étape de connexion, mais un token de session volé peut publier sans se ré-authentifier. La défense la plus efficace contre l'attaque Mastra est l'hygiène des comptes : retirer les contributeurs inactifs de l'équipe de publication npm avant qu'un attaquant n'exploite leurs credentials.
+
+### What does npm staged publishing protect against that 2FA doesn't?
+
+### Contre quoi la publication par étapes npm protège-t-elle là où la 2FA ne le fait pas ?
+
+Staged publishing targets stolen CI/CD tokens — the TeamPCP attack pattern. When an attacker steals an npm OIDC token from a GitHub Actions runner (as in the TanStack attack, CVE-2026-45321), they can publish immediately with that token even if they don't have the maintainer's personal 2FA device. Staged publishing inserts a mandatory human approval step that requires the maintainer's 2FA authentication — a token alone cannot complete it. This blocked TeamPCP's 500+ poisoned packages across 20 attack waves in 2026.
+
+La publication par étapes cible les tokens CI/CD volés — le pattern d'attaque TeamPCP. Quand un attaquant vole un token OIDC npm d'un runner GitHub Actions (comme dans l'attaque TanStack, CVE-2026-45321), il peut publier immédiatement avec ce token même sans avoir le dispositif 2FA personnel du mainteneur. La publication par étapes insère une étape d'approbation humaine obligatoire qui nécessite l'authentification 2FA du mainteneur — un token seul ne peut pas la compléter. Cela a bloqué les 500+ packages empoisonnés de TeamPCP sur 20 vagues d'attaques en 2026.
+
+### My CI/CD uses npm tokens for automated publishing. Does staged publishing break it?
+
+### Mon CI/CD utilise des tokens npm pour la publication automatique. La publication par étapes va-t-elle casser mon pipeline ?
+
+Yes, fully automated pipelines that run`npm publish` without human intervention will be paused in the staging queue. The resolution is to migrate to OIDC Trusted Publishing and add a structured approval step — either a manual approval job in your CI/CD pipeline, or a dedicated maintainer who monitors the staging queue and approves with their 2FA device. The approval does not need to happen immediately; packages can sit in the staging queue for a review period before approval.
+
+Oui, les pipelines entièrement automatisés qui exécutent`npm publish` sans intervention humaine seront mis en pause dans la file d'attente de staging. La solution est de migrer vers la Publication de Confiance OIDC et d'ajouter une étape d'approbation structurée — soit un job d'approbation manuelle dans votre pipeline CI/CD, soit un mainteneur dédié qui surveille la file d'attente de staging et approuve avec son dispositif 2FA. L'approbation n'a pas besoin d'être immédiate ; les packages peuvent rester dans la file d'attente de staging pendant une période de révision avant approbation.
+
+### How do I know if my npm organization has stale maintainer accounts right now?
+
+### Comment savoir si mon organisation npm a des comptes mainteneurs obsolètes maintenant ?
+
+Run`npm team ls:developers` to list all team members, then cross-reference against your GitHub organization members and your project's recent contribution history. Any npm team member not in your GitHub org or not having committed in 6+ months is a candidate for removal. Also check direct package ownership with`npm owner ls ` for each package — owners granted directly bypass team-level controls.
+
+Exécutez`npm team ls:developers` pour lister tous les membres de l'équipe, puis croisez avec les membres de votre organisation GitHub et l'historique des contributions récentes de votre projet. Tout membre d'équipe npm ne faisant pas partie de votre org GitHub ou n'ayant pas effectué de commit depuis 6+ mois est candidat à la suppression. Vérifiez également la propriété directe des packages avec`npm owner ls ` pour chaque package — les propriétaires accordés directement contournent les contrôles au niveau de l'équipe.
+
+### When will TOTP be fully removed from npm?
+
+### Quand TOTP sera-t-il complètement supprimé de npm ?
+
+GitHub has not announced a hard cutoff date for TOTP removal, but new TOTP setups are being disabled and the migration to FIDO/WebAuthn is underway. GitHub's public roadmap indicates TOTP for npm will be deprecated within the next 12 months. Start the migration now: register a WebAuthn security key or device passkey on your npm account, and encourage all package maintainers in your organization to do the same. FIDO is phishing-resistant; TOTP is not.
+
+GitHub n'a pas annoncé de date limite ferme pour la suppression de TOTP, mais les nouvelles configurations TOTP sont désactivées et la migration vers FIDO/WebAuthn est en cours. La feuille de route publique de GitHub indique que TOTP pour npm sera déprécié dans les 12 prochains mois. Commencez la migration maintenant : enregistrez une clé de sécurité WebAuthn ou un passkey d'appareil sur votre compte npm, et encouragez tous les mainteneurs de packages de votre organisation à faire de même. FIDO est résistant au phishing ; TOTP ne l'est pas.
+
+### Does npm have a way to auto-expire publish permissions for inactive contributors?
+
+### npm dispose-t-il d’un moyen d’expirer automatiquement les permissions de publication des contributeurs inactifs ?
+
+As of June 2026, npm does not automatically expire scope publish permissions on account inactivity — this is the exact gap that enabled the Mastra attack. The Mastra post-mortem has renewed industry calls for npm to add inactivity-based permission expiry. Until that feature exists, the responsibility falls entirely on project maintainers to audit and clean up permissions manually. Automating this with a quarterly cron job that cross-references npm team membership against GitHub activity is the current best practice.
+
+En juin 2026, npm n'expire pas automatiquement les permissions de publication de scope sur inactivité du compte — c'est exactement la lacune qui a permis l'attaque Mastra. Le post-mortem Mastra a renouvelé les appels de l'industrie pour que npm ajoute une expiration des permissions basée sur l'inactivité. Jusqu'à ce que cette fonctionnalité existe, la responsabilité incombe entièrement aux mainteneurs du projet d'auditer et nettoyer manuellement les permissions. Automatiser cela avec un cron job trimestriel qui croise l'appartenance à l'équipe npm avec l'activité GitHub est la meilleure pratique actuelle.
+
+## Monitor Your Dependencies for Malicious Injections Automatically
+
+## Surveillez Vos Dépendances pour les Injections Malveillantes Automatiquement
+
+CVE OptiBot scans your`package-lock.json` daily and alerts you when a dependency changes its hash unexpectedly — the earliest signal of a supply chain attack like the @mastra incident. No code access required. Works in 60 seconds.
+
+CVE OptiBot scanne votre`package-lock.json` quotidiennement et vous alerte quand une dépendance change son hash de façon inattendue — le signal le plus précoce d'une attaque supply chain comme l'incident @mastra. Aucun accès au code requis. Fonctionne en 60 secondes.
+
+Start free monitoring Démarrer le monitoring gratuit
+
+### Related Articles
+
+### Articles liés
+
+- npm Scoped Packages & Private Registry Security in 2026: @mastra Scope Takeover & Hardening Guide → Sécurité des Packages Scopés npm en 2026 : Prise de Contrôle @mastra & Guide de Durcissement →
+- npm Provenance Attestations & SLSA Build Level 3 in 2026 → Attestations de Provenance npm & SLSA Build Level 3 en 2026 →
+- npm Lockfile Security in 2026: package-lock.json v3 Integrity & CI/CD Defense Guide → Sécurité du Lockfile npm en 2026 : Intégrité v3 & Guide Défense CI/CD →
+- npm Dependency Confusion Attacks in 2026 → Attaques Dependency Confusion npm en 2026 →
+- npm CVE Monitoring → Monitoring CVE npm →
+- CVE Monitoring Dashboard → Tableau de Bord CVE Monitoring →
+
+## Related Articles
+
+## Articles similaires
+
+### Start monitoring your npm packages
+
+### Commencez à monitorer vos packages npm
+
+Upload your package.json or package-lock.json and get instant vulnerability reports across all your projects.
+
+Importez votre package.json ou package-lock.json et recevez des rapports de vulnérabilités instantanés sur tous vos projets.
+
+Get started free Commencer gratuitement
+
+#### Explore more
+
+#### Explorer

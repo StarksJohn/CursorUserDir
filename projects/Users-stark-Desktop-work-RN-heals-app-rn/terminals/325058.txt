@@ -1,0 +1,49 @@
+---
+pid: 38191
+cwd: "/Users/stark/Desktop/work/RN/react-native-advanced-flatlist"
+command: "npx --yes npm-cli-login -u stark2018 -p 'Zc111111' -e '397866153@qq.com' && npm whoami"
+title: "Re-authenticate npm and verify username"
+status: failed   
+started_at: 2026-09-02T08:46:47.923Z
+running_for_ms: 54113    
+---
+npm warn deprecated osenv@0.1.5: This package is no longer supported.
+npm warn deprecated har-validator@5.1.5: this library is no longer supported
+npm warn deprecated npmlog@4.1.2: This package is no longer supported.
+npm warn deprecated are-we-there-yet@1.1.7: This package is no longer supported.
+npm warn deprecated uuid@3.4.0: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+npm warn deprecated gauge@2.7.4: This package is no longer supported.
+npm warn deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+npm warn deprecated npm-registry-client@8.6.0: This package is no longer supported.
+info attempt registry request try #1 at 4:47:41 PM
+http request PUT https://registry.npmjs.org/-/user/org.couchdb.user:stark2018
+http 401 https://registry.npmjs.org/-/user/org.couchdb.user:stark2018
+WARN notice npm tokens that bypass 2FA are being restricted for account changes and direct publishing. Learn how to prepare: https://gh.io/npm-gat-bypass2fa-deprecation, Authentication requires a one-time password
+WARN adduser Incorrect username or password
+WARN adduser You can reset your account by visiting:
+WARN adduser 
+WARN adduser     https://npmjs.org/forgot
+WARN adduser 
+/Users/stark/.npm/_npx/0c9889ea1760d1de/node_modules/npm-cli-login/lib/index.js:11
+            throw new Error(err);
+            ^
+
+Error: Error: username or password was invalid : -/user/org.couchdb.user:stark2018
+    at /Users/stark/.npm/_npx/0c9889ea1760d1de/node_modules/npm-cli-login/lib/index.js:11:19
+    at /Users/stark/.npm/_npx/0c9889ea1760d1de/node_modules/npm-cli-login/lib/login.js:59:24
+    at /Users/stark/.npm/_npx/0c9889ea1760d1de/node_modules/npm-registry-client/lib/adduser.js:125:14
+    at /Users/stark/.npm/_npx/0c9889ea1760d1de/node_modules/npm-registry-client/lib/adduser.js:73:16
+    at f (/Users/stark/.npm/_npx/0c9889ea1760d1de/node_modules/once/once.js:25:25)
+    at /Users/stark/.npm/_npx/0c9889ea1760d1de/node_modules/npm-registry-client/lib/request.js:91:10
+    at /Users/stark/.npm/_npx/0c9889ea1760d1de/node_modules/npm-registry-client/lib/request.js:105:12
+    at f (/Users/stark/.npm/_npx/0c9889ea1760d1de/node_modules/once/once.js:25:25)
+    at RegClient.<anonymous> (/Users/stark/.npm/_npx/0c9889ea1760d1de/node_modules/npm-registry-client/lib/request.js:324:12)
+    at Request._callback (/Users/stark/.npm/_npx/0c9889ea1760d1de/node_modules/npm-registry-client/lib/request.js:216:14)
+
+Node.js v20.20.2
+
+---
+exit_code: 1
+elapsed_ms: 54113
+ended_at: 2026-09-02T08:47:42.036Z
+---
