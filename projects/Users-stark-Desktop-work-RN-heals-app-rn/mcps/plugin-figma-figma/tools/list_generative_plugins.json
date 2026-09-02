@@ -1,0 +1,19 @@
+{
+  "name": "list_generative_plugins",
+  "description": "Lists the generative plugins in the authenticated user's account library, including Figma's first-party plugins. Returns each plugin's id, name, description, and owner (plus a nextCursor when more pages exist). Owner is the authenticated user's email for their plugins, or a public publisher handle otherwise. Use the id with get_generative_plugin to read a plugin's source. Generative plugins are runnable tools that modify the canvas, distinct from shader effects and shader fills.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "cursor": {
+        "description": "Pagination cursor returned as nextCursor by a previous call. Omit to fetch the first page.",
+        "type": "string"
+      }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}
