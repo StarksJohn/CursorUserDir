@@ -1,0 +1,62 @@
+---
+pid: 52425
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "python3 - <<'PY'\nimport time\nfrom pathlib import Path\nlog = Path(\"/tmp/heals-android-dev.log\")\nneedles = (\n    \"BUILD SUCCESSFUL\",\n    \"BUILD FAILED\",\n    \"FAILURE:\",\n    \"error Failed to\",\n    \"Successfully installed the app\",\n    \"Starting: Intent\",\n    \"INSTALL_FAILED\",\n    \"Execution failed\",\n)\nlast_size = -1\nstart = time.time()\ntimeout = 12 * 60\nwhile time.time() - start < timeout:\n    text = log.read_text(errors=\"replace\") if log.exists() else \"\"\n    size = len(text)\n    if size != last_size:\n        last_size = size\n        lines = [ln for ln in text.splitlines() if ln.strip()]\n        print(f\"[{int(time.time()-start)}s] bytes={size} last={lines[-1][:200] if lines else ''}\")\n    for n in needles:\n        if n in text:\n            print(f\"MATCH:{n}\")\n            print(\"--- tail ---\")\n            print(\"\\n\".join(text.splitlines()[-40:]))\n            raise SystemExit(0)\n    time.sleep(5)\nprint(\"TIMEOUT\")\nprint(log.read_text(errors=\"replace\")[-3000:] if log.exists() else \"no log\")\nraise SystemExit(1)\nPY"
+title: "Poll android:dev log until Gradle finishes"
+status: succeeded
+started_at: 2026-09-02T07:13:25.209Z
+running_for_ms: 35703    
+---
+[0s] bytes=209 last=info Installing the app...
+[5s] bytes=997 last=> Task :gradle-plugin:settings-plugin:jar UP-TO-DATE
+[10s] bytes=1590 last=Reading env from: .env.development
+[20s] bytes=3497 last=:react-native-firebase_messaging:reactNativeAndroidDir /Users/stark/Desktop/work/RN/heals-app-rn/node_modules/react-native
+[35s] bytes=11558 last=info Run CLI with --verbose flag for more details.
+MATCH:BUILD FAILED
+--- tail ---
+
+[Incubating] Problems report is available at: file:///Users/stark/Desktop/work/RN/heals-app-rn/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+49 actionable tasks: 5 executed, 44 up-to-date
+
+info 💡 Tip: Make sure that you have set up your development environment correctly, by running npx react-native doctor. To read more about doctor command visit: https://github.com/react-native-community/cli/blob/main/packages/cli-doctor/README.md#doctor 
+
+Warning: SDK processing. This version only understands SDK XML versions up to 3 but an SDK XML file of version 4 was encountered. This can happen if you use versions of Android Studio and the command-line tools that were released at different times.
+
+FAILURE: Build failed with an exception.
+
+* Where:
+Build file '/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/react-native-reanimated/android/build.gradle' line: 276
+
+* What went wrong:
+Execution failed for task ':react-native-reanimated:assertWorkletsVersionTask'.
+> [Reanimated] Your installed version of Worklets (0.7.4) is not compatible with installed version of Reanimated (4.3.1). Please install Worklets 0.8.x or newer. See the documentation for the list of supported versions: https://docs.swmansion.com/react-native-reanimated/docs/guides/compatibility/#supported-react-native-worklets-versions
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 36s
+error Failed to install the app. Command failed with exit code 1: ./gradlew app:installDevDebug -PreactNativeDevServerPort=8081
+Warning: SDK processing. This version only understands SDK XML versions up to 3 but an SDK XML file of version 4 was encountered. This can happen if you use versions of Android Studio and the command-line tools that were released at different times. FAILURE: Build failed with an exception. * Where:
+Build file '/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/react-native-reanimated/android/build.gradle' line: 276 * What went wrong:
+Execution failed for task ':react-native-reanimated:assertWorkletsVersionTask'.
+> [Reanimated] Your installed version of Worklets (0.7.4) is not compatible with installed version of Reanimated (4.3.1). Please install Worklets 0.8.x or newer. See the documentation for the list of supported versions: https://docs.swmansion.com/react-native-reanimated/docs/guides/compatibility/#supported-react-native-worklets-versions * Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org. BUILD FAILED in 36s.
+info Run CLI with --verbose flag for more details.
+
+---
+exit_code: 0
+elapsed_ms: 35703
+ended_at: 2026-09-02T07:14:00.912Z
+---
