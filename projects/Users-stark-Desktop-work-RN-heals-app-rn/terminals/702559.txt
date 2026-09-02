@@ -3,7 +3,37 @@ pid: 53031
 cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
 command: "npm install --legacy-peer-deps && node -p \"require('./node_modules/react-native-worklets/package.json').version\" && node -p \"require('./node_modules/react-native-reanimated/package.json').version\""
 title: "Install deps with legacy peer deps"
-status: running  
+status: succeeded
 started_at: 2026-09-02T07:15:28.356Z
-running_for_ms: 185067   
+running_for_ms: 194054   
+---
+
+> Heals@0.0.1 postinstall
+> patch-package
+
+patch-package 8.0.1
+Applying patches...
+react-native-toast-notifications@3.4.0 ✔
+
+removed 4 packages, changed 1 package, and audited 1284 packages in 3m
+
+223 packages are looking for funding
+  run `npm fund` for details
+
+38 vulnerabilities (2 low, 17 moderate, 17 high, 2 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+0.8.3
+4.3.1
+
+---
+exit_code: 0
+elapsed_ms: 194054
+ended_at: 2026-09-02T07:18:42.410Z
 ---

@@ -1,0 +1,104 @@
+---
+pid: 58152
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "python3 - <<'PY'\nimport time\nfrom pathlib import Path\nlog = Path(\"/tmp/heals-android-dev.log\")\nneedles_fail = (\"BUILD FAILED\", \"INSTALL_FAILED\", \"error Failed to install the app\")\nneedles_ok = (\"BUILD SUCCESSFUL\", \"Successfully installed the app\", \"Starting: Intent\")\nlast_size = -1\nstart = time.time()\ntimeout = 15 * 60\nwhile time.time() - start < timeout:\n    text = log.read_text(errors=\"replace\") if log.exists() else \"\"\n    size = len(text)\n    if size != last_size:\n        last_size = size\n        lines = [ln for ln in text.splitlines() if ln.strip()]\n        print(f\"[{int(time.time()-start)}s] bytes={size} last={lines[-1][:220] if lines else ''}\", flush=True)\n    if any(n in text for n in needles_ok) and \"BUILD FAILED\" not in text[-4000:]:\n        # wait a moment for install/start lines\n        if \"Successfully installed the app\" in text or \"Starting: Intent\" in text or \"BUILD SUCCESSFUL\" in text:\n            print(\"MATCH_OK\")\n            print(\"\\n\".join(text.splitlines()[-50:]))\n            raise SystemExit(0)\n    if any(n in text for n in needles_fail) and \"BUILD FAILED\" in text:\n        print(\"MATCH_FAIL\")\n        print(\"\\n\".join(text.splitlines()[-60:]))\n        raise SystemExit(2)\n    time.sleep(8)\nprint(\"TIMEOUT\")\nprint(log.read_text(errors=\"replace\")[-4000:] if log.exists() else \"no log\")\nraise SystemExit(1)\nPY"
+title: "Poll Gradle install until success or failure"
+status: failed   
+started_at: 2026-09-02T07:19:13.576Z
+running_for_ms: 905434   
+---
+[0s] bytes=1590 last=Reading env from: .env.development
+[8s] bytes=3497 last=:react-native-firebase_messaging:reactNativeAndroidDir /Users/stark/Desktop/work/RN/heals-app-rn/node_modules/react-native
+[16s] bytes=16410 last=[22m
+[72s] bytes=16904 last=Done copying assets
+[96s] bytes=23689 last=> Task :react-native-screens:packageDebugResources UP-TO-DATE
+[104s] bytes=51761 last=> Task :sentry_react-native:bundleLibCompileToJarDebug UP-TO-DATE
+[112s] bytes=62071 last=> Task :app:compressDevDebugAssets
+[120s] bytes=70630 last=> Task :app:preProdDebugBuild
+[136s] bytes=70787 last=> Task :app:mergeLibDexDevDebug UP-TO-DATE
+[168s] bytes=70854 last=> Task :react-native-worklets:buildCMakeDebug[arm64-v8a][worklets]
+[176s] bytes=70917 last=> Task :react-native-worklets:configureCMakeDebug[armeabi-v7a]
+[208s] bytes=70986 last=> Task :react-native-worklets:buildCMakeDebug[armeabi-v7a][worklets]
+[232s] bytes=71041 last=> Task :react-native-worklets:configureCMakeDebug[x86]
+[256s] bytes=71102 last=> Task :react-native-worklets:buildCMakeDebug[x86][worklets]
+[264s] bytes=71160 last=> Task :react-native-worklets:configureCMakeDebug[x86_64]
+[296s] bytes=71224 last=> Task :react-native-worklets:buildCMakeDebug[x86_64][worklets]
+[304s] bytes=71390 last=> Task :react-native-worklets:prefabDebugConfigurePackage
+[312s] bytes=71575 last=> Task :react-native-reanimated:configureCMakeDebug[x86]
+[320s] bytes=71761 last=> Task :react-native-reanimated:prefabDebugConfigurePackage UP-TO-DATE
+[328s] bytes=71853 last=> Task :react-native-worklets:prefabDebugPackage
+[344s] bytes=73465 last=info Run CLI with --verbose flag for more details.
+TIMEOUT
+ask :react-native-biometrics:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-blob-util:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-config:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-date-picker:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-device-info:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-encrypted-storage:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-file-viewer:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-fs:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-image-picker:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-linear-gradient:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-pdf:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-restart:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-share:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-svg:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-worklets:bundleLibRuntimeToDirDebug
+> Task :react-native-vector-icons:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :app:mergeProjectDexDevDebug UP-TO-DATE
+> Task :app:preProdDebugBuild
+> Task :react-native-worklets:configureCMakeDebug[arm64-v8a]
+> Task :app:mergeDevDebugGlobalSynthetics UP-TO-DATE
+> Task :app:mergeLibDexDevDebug UP-TO-DATE
+> Task :react-native-worklets:buildCMakeDebug[arm64-v8a][worklets]
+> Task :react-native-worklets:configureCMakeDebug[armeabi-v7a]
+> Task :react-native-worklets:buildCMakeDebug[armeabi-v7a][worklets]
+> Task :react-native-worklets:configureCMakeDebug[x86]
+> Task :react-native-worklets:buildCMakeDebug[x86][worklets]
+> Task :react-native-worklets:configureCMakeDebug[x86_64]
+> Task :react-native-worklets:buildCMakeDebug[x86_64][worklets]
+> Task :react-native-worklets:externalNativeBuildDebug
+> Task :react-native-worklets:generateJsonModelDebug
+> Task :react-native-worklets:prefabDebugConfigurePackage
+> Task :react-native-reanimated:configureCMakeDebug[arm64-v8a]
+> Task :react-native-reanimated:configureCMakeDebug[armeabi-v7a]
+> Task :react-native-reanimated:configureCMakeDebug[x86]
+> Task :react-native-reanimated:configureCMakeDebug[x86_64]
+> Task :react-native-reanimated:generateJsonModelDebug
+> Task :react-native-reanimated:prefabDebugConfigurePackage UP-TO-DATE
+> Task :app:configureCMakeDebug[arm64-v8a]
+> Task :react-native-worklets:prefabDebugPackage
+Daemon is stopping immediately stop command received
+> Task :react-native-reanimated:buildCMakeDebug[arm64-v8a][reanimated]
+
+info 💡 Tip: Make sure that you have set up your development environment correctly, by running npx react-native doctor. To read more about doctor command visit: https://github.com/react-native-community/cli/blob/main/packages/cli-doctor/README.md#doctor 
+
+注: /Users/stark/Desktop/work/RN/heals-app-rn/node_modules/react-native-worklets/android/src/main/java/com/swmansion/worklets/WorkletsPackage.java使用了未经检查或不安全的操作。
+注: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Gradle build daemon has been stopped: stop command received
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+error Failed to install the app. Command failed with exit code 1: ./gradlew app:installDevDebug -PreactNativeDevServerPort=8081
+注: /Users/stark/Desktop/work/RN/heals-app-rn/node_modules/react-native-worklets/android/src/main/java/com/swmansion/worklets/WorkletsPackage.java使用了未经检查或不安全的操作。
+注: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。 FAILURE: Build failed with an exception. * What went wrong:
+Gradle build daemon has been stopped: stop command received * Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+info Run CLI with --verbose flag for more details.
+
+
+---
+exit_code: 1
+elapsed_ms: 905434
+ended_at: 2026-09-02T07:34:19.010Z
+---

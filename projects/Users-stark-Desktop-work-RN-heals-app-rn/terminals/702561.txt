@@ -1,0 +1,154 @@
+---
+pid: 89964
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "# wait for first bundle; recapture until splash bundling bar is gone or timeout\npython3 - <<'PY'\nimport subprocess, time, os\nserial='4ae24c72'\nout='/tmp/heals-dev-debug-current.png'\nfor i in range(18):\n    time.sleep(5)\n    subprocess.check_call(['adb','-s',serial,'exec-out','screencap','-p'], stdout=open(out,'wb'))\n    size=os.path.getsize(out)\n    print(f'[{(i+1)*5}s] screenshot_bytes={size}', flush=True)\nprint('done')\nPY\nadb -s 4ae24c72 shell dumpsys activity activities | rg -m 4 'topResumedActivity'\npid=$(adb -s 4ae24c72 shell pidof com.healshealthcare.healspass.dev | tr -d '\\r')\necho pid=$pid\nadb -s 4ae24c72 shell uiautomator dump --compressed /sdcard/heals-dev-debug-current.xml >/dev/null\nadb -s 4ae24c72 pull /sdcard/heals-dev-debug-current.xml /tmp/heals-dev-debug-current.xml >/dev/null\nadb -s 4ae24c72 shell rm /sdcard/heals-dev-debug-current.xml\nrg -o 'text=\"[^\"]+\"|content-desc=\"[^\"]+\"' /tmp/heals-dev-debug-current.xml | head -n 80\necho '==== logcat ===='\nadb -s 4ae24c72 logcat -d --pid=\"$pid\" -v brief | rg -i \"FATAL EXCEPTION|AndroidRuntime|Unable to load script|Could not connect|ReactNativeJS|TypeError|ReferenceError|Invariant Violation|forwardRef|Open debugger|LogBox|RedBox\" | tail -n 50\necho '==== metro strings ===='\npython3 - <<'PY'\nfrom pathlib import Path\np=Path('/tmp/heals-metro.log')\nt=p.read_bytes().decode('utf-8','replace')\nfor key in ['error','Error','BUNDLE','Bundled','Dev server ready','Unable']:\n    if key.lower() in t.lower():\n        pass\n# print last non-empty lines stripped of ansi\nimport re\ns=re.sub(r'\\x1b\\[[0-9;]*[A-Za-z]','',t)\nlines=[ln for ln in s.splitlines() if ln.strip()]\nprint('\\n'.join(lines[-40:]))\nPY"
+title: "Wait for JS bundle then recapture screen and logs"
+status: succeeded
+started_at: 2026-09-02T07:32:46.148Z
+running_for_ms: 104157   
+---
+[5s] screenshot_bytes=226313
+[10s] screenshot_bytes=225847
+[15s] screenshot_bytes=396196
+[20s] screenshot_bytes=225963
+[25s] screenshot_bytes=226402
+[30s] screenshot_bytes=225341
+[35s] screenshot_bytes=225341
+[40s] screenshot_bytes=226182
+[45s] screenshot_bytes=225353
+[50s] screenshot_bytes=226308
+[55s] screenshot_bytes=225962
+[60s] screenshot_bytes=101572
+[65s] screenshot_bytes=196887
+[70s] screenshot_bytes=226231
+[75s] screenshot_bytes=226631
+[80s] screenshot_bytes=226231
+[85s] screenshot_bytes=226031
+[90s] screenshot_bytes=397317
+done
+    topResumedActivity=ActivityRecord{120704265 u0 com.healshealthcare.healspass.dev/com.healshealthcare.healspass.MainActivity t4574}
+pid=3127
+content-desc="juk"
+text="juk"
+content-desc="尊尚计划, 截止日期 2026年5月27日, 无限次远程咨询（与当地全科医生）"
+text="尊尚计划"
+text="截止日期 2026年5月27日"
+content-desc="检视"
+text="检视"
+text="无限次远程咨询（与当地全科医生）"
+text="更多"
+content-desc="问医生"
+text="问医生"
+content-desc="预约"
+text="预约"
+content-desc="账单"
+text="账单"
+content-desc="访问诊所"
+text="访问诊所"
+content-desc="看华语医生，取全球处方药品"
+text="看华语医生，取全球处方药品"
+text="最近日程"
+text="您没有预约记录"
+content-desc="浏览所有Heals产品"
+text="浏览所有Heals产品"
+content-desc="我的福利计划"
+text="我的福利计划"
+content-desc="主页"
+text="主页"
+content-desc="预约"
+text="预约"
+content-desc="个人资料"
+text="个人资料"
+==== logcat ====
+I/ReactNativeJS( 3127):                      visitType: 'IN_PERSON',
+I/ReactNativeJS( 3127):                      doctorType: 'CHIRO' },
+I/ReactNativeJS( 3127):                    { amount: 380,
+I/ReactNativeJS( 3127):                      currency: 'HKD',
+I/ReactNativeJS( 3127):                      visitType: 'IN_PERSON',
+I/ReactNativeJS( 3127):                      doctorType: 'PHYSIO' },
+I/ReactNativeJS( 3127):                    { amount: 300,
+I/ReactNativeJS( 3127):                      currency: 'HKD',
+I/ReactNativeJS( 3127):                      visitType: 'IN_PERSON',
+I/ReactNativeJS( 3127):                      doctorType: 'BONESET' } ],
+I/ReactNativeJS( 3127):                 defaultServiceItem: 
+I/ReactNativeJS( 3127):                  [ { visitType: 'IN_PERSON',
+I/ReactNativeJS( 3127):                      doctorType: 'GP',
+I/ReactNativeJS( 3127):                      serviceItemIds: [ 'CON101-HP' ] },
+I/ReactNativeJS( 3127):                    { visitType: 'IN_PERSON',
+I/ReactNativeJS( 3127):                      doctorType: 'TCM',
+I/ReactNativeJS( 3127):                      serviceItemIds: [ 'TCM-CON-DSI', 'TCM-MED-DSI' ] },
+I/ReactNativeJS( 3127):                    { visitType: 'IN_PERSON',
+I/ReactNativeJS( 3127):                      doctorType: 'SP',
+I/ReactNativeJS( 3127):                      serviceItemIds: [ 'SP-CON-DSI', 'SP-MED-DSI' ] },
+I/ReactNativeJS( 3127):                    { visitType: 'IN_PERSON',
+I/ReactNativeJS( 3127):                      doctorType: 'CHIRO',
+I/ReactNativeJS( 3127):                      serviceItemIds: [ 'CHIRO-CON-DSI' ] },
+I/ReactNativeJS( 3127):                    { visitType: 'IN_PERSON',
+I/ReactNativeJS( 3127):                      doctorType: 'PHYSIO',
+I/ReactNativeJS( 3127):                      serviceItemIds: [ 'PHYSIO-CON-DSI' ] },
+I/ReactNativeJS( 3127):                    { visitType: 'IN_PERSON',
+I/ReactNativeJS( 3127):                      doctorType: 'BONESET',
+I/ReactNativeJS( 3127):                      serviceItemIds: [ 'BONE-CON-DSI' ] } ] },
+I/ReactNativeJS( 3127):              plan: 
+I/ReactNativeJS( 3127):               { insurer: { id: '8a9ccdb6-60d0-4dc3-9db7-b588c01fde28', name: 'HP BASIC' },
+I/ReactNativeJS( 3127):                 id: 'f8ce616d-7675-4ac2-aa99-885831295ef3',
+I/ReactNativeJS( 3127):                 name: [TOO BIG formatValueCalls 201 exceeded limit of 200],
+I/ReactNativeJS( 3127):                 value: [TOO BIG formatValueCalls 202 exceeded limit of 200],
+I/ReactNativeJS( 3127):                 assets: [TOO BIG formatValueCalls 203 exceeded limit of 200] },
+I/ReactNativeJS( 3127):              policyName: [TOO BIG formatValueCalls 204 exceeded limit of 200],
+I/ReactNativeJS( 3127):              product: [TOO BIG formatValueCalls 205 exceeded limit of 200],
+I/ReactNativeJS( 3127):              insuredItem: [TOO BIG formatValueCalls 206 exceeded limit of 200],
+I/ReactNativeJS( 3127):              remainingBenefits: [TOO BIG formatValueCalls 207 exceeded limit of 200] },
+I/ReactNativeJS( 3127):            [TOO BIG formatValueCalls 208 exceeded limit of 200],
+I/ReactNativeJS( 3127):            [TOO BIG formatValueCalls 209 exceeded limit of 200],
+I/ReactNativeJS( 3127):            [TOO BIG formatValueCalls 210 exceeded limit of 200],
+I/ReactNativeJS( 3127):            [TOO BIG formatValueCalls 211 exceeded limit of 200],
+I/ReactNativeJS( 3127):            [TOO BIG formatValueCalls 212 exceeded limit of 200],
+I/ReactNativeJS( 3127):            [TOO BIG formatValueCalls 213 exceeded limit of 200],
+I/ReactNativeJS( 3127):            [TOO BIG formatValueCalls 214 exceeded limit of 200] ],
+I/ReactNativeJS( 3127):         currentUser: [TOO BIG formatValueCalls 215 exceeded limit of 200],
+I/ReactNativeJS( 3127):         productRecommendation: [TOO BIG formatValueCalls 216 exceeded limit of 200],
+I/ReactNativeJS( 3127):         hasWechatOpenid: [TOO BIG formatValueCalls 217 exceeded limit of 200] },
+I/ReactNativeJS( 3127):      localize_key: [TOO BIG formatValueCalls 218 exceeded limit of 200] } }
+==== metro strings ====
+Welcome to React Native v0.81
+Starting dev server on http://localhost:8081
+                        ▒▒▓▓▓▓▒▒
+                     ▒▓▓▓▒▒░░▒▒▓▓▓▒
+                  ▒▓▓▓▓░░░▒▒▒▒░░░▓▓▓▓▒
+                 ▓▓▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▓▓
+                 ▓▓░░░░░▒▓▓▓▓▓▓▒░░░░░▓▓
+                 ▓▓░░▓▓▒░░░▒▒░░░▒▓▒░░▓▓
+                 ▓▓░░▓▓▓▓▓▒▒▒▒▓▓▓▓▒░░▓▓
+                 ▓▓░░▓▓▓▓▓▓▓▓▓▓▓▓▓▒░░▓▓
+                 ▓▓▒░░▒▒▓▓▓▓▓▓▓▓▒░░░▒▓▓
+                  ▒▓▓▓▒░░░▒▓▓▒░░░▒▓▓▓▒
+                     ▒▓▓▓▒░░░░▒▓▓▓▒
+                        ▒▒▓▓▓▓▒▒
+ WARN  the transform cache was reset.
+                Welcome to Metro v0.83.7
+              Fast - Scalable - Integrated
+ INFO  Dev server ready. Press Ctrl+C to exit.
+ INFO  Interactive mode is not supported in this environment
+ BUNDLE  ./index.js ░░░░░░░░░░░░░░░░ 0% (0/1)
+ BUNDLE  ./index.js ▓▓▓▓▓░░░░░░░░░░░ 36% (39/180)
+ BUNDLE  ./index.js ▓▓▓▓▓░░░░░░░░░░░ 36% (305/763)
+ BUNDLE  ./index.js ▓▓▓▓▓░░░░░░░░░░░ 36% (580/974)
+ BUNDLE  ./index.js ▓▓▓▓▓▓▓░░░░░░░░░ 48% (846/1222)
+ BUNDLE  ./index.js ▓▓▓▓▓▓▓▓▓░░░░░░░ 58% (1104/1461)
+ BUNDLE  ./index.js ▓▓▓▓▓▓▓▓▓░░░░░░░ 59% (1322/1723)
+ BUNDLE  ./index.js ▓▓▓▓▓▓▓▓▓▓░░░░░░ 62% (1587/2007)
+ BUNDLE  ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓░░░░ 76% (1920/2196)
+ BUNDLE  ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 88% (2362/2517)
+ BUNDLE  ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99% (2999/3000)
+info Bundle Debug ID: 185dceeb-5875-4bba-b3f6-d28494457e36
+ BUNDLE  ./index.js 
+ BUNDLE  ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99% (3009/3009)
+ INFO  Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+ INFO  💡 JavaScript logs have moved! They can now be viewed in React Native DevTools. Tip: Type j in the terminal to open (requires Google Chrome or Microsoft Edge).
+
+---
+exit_code: 0
+elapsed_ms: 104157
+ended_at: 2026-09-02T07:34:30.305Z
+---

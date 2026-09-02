@@ -1,0 +1,95 @@
+---
+pid: 62893
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn/android"
+command: "ENVFILE=.env.development SENTRY_DISABLE_AUTO_UPLOAD=true ./gradlew :app:compressDevDebugAssets --stacktrace --offline 2>&1 | tail -n 80"
+title: "Get compressDevDebugAssets Gradle stacktrace"
+status: succeeded
+started_at: 2026-09-02T07:22:00.418Z
+running_for_ms: 47421    
+---
+> Task :react-native-pager-view:generateDebugAssets UP-TO-DATE
+> Task :react-native-pager-view:mergeDebugAssets UP-TO-DATE
+> Task :react-native-pdf:preDebugBuild UP-TO-DATE
+> Task :react-native-pdf:mergeDebugShaders UP-TO-DATE
+> Task :react-native-pdf:compileDebugShaders NO-SOURCE
+> Task :react-native-pdf:generateDebugAssets UP-TO-DATE
+> Task :react-native-pdf:mergeDebugAssets UP-TO-DATE
+> Task :react-native-permissions:preDebugBuild UP-TO-DATE
+> Task :react-native-permissions:mergeDebugShaders UP-TO-DATE
+> Task :react-native-permissions:compileDebugShaders NO-SOURCE
+> Task :react-native-permissions:generateDebugAssets UP-TO-DATE
+> Task :react-native-permissions:mergeDebugAssets UP-TO-DATE
+> Task :react-native-reanimated:preDebugBuild
+> Task :react-native-reanimated:mergeDebugShaders UP-TO-DATE
+> Task :react-native-reanimated:compileDebugShaders NO-SOURCE
+> Task :react-native-reanimated:generateDebugAssets UP-TO-DATE
+> Task :react-native-reanimated:mergeDebugAssets UP-TO-DATE
+> Task :react-native-restart:preDebugBuild UP-TO-DATE
+> Task :react-native-restart:mergeDebugShaders UP-TO-DATE
+> Task :react-native-restart:compileDebugShaders NO-SOURCE
+> Task :react-native-restart:generateDebugAssets UP-TO-DATE
+> Task :react-native-restart:mergeDebugAssets UP-TO-DATE
+> Task :react-native-safe-area-context:preDebugBuild UP-TO-DATE
+> Task :react-native-safe-area-context:mergeDebugShaders UP-TO-DATE
+> Task :react-native-safe-area-context:compileDebugShaders NO-SOURCE
+> Task :react-native-safe-area-context:generateDebugAssets UP-TO-DATE
+> Task :react-native-safe-area-context:mergeDebugAssets UP-TO-DATE
+> Task :react-native-screens:preDebugBuild UP-TO-DATE
+> Task :react-native-screens:mergeDebugShaders UP-TO-DATE
+> Task :react-native-screens:compileDebugShaders NO-SOURCE
+> Task :react-native-screens:generateDebugAssets UP-TO-DATE
+> Task :react-native-screens:mergeDebugAssets UP-TO-DATE
+> Task :react-native-share:preDebugBuild UP-TO-DATE
+> Task :react-native-share:mergeDebugShaders UP-TO-DATE
+> Task :react-native-share:compileDebugShaders NO-SOURCE
+> Task :react-native-share:generateDebugAssets UP-TO-DATE
+> Task :react-native-share:mergeDebugAssets UP-TO-DATE
+> Task :react-native-svg:preDebugBuild UP-TO-DATE
+> Task :react-native-svg:mergeDebugShaders UP-TO-DATE
+> Task :react-native-svg:compileDebugShaders NO-SOURCE
+> Task :react-native-svg:generateDebugAssets UP-TO-DATE
+> Task :react-native-svg:mergeDebugAssets UP-TO-DATE
+> Task :react-native-vector-icons:preDebugBuild UP-TO-DATE
+> Task :react-native-vector-icons:mergeDebugShaders UP-TO-DATE
+> Task :react-native-vector-icons:compileDebugShaders NO-SOURCE
+> Task :react-native-vector-icons:generateDebugAssets UP-TO-DATE
+> Task :react-native-vector-icons:mergeDebugAssets UP-TO-DATE
+> Task :react-native-wallet-manager:preDebugBuild UP-TO-DATE
+> Task :react-native-wallet-manager:mergeDebugShaders UP-TO-DATE
+> Task :react-native-wallet-manager:compileDebugShaders NO-SOURCE
+> Task :react-native-wallet-manager:generateDebugAssets UP-TO-DATE
+> Task :react-native-wallet-manager:mergeDebugAssets UP-TO-DATE
+> Task :react-native-webview:preDebugBuild UP-TO-DATE
+> Task :react-native-webview:mergeDebugShaders UP-TO-DATE
+> Task :react-native-webview:compileDebugShaders NO-SOURCE
+> Task :react-native-webview:generateDebugAssets UP-TO-DATE
+> Task :react-native-webview:mergeDebugAssets UP-TO-DATE
+> Task :react-native-worklets:preDebugBuild
+> Task :react-native-worklets:mergeDebugShaders UP-TO-DATE
+> Task :react-native-worklets:compileDebugShaders NO-SOURCE
+> Task :react-native-worklets:generateDebugAssets UP-TO-DATE
+> Task :react-native-worklets:mergeDebugAssets UP-TO-DATE
+> Task :sentry_react-native:preDebugBuild UP-TO-DATE
+> Task :sentry_react-native:mergeDebugShaders UP-TO-DATE
+> Task :sentry_react-native:compileDebugShaders NO-SOURCE
+> Task :sentry_react-native:generateDebugAssets UP-TO-DATE
+> Task :sentry_react-native:mergeDebugAssets UP-TO-DATE
+> Task :app:mergeDevDebugAssets UP-TO-DATE
+> Task :app:compressDevDebugAssets UP-TO-DATE
+
+[Incubating] Problems report is available at: file:///Users/stark/Desktop/work/RN/heals-app-rn/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 44s
+155 actionable tasks: 3 executed, 152 up-to-date
+
+---
+exit_code: 0
+elapsed_ms: 47420
+ended_at: 2026-09-02T07:22:47.838Z
+---
