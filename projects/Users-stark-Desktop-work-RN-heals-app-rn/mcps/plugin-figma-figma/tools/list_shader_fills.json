@@ -1,0 +1,19 @@
+{
+  "name": "list_shader_fills",
+  "description": "DEPRECATED: Use list_shaders instead. Lists the shader fills in the authenticated user's account library. Returns each fill's id, name, and description (plus a nextCursor when more pages exist). Use the id with get_shader_fill to read a fill's source. Shader fills generate pixels directly with no input raster, distinct from custom tools and shader effects.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "cursor": {
+        "description": "Pagination cursor returned as nextCursor by a previous call. Omit to fetch the first page.",
+        "type": "string"
+      }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}
