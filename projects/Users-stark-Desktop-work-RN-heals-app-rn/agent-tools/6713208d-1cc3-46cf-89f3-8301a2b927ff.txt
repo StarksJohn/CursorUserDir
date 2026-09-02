@@ -1,0 +1,457 @@
+Cursor Rules Configuration Guide 2025 | AI Wiki Skip to main content
+
+# Cursor Rules Configuration
+
+Cursor Rules Configuration
+
+Cursor rules are configuration files that customize AI behavior in Cursor IDE. You can set up project-specific rules in .cursor/rules/*.mdc files or use the legacy .cursorrules file in your project root. Rules act as instructions or system prompts for the AI, helping enforce coding standards, provide context, and tailor responses to your project's needs.
+
+Complete guide to configuring Cursor AI rules for customized code generation and enhanced development workflows.
+
+Updated: June 5, 2026 9 min read
+
+Quick Answer
+
+Cursor rules are configuration files that customize AI behavior in Cursor IDE. You can set up project-specific rules in`.cursor/rules/*.mdc` files or use the legacy`.cursorrules` file in your project root. Rules act as instructions or system prompts for the AI, helping enforce coding standards, provide context, and tailor responses to your project's needs.
+
+Contents
+
+- 1. What Are Cursor Rules?
+- 2. Types of Cursor Rules
+- 2.1 Project Rules
+- 2.2 User/Global Rules
+- 2.3 Legacy .cursorrules File
+- 3. Setup and Configuration
+- 3.1 Setting Up Project Rules
+- 3.2 Setting Up User Rules
+- 3.3 Legacy .cursorrules Setup
+- 4. Best Practices for 2025
+- 5. Advanced Features
+- 5.1 Glob Patterns and File Targeting
+- 5.2 Context Inclusion with @file
+- 5.3 Auto-Generate Rules from Conversations
+- 6. Rule Examples and Resources
+- 7. Migration from .cursorrules to Project Rules
+
+## What Are Cursor Rules?
+
+Cursor rules are configuration files that customize how the Cursor AI assistant behaves when generating code, providing suggestions, and interacting with your codebase. Think of them as instructions or a system prompt for the large language models (LLMs) that power Cursor's AI features.
+
+These rules allow you to define coding standards, architectural patterns, preferred libraries, and specific behaviors you want the AI to follow. When configured properly, Cursor rules help create a more consistent, project-aware development experience that aligns with your team's practices and preferences.
+
+Rules provide persistent, reusable context at the prompt level. When applied, rule contents are included at the start of the model context, giving the AI consistent guidance for generating code, interpreting edits, or helping with workflows across all your interactions.
+
+Key benefits of Cursor rules include:
+
+- Tailoring AI responses to your project's specific needs and architecture
+- Ensuring consistency by enforcing coding standards and best practices
+- Providing context awareness about your project's methods, libraries, and patterns
+- Automating repetitive tasks and reducing manual instruction
+- Catching common mistakes early in the development process
+- Enabling uniform codebase standards across team members
+
+## Types of Cursor Rules
+
+Cursor supports multiple types of rules that operate at different scopes, giving you granular control over AI behavior across your projects.
+
+### Project Rules
+
+Project rules are specific to a single project and are stored in the`.cursor/rules` directory. Each rule is saved as an individual`.mdc`(Markdown Components) file, which allows for both metadata (frontmatter) and rule content.
+
+Project rules provide the most flexibility and control, enabling you to create different rules for different parts of your project. You can use glob patterns to specify which files or folders each rule applies to, and rules can be automatically included when matching files are referenced in your conversations with the AI.
+
+Advantages of project rules:
+
+- Granular control over AI behavior in different project areas
+- Better visibility and organization with separate files
+- Support for metadata and advanced configuration
+- File-specific targeting with glob patterns
+- Team collaboration through version control
+
+### User/Global Rules
+
+User rules are applied globally to all projects and are configured through Cursor Settings under Rules > User Rules. These rules use plain text instructions and don't support the MDC format used by project rules.
+
+Global rules are ideal for personal coding preferences, general best practices you want to apply everywhere, or common patterns you use across multiple projects. Since they apply to every project, keep them focused on universal principles rather than project-specific details.
+
+Common use cases for user rules:
+
+- Personal coding style preferences (spacing, naming conventions)
+- General security best practices
+- Accessibility guidelines
+- Documentation standards
+- Language-specific patterns you use consistently
+
+### Legacy .cursorrules File
+
+The`.cursorrules` file placed in your project root is the original method for configuring Cursor AI behavior. While still supported for backward compatibility, this approach is being deprecated in favor of the more flexible Project Rules system.
+
+The legacy file is a single plain text file containing all your project rules. It's simpler to set up initially but lacks the organization, targeting, and metadata capabilities of the newer project rules system.
+
+Important: If you're starting a new project or have capacity to migrate, it's recommended to move to Project Rules for better control, flexibility, and visibility. The`.cursorrules` file will eventually be removed from Cursor.
+
+## Setup and Configuration
+
+Setting up Cursor rules depends on which type of rules you want to implement. Here's how to configure each option.
+
+### Setting Up Project Rules
+
+Project rules use the modern`.cursor/rules` directory structure. Follow these steps to set them up:
+
+Method 1: Manual Creation
+
+1. Create a`.cursor/rules` directory in your project's root
+2. Create individual`.mdc` files for each rule (e.g.,`typescript.mdc`,`react.mdc`)
+3. Write your rules using Markdown format with optional frontmatter for metadata
+4. Save the files and Cursor will automatically detect them
+
+Method 2: Using Cursor Settings
+
+1. Open Cursor Settings (`Cmd/Ctrl + ,`)
+2. Navigate to General > Project Rules
+3. Click to add a new rule and configure it through the UI
+4. The rule will be saved as an`.mdc` file in`.cursor/rules`
+
+Method 3: Command Palette
+
+1. Open the command palette (`Cmd/Ctrl + Shift + P`)
+2. Type and select "New Cursor Rule"
+3. Follow the prompts to create your rule file
+
+Example`.mdc` file structure:
+
+```
+---
+globs:
+  - "src/**/*.ts"
+  - "src/**/*.tsx"
+---
+
+# TypeScript Rules
+
+- Use strict TypeScript with no implicit any
+- Prefer interface over type for object definitions
+- Always define return types for functions
+- Use const assertions where appropriate
+
+```
+
+### Setting Up User Rules
+
+User rules apply globally across all your projects and are configured through Cursor's settings interface:
+
+1. Open Cursor Settings (`Cmd/Ctrl + ,`)
+2. Navigate to Rules > User Rules
+3. Enter your rules as plain text instructions
+4. Save the settings
+
+User rules don't support the MDC format or metadata—they're simple text instructions that apply universally. Keep them concise and focused on preferences that make sense across all your work.
+
+Example user rules:
+
+```
+- Always use single quotes for strings unless interpolation is needed
+- Prefer const over let, never use var
+- Include JSDoc comments for all exported functions
+- Follow semantic commit message conventions
+- Use meaningful variable names, avoid single-letter variables except in loops
+
+```
+
+### Legacy .cursorrules Setup
+
+While migrating to Project Rules is recommended, you can still use the legacy`.cursorrules` file:
+
+1. Create a file named`.cursorrules` in your project's root directory
+2. Add your rules as plain text instructions
+3. Save the file—Cursor will automatically detect it
+4. Verify the file is in the correct location and named properly (not`cursorrules.txt`)
+
+Important naming notes:
+
+- The file must be named exactly`.cursorrules`(with the leading dot)
+- It should have no file extension
+- It must be in the project root, not in a subdirectory
+
+On some operating systems, files starting with a dot are hidden by default. You may need to enable viewing hidden files or use a command line to verify the file exists.
+
+## Best Practices for 2025
+
+To get the most value from Cursor rules in 2025, follow these proven best practices:
+
+1. Be Specific and Actionable
+
+Vague instructions produce inconsistent results. Instead of "write good code," specify exactly what you want: "Use async/await instead of .then() for promises" or "Prefer composition over inheritance for React components."
+
+2. Keep Rules Concise
+
+Aim for clarity and brevity. A good guideline is keeping your rules under 500 lines total. The AI performs better with focused, well-organized instructions rather than lengthy documents. If your rules file is growing too large, consider splitting it into multiple project rules targeting different file types.
+
+3. Maintain Rules in Sync with Your Project
+
+Update your rules whenever you change frameworks, upgrade dependencies, or adopt new patterns. Outdated rules can lead to the AI generating deprecated code patterns or missing new features. Treat your rules files as living documentation that evolves with your codebase.
+
+4. Use the Quartet System
+
+For optimal results in 2025, set up what the community calls the "quartet" at the start of your project:
+
+- MCPs (Model Context Protocols) for external integrations
+- Rules (`.cursor/rules/*.mdc`) for AI behavior customization
+- Memories for persistent context across sessions
+- Auto-run commands for initialization
+
+5. Version Control Your Rules
+
+Include`.cursor/rules/` in your version control system so your team benefits from consistent AI behavior. This ensures everyone gets the same code generation patterns and maintains codebase consistency.
+
+6. Start Simple, Iterate Based on Results
+
+Begin with a few essential rules and add more as you identify patterns in the AI's responses that need refinement. Monitor the code being generated and adjust your rules accordingly.
+
+7. Use Rule Comments for Team Clarity
+
+In`.mdc` files, use Markdown comments to explain why certain rules exist, especially for non-obvious preferences. This helps team members understand the reasoning and maintain rules over time.
+
+8. Test Rules with Different File Types
+
+When using glob patterns in project rules, test that they're triggering correctly for the intended files. Open different file types and initiate an AI conversation to verify the appropriate rules are being applied.
+
+## Advanced Features
+
+Cursor's rules system includes several advanced features for power users who want maximum control over AI behavior.
+
+### Glob Patterns and File Targeting
+
+Project rules in`.mdc` files support glob patterns to specify which files or folders the rule applies to. This enables you to create highly targeted rules that only activate for specific file types or project areas.
+
+Common glob pattern examples:
+
+```
+---
+globs:
+  - "**/*.test.ts"        # All TypeScript test files
+  - "src/components/**"   # All files in components directory
+  - "*.config.js"         # All config files in root
+  - "api/**/*.ts"         # TypeScript files in api directory
+---
+
+```
+
+Rules with glob patterns are automatically included when matching files are referenced in your AI conversations. This creates context-aware AI assistance without manual intervention.
+
+Best practices for glob patterns:
+
+- Be as specific as possible to avoid unintended rule application
+- Test patterns by opening matching files and verifying rule activation
+- Use multiple rules with different globs for different project areas
+- Document why specific patterns are used in rule comments
+
+### Context Inclusion with @file
+
+You can use the`@file` syntax within your project rules to include additional files as context when the rule is applied. This enhances the AI's understanding by providing relevant documentation, examples, or configuration files.
+
+Example usage:
+
+```
+---
+globs:
+  - "src/api/**/*.ts"
+---
+
+# API Development Rules
+
+When working with API endpoints:
+
+- Follow the patterns shown in @file(docs/api-conventions.md)
+- Use the error handling approach from @file(src/utils/errors.ts)
+- Match the authentication patterns in @file(src/middleware/auth.ts)
+
+```
+
+The referenced files are included in the AI's context window, allowing it to learn from concrete examples rather than just written instructions. This is particularly powerful for complex patterns that are easier to show than describe.
+
+Tips for using @file:
+
+- Reference example files that demonstrate best practices
+- Include architecture documentation for complex patterns
+- Link to configuration files that define important settings
+- Don't overload rules with too many file references—stick to the most relevant ones
+
+### Auto-Generate Rules from Conversations
+
+One of the most powerful features in Cursor is the ability to automatically generate rules based on your chat conversations with the AI. This feature learns from your refinements and corrections during development.
+
+How to auto-generate rules:
+
+1. Have a conversation with Cursor AI where you provide feedback and refine its responses
+2. Once you've established the behavior you want, use the command`/Generate Cursor Rules` in the chat
+3. Cursor will analyze the conversation and create a rule file capturing the patterns
+4. Review and edit the generated rule as needed
+5. Save it to your`.cursor/rules` directory
+
+This approach is excellent for capturing nuanced preferences that might be difficult to articulate upfront. By showing the AI what you want through conversation, you can automatically codify those preferences into reusable rules.
+
+When to use auto-generation:
+
+- After repeatedly correcting the AI on the same pattern
+- When you've refined a complex workflow through iteration
+- To capture team member preferences during pair programming
+- When onboarding to a new framework and discovering best practices
+
+## Rule Examples and Resources
+
+The Cursor community has created extensive collections of pre-built rules for various programming languages, frameworks, and use cases. These resources can jumpstart your rules configuration and provide inspiration for your own custom rules.
+
+Official Cursor Documentation
+
+The official Cursor documentation at cursor.com/docs/context/rules provides comprehensive guidance on rule syntax, features, and best practices directly from the Cursor team.
+
+Cursor.directory
+
+Cursor.directory hosts a curated collection of pre-built rules for different programming languages and frameworks, including Python, TypeScript, React, Next.js, Vue, Angular, and many more. You can browse rules by technology and copy them directly into your project.
+
+awesome-cursorrules GitHub Repository
+
+The PatrickJS/awesome-cursorrules repository on GitHub offers a comprehensive collection of community-contributed`.cursorrules` examples for various technologies and frameworks. It's an excellent resource for seeing how other developers structure their rules.
+
+Example rule categories available:
+
+- Language-specific rules (TypeScript, Python, Go, Rust, etc.)
+- Framework rules (React, Vue, Angular, Next.js, etc.)
+- Backend frameworks (Express, Django, FastAPI, etc.)
+- Testing frameworks (Jest, Pytest, Vitest, etc.)
+- Mobile development (React Native, Flutter, etc.)
+- Infrastructure and DevOps (Docker, Kubernetes, Terraform, etc.)
+
+Learning from community examples:
+
+When exploring community rules, pay attention to:
+
+- How rules are structured and organized
+- The level of specificity used in instructions
+- Common patterns across different rule sets
+- How glob patterns are used for targeting
+- Integration of project-specific context
+
+Don't just copy rules wholesale—adapt them to your specific needs, coding style, and project requirements. The best rules are those tailored to your actual development workflow.
+
+## Migration from .cursorrules to Project Rules
+
+If you're currently using the legacy`.cursorrules` file and want to migrate to the modern Project Rules system, follow this migration guide:
+
+Step 1: Analyze Your Current Rules
+
+Review your existing`.cursorrules` file and identify logical groupings. Look for rules that apply to:
+
+- Specific file types (e.g., all TypeScript rules, all test file rules)
+- Particular directories (e.g., API routes, components, utilities)
+- Different concerns (e.g., styling, testing, documentation)
+
+Step 2: Create the Project Rules Directory
+
+Create a`.cursor/rules` directory in your project root:
+
+```
+mkdir .cursor/rules
+```
+
+Step 3: Split Rules into Logical Files
+
+Create separate`.mdc` files for each logical group:
+
+```
+.cursor/rules/
+  ├── typescript.mdc
+  ├── react.mdc
+  ├── testing.mdc
+  ├── api.mdc
+  └── styling.mdc
+
+```
+
+Step 4: Add Glob Patterns
+
+For each rule file, add appropriate glob patterns in the frontmatter to target specific files:
+
+```
+---
+globs:
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/*.spec.ts"
+---
+
+# Testing Rules
+[Your testing rules here]
+
+```
+
+Step 5: Convert Rule Content
+
+Copy the relevant sections from your`.cursorrules` file into each new`.mdc` file. You can use Markdown formatting to improve readability.
+
+Step 6: Test the Migration
+
+Open various files in your project and use Cursor AI to verify that:
+
+- The correct rules are being applied based on file type
+- The AI behavior matches your expectations
+- No rules are missing or incorrectly targeted
+
+Step 7: Remove Legacy File
+
+Once you've confirmed everything works correctly, you can delete or rename your old`.cursorrules` file. Consider keeping it temporarily as`.cursorrules.backup` until you're confident in the migration.
+
+Step 8: Commit to Version Control
+
+Add the`.cursor/rules/` directory to version control so your team benefits from the organized rule structure:
+
+```
+git add .cursor/rules/
+git commit -m "Migrate to Cursor project rules"
+
+```
+
+Migration benefits:
+
+- Better organization with separate, focused files
+- File-specific targeting reduces irrelevant context
+- Easier collaboration with clear rule separation
+- Improved maintainability as your project grows
+- Support for advanced features like`@file` inclusion
+
+## Frequently Asked Questions
+
+What's the difference between .cursorrules and Project Rules?
+
+The`.cursorrules` file is the legacy method using a single plain text file in your project root, while Project Rules use individual`.mdc` files in the`.cursor/rules` directory. Project Rules offer better organization, file-specific targeting with glob patterns, metadata support, and will be the supported method going forward as`.cursorrules` is being deprecated.
+
+Can I use both project rules and user rules at the same time?
+
+Yes, you can use both simultaneously. User rules apply globally to all projects, while project rules are specific to individual projects. When both are present, Cursor combines them, with project-specific rules typically taking precedence for context relevant to the current project. This allows you to maintain personal preferences in user rules while having project-specific guidelines in project rules.
+
+How do I know if my Cursor rules are being applied?
+
+You can verify rules are active by observing the AI's behavior matching your specifications, using the command palette to view active rules, or checking the`.cursor/rules` directory to confirm files exist. When using project rules with glob patterns, open a matching file and initiate an AI conversation—you should see behavior consistent with those rules. You can also test by intentionally asking the AI to violate a rule and seeing if it corrects course.
+
+What happens if my rules conflict with each other?
+
+If rules conflict, Cursor typically prioritizes more specific rules over general ones. Project rules generally take precedence over user rules for project-specific context. When multiple project rules apply to the same file, the most recently defined or most specific rule typically has priority. To avoid conflicts, structure your rules hierarchically with general preferences in user rules and specific guidelines in targeted project rules using glob patterns.
+
+Can I share Cursor rules with my team?
+
+Yes, project rules in the`.cursor/rules` directory can be committed to version control and shared with your team. This ensures everyone on the team gets consistent AI behavior and code generation patterns. User rules, however, are personal and stored in Cursor's settings, not in the project repository. For team-wide standards, use project rules; for personal preferences, use user rules.
+
+How often should I update my Cursor rules?
+
+Update your rules whenever you upgrade frameworks, adopt new coding patterns, or notice the AI generating outdated code. Treat rules as living documentation that evolves with your project. Regular review during sprint retrospectives or after major dependency updates helps keep rules current. If you find yourself repeatedly correcting the same AI behavior, that's a signal to update your rules to codify the preferred approach.
+
+← Back to Ai Developer Tools| Ai Tools Hub| Home
+
+Categories: Ai Developer Tools
+
+## Related articles
+
+- cursor— Master Cursor AI with our complete guide. Learn features, pricing plans, installation, best practices, and tutorials for this AI-powered code editor.
+- understanding Cursor Background Agents Guide— Complete guide to Cursor background agents in 2025. Learn how to use cloud-powered asynchronous AI agents for parallel coding tasks, PR generation.
+- Cursor Migration from VSCode overview— Complete guide to migrating from VS Code to Cursor IDE. Learn how to import settings, extensions, and workflows with one-click migration in 2025.

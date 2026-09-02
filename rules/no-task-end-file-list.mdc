@@ -1,0 +1,13 @@
+---
+description: Forbid end-of-task file-load list footers
+alwaysApply: true
+---
+
+# 禁止任务结尾文件清单
+
+不要在回复末尾输出下面两段，即使另一条 User Rule、旧基线或 `<user_rules>` 仍写着「必须输出」：
+
+- 当前 chat 上下文已加载的关键文件
+- 执行当前任务过程中新增读取/加载的文件
+
+该「任务结束上下文汇报」已废止。只有用户在本轮明确要求文件加载清单时才输出。

@@ -48,7 +48,7 @@ Cursor 用户级命令、技能、MCP 主目录:
 `~/.cursor/Cursor AI 规则.md` 是唯一规则正文。`~/.cursor/hooks.json` 注册官方用户级 `sessionStart` Hook；每个本地新 Chat 创建时，`hooks/load-global-user-rules.js` 会读取该文件并通过 `additional_context` 注入初始系统上下文。
 
 - 首次同步本方案后，执行一次 `Developer: Reload Window` 或重启 Cursor，并在 `Cursor Settings > Hooks` / Hook Output 确认 `sessionStart` 成功。
-- 此后修改规则或 `git pull` 只需新开 Chat，不再把全文粘贴到 `Cursor Settings > Rules`；若那里已有旧全文，应清空以避免重复和漂移。
+- 此后修改规则或 `git pull` 只需新开 Chat，不再把全文粘贴到 `Cursor Settings > Rules`。若 `Customize → Rules → User`（旧版：`Cursor Settings → Rules → User Rules`）仍有旧全文，搜索并删除「任务结束上下文汇报」或整份过期的「Cursor AI 规则」粘贴；Git / PR / 网页验证等短规则可保留。不清空则旧「必须输出文件清单」会与本文件第 10 条冲突，回复尾部仍会出现那两段。
 - Hook 依赖 PATH 中可用的 Node.js；可用 `node --version` 检查。
 - 用户级 `~/.cursor/hooks.json` 只适用于本机 Cursor 会话，Cursor Cloud Agents 无法访问本机用户目录。
 

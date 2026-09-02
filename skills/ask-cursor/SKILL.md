@@ -43,32 +43,32 @@ description: >-
 
 ### 1. Cursor 用户数据目录（User、全局存储、日志，类 VS Code）
 
-| 作用 | Windows 11 | macOS |
-|------|--------------|--------|
-| 用户范围设置与状态 | `%APPDATA%\Cursor` | `~/Library/Application Support/Cursor` |
+| 作用                 | Windows 11                            | macOS                                                     |
+| -------------------- | ------------------------------------- | --------------------------------------------------------- |
+| 用户范围设置与状态   | `%APPDATA%\Cursor`                    | `~/Library/Application Support/Cursor`                    |
 | 用户 `settings.json` | `%APPDATA%\Cursor\User\settings.json` | `~/Library/Application Support/Cursor/User/settings.json` |
-| 工作区存储等 | 同上目录下子文件夹 | 同上 |
+| 工作区存储等         | 同上目录下子文件夹                    | 同上                                                      |
 
 ### 2. 用户级 Cursor 配置树（命令、技能、部分工具链约定）
 
-| 作用 | Windows 11 | macOS |
-|------|------------|--------|
-| 根目录（Skills、Commands、部分规则） | `%USERPROFILE%\.cursor` | `~/.cursor` |
-| MCP 客户端配置（常见） | `%USERPROFILE%\.cursor\mcp.json` | `~/.cursor/mcp.json` |
+| 作用                                 | Windows 11                       | macOS                |
+| ------------------------------------ | -------------------------------- | -------------------- |
+| 根目录（Skills、Commands、部分规则） | `%USERPROFILE%\.cursor`          | `~/.cursor`          |
+| MCP 客户端配置（常见）               | `%USERPROFILE%\.cursor\mcp.json` | `~/.cursor/mcp.json` |
 
 **本机示例（便于你直接定位；换机请按上表替换用户名）**
 
-| 平台 | `.cursor` 示例 |
-|------|----------------|
+| 平台    | `.cursor` 示例                  |
+| ------- | ------------------------------- |
 | Windows | `C:\Users\Stark8964911\.cursor` |
-| Mac | `/Users/stark/.cursor` |
+| Mac     | `/Users/stark/.cursor`          |
 
 ### 3. 本 skill 文件位置
 
-| 平台 | 路径 |
-|------|------|
+| 平台    | 路径                                                       |
+| ------- | ---------------------------------------------------------- |
 | Windows | `C:\Users\Stark8964911\.cursor\skills\ask-cursor\SKILL.md` |
-| Mac | `~/.cursor/skills/ask-cursor/SKILL.md` |
+| Mac     | `~/.cursor/skills/ask-cursor/SKILL.md`                     |
 
 ## 问题类型与处理顺序
 
@@ -83,14 +83,14 @@ description: >-
 
 ## 路由规则（关联 skills）
 
-| 场景 | 推荐 |
-|------|------|
-| 修改 `settings.json`、编辑器偏好 | `skills-cursor/update-cursor-settings` |
-| 新建/调整 `.cursor/rules`、RULE.md | `skills-cursor/create-rule` |
-| 新建 Agent Skill（`SKILL.md` 结构） | `skills-cursor/create-skill` |
-| Cursor Hooks（`hooks.json` 等） | `skills-cursor/create-hook` |
-| 项目级长期事实、打开新仓库 | `init-project` + 项目 `project-context.mdc` |
-| 产品化研发流程（PRD、架构） | BMad 系列 skills，与 IDE 无强绑定时不必经本 skill |
+| 场景                                | 推荐                                              |
+| ----------------------------------- | ------------------------------------------------- |
+| 修改 `settings.json`、编辑器偏好    | `skills-cursor/update-cursor-settings`            |
+| 新建/调整 `.cursor/rules`、RULE.md  | `skills-cursor/create-rule`                       |
+| 新建 Agent Skill（`SKILL.md` 结构） | `skills-cursor/create-skill`                      |
+| Cursor Hooks（`hooks.json` 等）     | `skills-cursor/create-hook`                       |
+| 项目级长期事实、打开新仓库          | `init-project` + 项目 `project-context.mdc`       |
+| 产品化研发流程（PRD、架构）         | BMad 系列 skills，与 IDE 无强绑定时不必经本 skill |
 
 ## 输出约定
 
@@ -114,8 +114,9 @@ description: >-
 - 不在本 skill 中维护易过期的**个人订阅状态、账单截图结论**；需要时以用户当次提供的信息与官方页为准。
 
 ## 当前活跃需求(不要修改这部分的子内容)
-- 我当前是`cursor Pro+ Annual $48/mo.` 计划的用户, 目前有如图![img_010515.png](img_010515.png)![img_011234.png](img_011234.png) 2个计费池,一个是使用高级API的计费池,一个是`Auto + Composer`的计费池, 每月24日15:00点重置;API计费池每月大概能用2亿token,105美金额度
-- 当前Win11系统已经安装了`cursor IDE`
+<!-- - 帮我检查下如图 ![img_105536.png](img_105536.png) 的 cursor 里的 红框处的每个选项里的每个配置,如果有可优化的配置 直接帮我优化, 目的是 让 cursor 的 chat在使用  任何模型时, 都能最大化发挥出 cursor 和模型的 能力  -->
+<!-- - 我当前是`cursor Pro+ Annual $48/mo.` 计划的用户, 目前有如图![img_010515.png](img_010515.png)![img_011234.png](img_011234.png) 2个计费池,一个是使用高级API的计费池,一个是`Auto + Composer`的计费池, 每月24日15:00点重置;API计费池每月大概能用2亿token,105美金额度 -->
+<!-- - 当前Win11系统已经安装了`cursor IDE` -->
   <!-- - 但是`Pro+`每个月的额度不够用;我已经买了codex plus 账号;你觉得我应该在cursor里使用codex插件![img_223216.png](img_223216.png),还是 codex cli? 怎么可以把cursor里配置的 skill 和 MCP 无缝的同步到 codex 里直接使用?保证以后当cursor有余额时,优先继续用cursor;cursor的余额用完后,可以继续用codex,并且在使用codex时,保证也可以用和cursor一样的MCP和skill -->
   <!-- - 使用![img_215834.png](img_215834.png)模型时, 执行一个任务消耗了762.1万token,API的Usage从3.3%上涨到了10.6%; 
     -  约 104.40 万 / 1%
@@ -124,7 +125,7 @@ description: >-
   - ![img_192458.png](img_192458.png)在cursor内置浏览器里我访问&&登录了 `https://supabase.com`, 怎么让这个内置浏览器 保持所有已经登录过的网站的登录状态,下次我再用 内置浏览器打开 `https://supabase.com` 时, 不想再次登录 -->
 <!-- - 当前 `MacBook Pro` 电脑也下载安装了cursor,已经有了  `/Users/stark/.cursor` 和 `~/Library/Application Support/Cursor` 目录
   - 当前mac系统的 cursor 的eslint 是否已经全局打开? 是否用cursor打开任何项目后,都已经使用了 eslint  ? -->
-- 把以上你执行过的所有任务的执行结果都总结更新到
+<!-- - 把以上你执行过的所有任务的执行结果都总结更新到
   - win:`C:\Users\Stark8964911\AppData\Roaming\Cursor\Cursor_使用指南与Token优化.md`
-  - mac : `/Users/stark/Library/Application Support/Cursor/Cursor_使用指南与Token优化.md`
-- 不要修改 `/Users/stark/.cursor/skills/ask-cursor/SKILL.md`里的 `当前活跃需求`下的内容
+  - mac : `/Users/stark/Library/Application Support/Cursor/Cursor_使用指南与Token优化.md` -->
+<!-- - 不要修改 `/Users/stark/.cursor/skills/ask-cursor/SKILL.md`里的 `当前活跃需求`下的内容 -->

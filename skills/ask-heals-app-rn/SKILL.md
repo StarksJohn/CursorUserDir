@@ -107,7 +107,7 @@ description: >-
 <!-- - 对 ``页面 使用 '/Users/stark/Desktop/work/RN/heals-app-rn/src/style/theme/theme-common.ts'里定义的 新主题色 'APP_THEME_COLOR'进行 UI改版, 其中页面的背景色改成 `APP_PAGE_BACKGROUND_COLOR`, 如果页面里使用了 FlatList 组件,则其的背景色改成 `APP_PAGE_BACKGROUND_COLOR`,如果页面里有使用了'#00AC86'颜色的UI元素,比如某个`TouchableOpacity` 的背景色或者某个`Text`的字体颜色等都改成'APP_THEME_COLOR'; -->
 <!-- - $code-review-codex 目标 `1.2.3`, PR ``, commit ``, 帮我直接解决遇到的问题 -->
 <!-- - pls conduct a code review of this PR ' ' as soon as possible ,and addressing the 'Requested changes' I provided in your PR ' ' as soon as possible.  -->
-<!-- - 以 `https://ais-pre-hce4mtkty7p4aewqsgaizl-663605729382.us-west2.run.app/` 网页当前 DOM/可访问性节点和计算样式为事实源，读取`图x`红框里的尺寸、间距、圆角、阴影、图标容器、字号/颜色和点击区域等UI元素节点数据来进行UI布局,按这些节点值映射到项目现有的样式系统；不只凭截图目测 -->
+<!-- - 以 `https://ais-pre-hce4mtkty7p4aewqsgaizl-663605729382.us-west2.run.app/` 网页当前 DOM/可访问性节点和计算样式为事实源，读取`图x`红框里的尺寸、间距、圆角、阴影、图标容器、字号/颜色和点击区域等UI元素节点数据并把红框处的UI布局到 ' '页面对应的位置,还要记得把这些节点值映射到项目现有的样式系统,不要只凭截图目测; 暂时只需要实现 UI 布局,不需要实现交互逻辑, -->
 <!-- - Reload 没有加载到最新 bundle，仍显示旧 JS -->
 - IOS:
   <!-- - 为当前 checkout 构建 `dev` 环境的 Release 模式 IPA，并真实上传到 Heals (Dev) 的 TestFlight：`https://appstoreconnect.apple.com/teams/1f49f429-f33a-4c15-b357-7025b5e32451/apps/6740129703/testflight/ios`。本任务明确授权构建和上传，但不授权自动提交 Git、push、分配测试群组、回答出口合规问题或发布到 App Store。
