@@ -99,6 +99,7 @@ description: >-
 ## 当前活跃需求(不要修改这部分的子内容)
 <!-- /code-review 对 'heals-app-rn' 项目的未 commit 的文件进行 code review , 目标 `1.2.3`, 直接解决发现的问题, 直到没有问题;  -->
 <!-- - 帮我用英文尽可能详细的总结下 `heals-app-rn` 项目下所有未 commit 文件的 git commit message , 然后帮我 commit+push   -->
+<!-- - /code-review 目标 `1.2.3`, PR ``, commit `` -->
 <!-- - 你重新执行 '/Users/stark/.cursor/skills/ask-heals-app-rn/SKILL.md'里的 129 行开始的任务 -->
 <!-- - 我以后如果在 cursor 侧执行 `heals-app-rn`项目的相关任务, 是不是只需要把通用和可重复的任务写到`/Users/stark/.cursor/skills/ask-heals-app-rn/SKILL.md`的 `当前活跃需求`这部分里,然后在 cursor 的 新 chat 里一开始执行一次 `/ask-heals-app-rn`,然后等第一个任务执行完后,如果有新任务,则直接在 chat 里输入具体任务; 目前这是不是最完美最高效最正确的使用 cursor 工作流来执行某个项目任务的最优流程? -->
 <!-- - `xx` 页面的列表使用我自定义的 "react-native-advanced-flatlist"库的最新版本来布局,仓库源码在 `/Users/stark/Desktop/work/RN/react-native-advanced-flatlist` -->
@@ -106,7 +107,6 @@ description: >-
 <!-- - 继续之前的任务,完成后,再 执行以下任务:  -->
 <!-- - 我已经手动完成了在安卓真机上的操作流程检查, 所以你不用再检查安卓真机的UI显示和操作流程了,只需要继续检查其它方面的内容和功能 -->
 <!-- - 对 ``页面 使用 '/Users/stark/Desktop/work/RN/heals-app-rn/src/style/theme/theme-common.ts'里定义的 新主题色 'APP_THEME_COLOR'进行 UI改版, 其中页面的背景色改成 `APP_PAGE_BACKGROUND_COLOR`, 如果页面里使用了 FlatList 组件,则其的背景色改成 `APP_PAGE_BACKGROUND_COLOR`,如果页面里有使用了'#00AC86'颜色的UI元素,比如某个`TouchableOpacity` 的背景色或者某个`Text`的字体颜色等都改成'APP_THEME_COLOR'; -->
-<!-- - /code-review 目标 `1.2.3`, PR ``, commit `` -->
 <!-- - pls conduct a code review of this PR ' ' as soon as possible ,and addressing the 'Requested changes' I provided in your PR ' ' as soon as possible.  -->
 <!-- - 以 `https://ais-pre-hce4mtkty7p4aewqsgaizl-663605729382.us-west2.run.app/` 网页当前 DOM/可访问性节点和计算样式为事实源，读取`图x`红框里的尺寸、间距、圆角、阴影、图标容器、字号/颜色和点击区域等UI元素节点数据并把红框处的UI布局到 ' '页面对应的位置,还要记得把这些节点值映射到项目现有的样式系统,不要只凭截图目测; 暂时只需要实现 UI 布局,不需要实现交互逻辑; -->
 <!-- - Reload 没有加载到最新 bundle，仍显示旧 JS -->
