@@ -1,0 +1,1590 @@
+# Compare: software-mansion/react-native-reanimated 4.2.0...4.2.1
+
+- Repository: software-mansion/react-native-reanimated | React Native's Animated library reimplemented | 11K stars | TypeScript
+- 8 commits across 24 files by 1 contributors (ahead)
+
+---
+
+## Commits
+
+- e928bcc: fix: Missing style props in the config causing TS compatibility check to fail (# (Mateusz Łopaciński, 2025-12-16)
+- 2c60d62: chore: Remove macos compatibility check from v4 stable branch (#8767) (Mateusz Łopaciński, 2025-12-16)
+- 9655802: cherry-pick(Reanimated): use native processTransformOrigin instead of web versio (Mateusz Łopaciński, 2025-12-16)
+- 64b2730: cherry-pick(Reanimated) Proper support for nested `animatedProps` objects and co (Mateusz Łopaciński, 2025-12-16)
+- eb005e4: cherry-pick(Reanimated): fix(web): Support originX and originY in layout animati (Mateusz Łopaciński, 2025-12-16)
+- 8164081: cherry-pick(Reanimated): Fix web entering animations triggered on view exiting ( (Mateusz Łopaciński, 2025-12-18)
+- 89e612d: cherry-pick(Reanimated): Fix animation names array order updates on keyframes or (Mateusz Łopaciński, 2025-12-18)
+- 8014851: release(Reanimated): 4.2.1 (#8781) (Mateusz Łopaciński, 2025-12-18)
+
+---
+
+## Files Changed
+
+| File | Status | Add | Del |
+| --- | --- | --- | --- |
+| .github/workflows/reanimated-release-checks.yml | modified | +0 | -5 |
+| apps/fabric-example/ios/Podfile.lock | modified | +6 | -6 |
+| apps/tvos-example/ios/Podfile.lock | modified | +6 | -6 |
+| packages/react-native-reanimated/__tests__/__snapshots__/animatedProps.test.tsx.snap | modified | +88 | -2 |
+| packages/react-native-reanimated/__tests__/animatedProps.test.tsx | modified | +274 | -27 |
+| packages/react-native-reanimated/__typetests__/common/useAnimatedPropsTest.tsx → packages/react-native-reanimated/__typetests__/common/AnimatedPropsTest.tsx | renamed | +63 | -26 |
+| packages/react-native-reanimated/package.json | modified | +1 | -1 |
+| packages/react-native-reanimated/src/common/style/config.ts | modified | +8 | -1 |
+| packages/react-native-reanimated/src/common/web/index.ts | modified | +1 | -0 |
+| packages/react-native-reanimated/src/common/web/utils/dom.ts | added | +16 | -0 |
+| packages/react-native-reanimated/src/common/web/utils/index.ts | modified | +1 | -0 |
+| packages/react-native-reanimated/src/createAnimatedComponent/AnimatedComponent.tsx | modified | +2 | -2 |
+| packages/react-native-reanimated/src/createAnimatedComponent/commonTypes.ts | modified | +1 | -1 |
+| packages/react-native-reanimated/src/createAnimatedComponent/createAnimatedComponent.tsx | modified | +1 | -1 |
+| packages/react-native-reanimated/src/css/native/managers/CSSAnimationsManager.ts | modified | +4 | -4 |
+| packages/react-native-reanimated/src/css/native/managers/__tests__/CSSAnimationsManager.test.ts | modified | +146 | -6 |
+| packages/react-native-reanimated/src/css/native/types/animation.ts | modified | +2 | -2 |
+| packages/react-native-reanimated/src/css/web/managers/CSSAnimationsManager.ts | modified | +2 | -6 |
+| packages/react-native-reanimated/src/helperTypes.ts | modified | +10 | -9 |
+| packages/react-native-reanimated/src/layoutReanimation/web/animationsManager.ts | modified | +4 | -2 |
+| packages/react-native-reanimated/src/layoutReanimation/web/componentUtils.ts | modified | +52 | -3 |
+| packages/react-native-reanimated/src/layoutReanimation/web/createAnimation.ts | modified | +58 | -40 |
+| packages/react-native-reanimated/src/platform-specific/jsVersion.ts | modified | +1 | -1 |
+| packages/react-native-reanimated/src/updateProps/updateProps.ts | modified | +2 | -5 |
+
+---
+
+## Diffs
+
+### .github/workflows/reanimated-release-checks.yml
+
+```diff
+@@ -30,11 +30,6 @@ jobs:
+     name: Example iOS build check
+     uses: ./.github/workflows/example-ios-build-check.yml
+ 
+-  example_macos_build_check:
+-    if: github.repository == 'software-mansion/react-native-reanimated'
+-    name: Example macOS build check
+-    uses: ./.github/workflows/example-macos-build-check.yml
+-
+   example_next_build_check:
+     if: github.repository == 'software-mansion/react-native-reanimated'
+     name: Example Next build check
+```
+
+### apps/fabric-example/ios/Podfile.lock
+
+```diff
+@@ -2609,7 +2609,7 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - SocketRocket
+     - Yoga
+-  - RNReanimated (4.2.0):
++  - RNReanimated (4.2.1):
+     - boost
+     - DoubleConversion
+     - fast_float
+@@ -2636,11 +2636,11 @@ PODS:
+     - ReactCodegen
+     - ReactCommon/turbomodule/bridging
+     - ReactCommon/turbomodule/core
+-    - RNReanimated/reanimated (= 4.2.0)
++    - RNReanimated/reanimated (= 4.2.1)
+     - RNWorklets
+     - SocketRocket
+     - Yoga
+-  - RNReanimated/reanimated (4.2.0):
++  - RNReanimated/reanimated (4.2.1):
+     - boost
+     - DoubleConversion
+     - fast_float
+@@ -2667,11 +2667,11 @@ PODS:
+     - ReactCodegen
+     - ReactCommon/turbomodule/bridging
+     - ReactCommon/turbomodule/core
+-    - RNReanimated/reanimated/apple (= 4.2.0)
++    - RNReanimated/reanimated/apple (= 4.2.1)
+     - RNWorklets
+     - SocketRocket
+     - Yoga
+-  - RNReanimated/reanimated/apple (4.2.0):
++  - RNReanimated/reanimated/apple (4.2.1):
+     - boost
+     - DoubleConversion
+     - fast_float
+@@ -3258,7 +3258,7 @@ SPEC CHECKSUMS:
+   RNCClipboard: 4b58c780f63676367640f23c8e114e9bd0cf86ac
+   RNCMaskedView: 5ef8c95cbab95334a32763b72896a7b7d07e6299
+   RNGestureHandler: f1dd7f92a0faa2868a919ab53bb9d66eb4ebfcf5
+-  RNReanimated: e1a35227186755cca2350470492c0303444be657
++  RNReanimated: fdcab4580660c876f5356aa2be6f673b98c7a3a1
+   RNScreens: 42e7a4ec86914b9b22cea8db89abfa160e86be62
+   RNSVG: 8c0bbfa480a24b24468f1c76bd852a4aac3178e6
+   RNWorklets: f54a415f73a3fc653bfe65e599872fdc6bca0477
+```
+
+### apps/tvos-example/ios/Podfile.lock
+
+```diff
+@@ -2252,7 +2252,7 @@ PODS:
+     - React-perflogger (= 0.81.1-1)
+     - React-utils (= 0.81.1-1)
+     - SocketRocket
+-  - RNReanimated (4.2.0):
++  - RNReanimated (4.2.1):
+     - boost
+     - DoubleConversion
+     - fast_float
+@@ -2278,11 +2278,11 @@ PODS:
+     - ReactCodegen
+     - ReactCommon/turbomodule/bridging
+     - ReactCommon/turbomodule/core
+-    - RNReanimated/reanimated (= 4.2.0)
++    - RNReanimated/reanimated (= 4.2.1)
+     - RNWorklets
+     - SocketRocket
+     - Yoga
+-  - RNReanimated/reanimated (4.2.0):
++  - RNReanimated/reanimated (4.2.1):
+     - boost
+     - DoubleConversion
+     - fast_float
+@@ -2308,11 +2308,11 @@ PODS:
+     - ReactCodegen
+     - ReactCommon/turbomodule/bridging
+     - ReactCommon/turbomodule/core
+-    - RNReanimated/reanimated/apple (= 4.2.0)
++    - RNReanimated/reanimated/apple (= 4.2.1)
+     - RNWorklets
+     - SocketRocket
+     - Yoga
+-  - RNReanimated/reanimated/apple (4.2.0):
++  - RNReanimated/reanimated/apple (4.2.1):
+     - boost
+     - DoubleConversion
+     - fast_float
+@@ -2731,7 +2731,7 @@ SPEC CHECKSUMS:
+   ReactAppDependencyProvider: 02d17caeffffa513b02bb1ba394bbf1e8f46df86
+   ReactCodegen: f4d6e6fd5140eade461ffb5579795197956868c8
+   ReactCommon: c178596d3ef05508bb6c0f88bfbbc281b5c4222b
+-  RNReanimated: e264ed146227b012686d50549d50fe2f6cf7cf22
++  RNReanimated: a16996fb8928fd28e8066fda9aa359dc6234e6e0
+   RNWorklets: 339aa12272b2ff6490d91526e8ced6599f7ef6a3
+   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
+   Yoga: 0e792f39294e864568930600eeb71135364f777d
+```
+
+### packages/react-native-reanimated/__tests__/__snapshots__/animatedProps.test.tsx.snap
+
+```diff
+@@ -1,6 +1,6 @@
+ // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+ 
+-exports[`animatedProps Custom animated component 1`] = `
++exports[`animatedProps Multiple animated props objects matches snapshot 1`] = `
+ <View>
+   <TextInput
+     collapsable={false}
+@@ -9,6 +9,7 @@ exports[`animatedProps Custom animated component 1`] = `
+       {
+         "value": {
+           "defaultValue": "Box width: 20",
++          "placeholder": "Click count: 0",
+           "text": "Box width: 20",
+         },
+       }
+@@ -18,7 +19,92 @@ exports[`animatedProps Custom animated component 1`] = `
+         "value": {},
+       }
+     }
+-    nativeID="1"
++    nativeID="3"
++    placeholder="Click count: 0"
++    testID="text"
++    text="Box width: 20"
++  />
++  <View
++    accessibilityRole="button"
++    accessibilityState={
++      {
++        "busy": undefined,
++        "checked": undefined,
++        "disabled": undefined,
++        "expanded": undefined,
++        "selected": undefined,
++      }
++    }
++    accessibilityValue={
++      {
++        "max": undefined,
++        "min": undefined,
++        "now": undefined,
++        "text": undefined,
++      }
++    }
++    accessible={true}
++    collapsable={false}
++    focusable={true}
++    onClick={[Function]}
++    onResponderGrant={[Function]}
++    onResponderMove={[Function]}
++    onResponderRelease={[Function]}
++    onResponderTerminate={[Function]}
++    onResponderTerminationRequest={[Function]}
++    onStartShouldSetResponder={[Function]}
++    style={
++      {
++        "opacity": 1,
++      }
++    }
++    testID="button"
++  >
++    <View
++      style={
++        [
++          {},
++        ]
++      }
++    >
++      <Text
++        style={
++          [
++            {
++              "color": "#007AFF",
++              "fontSize": 18,
++              "margin": 8,
++              "textAlign": "center",
++            },
++          ]
++        }
++      >
++        Click me
++      </Text>
++    </View>
++  </View>
++</View>
++`;
++
++exports[`animatedProps Single animated props object matches snapshot 1`] = `
++<View>
++  <TextInput
++    collapsable={false}
++    defaultValue="Box width: 20"
++    jestAnimatedProps={
++      {
++        "value": {
++          "defaultValue": "Box width: 20",
++          "text": "Box width: 20",
++        },
++      }
++    }
++    jestAnimatedStyle={
++      {
++        "value": {},
++      }
++    }
++    nativeID="0"
+     testID="text"
+     text="Box width: 20"
+   />
+```
+
+### packages/react-native-reanimated/__tests__/animatedProps.test.tsx
+
+```diff
+@@ -1,35 +1,32 @@
+ import { fireEvent, render } from '@testing-library/react-native';
++import type { ComponentProps } from 'react';
+ import React from 'react';
++import type { TextInputProps } from 'react-native';
+ import { Button, TextInput, View } from 'react-native';
+ import Animated, {
+   useAnimatedProps,
+   useSharedValue,
+ } from 'react-native-reanimated';
+ 
++import type { JestAnimatedStyleHandle } from '../src/hook/commonTypes';
++
+ const animationDuration = 100;
+ 
+ const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
+ 
+-export default function AnimatedComponent() {
+-  const r = useSharedValue(20);
+-  const width = useSharedValue(20);
+-
+-  const handlePress = () => {
+-    r.value += 10;
+-    width.value += 10;
+-  };
+-
+-  const textAnimatedProps = useAnimatedProps(() => {
+-    return {
+-      text: `Box width: ${width.value}`,
+-      defaultValue: `Box width: ${width.value}`,
+-    };
+-  });
++interface BaseTextInputComponentProps {
++  animatedProps: ComponentProps<typeof AnimatedTextInput>['animatedProps'];
++  onPress?: () => void;
++}
+ 
++function BaseTextInputComponent({
++  animatedProps,
++  onPress,
++}: BaseTextInputComponentProps) {
+   return (
+     <View>
+-      <AnimatedTextInput testID={'text'} animatedProps={textAnimatedProps} />
+-      <Button testID={'button'} onPress={handlePress} title="Click me" />
++      <AnimatedTextInput testID="text" animatedProps={animatedProps} />
++      <Button testID="button" onPress={onPress} title="Click me" />
+     </View>
+   );
+ }
+@@ -44,19 +41,269 @@ describe('animatedProps', () => {
+     jest.useRealTimers();
+   });
+ 
+-  test('Custom animated component', () => {
+-    const { getByTestId } = render(<AnimatedComponent />);
+-    const textInput = getByTestId('text');
+-    const button = getByTestId('button');
++  describe('Single animated props object', () => {
++    function TextInputTestComponent() {
++      const width = useSharedValue(20);
++
++      const animatedProps = useAnimatedProps(() => ({
++        text: `Box width: ${width.value}`,
++        defaultValue: `Box width: ${width.value}`,
++      }));
++
++      const handlePress = () => {
++        width.value += 10;
++      };
++
++      return (
++        <BaseTextInputComponent
++          animatedProps={animatedProps}
++          onPress={handlePress}
++        />
++      );
++    }
++
++    test('matches snapshot', () => {
++      const rendered = render(<TextInputTestComponent />).toJSON();
++      expect(rendered).toMatchSnapshot();
++    });
++
++    test('updates text on button press', () => {
++      const { getByTestId } = render(<TextInputTestComponent />);
++      const textInput = getByTestId('text');
++      const button = getByTestId('button');
++
++      expect(textInput).toHaveAnimatedProps({ text: 'Box width: 20' });
++
++      fireEvent.press(button);
++      jest.advanceTimersByTime(animationDuration);
++
++      expect(textInput).toHaveAnimatedProps({ text: 'Box width: 30' });
++    });
++
++    test('cleans up a single animated props object on unmount', () => {
++      const removeSpy = jest.fn();
++
++      function DetachSingleAnimatedPropsComponent() {
++        const animatedProps = useAnimatedProps(() => ({
++          placeholder: 'Single animated props',
++        }));
++
++        React.useEffect(() => {
++          const handle =
++            animatedProps as JestAnimatedStyleHandle<TextInputProps>;
++          const spy = jest
++            .spyOn(handle.viewDescriptors, 'remove')
++            .mockImplementation(removeSpy);
++
++          return () => {
++            spy.mockRestore();
++          };
++        }, [animatedProps]);
++
++        return <AnimatedTextInput animatedProps={animatedProps} />;
++      }
++
++      const { unmount } = render(<DetachSingleAnimatedPropsComponent />);
++
++      unmount();
++
++      expect(removeSpy).toHaveBeenCalledTimes(1);
++    });
++  });
++
++  describe('Multiple animated props objects', () => {
++    function TextInputTestComponent() {
++      const width = useSharedValue(20);
++      const counter = useSharedValue(0);
++
++      const animatedProps1 = useAnimatedProps(() => ({
++        text: `Box width: ${width.value}`,
++        defaultValue: `Box width: ${width.value}`,
++      }));
++
++      const animatedProps2 = useAnimatedProps(() => ({
++        placeholder: `Click count: ${counter.value}`,
++      }));
++
++      const handlePress = () => {
++        width.value += 10;
++        counter.value += 1;
++      };
++
++      return (
++        <BaseTextInputComponent
++          animatedProps={[animatedProps1, animatedProps2]}
++          onPress={handlePress}
++        />
++      );
++    }
++
++    test('matches snapshot', () => {
++      const rendered = render(<TextInputTestComponent />).toJSON();
++      expect(rendered).toMatchSnapshot();
++    });
++
++    test('merges multiple animated props objects', () => {
++      const { getByTestId } = render(<TextInputTestComponent />);
++      const textInput = getByTestId('text');
++      const button = getByTestId('button');
++
++      expect(textInput).toHaveAnimatedProps({
++        text: 'Box width: 20',
++        placeholder: 'Click count: 0',
++      });
++
++      fireEvent.press(button);
++      jest.advanceTimersByTime(animationDuration);
++
++      expect(textInput).toHaveAnimatedProps({
++        text: 'Box width: 30',
++        placeholder: 'Click count: 1',
++      });
++    });
++
++    test('later animated props override earlier animated props when overlapping and when both are updated', () => {
++      function OverlappingPropsComponent() {
++        const value1 = useSharedValue('first');
++        const value2 = useSharedValue('second');
++
++        const animatedProps1 = useAnimatedProps(() => ({
++          text: value1.value,
++          placeholder: 'First placeholder',
++        }));
++
++        const animatedProps2 = useAnimatedProps(() => ({
++          text: value2.value,
++          placeholder: 'Second placeholder',
++        }));
++
++        const handlePress = () => {
++          value1.value = 'updated first';
++          value2.value = 'updated second';
++        };
++
++        return (
++          <BaseTextInputComponent
++            animatedProps={[animatedProps1, animatedProps2]}
++            onPress={handlePress}
++          />
++        );
++      }
++
++      const { getByTestId } = render(<OverlappingPropsComponent />);
++      const textInput = getByTestId('text');
++      const button = getByTestId('button');
++
++      // Later props (animatedProps2) should override earlier ones (animatedProps1)
++      expect(textInput).toHaveAnimatedProps({
++        text: 'second',
++        placeholder: 'Second placeholder',
++      });
++
++      fireEvent.press(button);
++      jest.advanceTimersByTime(animationDuration);
++
++      expect(textInput).toHaveAnimatedProps({
++        text: 'updated second',
++        placeholder: 'Second placeholder',
++      });
++    });
++
++    test('last updated animated props override all other animated props', () => {
++      function OverlappingPropsComponent() {
++        const value1 = useSharedValue(10);
++        const value2 = useSharedValue(20);
++
++        const animatedProps1 = useAnimatedProps(() => ({
++          text: `First: ${value1.value}`,
++          placeholder: 'First placeholder',
++        }));
++
++        const animatedProps2 = useAnimatedProps(() => ({
++          text: `Second: ${value2.value}`,
++          placeholder: 'Second placeholder',
++        }));
++
++        const handlePress = () => {
++          // Update the shared value to show that order does not matter
++          value1.value += 5;
++        };
++
++        return (
++          <BaseTextInputComponent
++            animatedProps={[animatedProps1, animatedProps2]}
++            onPress={handlePress}
++          />
++        );
++      }
++
++      const { getByTestId } = render(<OverlappingPropsComponent />);
++      const textInput = getByTestId('text');
++      const button = getByTestId('button');
++
++      // Initially, the second animated props are used
++      expect(textInput).toHaveAnimatedProps({
++        text: 'Second: 20',
++        placeholder: 'Second placeholder',
++      });
++
++      fireEvent.press(button);
++      jest.advanceTimersByTime(animationDuration);
++
++      // After updating value1, used in the first animated props, the props from this animated props are used
++      expect(textInput).toHaveAnimatedProps({
++        text: 'First: 15',
++        placeholder: 'First placeholder', // this also changes as the entire returned object is used
++      });
++    });
++
++    test('cleans up all animated props objects on unmount', () => {
++      const removeMocks: jest.Mock[] = [];
++
++      function DetachMultipleAnimatedPropsComponent() {
++        const animatedProps1 = useAnimatedProps(() => ({
++          placeholder: 'First animated props',
++        }));
++        const animatedProps2 = useAnimatedProps(() => ({
++          inputMode: 'numeric' as const,
++        }));
++        const animatedProps3 = useAnimatedProps(() => ({
++          pointerEvents: 'auto' as const,
++        }));
++
++        React.useEffect(() => {
++          const handles = [animatedProps1, animatedProps2, animatedProps3];
++          const spies = handles.map((animatedProps) => {
++            const mock = jest.fn();
++            removeMocks.push(mock);
++            return jest
++              .spyOn(
++                (animatedProps as JestAnimatedStyleHandle<TextInputProps>)
++                  .viewDescriptors,
++                'remove'
++              )
++              .mockImplementation(mock);
++          });
++
++          return () => {
++            spies.forEach((spy) => spy.mockRestore());
++          };
++        }, [animatedProps1, animatedProps2, animatedProps3]);
+ 
+-    expect(textInput).toHaveAnimatedProps({ text: 'Box width: 20' });
++        return (
++          <BaseTextInputComponent
++            animatedProps={[[animatedProps1], animatedProps2, animatedProps3]}
++          />
++        );
++      }
+ 
+-    fireEvent.press(button);
+-    jest.advanceTimersByTime(animationDuration);
++      const { unmount } = render(<DetachMultipleAnimatedPropsComponent />);
+ 
+-    expect(textInput).toHaveAnimatedProps({ text: 'Box width: 30' });
++      unmount();
+ 
+-    const rendered = render(<AnimatedComponent />).toJSON();
+-    expect(rendered).toMatchSnapshot();
++      removeMocks.forEach((mock) => {
++        expect(mock).toHaveBeenCalled();
++      });
++    });
+   });
+ });
+```
+
+### packages/react-native-reanimated/__typetests__/common/AnimatedPropsTest.tsx
+
+```diff
+@@ -4,11 +4,10 @@ import React from 'react';
+ import type { FlatListProps } from 'react-native';
+ import { FlatList } from 'react-native';
+ 
+-import type { CSSStyle } from '../..';
+ import Animated, { useAnimatedProps } from '../..';
+ 
+-function UseAnimatedPropsTest() {
+-  function UseAnimatedPropsTestClass1() {
++function AnimatedPropsTest() {
++  function AnimatedPropsTestClass1() {
+     class Path extends React.Component<{ fill?: string }> {
+       render() {
+         return null;
+@@ -25,7 +24,7 @@ function UseAnimatedPropsTest() {
+     );
+   }
+ 
+-  function UseAnimatedPropsTestClass2() {
++  function AnimatedPropsTestClass2() {
+     class Path extends React.Component<{ fill?: string }> {
+       render() {
+         return null;
+@@ -39,34 +38,38 @@ function UseAnimatedPropsTest() {
+     );
+   }
+ 
+-  function UseAnimatedPropsTestView1() {
++  function AnimatedPropsTestView1() {
+     const animatedProps = useAnimatedProps(
+       () => ({ pointerEvents: 'none' }) as const
+     );
+     return <Animated.View animatedProps={animatedProps} />;
+   }
+ 
+-  function UseAnimatedPropsTestView2() {
+-    const cssProps: CSSStyle = {
+-      animationName: { from: { backgroundColor: 'red' } },
++  function AnimatedPropsTestView2() {
++    const cssProps = {
++      animationName: { from: { pointerEvents: 'auto' as const } },
+     };
+     return <Animated.View animatedProps={cssProps} />;
+   }
+ 
+-  function UseAnimatedPropsTestView3() {
++  function AnimatedPropsTestView3() {
+     // @ts-expect-error Fails because of the invalid `animationName` type
+     return <Animated.View animatedProps={{ animationName: 'name' }} />;
+   }
+ 
+-  function UseAnimatedPropsTestPartial1() {
++  function AnimatedPropsTestView4() {
++    const cssProps = {
++      animationName: { from: { backgroundColor: 'red' } },
++    };
++    // @ts-expect-error Fails because style properties aren't allowed in animatedProps
++    return <Animated.View animatedProps={cssProps} />;
++  }
++
++  function AnimatedPropsTestPartial1() {
+     const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+     const optionalProps = useAnimatedProps<FlatListProps<unknown>>(() => ({
+       style: {},
+     }));
+-    const requiredProps = useAnimatedProps<FlatListProps<unknown>>(() => ({
+-      data: ['1'],
+-      renderItem: () => null,
+-    }));
+ 
+     // Should pass because required props are set.
+     return (
+@@ -87,7 +90,7 @@ function UseAnimatedPropsTest() {
+     );
+   }
+ 
+-  function UseAnimatedPropsTestPartial2() {
++  function AnimatedPropsTestPartial2() {
+     const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+     const optionalProps = useAnimatedProps<FlatListProps<string>>(() => ({
+       style: {},
+@@ -104,7 +107,7 @@ function UseAnimatedPropsTest() {
+     );
+   }
+ 
+-  function UseAnimatedPropsTestPartial3() {
++  function AnimatedPropsTestPartial3() {
+     const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+     const requiredProps = useAnimatedProps<FlatListProps<string>>(() => ({
+       data: ['1'],
+@@ -123,7 +126,7 @@ function UseAnimatedPropsTest() {
+     );
+   }
+ 
+-  function UseAnimatedPropsTestPartial4() {
++  function AnimatedPropsTestPartial4() {
+     const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+     const partOfRequiredProps = useAnimatedProps<FlatListProps<string>>(() => ({
+       data: ['1'],
+@@ -148,7 +151,7 @@ function UseAnimatedPropsTest() {
+     );
+   }
+ 
+-  function UseAnimatedPropsTestMultiple1() {
++  function AnimatedPropsTestMultiple1() {
+     const animatedProps1 = useAnimatedProps(() => ({
+       pointerEvents: 'none' as const,
+     }));
+@@ -158,23 +161,57 @@ function UseAnimatedPropsTest() {
+     return <Animated.View animatedProps={[animatedProps1, animatedProps2]} />;
+   }
+ 
+-  function UseAnimatedPropsMultiple2() {
+-    const cssProps1: CSSStyle = {
+-      animationName: { from: { backgroundColor: 'red' } },
++  function AnimatedPropsMultiple2() {
++    const cssProps1 = {
++      animationName: { from: { pointerEvents: 'auto' as const } },
+     };
+-    const cssProps2: CSSStyle = {
+-      animationName: { to: { backgroundColor: 'blue' } },
++    const cssProps2 = {
++      animationName: { to: { pointerEvents: 'none' as const } },
+     };
+     return <Animated.View animatedProps={[cssProps1, cssProps2]} />;
+   }
+ 
+-  function UseAnimatedPropsMultiple3() {
++  function AnimatedPropsMultiple3() {
+     const animatedProps = useAnimatedProps(() => ({
+       pointerEvents: 'none' as const,
+     }));
+-    const cssProps: CSSStyle = {
+-      animationName: { to: { backgroundColor: 'blue' } },
++    const cssProps = {
++      animationName: { to: { pointerEvents: 'auto' as const } },
+     };
+     return <Animated.View animatedProps={[animatedProps, cssProps]} />;
+   }
++
++  function AnimatedPropsNestedArrays() {
++    const animatedProps = useAnimatedProps(() => ({
++      pointerEvents: 'none' as const,
++    }));
++    const cssProps = {
++      animationName: {
++        from: { pointerEvents: 'auto' as const },
++        to: { pointerEvents: 'none' as const },
++      },
++    };
++    const accessibilityProps = useAnimatedProps(() => ({
++      accessibilityLiveRegion: 'polite' as const,
++    }));
++    return (
++      <Animated.View
++        animatedProps={[[animatedProps, cssProps], [[accessibilityProps]]]}
++      />
++    );
++  }
++
++  function AnimatedPropsDeeplyNestedArrays() {
++    const cssFrom = {
++      animationName: { from: { pointerEvents: 'auto' as const } },
++    };
++    const cssTo = {
++      animationName: { to: { pointerEvents: 'none' as const } },
++    };
++    return (
++      <Animated.View
++        animatedProps={[[cssFrom], [[cssTo], [[[cssFrom, cssTo]]]]]}
++      />
++    );
++  }
+ }
+```
+
+### packages/react-native-reanimated/package.json
+
+```diff
+@@ -1,6 +1,6 @@
+ {
+   "name": "react-native-reanimated",
+-  "version": "4.2.0",
++  "version": "4.2.1",
+   "description": "More powerful alternative to Animated library for React Native.",
+   "keywords": [
+     "react-native",
+```
+
+### packages/react-native-reanimated/src/common/style/config.ts
+
+```diff
+@@ -1,3 +1,4 @@
++/* eslint-disable camelcase */
+ 'use strict';
+ import { IS_ANDROID } from '../constants';
+ import type { PlainStyle } from '../types';
+@@ -190,8 +191,14 @@ export const BASE_PROPERTIES_CONFIG: StyleBuilderConfig<PlainStyle> = {
+   backfaceVisibility: true,
+   opacity: true,
+   mixBlendMode: true,
+-  // eslint-disable-next-line camelcase
++
+   experimental_backgroundImage: false, // TODO
++  // @ts-ignore This type doesn't exist on non-strict-api
++  experimental_backgroundPosition: false, // TODO
++  // @ts-ignore This type doesn't exist on non-strict-api
++  experimental_backgroundSize: false, // TODO
++  // @ts-ignore This type doesn't exist on non-strict-api
++  experimental_backgroundRepeat: false, // TODO
+ 
+   /** Typography */
+   // Font
+```
+
+### packages/react-native-reanimated/src/common/web/index.ts
+
+```diff
+@@ -1,2 +1,3 @@
+ 'use strict';
+ export * from './style';
++export * from './utils';
+```
+
+### packages/react-native-reanimated/src/common/web/utils/dom.ts
+
+```diff
+@@ -0,0 +1,16 @@
++'use strict';
++
++export function removeElementAnimation(element: HTMLElement) {
++  if (!element.style) {
++    return;
++  }
++
++  element.style.animationName = '';
++  element.style.animationDuration = '';
++  element.style.animationDelay = '';
++  element.style.animationFillMode = '';
++  element.style.animationPlayState = '';
++  element.style.animationDirection = '';
++  element.style.animationTimingFunction = '';
++  element.style.animationIterationCount = '';
++}
+```
+
+### packages/react-native-reanimated/src/common/web/utils/index.ts
+
+```diff
+@@ -1,2 +1,3 @@
+ 'use strict';
+ export * from './colors';
++export * from './dom';
+```
+
+### packages/react-native-reanimated/src/createAnimatedComponent/AnimatedComponent.tsx
+
+```diff
+@@ -227,8 +227,8 @@ export default class AnimatedComponent
+       for (const style of this._animatedStyles) {
+         style.viewDescriptors.remove(viewTag);
+       }
+-      if (this.props.animatedProps?.viewDescriptors) {
+-        this.props.animatedProps.viewDescriptors.remove(viewTag);
++      for (const animatedProp of this._animatedProps) {
++        animatedProp?.viewDescriptors?.remove(viewTag);
+       }
+     }
+   }
+```
+
+### packages/react-native-reanimated/src/createAnimatedComponent/commonTypes.ts
+
+```diff
+@@ -82,7 +82,7 @@ export type AnimatedComponentProps<
+ > = P & {
+   ref?: Ref<Component>;
+   style?: NestedArray<StyleProps>;
+-  animatedProps?: Partial<AnimatedComponentProps<AnimatedProps>>;
++  animatedProps?: NestedArray<Partial<AnimatedComponentProps<AnimatedProps>>>;
+   jestAnimatedValues?: RefObject<AnimatedProps>;
+   animatedStyle?: StyleProps;
+   sharedTransitionTag?: string;
+```
+
+### packages/react-native-reanimated/src/createAnimatedComponent/createAnimatedComponent.tsx
+
+```diff
+@@ -91,7 +91,7 @@ export function createAnimatedComponent<
+   }
+ 
+   const animatedComponent = (
+-    props: AnimatedProps<InitialComponentProps> & {
++    props: Omit<AnimatedProps<React.ComponentProps<TInstance>>, 'ref'> & {
+       ref?: AnimatedComponentRef<TInstance>;
+     }
+   ) => (
+```
+
+### packages/react-native-reanimated/src/css/native/managers/CSSAnimationsManager.ts
+
+```diff
+@@ -191,6 +191,10 @@ export default class CSSAnimationsManager implements ICSSAnimationsManager {
+         return;
+       }
+ 
++      // Check if the order of animations has changed
++      animationsArrayChanged ||=
++        this.attachedAnimations[i].keyframesRule.name !== keyframesRule.name;
++
+       const updates = getAnimationSettingsUpdates(
+         oldAnimation.normalizedSettings,
+         normalizedSettings
+@@ -200,10 +204,6 @@ export default class CSSAnimationsManager implements ICSSAnimationsManager {
+         hasSettingsUpdates = true;
+         settingsUpdates[i] = updates;
+       }
+-
+-      if (oldAnimation.keyframesRule.name !== keyframesRule.name) {
+-        animationsArrayChanged = true;
+-      }
+     });
+ 
+     const result: CSSAnimationUpdates = {};
+```
+
+### packages/react-native-reanimated/src/css/native/managers/__tests__/CSSAnimationsManager.test.ts
+
+```diff
+@@ -2,12 +2,12 @@
+ import type { ShadowNodeWrapper } from '../../../../commonTypes';
+ import { ANIMATION_NAME_PREFIX } from '../../../constants';
+ import { CSSKeyframesRuleBase } from '../../../models';
+-import { css } from '../../../stylesheet';
+ import type { CSSAnimationProperties } from '../../../types';
+ import { cssKeyframesRegistry } from '../../keyframes';
+ import { normalizeSingleCSSAnimationSettings } from '../../normalization';
+ import {
+   applyCSSAnimations,
++  registerCSSKeyframes,
+   unregisterCSSAnimations,
+   unregisterCSSKeyframes,
+ } from '../../proxy';
+@@ -129,6 +129,41 @@ describe('CSSAnimationsManager', () => {
+         expect(unregisterCSSAnimations).not.toHaveBeenCalled();
+       });
+ 
++      test('reuses the same CSSKeyframesRuleImpl instances when the same inline keyframes are passed to different components', () => {
++        const manager1 = new CSSAnimationsManager(
++          shadowNodeWrapper,
++          VIEW_NAME,
++          1
++        );
++        const manager2 = new CSSAnimationsManager(
++          shadowNodeWrapper,
++          VIEW_NAME,
++          2
++        );
++
++        const getKeyframes = () => ({
++          from: { opacity: 0, transform: [{ rotate: '180deg' }] },
++          to: { opacity: 1, backgroundColor: 'red' },
++        });
++        const keyframesCssText = JSON.stringify(getKeyframes());
++
++        manager1.update({
++          animationName: getKeyframes(),
++        });
++
++        const keyframesRule1 = cssKeyframesRegistry.get(keyframesCssText);
++        expect(keyframesRule1).toBeDefined();
++
++        manager2.update({
++          animationName: getKeyframes(),
++        });
++
++        const keyframesRule2 = cssKeyframesRegistry.get(keyframesCssText);
++        expect(keyframesRule2).toBeDefined();
++
++        expect(keyframesRule2).toBe(keyframesRule1);
++      });
++
+       test('detaches an existing animation if the new config is empty', () => {
+         const animationProperties = {
+           animationName: {
+@@ -148,7 +183,112 @@ describe('CSSAnimationsManager', () => {
+       });
+ 
+       describe('multiple animations', () => {
+-        // TODO - add after fixing multiple animations implementation for native
++        // Use functions to create keyframes in order to ensure that the new object is passed every time
++        const getKeyframes1 = () => ({ from: { opacity: 0 } });
++        const getKeyframes2 = () => ({
++          to: { transform: [{ rotate: '180deg' }] },
++        });
++        const animation1Name = animationName(0);
++        const animation2Name = animationName(1);
++
++        test('reuses the same CSSKeyframesRuleImpl instances when animations are re-ordered', () => {
++          manager.update({
++            animationName: [getKeyframes1(), getKeyframes2()],
++            animationDuration: '2s',
++          } satisfies CSSAnimationProperties);
++
++          const firstKeyframesRule1 = cssKeyframesRegistry.get(animation1Name);
++          const firstKeyframesRule2 = cssKeyframesRegistry.get(animation2Name);
++
++          expect(firstKeyframesRule1).toBeDefined();
++          expect(firstKeyframesRule2).toBeDefined();
++
++          // Verify 2 keyframes were registered
++          expect(registerCSSKeyframes).toHaveBeenCalledTimes(2);
++
++          manager.update({
++            animationName: [getKeyframes2(), getKeyframes1()],
++            animationDuration: '2s',
++          } satisfies CSSAnimationProperties);
++
++          const secondKeyframesRule1 = cssKeyframesRegistry.get(animation1Name);
++          const secondKeyframesRule2 = cssKeyframesRegistry.get(animation2Name);
++
++          // Verify the exact same instances are reused
++          expect(secondKeyframesRule1).toBe(firstKeyframesRule1);
++          expect(secondKeyframesRule2).toBe(firstKeyframesRule2);
++
++          // Verify no new keyframes were registered
++          expect(registerCSSKeyframes).toHaveBeenCalledTimes(2);
++        });
++
++        test('calls applyCSSAnimations with updated order of animation names and no settings if they are the same when the order of keyframes is changed', () => {
++          manager.update({
++            animationName: [getKeyframes1(), getKeyframes2()],
++            animationDuration: '2s',
++          });
++
++          expect(applyCSSAnimations).toHaveBeenCalledTimes(1);
++          expect(applyCSSAnimations).toHaveBeenLastCalledWith(
++            shadowNodeWrapper,
++            {
++              animationNames: [animation1Name, animation2Name],
++              newAnimationSettings: {
++                0: expect.objectContaining({ duration: 2000 }),
++                1: expect.objectContaining({ duration: 2000 }),
++              },
++            }
++          );
++
++          manager.update({
++            animationName: [getKeyframes2(), getKeyframes1()], // only order changes
++            animationDuration: '2s',
++          });
++
++          expect(applyCSSAnimations).toHaveBeenCalledTimes(2);
++          expect(applyCSSAnimations).toHaveBeenLastCalledWith(
++            shadowNodeWrapper,
++            {
++              animationNames: [animation2Name, animation1Name],
++            }
++          );
++        });
++
++        test('calls applyCSSAnimations with updated order of animation names and updated settings when the order of keyframes is changed', () => {
++          manager.update({
++            animationName: [getKeyframes1(), getKeyframes2()],
++            animationDuration: ['2s', 500],
++          });
++
++          expect(applyCSSAnimations).toHaveBeenCalledTimes(1);
++          expect(applyCSSAnimations).toHaveBeenLastCalledWith(
++            shadowNodeWrapper,
++            {
++              animationNames: [animation1Name, animation2Name],
++              newAnimationSettings: {
++                0: expect.objectContaining({ duration: 2000 }),
++                1: expect.objectContaining({ duration: 500 }),
++              },
++            }
++          );
++
++          manager.update({
++            animationName: [getKeyframes2(), getKeyframes1()], // only order changes
++            animationDuration: ['2s', 500],
++          });
++
++          expect(applyCSSAnimations).toHaveBeenCalledTimes(2);
++          expect(applyCSSAnimations).toHaveBeenLastCalledWith(
++            shadowNodeWrapper,
++            {
++              animationNames: [animation2Name, animation1Name],
++              settingsUpdates: {
++                0: { duration: 2000 },
++                1: { duration: 500 },
++              },
++            }
++          );
++        });
+       });
+     });
+ 
+@@ -157,14 +297,14 @@ describe('CSSAnimationsManager', () => {
+         // Prepare the manager
+         manager.update({
+           animationName: [
+-            css.keyframes({
++            {
+               from: { opacity: 1 },
+               to: { opacity: 0.5 },
+-            }),
+-            css.keyframes({
++            },
++            {
+               from: { opacity: 0 },
+               to: { opacity: 1 },
+-            }),
++            },
+           ],
+         });
+         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+```
+
+### packages/react-native-reanimated/src/css/native/types/animation.ts
+
+```diff
+@@ -48,9 +48,9 @@ export type NormalizedSingleCSSAnimationSettings = {
+ 
+ export type CSSAnimationUpdates = {
+   animationNames?: string[];
+-  newAnimationSettings?: Record<string, NormalizedSingleCSSAnimationSettings>;
++  newAnimationSettings?: Record<number, NormalizedSingleCSSAnimationSettings>;
+   settingsUpdates?: Record<
+-    string,
++    number,
+     Partial<NormalizedSingleCSSAnimationSettings>
+   >;
+ };
+```
+
+### packages/react-native-reanimated/src/css/web/managers/CSSAnimationsManager.ts
+
+```diff
+@@ -5,6 +5,7 @@ import {
+   kebabizeCamelCase,
+   maybeAddSuffix,
+ } from '../../../common';
++import { removeElementAnimation } from '../../../common/web';
+ import type { ReanimatedHTMLElement } from '../../../ReanimatedModule/js-reanimated';
+ import type {
+   CSSAnimationKeyframes,
+@@ -133,12 +134,7 @@ export default class CSSAnimationsManager implements ICSSAnimationsManager {
+       return;
+     }
+ 
+-    this.element.style.animationDuration = '';
+-    this.element.style.animationDelay = '';
+-    this.element.style.animationDirection = '';
+-    this.element.style.animationFillMode = '';
+-    this.element.style.animationPlayState = '';
+-    this.element.style.animationTimingFunction = '';
++    removeElementAnimation(this.element);
+ 
+     this.removeAnimationsFromStyleSheet(attachedAnimations);
+     this.unmountCleanupCalled = false;
+```
+
+### packages/react-native-reanimated/src/helperTypes.ts
+
+```diff
+@@ -15,8 +15,8 @@ import type {
+   LayoutAnimationFunction,
+   SharedValue,
+ } from './commonTypes';
++import type { NestedArray } from './createAnimatedComponent/commonTypes';
+ import type { CSSStyle } from './css';
+-import type { AddArrayPropertyType } from './css/types';
+ import type { BaseAnimationBuilder } from './layoutReanimation/animationBuilder/BaseAnimationBuilder';
+ import type { ReanimatedKeyframe } from './layoutReanimation/animationBuilder/Keyframe';
+ import type { SharedTransition } from './layoutReanimation/SharedTransition';
+@@ -47,8 +47,13 @@ type AnimatedStyleProps<Props extends object> = {
+ };
+ 
+ /** Component props that are not specially handled by us. */
++type ComponentPropsWithoutStyle<Props extends object> = Omit<
++  Props,
++  keyof PickStyleProps<Props> | 'style'
++>;
++
+ type RestProps<Props extends object> = {
+-  [K in keyof Omit<Props, keyof PickStyleProps<Props> | 'style'>]:
++  [K in keyof ComponentPropsWithoutStyle<Props>]:
+     | Props[K]
+     | SharedValue<Props[K]>;
+ };
+@@ -94,10 +99,6 @@ type SharedTransitionProps = {
+   sharedTransitionStyle?: SharedTransition;
+ };
+ 
+-type AnimatedPropsProp<Props extends object> = RestProps<Props> &
+-  AnimatedStyleProps<Props> &
+-  LayoutProps;
+-
+ export type AnimatedProps<Props extends object> = RestProps<Props> &
+   AnimatedStyleProps<Props> &
+   LayoutProps & {
+@@ -106,9 +107,9 @@ export type AnimatedProps<Props extends object> = RestProps<Props> &
+      *
+      * @see https://docs.swmansion.com/react-native-reanimated/docs/core/useAnimatedProps
+      */
+-    animatedProps?: AddArrayPropertyType<
+-      Partial<AnimatedPropsProp<Props>> | CSSStyle<Props>
+-    >;
++    animatedProps?: NestedArray<
++      CSSStyle<ComponentPropsWithoutStyle<Partial<Props>>>
++    >; // TODO - improve type once useAnimatedProps is typed properly. For now it is typed in the same way as the normal style prop, so it is assignable to the CSSStyle type
+   } & SharedTransitionProps;
+ 
+ // THE LAND OF THE DEPRECATED
+```
+
+### packages/react-native-reanimated/src/layoutReanimation/web/animationsManager.ts
+
+```diff
+@@ -132,7 +132,8 @@ function tryGetAnimationConfig<ComponentProps extends Record<string, unknown>>(
+ 
+   if (isCustomKeyframe) {
+     animationName = createCustomKeyFrameAnimation(
+-      (config as CustomConfig).definitions as KeyframeDefinitions
++      (config as CustomConfig).definitions as KeyframeDefinitions,
++      animationType
+     );
+   } else if (typeof config === 'function') {
+     animationName = config.presetName;
+@@ -144,7 +145,8 @@ function tryGetAnimationConfig<ComponentProps extends Record<string, unknown>>(
+   if (hasInitialValues) {
+     animationName = createAnimationWithInitialValues(
+       animationName,
+-      (config as CustomConfig).initialValues as InitialValuesStyleProps
++      (config as CustomConfig).initialValues as InitialValuesStyleProps,
++      animationType
+     );
+   }
+ 
+```
+
+### packages/react-native-reanimated/src/layoutReanimation/web/componentUtils.ts
+
+```diff
+@@ -1,5 +1,7 @@
+ 'use strict';
++
+ import { logger } from '../../common';
++import { removeElementAnimation } from '../../common/web';
+ import { LayoutAnimationType, ReduceMotion } from '../../commonTypes';
+ import type { EasingFunctionFactory } from '../../Easing';
+ import { EasingNameSymbol } from '../../Easing';
+@@ -29,6 +31,28 @@ import {
+ } from './Easing.web';
+ import { prepareCurvedTransition } from './transition/Curved.web';
+ 
++function getSnapshotForElement(element: HTMLElement): ReanimatedSnapshot {
++  const existingSnapshot = snapshots.get(element);
++
++  if (existingSnapshot) {
++    return existingSnapshot;
++  }
++
++  const rect = element.getBoundingClientRect();
++
++  const fallbackSnapshot: ReanimatedSnapshot = {
++    top: rect.top,
++    left: rect.left,
++    width: rect.width,
++    height: rect.height,
++    scrollOffsets: getElementScrollValue(element),
++  };
++
++  snapshots.set(element, fallbackSnapshot);
++
++  return fallbackSnapshot;
++}
++
+ function getEasingFromConfig(config: CustomConfig): string {
+   if (!config.easingV) {
+     return getEasingByName('linear');
+@@ -175,10 +199,16 @@ export function setElementAnimation(
+ 
+   const configureAnimation = () => {
+     element.style.animationName = animationName;
+-    element.style.animationFillMode = 'backwards';
+     element.style.animationDuration = `${duration}s`;
+     element.style.animationDelay = `${delay}s`;
+     element.style.animationTimingFunction = easing;
++
++    if (
++      animationConfig.animationType === LayoutAnimationType.ENTERING &&
++      delay > 0
++    ) {
++      element.style.animationFillMode = 'backwards';
++    }
+   };
+ 
+   if (animationConfig.animationType === LayoutAnimationType.ENTERING) {
+@@ -234,7 +264,7 @@ export function setElementAnimation(
+   if (!(animationName in Animations)) {
+     scheduleAnimationCleanup(animationName, duration + delay, () => {
+       if (shouldSavePosition) {
+-        setElementPosition(element, snapshots.get(element)!);
++        setElementPosition(element, getSnapshotForElement(element));
+       }
+ 
+       maybeRemoveElement();
+@@ -317,6 +347,21 @@ function getElementScrollValue(element: HTMLElement): ScrollOffsets {
+   return scrollOffsets;
+ }
+ 
++function cleanupEnteringAnimations(element: HTMLElement) {
++  const animationName = element.style.animationName;
++
++  // Check if the animation name indicates it's an entering animation
++  if (animationName && animationName.startsWith('REA-ENTERING-')) {
++    removeElementAnimation(element);
++  }
++
++  for (const child of Array.from(element.children)) {
++    if (child instanceof HTMLElement) {
++      cleanupEnteringAnimations(child);
++    }
++  }
++}
++
+ export function handleExitingAnimation(
+   element: ReanimatedHTMLElement,
+   animationConfig: AnimationConfig
+@@ -344,6 +389,10 @@ export function handleExitingAnimation(
+   };
+   saveScrollPosition(element);
+ 
++  // Clean up entering animations on all descendants before moving them to the dummy.
++  // This prevents entering animations from restarting when elements are moved to a new parent.
++  cleanupEnteringAnimations(element);
++
+   // After cloning the element, we want to move all children from original element to its clone. This is because original element
+   // will be unmounted, therefore when this code executes in child component, parent will be either empty or removed soon.
+   // Using element.cloneNode(true) doesn't solve the problem, because it creates copy of children and we won't be able to set their animations
+@@ -367,7 +416,7 @@ export function handleExitingAnimation(
+   };
+   restoreScrollPosition(dummy);
+ 
+-  const snapshot = snapshots.get(element)!;
++  const snapshot = getSnapshotForElement(element);
+ 
+   const scrollOffsets = getElementScrollValue(element);
+ 
+```
+
+### packages/react-native-reanimated/src/layoutReanimation/web/createAnimation.ts
+
+```diff
+@@ -2,6 +2,8 @@
+ 
+ import type { TransformsStyle } from 'react-native';
+ 
++import { maybeAddSuffix } from '../../common';
++import { LayoutAnimationType } from '../../commonTypes';
+ import type {
+   AnimationData,
+   ReanimatedWebTransformProperties,
+@@ -19,12 +21,27 @@ import { LinearTransition } from './transition/Linear.web';
+ import { SequencedTransition } from './transition/Sequenced.web';
+ 
+ type TransformType = NonNullable<TransformsStyle['transform']>;
++type TransformValue = string | number;
++
++function assignTransformRules(
++  map: Map<string, TransformValue>,
++  transform?: ReanimatedWebTransformProperties[]
++) {
++  if (!transform) {
++    return;
++  }
++
++  for (const rule of transform) {
++    for (const [property, value] of Object.entries(rule)) {
++      map.set(property, value as TransformValue);
++    }
++  }
++}
+ 
+ // Translate values are passed as numbers. However, if `translate` property receives number, it will not automatically
+ // convert it to `px`. Therefore if we want to keep transform we have to add 'px' suffix to each of translate values
+ // that are present inside transform.
+ //
+-
+ function addPxToTransform(transform: TransformType) {
+   type RNTransformProp = NonNullable<(typeof transform)[number]>;
+ 
+@@ -52,7 +69,8 @@ function addPxToTransform(transform: TransformType) {
+ }
+ 
+ export function createCustomKeyFrameAnimation(
+-  keyframeDefinitions: KeyframeDefinitions
++  keyframeDefinitions: KeyframeDefinitions,
++  animationType: LayoutAnimationType
+ ) {
+   for (const value of Object.values(keyframeDefinitions)) {
+     if (value.transform) {
+@@ -66,7 +84,7 @@ export function createCustomKeyFrameAnimation(
+     duration: -1,
+   };
+ 
+-  animationData.name = generateNextCustomKeyframeName();
++  animationData.name = generateNextCustomKeyframeName(animationType);
+ 
+   // Move keyframe easings one keyframe up (our LA Keyframe definition is different
+   // from the CSS keyframes and expects easing to be present in the keyframe to which
+@@ -92,46 +110,36 @@ export function createCustomKeyFrameAnimation(
+ 
+ export function createAnimationWithInitialValues(
+   animationName: string,
+-  initialValues: InitialValuesStyleProps
++  initialValues: InitialValuesStyleProps,
++  animationType: LayoutAnimationType
+ ) {
+   const animationStyle = structuredClone(AnimationsData[animationName].style);
+   const firstAnimationStep = animationStyle['0'];
+ 
+-  const { transform, ...rest } = initialValues;
+-  const transformWithPx = addPxToTransform(transform as TransformType);
++  const { transform, originX, originY, ...rest } = initialValues;
++
++  const transformStyle = new Map<string, TransformValue>();
++  assignTransformRules(transformStyle, firstAnimationStep.transform);
+ 
+   if (transform) {
+-    // If there was no predefined transform, we can simply assign transform from `initialValues`.
+-    if (!firstAnimationStep.transform) {
+-      firstAnimationStep.transform = transformWithPx;
+-    } else {
+-      // Othwerwise we have to merge predefined transform with the one provided in `initialValues`.
+-      // To do that, we create `Map` that will contain final transform.
+-      const transformStyle = new Map<string, any>();
+-
+-      // First we assign all of the predefined rules
+-      for (const rule of firstAnimationStep.transform) {
+-        // In most cases there will be just one iteration
+-        for (const [property, value] of Object.entries(rule)) {
+-          transformStyle.set(property, value);
+-        }
+-      }
++    const transformWithPx = addPxToTransform(transform as TransformType);
++    assignTransformRules(transformStyle, transformWithPx);
++  }
+ 
+-      // Then we either add new rule, or override one that already exists.
+-      for (const rule of transformWithPx) {
+-        for (const [property, value] of Object.entries(rule)) {
+-          transformStyle.set(property, value);
+-        }
+-      }
++  if (originX !== undefined) {
++    transformStyle.set('translateX', maybeAddSuffix(originX, 'px'));
++  }
+ 
+-      // Finally, we convert `Map` with final transform back into array of objects.
+-      firstAnimationStep.transform = Array.from(
+-        transformStyle,
+-        ([property, value]) => ({
+-          [property]: value,
+-        })
+-      );
+-    }
++  if (originY !== undefined) {
++    transformStyle.set('translateY', maybeAddSuffix(originY, 'px'));
++  }
++
++  const mergedTransform = Array.from(transformStyle, ([property, value]) => ({
++    [property]: value,
++  }));
++
++  if (transformStyle.size) {
++    firstAnimationStep.transform = mergedTransform;
+   }
+ 
+   animationStyle['0'] = {
+@@ -140,7 +148,7 @@ export function createAnimationWithInitialValues(
+   };
+ 
+   // TODO: Maybe we can extract the logic below into separate function
+-  const keyframeName = generateNextCustomKeyframeName();
++  const keyframeName = generateNextCustomKeyframeName(animationType);
+ 
+   const animationObject: AnimationData = {
+     name: keyframeName,
+@@ -157,8 +165,14 @@ export function createAnimationWithInitialValues(
+ 
+ let customKeyframeCounter = 0;
+ 
+-function generateNextCustomKeyframeName() {
+-  return `REA${customKeyframeCounter++}`;
++const ANIMATION_TYPE_STRINGS: Partial<Record<LayoutAnimationType, string>> = {
++  [LayoutAnimationType.ENTERING]: 'ENTERING',
++  [LayoutAnimationType.EXITING]: 'EXITING',
++  [LayoutAnimationType.LAYOUT]: 'LAYOUT',
++};
++
++function generateNextCustomKeyframeName(animationType: LayoutAnimationType) {
++  return `REA-${ANIMATION_TYPE_STRINGS[animationType] ?? ''}-${customKeyframeCounter++}`;
+ }
+ 
+ /**
+@@ -174,7 +188,9 @@ export function TransitionGenerator(
+   transitionType: TransitionType,
+   transitionData: TransitionData
+ ) {
+-  const transitionKeyframeName = generateNextCustomKeyframeName();
++  const transitionKeyframeName = generateNextCustomKeyframeName(
++    LayoutAnimationType.LAYOUT
++  );
+   let dummyTransitionKeyframeName;
+ 
+   let transitionObject;
+@@ -207,7 +223,9 @@ export function TransitionGenerator(
+ 
+     // Here code block with {} is necessary because of eslint
+     case TransitionType.CURVED: {
+-      dummyTransitionKeyframeName = generateNextCustomKeyframeName();
++      dummyTransitionKeyframeName = generateNextCustomKeyframeName(
++        LayoutAnimationType.LAYOUT
++      );
+ 
+       const { firstKeyframeObj, secondKeyframeObj } = CurvedTransition(
+         transitionKeyframeName,
+```
+
+### packages/react-native-reanimated/src/platform-specific/jsVersion.ts
+
+```diff
+@@ -4,4 +4,4 @@
+  * version used to build the native part of the library in runtime. Remember to
+  * keep this in sync with the version declared in `package.json`
+  */
+-export const jsVersion = '4.2.0';
++export const jsVersion = '4.2.1';
+```
+
+### packages/react-native-reanimated/src/updateProps/updateProps.ts
+
+```diff
+@@ -10,14 +10,11 @@ import {
+   processColorsInProps,
+   processFilter,
+   processTransform,
++  processTransformOrigin,
+   ReanimatedError,
+   SHOULD_BE_USE_WEB,
+ } from '../common';
+-import {
+-  processBoxShadowWeb,
+-  processFilterWeb,
+-  processTransformOrigin,
+-} from '../common/web';
++import { processBoxShadowWeb, processFilterWeb } from '../common/web';
+ import type {
+   AnimatedStyle,
+   ShadowNodeWrapper,
+```
