@@ -1,0 +1,109 @@
+---
+pid: 8190
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "npm run android:dev -- --deviceId 4ae24c72"
+title: "Run Android devDebug on PJJ110"
+status: failed   
+started_at: 2026-09-07T05:59:24.334Z
+running_for_ms: 245306   
+---
+
+> Heals@0.0.1 android:dev
+> ENVFILE=.env.development react-native run-android --mode=devDebug --appIdSuffix=dev --deviceId 4ae24c72
+
+error Cannot start server in new windows because no terminal app was specified, use --terminal to specify, or start a dev server manually by running npm start or yarn start in other terminal window.
+warn The `deviceId` parameter is renamed to `device`. Please use the new `device` argument next time to avoid this warning.
+info Building the app...
+Downloading https://services.gradle.org/distributions/gradle-8.14.3-bin.zip
+.............10%.............20%.............30%.............40%.............50%.............60%.............70%.............80%.............90%..............100%
+
+Welcome to Gradle 8.14.3!
+
+Here are the highlights of this release:
+ - Java 24 support
+ - GraalVM Native Image toolchain selection
+ - Enhancements to test reporting
+ - Build Authoring improvements
+
+For more details see https://docs.gradle.org/8.14.3/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :gradle-plugin:settings-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:shared:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:shared:compileJava NO-SOURCE
+> Task :gradle-plugin:shared:processResources NO-SOURCE
+> Task :gradle-plugin:shared:classes UP-TO-DATE
+> Task :gradle-plugin:shared:jar UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:compileJava NO-SOURCE
+> Task :gradle-plugin:settings-plugin:pluginDescriptors UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:processResources UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:classes UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:jar UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:react-native-gradle-plugin:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:compileJava NO-SOURCE
+> Task :gradle-plugin:react-native-gradle-plugin:pluginDescriptors UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:processResources UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:classes UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:jar UP-TO-DATE
+
+> Configure project :app
+Reading env from: .env.development
+
+[Incubating] Problems report is available at: file:///Users/stark/Desktop/work/RN/heals-app-rn/android/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+A problem occurred configuring project ':react-native-clipboard_clipboard'.
+> Could not resolve all dependencies for configuration 'classpath'.
+   > Could not resolve com.android.tools.build:gradle:3.2.1.
+     Required by:
+         project :react-native-clipboard_clipboard
+      > Could not resolve com.android.tools.build:gradle:3.2.1.
+         > Could not get resource 'https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle/3.2.1/gradle-3.2.1.pom'.
+            > Could not GET 'https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle/3.2.1/gradle-3.2.1.pom'.
+               > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation.
+                  > Remote host terminated the handshake
+      > Could not resolve com.android.tools.build:gradle:3.2.1.
+         > Could not get resource 'https://repo.maven.apache.org/maven2/com/android/tools/build/gradle/3.2.1/gradle-3.2.1.pom'.
+            > Could not GET 'https://repo.maven.apache.org/maven2/com/android/tools/build/gradle/3.2.1/gradle-3.2.1.pom'.
+               > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation.
+                  > Remote host terminated the handshake
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4m
+10 actionable tasks: 10 up-to-date
+
+info 💡 Tip: Make sure that you have set up your development environment correctly, by running npx react-native doctor. To read more about doctor command visit: https://github.com/react-native-community/cli/blob/main/packages/cli-doctor/README.md#doctor 
+
+error Failed to build the app.
+Error: Command failed with exit code 1: ./gradlew app:installDevDebug -x lint -PreactNativeDevServerPort=8081
+    at makeError (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/execa/lib/error.js:60:11)
+    at module.exports.sync (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/execa/index.js:194:17)
+    at build (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native-community/cli-platform-android/build/commands/buildAndroid/index.js:74:22)
+    at runOnSpecificDevice (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native-community/cli-platform-android/build/commands/runAndroid/index.js:231:33)
+    at buildAndRun (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native-community/cli-platform-android/build/commands/runAndroid/index.js:193:12)
+    at Object.runAndroid [as func] (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native-community/cli-platform-android/build/commands/runAndroid/index.js:122:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Command.handleAction (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native-community/cli/build/index.js:139:9)
+info Run CLI with --verbose flag for more details.
+
+---
+exit_code: 1
+elapsed_ms: 245306
+ended_at: 2026-09-07T06:03:29.640Z
+---

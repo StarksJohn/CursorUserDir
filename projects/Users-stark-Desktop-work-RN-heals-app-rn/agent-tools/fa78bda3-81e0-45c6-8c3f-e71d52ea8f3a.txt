@@ -1,0 +1,558 @@
+# Issue: invertase/react-native-firebase #8282
+
+- Repository: invertase/react-native-firebase | 🔥 A well-tested feature-rich modular Firebase implementation for React Native. Supports both iOS & Android platforms for all Firebase services. | 12K stars | TypeScript
+
+## "method is deprecated and will be removed" Solution: migrate to modular style APIs. There is a guide
+
+- Author: [@nazacity](https://github.com/nazacity)
+- State: closed (completed)
+- Labels: resolution: solution-provided, type: documentation
+- Reactions: 👍 13
+- Created: 2025-02-08T00:48:44Z
+- Updated: 2025-09-26T19:26:59Z
+- Closed: 2025-02-08T13:15:59Z
+- Closed by: [@mikehardy](https://github.com/mikehardy)
+
+[Maintainer edit 👋 - We are resolving comments as people note things and we implement changes - but we really appreciate any feedback. If you convert to modular namespace and still see deprecation messages, or have other feedback, please leave a comment. Thanks]
+
+---
+
+Got Warning
+This v8 method is deprecated and will be removed in the next major release as part of move to match Firebase Web modular v9 SDK API. Please use `getApp()` instead.
+
+on both Android and IOS
+
+[Image: Image | https://github.com/user-attachments/assets/ff5ad44e-306f-404b-9e88-3fcfcd968b55]
+
+---
+
+### Timeline
+
+**nazacity** added label `Needs Attention`; added label `type: bug` · Feb 8, 2025 at 12:48am
+
+**@umakantv** commented · Feb 8, 2025 at 5:45am · edited
+
+> Facing the same issue
+
+**@furkananter** commented · Feb 8, 2025 at 7:42am · edited
+
+> Facing the same issue. Can we have the info? Is that critical?
+
+**@sanjaykdotworld** commented · Feb 8, 2025 at 8:58am · edited
+
+> same issue
+
+**@SamJbori** commented · Feb 8, 2025 at 10:36am · edited
+
+> Same with a cherry
+> 
+> ```
+> (NOBRIDGE) WARN This v8 method is deprecated and will be removed in the next major release as part of move to match Firebase Web modular v9 SDK API. Please use `getApp()` instead. [Component Stack]
+> (NOBRIDGE) WARN This v8 method is deprecated and will be removed in the next major release as part of move to match Firebase Web modular v9 SDK API. Please use `collection()` instead. [Component Stack]
+> (NOBRIDGE) WARN This v8 method is deprecated and will be removed in the next major release as part of move to match Firebase Web modular v9 SDK API. Please use `where()` instead. [Component Stack]
+> (NOBRIDGE) WARN This v8 method is deprecated and will be removed in the next major release as part of move to match Firebase Web modular v9 SDK API. Please use `getApp()` instead. [Component Stack]
+> ```
+
+**@retyui** commented · Feb 8, 2025 at 12:11pm · edited
+
+> Warn. message unclear enough to see where place and what method was deprecated
+
+**mikehardy** changed the title from "[🐛] Bug Report This v8 method is deprecated and will be removed in the next major release as part of move to match Firebase Web modular v9 SDK API. Please use `getApp()` instead" to ""method is deprecated and will be removed in the next major release" Solution: you must migrate to modular firebase-js-sdk style APIs" · Feb 8, 2025 at 1:12pm
+
+**@mikehardy** commented · Feb 8, 2025 at 1:15pm · edited
+
+> Maintainer here 👋
+> 
+> This message will trigger for every API you use that is deprecated, so basically every single time you use any of the non-modular / chained APIs directly off one of the firebase modules - they are easy enough to search for in each file.
+> 
+> ## You will need to move to the new non-modular APIs.
+> 
+> I will really underline to everyone: This sounds painful. When I first looked into it in my projects I thought "oh no..."
+> 
+> The API move is purely mechanical though. It is really just changing syntax. It is *not* difficult, it just changes a lot of files.
+> 
+> ## The migration is not to be feared.
+> 
+> We just posted up a migration document but this isn't a bug or an issue or anything.
+> Google has deprecated the non-modular APIs in firebase-js-sdk and they are removing them.
+> We are obligated to conform to the firebase-js-sdk API set, so we must follow them.
+> 
+> The migration is straightforward thankfully - see here for how you migrate, or - once you accept that you *know* react-native-firebase v22 will drop all the APIs that are warning you - you can defer your maintenance as long as you like and disable the messages
+> 
+> https://rnfirebase.io/migrating-to-v22
+> 
+> (note, the feature of disabling the messages is present in react-native-firebase 21.7.3+)
+> (also note, the feature of enabling "strict mode" is present in react-native-firebase 21.10.1+)
+> 
+> ## Frequent Questions
+> 
+> Things I'm noting as I read comments here, we will add to the migration guide as we see people's concerns:
+> 
+> -" is it that critical?"
+> 
+> the APIs will be removed in react-native-firebase v22 so you will not be able to upgrade until you complete the migration. How critical is it for you to maintain a path to upgrade such that you maintain the ability to receive bugfixes, new ios/android system support, etc? Every project has a different timeline and answer for that
+> 
+> - "I've seen some issues related to the migration":
+> 
+> Indeed there are still some typing issues at the moment, for typescript users. We are treating those as high priority bugs and fixing them as quickly as possible
+> 
+> - Your thought here. I/we are listening. If you post a comment noting something specific you see about the migration, and have some constructive suggestion that would be great. We'll try to smooth the process out in response to any specific notes or constructive suggestions
+> 
+> Cheers
+
+**mikehardy** closed this · Feb 8, 2025 at 1:15pm
+
+**mikehardy** pinned this · Feb 8, 2025 at 1:16pm
+
+**@furkananter** commented · Feb 8, 2025 at 1:17pm · edited
+
+> > It will trigger for every API you use that is deprecated, so basically every single time you use any of the non-modular / chained APIs directly off one of the firebase modules - they are easy enough to search for in each file.
+> > 
+> > You will need to move to the new non-modular APIs.
+> > 
+> > We just posted up a migration document but this isn't a bug or an issue or anything. We must conform to the firebase-js-sdk APIs and they have deprecated and are removing their non-modular API set, so we must do the same.
+> > 
+> > The migration is straightforward thankfully - see here for how you migrate, or - once you accept that you _know_ react-native-firebase v22 will drop all the APIs that are warning you - you can defer your maintenance as long as you like and disable the messages
+> > 
+> > https://rnfirebase.io/migrating-to-v22
+> 
+> 404: NOT_FOUND
+
+**@mikehardy** commented · Feb 8, 2025 at 1:34pm · edited
+
+> @furkananter vercel was deploying it as I typed, it's there now - moving really quickly, sorry
+
+**mikehardy** removed label `type: bug`; removed label `Needs Attention`; added label `resolution: solution-provided`; added label `type: documentation` · Feb 8, 2025 at 1:41pm
+
+**@omerkars78** commented · Feb 8, 2025 at 3:59pm · edited
+
+> No matter what I do, the same warning keeps appearing in the auth section. Could you please provide a more detailed explanation to help me resolve this issue? @mikehardy
+
+**@mikehardy** commented · Feb 8, 2025 at 4:18pm · edited
+
+> @omerkars78 not without a reproducible code snippet, no. Who could?
+
+**@furkananter** commented · Feb 8, 2025 at 4:21pm · edited
+
+> ```
+> import {
+> FirebaseAuthTypes,
+> sendEmailVerification,
+> getAuth,
+> onAuthStateChanged,
+> signInAnonymously,
+> signInWithEmailAndPassword,
+> sendPasswordResetEmail,
+> signOut,
+> signInWithCredential,
+> createUserWithEmailAndPassword,
+> } from '@react-native-firebase/auth';
+> 
+> const auth = getAuth();
+> 
+> 
+> // for example:
+> await signInWithEmailAndPassword(auth, email, password);
+> await signOut(auth);
+> ```
+> 
+> Still getting that error:
+> 
+> `(NOBRIDGE) WARN This v8 method is deprecated and will be removed in the next major release as part of move to match Firebase Web modular v9 SDK API. Please use `getApp()` instead. [Component Stack]`
+> 
+> And I am doing with following these lines:
+> 
+> > You will find code snippets for "Web namespaced API" and "Web modular API" throughout the official Firebase documentation. Update your code to use "Web modular API". Here are some links to help you get started:
+> 
+> Can you help me, please? Where do I miss something?
+> 
+> @mikehardy
+
+**mikehardy** mentioned this in PR [#8304: fix: the init calls for modular should use modular getApp()](https://github.com/invertase/react-native-firebase/pull/8304) · Feb 8, 2025 at 5:54pm
+
+**mikehardy** changed the title from ""method is deprecated and will be removed in the next major release" Solution: you must migrate to modular firebase-js-sdk style APIs" to ""method is deprecated and will be removed" Solution: migrate to modular style APIs. There is a guide" · Feb 8, 2025 at 7:21pm
+
+**@mikehardy** commented · Feb 8, 2025 at 7:49pm · edited
+
+> @furkananter good one! Releasing 21.7.4 right now with a fix for the modular init calls so they don't recursively (and unavoidably!) call the non-modular / namespaced calls on your behalf. Going to mark these comments as resolved to keep the thread clean for any future follow-ons
+
+**@mikehardy** commented · Feb 9, 2025 at 7:37pm · edited
+
+> There is an issue with crashlytics where even if you do everything correctly, you'll see the deprecation message. Will be repaired (and I'll close this comment as resolved) when #8307 merges and is released as 21.7.5
+> 
+> Thanks everyone for the continued reports, I/we are listening. We'll get this migration done cleanly if we all work together 🚂
+
+**@mikehardy** commented · Feb 10, 2025 at 12:24pm · edited
+
+> Just shipped latest batch of fixes in 21.8.0 (semver-feature version bump because remote-config got the new "Custom Signals" feature - it's not just bugfixes happening around here 😆 )
+> 
+> We are tracking a number of API *gaps* (not deprecation warnings) between namespaced and modular and will continue iterating as quickly as possible to make modular work as the drop-in replacement for firebase-js-sdk that it is supposed to be
+
+**@SamJbori** commented · Feb 10, 2025 at 12:45pm · edited
+
+> I am still having an issue with `query`
+> 
+> **EDIT**: I cleaned the code a little bit for readability
+> 
+> ```
+> This method is deprecated (as well as all React Native Firebase namespaced API) and will be removed in the next major release as part of move to match Firebase Web modular SDK API. Please see migration guide for more details: https://rnfirebase.io/migrating-to-v22 Please use `where()` instead firebase.ts:372
+> ```
+> 
+> ```typescript
+> import {
+> doc,
+> getDoc,
+> onSnapshot,
+> setDoc,
+> getFirestore,
+> query,
+> collection,
+> FirebaseFirestoreTypes,
+> QueryFieldFilterConstraint,
+> getDocs,
+> where,
+> } from "@react-native-firebase/firestore";
+> 
+> const tablesNames = {
+> Users: "Users",
+> DriverRequests: "DriverRequests",
+> Trips: "Trips",
+> } as const;
+> 
+> type TablesNames = keyof typeof tablesNames;
+> 
+> type TablesTypes = {
+> Users: OUser;
+> DriverRequests: ODriverRequest;
+> Trips: OTrips;
+> };
+> 
+> type KVTuple = {
+> [K in keyof T]: [K, N, T[K]];
+> }[keyof T];
+> 
+> 
+> export const recordsQuery = async (
+> collectionName: T,
+> queryConstrains: KVTuple<
+> TablesTypes[T],
+> FirebaseFirestoreTypes.WhereFilterOp
+> >[]
+> ) => {
+> const w = queryConstrains.map((c) => where(c[0] as string, c[1], c[2])); // Doesn't matter if I made it a single or array
+> const q = query(collection(db, collectionName), ...w); // <-------- Line 372
+> const docs = await getDocs(q);
+> return docs.empty ? [] : docs.docs.map((v) => v.data() as TablesTypes[T]);
+> };
+> 
+> ```
+
+**@emokeOrdog** commented · Feb 12, 2025 at 8:31am · edited
+
+> I am also getting the error
+> `This method is deprecated (as well as all React Native Firebase namespaced API) and will be removed in the next major release as part of move to match Firebase Web modular SDK API. Please see migration guide for more details: https://rnfirebase.io/migrating-to-v22 Please use `where()` instead `
+> 
+> My code simplified:
+> 
+> ```javascript
+> import { getApp } from "@react-native-firebase/app";
+> import {
+> doc,
+> getDoc,
+> getDocs,
+> where,
+> query,
+> collection,
+> getCountFromServer,
+> onSnapshot,
+> getFirestore,
+> } from '@react-native-firebase/firestore';
+> 
+> const db = getFirestore(getApp());
+> /*
+> .....
+> */
+> 
+> const q = query( collection(db, 'books'), where('__name__', 'in', ["CTIVcQM9zyMdp1oZg54N"]))
+> ```
+
+**@mikehardy** commented · Feb 12, 2025 at 5:06pm · edited
+
+> 🤔 both of those are inside a query, related to the where clause. Something must be going on. Just for transparency: we've got around 4 different PRs approaching merge right now for various modular namespace typing issues - even if I'm quiet on responding to these, we are working hard on making sure everything is correct, and we appreciate the reports
+
+**@ryansobol** commented · Feb 13, 2025 at 11:36pm · edited
+
+> > ... they are easy enough to search for in each file.
+> 
+> Yes, but what are we supposed to search for? The warning message is not helpful enough.
+
+**@mikehardy** commented · Feb 13, 2025 at 11:42pm · edited
+
+> @ryansobol any time you see `firebase.` in your file, that's the "namespaced" APIs that are deprecated. All usage of those is going away. Similarly, if you see `. ` that is a "namespaced API and is going away, for example `auth.someMethod()` or `firestore.someMethod()`.
+> 
+> So you search for all the namespaced APIs, i.e. `firebase.`, `auth.`, `appCheck.` etc. That's all that's necessary to locate them.
+
+**@retyui** commented · Feb 15, 2025 at 5:10pm · edited
+
+> @mikehardy Which syntax is preferable, does it has any difference ?
+> 
+> 1. One instance
+> 
+> ```tsx
+> const crashlytics = getCrashlytics();
+> //...
+> setUserId(crashlytics, id);
+> setAttributes(crashlytics, {});
+> ```
+> 
+> 1. Get an instance on each call
+> 
+> ```tsx
+> setUserId(getCrashlytics(), id);
+> setAttributes(getCrashlytics(), {});
+> ```
+
+**@mikehardy** commented · Feb 15, 2025 at 5:20pm · edited
+
+> @retyui I do not believe there is any difference, I prefer fewer local variables if I can have fewer, personally, because in my opinion that reduces the mental load because there are fewer items I need to remember with regard to scope and definitions. So I use inline `get ()` personally
+
+**@aman-prajapati05** commented · Feb 16, 2025 at 4:21pm · edited
+
+> since in react native there is no need to initialize the app it is typically initialize using the google-services.json and GoogleService-Info.plist configuration files even though the initialization is handled automatically when Firebase is set up in React Native do i still need to reinitialize the app just like how it is done in web because to migrate to the modular api , for authentication there is a need of app reference and when i am trying to shift to modular api its throwing me an error "app not initialized" , is there any way how i can fix it
+
+**@mikehardy** commented · Feb 16, 2025 at 7:13pm · edited
+
+> @aman-prajapati05 hey there
+> 
+> 1- "do i still need to reinitialize the app" - no, you do not need to initialize the default app. Not for the old API, not for the new modular API.
+> 
+> In a native context you only need to specifically initialize secondary apps in your code, if you use those (not many do, so this is likely not important for you). For the web, or for the "other" / macOS platform yes you need to initialize even the default app. And truthfully, it won't *harm* anything to initialize the default app again. However it is not necessary to initialize the default app.
+> 
+> 2- "for authentication there is a need of app reference", yep, and `getApp()` from `@react-native-firebase/app` should make that available. That will get you the "default" app any time. If for project-specific reasons you are also using non-default / secondary apps, then you'd say `getApp()`
+> 
+> 3- 'when i am trying to shift to modular api its throwing me an error "app not initialized"' - now this...this seems odd to me 🤔 - if all you are doing is shifting from namespaced API to modular API, and your configuration is otherwise the same, there should be no difference. You should be able to just say `getApp()` and it should work. If it is not, you'll need to post a concrete code example of namespaced API that works (even if it is printing deprecation warnings...) along with the new modular API code you are trying that is not working
+
+**@mikehardy** commented · Feb 17, 2025 at 6:03pm · edited
+
+> @SamJbori @emokeOrdog I located the problem with firestore still showing those deprecation messages inside queries, v21.11.0 which I'm releasing shortly will have the fix. Thanks again for pointing those out. I'm going to hide these comments as resolved to keep the issue uncluttered. Cheers
+
+**@mikehardy** commented · Feb 17, 2025 at 6:08pm · edited
+
+> @ryansobol v21.11.0 will have two changes that should help identify the usage of deprecated APIs beyond just "search for it" - I am sympathetic to the difficulty 😅
+> 
+> 1- I added the name of the calling method to the deprecation message, so you will have that now as a key to search for
+> 
+> 2- I added a new "strict mode" you can turn on with `globalThis.RNFB_MODULAR_DEPRECATION_STRICT_MODE = true;` - if you turn that on the app will *crash* right where the usage was if you have deprecation messaging turned on. Obviously only a troubleshooting tool, but this will give you the stack trace to the deprecated usage for accurate identification
+> 
+> Note that there are still some implementation issues within react-native-firebase but we're working through them as fast as we can internally
+> 
+> I'm going to resolve these "how can I find the usage?" comments now, with v22.11.0 preparing for release but I appreciate the feedback, it helped improve our implementation for this
+
+**@aliceni81** commented · Feb 20, 2025 at 9:16am · edited
+
+> FYI, I'm using react-native-firebase/app v21.10.1 and react-native-firebase/messaging v21.10.1.
+> Part of my previous codes is:
+> 
+> ```
+> import messaging from '@react-native-firebase/messaging';
+> messaging().setBackgroundMessageHandler();
+> ```
+> 
+> After changing it to the following code:
+> 
+> ```
+> import { getMessaging } from '@react-native-firebase/messaging';
+> getMessaging().setBackgroundMessageHandler();
+> ```
+> 
+> The warning messages are gone.
+
+**@tahaipek** commented · Feb 20, 2025 at 11:56am · edited
+
+> Hi, thanks for your guidance and the migraion to v22 doc.
+> 
+> ```
+> import {
+> getMessaging,
+> AuthorizationStatus,
+> } from '@react-native-firebase/messaging';
+> 
+> const authStatus = await getMessaging().requestPermission();
+> const enabled = authStatus === AuthorizationStatus.AUTHORIZED || authStatus === AuthorizationStatus.PROVISIONAL; // iOS
+> ```
+
+**@mikehardy** commented · Feb 20, 2025 at 12:04pm · edited
+
+> @aliceni81
+> 
+> ```javascript
+> import { getMessaging } from '@react-native-firebase/messaging';
+> getMessaging().setBackgroundMessageHandler();
+> ```
+> 
+> should be
+> 
+> ```javascript
+> import { getMessaging, setBackgroundMessageHandler } from '@react-native-firebase/messaging';
+> setBackgroundMessageHandler(getMessaging(), yourHandlerHere);
+> ```
+
+**@mikehardy** commented · Feb 20, 2025 at 12:06pm · edited
+
+> @tahaipek
+> 
+> ```javascript
+> const authStatus = await getMessaging().requestPermission();
+> ```
+> 
+> should be
+> 
+> ```javascript
+> requestPermission(getMessaging());
+> ```
+> 
+> ...though to be honest I encourage all users with any permissions needs to use the package react-native-permissions for all of their permissions management. It is much more full-featured, and very well maintained with permissions as a specific focus. Permissions is not the focus of react-native-firebase at all so is a minimal / just barely working type implementation...
+
+**@SamJbori** commented · Feb 20, 2025 at 3:54pm · edited
+
+> > [@SamJbori](https://github.com/SamJbori) [@emokeOrdog](https://github.com/emokeOrdog) I located the problem with firestore still showing those deprecation messages inside queries, v21.11.0 which I'm releasing shortly will have the fix. Thanks again for pointing those out. I'm going to hide these comments as resolved to keep the issue uncluttered. Cheers
+> 
+> Thank you Mike, I appreciate the awesome work you guys do so we don't 🙏🏻
+
+**@aliceni81** commented · Feb 21, 2025 at 2:24am · edited
+
+> > [@aliceni81](https://github.com/aliceni81)
+> > 
+> > import { getMessaging } from '@react-native-firebase/messaging';
+> > getMessaging().setBackgroundMessageHandler();
+> > should be
+> > 
+> > import { getMessaging, setBackgroundMessageHandler } from '@react-native-firebase/messaging';
+> > setBackgroundMessageHandler(getMessaging(), yourHandlerHere);
+> 
+> Thanks a lot!
+
+**@Decezaris** commented · Feb 21, 2025 at 11:58pm · edited
+
+> @mikehardy The method `withConverter()` will be available in this new version?
+
+**@mikehardy** commented · Feb 22, 2025 at 12:02am · edited
+
+> Unfortunately no @Decezaris withConverter is not really a namespace vs modular problem, it's a feature that was on namespaced API also but was never supported by react-native-firebase. It would be great to have I agree, but right now we're focused on simply getting through the "existing things on namespace API are correctly available on modular API", which is proving difficult enough 😅
+
+**@fobos531** commented · Feb 28, 2025 at 1:38pm
+
+> Hey @mikehardy
+> 
+> When using the new style APIs, do you recommend to do:
+> 
+> `export const messagingModular = getMessaging()`
+> 
+> and then import that everywhere we use the firebase APIs, or should we do `getMessaging()` in each and every place where we're using the firebase APIs?
+
+**@mikehardy** commented · Feb 28, 2025 at 3:04pm
+
+> @fobos531 I would just use `getMessaging()` (or more generally, *any* modular call you need) directly from the package exports every time
+
+**@KrisLau** commented · Mar 4, 2025 at 9:19pm · edited
+
+> @mikehardy are we supposed to use it like this:
+> 
+> ```js
+> import {getAuth} from '@react-native-firebase/auth';
+> 
+> const auth = getAuth();
+> const user = auth.currentUser;
+> auth.createUserWithEmailAndPassword(email, password);
+> 
+> await user.updateProfile({
+> displayName: 'John Smith',
+> photoURL: "https://example.com/jane-q-user/profile.jpg",
+> });
+> ```
+> 
+> OR
+> 
+> ```js
+> 
+> import {createUserWithEmailAndPassword, getAuth, updateProfile} from '@react-native-firebase/auth';
+> 
+> const auth = getAuth();
+> const user = auth.currentUser;
+> createUserWithEmailAndPassword(auth, email, password);
+> 
+> await updateProfile(user, {
+> displayName: 'John Smith',
+> photoURL: "https://example.com/jane-q-user/profile.jpg",
+> });
+> ```
+> 
+> I tried looking at the [documentation](https://rnfirebase.io/auth/usage) but it doesn't seem to be updated yet. The migration documentation links firebase which suggests:
+> 
+> ```js
+> import { getAuth, updateProfile } from "firebase/auth";
+> const auth = getAuth();
+> updateProfile(auth.currentUser, {
+> displayName: "Jane Q. User", photoURL: "https://example.com/jane-q-user/profile.jpg"
+> })
+> ```
+> 
+> I'm confused as to whether there is a difference between using one over the other?
+> 
+> ---
+> 
+> Also should I be calling `const auth = getAuth();` in every function or just on the top of my provider file:
+> 
+> ```js
+> function AuthProvider({children}) {
+> const auth = getAuth();
+> ```
+
+**@mikehardy** commented · Mar 4, 2025 at 10:03pm
+
+> @KrisLau in general, you should follow all the guides for using the modular API that are available in the upstream firebase-js-sdk documentation: https://firebase.google.com/docs/auth/web/password-auth
+> 
+> When in doubt, assume the upstream modular documentation style *should* be followed and that our local documentation on rnfirebase.io has not caught up yet
+> 
+> It *should work* and when in doubt, assume that if using the modular API the way firebase.google.com shows does not work here, that we have a bug here.
+> 
+> The goal is always for react-native-firebase to be a drop-in / works-the-same replacement for firebase-js-sdk so that upstream docs are correct and we function the same
+
+**@KrisLau** commented · Mar 5, 2025 at 5:03am · edited
+
+> @mikehardy Makes sense, thank you! Another question I have is about the credential method:
+> 
+> ```js
+> const auth = getAuth();
+> const user = auth.currentUser;
+> const credential = auth.EmailAuthProvider.credential(user.email, currentPassword);
+> ```
+> 
+> That doesnt seem to work anymore? How do I access the EmailAuthProvider in the modular api?
+
+**@emokeOrdog** commented · Mar 5, 2025 at 5:25am · edited
+
+> @KrisLau
+> 
+> ```typescript
+> import {getApp} from "@react-native-firebase/app";
+> import { getAuth, EmailAuthProvider, } from '@react-native-firebase/auth';
+> 
+> const firebaseAuthApp = getAuth(getApp())
+> const user = firebaseAuthApp.currentUser;
+> const credential = EmailAuthProvider.credential(user.email, password);
+> ```
+
+**@mikehardy** commented · Sep 25, 2025 at 5:10pm
+
+> @7ammer @dgreasi @JustJoostNL hey you three - the discussion around analytics screen views (and perhaps 3 other events which are apparently not in the enum?) is very interesting to me.
+> 
+> I'm not 100% clear on what the current state of it is - that is, are there still gaps and some related testing results that show the gaps when trying to use the event API (or trying to replace the screen view API with the event API) ?
+> 
+> If so could you please 🙏 open a new issue with the details as you understand them? That will help track that as a real issue vs buried in here which was the generic "we're migrating..." issue
+> 
+> Many thanks
+
+**@JustJoostNL** commented · Sep 26, 2025 at 7:26pm
+
+> @mikehardy Thanks for your reply. I currently only have the issue where the `screen_view` doesn't work as expected. That issue is tracked here already: https://github.com/invertase/react-native-firebase/issues/8609. If you could review https://github.com/invertase/react-native-firebase/pull/8687 that would be great.
