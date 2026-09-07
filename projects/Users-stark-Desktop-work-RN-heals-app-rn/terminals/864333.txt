@@ -5,7 +5,7 @@ command: "npx react-native start --port 8081"
 title: "Start Metro bundler on 8081"
 status: running  
 started_at: 2026-09-07T06:02:43.589Z
-running_for_ms: 2585360  
+running_for_ms: 2975411  
 ---
 
 Welcome to React Native v0.81
@@ -67,3 +67,28 @@ info Bundle Debug ID: 03830d44-4ef8-48c4-bd67-fd16ee26a3bc
 [36m[7m[1m INFO [22m[27m[39m Connection established to DevTools for app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
 [36m[7m[1m INFO [22m[27m[39m Connection closed to DevTools for app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36' with code='1000' and reason='[NEW_DEBUGGER_OPENED] New debugger opened for the same app instance'.
 [36m[7m[1m INFO [22m[27m[39m Connection closed to DevTools for app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36' with code='1005' and reason=''.
+[31m[7m[1m ERROR [22m[27m[39m Error: Unable to resolve module ./src/store/DrawerContext from /Users/stark/Desktop/work/RN/heals-app-rn/App.tsx: 
+
+None of these files exist:
+  * src/store/DrawerContext(.android.js|.native.js|.js|.android.jsx|.native.jsx|.jsx|.android.json|.native.json|.json|.android.ts|.native.ts|.ts|.android.tsx|.native.tsx|.tsx|.android.jsx|.native.jsx|.jsx|.android.js|.native.js|.js|.android.ts|.native.ts|.ts|.android.tsx|.native.tsx|.tsx|.android.svg|.native.svg|.svg|.android.mjs|.native.mjs|.mjs|.android.d.ts|.native.d.ts|.d.ts)
+  * src/store/DrawerContext
+  26 | import {useAppState} from './src/store/AppContext';
+  27 | import styles from './App.styles';
+> 28 | import { DrawerProvider } from './src/store/DrawerContext';
+     |                                 ^
+  29 |
+  30 | // process.env.NODE_ENV === 'production' &&
+  31 | // Sentry.init({
+    at ModuleResolver.resolveDependency (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/node-haste/DependencyGraph/ModuleResolution.js:143:15)
+    at DependencyGraph.resolveDependency (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/node-haste/DependencyGraph.js:263:43)
+    at /Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/lib/transformHelpers.js:165:21
+    at resolveDependencies (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/DeltaBundler/buildSubgraph.js:43:25)
+    at visit (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/DeltaBundler/buildSubgraph.js:81:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async buildSubgraph (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/DeltaBundler/buildSubgraph.js:105:3)
+    at async Graph._buildDelta (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/DeltaBundler/Graph.js:163:22)
+    at async Graph.traverseDependencies (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/DeltaBundler/Graph.js:50:19)
+[33m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+info Bundle Debug ID: 4a8c761f-b606-4b72-b4a0-f1cd03afa57b
+[32m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m 
