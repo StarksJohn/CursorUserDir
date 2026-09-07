@@ -1,0 +1,16 @@
+---
+pid: 69047
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "SERIAL=4ae24c72\nARTIFACT_DIR=\"/Users/stark/Desktop/work/RN/heals-app-rn/.verify-android/plan-picker-empty\"\nAPP_ID=com.healshealthcare.healspass.dev\nAPP_PID=$(adb -s \"$SERIAL\" shell pidof \"$APP_ID\" | tr -d '\\r')\necho \"pid=$APP_PID\"\nadb -s \"$SERIAL\" logcat --pid=\"$APP_PID\" -T 1 -v threadtime >/dev/null\nadb -s \"$SERIAL\" shell input tap 540 388\nsleep 2.5\nadb -s \"$SERIAL\" exec-out screencap -p > \"$ARTIFACT_DIR/04-plan-picker.png\"\nadb -s \"$SERIAL\" shell uiautomator dump /sdcard/rn-ui-window.xml >/dev/null\nadb -s \"$SERIAL\" pull /sdcard/rn-ui-window.xml \"$ARTIFACT_DIR/04-plan-picker.xml\" >/dev/null\npython3 - <<'PY'\nimport xml.etree.ElementTree as ET\nroot=ET.parse(\"/Users/stark/Desktop/work/RN/heals-app-rn/.verify-android/plan-picker-empty/04-plan-picker.xml\").getroot()\nrows=[]\nfor n in root.iter('node'):\n    t=(n.attrib.get('text') or '').strip()\n    d=(n.attrib.get('content-desc') or '').strip()\n    b=n.attrib.get('bounds','')\n    click=n.attrib.get('clickable')\n    cls=n.attrib.get('class','')\n    if t or d:\n        rows.append((t,d,b,click,cls))\nprint('count', len(rows))\nfor t,d,b,c,cls in rows:\n    print(repr(t)[:80], '|', repr(d)[:50], '|', b, '|', c, '|', cls.split('.')[-1])\nPY\necho '---logs---'\nadb -s \"$SERIAL\" logcat --pid=\"$APP_PID\" -T 8s -d -v threadtime | rg -i 'ReactNativeJS|AndroidRuntime|FATAL|Error|Exception|Invariant|TypeError|crash|selectablePlans' | head -60"
+title: "Open plan picker and capture empty-state UI plus logs"
+status: failed   
+started_at: 2026-09-07T08:50:10.888Z
+running_for_ms: 110518   
+---
+pid=12433
+
+---
+exit_code: unknown
+elapsed_ms: 110518
+ended_at: 2026-09-07T08:52:01.406Z
+---
