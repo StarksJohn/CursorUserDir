@@ -1,0 +1,499 @@
+=== COVERAGE ===
+program files 613
+changed covered 31
+changed missing 0
+=== SEMANTIC/SYNTACTIC for changed files ===
+[diag] TS1117 src/i18n/locale/ph.ts:822:3 An object literal cannot have multiple properties with the same name.
+[diag] TS1117 src/i18n/locale/th.ts:900:3 An object literal cannot have multiple properties with the same name.
+[diag] TS1117 src/i18n/locale/th.ts:901:3 An object literal cannot have multiple properties with the same name.
+[diag] TS1117 src/i18n/locale/th.ts:902:3 An object literal cannot have multiple properties with the same name.
+[diag] TS1117 src/i18n/locale/Indonesia.ts:1603:3 An object literal cannot have multiple properties with the same name.
+[diag] TS1117 src/i18n/locale/Melayu.ts:1591:3 An object literal cannot have multiple properties with the same name.
+[suggestion] TS6196 src/api/api-types.ts:321:11 'PractitionerDetails' is declared but never used.
+[suggestion] TS6196 src/api/api-types.ts:361:11 'LocationDetails' is declared but never used.
+[suggestion] TS6133 src/api/api-types.ts:4:1 'Moment' is declared but its value is never read.
+[suggestion] TS6133 src/navigation/types.ts:4:8 'Pdf' is declared but its value is never read.
+[diag] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:115:33 Property 'close' does not exist on type 'never'.
+[diag] TS2588 src/components/delivery-address-sheet/delivery-address-sheet.tsx:201:17 Cannot assign to 'refRBCountry' because it is a constant.
+[diag] TS2322 src/components/delivery-address-sheet/delivery-address-sheet.tsx:308:9 Type '{ children: Element; ref: RefObject<null>; height: number; closeOnDragDown: boolean; closeOnPressMask: true; customStyles: { wrapper: { backgroundColor: string; }; container: { ...; }; draggableIcon: { ...; }; }; onClose: () => Promise<...>; }' is not assignable to type 'IntrinsicAttributes & RBSheetProps & RefAttributes<RBSheetRef>'.
+  Property 'closeOnDragDown' does not exist on type 'IntrinsicAttributes & RBSheetProps & RefAttributes<RBSheetRef>'.
+[diag] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:324:33 Property 'refresh' does not exist on type 'never'.
+[diag] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:350:48 Property 'close' does not exist on type 'never'.
+[diag] TS2322 src/components/delivery-address-sheet/delivery-address-sheet.tsx:385:15 Type '{ ref: RefObject<null>; data: ({} | { itemName: string; })[]; width: number; renderItem: ({ item, index }: any) => Element; sliderWidth: number; itemWidth: number; layout: string; onSnapToItem: (e: number) => void; defaultIndex: number; enabled: false; }' is not assignable to type 'IntrinsicAttributes & PropsWithChildren<TCarouselProps<{ itemName?: undefined; } | { itemName: string; }>>'.
+  Property 'sliderWidth' does not exist on type 'IntrinsicAttributes & PropsWithChildren<TCarouselProps<{ itemName?: undefined; } | { itemName: string; }>>'.
+[diag] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:408:37 Property 'prev' does not exist on type 'never'.
+[diag] TS18047 src/components/delivery-address-sheet/delivery-address-sheet.tsx:461:32 'user' is possibly 'null'.
+[diag] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:462:40 Property 'close' does not exist on type 'never'.
+[diag] TS2722 src/components/delivery-address-sheet/delivery-address-sheet.tsx:464:9 Cannot invoke an object which is possibly 'undefined'.
+[diag] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:467:64 Property 'next' does not exist on type 'never'.
+[diag] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:518:45 Property 'close' does not exist on type 'never'.
+[diag] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:520:50 Property 'open' does not exist on type 'never'.
+[diag] TS18047 src/components/delivery-address-sheet/delivery-address-sheet.tsx:564:31 'user' is possibly 'null'.
+[diag] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:568:35 Property 'close' does not exist on type 'never'.
+[diag] TS2722 src/components/delivery-address-sheet/delivery-address-sheet.tsx:569:7 Cannot invoke an object which is possibly 'undefined'.
+[diag] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:571:29 Property 'refresh' does not exist on type 'never'.
+[diag] TS2322 src/components/delivery-address-sheet/delivery-address-sheet.tsx:580:9 Type '{ children: Element[]; ref: RefObject<null>; height: number; closeOnDragDown: boolean; closeOnPressMask: true; customStyles: { wrapper: { backgroundColor: string; }; container: { ...; }; draggableIcon: { ...; }; }; animationDuration: number; }' is not assignable to type 'IntrinsicAttributes & RBSheetProps & RefAttributes<RBSheetRef>'.
+  Property 'closeOnDragDown' does not exist on type 'IntrinsicAttributes & RBSheetProps & RefAttributes<RBSheetRef>'.
+[diag] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:605:41 Property 'close' does not exist on type 'never'.
+[diag] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:642:43 Property 'close' does not exist on type 'never'.
+[diag] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:644:48 Property 'open' does not exist on type 'never'.
+[diag] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:663:39 Property 'open' does not exist on type 'never'.
+[suggestion] TS6133 src/components/delivery-address-sheet/delivery-address-sheet.tsx:45:9 'refRBCountry' is declared but its value is never read.
+[suggestion] TS6133 src/components/delivery-address-sheet/delivery-address-sheet.tsx:294:35 'item' is declared but its value is never read.
+[suggestion] TS6133 src/components/delivery-address-sheet/delivery-address-sheet.tsx:476:11 'label' is declared but its value is never read.
+[suggestion] TS6133 src/components/delivery-address-sheet/delivery-address-sheet.tsx:72:13 'label' is declared but its value is never read.
+[suggestion] TS6133 src/components/delivery-address-sheet/delivery-address-sheet.tsx:4:3 'ReactElement' is declared but its value is never read.
+[suggestion] TS6133 src/components/delivery-address-sheet/delivery-address-sheet.tsx:15:3 'Modal' is declared but its value is never read.
+[suggestion] TS6385 src/components/doctor-avatar/doctor-avatar.tsx:4:3 'ImageErrorEventData' is deprecated.
+[suggestion] TS6385 src/components/doctor-avatar/doctor-avatar.tsx:33:46 'ImageErrorEventData' is deprecated.
+[diag] TS2322 src/screens/profile/profile-screen/profile-screen.tsx:256:9 Type '{ children: string; ellipsizeMode: string; numberOfLines: number; style: any; testID: string; }' is not assignable to type 'IntrinsicAttributes & AppTextProps'.
+  Property 'testID' does not exist on type 'IntrinsicAttributes & AppTextProps'.
+[diag] TS2322 src/screens/profile/profile-screen/profile-screen.tsx:422:9 Type '{ children: string; ellipsizeMode: string; numberOfLines: number; style: any; testID: string; }' is not assignable to type 'IntrinsicAttributes & AppTextProps'.
+  Property 'testID' does not exist on type 'IntrinsicAttributes & AppTextProps'.
+[diag] TS6137 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:22:28 Cannot import type declaration files. Consider importing 'Theme.ts' instead of '@types/Theme.ts'.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:187:15 Type 'Provider_timeslot[] | undefined' is not assignable to type 'Provider_timeslot | undefined'.
+  Type 'Provider_timeslot[]' is missing the following properties from type 'Provider_timeslot': id, practitioner, location, statuses, and 6 more.
+[diag] TS2345 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:191:20 Argument of type '(prevState: StateProps) => { selectedProvider: Provider_timeslot; phoneNumber: string | undefined; isKorea: boolean; svgData_building: object | null; ... 18 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+  Type '(prevState: StateProps) => { selectedProvider: Provider_timeslot; phoneNumber: string | undefined; isKorea: boolean; svgData_building: object | null; ... 18 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to type '(prevState: StateProps) => StateProps'.
+    Call signature return types '{ selectedProvider: Provider_timeslot; phoneNumber: string | undefined; isKorea: boolean; svgData_building: object | null; svgData_phone: object | null; svgData_pin: object | null; ... 16 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' and 'StateProps' are incompatible.
+      The types of 'phoneNumber' are incompatible between these types.
+        Type 'string | undefined' is not assignable to type 'string'.
+          Type 'undefined' is not assignable to type 'string'.
+[diag] TS2345 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:228:18 Argument of type '(prevState: StateProps) => { svgData_building: string; svgData_phone: object | null; svgData_pin: object | null; selectedProvider: Provider_timeslot | undefined; ... 18 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+  Type '(prevState: StateProps) => { svgData_building: string; svgData_phone: object | null; svgData_pin: object | null; selectedProvider: Provider_timeslot | undefined; ... 18 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to type '(prevState: StateProps) => StateProps'.
+    Call signature return types '{ svgData_building: string; svgData_phone: object | null; svgData_pin: object | null; selectedProvider: Provider_timeslot | undefined; phoneNumber: string; ... 17 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' and 'StateProps' are incompatible.
+      The types of 'svgData_building' are incompatible between these types.
+        Type 'string' is not assignable to type 'object'.
+[diag] TS2345 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:242:18 Argument of type '(prevState: StateProps) => { svgData_phone: string; svgData_building: object | null; svgData_pin: object | null; selectedProvider: Provider_timeslot | undefined; ... 18 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+  Type '(prevState: StateProps) => { svgData_phone: string; svgData_building: object | null; svgData_pin: object | null; selectedProvider: Provider_timeslot | undefined; ... 18 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to type '(prevState: StateProps) => StateProps'.
+    Call signature return types '{ svgData_phone: string; svgData_building: object | null; svgData_pin: object | null; selectedProvider: Provider_timeslot | undefined; phoneNumber: string; ... 17 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' and 'StateProps' are incompatible.
+      The types of 'svgData_phone' are incompatible between these types.
+        Type 'string' is not assignable to type 'object'.
+[diag] TS2345 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:256:18 Argument of type '(prevState: StateProps) => { svgData_pin: string; svgData_building: object | null; svgData_phone: object | null; selectedProvider: Provider_timeslot | undefined; ... 18 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+  Type '(prevState: StateProps) => { svgData_pin: string; svgData_building: object | null; svgData_phone: object | null; selectedProvider: Provider_timeslot | undefined; ... 18 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to type '(prevState: StateProps) => StateProps'.
+    Call signature return types '{ svgData_pin: string; svgData_building: object | null; svgData_phone: object | null; selectedProvider: Provider_timeslot | undefined; phoneNumber: string; ... 17 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' and 'StateProps' are incompatible.
+      The types of 'svgData_pin' are incompatible between these types.
+        Type 'string' is not assignable to type 'object'.
+[diag] TS2345 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:270:18 Argument of type '(prevState: StateProps) => { svgData_info_pink: string; svgData_building: object | null; svgData_phone: object | null; svgData_pin: object | null; selectedProvider: Provider_timeslot | undefined; ... 17 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+  Type '(prevState: StateProps) => { svgData_info_pink: string; svgData_building: object | null; svgData_phone: object | null; svgData_pin: object | null; selectedProvider: Provider_timeslot | undefined; ... 17 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to type '(prevState: StateProps) => StateProps'.
+    Call signature return types '{ svgData_info_pink: string; svgData_building: object | null; svgData_phone: object | null; svgData_pin: object | null; selectedProvider: Provider_timeslot | undefined; ... 17 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' and 'StateProps' are incompatible.
+      The types of 'svgData_info_pink' are incompatible between these types.
+        Type 'string' is not assignable to type 'object'.
+[diag] TS7006 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:282:38 Parameter 'index' implicitly has an 'any' type.
+[diag] TS7006 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:282:45 Parameter 'arr' implicitly has an 'any' type.
+[diag] TS7006 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:323:38 Parameter 'index' implicitly has an 'any' type.
+[diag] TS7006 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:323:45 Parameter 'arr' implicitly has an 'any' type.
+[diag] TS2345 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:340:54 Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:489:18 Type 'RegisteredStyle<{ fontSize: number; fontWeight: "700"; color: string; paddingLeft: number; paddingRight: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { fontSize: number; fontWeight: "700"; color: string; paddingLeft: number; paddingRight: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:493:18 Type 'RegisteredStyle<{ fontSize: number; fontWeight: "700"; color: string; paddingLeft: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { fontSize: number; fontWeight: "700"; color: string; paddingLeft: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:525:13 Type 'RegisteredStyle<{ color: string; fontSize: number; lineHeight: number; paddingVertical: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; lineHeight: number; paddingVertical: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:537:18 Type 'RegisteredStyle<{ color: string; fontSize: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:548:22 Type 'RegisteredStyle<{ color: string; fontSize: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:552:20 Type 'RegisteredStyle<{ fontSize: number; fontWeight: "bold"; color: string; paddingTop: number; paddingLeft: number; textDecorationLine: "underline"; paddingBottom: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { fontSize: number; fontWeight: "bold"; color: string; paddingTop: number; paddingLeft: number; textDecorationLine: "underline"; paddingBottom: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:565:20 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "700"; paddingLeft: number; flexShrink: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "700"; paddingLeft: number; flexShrink: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:575:22 Type 'RegisteredStyle<{ color: string; textDecorationLine: "underline"; fontSize: number; fontWeight: "700"; paddingLeft: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; textDecorationLine: "underline"; fontSize: number; fontWeight: "700"; paddingLeft: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:582:20 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "700"; paddingLeft: number; flexShrink: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "700"; paddingLeft: number; flexShrink: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:641:18 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "700"; paddingBottom: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "700"; paddingBottom: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:647:22 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:653:22 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:686:22 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "700"; paddingLeft: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "700"; paddingLeft: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2345 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:700:24 Argument of type '{ selectedAddress: MemberAddresses | null; id?: string | undefined; name?: string | undefined; code?: number | undefined; valueAsString?: string | undefined; value?: UserValue | undefined; ... 8 more ...; productRecommendation?: any; }' is not assignable to parameter of type 'SetStateAction<User | null>'.
+  Type '{ selectedAddress: MemberAddresses | null; id?: string | undefined; name?: string | undefined; code?: number | undefined; valueAsString?: string | undefined; value?: UserValue | undefined; ... 8 more ...; productRecommendation?: any; }' is not assignable to type 'User'.
+    Types of property 'id' are incompatible.
+      Type 'string | undefined' is not assignable to type 'string'.
+        Type 'undefined' is not assignable to type 'string'.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:714:24 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:720:24 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:726:24 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:785:23 Type 'RegisteredStyle<{ fontSize: number; lineHeight: number; color: string; fontWeight: "700"; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { fontSize: number; lineHeight: number; color: string; fontWeight: "700"; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:800:27 Type 'RegisteredStyle<{ marginTop: number; fontSize: number; lineHeight: number; color: string; fontWeight: "400"; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { marginTop: number; fontSize: number; lineHeight: number; color: string; fontWeight: "400"; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:817:32 Type 'RegisteredStyle<{ fontSize: number; fontWeight: "400"; color: string; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { fontSize: number; fontWeight: "400"; color: string; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:822:32 Type 'RegisteredStyle<{ fontSize: number; fontWeight: "400"; color: string; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { fontSize: number; fontWeight: "400"; color: string; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:828:28 Type 'RegisteredStyle<{ fontSize: number; color: string; textTransform: "capitalize"; fontWeight: "700"; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { fontSize: number; color: string; textTransform: "capitalize"; fontWeight: "700"; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2559 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:861:29 Type 'RegisteredStyle<{ fontSize: number; lineHeight: number; color: string; marginLeft: number; fontWeight: "700"; paddingHorizontal: number; }>' has no properties in common with type 'TextStyle'.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:862:29 Type 'false | { color: string; }' is not assignable to type 'TextStyle'.
+  Type 'false' has no properties in common with type 'TextStyle'.
+[diag] TS2559 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:900:29 Type 'RegisteredStyle<{ fontSize: number; lineHeight: number; color: string; marginLeft: number; fontWeight: "700"; paddingHorizontal: number; }>' has no properties in common with type 'TextStyle'.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:901:29 Type 'false | { color: string; }' is not assignable to type 'TextStyle'.
+  Type 'false' has no properties in common with type 'TextStyle'.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:904:29 Type 'false | { color: string; }' is not assignable to type 'TextStyle'.
+  Type 'false' has no properties in common with type 'TextStyle'.
+[diag] TS2559 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:917:29 Type 'RegisteredStyle<{ fontSize: number; lineHeight: number; color: string; marginLeft: number; textTransform: "capitalize"; paddingVertical: number; }>' has no properties in common with type 'TextStyle'.
+[diag] TS2345 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:924:56 Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:928:36 Type 'RegisteredStyle<{ fontSize: number; lineHeight: number; color: string; marginLeft: number; textTransform: "capitalize"; paddingVertical: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { fontSize: number; lineHeight: number; color: string; marginLeft: number; textTransform: "capitalize"; paddingVertical: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2559 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:962:35 Type 'RegisteredStyle<{ fontSize: number; lineHeight: number; color: string; marginLeft: number; fontWeight: "700"; paddingHorizontal: number; }>' has no properties in common with type 'TextStyle'.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:963:35 Type 'false | { color: string; }' is not assignable to type 'TextStyle'.
+  Type 'false' has no properties in common with type 'TextStyle'.
+[diag] TS2559 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:1001:35 Type 'RegisteredStyle<{ fontSize: number; lineHeight: number; color: string; marginLeft: number; fontWeight: "700"; paddingHorizontal: number; }>' has no properties in common with type 'TextStyle'.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:1002:35 Type 'false | { color: string; }' is not assignable to type 'TextStyle'.
+  Type 'false' has no properties in common with type 'TextStyle'.
+[diag] TS2559 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:1041:33 Type 'RegisteredStyle<{ fontSize: number; lineHeight: number; color: string; marginLeft: number; fontWeight: "700"; paddingHorizontal: number; }>' has no properties in common with type 'TextStyle'.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:1042:33 Type 'false | { color: string; }' is not assignable to type 'TextStyle'.
+  Type 'false' has no properties in common with type 'TextStyle'.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:1052:27 Type 'RegisteredStyle<{ fontSize: number; lineHeight: number; color: string; marginLeft: number; textTransform: "capitalize"; paddingVertical: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { fontSize: number; lineHeight: number; color: string; marginLeft: number; textTransform: "capitalize"; paddingVertical: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[diag] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:1062:30 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "400"; paddingVertical: number; paddingRight: number; textAlign: "left"; flexShrink: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "400"; paddingVertical: number; paddingRight: number; textAlign: "left"; flexShrink: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[suggestion] TS6133 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:109:23 'setLoadingText' is declared but its value is never read.
+[suggestion] TS6133 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:109:39 'loading' is declared but its value is never read.
+[suggestion] TS6133 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:323:38 'index' is declared but its value is never read.
+[suggestion] TS6133 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:323:45 'arr' is declared but its value is never read.
+[suggestion] TS6133 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:403:28 'index' is declared but its value is never read.
+[suggestion] TS6133 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:403:35 'arr' is declared but its value is never read.
+[suggestion] TS6133 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:413:28 'index' is declared but its value is never read.
+[suggestion] TS6133 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:413:35 'arr' is declared but its value is never read.
+[suggestion] TS6133 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:196:32 'index' is declared but its value is never read.
+[suggestion] TS6133 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:196:39 'arr' is declared but its value is never read.
+[suggestion] TS6133 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:282:38 'index' is declared but its value is never read.
+[suggestion] TS6133 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:282:45 'arr' is declared but its value is never read.
+[suggestion] TS6133 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:3:3 'useRef' is declared but its value is never read.
+[suggestion] TS6133 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:45:3 'SVGEditGreenIcon' is declared but its value is never read.
+[diag] TS6137 src/screens/my-appointment-screen/my-appointment-screen.tsx:23:28 Cannot import type declaration files. Consider importing 'Theme.ts' instead of '@types/Theme.ts'.
+[diag] TS2345 src/screens/my-appointment-screen/my-appointment-screen.tsx:244:18 Argument of type '(prevState: StateProps) => { svgData_fileIcon: string; ticketId: string; ticket: Ticket | null; uploadProgress: number; uploading: boolean; uploadedFilesList: UploadedFilesList[]; uploadingFile: UploadedFilesList | null; transaction_ticket: Transaction_ticket[]; prescriptionRowBtW: number; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+  Type '(prevState: StateProps) => { svgData_fileIcon: string; ticketId: string; ticket: Ticket | null; uploadProgress: number; uploading: boolean; uploadedFilesList: UploadedFilesList[]; uploadingFile: UploadedFilesList | null; transaction_ticket: Transaction_ticket[]; prescriptionRowBtW: number; }' is not assignable to type '(prevState: StateProps) => StateProps'.
+    Call signature return types '{ svgData_fileIcon: string; ticketId: string; ticket: Ticket | null; uploadProgress: number; uploading: boolean; uploadedFilesList: UploadedFilesList[]; uploadingFile: UploadedFilesList | null; transaction_ticket: Transaction_ticket[]; prescriptionRowBtW: number; }' and 'StateProps' are incompatible.
+      The types of 'svgData_fileIcon' are incompatible between these types.
+        Type 'string' is not assignable to type 'object'.
+[diag] TS2345 src/screens/my-appointment-screen/my-appointment-screen.tsx:352:20 Argument of type '(prevState: StateProps) => { uploadedFilesList: { name: string | undefined; key: string; size: number; }[]; ticketId: string; ticket: Ticket | null; uploadProgress: number; ... 4 more ...; prescriptionRowBtW: number; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+  Type '(prevState: StateProps) => { uploadedFilesList: { name: string | undefined; key: string; size: number; }[]; ticketId: string; ticket: Ticket | null; uploadProgress: number; ... 4 more ...; prescriptionRowBtW: number; }' is not assignable to type '(prevState: StateProps) => StateProps'.
+    Call signature return types '{ uploadedFilesList: { name: string | undefined; key: string; size: number; }[]; ticketId: string; ticket: Ticket | null; uploadProgress: number; uploading: boolean; svgData_fileIcon: object | null; uploadingFile: UploadedFilesList | null; transaction_ticket: Transaction_ticket[]; prescriptionRowBtW: number; }' and 'StateProps' are incompatible.
+      The types of 'uploadedFilesList' are incompatible between these types.
+        Type '{ name: string | undefined; key: string; size: number; }[]' is not assignable to type 'UploadedFilesList[]'.
+          Type '{ name: string | undefined; key: string; size: number; }' has no properties in common with type 'UploadedFilesList'.
+[diag] TS18048 src/screens/my-appointment-screen/my-appointment-screen.tsx:400:13 'file.uri' is possibly 'undefined'.
+[diag] TS2353 src/screens/my-appointment-screen/my-appointment-screen.tsx:412:11 Object literal may only specify known properties, and 'name' does not exist in type 'UploadedFilesList'.
+[diag] TS7034 src/screens/my-appointment-screen/my-appointment-screen.tsx:483:11 Variable 'drugInformation' implicitly has type 'any[]' in some locations where its type cannot be determined.
+[diag] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:484:53 Property 'drugs' does not exist on type 'ValueAsJson'.
+[diag] TS7006 src/screens/my-appointment-screen/my-appointment-screen.tsx:488:25 Parameter 'drugInfo' implicitly has an 'any' type.
+[diag] TS7006 src/screens/my-appointment-screen/my-appointment-screen.tsx:488:35 Parameter 'index' implicitly has an 'any' type.
+[diag] TS7006 src/screens/my-appointment-screen/my-appointment-screen.tsx:489:31 Parameter 'medItem' implicitly has an 'any' type.
+[diag] TS7006 src/screens/my-appointment-screen/my-appointment-screen.tsx:489:40 Parameter 'index' implicitly has an 'any' type.
+[diag] TS7005 src/screens/my-appointment-screen/my-appointment-screen.tsx:560:12 Variable 'drugInformation' implicitly has an 'any[]' type.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:620:14 'state.ticket' is possibly 'null'.
+[diag] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:779:29 Property 'next' does not exist on type 'never'.
+[diag] TS2588 src/screens/my-appointment-screen/my-appointment-screen.tsx:818:21 Cannot assign to 'refRBCountry' because it is a constant.
+[diag] TS2741 src/screens/my-appointment-screen/my-appointment-screen.tsx:909:14 Property 'areaCode' is missing in type '{ onChangeText: (e: any) => void; onAreaCodeChange: (e: any) => void; mobileNumber: string; }' but required in type 'MobileNumberComponentProps'.
+[diag] TS2588 src/screens/my-appointment-screen/my-appointment-screen.tsx:944:17 Cannot assign to 'refRBCountry' because it is a constant.
+[diag] TS2322 src/screens/my-appointment-screen/my-appointment-screen.tsx:1078:41 Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+[diag] TS2345 src/screens/my-appointment-screen/my-appointment-screen.tsx:1081:32 Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+[diag] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:1084:30 Property 'close' does not exist on type 'never'.
+[diag] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:1091:35 Property 'next' does not exist on type 'never'.
+[diag] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:1094:33 Property 'next' does not exist on type 'never'.
+[diag] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:1160:37 Property 'next' does not exist on type 'never'.
+[diag] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:1173:39 Property 'prev' does not exist on type 'never'.
+[diag] TS2322 src/screens/my-appointment-screen/my-appointment-screen.tsx:1217:9 Type '{ children: Element; ref: RefObject<null>; height: number; closeOnDragDown: boolean; closeOnPressMask: true; customStyles: { wrapper: { backgroundColor: string; }; container: { ...; }; draggableIcon: { ...; }; }; onClose: () => Promise<...>; }' is not assignable to type 'IntrinsicAttributes & RBSheetProps & RefAttributes<RBSheetRef>'.
+  Property 'closeOnDragDown' does not exist on type 'IntrinsicAttributes & RBSheetProps & RefAttributes<RBSheetRef>'.
+[diag] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:1243:38 Property 'close' does not exist on type 'never'.
+[diag] TS2322 src/screens/my-appointment-screen/my-appointment-screen.tsx:1277:15 Type '{ ref: RefObject<null>; data: { itemName: string; }[]; width: number; renderItem: ({ item, index }: any) => Element; sliderWidth: number; itemWidth: number; layout: string; onSnapToItem: (e: number) => void; defaultIndex: number; enabled: false; }' is not assignable to type 'IntrinsicAttributes & PropsWithChildren<TCarouselProps<{ itemName: string; }>>'.
+  Property 'sliderWidth' does not exist on type 'IntrinsicAttributes & PropsWithChildren<TCarouselProps<{ itemName: string; }>>'.
+[diag] TS2322 src/screens/my-appointment-screen/my-appointment-screen.tsx:1297:11 Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+[diag] TS2304 src/screens/my-appointment-screen/my-appointment-screen.tsx:1362:18 Cannot find name 'UploadedFilesList'.
+[diag] TS2322 src/screens/my-appointment-screen/my-appointment-screen.tsx:1392:21 Type 'object' is not assignable to type 'string'.
+[diag] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:1416:46 Property 'name' does not exist on type 'UploadedFilesList'.
+[diag] TS2322 src/screens/my-appointment-screen/my-appointment-screen.tsx:1470:7 Type 'string | boolean' is not assignable to type 'boolean'.
+  Type 'string' is not assignable to type 'boolean'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1503:10 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1514:16 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1522:27 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1537:16 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1545:27 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1558:11 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1567:18 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1568:19 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1575:51 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1582:11 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1583:11 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1587:41 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1606:31 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1607:28 'token' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1608:26 'token' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1609:28 'token' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1610:30 'token' is possibly 'null'.
+[diag] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:1624:40 Property 'open' does not exist on type 'never'.
+[diag] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:1767:37 Property 'drugs' does not exist on type 'ValueAsJson'.
+[diag] TS2345 src/screens/my-appointment-screen/my-appointment-screen.tsx:1788:15 Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1818:11 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1819:11 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1821:16 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1828:21 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1835:22 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1835:66 'state.ticket' is possibly 'null'.
+[diag] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1848:22 'state.ticket' is possibly 'null'.
+[diag] TS2322 src/screens/my-appointment-screen/my-appointment-screen.tsx:2168:11 Type 'string | boolean' is not assignable to type 'boolean'.
+  Type 'string' is not assignable to type 'boolean'.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:166:10 'countryFrom' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:168:10 'deliveryRegion' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:179:10 'addressData' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:193:5 'set_User' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:141:9 'refRBSheetAddress' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:142:9 'flatListRef' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:143:9 'refRBCountry' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:756:11 'label' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:1104:25 'item' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:1458:9 'closed' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:2058:11 'label' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:2151:13 'isReadyForConsult' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:2155:13 'upcoming' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:488:35 'index' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:1669:36 'index' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:1669:43 'array' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:1703:49 'array' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:356:43 'index' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:356:50 'array' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:489:40 'index' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:1851:52 'array' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:1984:56 'array' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:1414:44 'index' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:1414:51 'arr' is declared but its value is never read.
+[suggestion] TS6133 src/screens/my-appointment-screen/my-appointment-screen.tsx:123:7 'monthMap' is declared but its value is never read.
+changed-file diagnostic count 191
+=== GLOBAL semantic (intersect changed) ===
+[global] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:115:33 Property 'close' does not exist on type 'never'.
+[global] TS2588 src/components/delivery-address-sheet/delivery-address-sheet.tsx:201:17 Cannot assign to 'refRBCountry' because it is a constant.
+[global] TS2322 src/components/delivery-address-sheet/delivery-address-sheet.tsx:308:9 Type '{ children: Element; ref: RefObject<null>; height: number; closeOnDragDown: boolean; closeOnPressMask: true; customStyles: { wrapper: { backgroundColor: string; }; container: { ...; }; draggableIcon: { ...; }; }; onClose: () => Promise<...>; }' is not assignable to type 'IntrinsicAttributes & RBSheetProps & RefAttributes<RBSheetRef>'.
+  Property 'closeOnDragDown' does not exist on type 'IntrinsicAttributes & RBSheetProps & RefAttributes<RBSheetRef>'.
+[global] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:324:33 Property 'refresh' does not exist on type 'never'.
+[global] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:350:48 Property 'close' does not exist on type 'never'.
+[global] TS2322 src/components/delivery-address-sheet/delivery-address-sheet.tsx:385:15 Type '{ ref: RefObject<null>; data: ({} | { itemName: string; })[]; width: number; renderItem: ({ item, index }: any) => Element; sliderWidth: number; itemWidth: number; layout: string; onSnapToItem: (e: number) => void; defaultIndex: number; enabled: false; }' is not assignable to type 'IntrinsicAttributes & PropsWithChildren<TCarouselProps<{ itemName?: undefined; } | { itemName: string; }>>'.
+  Property 'sliderWidth' does not exist on type 'IntrinsicAttributes & PropsWithChildren<TCarouselProps<{ itemName?: undefined; } | { itemName: string; }>>'.
+[global] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:408:37 Property 'prev' does not exist on type 'never'.
+[global] TS18047 src/components/delivery-address-sheet/delivery-address-sheet.tsx:461:32 'user' is possibly 'null'.
+[global] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:462:40 Property 'close' does not exist on type 'never'.
+[global] TS2722 src/components/delivery-address-sheet/delivery-address-sheet.tsx:464:9 Cannot invoke an object which is possibly 'undefined'.
+[global] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:467:64 Property 'next' does not exist on type 'never'.
+[global] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:518:45 Property 'close' does not exist on type 'never'.
+[global] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:520:50 Property 'open' does not exist on type 'never'.
+[global] TS18047 src/components/delivery-address-sheet/delivery-address-sheet.tsx:564:31 'user' is possibly 'null'.
+[global] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:568:35 Property 'close' does not exist on type 'never'.
+[global] TS2722 src/components/delivery-address-sheet/delivery-address-sheet.tsx:569:7 Cannot invoke an object which is possibly 'undefined'.
+[global] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:571:29 Property 'refresh' does not exist on type 'never'.
+[global] TS2322 src/components/delivery-address-sheet/delivery-address-sheet.tsx:580:9 Type '{ children: Element[]; ref: RefObject<null>; height: number; closeOnDragDown: boolean; closeOnPressMask: true; customStyles: { wrapper: { backgroundColor: string; }; container: { ...; }; draggableIcon: { ...; }; }; animationDuration: number; }' is not assignable to type 'IntrinsicAttributes & RBSheetProps & RefAttributes<RBSheetRef>'.
+  Property 'closeOnDragDown' does not exist on type 'IntrinsicAttributes & RBSheetProps & RefAttributes<RBSheetRef>'.
+[global] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:605:41 Property 'close' does not exist on type 'never'.
+[global] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:642:43 Property 'close' does not exist on type 'never'.
+[global] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:644:48 Property 'open' does not exist on type 'never'.
+[global] TS2339 src/components/delivery-address-sheet/delivery-address-sheet.tsx:663:39 Property 'open' does not exist on type 'never'.
+[global] TS1117 src/i18n/locale/Indonesia.ts:1603:3 An object literal cannot have multiple properties with the same name.
+[global] TS1117 src/i18n/locale/Melayu.ts:1591:3 An object literal cannot have multiple properties with the same name.
+[global] TS1117 src/i18n/locale/ph.ts:822:3 An object literal cannot have multiple properties with the same name.
+[global] TS1117 src/i18n/locale/th.ts:900:3 An object literal cannot have multiple properties with the same name.
+[global] TS1117 src/i18n/locale/th.ts:901:3 An object literal cannot have multiple properties with the same name.
+[global] TS1117 src/i18n/locale/th.ts:902:3 An object literal cannot have multiple properties with the same name.
+[global] TS6137 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:22:28 Cannot import type declaration files. Consider importing 'Theme.ts' instead of '@types/Theme.ts'.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:187:15 Type 'Provider_timeslot[] | undefined' is not assignable to type 'Provider_timeslot | undefined'.
+  Type 'Provider_timeslot[]' is missing the following properties from type 'Provider_timeslot': id, practitioner, location, statuses, and 6 more.
+[global] TS2345 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:191:20 Argument of type '(prevState: StateProps) => { selectedProvider: Provider_timeslot; phoneNumber: string | undefined; isKorea: boolean; svgData_building: object | null; ... 18 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+  Type '(prevState: StateProps) => { selectedProvider: Provider_timeslot; phoneNumber: string | undefined; isKorea: boolean; svgData_building: object | null; ... 18 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to type '(prevState: StateProps) => StateProps'.
+    Call signature return types '{ selectedProvider: Provider_timeslot; phoneNumber: string | undefined; isKorea: boolean; svgData_building: object | null; svgData_phone: object | null; svgData_pin: object | null; ... 16 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' and 'StateProps' are incompatible.
+      The types of 'phoneNumber' are incompatible between these types.
+        Type 'string | undefined' is not assignable to type 'string'.
+          Type 'undefined' is not assignable to type 'string'.
+[global] TS2345 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:228:18 Argument of type '(prevState: StateProps) => { svgData_building: string; svgData_phone: object | null; svgData_pin: object | null; selectedProvider: Provider_timeslot | undefined; ... 18 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+  Type '(prevState: StateProps) => { svgData_building: string; svgData_phone: object | null; svgData_pin: object | null; selectedProvider: Provider_timeslot | undefined; ... 18 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to type '(prevState: StateProps) => StateProps'.
+    Call signature return types '{ svgData_building: string; svgData_phone: object | null; svgData_pin: object | null; selectedProvider: Provider_timeslot | undefined; phoneNumber: string; ... 17 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' and 'StateProps' are incompatible.
+      The types of 'svgData_building' are incompatible between these types.
+        Type 'string' is not assignable to type 'object'.
+[global] TS2345 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:242:18 Argument of type '(prevState: StateProps) => { svgData_phone: string; svgData_building: object | null; svgData_pin: object | null; selectedProvider: Provider_timeslot | undefined; ... 18 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+  Type '(prevState: StateProps) => { svgData_phone: string; svgData_building: object | null; svgData_pin: object | null; selectedProvider: Provider_timeslot | undefined; ... 18 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to type '(prevState: StateProps) => StateProps'.
+    Call signature return types '{ svgData_phone: string; svgData_building: object | null; svgData_pin: object | null; selectedProvider: Provider_timeslot | undefined; phoneNumber: string; ... 17 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' and 'StateProps' are incompatible.
+      The types of 'svgData_phone' are incompatible between these types.
+        Type 'string' is not assignable to type 'object'.
+[global] TS2345 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:256:18 Argument of type '(prevState: StateProps) => { svgData_pin: string; svgData_building: object | null; svgData_phone: object | null; selectedProvider: Provider_timeslot | undefined; ... 18 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+  Type '(prevState: StateProps) => { svgData_pin: string; svgData_building: object | null; svgData_phone: object | null; selectedProvider: Provider_timeslot | undefined; ... 18 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to type '(prevState: StateProps) => StateProps'.
+    Call signature return types '{ svgData_pin: string; svgData_building: object | null; svgData_phone: object | null; selectedProvider: Provider_timeslot | undefined; phoneNumber: string; ... 17 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' and 'StateProps' are incompatible.
+      The types of 'svgData_pin' are incompatible between these types.
+        Type 'string' is not assignable to type 'object'.
+[global] TS2345 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:270:18 Argument of type '(prevState: StateProps) => { svgData_info_pink: string; svgData_building: object | null; svgData_phone: object | null; svgData_pin: object | null; selectedProvider: Provider_timeslot | undefined; ... 17 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+  Type '(prevState: StateProps) => { svgData_info_pink: string; svgData_building: object | null; svgData_phone: object | null; svgData_pin: object | null; selectedProvider: Provider_timeslot | undefined; ... 17 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' is not assignable to type '(prevState: StateProps) => StateProps'.
+    Call signature return types '{ svgData_info_pink: string; svgData_building: object | null; svgData_phone: object | null; svgData_pin: object | null; selectedProvider: Provider_timeslot | undefined; ... 17 more ...; selected_pharmacy_of_Korean_doctor: Selected_pharmacy_of_Korean_doctor; }' and 'StateProps' are incompatible.
+      The types of 'svgData_info_pink' are incompatible between these types.
+        Type 'string' is not assignable to type 'object'.
+[global] TS7006 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:282:38 Parameter 'index' implicitly has an 'any' type.
+[global] TS7006 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:282:45 Parameter 'arr' implicitly has an 'any' type.
+[global] TS7006 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:323:38 Parameter 'index' implicitly has an 'any' type.
+[global] TS7006 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:323:45 Parameter 'arr' implicitly has an 'any' type.
+[global] TS2345 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:340:54 Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:489:18 Type 'RegisteredStyle<{ fontSize: number; fontWeight: "700"; color: string; paddingLeft: number; paddingRight: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { fontSize: number; fontWeight: "700"; color: string; paddingLeft: number; paddingRight: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:493:18 Type 'RegisteredStyle<{ fontSize: number; fontWeight: "700"; color: string; paddingLeft: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { fontSize: number; fontWeight: "700"; color: string; paddingLeft: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:525:13 Type 'RegisteredStyle<{ color: string; fontSize: number; lineHeight: number; paddingVertical: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; lineHeight: number; paddingVertical: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:537:18 Type 'RegisteredStyle<{ color: string; fontSize: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:548:22 Type 'RegisteredStyle<{ color: string; fontSize: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:552:20 Type 'RegisteredStyle<{ fontSize: number; fontWeight: "bold"; color: string; paddingTop: number; paddingLeft: number; textDecorationLine: "underline"; paddingBottom: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { fontSize: number; fontWeight: "bold"; color: string; paddingTop: number; paddingLeft: number; textDecorationLine: "underline"; paddingBottom: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:565:20 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "700"; paddingLeft: number; flexShrink: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "700"; paddingLeft: number; flexShrink: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:575:22 Type 'RegisteredStyle<{ color: string; textDecorationLine: "underline"; fontSize: number; fontWeight: "700"; paddingLeft: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; textDecorationLine: "underline"; fontSize: number; fontWeight: "700"; paddingLeft: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:582:20 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "700"; paddingLeft: number; flexShrink: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "700"; paddingLeft: number; flexShrink: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:641:18 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "700"; paddingBottom: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "700"; paddingBottom: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:647:22 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:653:22 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:686:22 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "700"; paddingLeft: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "700"; paddingLeft: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2345 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:700:24 Argument of type '{ selectedAddress: MemberAddresses | null; id?: string | undefined; name?: string | undefined; code?: number | undefined; valueAsString?: string | undefined; value?: UserValue | undefined; ... 8 more ...; productRecommendation?: any; }' is not assignable to parameter of type 'SetStateAction<User | null>'.
+  Type '{ selectedAddress: MemberAddresses | null; id?: string | undefined; name?: string | undefined; code?: number | undefined; valueAsString?: string | undefined; value?: UserValue | undefined; ... 8 more ...; productRecommendation?: any; }' is not assignable to type 'User'.
+    Types of property 'id' are incompatible.
+      Type 'string | undefined' is not assignable to type 'string'.
+        Type 'undefined' is not assignable to type 'string'.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:714:24 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:720:24 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:726:24 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "400"; paddingLeft: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:785:23 Type 'RegisteredStyle<{ fontSize: number; lineHeight: number; color: string; fontWeight: "700"; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { fontSize: number; lineHeight: number; color: string; fontWeight: "700"; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:800:27 Type 'RegisteredStyle<{ marginTop: number; fontSize: number; lineHeight: number; color: string; fontWeight: "400"; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { marginTop: number; fontSize: number; lineHeight: number; color: string; fontWeight: "400"; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:817:32 Type 'RegisteredStyle<{ fontSize: number; fontWeight: "400"; color: string; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { fontSize: number; fontWeight: "400"; color: string; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:822:32 Type 'RegisteredStyle<{ fontSize: number; fontWeight: "400"; color: string; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { fontSize: number; fontWeight: "400"; color: string; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:828:28 Type 'RegisteredStyle<{ fontSize: number; color: string; textTransform: "capitalize"; fontWeight: "700"; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { fontSize: number; color: string; textTransform: "capitalize"; fontWeight: "700"; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2559 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:861:29 Type 'RegisteredStyle<{ fontSize: number; lineHeight: number; color: string; marginLeft: number; fontWeight: "700"; paddingHorizontal: number; }>' has no properties in common with type 'TextStyle'.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:862:29 Type 'false | { color: string; }' is not assignable to type 'TextStyle'.
+  Type 'false' has no properties in common with type 'TextStyle'.
+[global] TS2559 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:900:29 Type 'RegisteredStyle<{ fontSize: number; lineHeight: number; color: string; marginLeft: number; fontWeight: "700"; paddingHorizontal: number; }>' has no properties in common with type 'TextStyle'.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:901:29 Type 'false | { color: string; }' is not assignable to type 'TextStyle'.
+  Type 'false' has no properties in common with type 'TextStyle'.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:904:29 Type 'false | { color: string; }' is not assignable to type 'TextStyle'.
+  Type 'false' has no properties in common with type 'TextStyle'.
+[global] TS2559 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:917:29 Type 'RegisteredStyle<{ fontSize: number; lineHeight: number; color: string; marginLeft: number; textTransform: "capitalize"; paddingVertical: number; }>' has no properties in common with type 'TextStyle'.
+[global] TS2345 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:924:56 Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:928:36 Type 'RegisteredStyle<{ fontSize: number; lineHeight: number; color: string; marginLeft: number; textTransform: "capitalize"; paddingVertical: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { fontSize: number; lineHeight: number; color: string; marginLeft: number; textTransform: "capitalize"; paddingVertical: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2559 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:962:35 Type 'RegisteredStyle<{ fontSize: number; lineHeight: number; color: string; marginLeft: number; fontWeight: "700"; paddingHorizontal: number; }>' has no properties in common with type 'TextStyle'.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:963:35 Type 'false | { color: string; }' is not assignable to type 'TextStyle'.
+  Type 'false' has no properties in common with type 'TextStyle'.
+[global] TS2559 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:1001:35 Type 'RegisteredStyle<{ fontSize: number; lineHeight: number; color: string; marginLeft: number; fontWeight: "700"; paddingHorizontal: number; }>' has no properties in common with type 'TextStyle'.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:1002:35 Type 'false | { color: string; }' is not assignable to type 'TextStyle'.
+  Type 'false' has no properties in common with type 'TextStyle'.
+[global] TS2559 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:1041:33 Type 'RegisteredStyle<{ fontSize: number; lineHeight: number; color: string; marginLeft: number; fontWeight: "700"; paddingHorizontal: number; }>' has no properties in common with type 'TextStyle'.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:1042:33 Type 'false | { color: string; }' is not assignable to type 'TextStyle'.
+  Type 'false' has no properties in common with type 'TextStyle'.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:1052:27 Type 'RegisteredStyle<{ fontSize: number; lineHeight: number; color: string; marginLeft: number; textTransform: "capitalize"; paddingVertical: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { fontSize: number; lineHeight: number; color: string; marginLeft: number; textTransform: "capitalize"; paddingVertical: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS2322 src/screens/doctor-detail-screen/doctor-detail-screen.tsx:1062:30 Type 'RegisteredStyle<{ color: string; fontSize: number; fontWeight: "400"; paddingVertical: number; paddingRight: number; textAlign: "left"; flexShrink: number; }>' is not assignable to type 'TextStyle | TextStyle[] | undefined'.
+  Type 'Number & { __registeredStyleBrand: { color: string; fontSize: number; fontWeight: "400"; paddingVertical: number; paddingRight: number; textAlign: "left"; flexShrink: number; }; }' is missing the following properties from type 'TextStyle[]': length, pop, push, concat, and 29 more.
+[global] TS6137 src/screens/my-appointment-screen/my-appointment-screen.tsx:23:28 Cannot import type declaration files. Consider importing 'Theme.ts' instead of '@types/Theme.ts'.
+[global] TS2345 src/screens/my-appointment-screen/my-appointment-screen.tsx:244:18 Argument of type '(prevState: StateProps) => { svgData_fileIcon: string; ticketId: string; ticket: Ticket | null; uploadProgress: number; uploading: boolean; uploadedFilesList: UploadedFilesList[]; uploadingFile: UploadedFilesList | null; transaction_ticket: Transaction_ticket[]; prescriptionRowBtW: number; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+  Type '(prevState: StateProps) => { svgData_fileIcon: string; ticketId: string; ticket: Ticket | null; uploadProgress: number; uploading: boolean; uploadedFilesList: UploadedFilesList[]; uploadingFile: UploadedFilesList | null; transaction_ticket: Transaction_ticket[]; prescriptionRowBtW: number; }' is not assignable to type '(prevState: StateProps) => StateProps'.
+    Call signature return types '{ svgData_fileIcon: string; ticketId: string; ticket: Ticket | null; uploadProgress: number; uploading: boolean; uploadedFilesList: UploadedFilesList[]; uploadingFile: UploadedFilesList | null; transaction_ticket: Transaction_ticket[]; prescriptionRowBtW: number; }' and 'StateProps' are incompatible.
+      The types of 'svgData_fileIcon' are incompatible between these types.
+        Type 'string' is not assignable to type 'object'.
+[global] TS2345 src/screens/my-appointment-screen/my-appointment-screen.tsx:352:20 Argument of type '(prevState: StateProps) => { uploadedFilesList: { name: string | undefined; key: string; size: number; }[]; ticketId: string; ticket: Ticket | null; uploadProgress: number; ... 4 more ...; prescriptionRowBtW: number; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+  Type '(prevState: StateProps) => { uploadedFilesList: { name: string | undefined; key: string; size: number; }[]; ticketId: string; ticket: Ticket | null; uploadProgress: number; ... 4 more ...; prescriptionRowBtW: number; }' is not assignable to type '(prevState: StateProps) => StateProps'.
+    Call signature return types '{ uploadedFilesList: { name: string | undefined; key: string; size: number; }[]; ticketId: string; ticket: Ticket | null; uploadProgress: number; uploading: boolean; svgData_fileIcon: object | null; uploadingFile: UploadedFilesList | null; transaction_ticket: Transaction_ticket[]; prescriptionRowBtW: number; }' and 'StateProps' are incompatible.
+      The types of 'uploadedFilesList' are incompatible between these types.
+        Type '{ name: string | undefined; key: string; size: number; }[]' is not assignable to type 'UploadedFilesList[]'.
+          Type '{ name: string | undefined; key: string; size: number; }' has no properties in common with type 'UploadedFilesList'.
+[global] TS18048 src/screens/my-appointment-screen/my-appointment-screen.tsx:400:13 'file.uri' is possibly 'undefined'.
+[global] TS2353 src/screens/my-appointment-screen/my-appointment-screen.tsx:412:11 Object literal may only specify known properties, and 'name' does not exist in type 'UploadedFilesList'.
+[global] TS7034 src/screens/my-appointment-screen/my-appointment-screen.tsx:483:11 Variable 'drugInformation' implicitly has type 'any[]' in some locations where its type cannot be determined.
+[global] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:484:53 Property 'drugs' does not exist on type 'ValueAsJson'.
+[global] TS7006 src/screens/my-appointment-screen/my-appointment-screen.tsx:488:25 Parameter 'drugInfo' implicitly has an 'any' type.
+[global] TS7006 src/screens/my-appointment-screen/my-appointment-screen.tsx:488:35 Parameter 'index' implicitly has an 'any' type.
+[global] TS7006 src/screens/my-appointment-screen/my-appointment-screen.tsx:489:31 Parameter 'medItem' implicitly has an 'any' type.
+[global] TS7006 src/screens/my-appointment-screen/my-appointment-screen.tsx:489:40 Parameter 'index' implicitly has an 'any' type.
+[global] TS7005 src/screens/my-appointment-screen/my-appointment-screen.tsx:560:12 Variable 'drugInformation' implicitly has an 'any[]' type.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:620:14 'state.ticket' is possibly 'null'.
+[global] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:779:29 Property 'next' does not exist on type 'never'.
+[global] TS2588 src/screens/my-appointment-screen/my-appointment-screen.tsx:818:21 Cannot assign to 'refRBCountry' because it is a constant.
+[global] TS2741 src/screens/my-appointment-screen/my-appointment-screen.tsx:909:14 Property 'areaCode' is missing in type '{ onChangeText: (e: any) => void; onAreaCodeChange: (e: any) => void; mobileNumber: string; }' but required in type 'MobileNumberComponentProps'.
+[global] TS2588 src/screens/my-appointment-screen/my-appointment-screen.tsx:944:17 Cannot assign to 'refRBCountry' because it is a constant.
+[global] TS2322 src/screens/my-appointment-screen/my-appointment-screen.tsx:1078:41 Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+[global] TS2345 src/screens/my-appointment-screen/my-appointment-screen.tsx:1081:32 Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+[global] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:1084:30 Property 'close' does not exist on type 'never'.
+[global] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:1091:35 Property 'next' does not exist on type 'never'.
+[global] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:1094:33 Property 'next' does not exist on type 'never'.
+[global] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:1160:37 Property 'next' does not exist on type 'never'.
+[global] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:1173:39 Property 'prev' does not exist on type 'never'.
+[global] TS2322 src/screens/my-appointment-screen/my-appointment-screen.tsx:1217:9 Type '{ children: Element; ref: RefObject<null>; height: number; closeOnDragDown: boolean; closeOnPressMask: true; customStyles: { wrapper: { backgroundColor: string; }; container: { ...; }; draggableIcon: { ...; }; }; onClose: () => Promise<...>; }' is not assignable to type 'IntrinsicAttributes & RBSheetProps & RefAttributes<RBSheetRef>'.
+  Property 'closeOnDragDown' does not exist on type 'IntrinsicAttributes & RBSheetProps & RefAttributes<RBSheetRef>'.
+[global] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:1243:38 Property 'close' does not exist on type 'never'.
+[global] TS2322 src/screens/my-appointment-screen/my-appointment-screen.tsx:1277:15 Type '{ ref: RefObject<null>; data: { itemName: string; }[]; width: number; renderItem: ({ item, index }: any) => Element; sliderWidth: number; itemWidth: number; layout: string; onSnapToItem: (e: number) => void; defaultIndex: number; enabled: false; }' is not assignable to type 'IntrinsicAttributes & PropsWithChildren<TCarouselProps<{ itemName: string; }>>'.
+  Property 'sliderWidth' does not exist on type 'IntrinsicAttributes & PropsWithChildren<TCarouselProps<{ itemName: string; }>>'.
+[global] TS2322 src/screens/my-appointment-screen/my-appointment-screen.tsx:1297:11 Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+[global] TS2304 src/screens/my-appointment-screen/my-appointment-screen.tsx:1362:18 Cannot find name 'UploadedFilesList'.
+[global] TS2322 src/screens/my-appointment-screen/my-appointment-screen.tsx:1392:21 Type 'object' is not assignable to type 'string'.
+[global] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:1416:46 Property 'name' does not exist on type 'UploadedFilesList'.
+[global] TS2322 src/screens/my-appointment-screen/my-appointment-screen.tsx:1470:7 Type 'string | boolean' is not assignable to type 'boolean'.
+  Type 'string' is not assignable to type 'boolean'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1503:10 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1514:16 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1522:27 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1537:16 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1545:27 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1558:11 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1567:18 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1568:19 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1575:51 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1582:11 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1583:11 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1587:41 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1606:31 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1607:28 'token' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1608:26 'token' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1609:28 'token' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1610:30 'token' is possibly 'null'.
+[global] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:1624:40 Property 'open' does not exist on type 'never'.
+[global] TS2339 src/screens/my-appointment-screen/my-appointment-screen.tsx:1767:37 Property 'drugs' does not exist on type 'ValueAsJson'.
+[global] TS2345 src/screens/my-appointment-screen/my-appointment-screen.tsx:1788:15 Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1818:11 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1819:11 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1821:16 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1828:21 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1835:22 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1835:66 'state.ticket' is possibly 'null'.
+[global] TS18047 src/screens/my-appointment-screen/my-appointment-screen.tsx:1848:22 'state.ticket' is possibly 'null'.
+[global] TS2322 src/screens/my-appointment-screen/my-appointment-screen.tsx:2168:11 Type 'string | boolean' is not assignable to type 'boolean'.
+  Type 'string' is not assignable to type 'boolean'.
+[global] TS2322 src/screens/profile/profile-screen/profile-screen.tsx:256:9 Type '{ children: string; ellipsizeMode: string; numberOfLines: number; style: any; testID: string; }' is not assignable to type 'IntrinsicAttributes & AppTextProps'.
+  Property 'testID' does not exist on type 'IntrinsicAttributes & AppTextProps'.
+[global] TS2322 src/screens/profile/profile-screen/profile-screen.tsx:422:9 Type '{ children: string; ellipsizeMode: string; numberOfLines: number; style: any; testID: string; }' is not assignable to type 'IntrinsicAttributes & AppTextProps'.
+  Property 'testID' does not exist on type 'IntrinsicAttributes & AppTextProps'.
+global changed-file diagnostics 140
