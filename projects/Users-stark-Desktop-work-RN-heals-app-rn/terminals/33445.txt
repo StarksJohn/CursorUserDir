@@ -1,0 +1,32 @@
+---
+pid: 88084
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "SERIAL=emulator-5554\n# sanity check local DNS\ndig @127.0.0.1 -p 5354 heals-patient-gateway-dev.heals.asia +short +time=2\n# turn off private DNS that bypasses port 53\nadb -s $SERIAL shell settings put global private_dns_mode off\n# redirect guest DNS to host:5354\nadb -s $SERIAL shell iptables -t nat -D OUTPUT -p udp --dport 53 -j DNAT --to-destination 10.0.2.2:5354 2>/dev/null || true\nadb -s $SERIAL shell iptables -t nat -D OUTPUT -p tcp --dport 53 -j DNAT --to-destination 10.0.2.2:5354 2>/dev/null || true\nadb -s $SERIAL shell iptables -t nat -I OUTPUT 1 -p udp --dport 53 -j DNAT --to-destination 10.0.2.2:5354\nadb -s $SERIAL shell iptables -t nat -I OUTPUT 1 -p tcp --dport 53 -j DNAT --to-destination 10.0.2.2:5354\nadb -s $SERIAL shell iptables -t nat -L OUTPUT -n -v | head -20\necho '=== ping ==='\nadb -s $SERIAL shell ping -c 1 -W 3 heals-patient-gateway-dev.heals.asia 2>&1 | tail -8\necho '=== getaddrinfo via toybox ==='\nadb -s $SERIAL shell toybox ping -c 1 -W 3 heals-patient-gateway-dev.heals.asia 2>&1 | tail -6"
+title: "DNAT emulator DNS to local UDP 5354 server"
+status: succeeded
+started_at: 2026-09-08T10:15:31.840Z
+running_for_ms: 31422    
+---
+;; Got bad packet: bad label type
+108 bytes
+bf 95 81 80 00 01 00 01 00 00 00 00 00 00 19 68          ...............h
+65 61 6c 73 2d 70 61 74 69 65 6e 74 2d 67 61 74          eals-patient-gat
+65 77 61 79 2d 64 65 76 05 68 65 61 6c 73 04 61          eway-dev.heals.a
+73 69 61 00 00 01 00 01 19 68 65 61 6c 73 2d 70          sia......heals-p
+61 74 69 65 6e 74 2d 67 61 74 65 77 61 79 2d 64          atient-gateway-d
+65 76 05 68 65 61 6c 73 04 61 73 69 61 00 00 01          ev.heals.asia...
+00 01 00 00 00 1e 00 04 5f 28 95 70                      ........_(.p
+Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+    0     0 DNAT       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:53 to:10.0.2.2:5354
+    0     0 DNAT       udp  --  *      *       0.0.0.0/0            0.0.0.0/0            udp dpt:53 to:10.0.2.2:5354
+=== ping ===
+ping: unknown host heals-patient-gateway-dev.heals.asia
+=== getaddrinfo via toybox ===
+ping: heals-patient-gateway-dev.heals.asia: No address associated with hostname
+
+---
+exit_code: 0
+elapsed_ms: 31421
+ended_at: 2026-09-08T10:16:03.261Z
+---

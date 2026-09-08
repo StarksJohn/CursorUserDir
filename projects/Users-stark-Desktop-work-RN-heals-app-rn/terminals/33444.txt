@@ -1,0 +1,47 @@
+---
+pid: 87756
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "python3 - <<'PY'\nimport socket, struct, threading\n\nRECORDS = {\n    b'heals-patient-gateway-dev.heals.asia': '95.40.149.112',\n    b'health-passport-dev.heals.asia': '43.199.84.174',\n    b'heals-core-static-dev.s3.ap-east-1.amazonaws.com': '52.95.162.58',\n    b'heals-core-static.s3.ap-east-1.amazonaws.com': '3.5.215.209',\n    b'heals-core-static.heals.asia': '18.65.238.77',\n    b'payment-stg.heals.asia': '95.40.149.112',\n    b'hsbc-gateway-dev.heals.asia': '16.162.210.203',\n}\n\ndef decode_qname(data, offset):\n    labels = []\n    jumped = False\n    orig = offset\n    while True:\n        if offset >= len(data):\n            return b'', orig + 1\n        length = data[offset]\n        if length == 0:\n            offset += 1\n            break\n        if length & 0xC0 == 0xC0:\n            if offset + 1 >= len(data):\n                return b'', offset + 1\n            ptr = ((length & 0x3F) << 8) | data[offset + 1]\n            if not jumped:\n                orig = offset + 2\n            offset = ptr\n            jumped = True\n            continue\n        offset += 1\n        labels.append(data[offset:offset+length])\n        offset += length\n    name = b'.'.join(labels).lower()\n    return name, (orig if jumped else offset)\n\ndef encode_name(name):\n    out = b''\n    for label in name.split(b'.'):\n        out += bytes([len(label)]) + label\n    return out + b'\\x00'\n\ndef build_response(query):\n    if len(query) < 12:\n        return None\n    tid = query[:2]\n    qname, qend = decode_qname(query, 12)\n    if qend + 4 > len(query):\n        return None\n    qtype, qclass = struct.unpack('!HH', query[qend:qend+4])\n    ip = RECORDS.get(qname)\n    flags = 0x8180  # standard query response, no error\n    ancount = 0\n    answers = b''\n    if ip and qtype in (1, 255):  # A or ANY\n        ancount = 1\n        answers = encode_name(qname) + struct.pack('!HHIH', 1, 1, 30, 4)\n        answers += socket.inet_aton(ip)\n    elif not ip:\n        flags = 0x8183  # NXDOMAIN for unknown - better SERVFAIL to not break other lookups\n        flags = 0x8182  # SERVFAIL so client may retry elsewhere? Android has only this resolver.\n        # Return no error empty answer so apps don't hang; OS may still fail other hosts\n        flags = 0x8180\n    header = tid + struct.pack('!HHHHHH', flags, 1, ancount, 0, 0, 0)\n    question = query[12:qend+4]\n    return header + question + answers\n\nsock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)\nsock.bind(('0.0.0.0', 5354))\nprint('dns_listen 0.0.0.0:5354', flush=True)\nwhile True:\n    try:\n        data, addr = sock.recvfrom(512)\n        resp = build_response(data)\n        if resp:\n            sock.sendto(resp, addr)\n            qname, _ = decode_qname(data, 12)\n            print('query', qname.decode('ascii', 'replace'), 'from', addr, flush=True)\n    except Exception as e:\n        print('dns_err', e, flush=True)\nPY"
+title: "Start local DNS server on UDP 5354"
+status: failed   
+started_at: 2026-09-08T10:15:14.333Z
+running_for_ms: 104199   
+---
+dns_listen 0.0.0.0:5354
+query heals-patient-gateway-dev.heals.asia from ('127.0.0.1', 49321)
+query heals-patient-gateway-dev.heals.asia from ('127.0.0.1', 56249)
+query www.google.com from ('127.0.0.1', 61445)
+query connectivitycheck.gstatic.com from ('127.0.0.1', 64214)
+query www.google.com from ('127.0.0.1', 50623)
+query www.google.com from ('127.0.0.1', 51899)
+query connectivitycheck.gstatic.com from ('127.0.0.1', 56783)
+query www.google.com from ('127.0.0.1', 59814)
+query gmscompliance-pa.googleapis.com from ('127.0.0.1', 50946)
+query gmscompliance-pa.googleapis.com from ('127.0.0.1', 51746)
+query heals-patient-gateway-dev.heals.asia from ('127.0.0.1', 56249)
+query www.google.com from ('127.0.0.1', 61445)
+query connectivitycheck.gstatic.com from ('127.0.0.1', 64214)
+query www.google.com from ('127.0.0.1', 50623)
+query www.google.com from ('127.0.0.1', 51899)
+query connectivitycheck.gstatic.com from ('127.0.0.1', 56783)
+query www.google.com from ('127.0.0.1', 59814)
+query gmscompliance-pa.googleapis.com from ('127.0.0.1', 50946)
+query gmscompliance-pa.googleapis.com from ('127.0.0.1', 51746)
+query heals-patient-gateway-dev.heals.asia from ('127.0.0.1', 61424)
+query heals-patient-gateway-dev.heals.asia from ('127.0.0.1', 59165)
+query heals-patient-gateway-dev.heals.asia from ('127.0.0.1', 61424)
+query heals-patient-gateway-dev.heals.asia from ('127.0.0.1', 59165)
+query gmscompliance-pa.googleapis.com from ('127.0.0.1', 50925)
+query gmscompliance-pa.googleapis.com from ('127.0.0.1', 63774)
+query heals-patient-gateway-dev.heals.asia from ('127.0.0.1', 53854)
+query heals-patient-gateway-dev.heals.asia from ('127.0.0.1', 56464)
+query gmscompliance-pa.googleapis.com from ('127.0.0.1', 50925)
+query gmscompliance-pa.googleapis.com from ('127.0.0.1', 63774)
+query heals-patient-gateway-dev.heals.asia from ('127.0.0.1', 53854)
+query heals-patient-gateway-dev.heals.asia from ('127.0.0.1', 56464)
+
+---
+exit_code: unknown
+elapsed_ms: 104199
+ended_at: 2026-09-08T10:16:58.532Z
+---

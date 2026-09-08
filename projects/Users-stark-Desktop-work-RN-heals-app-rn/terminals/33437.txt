@@ -1,17 +1,31 @@
 ---
-pid: 79865
+pid: 2924
 cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
-command: "npm run android:dev -- --device 4ae24c72 --no-packager"
-title: "Install and run Android devDebug APK"
+command: "ANDROID_SERIAL=4ae24c72 npm run android:dev"
+title: "Run Android devDebug on PJJ110"
 status: succeeded
-started_at: 2026-09-07T10:25:10.167Z
-running_for_ms: 1828475  
+started_at: 2026-09-08T05:58:58.480Z
+running_for_ms: 1775795  
 ---
 
 > Heals@0.0.1 android:dev
-> ENVFILE=.env.development react-native run-android --mode=devDebug --appIdSuffix=dev --device 4ae24c72 --no-packager
+> ENVFILE=.env.development react-native run-android --mode=devDebug --appIdSuffix=dev
 
-info Building the app...
+error Cannot start server in new windows because no terminal app was specified, use --terminal to specify, or start a dev server manually by running npm start or yarn start in other terminal window.
+info Installing the app...
+Downloading https://services.gradle.org/distributions/gradle-8.14.3-bin.zip
+.............10%.............20%.............30%.............40%.............50%.............60%.............70%.............80%.............90%..............100%
+
+Welcome to Gradle 8.14.3!
+
+Here are the highlights of this release:
+ - Java 24 support
+ - GraalVM Native Image toolchain selection
+ - Enhancements to test reporting
+ - Build Authoring improvements
+
+For more details see https://docs.gradle.org/8.14.3/release-notes.html
+
 Starting a Gradle Daemon (subsequent builds will be faster)
 > Task :gradle-plugin:settings-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :gradle-plugin:shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
@@ -58,7 +72,6 @@ Reading env from: .env.development
 :react-native-firebase_messaging:android.targetSdk using custom value: 36
 :react-native-firebase_messaging:android.minSdk using custom value: 24
 :react-native-firebase_messaging:reactNativeAndroidDir /Users/stark/Desktop/work/RN/heals-app-rn/node_modules/react-native
-Warning: SDK processing. This version only understands SDK XML versions up to 3 but an SDK XML file of version 4 was encountered. This can happen if you use versions of Android Studio and the command-line tools that were released at different times.
 
 > Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :app:generateAutolinkingNewArchitectureFiles UP-TO-DATE
@@ -270,7 +283,7 @@ Warning: SDK processing. This version only understands SDK XML versions up to 3 
 [22m[39m[2m              Fast - Scalable - Integrated
 
 [22m
-info Bundle Debug ID: e27b131b-0b5a-484b-9ab4-28306822c39e
+info Bundle Debug ID: 976eeca8-3820-451d-b85c-9e70d03e1e50
 LOG:Writing bundle output to: /Users/stark/Desktop/work/RN/heals-app-rn/android/app/build/generated/assets/createBundleDevDebugJsAndAssets/index.android.bundle
 LOG:Writing sourcemap output to: /Users/stark/Desktop/work/RN/heals-app-rn/android/app/build/intermediates/sourcemaps/react/devDebug/index.android.bundle.packager.map
 LOG:Done writing bundle output
@@ -278,7 +291,7 @@ LOG:Done writing sourcemap output
 Copying 76 asset files
 Done copying assets
 
-> Task :app:generateDevDebugResValues UP-TO-DATE
+> Task :app:generateDevDebugResValues
 > Task :app:processDevDebugGoogleServices UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:generateDebugResValues UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:generateDebugResources UP-TO-DATE
@@ -399,9 +412,7 @@ Done copying assets
 > Task :sentry_react-native:packageDebugResources UP-TO-DATE
 > Task :app:mapDevDebugSourceSetPaths UP-TO-DATE
 > Task :app:generateDevDebugResources UP-TO-DATE
-> Task :app:mergeDevDebugResources UP-TO-DATE
-> Task :app:packageDevDebugResources UP-TO-DATE
-> Task :app:parseDevDebugLocalResources UP-TO-DATE
+> Task :app:packageDevDebugResources
 > Task :app:createDevDebugCompatibleScreenManifests UP-TO-DATE
 > Task :app:extractDeepLinksDevDebug UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:extractDeepLinksDebug UP-TO-DATE
@@ -435,6 +446,7 @@ Done copying assets
 > Task :react-native-documents_picker:extractDeepLinksDebug UP-TO-DATE
 > Task :react-native-documents_picker:processDebugManifest UP-TO-DATE
 > Task :react-native-encrypted-storage:extractDeepLinksDebug UP-TO-DATE
+> Task :app:parseDevDebugLocalResources
 > Task :react-native-encrypted-storage:processDebugManifest UP-TO-DATE
 > Task :react-native-file-viewer:extractDeepLinksDebug UP-TO-DATE
 > Task :react-native-file-viewer:processDebugManifest UP-TO-DATE
@@ -482,6 +494,7 @@ Done copying assets
 > Task :react-native-worklets:processDebugManifest UP-TO-DATE
 > Task :sentry_react-native:extractDeepLinksDebug UP-TO-DATE
 > Task :sentry_react-native:processDebugManifest UP-TO-DATE
+> Task :app:mergeDevDebugResources
 > Task :app:processDevDebugMainManifest UP-TO-DATE
 > Task :app:processDevDebugManifest UP-TO-DATE
 > Task :app:processDevDebugManifestForPackage UP-TO-DATE
@@ -984,49 +997,49 @@ Done copying assets
 > Task :react-native-restart:bundleLibRuntimeToJarDebug UP-TO-DATE
 > Task :react-native-share:bundleLibRuntimeToJarDebug UP-TO-DATE
 > Task :react-native-svg:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :app:compressDevDebugAssets
 > Task :react-native-vector-icons:bundleLibRuntimeToJarDebug UP-TO-DATE
 > Task :react-native-worklets:bundleLibRuntimeToJarDebug UP-TO-DATE
 > Task :app:desugarDevDebugFileDependencies UP-TO-DATE
 > Task :app:dexBuilderDevDebug UP-TO-DATE
-> Task :app:compressDevDebugAssets
-> Task :app:processDevDebugJavaRes UP-TO-DATE
-> Task :invertase_react-native-apple-authentication:processDebugJavaRes UP-TO-DATE
 
 > Task :app:mergeDevDebugGlobalSynthetics
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbd, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbo, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.signin.zbb, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 7: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbv, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 7: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbv, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 7: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbi, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 7: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbi, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbp, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbs, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 10: invokespecial Lcom/google/android/gms/common/api/Api$AbstractClientBuilder;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.zba, but was com.google.android.gms.common.api.Api$AbstractClientBuilder.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbl, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbn, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbu, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbq, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 6: invokespecial Lcom/google/android/gms/common/api/Api$AbstractClientBuilder;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.internal.auth-api.zbae, but was com.google.android.gms.common.api.Api$AbstractClientBuilder.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbh, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbg, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbm, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbk, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 17: invokespecial Lcom/google/android/gms/auth/api/signin/internal/zbl;<init>(Lcom/google/android/gms/common/api/GoogleApiClient;)V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.signin.internal.zbi, but was com.google.android.gms.auth.api.signin.internal.zbl.<init>(com.google.android.gms.common.api.GoogleApiClient).
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 20: invokespecial Lcom/google/android/gms/auth/api/signin/internal/zbl;<init>(Lcom/google/android/gms/common/api/GoogleApiClient;)V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.signin.internal.zbk, but was com.google.android.gms.auth.api.signin.internal.zbl.<init>(com.google.android.gms.common.api.GoogleApiClient).
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbw, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbc, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbe, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbj, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbr, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.internal.auth-api.zbay, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 6: invokespecial Lcom/google/android/gms/common/api/Api$AbstractClientBuilder;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.internal.auth-api.zbak, but was com.google.android.gms.common.api.Api$AbstractClientBuilder.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbt, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.signin.internal.zbu, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbb, but was java.lang.Object.<init>().
-WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/5d283112d31a7243c9f7c5261f8e59f9/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 6: invokespecial Lcom/google/android/gms/common/api/Api$AbstractClientBuilder;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.internal.auth-api.zbw, but was com.google.android.gms.common.api.Api$AbstractClientBuilder.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbd, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbo, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.signin.zbb, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 7: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbv, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 7: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbv, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 7: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbi, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 7: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbi, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbp, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbs, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 10: invokespecial Lcom/google/android/gms/common/api/Api$AbstractClientBuilder;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.zba, but was com.google.android.gms.common.api.Api$AbstractClientBuilder.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbl, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbn, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbu, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbq, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 6: invokespecial Lcom/google/android/gms/common/api/Api$AbstractClientBuilder;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.internal.auth-api.zbae, but was com.google.android.gms.common.api.Api$AbstractClientBuilder.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbh, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbg, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbm, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbk, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 17: invokespecial Lcom/google/android/gms/auth/api/signin/internal/zbl;<init>(Lcom/google/android/gms/common/api/GoogleApiClient;)V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.signin.internal.zbi, but was com.google.android.gms.auth.api.signin.internal.zbl.<init>(com.google.android.gms.common.api.GoogleApiClient).
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 20: invokespecial Lcom/google/android/gms/auth/api/signin/internal/zbl;<init>(Lcom/google/android/gms/common/api/GoogleApiClient;)V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.signin.internal.zbk, but was com.google.android.gms.auth.api.signin.internal.zbl.<init>(com.google.android.gms.common.api.GoogleApiClient).
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbw, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbc, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbe, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbj, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbr, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.internal.auth-api.zbay, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 6: invokespecial Lcom/google/android/gms/common/api/Api$AbstractClientBuilder;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.internal.auth-api.zbak, but was com.google.android.gms.common.api.Api$AbstractClientBuilder.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbt, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.signin.internal.zbu, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 2: invokespecial Ljava/lang/Object;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.auth.api.identity.zbb, but was java.lang.Object.<init>().
+WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/7fd0d637032fc43b9ad28108543fbad7/gradle/caches/8.14.3/transforms/1135ac20599eccfdb13e597d1ffd1662/transformed/play-services-auth-21.5.0-runtime.jar: D8: Invalid stack map table at instruction index 6: invokespecial Lcom/google/android/gms/common/api/Api$AbstractClientBuilder;<init>()V, error: Constructor mismatch, expected constructor from com.google.android.gms.internal.auth-api.zbw, but was com.google.android.gms.common.api.Api$AbstractClientBuilder.<init>().
 
 > Task :app:mergeDevDebugGlobalSynthetics UP-TO-DATE
+> Task :app:processDevDebugJavaRes UP-TO-DATE
+> Task :invertase_react-native-apple-authentication:processDebugJavaRes UP-TO-DATE
 > Task :react-native-agora:processDebugJavaRes NO-SOURCE
 > Task :react-native-async-storage_async-storage:processDebugJavaRes NO-SOURCE
 > Task :react-native-biometrics:processDebugJavaRes NO-SOURCE
@@ -1221,8 +1234,8 @@ WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox
 > Task :react-native-image-picker:mergeDebugJniLibFolders UP-TO-DATE
 > Task :react-native-image-picker:mergeDebugNativeLibs NO-SOURCE
 > Task :react-native-image-picker:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-keychain:mergeDebugJniLibFolders UP-TO-DATE
 > Task :react-native-gesture-handler:mergeDebugNativeLibs
+> Task :react-native-keychain:mergeDebugJniLibFolders UP-TO-DATE
 > Task :react-native-keychain:mergeDebugNativeLibs NO-SOURCE
 > Task :react-native-keychain:copyDebugJniLibsProjectOnly UP-TO-DATE
 > Task :react-native-gesture-handler:copyDebugJniLibsProjectOnly
@@ -1265,17 +1278,17 @@ WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox
 > Task :react-native-vector-icons:mergeDebugJniLibFolders UP-TO-DATE
 > Task :react-native-vector-icons:mergeDebugNativeLibs NO-SOURCE
 > Task :react-native-vector-icons:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-screens:mergeDebugNativeLibs
 > Task :react-native-wallet-manager:mergeDebugJniLibFolders UP-TO-DATE
 > Task :react-native-wallet-manager:mergeDebugNativeLibs NO-SOURCE
 > Task :react-native-wallet-manager:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :react-native-screens:mergeDebugNativeLibs
 > Task :react-native-webview:mergeDebugJniLibFolders UP-TO-DATE
 > Task :react-native-webview:mergeDebugNativeLibs NO-SOURCE
 > Task :react-native-webview:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-screens:copyDebugJniLibsProjectOnly
 > Task :sentry_react-native:mergeDebugJniLibFolders UP-TO-DATE
 > Task :sentry_react-native:mergeDebugNativeLibs NO-SOURCE
 > Task :sentry_react-native:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :react-native-screens:copyDebugJniLibsProjectOnly
 > Task :app:validateSigningDevDebug UP-TO-DATE
 > Task :app:writeDevDebugAppMetadata UP-TO-DATE
 > Task :app:writeDevDebugSigningConfigVersions UP-TO-DATE
@@ -1285,11 +1298,6 @@ WARNING: /private/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox
 > Task :app:createDevDebugApkListingFileRedirect UP-TO-DATE
 
 > Task :app:installDevDebug
-[DeviceMonitor]: Sending Tracking request failed!
-[DeviceMonitor]: Adb connection Error:Connection reset
-[DeviceMonitor]: Cannot reach ADB server, attempting to reconnect.
-[adb]: * daemon not running; starting now at tcp:5037
-[adb]: * daemon started successfully
 Installing APK 'app-dev-debug.apk' on 'PJJ110 - 16' for :app:dev-debug
 Installed on 1 device.
 
@@ -1301,18 +1309,20 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 30m 3s
-928 actionable tasks: 65 executed, 863 up-to-date
+BUILD SUCCESSFUL in 29m 29s
+928 actionable tasks: 69 executed, 859 up-to-date
 info Connecting to the development server...
 8081
-info Installing the app on the device "4ae24c72"...
-Performing Streamed Install
-Success
 info Starting the app on "4ae24c72"...
 Starting: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.healshealthcare.healspass.dev/com.healshealthcare.healspass.MainActivity }
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 12.0.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.2
+npm notice To update run: npm install -g npm@12.0.2
+npm notice
 
 ---
 exit_code: 0
-elapsed_ms: 1828474
-ended_at: 2026-09-07T10:55:38.641Z
+elapsed_ms: 1775795
+ended_at: 2026-09-08T06:28:34.275Z
 ---
