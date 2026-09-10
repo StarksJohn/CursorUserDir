@@ -1,0 +1,34 @@
+---
+pid: 7974
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "npx jest __tests__/custom-drawer-content.test.tsx --no-coverage"
+title: "Run custom drawer content unit tests"
+status: succeeded
+started_at: 2026-09-10T07:02:19.201Z
+running_for_ms: 34132    
+---
+PASS __tests__/custom-drawer-content.test.tsx
+  CustomDrawerContent logout
+    ✓ opens the same logout confirmation modal used by settings (445 ms)
+    ✓ confirming logout closes the drawer before leaving the logged-in stack (29 ms)
+  CustomDrawerContent dependants
+    ✓ does not render the dependants row in the drawer (12 ms)
+  CustomDrawerContent transaction history
+    ✓ opens the same transaction history as the profile screen (11 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       4 passed, 4 total
+Snapshots:   0 total
+Time:        2.029 s
+Ran all test suites matching /__tests__\/custom-drawer-content.test.tsx/i.
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 12.0.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.2
+npm notice To update run: npm install -g npm@12.0.2
+npm notice
+
+---
+exit_code: 0
+elapsed_ms: 34131
+ended_at: 2026-09-10T07:02:53.332Z
+---
