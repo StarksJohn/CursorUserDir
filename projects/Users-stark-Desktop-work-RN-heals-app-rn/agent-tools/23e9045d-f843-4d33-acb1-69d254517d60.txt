@@ -1,0 +1,1472 @@
+commit 8456ce75a951d1326e8f7e35ac120b420859ee81
+Author:     albert <albert.laguador@heals.asia>
+AuthorDate: Sat Jan 4 00:13:57 2025 +1300
+Commit:     albert <albert.laguador@heals.asia>
+CommitDate: Sat Jan 4 00:13:57 2025 +1300
+
+    fixed expired token and config
+
+ .env                                               |   18 +-
+ .env.development                                   |   16 +-
+ .env.production                                    |   16 +-
+ .env.staging                                       |   17 +-
+ App.tsx                                            |    2 +-
+ README.md                                          |    3 -
+ ...ce-Info.com.healshealthcare.healspass.dev.plist |   30 +
+ ios/FirebaseConfig/GoogleService-Info.plist        |   34 +
+ ios/Heals.xcodeproj/project.pbxproj                |  188 +-
+ .../xcshareddata/xcschemes/Heals (Dev).xcscheme    |  112 ++
+ .../xcshareddata/xcschemes/Heals.xcscheme          |   38 +-
+ ios/Heals/Info.plist                               |   12 +-
+ ios/Heals/PrivacyInfo.xcprivacy                    |    9 +
+ ios/Podfile                                        |    1 -
+ ios/Pods-Heals-HealsTests.dev.xcconfig             |   19 +
+ ios/Pods-Heals.dev.xcconfig                        |   19 +
+ set-env.js                                         |   35 -
+ src/api/api-client.ts                              |   22 +-
+ src/api/api-env.ts                                 |   49 -
+ src/api/api.ts                                     |  561 +++---
+ src/api/urls.ts                                    |   62 +-
+ src/api/wallet-pass-api.ts                         |   31 +-
+ .../contact-us-modal/contact-us-modal.tsx          |  135 +-
+ src/components/doctor-avatar/doctor-avatar.tsx     |   65 +-
+ src/constants/index.ts                             |    5 +-
+ .../doctor-detail-screen/doctor-detail-screen.tsx  |  542 +++---
+ .../doctor-list-screen/doctor-list-screen.tsx      |  883 ++++++----
+ .../heals-plan-membership.tsx                      |   16 +-
+ src/screens/home/home-screen/home-screen.tsx       |   26 +-
+ src/screens/login/login-screen/login-screen.tsx    |    4 +-
+ src/screens/login/otp-screen/otp-screen.tsx        |    2 +-
+ .../my-appointment-screen.tsx                      | 1799 ++++++++++++--------
+ src/screens/my-plans-screen/my-plans-screen.tsx    |    7 +-
+ src/screens/pass/pass-screen.tsx                   |    6 +-
+ .../profile-healsplan-screen.tsx                   |    6 +-
+ .../transaction-history/transaction-history.tsx    |    5 +-
+ src/store/AppContext.tsx                           |  243 +--
+ src/types/types.d.ts                               |    2 -
+ 38 files changed, 3150 insertions(+), 1890 deletions(-)
+commit 8456ce75a951d1326e8f7e35ac120b420859ee81
+Author:     albert <albert.laguador@heals.asia>
+AuthorDate: Sat Jan 4 00:13:57 2025 +1300
+Commit:     albert <albert.laguador@heals.asia>
+CommitDate: Sat Jan 4 00:13:57 2025 +1300
+
+    fixed expired token and config
+
+diff --git a/App.tsx b/App.tsx
+index ee859aa0..55200606 100644
+--- a/App.tsx
++++ b/App.tsx
+@@ -146,7 +146,7 @@ const AppStack: React.FC = () => {
+     } else {
+       if (memberData) {
+         memberData = JSON.parse(memberData);
+-        const accessToken = memberData?.memberToken;
++        const accessToken = memberData?.accessToken;
+ 
+         if (accessToken) {
+           const decoded = jwtDecode(accessToken);
+diff --git a/src/api/api-client.ts b/src/api/api-client.ts
+index a6d4b88e..ec835dbe 100644
+--- a/src/api/api-client.ts
++++ b/src/api/api-client.ts
+@@ -3,6 +3,7 @@ import urls from '@api/urls';
+ import {getGlobalAppState} from '@store/AppContext';
+ import AsyncStorage from '@react-native-async-storage/async-storage';
+ import {jwtDecode} from "jwt-decode";
++import Config from 'react-native-config';
+ 
+ const apiClient = axios.create({
+   baseURL: urls.API_BASE_URL,
+@@ -26,13 +27,14 @@ apiClient.interceptors.request.use(
+     let memberData = await AsyncStorage.getItem('memberData');
+     memberData = JSON.parse(memberData);
+ 
+-    if (memberData?.memberToken) {
+-      const decoded = jwtDecode(memberData?.memberToken);
+-      config.headers['Authorization'] = `Bearer ${memberData?.memberToken}`;
++    if (memberData?.accessToken) {
++      const decoded = jwtDecode(memberData?.accessToken);
++      config.headers['Authorization'] = `Bearer ${memberData?.accessToken}`;
+       config.headers['username'] = decoded.username;
+     }
+     config.headers['Accept-Language'] = globalAppState.AcceptLanguage();
+-    $fake&&console.log('api-client.ts config:', config);
++    config.headers['x-client-secret'] = Config.CLIENT_SECRET;
++    config.headers['x-client-id'] = 'health-passport';
+     return config;
+   },
+   (error: AxiosError) => {
+@@ -45,7 +47,7 @@ apiClient.interceptors.response.use(
+   (response: AxiosResponse) => {
+     return response.data;
+   },
+-  (error: AxiosError) => {
++  async (error: AxiosError) => {
+     if (error.response) {
+       switch (error.response.status) {
+         case HttpStatus.BadRequest:
+@@ -53,7 +55,13 @@ apiClient.interceptors.response.use(
+           break;
+         case HttpStatus.Unauthorized:
+           console.error('api-client.ts Unauthorized, may require re-login.');
+-          break;
++          const memberData = await AsyncStorage.getItem('memberData');
++          const payload = {
++            "userId": JSON.parse(memberData)?.entity.id,
++            "refreshToken": JSON.parse(memberData)?.refreshToken
++          };
++          await $api.refreshToken(payload);
++          return;
+         case HttpStatus.Forbidden:
+           console.error('api-client.ts Access forbidden.');
+           break;
+@@ -145,7 +153,7 @@ export const deleteRequest = async <T>(url: string, config?: AxiosRequestConfig)
+ 
+ export const handleRequestError = (error: unknown) => {
+   if (axios.isAxiosError(error)) {
+-    console.error('api-client.ts An error occurred with the request:', error.message);
++    console.error('api-client.ts An error occurred with the request:', JSON.stringify(error));
+     if (error.response) {
+       console.error('api-client.ts Server returned an error message:', error.response.data);
+     }
+diff --git a/src/api/api.ts b/src/api/api.ts
+index 5bd9de3e..3654b28c 100644
+--- a/src/api/api.ts
++++ b/src/api/api.ts
+@@ -1,8 +1,12 @@
+-
+-import { deleteRequest, getRequest, postRequest, putRequest } from './api-client.ts';
+-import urls from '@api/urls';
+-import { AppState, getGlobalAppState, LoginData } from '@store/AppContext';
+-import apiEnv from '@api/api-env.ts'
++import {
++  deleteRequest,
++  getRequest,
++  postRequest,
++  putRequest,
++} from "./api-client.ts";
++import urls from "@api/urls";
++import { AppState, getGlobalAppState, LoginData } from "@store/AppContext";
++import Config from "react-native-config";
+ import {
+   heals_pass_product_list_Response,
+   MemberPolicies,
+@@ -10,55 +14,68 @@ import {
+   Ticket,
+   Provider_timeslot,
+   User,
+-  Dependants,
+   MemberAddresses,
+-  Ticket_post,
+   Ticket_post_response,
+   files_ticket_response,
+   Response,
+   Files_ticket_list,
+   Files_ticket_getOneFile_response,
+-  HpPurchaseRequestResponse, PurchaseRecord,
+-  HpListRequestResponse, Ticket_statuses, Transaction, Transaction_ticket, Sponsorship, PrescriptionFiles, health_info_response, Geolocation
+-} from '@api/api-types.ts';
++  HpPurchaseRequestResponse,
++  PurchaseRecord,
++  HpListRequestResponse,
++  Ticket_statuses,
++  Transaction,
++  Transaction_ticket,
++  Sponsorship,
++  PrescriptionFiles,
++  health_info_response,
++  Geolocation,
++} from "@api/api-types.ts";
+ import { AxiosProgressEvent } from "axios";
+-import * as Keychain from 'react-native-keychain';
+-import AsyncStorage from '@react-native-async-storage/async-storage';
+-import { FCMTokenStoreRequestDTO } from '@dto/FCMTokenStoreRequestDTO.ts';
+-import { FCMTokenStoreResponseDTO } from '@dto/FCMTokenStoreResponseDTO.ts';
+-import AppConfig from '../config/index';
++import * as Keychain from "react-native-keychain";
++import AsyncStorage from "@react-native-async-storage/async-storage";
++import { FCMTokenStoreRequestDTO } from "@dto/FCMTokenStoreRequestDTO.ts";
++import { FCMTokenStoreResponseDTO } from "@dto/FCMTokenStoreResponseDTO.ts";
++import AppConfig from "../config/index";
+ import * as Sentry from "@sentry/react-native";
+ 
+ const handleRequestError = (error: any): Promise<never> => {
+-  console.error('api error=', error);
+-  if (process.env.NODE_ENV === 'production') {
++  console.error("api error=", error);
++  if (process.env.NODE_ENV === "production") {
+     try {
+       throw new Error(error?.error?.message || error.toString());
+     } catch (error) {
+-      console.log('handleRequestError error=', error)
++      console.log("handleRequestError error=", error);
+       Sentry.captureException(error);
+     }
+   } else {
+-    const { setCommonModalKey, setShowErrorModal, setErrorModalText }: AppState = getGlobalAppState()
+-    setCommonModalKey('showErrorModal')
+-    setShowErrorModal(true)
+-    setErrorModalText(error?.error?.message || error.toString())
++    const {
++      setCommonModalKey,
++      setShowErrorModal,
++      setErrorModalText,
++    }: AppState = getGlobalAppState();
++    setCommonModalKey("showErrorModal");
++    setShowErrorModal(true);
++    setErrorModalText(error?.error?.message || error.toString());
+   }
+   return Promise.reject(error);
+ };
+ 
+ export const login = async (loginRequestPayload: any) => {
+   try {
+-    const response = await postRequest<any>(urls.API_LOGIN, loginRequestPayload);
++    const response = await postRequest<any>(
++      urls.API_LOGIN,
++      loginRequestPayload
++    );
+     const globalAppState = getGlobalAppState();
+     globalAppState?.setLoginData(response?.data);
+-    await AsyncStorage.setItem('memberData', JSON.stringify(response?.data));
+-    await Keychain.setGenericPassword('password', response?.data?.memberToken);
++    await AsyncStorage.setItem('memberData', JSON.stringify(response?.data?.data));
++    await Keychain.setGenericPassword('password', response?.data?.data?.accessToken);
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return error;
+   }
+-}
++};
+ 
+ export const sendotp = async (sendOTPRequest: any) => {
+   try {
+@@ -68,33 +85,40 @@ export const sendotp = async (sendOTPRequest: any) => {
+     // return handleRequestError(error);
+     return error;
+   }
+-}
++};
+ 
+ export const loginOtp = async (loginOtpRequest: any) => {
+   try {
+-    const response = await postRequest<any>(urls.API_LOGIN_OTP, loginOtpRequest);
++    const response = await postRequest<any>(
++      urls.API_LOGIN_OTP,
++      loginOtpRequest
++    );
+     const globalAppState = getGlobalAppState();
+-    globalAppState?.setLoginData(response.data);
+-    await AsyncStorage.setItem('memberData', JSON.stringify(response.data));
+-    await Keychain.setGenericPassword('password', response.data.memberToken);
+-    return Promise.resolve(response.data);
++    globalAppState?.setLoginData(response?.data.data);
++    await AsyncStorage.setItem('memberData', JSON.stringify(response?.data.data));
++    await Keychain.setGenericPassword('password', response?.data?.data.accessToken);
++    return Promise.resolve(response?.data);
+   } catch (error) {
+     // return handleRequestError(error);
+     return error;
+   }
+-}
++};
+ 
+ export const activate = async (code: string) => {
+   try {
+-    const response = await postRequest<any>(urls.API_ACTIVATE, { code }, {
+-      baseURL: apiEnv[apiEnv.env].baseUrl1,
+-    });
++    const response = await postRequest<any>(
++      urls.API_ACTIVATE,
++      { code },
++      {
++        baseURL: Config.BASE_URL_1,
++      }
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     //return handleRequestError(error);
+     return error;
+   }
+-}
++};
+ 
+ export const dependants = async () => {
+   try {
+@@ -103,59 +127,68 @@ export const dependants = async () => {
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+ /**
+  * const response: heals_pass_product_list_Response = await api.heals_pass_product_list();
+  */
+-export const heals_pass_product_list = async (): Promise<heals_pass_product_list_Response> => {
+-  try {
+-    const response = await getRequest<any>(urls.API_heals_pass_product_list, {
+-      baseURL: apiEnv[apiEnv.env].baseUrl1
+-    });
+-    return Promise.resolve(response.data);
+-  } catch (error) {
+-    return handleRequestError(error);
+-  }
+-}
++export const heals_pass_product_list =
++  async (): Promise<heals_pass_product_list_Response> => {
++    try {
++      const response = await getRequest<any>(urls.API_heals_pass_product_list, {
++        baseURL: Config.BASE_URL_1,
++      });
++      return Promise.resolve(response.data);
++    } catch (error) {
++      return handleRequestError(error);
++    }
++  };
+ 
+-export const ticketList = async (params: { statusGroup: string, limit: number, page: number }): Promise<Ticket[]> => {
++export const ticketList = async (params: {
++  statusGroup: string;
++  limit: number;
++  page: number;
++}): Promise<Ticket[]> => {
+   try {
+     const response = await getRequest<any>(urls.API_ticket, {
+-      // baseURL: apiEnv[apiEnv.env].baseUrl1,
+-      params
++      // baseURL: Config.BASE_URL_1,
++      params,
+     });
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+ export const getOneTicket = async (ticketId: string): Promise<Ticket> => {
+   try {
+     const response = await getRequest<any>(urls.API_ticket + `/${ticketId}`, {
+-      // baseURL: apiEnv[apiEnv.env].baseUrl1,
++      // baseURL: Config.BASE_URL_1,
+       // params: {ticketId}
+     });
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+ export const ticket_post = async (): Promise<Ticket_post_response> => {
+   try {
+     const globalAppState = getGlobalAppState();
+-    const response = await postRequest<any>(urls.API_ticket, {
+-      ...globalAppState?.ticketPostData,
+-    }, {
+-      // baseURL: apiEnv[apiEnv.env].baseUrl1,
+-    });
++    const response = await postRequest<any>(
++      urls.API_ticket,
++      {
++        ...globalAppState?.ticketPostData,
++      },
++      {
++        // baseURL: Config.BASE_URL_1,
++      }
++    );
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+ /**
+  * get questionnaire
+@@ -167,12 +200,14 @@ export const questionnaire = async (insurerId) => {
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+ /*
+  * const res: MemberPolicies | undefined = await $api.member_policies()
+  */
+-export const member_policies = async (): Promise<MemberPolicies | undefined> => {
++export const member_policies = async (): Promise<
++  MemberPolicies | undefined
++> => {
+   try {
+     const response = await getRequest<any>(urls.API_member_policies, {});
+ 
+@@ -180,91 +215,109 @@ export const member_policies = async (): Promise<MemberPolicies | undefined> =>
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+ /**
+  * post questionnaire
+  */
+-export const post_questionnaire = async (params: { answers: any, questionnaireId: string, memberId: string }) => {
++export const post_questionnaire = async (params: {
++  answers: any;
++  questionnaireId: string;
++  memberId: string;
++}) => {
+   try {
+     const response = await postRequest<any>(urls.API_QUESTION, params);
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+ /**
+  * get address
+  */
+ export const get_address = async (): Promise<MemberAddresses[]> => {
+   try {
+-    const response = await getRequest<any>(urls.API_ADDRESS,
+-      {
+-        baseURL: apiEnv[apiEnv.env].baseUrl1,
+-      }
+-    );
++    const response = await getRequest<any>(urls.API_ADDRESS, {
++      baseURL: Config.BASE_URL_1,
++    });
+     return Promise.resolve(response.data.data?.addresses);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+ /**
+  * delete address
+  */
+-export const delete_address = async (useId: string, addressId: string): Promise<MemberAddresses[]> => {
++export const delete_address = async (
++  useId: string,
++  addressId: string
++): Promise<MemberAddresses[]> => {
+   try {
+-    const response = await deleteRequest<any>(urls.API_ADDRESS_DELETE + '/' + useId + '/address/' + addressId);
++    const response = await deleteRequest<any>(
++      urls.API_ADDRESS_DELETE + "/" + useId + "/address/" + addressId
++    );
+     return Promise.resolve(response.data.data?.addresses);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+ /**
+  * add address
+  */
+-export const add_address = async (useId: string, payload: {}): Promise<MemberAddresses[]> => {
++export const add_address = async (
++  useId: string,
++  payload: {}
++): Promise<MemberAddresses[]> => {
+   try {
+-    const response = await putRequest<any>(urls.API_ADDRESS_ADD + '/' + useId, {
+-      addresses: [payload]
++    const response = await putRequest<any>(urls.API_ADDRESS_ADD + "/" + useId, {
++      addresses: [payload],
+     });
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+ /**
+  * const res: QueueItem[] | undefined = await $api.provider_list()
+  */
+-export const provider_list = async (payorId: string, planId: string): Promise<QueueItem[] | undefined> => {
++export const provider_list = async (
++  payorId: string,
++  planId: string
++): Promise<QueueItem[] | undefined> => {
+   try {
+     const response = await getRequest<any>(urls.API_provider_list, {
+-      baseURL: apiEnv[apiEnv.env].baseUrl1,
+-      params: { payorId, planId }
++      baseURL: Config.BASE_URL_1,
++      params: { payorId, planId },
+     });
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+ /**
+  * const res: Provider_timeslot | undefined = await $api.provider_timeslot(providerId)
+  */
+-export const provider_timeslot = async (providerId: string): Promise<Provider_timeslot[] | undefined> => {
++export const provider_timeslot = async (
++  providerId: string
++): Promise<Provider_timeslot[] | undefined> => {
+   try {
+-    const response = await getRequest<any>(urls.API_provider_timeslot + '/' + providerId, {
+-      baseURL: apiEnv[apiEnv.env].baseUrl1,
+-      params: { payor: null }
+-    });
++    const response = await getRequest<any>(
++      urls.API_provider_timeslot + "/" + providerId,
++      {
++        baseURL: Config.BASE_URL_1,
++        params: { payor: null },
++      }
++    );
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+ /**
+  * const res: User | undefined = await $api.getUser()
+@@ -272,185 +325,240 @@ export const provider_timeslot = async (providerId: string): Promise<Provider_ti
+ export const getUser = async (): Promise<User | undefined> => {
+   try {
+     const globalAppState = getGlobalAppState();
+-    const response = await getRequest<any>(urls.API_USER + '/' + globalAppState?.loginData?.entity.id, {
+-    });
++    const response = await getRequest<any>(
++      urls.API_USER + "/" + globalAppState?.loginData?.entity.id,
++      {}
++    );
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+ /**
+  * edit profile
+  */
+-export const putUser = async (profilePayload: any): Promise<User | undefined> => {
++export const putUser = async (
++  profilePayload: any
++): Promise<User | undefined> => {
+   try {
+     const globalAppState = getGlobalAppState();
+-    const response = await putRequest<any>(urls.API_PROFILE_EDIT + '/' + globalAppState?.loginData?.entity.id, profilePayload);
++    const response = await putRequest<any>(
++      urls.API_PROFILE_EDIT + "/" + globalAppState?.loginData?.entity.id,
++      profilePayload
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+ export const register = async (registerPayload: any) => {
+   try {
+-    const response = await postRequest<any>(urls.API_REGISTER, registerPayload, {
+-      baseURL: apiEnv[apiEnv.env].baseUrl1
+-    });
++    const response = await postRequest<any>(
++      urls.API_REGISTER,
++      registerPayload,
++      {
++        baseURL: Config.BASE_URL_1,
++      }
++    );
+     console.log(`Response: ${JSON.stringify(response)}`);
+     const globalAppState = getGlobalAppState();
+-    const loginData = {
+-      memberToken: response.data.data.accessToken,
+-      entity: response.data.data.entity,
+-      refreshToken: response.data.data.refreshToken,
+-      expires_in: response.data.data.expires_in
+-    }
+-    console.log(`loginDataStore: ${JSON.stringify(loginData)}`);
+-    globalAppState?.setLoginData(loginData);
+-    await AsyncStorage.setItem('memberData', JSON.stringify(loginData));
+-    await Keychain.setGenericPassword('password', loginData.memberToken);
++    globalAppState?.setLoginData(response.data.data);
++    await AsyncStorage.setItem("memberData", JSON.stringify(response.data.data));
++    await Keychain.setGenericPassword("password", response.data.data.accessToken);
+     return Promise.resolve(response.data);
+   } catch (error) {
+     // return handleRequestError(error);
+     return error;
+   }
+-}
++};
+ 
+ export const healthRecord = async (healthRecordPayload: any) => {
+   try {
+-    const response = await postRequest<any>(urls.API_HEALTH_RECORD, healthRecordPayload, {
+-      baseURL: apiEnv[apiEnv.env].baseUrl1
+-    });
++    const response = await postRequest<any>(
++      urls.API_HEALTH_RECORD,
++      healthRecordPayload,
++      {
++        baseURL: Config.BASE_URL_1,
++      }
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+ export const getHealthRecord = async (): Promise<health_info_response> => {
+   try {
+     const globalAppState = getGlobalAppState();
+-    const response = await getRequest<any>(urls.API_HEALTH_RECORD + '/' + globalAppState?.loginData?.entity.id, {
+-      baseURL: apiEnv[apiEnv.env].baseUrl1
+-    });
++    const response = await getRequest<any>(
++      urls.API_HEALTH_RECORD + "/" + globalAppState?.loginData?.entity.id,
++      {
++        baseURL: Config.BASE_URL_1,
++      }
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
+-
++};
+ 
+-export const files_ticket_post = async (ticketId: string, body: FormData, onProgress: (progress: number) => void): Promise<files_ticket_response> => {
++export const files_ticket_post = async (
++  ticketId: string,
++  body: FormData,
++  onProgress: (progress: number) => void
++): Promise<files_ticket_response> => {
+   try {
+-    const response = await postRequest<any>(urls.API_files_ticket + `/${ticketId}`, body, {
+-      baseURL: apiEnv[apiEnv.env].baseUrl1,
+-      headers: {
+-        'Content-Type': 'multipart/form-data',
+-      },
+-      timeout: 1000000,
+-      onUploadProgress: (progressEvent: AxiosProgressEvent) => {
+-        if (progressEvent) {
+-          const progress = Math.round((progressEvent.loaded * 100) / progressEvent?.total);
+-          onProgress(progress);
+-        }
+-      },
+-    });
++    const response = await postRequest<any>(
++      urls.API_files_ticket + `/${ticketId}`,
++      body,
++      {
++        baseURL: Config.BASE_URL_1,
++        headers: {
++          "Content-Type": "multipart/form-data",
++        },
++        timeout: 1000000,
++        onUploadProgress: (progressEvent: AxiosProgressEvent) => {
++          if (progressEvent) {
++            const progress = Math.round(
++              (progressEvent.loaded * 100) / progressEvent?.total
++            );
++            onProgress(progress);
++          }
++        },
++      }
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
+-export const files_ticket_del = async (ticketId: string, fileName: string): Promise<Response> => {
++};
++export const files_ticket_del = async (
++  ticketId: string,
++  fileName: string
++): Promise<Response> => {
+   try {
+-    const response = await deleteRequest<any>(urls.API_files_ticket + `/${ticketId}/${encodeURIComponent(fileName)}`, {
+-      baseURL: apiEnv[apiEnv.env].baseUrl1,
+-    });
++    const response = await deleteRequest<any>(
++      urls.API_files_ticket + `/${ticketId}/${encodeURIComponent(fileName)}`,
++      {
++        baseURL: Config.BASE_URL_1,
++      }
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+-export const files_ticket_list = async (ticketId: string): Promise<Files_ticket_list[]> => {
++export const files_ticket_list = async (
++  ticketId: string
++): Promise<Files_ticket_list[]> => {
+   try {
+-    const response = await getRequest<any>(urls.API_files_ticket + `/${ticketId}`, {
+-      baseURL: apiEnv[apiEnv.env].baseUrl1,
+-    });
++    const response = await getRequest<any>(
++      urls.API_files_ticket + `/${ticketId}`,
++      {
++        baseURL: Config.BASE_URL_1,
++      }
++    );
+     return Promise.resolve(response.data.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+-export const files_ticket_getOneFile = async (ticketId: string, fileName: string): Promise<Files_ticket_getOneFile_response> => {
++export const files_ticket_getOneFile = async (
++  ticketId: string,
++  fileName: string
++): Promise<Files_ticket_getOneFile_response> => {
+   try {
+-    const response = await getRequest<any>(urls.API_files_ticket + `/${ticketId}/${encodeURIComponent(fileName)}`, {
+-      baseURL: apiEnv[apiEnv.env].baseUrl1,
+-      headers: {
+-        'Accept': 'application/json',
+-      },
+-    });
++    const response = await getRequest<any>(
++      urls.API_files_ticket + `/${ticketId}/${encodeURIComponent(fileName)}`,
++      {
++        baseURL: Config.BASE_URL_1,
++        headers: {
++          Accept: "application/json",
++        },
++      }
++    );
+     return Promise.resolve(response.data.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+ /*
+  * const res: MemberPolicies | undefined = await $api.get_member_policies()
+  */
+-export const get_member_policies = async (memberId: string): Promise<MemberPolicies | undefined> => {
++export const get_member_policies = async (
++  memberId: string
++): Promise<MemberPolicies | undefined> => {
+   try {
+-    const response = await getRequest<any>(urls.API_USER + '/' + memberId, {
+-      baseURL: apiEnv[apiEnv.env].baseUrl1,
++    const response = await getRequest<any>(urls.API_USER + "/" + memberId, {
++      baseURL: Config.BASE_URL_1,
+     });
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+-export const heals_pass_product_request = async ({ numberOfPasses, id }: {
+-  numberOfPasses: number,
+-  id: string
++export const heals_pass_product_request = async ({
++  numberOfPasses,
++  id,
++}: {
++  numberOfPasses: number;
++  id: string;
+ }): Promise<HpPurchaseRequestResponse> => {
+   try {
+-    const response = await postRequest<any>(urls.API_heals_pass_product_request, { numberOfPasses, id }, {
+-      baseURL: apiEnv[apiEnv.env].baseUrl1,
+-    });
++    const response = await postRequest<any>(
++      urls.API_heals_pass_product_request,
++      { numberOfPasses, id },
++      {
++        baseURL: Config.BASE_URL_1,
++      }
++    );
+     return Promise.resolve(response.data.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ export const finishHPPurchase = async (id: string): Promise<PurchaseRecord> => {
+   try {
+-    const response = await getRequest<any>(urls.API_finishHPPurchase + '/' + id, {});
++    const response = await getRequest<any>(
++      urls.API_finishHPPurchase + "/" + id,
++      {}
++    );
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+     return Promise.reject(error);
+   }
+-}
+-export const heals_pass_product = async (): Promise<HpListRequestResponse[]> => {
++};
++export const heals_pass_product = async (): Promise<
++  HpListRequestResponse[]
++> => {
+   try {
+-    const response = await getRequest<any>(urls.API_heals_pass_product_request, {
+-      baseURL: apiEnv[apiEnv.env].baseUrl1,
+-    });
++    const response = await getRequest<any>(
++      urls.API_heals_pass_product_request,
++      {
++        baseURL: Config.BASE_URL_1,
++      }
++    );
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
+-export const ticket_statuses = async (data: Ticket_statuses): Promise<Response> => {
++};
++export const ticket_statuses = async (
++  data: Ticket_statuses
++): Promise<Response> => {
+   try {
+-    const response = await putRequest<any>(urls.API_ticket_statuses, data,
+-      {});
++    const response = await putRequest<any>(urls.API_ticket_statuses, data, {});
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ export const transaction = async (limit: number): Promise<Transaction[]> => {
+   try {
+     const response = await getRequest<any>(urls.API_transaction, {
+@@ -460,24 +568,30 @@ export const transaction = async (limit: number): Promise<Transaction[]> => {
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ export const deleteAccount = async (entityId: string) => {
+   try {
+-    const response = await deleteRequest<any>(`${urls.API_DELETE_ACCOUNT}/${entityId}`);
++    const response = await deleteRequest<any>(
++      `${urls.API_DELETE_ACCOUNT}/${entityId}`
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
+-export const transaction_ticket = async (ticketId: string): Promise<Transaction_ticket[]> => {
++};
++export const transaction_ticket = async (
++  ticketId: string
++): Promise<Transaction_ticket[]> => {
+   try {
+-    const response = await getRequest<any>(urls.API_transaction_ticket + `/${ticketId}`, {});
++    const response = await getRequest<any>(
++      urls.API_transaction_ticket + `/${ticketId}`,
++      {}
++    );
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
+-
++};
+ 
+ export const sponsorship_list = async (): Promise<Sponsorship[]> => {
+   try {
+@@ -488,74 +602,107 @@ export const sponsorship_list = async (): Promise<Sponsorship[]> => {
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+-export const getPrescriptionFiles = async (ticketId: string, patientCountry: string): Promise<PrescriptionFiles> => {
++export const getPrescriptionFiles = async (
++  ticketId: string,
++  patientCountry: string
++): Promise<PrescriptionFiles> => {
+   try {
+-    const response = await getRequest<any>(urls.API_edocs_prescription + `/${ticketId}/${patientCountry}`, {});
++    const response = await getRequest<any>(
++      urls.API_edocs_prescription + `/${ticketId}/${patientCountry}`,
++      {}
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ export const changePasssword = async (changePasswordPayload: any) => {
+   try {
+-    const response = await postRequest<any>(urls.API_CHANGE_PASSWORD, changePasswordPayload);
++    const response = await postRequest<any>(
++      urls.API_CHANGE_PASSWORD,
++      changePasswordPayload
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     // return handleRequestError(error);
+     return error;
+   }
+-}
++};
+ 
+-export const getReceipt = async (ticketId: string, patientCountry: string, providerCountry: string): Promise<PrescriptionFiles> => {
++export const getReceipt = async (
++  ticketId: string,
++  patientCountry: string,
++  providerCountry: string
++): Promise<PrescriptionFiles> => {
+   try {
+-    const response = await getRequest<any>(urls.API_edocs_receipt + `/${ticketId}/${patientCountry}/${providerCountry}`, {});
++    const response = await getRequest<any>(
++      urls.API_edocs_receipt +
++        `/${ticketId}/${patientCountry}/${providerCountry}`,
++      {}
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+-export const storeFCM = async (payload: FCMTokenStoreRequestDTO): Promise<FCMTokenStoreResponseDTO | any> => {
++export const storeFCM = async (
++  payload: FCMTokenStoreRequestDTO
++): Promise<FCMTokenStoreResponseDTO | any> => {
+   try {
+-    const response = await postRequest<FCMTokenStoreRequestDTO>(urls.API_STORE_FCM, payload);
++    const response = await postRequest<FCMTokenStoreRequestDTO>(
++      urls.API_STORE_FCM,
++      payload
++    );
+     return response as unknown as FCMTokenStoreResponseDTO;
+   } catch (error) {
+     return Promise.reject(error);
+   }
+-}
++};
+ 
+-export const geolocation = async (latlng: string, result_type: string): Promise<Geolocation> => {
++export const geolocation = async (
++  latlng: string,
++  result_type: string
++): Promise<Geolocation> => {
+   try {
+     const response = await getRequest<any>(urls.API_geolocation, {
+       params: {
+-        latlng, result_type
+-      }
++        latlng,
++        result_type,
++      },
+     });
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+-export const getNotificationLists = async (memberId: any): Promise<any[] | any> => {
++export const getNotificationLists = async (
++  memberId: any
++): Promise<any[] | any> => {
+   try {
+-    const response = await getRequest<any[]>(urls.API_NOTIFICATION_LISTS + memberId);
++    const response = await getRequest<any[]>(
++      urls.API_NOTIFICATION_LISTS + memberId
++    );
+     return response;
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+ export const updateNotification = async (payload: any): Promise<any> => {
+   try {
+-    const response = await putRequest<any>(urls.API_UPDATE_NOTIFICATION, payload);
++    const response = await putRequest<any>(
++      urls.API_UPDATE_NOTIFICATION,
++      payload
++    );
+     return response;
+   } catch (error) {
+     return handleRequestError(error);
+   }
+-}
++};
+ 
+ export const getMinimumVersion = async (): Promise<any> => {
+   try {
+@@ -566,7 +713,7 @@ export const getMinimumVersion = async (): Promise<any> => {
+     console.error(`API IS NOT AVAILABLE`);
+     return null;
+   }
+-}
++};
+ 
+ export const refreshToken = async (payload: any) => {
+   try {
+@@ -574,11 +721,17 @@ export const refreshToken = async (payload: any) => {
+     if (response?.data?.success) {
+       const globalAppState = getGlobalAppState();
+       globalAppState?.setLoginData(response.data?.data);
+-      await AsyncStorage.setItem('memberData', JSON.stringify(response?.data?.data));
+-      await Keychain.setGenericPassword('password', response.data.data.accessToken);
++      await AsyncStorage.setItem(
++        "memberData",
++        JSON.stringify(response?.data?.data)
++      );
++      await Keychain.setGenericPassword(
++        "password",
++        response.data.data.accessToken
++      );
+     }
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return error;
+   }
+-}
++};
+diff --git a/src/store/AppContext.tsx b/src/store/AppContext.tsx
+index 2ae4f21b..b4d6fb90 100644
+--- a/src/store/AppContext.tsx
++++ b/src/store/AppContext.tsx
+@@ -1,11 +1,25 @@
+ // AppContext.tsx
+-import React, {createContext, useState, useEffect, useContext, ReactNode} from 'react';
+-import {PermissionsAndroid, Platform} from 'react-native';
+-import cache from '@cache';
+-import constants from '@constants';
+-import {Plan, Policys, Sponsorship, Ticket_post, User, Geolocation as ApiGeolocation} from "@api/api-types.ts";
+-import moment from 'moment';
+-import Geolocation from '@react-native-community/geolocation';
++import React, {
++  createContext,
++  useState,
++  useEffect,
++  useContext,
++  ReactNode,
++} from "react";
++import { PermissionsAndroid, Platform } from "react-native";
++import cache from "@cache";
++import constants from "@constants";
++import {
++  Plan,
++  Policys,
++  Sponsorship,
++  Ticket_post,
++  User,
++  Geolocation as ApiGeolocation,
++} from "@api/api-types.ts";
++import moment from "moment";
++import Geolocation from "@react-native-community/geolocation";
++import Config from "react-native-config";
+ 
+ interface PatientHealthRecord {
+   drug: string;
+@@ -59,7 +73,7 @@ interface Entity {
+ }
+ 
+ export interface LoginData {
+-  memberToken: string;
++  accessToken: string;
+   entity: Entity;
+   dependents?: any[];
+   refreshToken?: string;
+@@ -91,7 +105,7 @@ export interface AppState {
+   showErrorModal: boolean;
+   setShowErrorModal: React.Dispatch<React.SetStateAction<boolean>>;
+   errorModalText: string;
+-  successModalText: string
++  successModalText: string;
+   setSuccessModalText: React.Dispatch<React.SetStateAction<string>>;
+   showSuccessModal: boolean;
+   setShowSuccessModal: React.Dispatch<React.SetStateAction<boolean>>;
+@@ -115,10 +129,12 @@ export interface AppState {
+   sponsorship_list: Sponsorship[];
+   setSponsorship_list: React.Dispatch<React.SetStateAction<Sponsorship[]>>;
+   setIsNewPushNotifArrived: boolean;
+-  setPushNotificationList: React.Dispatch<React.SetStateAction<PushNotifications[]>>;
++  setPushNotificationList: React.Dispatch<
++    React.SetStateAction<PushNotifications[]>
++  >;
+   setNewPushNotificationCounter: React.Dispatch<React.SetStateAction<number>>;
+-  newPushNotificationCounter: number,
+-  position: Position | null
++  newPushNotificationCounter: number;
++  position: Position | null;
+ }
+ 
+ interface AppProviderProps {
+@@ -128,8 +144,8 @@ interface AppProviderProps {
+ interface Position {
+   latitude: number;
+   longitude: number;
+-  apiGeolocation: ApiGeolocation,
+-  country: string
++  apiGeolocation: ApiGeolocation;
++  country: string;
+ }
+ 
+ interface StateProps {
+@@ -138,33 +154,37 @@ interface StateProps {
+ 
+ let globalAppState: AppState;
+ const AppContext = createContext<AppState | undefined>(undefined);
+-export const AppProvider: React.FC<AppProviderProps> = ({children}) => {
++export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
+   const [state, setState] = useState<StateProps>({
+     initingAppState: true,
+-  })
++  });
+   const [loginData, setLoginData] = useState<LoginData | null>(null);
+   const [language, setLanguage] = useState<string | undefined>(undefined);
+-  const [showCommonModal, setShowCommonModal] = useState<boolean>(false)
+-  const [showErrorModal, setShowErrorModal] = useState<boolean>(false)
+-  const [errorModalText, setErrorModalText] = useState<string>()
+-  const [commonModalKey, setCommonModalKey] = useState<string>()
+-  const [showActivateModal, setShowActivateModal] = useState<boolean>(false)
+-  const [showContactUsModal, setShowContactUsModal] = useState<boolean>(false)
+-  const [plan, setPlan] = useState<Plan>()
+-  const [user, setUser] = useState<User>()
+-  const [ticketPostData, setTicketPostData] = useState()
+-  const [selectedPolicies, setSelectedPolicies] = useState<Policys>()
+-  const [successModalText, setSuccessModalText] = useState()
+-  const [showSuccessModal, setShowSuccessModal] = useState()
+-  const [activationCodes, setActivationCodes] = useState<string>()
++  const [showCommonModal, setShowCommonModal] = useState<boolean>(false);
++  const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
++  const [errorModalText, setErrorModalText] = useState<string>();
++  const [commonModalKey, setCommonModalKey] = useState<string>();
++  const [showActivateModal, setShowActivateModal] = useState<boolean>(false);
++  const [showContactUsModal, setShowContactUsModal] = useState<boolean>(false);
++  const [plan, setPlan] = useState<Plan>();
++  const [user, setUser] = useState<User>();
++  const [ticketPostData, setTicketPostData] = useState();
++  const [selectedPolicies, setSelectedPolicies] = useState<Policys>();
++  const [successModalText, setSuccessModalText] = useState();
++  const [showSuccessModal, setShowSuccessModal] = useState();
++  const [activationCodes, setActivationCodes] = useState<string>();
+   const [sponsorship_list, setSponsorship_list] = useState<Sponsorship[]>([]);
+-  const [newPushNotificationCounter, setNewPushNotificationCounter] = useState<number>(0);
+-  const [position, setPosition] = useState<Position | null>(null)
++  const [newPushNotificationCounter, setNewPushNotificationCounter] =
++    useState<number>(0);
++  const [position, setPosition] = useState<Position | null>(null);
+   useEffect(() => {
+     (async () => {
+       try {
+         {
+-          const cachedLoginData = await cache.getItem($cacheKeys.loginData, true);
++          const cachedLoginData = await cache.getItem(
++            $cacheKeys.loginData,
++            true
++          );
+           if (cachedLoginData && isValidLoginData(cachedLoginData)) {
+             setLoginData(cachedLoginData);
+           }
+@@ -172,34 +192,36 @@ export const AppProvider: React.FC<AppProviderProps> = ({children}) => {
+         {
+           const languageData = await cache.getItem($cacheKeys.language, false);
+           if (languageData) {
+-            changeLanguage(languageData)
++            changeLanguage(languageData);
+           } else {
+-            changeLanguage('en')
++            changeLanguage("en");
+           }
+         }
+         {
+           const cachedPlanData = await cache.getItem($cacheKeys.plan, true);
+           if (cachedPlanData) {
+-            setPlan(cachedPlanData)
++            setPlan(cachedPlanData);
+           }
+         }
+         {
+-          const cachedselectedPoliciesData = await cache.getItem($cacheKeys.selectedPolicies, true);
++          const cachedselectedPoliciesData = await cache.getItem(
++            $cacheKeys.selectedPolicies,
++            true
++          );
+           if (cachedselectedPoliciesData) {
+-            setSelectedPolicies(cachedselectedPoliciesData)
++            setSelectedPolicies(cachedselectedPoliciesData);
+           }
+         }
+-        await getLocation()
+-      } catch (error) {
+-      }
++        await getLocation();
++      } catch (error) {}
+       setState((prevState) => {
+         return {
+-          ...prevState, initingAppState: false
+-        }
+-      })
++          ...prevState,
++          initingAppState: false,
++        };
++      });
+     })();
+-    return () => {
+-    }
++    return () => {};
+   }, []);
+   useEffect(() => {
+     if (loginData) {
+@@ -236,87 +258,85 @@ export const AppProvider: React.FC<AppProviderProps> = ({children}) => {
+   }, [sponsorship_list]);
+ 
+   const set_User = async (user: User | null) => {
+-    let new_user = user
++    let new_user = user;
+     if (new_user) {
+       try {
+         const cachedUSERData = await cache.getItem($cacheKeys.user, true);
+         if (cachedUSERData) {
+-          new_user = {...cachedUSERData, ...user}
++          new_user = { ...cachedUSERData, ...user };
+         }
+         await cache.setItem($cacheKeys.user, new_user);
+-      } catch (e) {
+-
+-      }
++      } catch (e) {}
+     }
+-    setUser(new_user || undefined)
+-  }
++    setUser(new_user || undefined);
++  };
+   const showLanguage = (_language: string) => {
+     switch (_language || language) {
+-      case 'zh-Hans':
+-        return '简体';
+-      case 'en':
+-        return 'EN';
+-      case 'zh-Hant':
+-        return '繁體';
+-      case 'ph':
+-        return 'Filipino';
+-      case 'th-TH':
+-        return 'ภาษาไทย';
+-      case 'vi':
+-        return 'Việt';
+-      case 'id':
+-        return 'Indonesia';
+-      case 'ms':
+-        return 'Melayu';
++      case "zh-Hans":
++        return "简体";
++      case "en":
++        return "EN";
++      case "zh-Hant":
++        return "繁體";
++      case "ph":
++        return "Filipino";
++      case "th-TH":
++        return "ภาษาไทย";
++      case "vi":
++        return "Việt";
++      case "id":
++        return "Indonesia";
++      case "ms":
++        return "Melayu";
+       default:
+-        return 'EN';
++        return "EN";
+     }
+   };
+   const setNotifCounter = (counter: number) => {
+     setNewPushNotificationCounter(newPushNotificationCounter);
+-  }
++  };
+   // Create moment language mapping.
+   const momentLanguageMap: { [key: string]: string } = {
+-    en: 'en',
+-    zh: 'zh-cn',  // 简体中文
+-    zh_tw: 'zh-tw', // 繁体中文
+-    ph: 'en', // 菲律宾默认用英文
+-    th: 'th',
+-    vn: 'vi', // 越南语
+-    Indonesia: 'id', // 印尼语
+-    Melayu: 'ms', // 马来语
++    en: "en",
++    zh: "zh-cn", // 简体中文
++    zh_tw: "zh-tw", // 繁体中文
++    ph: "en", // 菲律宾默认用英文
++    th: "th",
++    vn: "vi", // 越南语
++    Indonesia: "id", // 印尼语
++    Melayu: "ms", // 马来语
+   };
+   const changeLanguage = (language: string) => {
+-    $i18n.locale = language
+-    const momentLocale = momentLanguageMap[language] || 'en';
++    $i18n.locale = language;
++    const momentLocale = momentLanguageMap[language] || "en";
+     moment.locale(momentLocale);
+ 
+     setLanguage(language);
+-  }
++  };
+   /**
+    * The names  of all language files.
+    * [ 'en', 'zh', 'zh_tw', 'ph', 'th', 'vn', 'Indonesia', 'Melayu' ]
+    */
+   const lanTranslations = () => {
+     return Object.keys(constants.i18n.translations);
+-  }
++  };
+   const AcceptLanguage = () => {
+-    if ($i18n.locale === 'th-TH') {
+-      return 'th'
++    if ($i18n.locale === "th-TH") {
++      return "th";
+     }
+-    return $i18n.locale
+-  }
++    return $i18n.locale;
++  };
+   const isHpBasicPlan = (planId: string) => {
+-    return planId === $apiEnv[$apiEnv.env].NEXT_PUBLIC_365_BASIC_PLAN_ID;
+-  }
++    return planId === Config.NEXT_PUBLIC_365_BASIC_PLAN_ID;
++  };
+   const isAvailableCountry = (country: string): boolean => {
+-    return !!$availableCountries.find(x => x.googleValue === country);
+-  }
++    return !!$availableCountries.find((x) => x.googleValue === country);
++  };
+   const getLocation = async () => {
+     try {
+-      const position = await $cache.getItem($cacheKeys.position)
++      const position = await $cache.getItem($cacheKeys.position);
+       if (!position) {
+-        if (Platform.OS === 'android') {
++        if (Platform.OS === "android") {
+           const granted = await PermissionsAndroid.request(
+             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+           );
+@@ -326,31 +346,34 @@ export const AppProvider: React.FC<AppProviderProps> = ({children}) => {
+         }
+         Geolocation.getCurrentPosition(
+           async (position) => {
+-            const {latitude, longitude} = position.coords;
++            const { latitude, longitude } = position.coords;
+             try {
+-              const res = await $api.geolocation(`${latitude},${longitude}`, 'country')
++              const res = await $api.geolocation(
++                `${latitude},${longitude}`,
++                "country"
++              );
+               if (res) {
+-                const country = isAvailableCountry(res.results[0].address_components[0].long_name);
++                const country = isAvailableCountry(
++                  res.results[0].address_components[0].long_name
++                );
+                 if (country) {
+                   setPosition({
+                     latitude: latitude,
+                     longitude: longitude,
+                     apiGeolocation: res,
+-                    country: res.results[0].address_components[0].long_name
+-                  })
++                    country: res.results[0].address_components[0].long_name,
++                  });
+                   await $cache.setItem($cacheKeys.position, {
+                     latitude: latitude,
+                     longitude: longitude,
+                     apiGeolocation: res,
+-                    country: res.results[0].address_components[0].long_name
+-                  })
++                    country: res.results[0].address_components[0].long_name,
++                  });
+                 }
+               }
+-            } catch (e) {
+-            }
+-          },
+-          (error) => {
++            } catch (e) {}
+           },
++          (error) => {},
+           {
+             enableHighAccuracy: false,
+             timeout: 15000,
+@@ -360,9 +383,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({children}) => {
+       } else {
+         setPosition(position);
+       }
+-    } catch (e) {
+-    }
+-  }
++    } catch (e) {}
++  };
+   const value = {
+     loginData,
+     showErrorModal,
+@@ -403,7 +425,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({children}) => {
+     setSponsorship_list,
+     setNewPushNotificationCounter,
+     newPushNotificationCounter,
+-    setNotifCounter, position
++    setNotifCounter,
++    position,
+   };
+   globalAppState = value;
+   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+@@ -411,8 +434,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({children}) => {
+ // Ensure that the cached data conforms to the `LoginData` type.
+ const isValidLoginData = (data: any): data is LoginData => {
+   return (
+-    typeof data.memberToken === 'string' &&
+-    typeof data.entity === 'object' &&
++    typeof data.accessToken === "string" &&
++    typeof data.entity === "object" &&
+     Array.isArray(data.dependents)
+   );
+ };
+@@ -424,7 +447,7 @@ const isValidLoginData = (data: any): data is LoginData => {
+ export const useAppState = (): AppState => {
+   const context = useContext(AppContext);
+   if (!context) {
+-    throw new Error('useAppState must be used within an AppProvider');
++    throw new Error("useAppState must be used within an AppProvider");
+   }
+   return context;
+ };

@@ -1,0 +1,822 @@
+8a65fcb061050b8966cab6c5d8749649b81364af
+ .env                                               |     7 +-
+ .env.development                                   |     7 +-
+ .env.production                                    |     7 +-
+ .env.staging                                       |     7 +-
+ .eslintrc.js                                       |     4 +
+ .gitignore                                         |     7 +
+ .prettierignore                                    |     4 +
+ .prettierrc                                        |     7 +
+ .prettierrc.js                                     |     5 +
+ .vscode/settings.json                              |     1 +
+ .watchmanconfig                                    |     1 +
+ .yarnrc.yml                                        |     1 +
+ App.tsx                                            |   334 +-
+ Dockerfile                                         |    53 +
+ Gemfile                                            |     8 +
+ README.md                                          |   168 +-
+ README_stark.md                                    |   208 +
+ __tests__/App.test.tsx                             |    13 +
+ android/app/build.gradle                           |    35 +-
+ android/app/src/dev/res/values/string.xml          |     6 +-
+ android/app/src/main/AndroidManifest.xml           |    26 +-
+ .../app/src/main/java/com/heals/MainActivity.kt    |     6 -
+ .../app/src/main/java/com/heals/MainApplication.kt |     9 +-
+ android/app/src/main/res/values/strings.xml        |     2 +-
+ android/build.gradle                               |    14 +-
+ android/debug.keystore                             |   Bin 2257 -> 0 bytes
+ android/google-services.json                       |    55 -
+ android/gradle.properties                          |     9 +-
+ android/gradle/wrapper/gradle-wrapper.jar          |   Bin 43453 -> 43764 bytes
+ android/gradle/wrapper/gradle-wrapper.properties   |     2 +-
+ android/gradlew                                    |    10 +-
+ android/gradlew.bat                                |    11 +-
+ android/link-assets-manifest.json                  |    26 +-
+ android/release.keystore                           |   Bin 2592 -> 0 bytes
+ android/settings.gradle                            |     2 +
+ assets/bootsplash/logo.png                         |   Bin 5945 -> 3422 bytes
+ assets/bootsplash/logo@1,5x.png                    |   Bin 9336 -> 4753 bytes
+ assets/bootsplash/logo@2x.png                      |   Bin 13535 -> 6070 bytes
+ assets/bootsplash/logo@3x.png                      |   Bin 21830 -> 8831 bytes
+ assets/bootsplash/logo@4x.png                      |   Bin 31082 -> 11776 bytes
+ assets/bootsplash/manifest.json                    |     4 +-
+ babel.config.js                                    |    16 +-
+ bitbucket-pipelines.yml                            |   218 +
+ components.json                                    |    17 +
+ db.json                                            |   553 +
+ eslint.config.js                                   |    28 +
+ index.html                                         |    18 +
+ index.js                                           |     8 +-
+ ios/.xcode.env                                     |     8 +-
+ ios/Config.xcconfig                                |     9 -
+ ios/File.txt                                       |     1 -
+ ios/Heals.xcodeproj/project.pbxproj                |   709 +-
+ .../xcshareddata/xcschemes/Dev.xcscheme            |    19 +-
+ .../xcshareddata/xcschemes/Heals.xcscheme          |    23 +-
+ .../xcshareddata/IDEWorkspaceChecks.plist          |     8 -
+ .../xcshareddata/xcschemes/Development.xcscheme    |   112 -
+ ios/Heals/AppDelegate.h                            |     6 -
+ ios/Heals/AppDelegate.mm                           |    46 -
+ ios/Heals/AppDelegate.swift                        |    62 +
+ ios/Heals/BootSplash.storyboard                    |    12 +-
+ .../Contents.json                                  |     6 +-
+ ios/Heals/Heals.entitlements                       |     9 +-
+ ios/Heals/HealsDev Debug.entitlements              |    10 +-
+ ios/Heals/HealsDev.entitlements                    |    10 +-
+ ios/Heals/HealsRelease.entitlements                |    10 +-
+ .../AppIcon.appiconset/Contents.json               |     2 +-
+ ...on-App-60x60@2x.png => Icon-App-60x60@2x 2.png} |   Bin
+ .../Contents.json                                  |     6 +-
+ .../BootSplashLogo-68261b.imageset/logo-68261b.png |   Bin 0 -> 3422 bytes
+ .../logo-68261b@2x.png                             |   Bin 0 -> 6070 bytes
+ .../logo-68261b@3x.png                             |   Bin 0 -> 8831 bytes
+ .../BootSplashLogo-d8ada0.imageset/logo-d8ada0.png |   Bin 5945 -> 0 bytes
+ .../logo-d8ada0@2x.png                             |   Bin 13535 -> 0 bytes
+ .../logo-d8ada0@3x.png                             |   Bin 21830 -> 0 bytes
+ ios/Heals/Info.plist                               |    31 +-
+ ios/Heals/PrivacyInfo.xcprivacy                    |     2 +
+ ios/Heals/main.m                                   |    10 -
+ ios/HealsTests/HealsTests.m                        |    66 -
+ ios/HealsTests/Info.plist                          |    24 -
+ ios/Podfile                                        |    36 +-
+ ios/Pods-Heals-HealsTests.dev.xcconfig             |    19 -
+ ios/Pods-Heals.dev.xcconfig                        |    19 -
+ ios/en.lproj/InfoPlist.strings                     |     7 +
+ ios/id.lproj/InfoPlist.strings                     |    10 -
+ ios/link-assets-manifest.json                      |    26 +-
+ ios/ms.lproj/InfoPlist.strings                     |    12 -
+ ios/tmp.xcconfig                                   |     5 -
+ jsconfig.json                                      |     9 +
+ metro.config.js                                    |    19 +-
+ nginx.conf                                         |    16 +
+ package.json                                       |   155 +-
+ postcss.config.js                                  |     6 +
+ react-native.config.js                             |     2 +-
+ server.js                                          |    49 +
+ src/api/api-client.ts                              |    26 +-
+ src/api/api-types.ts                               |    19 +
+ src/api/api.ts                                     |   762 +-
+ src/api/urls.ts                                    |    63 +-
+ src/assets/images/NewUserIcon_5.png                |   Bin 0 -> 12623 bytes
+ src/assets/images/NewUserIcon_5.svg                |    32 +
+ src/assets/index.ts                                |     4 +
+ src/assets/json/countries-address.json             |  2907 +++++
+ src/assets/json/countries-original.json            | 10116 ++++++++++++++--
+ src/assets/json/countries.json                     | 11765 ++++++++++++++++---
+ src/assets/json/country-arecode.json               |  2904 +++++
+ src/assets/svg/BigTree.tsx                         |    19 +
+ src/assets/svg/BookmarkIcon.tsx                    |    18 +
+ src/assets/svg/COGIcon.tsx                         |    20 +
+ src/assets/svg/CalendarIcon.tsx                    |    22 +
+ src/assets/svg/ChevronDownDarkIcon.tsx             |    18 +
+ src/assets/svg/ChevronLeftThinIcon.tsx             |    20 +
+ src/assets/svg/ChevronUpDarkIcon.tsx               |    18 +
+ src/assets/svg/ClockCircleGrey.tsx                 |    18 +
+ src/assets/svg/ClockGreenIcon.tsx                  |    62 +
+ src/assets/svg/ClockIcon.tsx                       |    18 +
+ src/assets/svg/CloseCrossIcon.tsx                  |    22 +
+ src/assets/svg/CloseWhiteIcon.tsx                  |    18 +
+ src/assets/svg/DoctorsIcon.tsx                     |    26 +
+ src/assets/svg/FaceIDGreenIcon.tsx                 |    18 +
+ src/assets/svg/FaceIDIcon.tsx                      |    18 +
+ src/assets/svg/HealsLogoIcon.tsx                   |    33 +
+ src/assets/svg/HospitalIcon.tsx                    |    30 +
+ src/assets/svg/InfoRedIcon.tsx                     |    22 +
+ src/assets/svg/LocalizationMapIcon.tsx             |   682 ++
+ src/assets/svg/LogoTree.tsx                        |    36 +
+ src/assets/svg/NewUserIcon_1.tsx                   |  2039 ++++
+ src/assets/svg/NewUserIcon_2.tsx                   |   375 +
+ src/assets/svg/NewUserIcon_3.tsx                   |   119 +
+ src/assets/svg/NewUserIcon_4.tsx                   |   682 ++
+ src/assets/svg/NotificationBellIcon.tsx            |    18 +
+ src/assets/svg/NumberQueuePersonIcon.tsx           |    34 +
+ src/assets/svg/PeopleQueuIcon.tsx                  |    38 +
+ src/assets/svg/PhoneGreenIcon.tsx                  |    18 +
+ src/assets/svg/PhoneIcon.tsx                       |    18 +
+ src/assets/svg/PinIcon.tsx                         |    22 +
+ src/assets/svg/TreeIcon.tsx                        |    19 +
+ src/assets/svg/UnionIcon.tsx                       |    19 +
+ src/assets/svg/VideoCallGreenIcon.tsx              |    22 +
+ src/assets/svg/VideoIcon.tsx                       |    22 +
+ src/assets/svg/WhatsAppNoBackgroundIcon.tsx        |    20 +
+ src/assets/svg/add-contact-icon.tsx                |    26 +
+ src/assets/svg/arrow-left-white.tsx                |    18 +
+ src/assets/svg/arrow-right-green.tsx               |    18 +
+ src/assets/svg/arrow-right-grey.tsx                |    18 +
+ src/assets/svg/back-arrow-grey.tsx                 |    18 +
+ src/assets/svg/back-btn-number.tsx                 |    19 +
+ src/assets/svg/black-shade-bell.tsx                |    18 +
+ src/assets/svg/body.tsx                            |    18 +
+ src/assets/svg/capsule-icon.tsx                    |    38 +
+ src/assets/svg/chat-bubble-icon.tsx                |    22 +
+ src/assets/svg/check-green.tsx                     |    18 +
+ src/assets/svg/check-white.tsx                     |    18 +
+ src/assets/svg/chevron-down.tsx                    |    19 +
+ src/assets/svg/chevron-right-green-icon.tsx        |    18 +
+ src/assets/svg/chevron-right.tsx                   |     2 +-
+ src/assets/svg/close-transparent.tsx               |    20 +
+ src/assets/svg/close.tsx                           |    22 +
+ src/assets/svg/contact-card-gree-icon.tsx          |    18 +
+ src/assets/svg/doctors-in-your-lang.tsx            |   565 +
+ src/assets/svg/downloadFileIcon.tsx                |    23 +
+ src/assets/svg/edit-green-icon.tsx                 |    30 +
+ src/assets/svg/empty-address-icon.tsx              |   354 +
+ src/assets/svg/eye-blind.tsx                       |    26 +
+ src/assets/svg/eye-not-blind.tsx                   |    18 +
+ src/assets/svg/faceid.tsx                          |    20 +
+ src/assets/svg/finger-print-icon.tsx               |   109 +
+ src/assets/svg/index.ts                            |   178 +-
+ src/assets/svg/info-small-i-icon.tsx               |    22 +
+ src/assets/svg/left-arrow-green-icon.tsx           |    18 +
+ src/assets/svg/location-pin-icon.tsx               |    18 +
+ src/assets/svg/lock.tsx                            |     2 +-
+ src/assets/svg/next-arrow-white.tsx                |    18 +
+ src/assets/svg/payment-icon-1.tsx                  |    36 +
+ src/assets/svg/payment-icon-2.tsx                  |    33 +
+ src/assets/svg/payment-icon-3.tsx                  |    33 +
+ src/assets/svg/payment-icon-4.tsx                  |    38 +
+ src/assets/svg/payment-icon-5.tsx                  |    38 +
+ src/assets/svg/payment-icon-6.tsx                  |    36 +
+ src/assets/svg/payment-icon-7.tsx                  |    36 +
+ src/assets/svg/payment-icon-8.tsx                  |    42 +
+ src/assets/svg/payment-icon-9 copy.tsx             |    39 +
+ src/assets/svg/payment-icon-9.tsx                  |    39 +
+ src/assets/svg/people-icon.tsx                     |    22 +
+ src/assets/svg/phone-book-icon-green.tsx           |    18 +
+ src/assets/svg/phone-icon.tsx                      |    18 +
+ src/assets/svg/plan-list-bg-1.tsx                  |    36 +
+ src/assets/svg/plan-list-bg-2.tsx                  |    36 +
+ src/assets/svg/plan-list-bg-3.tsx                  |    41 +
+ src/assets/svg/plan-list-bg-4.tsx                  |    41 +
+ src/assets/svg/plan-list-bg-5.tsx                  |    36 +
+ src/assets/svg/red-pin.tsx                         |    46 +
+ src/assets/svg/red-timer.tsx                       |    62 +
+ src/assets/svg/small-clock-circle.tsx              |    26 +
+ src/assets/svg/truck-icon-green.tsx                |    18 +
+ src/assets/svg/whats-app-icon.tsx                  |    27 +
+ src/assets/svg/yed-pay-icon-with-text.tsx          |    36 +
+ src/assets/svg/yellow-info-icon.tsx                |    18 +
+ src/components/QRCodeBt/QRCodeBt.props.ts          |     3 +
+ src/components/QRCodeBt/QRCodeBt.tsx               |     8 +-
+ src/components/activate-modal/activate-modal.tsx   |     1 +
+ .../activation-modal/activation-modal.tsx          |    10 +-
+ .../add-emergency-contact-component.styles.ts      |   163 +
+ .../add-emergency-contact-component.tsx            |   151 +-
+ .../add-new-address-sheet.props.ts                 |     1 +
+ .../add-new-address-sheet.styles.ts                |   930 ++
+ .../add-new-address-sheet.tsx                      |   508 +
+ src/components/app-text/app-text.props.ts          |     1 +
+ src/components/app-text/app-text.styles.ts         |    24 +-
+ src/components/app-text/app-text.tsx               |     3 +-
+ .../avatar-component/avatar-component.props.ts     |     0
+ .../avatar-component/avatar-component.styles.ts    |   278 +
+ .../avatar-component/avatar-component.tsx          |   181 +
+ .../blood-type-chooser-component.styles.ts         |   219 +
+ .../blood-type-chooser-component.tsx               |   191 +-
+ src/components/common-modal-bt/common-modal-bt.tsx |    14 +-
+ src/components/common-modal/common-modal.styles.ts |    14 +
+ .../contact-us-modal/contact-us-modal.style.ts     |    11 +-
+ .../contact-us-modal/contact-us-modal.tsx          |   125 +-
+ .../countries-bottom-sheet-component.tsx           |    47 +-
+ .../countries-bottom-sheet.props.ts                |     5 +
+ .../countries-bottom-sheet.styles.ts               |   713 ++
+ .../countries-bottom-sheet.tsx                     |   169 +
+ .../date-picker-bottom-sheet.props.ts              |    19 +
+ .../date-picker-bottom-sheet.styles.ts             |   711 ++
+ .../date-picker-bottom-sheet.tsx                   |   222 +
+ .../delivery-address-sheet.props.ts                |     6 +
+ .../delivery-address-sheet.styles.ts               |   904 ++
+ .../delivery-address-sheet.tsx                     |   673 ++
+ .../gender-bottom-sheet-component.tsx              |     4 +-
+ .../gender-bottom-sheet.props.ts                   |     0
+ .../gender-bottom-sheet.styles.ts                  |   714 ++
+ .../gender-bottom-sheet/gender-bottom-sheet.tsx    |   130 +
+ .../gradient-button-component.props.ts             |     5 +-
+ .../gradient-button-component.styles.ts            |    19 +
+ .../gradient-button-component.tsx                  |    19 +-
+ .../improve-information-address.props.ts           |     4 +
+ .../improve-information-address.styles.ts          |   903 ++
+ .../improve-information-address.tsx                |   626 +
+ src/components/language-bt/language-bt.styles.ts   |     6 +-
+ src/components/language-bt/language-bt.tsx         |    63 +-
+ .../language-chooser-component.styles.ts           |    26 +-
+ .../language-chooser-component.tsx                 |    33 +-
+ src/components/logout-modal/logout-modal.styles.ts |     4 +-
+ src/components/logout-modal/logout-modal.tsx       |     4 +-
+ .../magic-login-loading-modal.styles.ts            |    21 +
+ .../magic-login-loading-modal.tsx                  |    24 +
+ .../mobile-number-component-register.props.ts      |     8 +
+ .../mobile-number-component-register.styles.ts     |   180 +
+ .../mobile-number-component-register.tsx           |   459 +
+ .../mobile-number-component.props.ts               |     5 +-
+ .../mobile-number-component.styles.ts              |   176 +-
+ .../mobile-number-component.tsx                    |   440 +-
+ .../nationality-bottom-sheet-component.tsx         |    31 +-
+ .../nationality-bottom-sheet.props.ts              |     0
+ .../nationality-bottom-sheet.styles.ts             |   713 ++
+ .../nationality-bottom-sheet.tsx                   |   113 +
+ src/components/number-pad/number-pad.props.ts      |     4 +
+ src/components/number-pad/number-pad.tsx           |    49 +
+ .../page-right-bt/page-right-bt.styles.ts          |     2 +-
+ src/components/page-right-bt/page-right-bt.tsx     |    58 +-
+ src/components/page-top-bar/page-top-bar.styles.ts |    42 +-
+ src/components/page-top-bar/page-top-bar.tsx       |   200 +-
+ .../radio-button-component.tsx                     |     3 +-
+ .../relationship-chooser-component.styles.ts       |   219 +
+ .../relationship-chooser-component.tsx             |   161 +-
+ src/components/safe-view/safe-view.tsx             |     5 +-
+ src/components/stepper-component/index.ts          |     0
+ .../stepper-component/stepper-component.props.ts   |    10 +
+ .../stepper-component/stepper-component.styles.ts  |    40 +
+ .../stepper-component/stepper-component.tsx        |    53 +
+ .../stepper-healthIfno-component/index.ts          |     1 +
+ .../stepper-healthIfno-component.props.ts          |    10 +
+ .../stepper-healthIfno-component.styles.ts         |    43 +
+ .../stepper-healthIfno-component.tsx               |    93 +
+ .../text-input-component.props.ts                  |     6 +-
+ .../text-input-component/text-input-component.tsx  |    11 +-
+ src/constants/base64Str.ts                         |     5 +
+ src/constants/index.ts                             |    37 +
+ src/constants/phone-numbers.json                   |   247 +
+ src/helper/async-storage-utils.ts                  |    16 +
+ src/helper/linking-helper.ts                       |    41 +-
+ src/hooks/auth-hook-context.tsx                    |     4 +-
+ src/hooks/useAndroidBackHandler.ts                 |    45 +
+ src/hooks/useLocationPermission.ts                 |    31 +
+ src/hooks/useUserData.ts                           |    17 +
+ src/i18n/locale/Indonesia.ts                       |   148 +-
+ src/i18n/locale/Melayu.ts                          |   148 +-
+ src/i18n/locale/en.ts                              |  3652 +++---
+ src/i18n/locale/ph.ts                              |   170 +-
+ src/i18n/locale/th.ts                              |  1977 ++--
+ src/i18n/locale/vn.ts                              |   335 +-
+ src/i18n/locale/zh.ts                              |  3609 +++---
+ src/i18n/locale/zh_tw.ts                           |  3612 +++---
+ src/modules/GoogleWalletModule.ts                  |    30 +
+ src/navigation/auth-stack.tsx                      |   263 +-
+ src/navigation/main-stack.tsx                      |    16 +
+ .../main-tab/main-tab-navigator.styles.ts          |   253 +-
+ src/navigation/main-tab/main-tab-navigator.tsx     |   781 +-
+ src/navigation/route-names.ts                      |    13 +-
+ src/navigation/types.ts                            |     7 +-
+ src/screens/PDFScreen/PDFScreen.props.ts           |     4 +
+ src/screens/PDFScreen/PDFScreen.styles.ts          |    10 +
+ src/screens/PDFScreen/PDFScreen.tsx                |    73 +
+ .../doctor-detail-screen.styles.ts                 |   615 +-
+ .../doctor-detail-screen/doctor-detail-screen.tsx  |  1586 ++-
+ .../doctor-list-screen/doctor-list-screen.props.ts |    31 +-
+ .../doctor-list-screen.styles.ts                   |    59 +-
+ .../doctor-list-screen/doctor-list-screen.tsx      |   390 +-
+ .../forgot-password-screen.tsx                     |    16 +-
+ .../heals-guide-screen/heals-guide-screen.tsx      |     3 +-
+ .../heals-plan-membership.styles.ts                |    67 +-
+ .../heals-plan-membership.tsx                      |   335 +-
+ .../doctor-prescription-ww.props.ts                |    10 +
+ .../doctor-prescription-ww.styles.ts               |   584 +
+ .../doctor-prescription-ww.tsx                     |   644 +
+ src/screens/home/home-screen/home-screen.styles.ts |   752 +-
+ src/screens/home/home-screen/home-screen.tsx       |  2030 +++-
+ src/screens/login-localization/index.ts            |     0
+ .../login-localization/login-localization.props.ts |    15 +
+ .../login-localization.styles.ts                   |    40 +
+ .../login-localization/login-localization.tsx      |    98 +
+ .../login-otp-screen/login-otp-screen.props.ts     |     3 +
+ .../login-otp-screen/login-otp-screen.styles.ts    |   359 +
+ .../login/login-otp-screen/login-otp-screen.tsx    |   794 ++
+ .../login/login-screen/login-screen.styles.ts      |   217 +-
+ src/screens/login/login-screen/login-screen.tsx    |   977 +-
+ src/screens/login/otp-screen/otp-screen.styles.ts  |    43 +-
+ src/screens/login/otp-screen/otp-screen.tsx        |   197 +-
+ .../send-magic-link-screen.props.ts                |     7 +
+ .../send-magic-link-screen.styles.ts               |    81 +
+ .../send-magic-link-screen.tsx                     |   151 +
+ .../medication-detailed-screen.styles.ts           |     2 +-
+ .../medication-detailed-screen.tsx                 |     4 +-
+ .../medication-list-screen.styles.ts               |    78 +-
+ .../medication-list-screen.tsx                     |   237 +-
+ .../my-appointment-list-screen.tsx                 |     5 +-
+ .../my-appointment-screen.props.ts                 |    22 +-
+ .../my-appointment-screen.styles.ts                |   552 +-
+ .../my-appointment-screen.tsx                      |  2929 +++--
+ .../my-plans-screen/my-plans-screen.styles.ts      |   141 +-
+ src/screens/my-plans-screen/my-plans-screen.tsx    |   297 +-
+ .../notification-screen/notification-screen.tsx    |    17 +-
+ src/screens/opening-hours-screen/index.ts          |     1 +
+ .../opening-hours-screen.styles.ts                 |    37 +
+ .../opening-hours-screen/opening-hours-screen.tsx  |    91 +
+ src/screens/pass/pass-screen.styles.ts             |    83 +-
+ src/screens/pass/pass-screen.tsx                   |   308 +-
+ .../plan-list-screen/plan-list-screen.props.ts     |     0
+ .../plan-list-screen/plan-list-screen.styles.ts    |   200 +
+ src/screens/plan-list-screen/plan-list-screen.tsx  |   377 +
+ .../product-waiting-room/product-waiting-room.tsx  |   118 +-
+ .../profile-address/profile-address-edit.styles.ts |    43 +-
+ .../profile-address/profile-address-edit.tsx       |    97 +-
+ .../profile-address/profile-address.styles.ts      |    85 +-
+ .../profile/profile-address/profile-address.tsx    |   222 +-
+ .../profile-delete-account-screen.props.ts         |     0
+ .../profile-delete-account-screen.styles.ts        |    80 +
+ .../profile-delete-account-screen.tsx              |    96 +
+ .../profile-add-dependants/index.ts                |     1 +
+ .../profile-add-dependants.props.ts                |    14 +
+ .../profile-add-dependants.styles.ts               |   195 +
+ .../profile-add-dependants.tsx                     |  1255 ++
+ .../profile-dependants.styles.ts                   |   136 +-
+ .../profile-dependants/profile-dependants.tsx      |   305 +-
+ .../profile-edit-dependants.props.ts               |    14 +
+ .../profile-edit-dependants.styles.ts              |   195 +
+ .../profile-edit-dependants.tsx                    |  1181 ++
+ .../profile-edit-screen.styles.ts                  |    19 +-
+ .../profile-edit-screen/profile-edit-screen.tsx    |   122 +-
+ .../profile-healthInfo-screen.styles.ts            |    37 +-
+ .../profile-healthInfo-screen.tsx                  |    34 +-
+ .../profile-healsplan-screen.styles.ts             |    11 +-
+ .../profile-healsplan-screen.tsx                   |    28 +-
+ .../profile-screen/profile-screen.styles.ts        |    27 +-
+ .../profile/profile-screen/profile-screen.tsx      |    28 +-
+ .../change-screen/change-password-screen.tsx       |    36 +-
+ .../profile-settings-screen.styles.ts              |   113 +-
+ .../profile-settings-screen.tsx                    |   182 +-
+ .../questionnaire/questionnaire-screen.styles.ts   |    84 +-
+ src/screens/questionnaire/questionnaire-screen.tsx |   296 +-
+ .../health-info-screen.styles.ts                   |    64 +-
+ .../health-info-screen/health-info-screen.tsx      |   378 +-
+ .../register-screen/register-screen.props.ts       |     5 +
+ .../register-screen/register-screen.styles.ts      |   308 +-
+ src/screens/register-screen/register-screen.tsx    |  1772 ++-
+ .../shopping-cart-screen-item.tsx                  |     5 +-
+ .../shopping-cart-screen.styles.ts                 |    16 +-
+ .../shopping-cart-screen/shopping-cart-screen.tsx  |   169 +-
+ src/screens/splash-screen/splash-screen.styles.ts  |     9 +
+ src/screens/splash-screen/splash-screen.tsx        |    69 +
+ .../teleconsult-screen/teleconsult-screen.tsx      |     4 +-
+ .../transaction-processing-screen.props.ts         |     5 +
+ .../transaction-processing-screen.styles.ts        |   111 +
+ .../transaction-processing-screen.tsx              |   186 +
+ src/services/firebase/pushnotification.ts          |    21 -
+ src/store/AppContext.tsx                           |     7 +
+ src/style/theme/theme-common.ts                    |     8 +-
+ src/style/theme/theme-light.ts                     |     3 +
+ src/style/theme/theme-provider.tsx                 |    72 +-
+ src/types/Theme.ts                                 |     9 +
+ src/types/types.d.ts                               |    17 +
+ src/utils/ErrorBoundary.tsx                        |    14 +-
+ src/utils/country-helper.ts                        |    83 +
+ src/utils/key-value-finder.ts                      |     6 +
+ src/utils/links.ts                                 |    42 +-
+ src/utils/wallet-helper.ts                         |   165 +
+ svgs/light-logo.svg                                |    12 +
+ tailwind.config.js                                 |    77 +
+ tsconfig.json                                      |     3 +
+ vite.config.js                                     |    67 +
+ 410 files changed, 74781 insertions(+), 16363 deletions(-)
+.env
+.env.development
+.env.production
+.env.staging
+.eslintrc.js
+.gitignore
+.prettierignore
+.prettierrc
+.prettierrc.js
+.vscode/settings.json
+.watchmanconfig
+.yarnrc.yml
+App.tsx
+Dockerfile
+Gemfile
+README.md
+README_stark.md
+__tests__/App.test.tsx
+android/app/build.gradle
+android/app/src/dev/res/values/string.xml
+android/app/src/main/AndroidManifest.xml
+android/app/src/main/java/com/heals/MainActivity.kt
+android/app/src/main/java/com/heals/MainApplication.kt
+android/app/src/main/res/values/strings.xml
+android/build.gradle
+android/debug.keystore
+android/google-services.json
+android/gradle.properties
+android/gradle/wrapper/gradle-wrapper.jar
+android/gradle/wrapper/gradle-wrapper.properties
+android/gradlew
+android/gradlew.bat
+android/link-assets-manifest.json
+android/release.keystore
+android/settings.gradle
+assets/bootsplash/logo.png
+assets/bootsplash/logo@1,5x.png
+assets/bootsplash/logo@2x.png
+assets/bootsplash/logo@3x.png
+assets/bootsplash/logo@4x.png
+assets/bootsplash/manifest.json
+babel.config.js
+bitbucket-pipelines.yml
+components.json
+db.json
+eslint.config.js
+index.html
+index.js
+ios/.xcode.env
+ios/Config.xcconfig
+ios/File.txt
+ios/Heals.xcodeproj/project.pbxproj
+ios/Heals.xcodeproj/xcshareddata/xcschemes/Dev.xcscheme
+ios/Heals.xcodeproj/xcshareddata/xcschemes/Heals.xcscheme
+ios/Heals.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+ios/Heals.xcworkspace/xcshareddata/xcschemes/Development.xcscheme
+ios/Heals/AppDelegate.h
+ios/Heals/AppDelegate.mm
+ios/Heals/AppDelegate.swift
+ios/Heals/BootSplash.storyboard
+ios/Heals/Colors.xcassets/BootSplashBackground-68261b.colorset/Contents.json
+ios/Heals/Heals.entitlements
+ios/Heals/HealsDev Debug.entitlements
+ios/Heals/HealsDev.entitlements
+ios/Heals/HealsRelease.entitlements
+ios/Heals/Images.xcassets/AppIcon.appiconset/Contents.json
+ios/Heals/Images.xcassets/AppIcon.appiconset/Icon-App-60x60@2x 2.png
+ios/Heals/Images.xcassets/BootSplashLogo-68261b.imageset/Contents.json
+ios/Heals/Images.xcassets/BootSplashLogo-68261b.imageset/logo-68261b.png
+ios/Heals/Images.xcassets/BootSplashLogo-68261b.imageset/logo-68261b@2x.png
+ios/Heals/Images.xcassets/BootSplashLogo-68261b.imageset/logo-68261b@3x.png
+ios/Heals/Images.xcassets/BootSplashLogo-d8ada0.imageset/logo-d8ada0.png
+ios/Heals/Images.xcassets/BootSplashLogo-d8ada0.imageset/logo-d8ada0@2x.png
+ios/Heals/Images.xcassets/BootSplashLogo-d8ada0.imageset/logo-d8ada0@3x.png
+ios/Heals/Info.plist
+ios/Heals/PrivacyInfo.xcprivacy
+ios/Heals/main.m
+ios/HealsTests/HealsTests.m
+ios/HealsTests/Info.plist
+ios/Podfile
+ios/Pods-Heals-HealsTests.dev.xcconfig
+ios/Pods-Heals.dev.xcconfig
+ios/en.lproj/InfoPlist.strings
+ios/id.lproj/InfoPlist.strings
+ios/link-assets-manifest.json
+ios/ms.lproj/InfoPlist.strings
+ios/tmp.xcconfig
+jsconfig.json
+metro.config.js
+nginx.conf
+package.json
+postcss.config.js
+react-native.config.js
+server.js
+src/api/api-client.ts
+src/api/api-types.ts
+src/api/api.ts
+src/api/urls.ts
+src/assets/images/NewUserIcon_5.png
+src/assets/images/NewUserIcon_5.svg
+src/assets/index.ts
+src/assets/json/countries-address.json
+src/assets/json/countries-original.json
+src/assets/json/countries.json
+src/assets/json/country-arecode.json
+src/assets/svg/BigTree.tsx
+src/assets/svg/BookmarkIcon.tsx
+src/assets/svg/COGIcon.tsx
+src/assets/svg/CalendarIcon.tsx
+src/assets/svg/ChevronDownDarkIcon.tsx
+src/assets/svg/ChevronLeftThinIcon.tsx
+src/assets/svg/ChevronUpDarkIcon.tsx
+src/assets/svg/ClockCircleGrey.tsx
+src/assets/svg/ClockGreenIcon.tsx
+src/assets/svg/ClockIcon.tsx
+src/assets/svg/CloseCrossIcon.tsx
+src/assets/svg/CloseWhiteIcon.tsx
+src/assets/svg/DoctorsIcon.tsx
+src/assets/svg/FaceIDGreenIcon.tsx
+src/assets/svg/FaceIDIcon.tsx
+src/assets/svg/HealsLogoIcon.tsx
+src/assets/svg/HospitalIcon.tsx
+src/assets/svg/InfoRedIcon.tsx
+src/assets/svg/LocalizationMapIcon.tsx
+src/assets/svg/LogoTree.tsx
+src/assets/svg/NewUserIcon_1.tsx
+src/assets/svg/NewUserIcon_2.tsx
+src/assets/svg/NewUserIcon_3.tsx
+src/assets/svg/NewUserIcon_4.tsx
+src/assets/svg/NotificationBellIcon.tsx
+src/assets/svg/NumberQueuePersonIcon.tsx
+src/assets/svg/PeopleQueuIcon.tsx
+src/assets/svg/PhoneGreenIcon.tsx
+src/assets/svg/PhoneIcon.tsx
+src/assets/svg/PinIcon.tsx
+src/assets/svg/TreeIcon.tsx
+src/assets/svg/UnionIcon.tsx
+src/assets/svg/VideoCallGreenIcon.tsx
+src/assets/svg/VideoIcon.tsx
+src/assets/svg/WhatsAppNoBackgroundIcon.tsx
+src/assets/svg/add-contact-icon.tsx
+src/assets/svg/arrow-left-white.tsx
+src/assets/svg/arrow-right-green.tsx
+src/assets/svg/arrow-right-grey.tsx
+src/assets/svg/back-arrow-grey.tsx
+src/assets/svg/back-btn-number.tsx
+src/assets/svg/black-shade-bell.tsx
+src/assets/svg/body.tsx
+src/assets/svg/capsule-icon.tsx
+src/assets/svg/chat-bubble-icon.tsx
+src/assets/svg/check-green.tsx
+src/assets/svg/check-white.tsx
+src/assets/svg/chevron-down.tsx
+src/assets/svg/chevron-right-green-icon.tsx
+src/assets/svg/chevron-right.tsx
+src/assets/svg/close-transparent.tsx
+src/assets/svg/close.tsx
+src/assets/svg/contact-card-gree-icon.tsx
+src/assets/svg/doctors-in-your-lang.tsx
+src/assets/svg/downloadFileIcon.tsx
+src/assets/svg/edit-green-icon.tsx
+src/assets/svg/empty-address-icon.tsx
+src/assets/svg/eye-blind.tsx
+src/assets/svg/eye-not-blind.tsx
+src/assets/svg/faceid.tsx
+src/assets/svg/finger-print-icon.tsx
+src/assets/svg/index.ts
+src/assets/svg/info-small-i-icon.tsx
+src/assets/svg/left-arrow-green-icon.tsx
+src/assets/svg/location-pin-icon.tsx
+src/assets/svg/lock.tsx
+src/assets/svg/next-arrow-white.tsx
+src/assets/svg/payment-icon-1.tsx
+src/assets/svg/payment-icon-2.tsx
+src/assets/svg/payment-icon-3.tsx
+src/assets/svg/payment-icon-4.tsx
+src/assets/svg/payment-icon-5.tsx
+src/assets/svg/payment-icon-6.tsx
+src/assets/svg/payment-icon-7.tsx
+src/assets/svg/payment-icon-8.tsx
+src/assets/svg/payment-icon-9 copy.tsx
+src/assets/svg/payment-icon-9.tsx
+src/assets/svg/people-icon.tsx
+src/assets/svg/phone-book-icon-green.tsx
+src/assets/svg/phone-icon.tsx
+src/assets/svg/plan-list-bg-1.tsx
+src/assets/svg/plan-list-bg-2.tsx
+src/assets/svg/plan-list-bg-3.tsx
+src/assets/svg/plan-list-bg-4.tsx
+src/assets/svg/plan-list-bg-5.tsx
+src/assets/svg/red-pin.tsx
+src/assets/svg/red-timer.tsx
+src/assets/svg/small-clock-circle.tsx
+src/assets/svg/truck-icon-green.tsx
+src/assets/svg/whats-app-icon.tsx
+src/assets/svg/yed-pay-icon-with-text.tsx
+src/assets/svg/yellow-info-icon.tsx
+src/components/QRCodeBt/QRCodeBt.props.ts
+src/components/QRCodeBt/QRCodeBt.tsx
+src/components/activate-modal/activate-modal.tsx
+src/components/activation-modal/activation-modal.tsx
+src/components/add-emergency-contact-compoent/add-emergency-contact-component.styles.ts
+src/components/add-emergency-contact-compoent/add-emergency-contact-component.tsx
+src/components/add-new-address-sheet/add-new-address-sheet.props.ts
+src/components/add-new-address-sheet/add-new-address-sheet.styles.ts
+src/components/add-new-address-sheet/add-new-address-sheet.tsx
+src/components/app-text/app-text.props.ts
+src/components/app-text/app-text.styles.ts
+src/components/app-text/app-text.tsx
+src/components/avatar-component/avatar-component.props.ts
+src/components/avatar-component/avatar-component.styles.ts
+src/components/avatar-component/avatar-component.tsx
+src/components/blood-type-chooser-component/blood-type-chooser-component.styles.ts
+src/components/blood-type-chooser-component/blood-type-chooser-component.tsx
+src/components/common-modal-bt/common-modal-bt.tsx
+src/components/common-modal/common-modal.styles.ts
+src/components/contact-us-modal/contact-us-modal.style.ts
+src/components/contact-us-modal/contact-us-modal.tsx
+src/components/countries-bottom-sheet-component/countries-bottom-sheet-component.tsx
+src/components/countries-bottom-sheet/countries-bottom-sheet.props.ts
+src/components/countries-bottom-sheet/countries-bottom-sheet.styles.ts
+src/components/countries-bottom-sheet/countries-bottom-sheet.tsx
+src/components/date-picker-bottom-sheet/date-picker-bottom-sheet.props.ts
+src/components/date-picker-bottom-sheet/date-picker-bottom-sheet.styles.ts
+src/components/date-picker-bottom-sheet/date-picker-bottom-sheet.tsx
+src/components/delivery-address-sheet/delivery-address-sheet.props.ts
+src/components/delivery-address-sheet/delivery-address-sheet.styles.ts
+src/components/delivery-address-sheet/delivery-address-sheet.tsx
+src/components/gender-bottom-sheet-component/gender-bottom-sheet-component.tsx
+src/components/gender-bottom-sheet/gender-bottom-sheet.props.ts
+src/components/gender-bottom-sheet/gender-bottom-sheet.styles.ts
+src/components/gender-bottom-sheet/gender-bottom-sheet.tsx
+src/components/gradient-button-component/gradient-button-component.props.ts
+src/components/gradient-button-component/gradient-button-component.styles.ts
+src/components/gradient-button-component/gradient-button-component.tsx
+src/components/improve-information-address/improve-information-address.props.ts
+src/components/improve-information-address/improve-information-address.styles.ts
+src/components/improve-information-address/improve-information-address.tsx
+src/components/language-bt/language-bt.styles.ts
+src/components/language-bt/language-bt.tsx
+src/components/language-chooser-component/language-chooser-component.styles.ts
+src/components/language-chooser-component/language-chooser-component.tsx
+src/components/logout-modal/logout-modal.styles.ts
+src/components/logout-modal/logout-modal.tsx
+src/components/magic-login-loading-modal/magic-login-loading-modal.styles.ts
+src/components/magic-login-loading-modal/magic-login-loading-modal.tsx
+src/components/mobile-number-component-register/mobile-number-component-register.props.ts
+src/components/mobile-number-component-register/mobile-number-component-register.styles.ts
+src/components/mobile-number-component-register/mobile-number-component-register.tsx
+src/components/mobile-number-component/mobile-number-component.props.ts
+src/components/mobile-number-component/mobile-number-component.styles.ts
+src/components/mobile-number-component/mobile-number-component.tsx
+src/components/nationality-bottom-sheet-component/nationality-bottom-sheet-component.tsx
+src/components/nationality-bottom-sheet/nationality-bottom-sheet.props.ts
+src/components/nationality-bottom-sheet/nationality-bottom-sheet.styles.ts
+src/components/nationality-bottom-sheet/nationality-bottom-sheet.tsx
+src/components/number-pad/number-pad.props.ts
+src/components/number-pad/number-pad.tsx
+src/components/page-right-bt/page-right-bt.styles.ts
+src/components/page-right-bt/page-right-bt.tsx
+src/components/page-top-bar/page-top-bar.styles.ts
+src/components/page-top-bar/page-top-bar.tsx
+src/components/radio-button-component/radio-button-component.tsx
+src/components/relationship-chooser-component/relationship-chooser-component.styles.ts
+src/components/relationship-chooser-component/relationship-chooser-component.tsx
+src/components/safe-view/safe-view.tsx
+src/components/stepper-component/index.ts
+src/components/stepper-component/stepper-component.props.ts
+src/components/stepper-component/stepper-component.styles.ts
+src/components/stepper-component/stepper-component.tsx
+src/components/stepper-healthIfno-component/index.ts
+src/components/stepper-healthIfno-component/stepper-healthIfno-component.props.ts
+src/components/stepper-healthIfno-component/stepper-healthIfno-component.styles.ts
+src/components/stepper-healthIfno-component/stepper-healthIfno-component.tsx
+src/components/text-input-component/text-input-component.props.ts
+src/components/text-input-component/text-input-component.tsx
+src/constants/base64Str.ts
+src/constants/index.ts
+src/constants/phone-numbers.json
+src/helper/async-storage-utils.ts
+src/helper/linking-helper.ts
+src/hooks/auth-hook-context.tsx
+src/hooks/useAndroidBackHandler.ts
+src/hooks/useLocationPermission.ts
+src/hooks/useUserData.ts
+src/i18n/locale/Indonesia.ts
+src/i18n/locale/Melayu.ts
+src/i18n/locale/en.ts
+src/i18n/locale/ph.ts
+src/i18n/locale/th.ts
+src/i18n/locale/vn.ts
+src/i18n/locale/zh.ts
+src/i18n/locale/zh_tw.ts
+src/modules/GoogleWalletModule.ts
+src/navigation/auth-stack.tsx
+src/navigation/main-stack.tsx
+src/navigation/main-tab/main-tab-navigator.styles.ts
+src/navigation/main-tab/main-tab-navigator.tsx
+src/navigation/route-names.ts
+src/navigation/types.ts
+src/screens/PDFScreen/PDFScreen.props.ts
+src/screens/PDFScreen/PDFScreen.styles.ts
+src/screens/PDFScreen/PDFScreen.tsx
+src/screens/doctor-detail-screen/doctor-detail-screen.styles.ts
+src/screens/doctor-detail-screen/doctor-detail-screen.tsx
+src/screens/doctor-list-screen/doctor-list-screen.props.ts
+src/screens/doctor-list-screen/doctor-list-screen.styles.ts
+src/screens/doctor-list-screen/doctor-list-screen.tsx
+src/screens/forgot-password-screen/forgot-password-screen.tsx
+src/screens/heals-guide-screen/heals-guide-screen.tsx
+src/screens/heals-plan-membership/heals-plan-membership.styles.ts
+src/screens/heals-plan-membership/heals-plan-membership.tsx
+src/screens/home/home-screen/doctor-prescription-ww/doctor-prescription-ww.props.ts
+src/screens/home/home-screen/doctor-prescription-ww/doctor-prescription-ww.styles.ts
+src/screens/home/home-screen/doctor-prescription-ww/doctor-prescription-ww.tsx
+src/screens/home/home-screen/home-screen.styles.ts
+src/screens/home/home-screen/home-screen.tsx
+src/screens/login-localization/index.ts
+src/screens/login-localization/login-localization.props.ts
+src/screens/login-localization/login-localization.styles.ts
+src/screens/login-localization/login-localization.tsx
+src/screens/login/login-otp-screen/login-otp-screen.props.ts
+src/screens/login/login-otp-screen/login-otp-screen.styles.ts
+src/screens/login/login-otp-screen/login-otp-screen.tsx
+src/screens/login/login-screen/login-screen.styles.ts
+src/screens/login/login-screen/login-screen.tsx
+src/screens/login/otp-screen/otp-screen.styles.ts
+src/screens/login/otp-screen/otp-screen.tsx
+src/screens/login/send-magic-link-screen/send-magic-link-screen.props.ts
+src/screens/login/send-magic-link-screen/send-magic-link-screen.styles.ts
+src/screens/login/send-magic-link-screen/send-magic-link-screen.tsx
+src/screens/medication-list-screen/medication-detailed-screen/medication-detailed-screen.styles.ts
+src/screens/medication-list-screen/medication-detailed-screen/medication-detailed-screen.tsx
+src/screens/medication-list-screen/medication-list-screen.styles.ts
+src/screens/medication-list-screen/medication-list-screen.tsx
+src/screens/my-appointment-list-screen/my-appointment-list-screen.tsx
+src/screens/my-appointment-screen/my-appointment-screen.props.ts
+src/screens/my-appointment-screen/my-appointment-screen.styles.ts
+src/screens/my-appointment-screen/my-appointment-screen.tsx
+src/screens/my-plans-screen/my-plans-screen.styles.ts
+src/screens/my-plans-screen/my-plans-screen.tsx
+src/screens/notification-screen/notification-screen.tsx
+src/screens/opening-hours-screen/index.ts
+src/screens/opening-hours-screen/opening-hours-screen.styles.ts
+src/screens/opening-hours-screen/opening-hours-screen.tsx
+src/screens/pass/pass-screen.styles.ts
+src/screens/pass/pass-screen.tsx
+src/screens/plan-list-screen/plan-list-screen.props.ts
+src/screens/plan-list-screen/plan-list-screen.styles.ts
+src/screens/plan-list-screen/plan-list-screen.tsx
+src/screens/product-waiting-room/product-waiting-room.tsx
+src/screens/profile/profile-address/profile-address-edit.styles.ts
+src/screens/profile/profile-address/profile-address-edit.tsx
+src/screens/profile/profile-address/profile-address.styles.ts
+src/screens/profile/profile-address/profile-address.tsx
+src/screens/profile/profile-delete-account-screen/profile-delete-account-screen.props.ts
+src/screens/profile/profile-delete-account-screen/profile-delete-account-screen.styles.ts
+src/screens/profile/profile-delete-account-screen/profile-delete-account-screen.tsx
+src/screens/profile/profile-dependants/profile-add-dependants/index.ts
+src/screens/profile/profile-dependants/profile-add-dependants/profile-add-dependants.props.ts
+src/screens/profile/profile-dependants/profile-add-dependants/profile-add-dependants.styles.ts
+src/screens/profile/profile-dependants/profile-add-dependants/profile-add-dependants.tsx
+src/screens/profile/profile-dependants/profile-dependants.styles.ts
+src/screens/profile/profile-dependants/profile-dependants.tsx
+src/screens/profile/profile-dependants/profile-edit-dependants/profile-edit-dependants.props.ts
+src/screens/profile/profile-dependants/profile-edit-dependants/profile-edit-dependants.styles.ts
+src/screens/profile/profile-dependants/profile-edit-dependants/profile-edit-dependants.tsx
+src/screens/profile/profile-edit-screen/profile-edit-screen.styles.ts
+src/screens/profile/profile-edit-screen/profile-edit-screen.tsx
+src/screens/profile/profile-edit-screen/profile-healthInfo-screen.styles.ts
+src/screens/profile/profile-edit-screen/profile-healthInfo-screen.tsx
+src/screens/profile/profile-healsplan-screen/profile-healsplan-screen.styles.ts
+src/screens/profile/profile-healsplan-screen/profile-healsplan-screen.tsx
+src/screens/profile/profile-screen/profile-screen.styles.ts
+src/screens/profile/profile-screen/profile-screen.tsx
+src/screens/profile/profile-settings-screen/change-screen/change-password-screen.tsx
+src/screens/profile/profile-settings-screen/profile-settings-screen.styles.ts
+src/screens/profile/profile-settings-screen/profile-settings-screen.tsx
+src/screens/questionnaire/questionnaire-screen.styles.ts
+src/screens/questionnaire/questionnaire-screen.tsx
+src/screens/register-screen/health-info-screen/health-info-screen.styles.ts
+src/screens/register-screen/health-info-screen/health-info-screen.tsx
+src/screens/register-screen/register-screen.props.ts
+src/screens/register-screen/register-screen.styles.ts
+src/screens/register-screen/register-screen.tsx
+src/screens/shopping-cart-screen/shopping-cart-screen-item.tsx
+src/screens/shopping-cart-screen/shopping-cart-screen.styles.ts
+src/screens/shopping-cart-screen/shopping-cart-screen.tsx
+src/screens/splash-screen/splash-screen.styles.ts
+src/screens/splash-screen/splash-screen.tsx
+src/screens/teleconsult-screen/teleconsult-screen.tsx
+src/screens/transaction-processing-screen/transaction-processing-screen.props.ts
+src/screens/transaction-processing-screen/transaction-processing-screen.styles.ts
+src/screens/transaction-processing-screen/transaction-processing-screen.tsx
+src/services/firebase/pushnotification.ts
+src/store/AppContext.tsx
+src/style/theme/theme-common.ts
+src/style/theme/theme-light.ts
+src/style/theme/theme-provider.tsx
+src/types/Theme.ts
+src/types/types.d.ts
+src/utils/ErrorBoundary.tsx
+src/utils/country-helper.ts
+src/utils/key-value-finder.ts
+src/utils/links.ts
+src/utils/wallet-helper.ts
+svgs/light-logo.svg
+tailwind.config.js
+tsconfig.json
+vite.config.js

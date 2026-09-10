@@ -129,7 +129,7 @@ description: >-
     12. 最终报告目标 App、version/build、Xcode/SDK、Archive 和 IPA 路径、IPA 大小/SHA-256、签名与 provisioning 校验、上传回执、App Store Connect 实际状态、dSYM/合规风险和未覆盖范围。除非用户明确要求，不提交或 push；完成项目产物和验证后，仅把新增或变化的通用工程/环境/发布事实更新到项目 `README_stark.md`，不写单次状态流水或秘密。 -->
     <!-- - 运行到如图![img_190329.png](img_190329.png)型号的真机上,真机所在的时区是 `东八区` -->
 - android:
-  <!-- -  你执行`npm run android:dev`,把当前项目的`1.2.3`版本的 `dev `环境的debug模式的apk运行到如图![img_143139.png](img_143139.png) ![img_143147.png](img_143147.png)型号的真机上,直到你用 adb 截取真机当前画面(遇到类似如图![img_154323.png](img_154323.png)这种警告或者报错,直接解决),检查完毕真机上运行的 APP 没问题为止,否则不要自动停止任务; 真机所在的时区是 `东八区` -->
+  -  你执行`npm run android:dev`,把当前项目的`1.2.3`版本的 `dev `环境的debug模式的apk运行到如图![img_143139.png](img_143139.png) ![img_143147.png](img_143147.png)型号的真机上,直到你用 adb 截取真机当前画面(遇到类似如图![img_154323.png](img_154323.png)这种警告或者报错,直接解决),检查完毕真机上运行的 APP 没问题为止,否则不要自动停止任务; 真机所在的时区是 `东八区`
   <!-- - 为当前 checkout 构建 `dev` 环境的 `1.2.3` 版本 Release 模式 APK。使用前把 `1.2.3` 换成真实 `versionName`，或在本轮消息里明确写出 version。本任务明确授权构建，但不授权自动安装到真机、提交 Git、push、上传 Google Play / 任何商店或发布。
     1. 先确认项目根、当前分支、HEAD 和工作树；保留已有未提交改动，不执行 clean/reset，不覆盖无关文件。读取 `package.json` 脚本、`android/app/build.gradle` 的 flavor / `applicationId` / `applicationIdSuffix` / `versionName` / `versionCode` / signingConfigs、以及 `.env.development` 是否存在，以源码和真实构建结果为准。
     2. 目标 `versionName` 优先使用用户本轮明确指定的 version；否则使用本条标题里已替换的 `1.2.3`；若标题仍是占位符 `xxx` 且本轮未指定，读取当前 `versionName` 并保持不变，不擅自升级。目标必须是 `dev` flavor + `release` buildType（`assembleDevRelease`），最终包名必须为 `com.healshealthcare.healspass.dev`；不得误改或误构建 `prod` / `debug`。

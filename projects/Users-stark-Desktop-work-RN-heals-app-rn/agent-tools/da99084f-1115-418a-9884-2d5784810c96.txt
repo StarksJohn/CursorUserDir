@@ -1,0 +1,476 @@
+How to Roll Back an App Update Effectively
+
+Agree & Join LinkedIn
+
+By clicking Continue to join or sign in, you agree to LinkedIn’s User Agreement, Privacy Policy, and Cookie Policy.
+
+# What are the best strategies for rolling back an app update?
+
+Powered by AI and the LinkedIn community
+
+### 1
+
+Use version control
+
+### 2
+
+Test before releasing
+
+### 3
+
+Use staged rollouts
+
+### 4
+
+Implement remote config
+
+### 5
+
+Follow best practices
+
+### 6
+
+Here’s what else to consider
+
+Sometimes, an app update can cause more problems than it solves. Maybe it introduces a new bug, breaks a feature, or annoys your users. In such cases, you might want to roll back to a previous version of your app until you fix the issue. But how do you do that without losing data, users, or ratings? In this article, we'll explore some of the best strategies for rolling back an app update for both iOS and Android platforms.
+
+Top experts in this article
+
+Selected by the community from 34 contributions. Learn more
+
+Ashok Londhe iOS Lead at LTIMindtree | Banking & Fintech Specialist | UPI & Digital Payments Expert | Mobile application security |…
+
+View contribution
+
+Niaz Ahmed Sr. Software Engineer | Android | Flutter | AI and Cloud Practitioner
+
+View contribution
+
+Chirag Thummar Senior Mobile App Architect | I Help Businesses Launch & Scale Revenue-Ready Apps | 9+ Years | 50+ Apps Shipped
+
+View contribution
+
+See what others are saying
+
+## 1 Use version control
+
+One of the most important tools for any app developer is version control. Version control allows you to track, manage, and revert changes to your code. It also helps you collaborate with other developers and avoid conflicts. You should always use version control to store your app's source code and assets, and commit changes regularly. This way, you can easily go back to a working version of your app if something goes wrong with an update. Some of the most popular version control systems are Git, Subversion, and Mercurial.
+
+Add your perspective
+
+Help others by sharing more (125 characters min.) Cancel
+
+Add Save
+
+Niaz Ahmed Sr. Software Engineer | Android | Flutter | AI and Cloud Practitioner
+
+- Copy link to contribution
+- Report contribution
+
+You can't directly revert to an older version of an app on the Play Store or App Store. Instead, you can take the last stable version of your app, update its build and version number, and then publish it as a new update. It's important to keep a separate release branch for each version, making it easier to identify the last stable release. Alternatively, you can adopt a feature flag-based release strategy. This allows you to remotely disable a new feature if it's not performing as expected for users.
+
+…see more
+
+Like
+
+Bhushan Abhyankar Principal iOS Architect | Tech Lead | Engineering Manager | Expert in Mobile Development, Scalable Solutions, and Team Leadership Expert in Swift, SwiftUI, ObjectiveC & Native Apps
+
+- Copy link to contribution
+- Report contribution
+
+We can Create a branch for each release or version. When a rollback is needed, switch to the branch corresponding to the stable version. This allows you to isolate changes and easily switch . between different versions. Also we can create release tags for after every release, with describing what exact features were rolled in that release. so while rolling back, we know which feature this will contain
+
+…see more
+
+Like
+
+Vuong Tran Engineering Manager at ShopBack
+
+- Copy link to contribution
+- Report contribution
+
+Added one point that would be great, that is your app have to have a feature to not allowing any specific version. let's say if you have an major crash issue in a specific version, then you rolled a hot-fix and you will have a way to not let user use the crash version anymore.
+
+…see more
+
+Like
+
+Awais Ibrahim 🚀 Mobile Lead | Senior Software Engineer | Flutter & React Native | iOS | AWS Certified | Silver Medalist | Remote Work Advocate
+
+- Copy link to contribution
+- Report contribution
+
+Rolling back a mobile app update can be necessary if the latest version introduces critical bugs, issues, or if users are dissatisfied with the changes. Here are some strategies to consider when rolling back a mobile app update: - Use robust version control system like Git to track changes in your codebase. This allows you to easily revert to a previous version if necessary. - Consider using a staged rollout strategy, where you initially release the update to a small subset of users. - Utilize remote configuration features this can be helpful for rolling back specific changes or features that are causing problems.
+
+…see more
+
+Like
+
+Mariano Daniel Perugini IT Manager at Despegar
+
+- Copy link to contribution
+- Report contribution
+
+A mi me resultó muy útil los features remotos, caminos separados de codigo basados en un flag. Importante hacer tag en cada release y/o squash and merge a la hora de mergear los prs para poder hacer fácilmente cherry picks
+
+…see more
+
+Translated
+
+Show translation Show original
+
+Like
+
+Load more contributions
+
+## 2 Test before releasing
+
+Another essential strategy for avoiding the need to roll back an app update is to test it thoroughly before releasing it to the public. Testing can help you identify and fix bugs, performance issues, compatibility problems, and user feedback. You should test your app on different devices, operating systems, screen sizes, and network conditions. You should also use automated testing tools, such as unit tests, integration tests, and UI tests, to ensure your app's functionality and quality. Additionally, you should use beta testing platforms, such as TestFlight for iOS and Firebase App Distribution for Android, to distribute your app to a limited group of users and collect feedback.
+
+Add your perspective
+
+Help others by sharing more (125 characters min.) Cancel
+
+Add Save
+
+Ashok Londhe iOS Lead at LTIMindtree | Banking & Fintech Specialist | UPI & Digital Payments Expert | Mobile application security | VAPT Audit |
+
+- Copy link to contribution
+- Report contribution
+
+We can use GitHub as version control tool where we can create: 1. Create Separate Branch for every release version 2. Separate Tag for release branch. Tag should have release note, comparison link to understand what features are supported in current release. 2.From tag we can create separate release framework/ release, which have release note which useful to know supported features and functionality. Next, we can use Remote Feature toggle and Remote Killswitch for disable or enable features and its Api's(services.) Whenever we need to rollback, check release tags and their release note, based on that you can make decision to rollback to most stable release. I hope this will help.
+
+…see more
+
+Like
+
+Chirag Thummar Senior Mobile App Architect | I Help Businesses Launch & Scale Revenue-Ready Apps | 9+ Years | 50+ Apps Shipped
+
+- Copy link to contribution
+- Report contribution
+
+Testing the app is an integral par of mobile app development. When you test the app robustly it means it is less error-prone and will also go a long way.
+
+…see more
+
+Like
+
+Kaushik Parmar
+
+- Copy link to contribution
+- Report contribution
+
+Extensive testing before release is the most effective way to roll back an app update. Setting high priority for thorough testing guarantees that possible problems or defects are found early on and fixed, lowering the possibility that an update will need to be rolled back. Comprehensive testing in various settings and circumstances allows developers to address unexpected issues and make the required corrections before launch. Developers may improve the stability and dependability of the application, reduce the need for rollback procedures, and improve user experience by prioritizing testing as a fundamental stage in the update process.
+
+…see more
+
+Like
+
+## 3 Use staged rollouts
+
+Even if you test your app extensively, you might still encounter unexpected issues when you release it to a large and diverse audience. That's why you should use staged rollouts, which allow you to gradually release your app update to a percentage of your users and monitor its performance and impact. Staged rollouts can help you reduce the risk of introducing a major bug, measure user satisfaction, and collect data for analysis. You can use staged rollouts for both iOS and Android apps, using the App Store Connect and Google Play Console respectively.
+
+Add your perspective
+
+Help others by sharing more (125 characters min.) Cancel
+
+Add Save
+
+Rishabh Jain Android Engineer @ Chewy • AWS Certified • Kubernetes
+
+- Copy link to contribution
+- Report contribution
+
+One thing I've found helpful, especially from my prior role as an Android engineer, is utilizing Google Play's staged rollout feature. We followed a strategy of first releasing the app update to Beta users, and then to the main production channel, initially to 10% of users. Within a week, based on the feedback and performance data, we would gradually roll out the app to 100% of the users. This approach significantly enhanced our ability to monitor the update's impact and ensure a smooth user experience before a full-scale release.
+
+…see more
+
+Like
+
+Chirag Thummar Senior Mobile App Architect | I Help Businesses Launch & Scale Revenue-Ready Apps | 9+ Years | 50+ Apps Shipped
+
+- Copy link to contribution
+- Report contribution
+
+When you upload a new version of an existing app you can choose a rollout strategy initially you will rollout for 20%. if it reports less or no error then roll out the next 30% and finally the rest of the 50%. I also apply this strategy in the play console rollout.
+
+…see more
+
+Like
+
+HARSHAVARDHANA K P Technical Delivery || Agile || Certified Scrum Master® || Digital Transformation || Application Security
+
+- Copy link to contribution
+- Report contribution
+
+We can take benefit of Google play stores alpha , beta and production roll out releases and dev team can track the feedback from alpha and beta users. Based on the feedback and usage, can decide on the feature rollouts.
+
+…see more
+
+Like
+
+Russell Morley
+
+- Copy link to contribution
+- Report contribution
+
+Staged rollouts should be considered for any mobile app testing and release strategy. Using staged rollouts allows app teams to gradually release updates to a subset of users before reaching a wider audience. This approach helps identify and address potential issues, ensuring a smoother experience for all users. It minimizes the impact of bugs, allows for real-world testing, and provides an opportunity to gather user feedback and data for further refinement. Using staged rollouts greatly reduces the impact of any bugs that make it into production. Being able to pause a release. Hot-fixing a bug and then rereleasing it to users is vital. In mobile apps. Bugs are like viruses. Staged rollouts allow the spread of the bug to be contained.
+
+…see more
+
+Like
+
+Rohan Jain Engineering Manager(Mobile), Scalable Capital
+
+- Copy link to contribution
+- Report contribution
+
+Release tracks, ease-in staged roll-out percentages and continuous monitoring. - Utilize the internal, alpha, beta release tracks to roll-out first to internal tester groups. - Rollout to small percentage of users on the first day then increase the percentage exponentially. - Make sure to have ample logging in your application with tools like crashlytics and monitor these after a rollout to see if the new version has any critical issues. If any critical issues are found, pause the rollout and roll-out a new update with the fix, repeat from step 1.
+
+…see more
+
+Like
+
+Load more contributions
+
+## 4 Implement remote config
+
+Another useful strategy for rolling back an app update is to implement remote config, which allows you to change the behavior and appearance of your app without releasing a new version. Remote config enables you to modify certain parameters or features of your app from a server, and apply them to different segments of your users. For example, you can use remote config to enable or disable a feature, change the layout or color scheme, or adjust the content or language of your app. This way, you can quickly revert any changes that cause problems or dissatisfaction among your users.
+
+Add your perspective
+
+Help others by sharing more (125 characters min.) Cancel
+
+Add Save
+
+Chirag Thummar Senior Mobile App Architect | I Help Businesses Launch & Scale Revenue-Ready Apps | 9+ Years | 50+ Apps Shipped
+
+- Copy link to contribution
+- Report contribution
+
+There could be some Remote Config Which will be used for testing specific app features and checking the errors or user experience.
+
+…see more
+
+Like
+
+Rishabh Jain Android Engineer @ Chewy • AWS Certified • Kubernetes
+
+- Copy link to contribution
+- Report contribution
+
+I believe this is one of the best strategies for managing app updates is the implementation of remote configuration. It's like a secret superpower 🔥 for app updates. QUICK SWITCH! 🔌 If something in the update doesn't work right, unplug the switch, and it's like it never happened. No need for a full rollback. Plus, it's a great way to test new stuff with just a few users before going big. In short, it keeps things smooth and user-friendly. Most of the developers use remote config for forcing flexible/immediate in-app updates.
+
+…see more
+
+Like
+
+Muhammad Bilal Rehman Khan Mentored 1000's of Careers | Providing Software Consultancy | Sr. Software Engineer | Flutter Expert
+
+- Copy link to contribution
+- Report contribution
+
+Remote configuration is a top strategy for rolling back an app update because it allows quick control over features without requiring a new release. It enables toggling features on or off remotely, swiftly addressing issues and minimizing user impact. This flexibility enhances agility in managing updates and ensures a smoother user experience.
+
+…see more
+
+Like
+
+Muhammad Khubaib Imtiaz Software Engineer Android, iOS | Contractor & Consultant | Kotlin Multiplatform | Compose Multiplatform | Open For Collaboration
+
+- Copy link to contribution
+- Report contribution
+
+Implementing the remote configuration is the most important feature in any app. By implementing this, we can live any updates and can revert them back easily, we can live any updates in specific countries too. Big organisations usually go with remote config.
+
+…see more
+
+Like
+
+Yurii Mysochenko Senior Android Engineer
+
+- Copy link to contribution
+- Report contribution
+
+Firebase offers the Remote Config library for all major platforms. It might be useful if you don't want to create and support your server infrastructure. The configuration values can be changed through the Firebase console or using the Remote Config backend APIs.
+
+…see more
+
+Like
+
+Load more contributions
+
+## 5 Follow best practices
+
+Finally, you should follow some best practices for rolling back an app update, depending on your platform and situation. For iOS apps, you should always keep a backup of your app's binary and metadata, and use the App Store Connect API to restore them if needed. You should also inform your users about the reason and duration of the rollback, and avoid changing the app's bundle ID or version number. For Android apps, you should use the Google Play Console to halt, resume, or revert a staged rollout, and use the versionCode and versionName attributes to manage your app's versions. You should also communicate with your users through in-app messages, notifications, or emails, and request them to update their app when you fix the issue.
+
+Add your perspective
+
+Help others by sharing more (125 characters min.) Cancel
+
+Add Save
+
+Rishabh Jain Android Engineer @ Chewy • AWS Certified • Kubernetes
+
+- Copy link to contribution
+- Report contribution
+
+- Rolling back an app update is like fixing a glitch in your car's navigation system. - For iOS, always have a backup of your app's essentials, like keeping a spare tire. Use App Store Connect API for a smooth rollback. - Android, Google Play Console is your remote control. Manage your update's pace with versionCode and versionName, like watching your speedometer. - One major key here is communication, always keep your users informed about the situation through in-app messages or emails, guiding your users like GPS directions. - When you've fixed the issue, ask users to update or enforce immediate updates in the app. The most important this is that never release app updates on weekends! 😂
+
+…see more
+
+Like
+
+Kaushik Parmar
+
+- Copy link to contribution
+- Report contribution
+
+Effective app update rollback techniques need adherence to recommended practices. This includes communication protocols, version control implementation, and extensive testing. Comprehensive testing before deployment enables developers to identify and address possible problems early on, minimizing the need for rollbacks. Developers may quickly return to earlier versions by tracking changes with version control systems. Furthermore, having open lines of contact with users makes it possible to gather feedback and provide updates on time, speeding up the process of addressing any issues that may arise after an upgrade. App upgrades are handled proactively by following these best practices, increasing reliability and user happiness.
+
+…see more
+
+Like
+
+Gayatri P. Fractional AI Head of Product and GTM at Gradient Advisory, x-MSFT, x-Google | AI/ML | B2C/B2B | Mobile | 0 -1 & Product-Led Growth | Portfolio planning and programs | Tech Partner Ecosystems
+
+- Copy link to contribution
+- Report contribution
+
+I think remote dynamic config is also what I will prefer, because "When you've fixed the issue, ask users to update or enforce immediate updates in the app" - that is so tricky! A common issue is users don't update versions when you ask them! In the Mobile platform world, this has always been on a burner. There are UI tactics (dialogs) for users to do needful, but how many will do and not dismiss it? If you do force-update which one of the app sides I worked and there was such a backlash! I also know that i had to at any given time support the last few versions depending on where users were and had to support the development of features and not overlook and give them plenty of time to get to newer versions (rollback or not).
+
+…see more
+
+Like
+
+Bhushan Abhyankar Principal iOS Architect | Tech Lead | Engineering Manager | Expert in Mobile Development, Scalable Solutions, and Team Leadership Expert in Swift, SwiftUI, ObjectiveC & Native Apps
+
+- Copy link to contribution
+- Report contribution
+
+One of the widely tested and used best practice for reverting back app version is implementing feature flags in your code to toggle specific features on or off. If a newly introduced feature causes issues, turn off the feature without rolling back the entire update.
+
+…see more
+
+Like
+
+## 6 Here’s what else to consider
+
+This is a space to share examples, stories, or insights that don’t fit into any of the previous sections. What else would you like to add?
+
+Add your perspective
+
+Help others by sharing more (125 characters min.) Cancel
+
+Add Save
+
+Cody E. Staff Software Engineer → Mobile Platforms & Architecture → I Can Ship (Code & Cruising)
+
+- Copy link to contribution
+- Report contribution
+
+You can’t roll back an app update. You can only roll forward after halting an ongoing update. If you’d like to limit your risk then it’s best to release new features behind feature flags that can be easily toggled off in the event of an incident.
+
+…see more
+
+Like
+
+Danh T. Build your app idea with optimal resources
+
+- Copy link to contribution
+- Report contribution
+
+Let's see Google Play and Apple Store enable us to percentile rollout the application to User. We can use this to minimize the risk of crash by rolling out the app steadily increasing from 1 to 100%. Whenever you get a prod crash from your latest version you can stop the release to minimize the impact and find solution for it.
+
+…see more
+
+Like
+
+Darshan Pandya Product Engineer, Mobile App Dev. | 150M+ App Downloads | Mobile Apps & Open Source | Prev: Appwrite
+
+- Copy link to contribution
+- Report contribution
+
+For scaled-up, high-end apps, below strategies can be particularly effective: 1. Real-Time Remote Config: By default, Firebase RC uses a cached version for the next 24 hours after a successful update. Since it supports realtime, it can be leveraged to pull the plug off of a feature. This is highly effective because it uses HTTP connection and not Google Play Services APIs. 2. In-House Notification System: Use a in-house notification system built on top of FCM to show non-dismissible screen urging the user to update the app at the earliest. This is quite common in popular apps to temporarily block the app functionality to prompt urgent updates. 3. Incorporate Version Logic in Your API to restrict serving data to that affected app version.
+
+…see more
+
+Like
+
+Khalil M. Saada Tech Manager | Solutions Architect | Professor | MBA
+
+- Copy link to contribution
+- Report contribution
+
+Quando se trata de reverter uma atualização de aplicativo, as estratégias podem variar dependendo de como o aplicativo foi publicado. Infelizmente, se você publicou um aplicativo nativo e não está utilizando o recurso de ‘hot code push’ (HCP), a única opção é fazer uma nova publicação, removendo ou adicionando o que desejar. No entanto, se você estiver usando o HCP, o processo é muito mais simples. Basta reverter a configuração para a versão desejada. O rollback com HCP é extremamente simples e quase instantâneo.
+
+…see more
+
+Translated
+
+Show translation Show original
+
+Like
+
+Victor Hugo Barros Senior Mobile (iOS/Android) Software Engineer | (ISC)2 CC - Certified in Cybersecurity | Swift, Objective-C, Java, Kotlin, React, React Native, JavaScript, TypeScript, C/C++, C#, Python, Rust, Deep Learning, WebAssembly
+
+- Copy link to contribution
+- Report contribution
+
+If your app is written in React Native, consider to use the new Expo OTA (over-the-air) updates which allows publish (or revert) versions without need user interaction. Since React Native and Expo updates uses JavaScript and does not change the binary published in the Apple’s App Store, it does not violate Apple’s guidelines.
+
+…see more
+
+Like
+
+### Mobile Applications
+
++ Follow
+
+## Rate this article
+
+We created this article with the help of AI. What do you think of it?
+
+It’s great It’s not so great
+
+## Thanks for your feedback
+
+Your feedback is private. Like or react to bring the conversation to your network.
+
+Report this article
+
+- How do you manage expectations when stakeholders request additional functionalities in a minimalist app? 17 contributions
+- Balancing user experience and data privacy in mobile apps: Can you find the sweet spot? 28 contributions
+- Struggling to balance aesthetics and functionality in your mobile app design? 16 contributions
+- Your mobile app feature is getting conflicting feedback from developers and designers. How do you resolve it? 10 contributions
+- You're struggling to improve your mobile app. How can you gather beta tester feedback for faster updates? 17 contributions
+- You're facing fluctuating network speeds. How do you adapt app features accordingly? 38 contributions
+- A third-party library has compromised your app's data security. What steps should you take now? 15 contributions
+- Your app relies on a crucial third-party API. How will you navigate its sudden unavailability? 26 contributions
+- How do you handle conflicting opinions between team members on security measures for mobile app data storage? 9 contributions
+
+See all
+
+## Explore Other Skills
+
+- Programming
+- Web Development
+- Agile Methodologies
+- Machine Learning
+- Software Development
+- Data Engineering
+- Data Analytics
+- Data Science
+- Artificial Intelligence (AI)
+- Cloud Computing
+
+Show more Show less
+
+- Mobile ApplicationsHow can Jenkins help mobile app developers automate their build processes?
+- Mobile ApplicationsWhat are the best practices for deploying and distributing mobile apps with Jenkins X?
+- Mobile ApplicationsWhat's an efficient way to test your mobile app after fixing a bug?
+- Mobile ApplicationsHow can you improve your iOS app's quality with continuous integration?
+
+Like
+
+34 Contributions

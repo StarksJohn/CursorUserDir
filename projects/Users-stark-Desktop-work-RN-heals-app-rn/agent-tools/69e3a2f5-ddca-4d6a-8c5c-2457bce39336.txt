@@ -1,0 +1,2374 @@
+commit 9eb8be8d2948a406281da223e9f8b1da32eb54e6
+Author:     Kester <montoya.kester@gmail.com>
+AuthorDate: Tue Apr 28 22:25:36 2026 +1200
+Commit:     Kester <montoya.kester@gmail.com>
+CommitDate: Tue Apr 28 22:25:36 2026 +1200
+
+    Code cleanup
+
+ App.tsx                                            |  83 +--
+ src/api/api.ts                                     | 560 +++++++++++++--------
+ src/api/urls.ts                                    |  49 +-
+ src/helper/linking-helper.ts                       |  29 +-
+ src/i18n/locale/en.ts                              |   3 +
+ src/screens/home/home-screen/home-screen.styles.ts |  20 +
+ src/screens/home/home-screen/home-screen.tsx       | 111 ++++
+ .../send-magic-link-screen.tsx                     | 133 ++---
+ 8 files changed, 665 insertions(+), 323 deletions(-)
+commit 9eb8be8d2948a406281da223e9f8b1da32eb54e6
+Author:     Kester <montoya.kester@gmail.com>
+AuthorDate: Tue Apr 28 22:25:36 2026 +1200
+Commit:     Kester <montoya.kester@gmail.com>
+CommitDate: Tue Apr 28 22:25:36 2026 +1200
+
+    Code cleanup
+
+diff --git a/src/api/api.ts b/src/api/api.ts
+index 2b3785b1..32be5e76 100644
+--- a/src/api/api.ts
++++ b/src/api/api.ts
+@@ -3,10 +3,10 @@ import {
+   getRequest,
+   postRequest,
+   putRequest,
+-} from "./api-client.ts";
+-import urls from "@api/urls";
+-import {AppState, getGlobalAppState, LoginData} from "@store/AppContext";
+-import Config from "react-native-config";
++} from './api-client.ts';
++import urls from '@api/urls';
++import { AppState, getGlobalAppState, LoginData } from '@store/AppContext';
++import Config from 'react-native-config';
+ import {
+   heals_pass_product_list_Response,
+   MemberPolicies,
+@@ -32,13 +32,13 @@ import {
+   Geolocation,
+   AddToCart,
+   CartResponse,
+-} from "@api/api-types.ts";
+-import {AxiosProgressEvent} from "axios";
+-import * as Keychain from "react-native-keychain";
+-import AsyncStorage from "@react-native-async-storage/async-storage";
+-import {FCMTokenStoreRequestDTO} from "@dto/FCMTokenStoreRequestDTO.ts";
+-import {FCMTokenStoreResponseDTO} from "@dto/FCMTokenStoreResponseDTO.ts";
+-import AppConfig from "../config/index";
++} from '@api/api-types.ts';
++import { AxiosProgressEvent } from 'axios';
++import * as Keychain from 'react-native-keychain';
++import AsyncStorage from '@react-native-async-storage/async-storage';
++import { FCMTokenStoreRequestDTO } from '@dto/FCMTokenStoreRequestDTO.ts';
++import { FCMTokenStoreResponseDTO } from '@dto/FCMTokenStoreResponseDTO.ts';
++import AppConfig from '../config/index';
+ // import * as Sentry from "@sentry/react-native";
+ 
+ const handleRequestError = (error: any): Promise<never> => {
+@@ -63,15 +63,25 @@ const handleRequestError = (error: any): Promise<never> => {
+     } else if (error?.message && typeof error.message === 'string') {
+       // First try: error.message (from API response data)
+       errorMessage = error.message;
+-    } else if (error?.error?.constraints && Array.isArray(error.error.constraints) && error.error.constraints.length > 0) {
++    } else if (
++      error?.error?.constraints &&
++      Array.isArray(error.error.constraints) &&
++      error.error.constraints.length > 0
++    ) {
+       // Handle error object with constraints array (e.g., { success: false, error: { constraints: ["..."], localize_key: "..." } })
+       // Join all constraint messages into a single string
+       errorMessage = error.error.constraints.join(', ');
+-    } else if (error?.error?.message && typeof error.error.message === 'string') {
++    } else if (
++      error?.error?.message &&
++      typeof error.error.message === 'string'
++    ) {
+       // Handle error object with message field (e.g., { success: false, error: { message: "...", localize_key: "..." } })
+       // Prioritize message over localize_key as it contains more meaningful error description
+       errorMessage = error.error.message;
+-    } else if (error?.error?.localize_key && typeof error.error.localize_key === 'string') {
++    } else if (
++      error?.error?.localize_key &&
++      typeof error.error.localize_key === 'string'
++    ) {
+       // Fallback to localize_key if message is not available (e.g., { success: false, error: { localize_key: "..." } })
+       errorMessage = error.error.localize_key;
+     } else if (error?.response?.data?.message) {
+@@ -85,10 +95,17 @@ const handleRequestError = (error: any): Promise<never> => {
+       } else if (typeof errorData === 'object' && errorData !== null) {
+         // If error is an object, try to extract meaningful info
+         // Priority: constraints > localize_key > message > JSON serialization
+-        if (errorData.constraints && Array.isArray(errorData.constraints) && errorData.constraints.length > 0) {
++        if (
++          errorData.constraints &&
++          Array.isArray(errorData.constraints) &&
++          errorData.constraints.length > 0
++        ) {
+           // Extract constraints array and join as error message
+           errorMessage = errorData.constraints.join(', ');
+-        } else if (errorData.localize_key && typeof errorData.localize_key === 'string') {
++        } else if (
++          errorData.localize_key &&
++          typeof errorData.localize_key === 'string'
++        ) {
+           errorMessage = errorData.localize_key;
+         } else if (errorData.message) {
+           errorMessage = errorData.message;
+@@ -104,23 +121,40 @@ const handleRequestError = (error: any): Promise<never> => {
+         errorMessage = responseData;
+       } else if (typeof responseData === 'object' && responseData !== null) {
+         // Look for common error message fields including constraints and localize_key
+-        if (responseData.error?.constraints && Array.isArray(responseData.error.constraints) && responseData.error.constraints.length > 0) {
++        if (
++          responseData.error?.constraints &&
++          Array.isArray(responseData.error.constraints) &&
++          responseData.error.constraints.length > 0
++        ) {
+           // Extract constraints array and join as error message
+           errorMessage = responseData.error.constraints.join(', ');
+-        } else if (responseData.error?.localize_key && typeof responseData.error.localize_key === 'string') {
++        } else if (
++          responseData.error?.localize_key &&
++          typeof responseData.error.localize_key === 'string'
++        ) {
+           errorMessage = responseData.error.localize_key;
+         } else {
+-          errorMessage = responseData.msg || responseData.detail || JSON.stringify(responseData, null, 2);
++          errorMessage =
++            responseData.msg ||
++            responseData.detail ||
++            JSON.stringify(responseData, null, 2);
+         }
+       }
+     } else if (error?.toString && typeof error.toString === 'function') {
+       // Last resort: convert to string (but avoid generic axios messages and [object Object])
+       const errorStr = error.toString();
+-      if (!errorStr.includes('Request failed with status code') && errorStr !== '[object Object]') {
++      if (
++        !errorStr.includes('Request failed with status code') &&
++        errorStr !== '[object Object]'
++      ) {
+         errorMessage = errorStr;
+       } else if (typeof error === 'object' && error !== null) {
+         // If toString returns [object Object], serialize the error object
+-        errorMessage = JSON.stringify(error, Object.getOwnPropertyNames(error), 2);
++        errorMessage = JSON.stringify(
++          error,
++          Object.getOwnPropertyNames(error),
++          2,
++        );
+       }
+     }
+   } catch (parseError) {
+@@ -128,15 +162,17 @@ const handleRequestError = (error: any): Promise<never> => {
+     console.error('Error parsing error message:', parseError);
+     errorMessage = 'An unexpected error occurred';
+   }
+-  
+-  console.error('handleRequestError - extracted message:', errorMessage, 'original error:', error);
+-  
+-  const {
+-    setCommonModalKey,
+-    setShowErrorModal,
+-    setErrorModalText,
+-  }: AppState = getGlobalAppState();
+-  setCommonModalKey("showErrorModal");
++
++  console.error(
++    'handleRequestError - extracted message:',
++    errorMessage,
++    'original error:',
++    error,
++  );
++
++  const { setCommonModalKey, setShowErrorModal, setErrorModalText }: AppState =
++    getGlobalAppState();
++  setCommonModalKey('showErrorModal');
+   setShowErrorModal(true);
+   setErrorModalText(errorMessage);
+   return Promise.reject(error);
+@@ -146,12 +182,18 @@ export const login = async (loginRequestPayload: any) => {
+   try {
+     const response = await postRequest<any>(
+       urls.API_LOGIN,
+-      loginRequestPayload
++      loginRequestPayload,
+     );
+     const globalAppState = getGlobalAppState();
+     globalAppState?.setLoginData(response?.data?.data);
+-    await AsyncStorage.setItem('memberData', JSON.stringify(response?.data?.data));
+-    await Keychain.setGenericPassword('password', response?.data?.data?.accessToken);
++    await AsyncStorage.setItem(
++      'memberData',
++      JSON.stringify(response?.data?.data),
++    );
++    await Keychain.setGenericPassword(
++      'password',
++      response?.data?.data?.accessToken,
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return error;
+@@ -175,14 +217,20 @@ export const loginOtp = async (loginOtpRequest: any) => {
+       loginOtpRequest,
+       {
+         params: {
+-          "source": "'default'"
+-        }
+-      }
++          source: "'default'",
++        },
++      },
+     );
+     const globalAppState = getGlobalAppState();
+     globalAppState?.setLoginData(response?.data.data);
+-    await AsyncStorage.setItem('memberData', JSON.stringify(response?.data.data));
+-    await Keychain.setGenericPassword('password', response?.data?.data.accessToken);
++    await AsyncStorage.setItem(
++      'memberData',
++      JSON.stringify(response?.data.data),
++    );
++    await Keychain.setGenericPassword(
++      'password',
++      response?.data?.data.accessToken,
++    );
+     return Promise.resolve(response?.data);
+   } catch (error) {
+     // return handleRequestError(error);
+@@ -194,10 +242,10 @@ export const activate = async (code: string) => {
+   try {
+     const response = await postRequest<any>(
+       urls.API_ACTIVATE,
+-      {code},
++      { code },
+       {
+         baseURL: Config.BASE_URL_1,
+-      }
++      },
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -266,7 +314,7 @@ export const ticket_post = async (): Promise<Ticket_post_response> => {
+       },
+       {
+         // baseURL: Config.BASE_URL_1,
+-      }
++      },
+     );
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+@@ -277,7 +325,7 @@ export const ticket_post = async (): Promise<Ticket_post_response> => {
+ /**
+  * get questionnaire
+  */
+-export const questionnaire = async (insurerId) => {
++export const questionnaire = async insurerId => {
+   try {
+     const response = await getRequest<any>(urls.API_QUESTION + `/${insurerId}`);
+     return Promise.resolve(response.data);
+@@ -304,14 +352,20 @@ export const member_policies = async (): Promise<
+ /**
+  * post questionnaire
+  */
+-export const post_questionnaire = async (payload: {
+-  answers: any;
+-  questionnaireId: string;
+-  memberId: string;
+-}, payorid: string) => {
+-  try {
+-    console.log(``)
+-    const response = await postRequest<any>(urls.API_QUESTION + `?payorId=${payorid}`, payload);
++export const post_questionnaire = async (
++  payload: {
++    answers: any;
++    questionnaireId: string;
++    memberId: string;
++  },
++  payorid: string,
++) => {
++  try {
++    console.log(``);
++    const response = await postRequest<any>(
++      urls.API_QUESTION + `?payorId=${payorid}`,
++      payload,
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     // return handleRequestError(error);
+@@ -338,11 +392,11 @@ export const get_address = async (): Promise<MemberAddresses[]> => {
+  */
+ export const delete_address = async (
+   useId: string,
+-  addressId: string
++  addressId: string,
+ ): Promise<MemberAddresses[]> => {
+   try {
+     const response = await deleteRequest<any>(
+-      urls.API_ADDRESS_DELETE + "/" + useId + "/address/" + addressId
++      urls.API_ADDRESS_DELETE + '/' + useId + '/address/' + addressId,
+     );
+     return Promise.resolve(response.data.data?.addresses);
+   } catch (error) {
+@@ -355,10 +409,10 @@ export const delete_address = async (
+  */
+ export const add_address = async (
+   useId: string,
+-  payload: {}
++  payload: {},
+ ): Promise<MemberAddresses[]> => {
+   try {
+-    const response = await putRequest<any>(urls.API_ADDRESS_ADD + "/" + useId, {
++    const response = await putRequest<any>(urls.API_ADDRESS_ADD + '/' + useId, {
+       addresses: [payload],
+     });
+     return Promise.resolve(response.data);
+@@ -372,12 +426,12 @@ export const add_address = async (
+  */
+ export const provider_list = async (
+   payorId: string,
+-  planId: string
++  planId: string,
+ ): Promise<QueueItem[] | undefined> => {
+   try {
+     const response = await getRequest<any>(urls.API_provider_list, {
+       baseURL: Config.BASE_URL_1,
+-      params: {payorId, planId},
++      params: { payorId, planId },
+     });
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+@@ -389,15 +443,15 @@ export const provider_list = async (
+  * const res: Provider_timeslot | undefined = await $api.provider_timeslot(providerId)
+  */
+ export const provider_timeslot = async (
+-  providerId: string
++  providerId: string,
+ ): Promise<Provider_timeslot[] | undefined> => {
+   try {
+     const response = await getRequest<any>(
+-      urls.API_provider_timeslot + "/" + providerId,
++      urls.API_provider_timeslot + '/' + providerId,
+       {
+         baseURL: Config.BASE_URL_1,
+-        params: {payor: null},
+-      }
++        params: { payor: null },
++      },
+     );
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+@@ -418,10 +472,7 @@ export const getUser = async (): Promise<User | undefined> => {
+       const userData = await AsyncStorage.getItem('memberData');
+       entityId = JSON.parse(userData)?.entity.id;
+     }
+-    const response = await getRequest<any>(
+-      urls.API_USER + "/" + entityId,
+-      {}
+-    );
++    const response = await getRequest<any>(urls.API_USER + '/' + entityId, {});
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+     return handleRequestError(error);
+@@ -432,14 +483,16 @@ export const getUser = async (): Promise<User | undefined> => {
+  * edit profile
+  */
+ export const putUser = async (
+-  profilePayload: any
++  profilePayload: any,
+ ): Promise<User | undefined> => {
+   try {
+     const globalAppState = getGlobalAppState();
+-    let userId = globalAppState?.loginData ? globalAppState?.loginData?.entity.id : globalAppState?.user?.id;
++    let userId = globalAppState?.loginData
++      ? globalAppState?.loginData?.entity.id
++      : globalAppState?.user?.id;
+     const response = await putRequest<any>(
+-      urls.API_PROFILE_EDIT + "/" + userId,
+-      profilePayload
++      urls.API_PROFILE_EDIT + '/' + userId,
++      profilePayload,
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -454,13 +507,19 @@ export const register = async (registerPayload: any) => {
+       registerPayload,
+       {
+         baseURL: Config.BASE_URL_1,
+-      }
++      },
+     );
+     console.log(`Response: ${JSON.stringify(response)}`);
+     const globalAppState = getGlobalAppState();
+     globalAppState?.setLoginData(response.data.data);
+-    await AsyncStorage.setItem("memberData", JSON.stringify(response.data.data));
+-    await Keychain.setGenericPassword("password", response.data.data.accessToken);
++    await AsyncStorage.setItem(
++      'memberData',
++      JSON.stringify(response.data.data),
++    );
++    await Keychain.setGenericPassword(
++      'password',
++      response.data.data.accessToken,
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     // return handleRequestError(error);
+@@ -475,7 +534,7 @@ export const healthRecord = async (healthRecordPayload: any) => {
+       healthRecordPayload,
+       {
+         baseURL: Config.BASE_URL_1,
+-      }
++      },
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -487,10 +546,10 @@ export const getHealthRecord = async (): Promise<health_info_response> => {
+   try {
+     const globalAppState = getGlobalAppState();
+     const response = await getRequest<any>(
+-      urls.API_HEALTH_RECORD + "/" + globalAppState?.loginData?.entity.id,
++      urls.API_HEALTH_RECORD + '/' + globalAppState?.loginData?.entity.id,
+       {
+         baseURL: Config.BASE_URL_1,
+-      }
++      },
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -501,7 +560,7 @@ export const getHealthRecord = async (): Promise<health_info_response> => {
+ export const files_ticket_post = async (
+   ticketId: string,
+   body: FormData,
+-  onProgress: (progress: number) => void
++  onProgress: (progress: number) => void,
+ ): Promise<files_ticket_response> => {
+   try {
+     const response = await postRequest<any>(
+@@ -510,18 +569,18 @@ export const files_ticket_post = async (
+       {
+         baseURL: Config.BASE_URL_1,
+         headers: {
+-          "Content-Type": "multipart/form-data",
++          'Content-Type': 'multipart/form-data',
+         },
+         timeout: 1000000,
+         onUploadProgress: (progressEvent: AxiosProgressEvent) => {
+           if (progressEvent) {
+             const progress = Math.round(
+-              (progressEvent.loaded * 100) / progressEvent?.total
++              (progressEvent.loaded * 100) / progressEvent?.total,
+             );
+             onProgress(progress);
+           }
+         },
+-      }
++      },
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -530,14 +589,14 @@ export const files_ticket_post = async (
+ };
+ export const files_ticket_del = async (
+   ticketId: string,
+-  fileName: string
++  fileName: string,
+ ): Promise<Response> => {
+   try {
+     const response = await deleteRequest<any>(
+       urls.API_files_ticket + `/${ticketId}/${encodeURIComponent(fileName)}`,
+       {
+         baseURL: Config.BASE_URL_1,
+-      }
++      },
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -546,14 +605,14 @@ export const files_ticket_del = async (
+ };
+ 
+ export const files_ticket_list = async (
+-  ticketId: string
++  ticketId: string,
+ ): Promise<Files_ticket_list[]> => {
+   try {
+     const response = await getRequest<any>(
+       urls.API_files_ticket + `/${ticketId}`,
+       {
+         baseURL: Config.BASE_URL_1,
+-      }
++      },
+     );
+     return Promise.resolve(response.data.data);
+   } catch (error) {
+@@ -563,7 +622,7 @@ export const files_ticket_list = async (
+ 
+ export const files_ticket_getOneFile = async (
+   ticketId: string,
+-  fileName: string
++  fileName: string,
+ ): Promise<Files_ticket_getOneFile_response> => {
+   try {
+     const response = await getRequest<any>(
+@@ -571,9 +630,9 @@ export const files_ticket_getOneFile = async (
+       {
+         baseURL: Config.BASE_URL_1,
+         headers: {
+-          Accept: "application/json",
++          Accept: 'application/json',
+         },
+-      }
++      },
+     );
+     return Promise.resolve(response.data.data);
+   } catch (error) {
+@@ -585,10 +644,10 @@ export const files_ticket_getOneFile = async (
+  * const res: MemberPolicies | undefined = await $api.get_member_policies()
+  */
+ export const get_member_policies = async (
+-  memberId: string
++  memberId: string,
+ ): Promise<MemberPolicies | undefined> => {
+   try {
+-    const response = await getRequest<any>(urls.API_USER + "/" + memberId, {
++    const response = await getRequest<any>(urls.API_USER + '/' + memberId, {
+       baseURL: Config.BASE_URL_1,
+     });
+     return Promise.resolve(response.data?.data);
+@@ -607,10 +666,10 @@ export const heals_pass_product_request = async ({
+   try {
+     const response = await postRequest<any>(
+       urls.API_heals_pass_product_request,
+-      {numberOfPasses, id},
++      { numberOfPasses, id },
+       {
+         baseURL: Config.BASE_URL_1,
+-      }
++      },
+     );
+     return Promise.resolve(response.data.data);
+   } catch (error) {
+@@ -620,8 +679,8 @@ export const heals_pass_product_request = async ({
+ export const finishHPPurchase = async (id: string): Promise<PurchaseRecord> => {
+   try {
+     const response = await getRequest<any>(
+-      urls.API_finishHPPurchase + "/" + id,
+-      {}
++      urls.API_finishHPPurchase + '/' + id,
++      {},
+     );
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+@@ -636,7 +695,7 @@ export const heals_pass_product = async (): Promise<
+       urls.API_heals_pass_product_request,
+       {
+         baseURL: Config.BASE_URL_1,
+-      }
++      },
+     );
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+@@ -644,7 +703,7 @@ export const heals_pass_product = async (): Promise<
+   }
+ };
+ export const ticket_statuses = async (
+-  data: Ticket_statuses
++  data: Ticket_statuses,
+ ): Promise<Response> => {
+   try {
+     const response = await putRequest<any>(urls.API_ticket_statuses, data, {});
+@@ -656,7 +715,7 @@ export const ticket_statuses = async (
+ export const transaction = async (limit: number): Promise<Transaction[]> => {
+   try {
+     const response = await getRequest<any>(urls.API_transaction, {
+-      params: {limit},
++      params: { limit },
+     });
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+@@ -666,7 +725,7 @@ export const transaction = async (limit: number): Promise<Transaction[]> => {
+ export const deleteAccount = async (entityId: string) => {
+   try {
+     const response = await deleteRequest<any>(
+-      `${urls.API_DELETE_ACCOUNT}/${entityId}`
++      `${urls.API_DELETE_ACCOUNT}/${entityId}`,
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -674,12 +733,12 @@ export const deleteAccount = async (entityId: string) => {
+   }
+ };
+ export const transaction_ticket = async (
+-  ticketId: string
++  ticketId: string,
+ ): Promise<Transaction_ticket[]> => {
+   try {
+     const response = await getRequest<any>(
+       urls.API_transaction_ticket + `/${ticketId}`,
+-      {}
++      {},
+     );
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+@@ -700,12 +759,12 @@ export const sponsorship_list = async (): Promise<Sponsorship[]> => {
+ 
+ export const getPrescriptionFiles = async (
+   ticketId: string,
+-  patientCountry: string
++  patientCountry: string,
+ ): Promise<PrescriptionFiles> => {
+   try {
+     const response = await getRequest<any>(
+       urls.API_edocs_prescription + `/${ticketId}/${patientCountry}`,
+-      {}
++      {},
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -716,7 +775,7 @@ export const changePasssword = async (changePasswordPayload: any) => {
+   try {
+     const response = await postRequest<any>(
+       urls.API_CHANGE_PASSWORD,
+-      changePasswordPayload
++      changePasswordPayload,
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -728,13 +787,13 @@ export const changePasssword = async (changePasswordPayload: any) => {
+ export const getReceipt = async (
+   ticketId: string,
+   patientCountry: string,
+-  providerCountry: string
++  providerCountry: string,
+ ): Promise<PrescriptionFiles> => {
+   try {
+     const response = await getRequest<any>(
+       urls.API_edocs_receipt +
+-      `/${ticketId}/${patientCountry}/${providerCountry}`,
+-      {}
++        `/${ticketId}/${patientCountry}/${providerCountry}`,
++      {},
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -743,12 +802,12 @@ export const getReceipt = async (
+ };
+ 
+ export const storeFCM = async (
+-  payload: FCMTokenStoreRequestDTO
++  payload: FCMTokenStoreRequestDTO,
+ ): Promise<FCMTokenStoreResponseDTO | any> => {
+   try {
+     const response = await postRequest<FCMTokenStoreRequestDTO>(
+       urls.API_STORE_FCM,
+-      payload
++      payload,
+     );
+     return response;
+   } catch (error) {
+@@ -759,7 +818,7 @@ export const storeFCM = async (
+ 
+ export const geolocation = async (
+   latlng: string,
+-  result_type: string
++  result_type: string,
+ ): Promise<Geolocation> => {
+   try {
+     const response = await getRequest<any>(urls.API_geolocation, {
+@@ -775,11 +834,11 @@ export const geolocation = async (
+ };
+ 
+ export const getNotificationLists = async (
+-  memberId: any
++  memberId: any,
+ ): Promise<any[] | any> => {
+   try {
+     const response = await getRequest<any[]>(
+-      urls.API_NOTIFICATION_LISTS + memberId
++      urls.API_NOTIFICATION_LISTS + memberId,
+     );
+     return response;
+   } catch (error) {
+@@ -791,7 +850,7 @@ export const updateNotification = async (payload: any): Promise<any> => {
+   try {
+     const response = await putRequest<any>(
+       urls.API_UPDATE_NOTIFICATION,
+-      payload
++      payload,
+     );
+     return response;
+   } catch (error) {
+@@ -817,12 +876,12 @@ export const refreshToken = async (payload: any) => {
+       const globalAppState = getGlobalAppState();
+       globalAppState?.setLoginData(response.data?.data);
+       await AsyncStorage.setItem(
+-        "memberData",
+-        JSON.stringify(response?.data?.data)
++        'memberData',
++        JSON.stringify(response?.data?.data),
+       );
+       await Keychain.setGenericPassword(
+-        "password",
+-        response.data.data.accessToken
++        'password',
++        response.data.data.accessToken,
+       );
+     }
+     return Promise.resolve(response.data);
+@@ -834,11 +893,18 @@ export const refreshToken = async (payload: any) => {
+ export const filterBySpecialty = async (params: any) => {
+   try {
+     const response = await getRequest<any>(
+-      `${urls.API_FILTER_BY_SPECIALTY}payorId=${params.payorId}&planId=${params?.planId}&specialty=${encodeURIComponent(params.specialty)}&region=${encodeURIComponent(params.region)}&page=${params.page}&limit=${params.limit}`
++      `${urls.API_FILTER_BY_SPECIALTY}payorId=${params.payorId}&planId=${
++        params?.planId
++      }&specialty=${encodeURIComponent(
++        params.specialty,
++      )}&region=${encodeURIComponent(params.region)}&page=${
++        params.page
++      }&limit=${params.limit}`,
+     );
+-    console.log('api filterBySpecialty=',{
+-      params, response
+-    })
++    console.log('api filterBySpecialty=', {
++      params,
++      response,
++    });
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return error;
+@@ -851,69 +917,88 @@ export const getProviderOptions = async () => {
+   } catch (e) {
+     return e;
+   }
+-}
++};
+ 
+-export const getProviderOptions2 = async (payorId?: string, planId?: string) => {
++export const getProviderOptions2 = async (
++  payorId?: string,
++  planId?: string,
++) => {
+   try {
+-    const response = await getRequest<any>(`${urls.API_PROVIDER_OPTIONS}?payorId=${payorId}&planId=${planId}`);
+-    console.log('api getProviderOptions2 response.data=',response.data)
++    const response = await getRequest<any>(
++      `${urls.API_PROVIDER_OPTIONS}?payorId=${payorId}&planId=${planId}`,
++    );
++    console.log('api getProviderOptions2 response.data=', response.data);
+     return response.data;
+   } catch (e) {
+     return e;
+   }
+-}
++};
+ 
+ export const getDrugsByTags = async (planId: string, tags: string) => {
+   try {
+-    const response = await getRequest<any>(`${urls.API_DRUG_INSURANCE_PLAN}${planId}/${tags}`);
++    const response = await getRequest<any>(
++      `${urls.API_DRUG_INSURANCE_PLAN}${planId}/${tags}`,
++    );
+     return response.data;
+   } catch (e) {
+     return e;
+   }
+-}
++};
+ 
+ export const getDrugTags = async (planId: string) => {
+   try {
+-    const response = await getRequest<any>(`${urls.API_DRUG_INSURANCE_PLAN}${planId}/tags`)
++    const response = await getRequest<any>(
++      `${urls.API_DRUG_INSURANCE_PLAN}${planId}/tags`,
++    );
+     return response.data;
+   } catch (e) {
+     return e;
+   }
+-}
++};
+ 
+-export const addToCart = async (payload: AddToCart): Promise<CartResponse | any> => {
++export const addToCart = async (
++  payload: AddToCart,
++): Promise<CartResponse | any> => {
+   try {
+     const response = await postRequest<CartResponse>(
+       urls.API_ADD_TO_CART,
+-      payload
++      payload,
+     );
+     return response.data;
+   } catch (e) {
+     return e;
+   }
+-}
++};
+ 
+-export const getCartItem = async (entity_id: string): Promise<CartResponse | any> => {
++export const getCartItem = async (
++  entity_id: string,
++): Promise<CartResponse | any> => {
+   try {
+-    const response = await getRequest<CartResponse>(`${urls.API_GET_TO_CART}/${entity_id}`);
++    const response = await getRequest<CartResponse>(
++      `${urls.API_GET_TO_CART}/${entity_id}`,
++    );
+     return response.data;
+   } catch (e) {
+     return e;
+   }
+-}
++};
+ 
+ export const getCartItemInfo = async (productId: string) => {
+   try {
+-    const response = await getRequest(`${urls.API_GET_CART_ITEM_INFO}${productId}`);
++    const response = await getRequest(
++      `${urls.API_GET_CART_ITEM_INFO}${productId}`,
++    );
+     return response.data;
+   } catch (e) {
+     return e;
+   }
+-}
++};
+ 
+ export const getQuestionnaire = async (payorId: string): Promise<any> => {
+   try {
+-    const response = await getRequest<any>(`${urls.API_QUESTIONNAIRE}/${payorId}`); // 2da36834-b43a-4fd2-ab51-8dd0e395f640 or 8e91359d-b4cb-4613-b161-91251e788a4a
++    const response = await getRequest<any>(
++      `${urls.API_QUESTIONNAIRE}/${payorId}`,
++    ); // 2da36834-b43a-4fd2-ab51-8dd0e395f640 or 8e91359d-b4cb-4613-b161-91251e788a4a
+     return response?.data;
+   } catch (e) {
+     console.log(`Exception encountered @ questionnaire ${e}`);
+@@ -933,13 +1018,11 @@ export const sendAidMessage = async () => {
+ /**
+  * const res: User | undefined = await $api.getUser()
+  */
+-export const getUserDependent = async (id: string): Promise<User | undefined> => {
++export const getUserDependent = async (
++  id: string,
++): Promise<User | undefined> => {
+   try {
+-
+-    const response = await getRequest<any>(
+-      urls.API_USER + '/' + id,
+-      {},
+-    );
++    const response = await getRequest<any>(urls.API_USER + '/' + id, {});
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+     console.error(`Exception encounterd @ ${error}`);
+@@ -953,40 +1036,48 @@ export const getUserDependent = async (id: string): Promise<User | undefined> =>
+  */
+ export const deleteMedication = async (payload: any) => {
+   try {
+-    const response = await postRequest<any>(urls.API_DELETE_MEDICATION, payload);
++    const response = await postRequest<any>(
++      urls.API_DELETE_MEDICATION,
++      payload,
++    );
+ 
+     return Promise.resolve(response.data);
+   } catch (error: any) {
+     console.log(`Expcetion encountered @`);
+     return null;
+   }
+-}
++};
+ 
+ export const getMedsItem = async (planId: string) => {
+   try {
+-    const response = await getRequest<any>(`${urls.API_DRUG_INSURANCE_PLAN}${planId}`);
++    const response = await getRequest<any>(
++      `${urls.API_DRUG_INSURANCE_PLAN}${planId}`,
++    );
+     return Promise.resolve(response.data);
+   } catch (error: any) {
+     console.log(`Exception encountered @ getMedsItem ${JSON.stringify(error)}`);
+     return null;
+   }
+-}
++};
+ 
+ export const getEMCFile = async (
+   fileKey: string,
+   bucketName: string,
+ ): Promise<any> => {
+   try {
+-    const response = await postRequest<any>(urls.API_GET_EMC_FILE,
++    const response = await postRequest<any>(
++      urls.API_GET_EMC_FILE,
+       JSON.stringify({
+         key: fileKey,
+         bucketName: bucketName,
+-      }), {
++      }),
++      {
+         headers: {
+           'x-client-id': 'health-passport-web',
+           'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
+-        }
+-      });
++        },
++      },
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     console.error(`Exception encounterd @ ${error}`);
+@@ -998,16 +1089,19 @@ export const getReferralLetters = async (
+   bucketName: string,
+ ): Promise<any> => {
+   try {
+-    const response = await postRequest<any>(urls.API_GET_REFERRAL,
++    const response = await postRequest<any>(
++      urls.API_GET_REFERRAL,
+       JSON.stringify({
+         key: fileKey,
+         bucketName: bucketName,
+-      }), {
++      }),
++      {
+         headers: {
+           'x-client-id': 'health-passport-web',
+           'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
+-        }
+-      });
++        },
++      },
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     console.error(`Exception encounterd @ ${error}`);
+@@ -1017,60 +1111,60 @@ export const getReferralLetters = async (
+ export const AddDependant = async (payload: any) => {
+   try {
+     const endpoint = `${urls.API_ADD_DEPENDANT}`;
+-    const response = await postRequest<any>(endpoint,
+-      JSON.stringify(payload), {
+-        headers: {
+-          'x-client-id': 'health-passport-web',
+-          'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
+-        }
+-      });
++    const response = await postRequest<any>(endpoint, JSON.stringify(payload), {
++      headers: {
++        'x-client-id': 'health-passport-web',
++        'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
++      },
++    });
+     return Promise.resolve(response.data);
+   } catch (e) {
+     console.log(`Excpetion encountered @ AddDependant`);
+   }
+-}
++};
+ 
+ export const updateDependant = async (entityId: string, payload: any) => {
+   try {
+     const endpoint = `${urls.API_UPDATE_DEPENDANT}${entityId}`;
+-    const response = await putRequest<any>(endpoint,
+-      JSON.stringify(payload), {
+-        headers: {
+-          'x-client-id': 'health-passport-web',
+-          'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
+-        }
+-      });
++    const response = await putRequest<any>(endpoint, JSON.stringify(payload), {
++      headers: {
++        'x-client-id': 'health-passport-web',
++        'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
++      },
++    });
+     return Promise.resolve(response.data);
+   } catch (e) {
+     console.log(`Excpetion encountered @ updateDependant ${JSON.stringify(e)}`);
+   }
+-}
++};
+ 
+ export const deleteDependant = async (entityId: string) => {
+   try {
+     const endpoint = `${urls.API_DELETE_DEPENDANT}${entityId}`;
+-    const response = await deleteRequest<any>(endpoint,
+-      {
+-        headers: {
+-          'x-client-id': 'health-passport-web',
+-          'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
+-        }
+-      });
++    const response = await deleteRequest<any>(endpoint, {
++      headers: {
++        'x-client-id': 'health-passport-web',
++        'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
++      },
++    });
+     return Promise.resolve(response.data);
+   } catch (e) {
+     console.log(`Excpetion encountered @ deleteDependant`);
+   }
+-}
++};
+ 
+ export const verifyExistingUser = async (payload: any) => {
+   try {
+-    const response = await postRequest<any>(urls.API_VERIFY_EXISTING_ACCOUNT, payload);
++    const response = await postRequest<any>(
++      urls.API_VERIFY_EXISTING_ACCOUNT,
++      payload,
++    );
+     return Promise.resolve(response.data);
+   } catch (e) {
+     console.log(`exception encountered verifyExistingUser`, e);
+     return e;
+   }
+-}
++};
+ 
+ export const sendOneTimePassword = async (payload: any) => {
+   try {
+@@ -1080,7 +1174,7 @@ export const sendOneTimePassword = async (payload: any) => {
+     console.log(`exception encountered `, e);
+     return e;
+   }
+-}
++};
+ 
+ export const registerOTP = async (payload: any) => {
+   try {
+@@ -1088,13 +1182,19 @@ export const registerOTP = async (payload: any) => {
+     const response = await postRequest<any>(urls.API_OTP_REGISTRATION, payload);
+     const globalAppState = getGlobalAppState();
+     globalAppState?.setLoginData(response?.data.data);
+-    await AsyncStorage.setItem('memberData', JSON.stringify(response?.data.data));
+-    await Keychain.setGenericPassword('password', response?.data?.data.accessToken);
++    await AsyncStorage.setItem(
++      'memberData',
++      JSON.stringify(response?.data.data),
++    );
++    await Keychain.setGenericPassword(
++      'password',
++      response?.data?.data.accessToken,
++    );
+     return Promise.resolve(response.data);
+   } catch (e) {
+     return e;
+   }
+-}
++};
+ 
+ export const getAddresses = async (country: string) => {
+   try {
+@@ -1103,28 +1203,57 @@ export const getAddresses = async (country: string) => {
+   } catch (error) {
+     return error;
+   }
+-}
++};
+ 
+-export const delivery_request = async ({ ticket_id, contactPerson, contactNumber, address, street, city, state, country }: { ticket_id: string, contactPerson: string, contactNumber: string /*"+852-66668888"*/, address: string, street: string, city: string, state: string, country: string }) => {
++export const delivery_request = async ({
++  ticket_id,
++  contactPerson,
++  contactNumber,
++  address,
++  street,
++  city,
++  state,
++  country,
++}: {
++  ticket_id: string;
++  contactPerson: string;
++  contactNumber: string /*"+852-66668888"*/;
++  address: string;
++  street: string;
++  city: string;
++  state: string;
++  country: string;
++}) => {
+   try {
+     const endpoint = `${urls.API_delivery_request}/${ticket_id}/delivery_request`;
+-    const response = await putRequest<any>(endpoint,
+-      JSON.stringify({ contactPerson, contactNumber, address, street, city, state, country }), {
+-      // headers: {
+-      //   'x-client-id': 'health-passport-web',
+-      //   'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
+-      // }
+-    });
++    const response = await putRequest<any>(
++      endpoint,
++      JSON.stringify({
++        contactPerson,
++        contactNumber,
++        address,
++        street,
++        city,
++        state,
++        country,
++      }),
++      {
++        // headers: {
++        //   'x-client-id': 'health-passport-web',
++        //   'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
++        // }
++      },
++    );
+     return Promise.resolve(response.data);
+   } catch (e) {
+     console.log(`Excpetion encountered @ updateDependant ${JSON.stringify(e)}`);
+   }
+-}
++};
+ 
+ export const get_ticket_upcoming = async (): Promise<Ticket[]> => {
+   try {
+     const response = await getRequest<{ data: Ticket[] }>(
+-      urls.API_ticket_upcoming
++      urls.API_ticket_upcoming,
+     );
+     console.log('api get_ticket_upcoming response=', response);
+     return Promise.resolve(response.data.data);
+@@ -1138,15 +1267,50 @@ export const getInquiryQuestions = async () => {
+     const response = await getRequest(urls.API_INQUIRY);
+     return Promise.resolve(response.data);
+   } catch (error: any) {
+-    return handleRequestError(error) as Promise<Ticket[]>; 
++    return handleRequestError(error) as Promise<Ticket[]>;
+   }
+-}
++};
+ 
+ export const getLocation = async () => {
+-  try { 
++  try {
+     const response = await getRequest(urls.API_GET_LOCATION);
+     return Promise.resolve(response.data);
+   } catch (error: any) {
+     return error;
+   }
+-}
+\ No newline at end of file
++};
++
++export const sendMagicLink = async (payload: {
++  contact: string;
++  email: string;
++}) => {
++  try {
++    const response = await postRequest<any>(urls.API_MAGIC_LINK, payload);
++    return Promise.resolve(response.data);
++  } catch (e) {
++    return handleRequestError(e);
++  }
++};
++
++export const magicLogin = async (payload: {
++  id: string;
++  token: string;
++  source: string;
++}) => {
++  try {
++    const response = await postRequest<any>(urls.API_MAGIC_LOGIN, payload);
++    const globalAppState = getGlobalAppState();
++    globalAppState?.setLoginData(response?.data?.data);
++    await AsyncStorage.setItem(
++      'memberData',
++      JSON.stringify(response?.data?.data),
++    );
++    await Keychain.setGenericPassword(
++      'password',
++      response?.data?.data?.accessToken,
++    );
++    return Promise.resolve(response.data);
++  } catch (e) {
++    return handleRequestError(e);
++  }
++};
+commit 86c32fc0c99b614c90706621b6aff20056da3163
+Author:     Kester <montoya.kester@gmail.com>
+AuthorDate: Tue Apr 28 22:25:36 2026 +1200
+Commit:     albertlaguador <laguador.al@gmail.com>
+CommitDate: Thu Apr 30 22:27:20 2026 +1200
+
+    Code cleanup
+
+ App.tsx                                            |  68 ++-
+ src/api/api.ts                                     | 560 +++++++++++++--------
+ src/api/urls.ts                                    |  49 +-
+ src/helper/linking-helper.ts                       |  36 +-
+ src/i18n/locale/en.ts                              |   3 +
+ src/screens/home/home-screen/home-screen.styles.ts |  20 +
+ src/screens/home/home-screen/home-screen.tsx       | 111 ++++
+ .../send-magic-link-screen.tsx                     | 133 ++---
+ 8 files changed, 656 insertions(+), 324 deletions(-)
+commit 86c32fc0c99b614c90706621b6aff20056da3163
+Author:     Kester <montoya.kester@gmail.com>
+AuthorDate: Tue Apr 28 22:25:36 2026 +1200
+Commit:     albertlaguador <laguador.al@gmail.com>
+CommitDate: Thu Apr 30 22:27:20 2026 +1200
+
+    Code cleanup
+
+diff --git a/src/api/api.ts b/src/api/api.ts
+index 2b3785b1..32be5e76 100644
+--- a/src/api/api.ts
++++ b/src/api/api.ts
+@@ -3,10 +3,10 @@ import {
+   getRequest,
+   postRequest,
+   putRequest,
+-} from "./api-client.ts";
+-import urls from "@api/urls";
+-import {AppState, getGlobalAppState, LoginData} from "@store/AppContext";
+-import Config from "react-native-config";
++} from './api-client.ts';
++import urls from '@api/urls';
++import { AppState, getGlobalAppState, LoginData } from '@store/AppContext';
++import Config from 'react-native-config';
+ import {
+   heals_pass_product_list_Response,
+   MemberPolicies,
+@@ -32,13 +32,13 @@ import {
+   Geolocation,
+   AddToCart,
+   CartResponse,
+-} from "@api/api-types.ts";
+-import {AxiosProgressEvent} from "axios";
+-import * as Keychain from "react-native-keychain";
+-import AsyncStorage from "@react-native-async-storage/async-storage";
+-import {FCMTokenStoreRequestDTO} from "@dto/FCMTokenStoreRequestDTO.ts";
+-import {FCMTokenStoreResponseDTO} from "@dto/FCMTokenStoreResponseDTO.ts";
+-import AppConfig from "../config/index";
++} from '@api/api-types.ts';
++import { AxiosProgressEvent } from 'axios';
++import * as Keychain from 'react-native-keychain';
++import AsyncStorage from '@react-native-async-storage/async-storage';
++import { FCMTokenStoreRequestDTO } from '@dto/FCMTokenStoreRequestDTO.ts';
++import { FCMTokenStoreResponseDTO } from '@dto/FCMTokenStoreResponseDTO.ts';
++import AppConfig from '../config/index';
+ // import * as Sentry from "@sentry/react-native";
+ 
+ const handleRequestError = (error: any): Promise<never> => {
+@@ -63,15 +63,25 @@ const handleRequestError = (error: any): Promise<never> => {
+     } else if (error?.message && typeof error.message === 'string') {
+       // First try: error.message (from API response data)
+       errorMessage = error.message;
+-    } else if (error?.error?.constraints && Array.isArray(error.error.constraints) && error.error.constraints.length > 0) {
++    } else if (
++      error?.error?.constraints &&
++      Array.isArray(error.error.constraints) &&
++      error.error.constraints.length > 0
++    ) {
+       // Handle error object with constraints array (e.g., { success: false, error: { constraints: ["..."], localize_key: "..." } })
+       // Join all constraint messages into a single string
+       errorMessage = error.error.constraints.join(', ');
+-    } else if (error?.error?.message && typeof error.error.message === 'string') {
++    } else if (
++      error?.error?.message &&
++      typeof error.error.message === 'string'
++    ) {
+       // Handle error object with message field (e.g., { success: false, error: { message: "...", localize_key: "..." } })
+       // Prioritize message over localize_key as it contains more meaningful error description
+       errorMessage = error.error.message;
+-    } else if (error?.error?.localize_key && typeof error.error.localize_key === 'string') {
++    } else if (
++      error?.error?.localize_key &&
++      typeof error.error.localize_key === 'string'
++    ) {
+       // Fallback to localize_key if message is not available (e.g., { success: false, error: { localize_key: "..." } })
+       errorMessage = error.error.localize_key;
+     } else if (error?.response?.data?.message) {
+@@ -85,10 +95,17 @@ const handleRequestError = (error: any): Promise<never> => {
+       } else if (typeof errorData === 'object' && errorData !== null) {
+         // If error is an object, try to extract meaningful info
+         // Priority: constraints > localize_key > message > JSON serialization
+-        if (errorData.constraints && Array.isArray(errorData.constraints) && errorData.constraints.length > 0) {
++        if (
++          errorData.constraints &&
++          Array.isArray(errorData.constraints) &&
++          errorData.constraints.length > 0
++        ) {
+           // Extract constraints array and join as error message
+           errorMessage = errorData.constraints.join(', ');
+-        } else if (errorData.localize_key && typeof errorData.localize_key === 'string') {
++        } else if (
++          errorData.localize_key &&
++          typeof errorData.localize_key === 'string'
++        ) {
+           errorMessage = errorData.localize_key;
+         } else if (errorData.message) {
+           errorMessage = errorData.message;
+@@ -104,23 +121,40 @@ const handleRequestError = (error: any): Promise<never> => {
+         errorMessage = responseData;
+       } else if (typeof responseData === 'object' && responseData !== null) {
+         // Look for common error message fields including constraints and localize_key
+-        if (responseData.error?.constraints && Array.isArray(responseData.error.constraints) && responseData.error.constraints.length > 0) {
++        if (
++          responseData.error?.constraints &&
++          Array.isArray(responseData.error.constraints) &&
++          responseData.error.constraints.length > 0
++        ) {
+           // Extract constraints array and join as error message
+           errorMessage = responseData.error.constraints.join(', ');
+-        } else if (responseData.error?.localize_key && typeof responseData.error.localize_key === 'string') {
++        } else if (
++          responseData.error?.localize_key &&
++          typeof responseData.error.localize_key === 'string'
++        ) {
+           errorMessage = responseData.error.localize_key;
+         } else {
+-          errorMessage = responseData.msg || responseData.detail || JSON.stringify(responseData, null, 2);
++          errorMessage =
++            responseData.msg ||
++            responseData.detail ||
++            JSON.stringify(responseData, null, 2);
+         }
+       }
+     } else if (error?.toString && typeof error.toString === 'function') {
+       // Last resort: convert to string (but avoid generic axios messages and [object Object])
+       const errorStr = error.toString();
+-      if (!errorStr.includes('Request failed with status code') && errorStr !== '[object Object]') {
++      if (
++        !errorStr.includes('Request failed with status code') &&
++        errorStr !== '[object Object]'
++      ) {
+         errorMessage = errorStr;
+       } else if (typeof error === 'object' && error !== null) {
+         // If toString returns [object Object], serialize the error object
+-        errorMessage = JSON.stringify(error, Object.getOwnPropertyNames(error), 2);
++        errorMessage = JSON.stringify(
++          error,
++          Object.getOwnPropertyNames(error),
++          2,
++        );
+       }
+     }
+   } catch (parseError) {
+@@ -128,15 +162,17 @@ const handleRequestError = (error: any): Promise<never> => {
+     console.error('Error parsing error message:', parseError);
+     errorMessage = 'An unexpected error occurred';
+   }
+-  
+-  console.error('handleRequestError - extracted message:', errorMessage, 'original error:', error);
+-  
+-  const {
+-    setCommonModalKey,
+-    setShowErrorModal,
+-    setErrorModalText,
+-  }: AppState = getGlobalAppState();
+-  setCommonModalKey("showErrorModal");
++
++  console.error(
++    'handleRequestError - extracted message:',
++    errorMessage,
++    'original error:',
++    error,
++  );
++
++  const { setCommonModalKey, setShowErrorModal, setErrorModalText }: AppState =
++    getGlobalAppState();
++  setCommonModalKey('showErrorModal');
+   setShowErrorModal(true);
+   setErrorModalText(errorMessage);
+   return Promise.reject(error);
+@@ -146,12 +182,18 @@ export const login = async (loginRequestPayload: any) => {
+   try {
+     const response = await postRequest<any>(
+       urls.API_LOGIN,
+-      loginRequestPayload
++      loginRequestPayload,
+     );
+     const globalAppState = getGlobalAppState();
+     globalAppState?.setLoginData(response?.data?.data);
+-    await AsyncStorage.setItem('memberData', JSON.stringify(response?.data?.data));
+-    await Keychain.setGenericPassword('password', response?.data?.data?.accessToken);
++    await AsyncStorage.setItem(
++      'memberData',
++      JSON.stringify(response?.data?.data),
++    );
++    await Keychain.setGenericPassword(
++      'password',
++      response?.data?.data?.accessToken,
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return error;
+@@ -175,14 +217,20 @@ export const loginOtp = async (loginOtpRequest: any) => {
+       loginOtpRequest,
+       {
+         params: {
+-          "source": "'default'"
+-        }
+-      }
++          source: "'default'",
++        },
++      },
+     );
+     const globalAppState = getGlobalAppState();
+     globalAppState?.setLoginData(response?.data.data);
+-    await AsyncStorage.setItem('memberData', JSON.stringify(response?.data.data));
+-    await Keychain.setGenericPassword('password', response?.data?.data.accessToken);
++    await AsyncStorage.setItem(
++      'memberData',
++      JSON.stringify(response?.data.data),
++    );
++    await Keychain.setGenericPassword(
++      'password',
++      response?.data?.data.accessToken,
++    );
+     return Promise.resolve(response?.data);
+   } catch (error) {
+     // return handleRequestError(error);
+@@ -194,10 +242,10 @@ export const activate = async (code: string) => {
+   try {
+     const response = await postRequest<any>(
+       urls.API_ACTIVATE,
+-      {code},
++      { code },
+       {
+         baseURL: Config.BASE_URL_1,
+-      }
++      },
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -266,7 +314,7 @@ export const ticket_post = async (): Promise<Ticket_post_response> => {
+       },
+       {
+         // baseURL: Config.BASE_URL_1,
+-      }
++      },
+     );
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+@@ -277,7 +325,7 @@ export const ticket_post = async (): Promise<Ticket_post_response> => {
+ /**
+  * get questionnaire
+  */
+-export const questionnaire = async (insurerId) => {
++export const questionnaire = async insurerId => {
+   try {
+     const response = await getRequest<any>(urls.API_QUESTION + `/${insurerId}`);
+     return Promise.resolve(response.data);
+@@ -304,14 +352,20 @@ export const member_policies = async (): Promise<
+ /**
+  * post questionnaire
+  */
+-export const post_questionnaire = async (payload: {
+-  answers: any;
+-  questionnaireId: string;
+-  memberId: string;
+-}, payorid: string) => {
+-  try {
+-    console.log(``)
+-    const response = await postRequest<any>(urls.API_QUESTION + `?payorId=${payorid}`, payload);
++export const post_questionnaire = async (
++  payload: {
++    answers: any;
++    questionnaireId: string;
++    memberId: string;
++  },
++  payorid: string,
++) => {
++  try {
++    console.log(``);
++    const response = await postRequest<any>(
++      urls.API_QUESTION + `?payorId=${payorid}`,
++      payload,
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     // return handleRequestError(error);
+@@ -338,11 +392,11 @@ export const get_address = async (): Promise<MemberAddresses[]> => {
+  */
+ export const delete_address = async (
+   useId: string,
+-  addressId: string
++  addressId: string,
+ ): Promise<MemberAddresses[]> => {
+   try {
+     const response = await deleteRequest<any>(
+-      urls.API_ADDRESS_DELETE + "/" + useId + "/address/" + addressId
++      urls.API_ADDRESS_DELETE + '/' + useId + '/address/' + addressId,
+     );
+     return Promise.resolve(response.data.data?.addresses);
+   } catch (error) {
+@@ -355,10 +409,10 @@ export const delete_address = async (
+  */
+ export const add_address = async (
+   useId: string,
+-  payload: {}
++  payload: {},
+ ): Promise<MemberAddresses[]> => {
+   try {
+-    const response = await putRequest<any>(urls.API_ADDRESS_ADD + "/" + useId, {
++    const response = await putRequest<any>(urls.API_ADDRESS_ADD + '/' + useId, {
+       addresses: [payload],
+     });
+     return Promise.resolve(response.data);
+@@ -372,12 +426,12 @@ export const add_address = async (
+  */
+ export const provider_list = async (
+   payorId: string,
+-  planId: string
++  planId: string,
+ ): Promise<QueueItem[] | undefined> => {
+   try {
+     const response = await getRequest<any>(urls.API_provider_list, {
+       baseURL: Config.BASE_URL_1,
+-      params: {payorId, planId},
++      params: { payorId, planId },
+     });
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+@@ -389,15 +443,15 @@ export const provider_list = async (
+  * const res: Provider_timeslot | undefined = await $api.provider_timeslot(providerId)
+  */
+ export const provider_timeslot = async (
+-  providerId: string
++  providerId: string,
+ ): Promise<Provider_timeslot[] | undefined> => {
+   try {
+     const response = await getRequest<any>(
+-      urls.API_provider_timeslot + "/" + providerId,
++      urls.API_provider_timeslot + '/' + providerId,
+       {
+         baseURL: Config.BASE_URL_1,
+-        params: {payor: null},
+-      }
++        params: { payor: null },
++      },
+     );
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+@@ -418,10 +472,7 @@ export const getUser = async (): Promise<User | undefined> => {
+       const userData = await AsyncStorage.getItem('memberData');
+       entityId = JSON.parse(userData)?.entity.id;
+     }
+-    const response = await getRequest<any>(
+-      urls.API_USER + "/" + entityId,
+-      {}
+-    );
++    const response = await getRequest<any>(urls.API_USER + '/' + entityId, {});
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+     return handleRequestError(error);
+@@ -432,14 +483,16 @@ export const getUser = async (): Promise<User | undefined> => {
+  * edit profile
+  */
+ export const putUser = async (
+-  profilePayload: any
++  profilePayload: any,
+ ): Promise<User | undefined> => {
+   try {
+     const globalAppState = getGlobalAppState();
+-    let userId = globalAppState?.loginData ? globalAppState?.loginData?.entity.id : globalAppState?.user?.id;
++    let userId = globalAppState?.loginData
++      ? globalAppState?.loginData?.entity.id
++      : globalAppState?.user?.id;
+     const response = await putRequest<any>(
+-      urls.API_PROFILE_EDIT + "/" + userId,
+-      profilePayload
++      urls.API_PROFILE_EDIT + '/' + userId,
++      profilePayload,
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -454,13 +507,19 @@ export const register = async (registerPayload: any) => {
+       registerPayload,
+       {
+         baseURL: Config.BASE_URL_1,
+-      }
++      },
+     );
+     console.log(`Response: ${JSON.stringify(response)}`);
+     const globalAppState = getGlobalAppState();
+     globalAppState?.setLoginData(response.data.data);
+-    await AsyncStorage.setItem("memberData", JSON.stringify(response.data.data));
+-    await Keychain.setGenericPassword("password", response.data.data.accessToken);
++    await AsyncStorage.setItem(
++      'memberData',
++      JSON.stringify(response.data.data),
++    );
++    await Keychain.setGenericPassword(
++      'password',
++      response.data.data.accessToken,
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     // return handleRequestError(error);
+@@ -475,7 +534,7 @@ export const healthRecord = async (healthRecordPayload: any) => {
+       healthRecordPayload,
+       {
+         baseURL: Config.BASE_URL_1,
+-      }
++      },
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -487,10 +546,10 @@ export const getHealthRecord = async (): Promise<health_info_response> => {
+   try {
+     const globalAppState = getGlobalAppState();
+     const response = await getRequest<any>(
+-      urls.API_HEALTH_RECORD + "/" + globalAppState?.loginData?.entity.id,
++      urls.API_HEALTH_RECORD + '/' + globalAppState?.loginData?.entity.id,
+       {
+         baseURL: Config.BASE_URL_1,
+-      }
++      },
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -501,7 +560,7 @@ export const getHealthRecord = async (): Promise<health_info_response> => {
+ export const files_ticket_post = async (
+   ticketId: string,
+   body: FormData,
+-  onProgress: (progress: number) => void
++  onProgress: (progress: number) => void,
+ ): Promise<files_ticket_response> => {
+   try {
+     const response = await postRequest<any>(
+@@ -510,18 +569,18 @@ export const files_ticket_post = async (
+       {
+         baseURL: Config.BASE_URL_1,
+         headers: {
+-          "Content-Type": "multipart/form-data",
++          'Content-Type': 'multipart/form-data',
+         },
+         timeout: 1000000,
+         onUploadProgress: (progressEvent: AxiosProgressEvent) => {
+           if (progressEvent) {
+             const progress = Math.round(
+-              (progressEvent.loaded * 100) / progressEvent?.total
++              (progressEvent.loaded * 100) / progressEvent?.total,
+             );
+             onProgress(progress);
+           }
+         },
+-      }
++      },
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -530,14 +589,14 @@ export const files_ticket_post = async (
+ };
+ export const files_ticket_del = async (
+   ticketId: string,
+-  fileName: string
++  fileName: string,
+ ): Promise<Response> => {
+   try {
+     const response = await deleteRequest<any>(
+       urls.API_files_ticket + `/${ticketId}/${encodeURIComponent(fileName)}`,
+       {
+         baseURL: Config.BASE_URL_1,
+-      }
++      },
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -546,14 +605,14 @@ export const files_ticket_del = async (
+ };
+ 
+ export const files_ticket_list = async (
+-  ticketId: string
++  ticketId: string,
+ ): Promise<Files_ticket_list[]> => {
+   try {
+     const response = await getRequest<any>(
+       urls.API_files_ticket + `/${ticketId}`,
+       {
+         baseURL: Config.BASE_URL_1,
+-      }
++      },
+     );
+     return Promise.resolve(response.data.data);
+   } catch (error) {
+@@ -563,7 +622,7 @@ export const files_ticket_list = async (
+ 
+ export const files_ticket_getOneFile = async (
+   ticketId: string,
+-  fileName: string
++  fileName: string,
+ ): Promise<Files_ticket_getOneFile_response> => {
+   try {
+     const response = await getRequest<any>(
+@@ -571,9 +630,9 @@ export const files_ticket_getOneFile = async (
+       {
+         baseURL: Config.BASE_URL_1,
+         headers: {
+-          Accept: "application/json",
++          Accept: 'application/json',
+         },
+-      }
++      },
+     );
+     return Promise.resolve(response.data.data);
+   } catch (error) {
+@@ -585,10 +644,10 @@ export const files_ticket_getOneFile = async (
+  * const res: MemberPolicies | undefined = await $api.get_member_policies()
+  */
+ export const get_member_policies = async (
+-  memberId: string
++  memberId: string,
+ ): Promise<MemberPolicies | undefined> => {
+   try {
+-    const response = await getRequest<any>(urls.API_USER + "/" + memberId, {
++    const response = await getRequest<any>(urls.API_USER + '/' + memberId, {
+       baseURL: Config.BASE_URL_1,
+     });
+     return Promise.resolve(response.data?.data);
+@@ -607,10 +666,10 @@ export const heals_pass_product_request = async ({
+   try {
+     const response = await postRequest<any>(
+       urls.API_heals_pass_product_request,
+-      {numberOfPasses, id},
++      { numberOfPasses, id },
+       {
+         baseURL: Config.BASE_URL_1,
+-      }
++      },
+     );
+     return Promise.resolve(response.data.data);
+   } catch (error) {
+@@ -620,8 +679,8 @@ export const heals_pass_product_request = async ({
+ export const finishHPPurchase = async (id: string): Promise<PurchaseRecord> => {
+   try {
+     const response = await getRequest<any>(
+-      urls.API_finishHPPurchase + "/" + id,
+-      {}
++      urls.API_finishHPPurchase + '/' + id,
++      {},
+     );
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+@@ -636,7 +695,7 @@ export const heals_pass_product = async (): Promise<
+       urls.API_heals_pass_product_request,
+       {
+         baseURL: Config.BASE_URL_1,
+-      }
++      },
+     );
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+@@ -644,7 +703,7 @@ export const heals_pass_product = async (): Promise<
+   }
+ };
+ export const ticket_statuses = async (
+-  data: Ticket_statuses
++  data: Ticket_statuses,
+ ): Promise<Response> => {
+   try {
+     const response = await putRequest<any>(urls.API_ticket_statuses, data, {});
+@@ -656,7 +715,7 @@ export const ticket_statuses = async (
+ export const transaction = async (limit: number): Promise<Transaction[]> => {
+   try {
+     const response = await getRequest<any>(urls.API_transaction, {
+-      params: {limit},
++      params: { limit },
+     });
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+@@ -666,7 +725,7 @@ export const transaction = async (limit: number): Promise<Transaction[]> => {
+ export const deleteAccount = async (entityId: string) => {
+   try {
+     const response = await deleteRequest<any>(
+-      `${urls.API_DELETE_ACCOUNT}/${entityId}`
++      `${urls.API_DELETE_ACCOUNT}/${entityId}`,
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -674,12 +733,12 @@ export const deleteAccount = async (entityId: string) => {
+   }
+ };
+ export const transaction_ticket = async (
+-  ticketId: string
++  ticketId: string,
+ ): Promise<Transaction_ticket[]> => {
+   try {
+     const response = await getRequest<any>(
+       urls.API_transaction_ticket + `/${ticketId}`,
+-      {}
++      {},
+     );
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+@@ -700,12 +759,12 @@ export const sponsorship_list = async (): Promise<Sponsorship[]> => {
+ 
+ export const getPrescriptionFiles = async (
+   ticketId: string,
+-  patientCountry: string
++  patientCountry: string,
+ ): Promise<PrescriptionFiles> => {
+   try {
+     const response = await getRequest<any>(
+       urls.API_edocs_prescription + `/${ticketId}/${patientCountry}`,
+-      {}
++      {},
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -716,7 +775,7 @@ export const changePasssword = async (changePasswordPayload: any) => {
+   try {
+     const response = await postRequest<any>(
+       urls.API_CHANGE_PASSWORD,
+-      changePasswordPayload
++      changePasswordPayload,
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -728,13 +787,13 @@ export const changePasssword = async (changePasswordPayload: any) => {
+ export const getReceipt = async (
+   ticketId: string,
+   patientCountry: string,
+-  providerCountry: string
++  providerCountry: string,
+ ): Promise<PrescriptionFiles> => {
+   try {
+     const response = await getRequest<any>(
+       urls.API_edocs_receipt +
+-      `/${ticketId}/${patientCountry}/${providerCountry}`,
+-      {}
++        `/${ticketId}/${patientCountry}/${providerCountry}`,
++      {},
+     );
+     return Promise.resolve(response.data);
+   } catch (error) {
+@@ -743,12 +802,12 @@ export const getReceipt = async (
+ };
+ 
+ export const storeFCM = async (
+-  payload: FCMTokenStoreRequestDTO
++  payload: FCMTokenStoreRequestDTO,
+ ): Promise<FCMTokenStoreResponseDTO | any> => {
+   try {
+     const response = await postRequest<FCMTokenStoreRequestDTO>(
+       urls.API_STORE_FCM,
+-      payload
++      payload,
+     );
+     return response;
+   } catch (error) {
+@@ -759,7 +818,7 @@ export const storeFCM = async (
+ 
+ export const geolocation = async (
+   latlng: string,
+-  result_type: string
++  result_type: string,
+ ): Promise<Geolocation> => {
+   try {
+     const response = await getRequest<any>(urls.API_geolocation, {
+@@ -775,11 +834,11 @@ export const geolocation = async (
+ };
+ 
+ export const getNotificationLists = async (
+-  memberId: any
++  memberId: any,
+ ): Promise<any[] | any> => {
+   try {
+     const response = await getRequest<any[]>(
+-      urls.API_NOTIFICATION_LISTS + memberId
++      urls.API_NOTIFICATION_LISTS + memberId,
+     );
+     return response;
+   } catch (error) {
+@@ -791,7 +850,7 @@ export const updateNotification = async (payload: any): Promise<any> => {
+   try {
+     const response = await putRequest<any>(
+       urls.API_UPDATE_NOTIFICATION,
+-      payload
++      payload,
+     );
+     return response;
+   } catch (error) {
+@@ -817,12 +876,12 @@ export const refreshToken = async (payload: any) => {
+       const globalAppState = getGlobalAppState();
+       globalAppState?.setLoginData(response.data?.data);
+       await AsyncStorage.setItem(
+-        "memberData",
+-        JSON.stringify(response?.data?.data)
++        'memberData',
++        JSON.stringify(response?.data?.data),
+       );
+       await Keychain.setGenericPassword(
+-        "password",
+-        response.data.data.accessToken
++        'password',
++        response.data.data.accessToken,
+       );
+     }
+     return Promise.resolve(response.data);
+@@ -834,11 +893,18 @@ export const refreshToken = async (payload: any) => {
+ export const filterBySpecialty = async (params: any) => {
+   try {
+     const response = await getRequest<any>(
+-      `${urls.API_FILTER_BY_SPECIALTY}payorId=${params.payorId}&planId=${params?.planId}&specialty=${encodeURIComponent(params.specialty)}&region=${encodeURIComponent(params.region)}&page=${params.page}&limit=${params.limit}`
++      `${urls.API_FILTER_BY_SPECIALTY}payorId=${params.payorId}&planId=${
++        params?.planId
++      }&specialty=${encodeURIComponent(
++        params.specialty,
++      )}&region=${encodeURIComponent(params.region)}&page=${
++        params.page
++      }&limit=${params.limit}`,
+     );
+-    console.log('api filterBySpecialty=',{
+-      params, response
+-    })
++    console.log('api filterBySpecialty=', {
++      params,
++      response,
++    });
+     return Promise.resolve(response.data);
+   } catch (error) {
+     return error;
+@@ -851,69 +917,88 @@ export const getProviderOptions = async () => {
+   } catch (e) {
+     return e;
+   }
+-}
++};
+ 
+-export const getProviderOptions2 = async (payorId?: string, planId?: string) => {
++export const getProviderOptions2 = async (
++  payorId?: string,
++  planId?: string,
++) => {
+   try {
+-    const response = await getRequest<any>(`${urls.API_PROVIDER_OPTIONS}?payorId=${payorId}&planId=${planId}`);
+-    console.log('api getProviderOptions2 response.data=',response.data)
++    const response = await getRequest<any>(
++      `${urls.API_PROVIDER_OPTIONS}?payorId=${payorId}&planId=${planId}`,
++    );
++    console.log('api getProviderOptions2 response.data=', response.data);
+     return response.data;
+   } catch (e) {
+     return e;
+   }
+-}
++};
+ 
+ export const getDrugsByTags = async (planId: string, tags: string) => {
+   try {
+-    const response = await getRequest<any>(`${urls.API_DRUG_INSURANCE_PLAN}${planId}/${tags}`);
++    const response = await getRequest<any>(
++      `${urls.API_DRUG_INSURANCE_PLAN}${planId}/${tags}`,
++    );
+     return response.data;
+   } catch (e) {
+     return e;
+   }
+-}
++};
+ 
+ export const getDrugTags = async (planId: string) => {
+   try {
+-    const response = await getRequest<any>(`${urls.API_DRUG_INSURANCE_PLAN}${planId}/tags`)
++    const response = await getRequest<any>(
++      `${urls.API_DRUG_INSURANCE_PLAN}${planId}/tags`,
++    );
+     return response.data;
+   } catch (e) {
+     return e;
+   }
+-}
++};
+ 
+-export const addToCart = async (payload: AddToCart): Promise<CartResponse | any> => {
++export const addToCart = async (
++  payload: AddToCart,
++): Promise<CartResponse | any> => {
+   try {
+     const response = await postRequest<CartResponse>(
+       urls.API_ADD_TO_CART,
+-      payload
++      payload,
+     );
+     return response.data;
+   } catch (e) {
+     return e;
+   }
+-}
++};
+ 
+-export const getCartItem = async (entity_id: string): Promise<CartResponse | any> => {
++export const getCartItem = async (
++  entity_id: string,
++): Promise<CartResponse | any> => {
+   try {
+-    const response = await getRequest<CartResponse>(`${urls.API_GET_TO_CART}/${entity_id}`);
++    const response = await getRequest<CartResponse>(
++      `${urls.API_GET_TO_CART}/${entity_id}`,
++    );
+     return response.data;
+   } catch (e) {
+     return e;
+   }
+-}
++};
+ 
+ export const getCartItemInfo = async (productId: string) => {
+   try {
+-    const response = await getRequest(`${urls.API_GET_CART_ITEM_INFO}${productId}`);
++    const response = await getRequest(
++      `${urls.API_GET_CART_ITEM_INFO}${productId}`,
++    );
+     return response.data;
+   } catch (e) {
+     return e;
+   }
+-}
++};
+ 
+ export const getQuestionnaire = async (payorId: string): Promise<any> => {
+   try {
+-    const response = await getRequest<any>(`${urls.API_QUESTIONNAIRE}/${payorId}`); // 2da36834-b43a-4fd2-ab51-8dd0e395f640 or 8e91359d-b4cb-4613-b161-91251e788a4a
++    const response = await getRequest<any>(
++      `${urls.API_QUESTIONNAIRE}/${payorId}`,
++    ); // 2da36834-b43a-4fd2-ab51-8dd0e395f640 or 8e91359d-b4cb-4613-b161-91251e788a4a
+     return response?.data;
+   } catch (e) {
+     console.log(`Exception encountered @ questionnaire ${e}`);
+@@ -933,13 +1018,11 @@ export const sendAidMessage = async () => {
+ /**
+  * const res: User | undefined = await $api.getUser()
+  */
+-export const getUserDependent = async (id: string): Promise<User | undefined> => {
++export const getUserDependent = async (
++  id: string,
++): Promise<User | undefined> => {
+   try {
+-
+-    const response = await getRequest<any>(
+-      urls.API_USER + '/' + id,
+-      {},
+-    );
++    const response = await getRequest<any>(urls.API_USER + '/' + id, {});
+     return Promise.resolve(response.data?.data);
+   } catch (error) {
+     console.error(`Exception encounterd @ ${error}`);
+@@ -953,40 +1036,48 @@ export const getUserDependent = async (id: string): Promise<User | undefined> =>
+  */
+ export const deleteMedication = async (payload: any) => {
+   try {
+-    const response = await postRequest<any>(urls.API_DELETE_MEDICATION, payload);
++    const response = await postRequest<any>(
++      urls.API_DELETE_MEDICATION,
++      payload,
++    );
+ 
+     return Promise.resolve(response.data);
+   } catch (error: any) {
+     console.log(`Expcetion encountered @`);
+     return null;
+   }
+-}
++};
+ 
+ export const getMedsItem = async (planId: string) => {
+   try {
+-    const response = await getRequest<any>(`${urls.API_DRUG_INSURANCE_PLAN}${planId}`);
++    const response = await getRequest<any>(
++      `${urls.API_DRUG_INSURANCE_PLAN}${planId}`,
++    );
+     return Promise.resolve(response.data);
+   } catch (error: any) {
+     console.log(`Exception encountered @ getMedsItem ${JSON.stringify(error)}`);
+     return null;
+   }
+-}
++};
+ 
+ export const getEMCFile = async (
+   fileKey: string,
+   bucketName: string,
+ ): Promise<any> => {
+   try {
+-    const response = await postRequest<any>(urls.API_GET_EMC_FILE,
++    const response = await postRequest<any>(
++      urls.API_GET_EMC_FILE,
+       JSON.stringify({
+         key: fileKey,
+         bucketName: bucketName,
+-      }), {
++      }),
++      {
+         headers: {
+           'x-client-id': 'health-passport-web',
+           'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
+-        }
+-      });
++        },
++      },
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     console.error(`Exception encounterd @ ${error}`);
+@@ -998,16 +1089,19 @@ export const getReferralLetters = async (
+   bucketName: string,
+ ): Promise<any> => {
+   try {
+-    const response = await postRequest<any>(urls.API_GET_REFERRAL,
++    const response = await postRequest<any>(
++      urls.API_GET_REFERRAL,
+       JSON.stringify({
+         key: fileKey,
+         bucketName: bucketName,
+-      }), {
++      }),
++      {
+         headers: {
+           'x-client-id': 'health-passport-web',
+           'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
+-        }
+-      });
++        },
++      },
++    );
+     return Promise.resolve(response.data);
+   } catch (error) {
+     console.error(`Exception encounterd @ ${error}`);
+@@ -1017,60 +1111,60 @@ export const getReferralLetters = async (
+ export const AddDependant = async (payload: any) => {
+   try {
+     const endpoint = `${urls.API_ADD_DEPENDANT}`;
+-    const response = await postRequest<any>(endpoint,
+-      JSON.stringify(payload), {
+-        headers: {
+-          'x-client-id': 'health-passport-web',
+-          'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
+-        }
+-      });
++    const response = await postRequest<any>(endpoint, JSON.stringify(payload), {
++      headers: {
++        'x-client-id': 'health-passport-web',
++        'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
++      },
++    });
+     return Promise.resolve(response.data);
+   } catch (e) {
+     console.log(`Excpetion encountered @ AddDependant`);
+   }
+-}
++};
+ 
+ export const updateDependant = async (entityId: string, payload: any) => {
+   try {
+     const endpoint = `${urls.API_UPDATE_DEPENDANT}${entityId}`;
+-    const response = await putRequest<any>(endpoint,
+-      JSON.stringify(payload), {
+-        headers: {
+-          'x-client-id': 'health-passport-web',
+-          'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
+-        }
+-      });
++    const response = await putRequest<any>(endpoint, JSON.stringify(payload), {
++      headers: {
++        'x-client-id': 'health-passport-web',
++        'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
++      },
++    });
+     return Promise.resolve(response.data);
+   } catch (e) {
+     console.log(`Excpetion encountered @ updateDependant ${JSON.stringify(e)}`);
+   }
+-}
++};
+ 
+ export const deleteDependant = async (entityId: string) => {
+   try {
+     const endpoint = `${urls.API_DELETE_DEPENDANT}${entityId}`;
+-    const response = await deleteRequest<any>(endpoint,
+-      {
+-        headers: {
+-          'x-client-id': 'health-passport-web',
+-          'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
+-        }
+-      });
++    const response = await deleteRequest<any>(endpoint, {
++      headers: {
++        'x-client-id': 'health-passport-web',
++        'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
++      },
++    });
+     return Promise.resolve(response.data);
+   } catch (e) {
+     console.log(`Excpetion encountered @ deleteDependant`);
+   }
+-}
++};
+ 
+ export const verifyExistingUser = async (payload: any) => {
+   try {
+-    const response = await postRequest<any>(urls.API_VERIFY_EXISTING_ACCOUNT, payload);
++    const response = await postRequest<any>(
++      urls.API_VERIFY_EXISTING_ACCOUNT,
++      payload,
++    );
+     return Promise.resolve(response.data);
+   } catch (e) {
+     console.log(`exception encountered verifyExistingUser`, e);
+     return e;
+   }
+-}
++};
+ 
+ export const sendOneTimePassword = async (payload: any) => {
+   try {
+@@ -1080,7 +1174,7 @@ export const sendOneTimePassword = async (payload: any) => {
+     console.log(`exception encountered `, e);
+     return e;
+   }
+-}
++};
+ 
+ export const registerOTP = async (payload: any) => {
+   try {
+@@ -1088,13 +1182,19 @@ export const registerOTP = async (payload: any) => {
+     const response = await postRequest<any>(urls.API_OTP_REGISTRATION, payload);
+     const globalAppState = getGlobalAppState();
+     globalAppState?.setLoginData(response?.data.data);
+-    await AsyncStorage.setItem('memberData', JSON.stringify(response?.data.data));
+-    await Keychain.setGenericPassword('password', response?.data?.data.accessToken);
++    await AsyncStorage.setItem(
++      'memberData',
++      JSON.stringify(response?.data.data),
++    );
++    await Keychain.setGenericPassword(
++      'password',
++      response?.data?.data.accessToken,
++    );
+     return Promise.resolve(response.data);
+   } catch (e) {
+     return e;
+   }
+-}
++};
+ 
+ export const getAddresses = async (country: string) => {
+   try {
+@@ -1103,28 +1203,57 @@ export const getAddresses = async (country: string) => {
+   } catch (error) {
+     return error;
+   }
+-}
++};
+ 
+-export const delivery_request = async ({ ticket_id, contactPerson, contactNumber, address, street, city, state, country }: { ticket_id: string, contactPerson: string, contactNumber: string /*"+852-66668888"*/, address: string, street: string, city: string, state: string, country: string }) => {
++export const delivery_request = async ({
++  ticket_id,
++  contactPerson,
++  contactNumber,
++  address,
++  street,
++  city,
++  state,
++  country,
++}: {
++  ticket_id: string;
++  contactPerson: string;
++  contactNumber: string /*"+852-66668888"*/;
++  address: string;
++  street: string;
++  city: string;
++  state: string;
++  country: string;
++}) => {
+   try {
+     const endpoint = `${urls.API_delivery_request}/${ticket_id}/delivery_request`;
+-    const response = await putRequest<any>(endpoint,
+-      JSON.stringify({ contactPerson, contactNumber, address, street, city, state, country }), {
+-      // headers: {
+-      //   'x-client-id': 'health-passport-web',
+-      //   'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
+-      // }
+-    });
++    const response = await putRequest<any>(
++      endpoint,
++      JSON.stringify({
++        contactPerson,
++        contactNumber,
++        address,
++        street,
++        city,
++        state,
++        country,
++      }),
++      {
++        // headers: {
++        //   'x-client-id': 'health-passport-web',
++        //   'x-client-secret': Config.HSBC_CLIENT_SECRET_WEB,
++        // }
++      },
++    );
+     return Promise.resolve(response.data);
+   } catch (e) {
+     console.log(`Excpetion encountered @ updateDependant ${JSON.stringify(e)}`);
+   }
+-}
++};
+ 
+ export const get_ticket_upcoming = async (): Promise<Ticket[]> => {
+   try {
+     const response = await getRequest<{ data: Ticket[] }>(
+-      urls.API_ticket_upcoming
++      urls.API_ticket_upcoming,
+     );
+     console.log('api get_ticket_upcoming response=', response);
+     return Promise.resolve(response.data.data);
+@@ -1138,15 +1267,50 @@ export const getInquiryQuestions = async () => {
+     const response = await getRequest(urls.API_INQUIRY);
+     return Promise.resolve(response.data);
+   } catch (error: any) {
+-    return handleRequestError(error) as Promise<Ticket[]>; 
++    return handleRequestError(error) as Promise<Ticket[]>;
+   }
+-}
++};
+ 
+ export const getLocation = async () => {
+-  try { 
++  try {
+     const response = await getRequest(urls.API_GET_LOCATION);
+     return Promise.resolve(response.data);
+   } catch (error: any) {
+     return error;
+   }
+-}
+\ No newline at end of file
++};
++
++export const sendMagicLink = async (payload: {
++  contact: string;
++  email: string;
++}) => {
++  try {
++    const response = await postRequest<any>(urls.API_MAGIC_LINK, payload);
++    return Promise.resolve(response.data);
++  } catch (e) {
++    return handleRequestError(e);
++  }
++};
++
++export const magicLogin = async (payload: {
++  id: string;
++  token: string;
++  source: string;
++}) => {
++  try {
++    const response = await postRequest<any>(urls.API_MAGIC_LOGIN, payload);
++    const globalAppState = getGlobalAppState();
++    globalAppState?.setLoginData(response?.data?.data);
++    await AsyncStorage.setItem(
++      'memberData',
++      JSON.stringify(response?.data?.data),
++    );
++    await Keychain.setGenericPassword(
++      'password',
++      response?.data?.data?.accessToken,
++    );
++    return Promise.resolve(response.data);
++  } catch (e) {
++    return handleRequestError(e);
++  }
++};
