@@ -35,7 +35,7 @@
         "type": "array"
       },
       "provider": {
-        "description": "Specify the issue provider",
+        "description": "Specify the issue provider. Default is BITBUCKET",
         "enum": [
           "github",
           "gitlab",
@@ -47,7 +47,7 @@
         "type": "string"
       },
       "repository_name": {
-        "description": "Repository name. Required for GitHub/GitLab; for Jira this is the project key",
+        "description": "Repository name. Required for GitHub/GitLab; required for Jira, where it is the project key (e.g. GKCLI)",
         "type": "string"
       },
       "repository_organization": {

@@ -1,0 +1,79 @@
+{
+  "name": "search_design_system",
+  "description": "Search for design system assets (components, variables, and styles) based on a text query. Returns matching assets from all design libraries. Use this when you need to find specific components, variables (e.g. colors, spacing tokens), or styles from design libraries.\nTo combine searches already required for the task, pass a `queries` array in one call instead of issuing multiple calls; never add speculative terms, synonyms, variants, or checklist items to fill a batch. Results are keyed by query text. Provide either `query` or `queries`, not both.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "description": "Deprecated for new callers; prefer `queries` with one entry. A text query describing one design-system asset to find. Use a specific component, variable, or style name, or a short natural-language phrase. Multi-word names and phrases are allowed. Each query MUST express exactly one search intent. You MUST NOT combine alternatives, synonyms, or unrelated searches in one query; this tool does NOT apply OR semantics. To run several independent searches, pass them as separate entries in `queries` instead of making one call each.",
+        "type": "string"
+      },
+      "queries": {
+        "description": "Run multiple design-system searches in one call instead of issuing separate calls per term. Each entry must specify `entity` as component, variable, or style, and must be an asset already identified as needed for the current task, exactly as `query` would be. Do not add speculative terms, generic checklists, synonyms, or naming variants to fill a batch. Use one batched call instead of parallel tool calls. Inspect results before deciding on a follow-up, and do not treat an empty result as a reason to try alternate terms. Provide EITHER query OR queries, not both. Results are returned in the same order as the entries.",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "entity": {
+              "type": "string",
+              "enum": [
+                "component",
+                "variable",
+                "style"
+              ],
+              "description": "The design-system entity type to search for this entry."
+            },
+            "query": {
+              "type": "string",
+              "description": "Text query describing one design-system asset of the specified entity type to find."
+            }
+          },
+          "required": [
+            "entity",
+            "query"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "fileKey": {
+        "type": "string",
+        "description": "The file key for context"
+      },
+      "disableCodeConnect": {
+        "description": "Whether to disable Code Connect for search results.",
+        "type": "boolean"
+      },
+      "includeComponents": {
+        "default": true,
+        "description": "For single-query calls, whether to include components in the search results. Defaults to true. Batch calls use each entry entity instead.",
+        "type": "boolean"
+      },
+      "includeVariables": {
+        "default": true,
+        "description": "For single-query calls, whether to include variables in the search results. Defaults to true. Batch calls use each entry entity instead.",
+        "type": "boolean"
+      },
+      "includeStyles": {
+        "default": true,
+        "description": "For single-query calls, whether to include styles in the search results. Defaults to true. Batch calls use each entry entity instead.",
+        "type": "boolean"
+      },
+      "includeLibraryKeys": {
+        "description": "Optional list of library keys to restrict the search to. When provided, only results from these libraries are returned. Library keys are returned in previous search results.",
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "required": [
+      "fileKey"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}
