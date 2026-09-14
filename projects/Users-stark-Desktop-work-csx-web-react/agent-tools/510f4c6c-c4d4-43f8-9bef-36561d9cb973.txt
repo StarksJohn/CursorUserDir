@@ -1,0 +1,2294 @@
+ e2e/display-screen-config.spec.ts                  | 312 ++++++++--
+ package.json                                       |   2 +-
+ scripts/dev-with-csx-proxy.mjs                     |   2 +-
+ src/app/globals.css                                |  24 +-
+ src/components/ui/global-confirm.css               |  11 -
+ src/components/ui/global-toast.css                 |   8 -
+ src/features/display-management/CustomSelect.tsx   |   4 +
+ .../display-management/DisplayManagementPage.tsx   |   8 +-
+ .../display-management/display-management.css      | 649 +++++++--------------
+ src/features/display-screen/DisplayScreenPage.tsx  |   2 +-
+ src/features/display-screen/display-screen.css     | 202 +++----
+ 11 files changed, 626 insertions(+), 598 deletions(-)
+======= FULL DIFF =======
+diff --git a/e2e/display-screen-config.spec.ts b/e2e/display-screen-config.spec.ts
+index a77be27..6a34814 100644
+--- a/e2e/display-screen-config.spec.ts
++++ b/e2e/display-screen-config.spec.ts
+@@ -82,6 +82,28 @@ const getResponsiveNextTicketRowHeight = (
+   viewportHeight: number,
+ ): number => Math.min(82, Math.max(41, getPortraitScale(viewportWidth, viewportHeight) * 82));
+ 
++const DISPLAY_PAGE_MIN_CANVAS = {
++  horizontal: {height: 720, width: 1280},
++  vertical: {height: 765, width: 500},
++} as const;
++const MANAGEMENT_PAGE_MIN_CANVAS = {height: 720, width: 1024} as const;
++
++const getPageCanvasSize = (
++  viewport: {height: number; width: number},
++  minCanvas: {height: number; width: number},
++): {height: number; width: number} => ({
++  height: Math.max(viewport.height, minCanvas.height),
++  width: Math.max(viewport.width, minCanvas.width),
++});
++
++const getDisplayCanvasSize = (
++  viewport: {height: number; width: number},
++  orientation: 'horizontal' | 'vertical',
++): {height: number; width: number} => getPageCanvasSize(
++  viewport,
++  DISPLAY_PAGE_MIN_CANVAS[orientation],
++);
++
+ const DISPLAY_FONT_SIZE_VARIABLES = [
+   '--clinic-brand-font-size',
+   '--time-font-size',
+@@ -328,6 +350,18 @@ const encodeAuthTransfer = (payload: unknown): string => Buffer.from(JSON.string
+ 
+ const isHydrationErrorText = (text: string): boolean => text.includes('Hydration failed') || text.includes("didn't match the client");
+ 
++const confirmManagementLeaveIfPrompted = async (page: Page): Promise<void> => {
++  const leaveDialog = page.getByRole('dialog', {name: '確認要離開嗎?'});
++
++  try {
++    await leaveDialog.waitFor({state: 'visible', timeout: 1500});
++    await leaveDialog.getByRole('button', {name: '確認', exact: true}).click();
++    await expect(leaveDialog).toHaveCount(0);
++  } catch {
++    // Browser back can complete without a leave prompt when the form is still pristine.
++  }
++};
++
+ const readManagementEditScrollState = async (
+   page: Page,
+   scrollTop: number,
+@@ -1019,14 +1053,15 @@ test('sizes the management table to its rows without bold data or a reserved rig
+ 
+   await selectCustomOption(page, '診所', 'ONE');
+   await expect(page.locator('.management-table tbody tr')).toHaveCount(1);
++  await expect(page.locator('.management-display-link')).toBeVisible();
+ 
+   const compactTableMetrics = await tableCard.evaluate((element) => {
+     const cardRect = element.getBoundingClientRect();
+-    const table = element.querySelector('table');
++    const table = element.querySelector('table, .management-table');
+     const tableRect = table?.getBoundingClientRect();
+     const clinicValue = document.querySelector('.management-filter-form .management-select-value');
+-    const nameCell = table?.querySelector('tbody td:first-child');
+-    const displayLink = table?.querySelector('.management-display-link');
++    const nameCell = element.querySelector('tbody td:first-child, tbody tr > *:first-child');
++    const displayLink = element.querySelector('.management-display-link');
+     const style = getComputedStyle(element);
+ 
+     if (!table || !tableRect || !clinicValue || !nameCell || !displayLink) {
+@@ -1088,7 +1123,7 @@ for (const {
+     await mockClinicList(page, [TEST_CLINICS[0]]);
+     await page.setViewportSize({height: 720, width: 1280});
+     await page.goto(route);
+-    await expect(page.locator('.management-edit-content')).toBeVisible();
++    await expect(page.locator('.management-edit-content .management-edit-section').first()).toBeVisible();
+     await expect(page.getByRole('checkbox', {name: '總排隊人數'})).toHaveCount(0);
+ 
+     const initialScrollState = await readManagementEditScrollState(page, 0);
+@@ -1792,6 +1827,7 @@ test('centers the Figma empty state in the remaining table area', async ({page})
+   });
+   await mockClinicList(page, clinics, () => []);
+ 
++  await page.setViewportSize({width: 1280, height: 1366});
+   await page.goto(MANAGEMENT_ROUTE);
+ 
+   const emptyState = page.getByTestId('management-empty-state');
+@@ -1883,8 +1919,8 @@ test('centers the Figma empty state in the remaining table area', async ({page})
+   expect(mobileEmptyStateLayout.areaHeight).toBeGreaterThanOrEqual(320);
+   expect(mobileEmptyStateLayout.centerXOffset).toBeLessThanOrEqual(1);
+   expect(mobileEmptyStateLayout.centerYOffset).toBeLessThanOrEqual(1);
+-  expect(mobileEmptyStateLayout.hasHorizontalOverflow).toBe(false);
+-  expect(mobileEmptyStateLayout.headerDisplay).toBe('none');
++  expect(mobileEmptyStateLayout.hasHorizontalOverflow).toBe(true);
++  expect(mobileEmptyStateLayout.headerDisplay).not.toBe('none');
+ });
+ 
+ const readCopyToastStyle = async (page: Page): Promise<CopyToastStyleSnapshot> => page.getByTestId('global-toast').evaluate((element) => {
+@@ -2212,7 +2248,7 @@ test('matches the latest Figma new display configuration layout', async ({page})
+       document.querySelectorAll<HTMLButtonElement>('button:not(:disabled)'),
+     ).map((button) => window.getComputedStyle(button).cursor),
+   }));
+-  expect(mobileLayout.hasHorizontalOverflow).toBe(false);
++  expect(mobileLayout.hasHorizontalOverflow).toBe(true);
+   expect(mobileLayout.enabledButtonCursors.every((cursor) => cursor === 'pointer')).toBe(true);
+ });
+ 
+@@ -3155,6 +3191,7 @@ test('renders the display management shell on the module route', async ({page})
+     });
+   });
+ 
++  await page.setViewportSize({width: 1280, height: 1366});
+   await page.goto(MANAGEMENT_ROUTE);
+ 
+   await expect(page).toHaveTitle('ClinicSolution');
+@@ -3542,6 +3579,7 @@ test('renders the display management shell on the module route', async ({page})
+   await expect(page.getByRole('heading', {name: '醫生配置', level: 2})).toBeAttached();
+   await expect(page.getByRole('heading', {name: '自定義主題色', level: 2})).toBeAttached();
+   await page.goBack();
++  await confirmManagementLeaveIfPrompted(page);
+   await expect(page).toHaveURL(managementListUrl);
+   const clinicFilterLabel = page.locator('label[for="management-clinic-select"]');
+   await expect(clinicFilterLabel).toBeVisible();
+@@ -3804,6 +3842,7 @@ test('renders the display management shell on the module route', async ({page})
+   await expect(editPageClinicSelect).toBeDisabled();
+   await expect(page.getByTestId('display-device-edit-clinic-code')).toHaveText('ST');
+   await page.goBack();
++  await confirmManagementLeaveIfPrompted(page);
+   await expect(page).toHaveURL(managementListUrl);
+   await expect(formClinicSelect).toHaveAttribute('value', 'ST');
+   await expect(page.getByRole('region', {name: '顯示屏配置列表: ST'})).toBeVisible();
+@@ -3814,6 +3853,7 @@ test('renders the display management shell on the module route', async ({page})
+   await expect(page.getByTestId('display-device-edit-clinic-code')).toHaveText('ST');
+   await expect(topbarClinicSelect).toHaveAttribute('value', 'TST');
+   await page.goBack();
++  await confirmManagementLeaveIfPrompted(page);
+   await expect(page).toHaveURL(managementListUrl);
+   await expect(page.getByRole('main', {name: '顯示屏配置'})).toBeVisible();
+   await expect(formClinicSelect).toHaveAttribute('value', 'ST');
+@@ -3909,22 +3949,28 @@ test('renders the display management shell on the module route', async ({page})
+   expect(copyConfigDialogStyle.centerXOffset).toBeLessThanOrEqual(1);
+   expect(copyConfigDialogStyle.centerYOffset).toBeLessThanOrEqual(1);
+   expect(copyConfigDialogStyle.isOverflowingViewport).toBe(false);
+-  const copyFromClinicSelect = page.getByLabel('從診所');
+-  const copyToClinicSelect = page.getByLabel('至診所');
++  const copyFromClinicSelect = page.getByRole('combobox', {name: '從診所'});
++  const copyToClinicSelect = page.getByRole('combobox', {name: '至診所'});
+   await expect(copyFromClinicSelect).toHaveAttribute('value', 'ST');
+   await expect(copyToClinicSelect).toHaveAttribute('value', '');
+   await copyFromClinicSelect.click();
+-  const copyFromClinicOptions = await page
+-    .getByRole('listbox', {name: '從診所'})
++  const copyFromClinicListbox = page.getByRole('listbox', {name: '從診所'});
++  await expect(copyFromClinicListbox).toBeVisible();
++  const copyFromClinicOptions = await copyFromClinicListbox
+     .getByRole('option')
+     .evaluateAll((options) => options.map((option) => option.getAttribute('data-value')));
+-  await page.keyboard.press('Escape');
++  await copyFromClinicSelect.click();
++  await expect(copyFromClinicListbox).toHaveCount(0);
++  await expect(copyConfigDialog).toBeVisible();
+   await copyToClinicSelect.click();
+-  const copyToClinicOptions = await page
+-    .getByRole('listbox', {name: '至診所'})
++  const copyToClinicListbox = page.getByRole('listbox', {name: '至診所'});
++  await expect(copyToClinicListbox).toBeVisible();
++  const copyToClinicOptions = await copyToClinicListbox
+     .getByRole('option')
+     .evaluateAll((options) => options.map((option) => option.getAttribute('data-value')));
+-  await page.keyboard.press('Escape');
++  await copyToClinicSelect.click();
++  await expect(copyToClinicListbox).toHaveCount(0);
++  await expect(copyConfigDialog).toBeVisible();
+   expect(copyFromClinicOptions).toEqual(topbarClinicOptions);
+   expect(copyToClinicOptions).toEqual(topbarClinicOptions);
+   await expect(copyConfigDialog.getByRole('checkbox', {name: '完全相同'})).toBeChecked();
+@@ -4030,7 +4076,7 @@ test('renders the display management shell on the module route', async ({page})
+       isLabelAboveSelect: labelRect && selectRect ? labelRect.bottom <= selectRect.top : false,
+     };
+   });
+-  expect(mobileClinicFilterLayout.isLabelAboveSelect).toBe(true);
++  expect(mobileClinicFilterLayout.isLabelAboveSelect).toBe(false);
+   await expect(page.getByRole('button', {name: '複製配置'}).first()).toBeVisible();
+ 
+   const hasHorizontalOverflow = await page.evaluate(() => {
+@@ -4038,7 +4084,7 @@ test('renders the display management shell on the module route', async ({page})
+ 
+     return documentElement.scrollWidth > window.innerWidth;
+   });
+-  expect(hasHorizontalOverflow).toBe(false);
++  expect(hasHorizontalOverflow).toBe(true);
+   await selectCustomOption(page, '診所', 'ST');
+   await page.getByRole('button', {name: ST_FIRST_DEVICE_DISPLAY_URL}).click();
+   const mobileCopyToastStyle = await readCopyToastStyle(page);
+@@ -6632,6 +6678,138 @@ test('keeps display content visible for the current viewport', async ({page}) =>
+   expect(metrics.bodyBackground).toBe('rgb(237, 243, 252)');
+ });
+ 
++test('keeps display chrome readable with document scrollbars below the min canvas', async ({
++  page,
++}) => {
++  const viewport = {height: 400, width: 360};
++  const canvas = getDisplayCanvasSize(viewport, 'vertical');
++
++  await page.setViewportSize(viewport);
++  await page.goto('./tvScreenNew/?mock=1&doctors=2');
++  await expect(page.locator('.display-screen')).toHaveAttribute('data-orientation', 'vertical');
++  await expect(page.locator('.queue-stat-latest dt').first()).toHaveText('最新叫號 Last Call');
++
++  const layout = await page.evaluate(() => {
++    const shell = document.querySelector('.display-shell');
++    const clinicHeader = document.querySelector('.clinic-header');
++    const nextSection = document.querySelector('.queue-header, .doctors-stage');
++    const lastCallLabels = Array.from(
++      document.querySelectorAll('.queue-stat-latest dt, .featured-last-call span'),
++    ).map((label) => {
++      const rect = label.getBoundingClientRect();
++
++      return {
++        bottom: rect.bottom,
++        clientWidth: (label as HTMLElement).clientWidth,
++        height: rect.height,
++        scrollWidth: (label as HTMLElement).scrollWidth,
++        text: label.textContent?.trim() ?? '',
++        top: rect.top,
++      };
++    });
++
++    return {
++      canvasHeight: shell?.getBoundingClientRect().height ?? 0,
++      canvasWidth: shell?.getBoundingClientRect().width ?? 0,
++      clinicHeaderBottom: clinicHeader?.getBoundingClientRect().bottom ?? 0,
++      documentClientHeight: document.documentElement.clientHeight,
++      documentClientWidth: document.documentElement.clientWidth,
++      documentScrollHeight: document.documentElement.scrollHeight,
++      documentScrollWidth: document.documentElement.scrollWidth,
++      lastCallLabels,
++      nextSectionTop: nextSection?.getBoundingClientRect().top ?? 0,
++    };
++  });
++
++  expect(layout.canvasWidth).toBeCloseTo(canvas.width, 0);
++  expect(layout.canvasHeight).toBeCloseTo(canvas.height, 0);
++  expect(layout.documentScrollWidth).toBeGreaterThan(layout.documentClientWidth + 1);
++  expect(layout.documentScrollHeight).toBeGreaterThan(layout.documentClientHeight + 1);
++  expect(layout.clinicHeaderBottom).toBeLessThanOrEqual(layout.nextSectionTop + 0.5);
++  expect(layout.lastCallLabels.length).toBeGreaterThan(0);
++  for (const label of layout.lastCallLabels) {
++    expect(label.text).toContain('最新叫號 Last Call');
++    expect(label.height).toBeGreaterThan(0);
++    expect(label.scrollWidth).toBeLessThanOrEqual(label.clientWidth + 1);
++  }
++});
++
++test('keeps management chrome readable with document scrollbars below the min canvas', async ({
++  page,
++}) => {
++  const viewport = {height: 400, width: 360};
++  const canvas = getPageCanvasSize(viewport, MANAGEMENT_PAGE_MIN_CANVAS);
++
++  await page.addInitScript(() => {
++    window.localStorage.setItem('tok', JSON.stringify('local-token'));
++    window.localStorage.setItem('userName', JSON.stringify('stark.user'));
++    window.localStorage.setItem(
++      'userInfo',
++      JSON.stringify({
++        userName: 'stark.user',
++        currentClinic: {
++          clinicCode: 'ST',
++          clinicEnglishName: 'ST',
++        },
++      }),
++    );
++    window.localStorage.setItem('permission', JSON.stringify(['008014']));
++    window.localStorage.setItem('locale', JSON.stringify('zh-HK'));
++  });
++  await mockClinicList(page, [TEST_CLINICS[0]]);
++  await page.setViewportSize(viewport);
++  await page.goto(MANAGEMENT_ROUTE);
++  await expect(page.getByRole('heading', {name: '顯示屏配置', level: 1})).toBeVisible();
++  await expect(page.getByRole('button', {name: /新增\s*W/})).toBeVisible();
++
++  const layout = await page.evaluate(() => {
++    const shell = document.querySelector('.management-shell');
++    const topbar = document.querySelector('.management-topbar');
++    const body = document.querySelector('.management-body');
++    const sidebar = document.querySelector('.management-sidebar');
++    const content = document.querySelector('.management-content-card');
++    const heading = document.querySelector('.management-content-heading h1');
++    const addButton = document.querySelector('.management-add-display-config');
++    const headingRect = heading?.getBoundingClientRect();
++    const addRect = addButton?.getBoundingClientRect();
++    const sidebarRect = sidebar?.getBoundingClientRect();
++    const contentRect = content?.getBoundingClientRect();
++
++    return {
++      addBottom: addRect?.bottom ?? 0,
++      addHeight: addRect?.height ?? 0,
++      bodyDirection: body ? getComputedStyle(body).flexDirection : '',
++      bodyWrap: body ? getComputedStyle(body).flexWrap : '',
++      canvasHeight: shell?.getBoundingClientRect().height ?? 0,
++      canvasWidth: shell?.getBoundingClientRect().width ?? 0,
++      contentLeft: contentRect?.left ?? 0,
++      contentTop: contentRect?.top ?? 0,
++      documentClientHeight: document.documentElement.clientHeight,
++      documentClientWidth: document.documentElement.clientWidth,
++      documentScrollHeight: document.documentElement.scrollHeight,
++      documentScrollWidth: document.documentElement.scrollWidth,
++      headingHeight: headingRect?.height ?? 0,
++      headingText: heading?.textContent?.trim() ?? '',
++      sidebarLeft: sidebarRect?.left ?? 0,
++      sidebarTop: sidebarRect?.top ?? 0,
++      topbarDirection: topbar ? getComputedStyle(topbar).flexDirection : '',
++    };
++  });
++
++  expect(layout.canvasWidth).toBeCloseTo(canvas.width, 0);
++  expect(layout.canvasHeight).toBeCloseTo(canvas.height, 0);
++  expect(layout.documentScrollWidth).toBeGreaterThan(layout.documentClientWidth + 1);
++  expect(layout.documentScrollHeight).toBeGreaterThan(layout.documentClientHeight + 1);
++  expect(layout.headingText).toBe('顯示屏配置');
++  expect(layout.headingHeight).toBeGreaterThan(0);
++  expect(layout.addHeight).toBeGreaterThan(0);
++  expect(layout.topbarDirection).toBe('row');
++  expect(layout.bodyDirection).toBe('row');
++  expect(layout.bodyWrap).toBe('nowrap');
++  expect(layout.sidebarLeft).toBeLessThan(layout.contentLeft - 1);
++  expect(Math.abs(layout.sidebarTop - layout.contentTop)).toBeLessThanOrEqual(1);
++});
++
+ test('scales every display typography token with a narrow portrait viewport', async ({page}) => {
+   const readFontSizes = async (): Promise<Record<string, number>> =>
+     page.locator('.display-screen').evaluate((screen, variableNames) => {
+@@ -7638,7 +7816,10 @@ test('renders the configured doctor queue footer variants in portrait and landsc
+       return {
+         latestBlockBottom: latestBlock?.getBoundingClientRect().bottom ?? null,
+         latestLabelBottom: latestLabel?.getBoundingClientRect().bottom ?? null,
++        latestLabelClientWidth: latestLabel?.clientWidth ?? null,
+         latestLabelHeight: latestLabel?.getBoundingClientRect().height ?? null,
++        latestLabelScrollWidth: latestLabel?.scrollWidth ?? null,
++        latestLabelText: latestLabel?.textContent?.trim() ?? null,
+         latestNumberFontSize: latestValue ? getComputedStyle(latestValue).fontSize : null,
+         nextBlockHeight: nextBlock?.getBoundingClientRect().height ?? null,
+         nextBlockWidth: nextBlock?.getBoundingClientRect().width ?? null,
+@@ -7658,54 +7839,44 @@ test('renders the configured doctor queue footer variants in portrait and landsc
+         waitingBlockWidth: waitingBlock?.getBoundingClientRect().width ?? null,
+         waitingDirection: waitingBlock ? getComputedStyle(waitingBlock).flexDirection : null,
+         waitingFontSize: waitingValue ? getComputedStyle(waitingValue).fontSize : null,
++        waitingLabelBottom: waitingLabel?.getBoundingClientRect().bottom ?? null,
+         waitingLabelColor: waitingLabel ? getComputedStyle(waitingLabel).color : null,
+         waitingLabelClientWidth: waitingLabel?.clientWidth ?? null,
+         waitingLabelFontSize: waitingLabel ? getComputedStyle(waitingLabel).fontSize : null,
+         waitingLabelHeight: waitingLabel?.getBoundingClientRect().height ?? null,
++        waitingLabelLeft: waitingLabel?.getBoundingClientRect().left ?? null,
+         waitingLabelScrollWidth: waitingLabel?.scrollWidth ?? null,
+         waitingLabelTextAlign: waitingLabel ? getComputedStyle(waitingLabel).textAlign : null,
+         waitingLabelTop: waitingLabel?.getBoundingClientRect().top ?? null,
+         waitingTextAlign: waitingValue ? getComputedStyle(waitingValue).textAlign : null,
++        waitingValueLeft: waitingValue?.getBoundingClientRect().left ?? null,
++        waitingValueTop: waitingValue?.getBoundingClientRect().top ?? null,
+       };
+     });
+ 
+     if (scenario.waitingCountDisplay && scenario.nextPatientDisplay) {
++      const canvas = getDisplayCanvasSize(
++        scenario.viewport,
++        scenario.horizontal ? 'horizontal' : 'vertical',
++      );
+       const expectedNumberFontSize = scenario.horizontal
+         ? 48
+-        : getResponsiveNextTicketNumberFontSize(
+-            scenario.viewport.width,
+-            scenario.viewport.height,
+-          );
++        : getResponsiveNextTicketNumberFontSize(canvas.width, canvas.height);
+       const expectedRowHeight = scenario.horizontal
+         ? 82
+-        : getResponsiveNextTicketRowHeight(
+-            scenario.viewport.width,
+-            scenario.viewport.height,
+-          );
++        : getResponsiveNextTicketRowHeight(canvas.width, canvas.height);
+       const expectedCallLabelFontSize = scenario.horizontal
+         ? 18
+-        : getResponsiveCallLabelFontSize(
+-            scenario.viewport.width,
+-            scenario.viewport.height,
+-          );
++        : getResponsiveCallLabelFontSize(canvas.width, canvas.height);
+       const expectedNextTicketLabelFontSize = scenario.horizontal
+         ? 18
+-        : getResponsiveNextTicketLabelFontSize(
+-            scenario.viewport.width,
+-            scenario.viewport.height,
+-          );
++        : getResponsiveNextTicketLabelFontSize(canvas.width, canvas.height);
+       const expectedLatestCallNumberFontSize = scenario.horizontal
+         ? FIGMA_QUEUE_FOOTER_FONT_SIZES.latestCallNumber
+-        : getResponsiveLatestCallNumberFontSize(
+-            scenario.viewport.width,
+-            scenario.viewport.height,
+-          );
++        : getResponsiveLatestCallNumberFontSize(canvas.width, canvas.height);
+       const expectedLatestCallBottomGap = scenario.horizontal
+         ? 24
+-        : getResponsiveLatestCallBottomGap(
+-            scenario.viewport.width,
+-            scenario.viewport.height,
+-          );
++        : getResponsiveLatestCallBottomGap(canvas.width, canvas.height);
+ 
+       expect(footerLayout.waitingDirection).toBe('column');
+       expect(footerLayout.nextDirection).toBe('column');
+@@ -7746,6 +7917,10 @@ test('renders the configured doctor queue footer variants in portrait and landsc
+       expect(footerLayout.waitingLabelScrollWidth ?? 0).toBeLessThanOrEqual(
+         (footerLayout.waitingLabelClientWidth ?? 0) + 1,
+       );
++      expect(footerLayout.latestLabelText).toBe('最新叫號 Last Call');
++      expect(footerLayout.latestLabelScrollWidth ?? 0).toBeLessThanOrEqual(
++        (footerLayout.latestLabelClientWidth ?? 0) + 1,
++      );
+       expect(Math.abs((footerLayout.waitingLabelTop ?? 0) - (footerLayout.nextLabelTop ?? 0)))
+         .toBeLessThanOrEqual(1);
+       expect(footerLayout.latestLabelBottom ?? 0).toBeLessThanOrEqual(
+@@ -7765,8 +7940,14 @@ test('renders the configured doctor queue footer variants in portrait and landsc
+       }
+ 
+       if (scenario.id === 'vertical-both-ellipsis') {
+-        expect(footerLayout.nextLabelScrollWidth ?? 0).toBeGreaterThan(
+-          footerLayout.nextLabelClientWidth ?? 0,
++        const documentOverflow = await page.evaluate(() => ({
++          clientWidth: document.documentElement.clientWidth,
++          scrollWidth: document.documentElement.scrollWidth,
++        }));
++
++        expect(documentOverflow.scrollWidth).toBeGreaterThan(documentOverflow.clientWidth + 1);
++        expect(footerLayout.nextLabelScrollWidth ?? 0).toBeLessThanOrEqual(
++          (footerLayout.nextLabelClientWidth ?? 0) + 1,
+         );
+       }
+ 
+@@ -7814,9 +7995,15 @@ test('renders the configured doctor queue footer variants in portrait and landsc
+         )).toEqual([]);
+       }
+     } else if (scenario.waitingCountDisplay) {
+-      expect(footerLayout.waitingDirection).toBe('row');
++      expect(footerLayout.waitingDirection).toBe('column');
+       expect(Number.parseFloat(footerLayout.waitingFontSize ?? '')).toBeCloseTo(64, 1);
+-      expect(footerLayout.waitingTextAlign).toBe('right');
++      expect(footerLayout.waitingTextAlign).toBe('left');
++      expect(footerLayout.waitingValueTop ?? 0).toBeGreaterThanOrEqual(
++        (footerLayout.waitingLabelBottom ?? 0) - 1,
++      );
++      expect(
++        Math.abs((footerLayout.waitingValueLeft ?? 0) - (footerLayout.waitingLabelLeft ?? 0)),
++      ).toBeLessThanOrEqual(1);
+     } else {
+       expect(footerLayout.nextDirection).toBe('row');
+       expect(Number.parseFloat(footerLayout.nextFontSize ?? '')).toBeCloseTo(48, 1);
+@@ -7828,8 +8015,14 @@ test('renders the configured doctor queue footer variants in portrait and landsc
+       const expectedWaitingLabelFontSize = scenario.horizontal
+         ? 18
+         : getResponsiveNextTicketLabelFontSize(
+-            scenario.viewport.width,
+-            scenario.viewport.height,
++            getDisplayCanvasSize(
++              scenario.viewport,
++              scenario.horizontal ? 'horizontal' : 'vertical',
++            ).width,
++            getDisplayCanvasSize(
++              scenario.viewport,
++              scenario.horizontal ? 'horizontal' : 'vertical',
++            ).height,
+           );
+       expect(Number.parseFloat(footerLayout.waitingLabelFontSize ?? '')).toBeCloseTo(
+         expectedWaitingLabelFontSize,
+@@ -9065,8 +9258,13 @@ test('keeps horizontal and vertical displays responsive through dynamic browser
+         };
+       });
+ 
++      const shell = document.querySelector('.display-shell');
++      const shellRect = shell?.getBoundingClientRect();
++
+       return {
+         bioLayouts,
++        canvasHeight: shellRect?.height ?? 0,
++        canvasWidth: shellRect?.width ?? 0,
+         clientHeight: document.documentElement.clientHeight,
+         clientWidth: document.documentElement.clientWidth,
+         horizontalCardAlignments,
+@@ -9076,9 +9274,21 @@ test('keeps horizontal and vertical displays responsive through dynamic browser
+         waitingLabelSizes,
+       };
+     });
++    const canvas = getDisplayCanvasSize(
++      {height: metrics.clientHeight, width: metrics.clientWidth},
++      orientation,
++    );
+ 
+-    expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.clientWidth + 1);
+-    expect(metrics.scrollHeight).toBeLessThanOrEqual(metrics.clientHeight + 1);
++    expect(metrics.canvasWidth).toBeCloseTo(canvas.width, 0);
++    expect(metrics.canvasHeight).toBeCloseTo(canvas.height, 0);
++    expect(metrics.scrollWidth).toBeGreaterThanOrEqual(canvas.width - 1);
++    expect(metrics.scrollHeight).toBeGreaterThanOrEqual(canvas.height - 1);
++    if (canvas.width > metrics.clientWidth + 1) {
++      expect(metrics.scrollWidth).toBeGreaterThan(metrics.clientWidth + 1);
++    }
++    if (canvas.height > metrics.clientHeight + 1) {
++      expect(metrics.scrollHeight).toBeGreaterThan(metrics.clientHeight + 1);
++    }
+     expect(metrics.waitingLabelSizes.length).toBeGreaterThan(0);
+     expect(metrics.bioLayouts.length).toBeGreaterThan(0);
+ 
+@@ -9103,10 +9313,10 @@ test('keeps horizontal and vertical displays responsive through dynamic browser
+       expect(region.left, `${orientation} ${region.selector} left`).toBeGreaterThanOrEqual(-0.5);
+       expect(region.top, `${orientation} ${region.selector} top`).toBeGreaterThanOrEqual(-0.5);
+       expect(region.right, `${orientation} ${region.selector} right`).toBeLessThanOrEqual(
+-        metrics.clientWidth + 0.5,
++        metrics.canvasWidth + 0.5,
+       );
+       expect(region.bottom, `${orientation} ${region.selector} bottom`).toBeLessThanOrEqual(
+-        metrics.clientHeight + 0.5,
++        metrics.canvasHeight + 0.5,
+       );
+     }
+ 
+diff --git a/package.json b/package.json
+index 96e0280..b342c37 100644
+--- a/package.json
++++ b/package.json
+@@ -10,7 +10,7 @@
+   "scripts": {
+     "dev": "next dev --webpack",
+     "dev:csx": "NEXT_PUBLIC_CSX_SYSTEM=csx NEXT_PUBLIC_CSX_ENV=poc next dev --webpack",
+-    "dev:csx:internal": "NEXT_PUBLIC_CSX_SYSTEM=csx NEXT_PUBLIC_CSX_ENV=dev next dev --webpack",
++    "dev:csx:internal": "NEXT_PUBLIC_CSX_SYSTEM=csx NEXT_PUBLIC_CSX_ENV=dev CSX_LOCAL_PROXY_TARGET=http://192.168.99.29:8083 CSX_LOCAL_TENANT_ORIGIN=http://192.168.99.29:8083 node scripts/dev-with-csx-proxy.mjs",
+     "dev:csx:prod": "NEXT_PUBLIC_CSX_SYSTEM=csx NEXT_PUBLIC_CSX_ENV=prod next dev --webpack",
+     "dev:k8": "node scripts/dev-with-csx-proxy.mjs",
+     "dev:k8:direct": "NEXT_PUBLIC_CSX_SYSTEM=csx-k8 NEXT_PUBLIC_CSX_ENV=poc NEXT_PUBLIC_CSX_API_BASE_URL=https://api-poc.clinicsolution.hk next dev --webpack",
+diff --git a/scripts/dev-with-csx-proxy.mjs b/scripts/dev-with-csx-proxy.mjs
+index 12ef287..bd05905 100644
+--- a/scripts/dev-with-csx-proxy.mjs
++++ b/scripts/dev-with-csx-proxy.mjs
+@@ -117,7 +117,7 @@ const proxyServer = createServer(async (request, response) => {
+   } catch (error) {
+     console.error('[csx-local-proxy] Upstream request failed:', error);
+     response.writeHead(502, {'Content-Type': 'application/json'});
+-    response.end(JSON.stringify({message: 'CSX POC API proxy request failed.'}));
++    response.end(JSON.stringify({message: 'CSX API proxy request failed.'}));
+   }
+ });
+ 
+diff --git a/src/app/globals.css b/src/app/globals.css
+index 4a8bdb8..ea7944f 100644
+--- a/src/app/globals.css
++++ b/src/app/globals.css
+@@ -6,7 +6,7 @@
+ 
+ html,
+ body {
+-  width: 100%;
++  min-width: 100%;
+   min-height: 100%;
+ }
+ 
+@@ -19,3 +19,25 @@ body {
+ button {
+   font: inherit;
+ }
++
++/*
++ * Shared small-viewport contract:
++ * pages fill the window until their CSS floor, then keep that canvas
++ * and let the root document show browser-edge scrollbars.
++ */
++.display-shell,
++.management-shell {
++  box-sizing: border-box;
++  width: max(100%, var(--csx-page-min-width, 0px));
++  min-width: var(--csx-page-min-width, 0px);
++  height: max(100dvh, var(--csx-page-min-height, 0px));
++  min-height: var(--csx-page-min-height, 0px);
++}
++
++body:has(.display-shell) {
++  background: #edf3fc;
++}
++
++body:has(.management-shell) {
++  background: #d6e4e8;
++}
+diff --git a/src/components/ui/global-confirm.css b/src/components/ui/global-confirm.css
+index 3c958b7..7a4dd39 100644
+--- a/src/components/ui/global-confirm.css
++++ b/src/components/ui/global-confirm.css
+@@ -122,14 +122,3 @@
+   outline: 3px solid rgb(14 124 132 / 30%);
+   outline-offset: 2px;
+ }
+-
+-@media (max-width: 520px) {
+-  .global-confirm-footer {
+-    align-items: stretch;
+-    flex-direction: column-reverse;
+-  }
+-
+-  .global-confirm-action {
+-    width: 100%;
+-  }
+-}
+diff --git a/src/components/ui/global-toast.css b/src/components/ui/global-toast.css
+index e85d11c..707e7b8 100644
+--- a/src/components/ui/global-toast.css
++++ b/src/components/ui/global-toast.css
+@@ -122,11 +122,3 @@
+   width: var(--global-toast-close-icon-size);
+   height: var(--global-toast-close-icon-size);
+ }
+-
+-@media (max-width: 460px) {
+-  .global-toast {
+-    left: var(--global-toast-inline-offset);
+-    right: var(--global-toast-inline-offset);
+-    width: auto;
+-  }
+-}
+diff --git a/src/features/display-management/CustomSelect.tsx b/src/features/display-management/CustomSelect.tsx
+index 2165188..76e21a7 100644
+--- a/src/features/display-management/CustomSelect.tsx
++++ b/src/features/display-management/CustomSelect.tsx
+@@ -271,6 +271,8 @@ const CustomSelect = ({
+     }
+     if (event.key === 'Escape' && isOpen) {
+       event.preventDefault();
++      event.stopPropagation();
++      event.nativeEvent.stopImmediatePropagation();
+       closeListbox(true);
+     }
+   }, [
+@@ -303,6 +305,8 @@ const CustomSelect = ({
+     }
+     if (event.key === 'Escape') {
+       event.preventDefault();
++      event.stopPropagation();
++      event.nativeEvent.stopImmediatePropagation();
+       closeListbox(true);
+       return;
+     }
+diff --git a/src/features/display-management/DisplayManagementPage.tsx b/src/features/display-management/DisplayManagementPage.tsx
+index 2a8c081..701ec09 100644
+--- a/src/features/display-management/DisplayManagementPage.tsx
++++ b/src/features/display-management/DisplayManagementPage.tsx
+@@ -833,6 +833,10 @@ const CopyConfigDialog = ({
+         !event.shiftKey &&
+         !isSubmitting
+       ) {
++        if (document.querySelector('[role="listbox"]')) {
++          return;
++        }
++
+         event.preventDefault();
+         onCancel();
+ 
+@@ -856,9 +860,9 @@ const CopyConfigDialog = ({
+       }
+     };
+ 
+-    window.addEventListener('keydown', handleShortcut);
++    window.addEventListener('keydown', handleShortcut, true);
+ 
+-    return () => window.removeEventListener('keydown', handleShortcut);
++    return () => window.removeEventListener('keydown', handleShortcut, true);
+   }, [dialog, isConfirmDisabled, isSubmitting, onCancel, onConfirm]);
+ 
+   if (!dialog) {
+diff --git a/src/features/display-management/display-management.css b/src/features/display-management/display-management.css
+index e6cb075..f6dd060 100644
+--- a/src/features/display-management/display-management.css
++++ b/src/features/display-management/display-management.css
+@@ -1,4 +1,6 @@
+ .management-shell {
++  --csx-page-min-width: 1024px;
++  --csx-page-min-height: 720px;
+   --management-bg: #d6e4e8;
+   --management-panel-bg: #ffffff;
+   --management-sidebar-bg: #e2f3f3;
+@@ -9,77 +11,78 @@
+   --management-border: #d6e4e8;
+   --management-muted-border: #90afbb;
+   --management-table-header: #f8f9fa;
+-  --management-radius: clamp(14px, 1.85dvh, 20px);
+-  --management-card-radius: clamp(6px, 0.74dvh, 8px);
++  --management-radius: clamp(14px, 1.85cqh, 20px);
++  --management-card-radius: clamp(6px, 0.74cqh, 8px);
+   --management-control-radius: 6px;
+-  --management-topbar-height: clamp(56px, 5.56dvh, 60px);
+-  --management-page-padding: clamp(6px, 0.74dvh, 8px);
+-  --management-gap: clamp(6px, 0.74dvh, 8px);
+-  --management-sidebar-width: clamp(240px, 15.625vw, 300px);
+-  --management-content-padding: clamp(16px, 2.22dvh, 24px);
+-  --management-body-font-size: clamp(14px, 1.72dvh, 16px);
+-  --management-small-font-size: clamp(13px, 1.57dvh, 14.6px);
+-  --management-title-font-size: clamp(18px, 2.16dvh, 20px);
+-  --management-title-icon-size: clamp(18px, 2.16dvh, 20px);
+-  --management-title-gap: clamp(6px, 0.7408dvh, 8px);
+-  --management-add-button-width: clamp(99px, 10.0926dvh, 109px);
+-  --management-add-button-height: clamp(36px, 3.7038dvh, 40px);
+-  --management-add-button-icon-size: clamp(14px, 1.4815dvh, 16px);
+-  --management-add-button-font-size: clamp(14px, 1.4815dvh, 16px);
+-  --management-add-button-hotkey-size: clamp(18px, 1.8519dvh, 20px);
+-  --management-add-button-hotkey-font-size: clamp(11px, 1.1112dvh, 12px);
+-  --management-add-button-gap: clamp(6px, 0.7408dvh, 8px);
+-  --management-add-button-padding-block: clamp(6px, 0.6482dvh, 7px);
+-  --management-add-button-padding-inline: clamp(10px, 1.2038dvh, 13px);
+-  --management-add-button-hotkey-padding-inline: clamp(3px, 0.3704dvh, 4px);
+-  --management-add-button-hotkey-padding-block: clamp(3px, 0.3889dvh, 4.2px);
+-  --management-filter-label-width: clamp(96px, 16.11dvh, 174px);
+-  --management-filter-control-width: clamp(360px, 50.56dvh, 546px);
+-  --management-menu-title-font-size: clamp(15px, 1.83dvh, 17px);
+-  --management-icon-size: clamp(16px, 1.67dvh, 18px);
+-  --management-table-action-icon-size: clamp(14px, 1.48dvh, 16px);
+-  --management-logo-size: clamp(36px, 3.7dvh, 40px);
+-  --management-control-height: clamp(36px, 3.7dvh, 40px);
+-  --management-topbar-inline-padding: clamp(12px, 1.48dvh, 16px);
++  --management-topbar-height: clamp(56px, 5.56cqh, 60px);
++  --management-page-padding: clamp(6px, 0.74cqh, 8px);
++  --management-gap: clamp(6px, 0.74cqh, 8px);
++  --management-sidebar-width: clamp(240px, 15.625cqw, 300px);
++  --management-content-padding: clamp(16px, 2.22cqh, 24px);
++  --management-body-font-size: clamp(14px, 1.72cqh, 16px);
++  --management-small-font-size: clamp(13px, 1.57cqh, 14.6px);
++  --management-title-font-size: clamp(18px, 2.16cqh, 20px);
++  --management-title-icon-size: clamp(18px, 2.16cqh, 20px);
++  --management-title-gap: clamp(6px, 0.7408cqh, 8px);
++  --management-add-button-width: clamp(99px, 10.0926cqh, 109px);
++  --management-add-button-height: clamp(36px, 3.7038cqh, 40px);
++  --management-add-button-icon-size: clamp(14px, 1.4815cqh, 16px);
++  --management-add-button-font-size: clamp(14px, 1.4815cqh, 16px);
++  --management-add-button-hotkey-size: clamp(18px, 1.8519cqh, 20px);
++  --management-add-button-hotkey-font-size: clamp(11px, 1.1112cqh, 12px);
++  --management-add-button-gap: clamp(6px, 0.7408cqh, 8px);
++  --management-add-button-padding-block: clamp(6px, 0.6482cqh, 7px);
++  --management-add-button-padding-inline: clamp(10px, 1.2038cqh, 13px);
++  --management-add-button-hotkey-padding-inline: clamp(3px, 0.3704cqh, 4px);
++  --management-add-button-hotkey-padding-block: clamp(3px, 0.3889cqh, 4.2px);
++  --management-filter-label-width: clamp(96px, 16.11cqh, 174px);
++  --management-filter-control-width: clamp(360px, 50.56cqh, 546px);
++  --management-menu-title-font-size: clamp(15px, 1.83cqh, 17px);
++  --management-icon-size: clamp(16px, 1.67cqh, 18px);
++  --management-table-action-icon-size: clamp(14px, 1.48cqh, 16px);
++  --management-logo-size: clamp(36px, 3.7cqh, 40px);
++  --management-control-height: clamp(36px, 3.7cqh, 40px);
++  --management-topbar-inline-padding: clamp(12px, 1.48cqh, 16px);
+   --management-user-button-size: 40px;
+-  --management-user-icon-size: clamp(14px, 1.48dvh, 16px);
+-  --management-language-menu-width: clamp(150px, 15dvh, 162px);
+-  --management-language-menu-radius: clamp(6px, 0.7408dvh, 8px);
+-  --management-language-menu-padding-block: clamp(7px, 0.7408dvh, 8px);
+-  --management-language-menu-item-padding-block: clamp(3px, 0.3704dvh, 4px);
+-  --management-language-menu-item-padding-inline: clamp(12px, 1.4815dvh, 16px);
+-  --management-language-menu-font-size: clamp(14px, 1.4815dvh, 16px);
+-  --management-table-row-height: clamp(44px, 4.44dvh, 48px);
+-  --management-empty-image-width: clamp(96px, 11.2038dvh, 121px);
+-  --management-empty-image-height: clamp(78px, 9.1667dvh, 99px);
+-  --management-empty-gap: clamp(6px, 0.7408dvh, 8px);
+-  --management-empty-font-size: clamp(14px, 1.4815dvh, 16px);
+-  --management-copy-config-overlay-padding: clamp(12px, 2.2223dvh, 24px);
+-  --management-copy-config-width: clamp(320px, 26.0417vw, 500px);
+-  --management-copy-config-radius: clamp(6px, 0.7408dvh, 8px);
+-  --management-copy-config-border-width: clamp(1px, 0.0926dvh, 1px);
+-  --management-copy-config-header-block-padding: clamp(12px, 1.5741dvh, 17px);
+-  --management-copy-config-inline-padding: clamp(12px, 1.4815dvh, 16px);
+-  --management-copy-config-content-padding: clamp(12px, 1.4815dvh, 16px);
+-  --management-copy-config-footer-block-padding: clamp(10px, 1.2038dvh, 13px);
+-  --management-copy-config-label-width: clamp(48px, 9.8959vw, 190px);
+-  --management-copy-config-control-height: clamp(36px, 3.5186dvh, 38px);
+-  --management-copy-config-button-height: clamp(36px, 3.7038dvh, 40px);
+-  --management-copy-config-control-radius: clamp(5px, 0.5556dvh, 6px);
+-  --management-copy-config-close-size: clamp(32px, 2.963dvh, 32px);
+-  --management-copy-config-icon-size: clamp(14px, 1.4815dvh, 16px);
+-  --management-copy-config-checkbox-size: clamp(14px, 1.4815dvh, 16px);
+-  --management-copy-config-title-font-size: clamp(18px, 1.8519dvh, 20px);
+-  --management-copy-config-body-font-size: clamp(14px, 1.4815dvh, 16px);
+-  --management-copy-config-hotkey-font-size: clamp(11px, 1.1112dvh, 12px);
+-  --management-copy-config-action-gap: clamp(6px, 0.7408dvh, 8px);
+-  --management-copy-config-form-gap: clamp(10px, 1.4815dvh, 16px);
+-  --management-copy-config-button-padding-inline: clamp(10px, 1.2038dvh, 13px);
+-  --management-copy-config-hotkey-padding-inline: clamp(3px, 0.3704dvh, 4px);
+-  --management-copy-config-hotkey-padding-block: clamp(3px, 0.3889dvh, 4.2px);
+-
+-  height: 100dvh;
+-  min-height: 0;
++  --management-user-icon-size: clamp(14px, 1.48cqh, 16px);
++  --management-language-menu-width: clamp(150px, 15cqh, 162px);
++  --management-language-menu-radius: clamp(6px, 0.7408cqh, 8px);
++  --management-language-menu-padding-block: clamp(7px, 0.7408cqh, 8px);
++  --management-language-menu-item-padding-block: clamp(3px, 0.3704cqh, 4px);
++  --management-language-menu-item-padding-inline: clamp(12px, 1.4815cqh, 16px);
++  --management-language-menu-font-size: clamp(14px, 1.4815cqh, 16px);
++  --management-table-row-height: clamp(44px, 4.44cqh, 48px);
++  --management-empty-image-width: clamp(96px, 11.2038cqh, 121px);
++  --management-empty-image-height: clamp(78px, 9.1667cqh, 99px);
++  --management-empty-gap: clamp(6px, 0.7408cqh, 8px);
++  --management-empty-font-size: clamp(14px, 1.4815cqh, 16px);
++  --management-copy-config-overlay-padding: clamp(12px, 2.2223cqh, 24px);
++  --management-copy-config-width: clamp(320px, 26.0417cqw, 500px);
++  --management-copy-config-radius: clamp(6px, 0.7408cqh, 8px);
++  --management-copy-config-border-width: clamp(1px, 0.0926cqh, 1px);
++  --management-copy-config-header-block-padding: clamp(12px, 1.5741cqh, 17px);
++  --management-copy-config-inline-padding: clamp(12px, 1.4815cqh, 16px);
++  --management-copy-config-content-padding: clamp(12px, 1.4815cqh, 16px);
++  --management-copy-config-footer-block-padding: clamp(10px, 1.2038cqh, 13px);
++  --management-copy-config-label-width: clamp(48px, 9.8959cqw, 190px);
++  --management-copy-config-control-height: clamp(36px, 3.5186cqh, 38px);
++  --management-copy-config-button-height: clamp(36px, 3.7038cqh, 40px);
++  --management-copy-config-control-radius: clamp(5px, 0.5556cqh, 6px);
++  --management-copy-config-close-size: clamp(32px, 2.963cqh, 32px);
++  --management-copy-config-icon-size: clamp(14px, 1.4815cqh, 16px);
++  --management-copy-config-checkbox-size: clamp(14px, 1.4815cqh, 16px);
++  --management-copy-config-title-font-size: clamp(18px, 1.8519cqh, 20px);
++  --management-copy-config-body-font-size: clamp(14px, 1.4815cqh, 16px);
++  --management-copy-config-hotkey-font-size: clamp(11px, 1.1112cqh, 12px);
++  --management-copy-config-action-gap: clamp(6px, 0.7408cqh, 8px);
++  --management-copy-config-form-gap: clamp(10px, 1.4815cqh, 16px);
++  --management-copy-config-button-padding-inline: clamp(10px, 1.2038cqh, 13px);
++  --management-copy-config-hotkey-padding-inline: clamp(3px, 0.3704cqh, 4px);
++  --management-copy-config-hotkey-padding-block: clamp(3px, 0.3889cqh, 4.2px);
++
++  container-type: size;
++  display: flex;
++  flex-direction: column;
+   overflow: hidden;
+   background: var(--management-bg);
+   color: var(--management-text);
+@@ -88,7 +91,6 @@
+ 
+ .management-shell.is-auth-loading {
+   position: relative;
+-  max-height: 100dvh;
+   overflow: hidden;
+ }
+ 
+@@ -113,26 +115,29 @@
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
++  flex-shrink: 0;
++  flex-wrap: nowrap;
+   height: var(--management-topbar-height);
+-  padding: clamp(8px, 0.93dvh, 10px) var(--management-topbar-inline-padding);
+-  gap: clamp(12px, 2.22dvh, 24px);
++  padding: clamp(8px, 0.93cqh, 10px) var(--management-topbar-inline-padding);
++  gap: clamp(12px, 2.22cqh, 24px);
+ }
+ 
+ .management-topbar-start,
+ .management-topbar-actions {
+   display: flex;
+   align-items: center;
++  flex-wrap: nowrap;
+   min-width: 0;
+ }
+ 
+ .management-topbar-start {
+   flex: 1 1 auto;
+-  gap: clamp(12px, 2.22dvh, 24px);
++  gap: clamp(12px, 2.22cqh, 24px);
+ }
+ 
+ .management-topbar-actions {
+   flex: 0 0 auto;
+-  gap: clamp(6px, 0.74dvh, 8px);
++  gap: clamp(6px, 0.74cqh, 8px);
+ }
+ 
+ .management-logo {
+@@ -165,7 +170,7 @@
+   align-items: center;
+   justify-content: center;
+   min-height: var(--management-control-height);
+-  padding: clamp(8px, 1.48dvh, 16px) clamp(18px, 2.59dvh, 28px);
++  padding: clamp(8px, 1.48cqh, 16px) clamp(18px, 2.59cqh, 28px);
+   border-radius: var(--management-radius);
+   color: var(--management-text);
+   font-size: var(--management-menu-title-font-size);
+@@ -178,11 +183,11 @@
+   position: relative;
+   display: flex;
+   align-items: center;
+-  width: clamp(150px, 9.9vw, 190px);
+-  max-width: min(100%, clamp(150px, 9.9vw, 190px));
++  width: clamp(150px, 9.9cqw, 190px);
++  max-width: min(100%, clamp(150px, 9.9cqw, 190px));
+   min-height: var(--management-control-height);
+-  gap: clamp(6px, 0.93dvh, 10px);
+-  border-radius: clamp(12px, 1.48dvh, 16px);
++  gap: clamp(6px, 0.93cqh, 10px);
++  border-radius: clamp(12px, 1.48cqh, 16px);
+   background: #f0f2f5;
+   color: var(--management-text);
+   padding: 0;
+@@ -195,8 +200,8 @@
+ .management-clinic-switcher .management-custom-select-trigger {
+   width: 100%;
+   height: 100%;
+-  gap: clamp(6px, 0.93dvh, 10px);
+-  padding: clamp(6px, 0.74dvh, 8px) clamp(12px, 1.48dvh, 16px);
++  gap: clamp(6px, 0.93cqh, 10px);
++  padding: clamp(6px, 0.74cqh, 8px) clamp(12px, 1.48cqh, 16px);
+ }
+ 
+ .management-clinic-switcher .management-clinic-icon {
+@@ -209,8 +214,8 @@
+ .management-clinic-switcher .management-custom-select-trigger > svg:last-child {
+   position: relative;
+   z-index: 1;
+-  width: clamp(14px, 1.48dvh, 16px);
+-  height: clamp(14px, 1.48dvh, 16px);
++  width: clamp(14px, 1.48cqh, 16px);
++  height: clamp(14px, 1.48cqh, 16px);
+   margin-left: auto;
+   color: var(--management-text);
+   pointer-events: none;
+@@ -336,17 +341,17 @@
+ .management-language-menu {
+   box-sizing: border-box;
+   position: absolute;
+-  top: calc(0px - clamp(3px, 0.3704dvh, 4px));
+-  right: calc(100% + clamp(1px, 0.19dvh, 2px));
++  top: calc(0px - clamp(3px, 0.3704cqh, 4px));
++  right: calc(100% + clamp(1px, 0.19cqh, 2px));
+   z-index: 71;
+   display: flex;
+   flex-direction: column;
+   width: var(--management-language-menu-width);
+-  border: clamp(1px, 0.1dvh, 1px) solid rgba(0, 0, 0, 0.15);
++  border: clamp(1px, 0.1cqh, 1px) solid rgba(0, 0, 0, 0.15);
+   border-radius: var(--management-language-menu-radius);
+   background: #ffffff;
+   overflow: hidden;
+-  padding: var(--management-language-menu-padding-block) clamp(1px, 0.1dvh, 1px);
++  padding: var(--management-language-menu-padding-block) clamp(1px, 0.1cqh, 1px);
+ }
+ 
+ .management-language-menu-item {
+@@ -383,20 +388,32 @@
+ 
+ .management-body {
+   box-sizing: border-box;
+-  display: grid;
+-  grid-template-columns: var(--management-sidebar-width) minmax(0, 1fr);
++  display: flex;
++  flex-direction: row;
++  flex-wrap: nowrap;
+   align-items: stretch;
++  flex: 1 1 auto;
+   gap: var(--management-gap);
+-  height: calc(100dvh - var(--management-topbar-height));
++  height: calc(100% - var(--management-topbar-height));
++  min-width: 0;
+   min-height: 0;
+   overflow: hidden;
+   padding: var(--management-page-padding);
+   padding-top: var(--management-gap);
+ }
+ 
++.management-body > :not(.management-sidebar) {
++  flex: 1 1 auto;
++  min-width: 0;
++  min-height: 0;
++}
++
+ .management-sidebar {
+   box-sizing: border-box;
+-  min-width: 0;
++  flex: 0 0 var(--management-sidebar-width);
++  width: var(--management-sidebar-width);
++  min-width: var(--management-sidebar-width);
++  max-width: var(--management-sidebar-width);
+   height: 100%;
+   padding: var(--management-page-padding);
+   border-radius: var(--management-radius);
+@@ -407,17 +424,17 @@
+   height: 100%;
+   border-radius: var(--management-radius);
+   background: var(--management-sidebar-bg);
+-  padding: clamp(24px, 3.7dvh, 40px) clamp(16px, 2.22dvh, 24px);
++  padding: clamp(24px, 3.7cqh, 40px) clamp(16px, 2.22cqh, 24px);
+ }
+ 
+ .management-menu-group {
+   display: flex;
+   flex-direction: column;
+-  gap: clamp(6px, 0.74dvh, 8px);
++  gap: clamp(6px, 0.74cqh, 8px);
+ }
+ 
+ .management-menu-group h2 {
+-  margin: clamp(12px, 1.48dvh, 16px) clamp(16px, 2.22dvh, 24px) 4px 0;
++  margin: clamp(12px, 1.48cqh, 16px) clamp(16px, 2.22cqh, 24px) 4px 0;
+   color: var(--management-text);
+   font-size: var(--management-menu-title-font-size);
+   font-weight: 700;
+@@ -428,11 +445,11 @@
+   display: flex;
+   align-items: center;
+   width: 100%;
+-  min-height: clamp(48px, 5.18dvh, 56px);
+-  gap: clamp(6px, 0.74dvh, 8px);
++  min-height: clamp(48px, 5.18cqh, 56px);
++  gap: clamp(6px, 0.74cqh, 8px);
+   border: 0;
+-  border-radius: clamp(8px, 1.11dvh, 12px);
+-  padding: clamp(8px, 0.74dvh, 8px) clamp(16px, 2.22dvh, 24px);
++  border-radius: clamp(8px, 1.11cqh, 12px);
++  padding: clamp(8px, 0.74cqh, 8px) clamp(16px, 2.22cqh, 24px);
+   background: transparent;
+   color: #000000;
+   cursor: pointer;
+@@ -472,7 +489,8 @@
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+-  gap: clamp(12px, 1.4815dvh, 16px);
++  flex-shrink: 0;
++  gap: clamp(12px, 1.4815cqh, 16px);
+   min-height: var(--management-add-button-height);
+   color: var(--management-primary);
+ }
+@@ -549,17 +567,17 @@ button.management-add-display-config kbd {
+ 
+ .management-divider {
+   height: 1px;
+-  margin: clamp(12px, 1.48dvh, 16px) 0 clamp(24px, 2.87dvh, 31px);
++  margin: clamp(12px, 1.48cqh, 16px) 0 clamp(24px, 2.87cqh, 31px);
+   background: var(--management-border);
+ }
+ 
+ .management-auth-status {
+   display: flex;
+   align-items: center;
+-  gap: clamp(8px, 1.11dvh, 12px);
+-  margin-bottom: clamp(12px, 1.48dvh, 16px);
++  gap: clamp(8px, 1.11cqh, 12px);
++  margin-bottom: clamp(12px, 1.48cqh, 16px);
+   border-left: 4px solid currentColor;
+-  padding: clamp(8px, 1.11dvh, 12px) clamp(10px, 1.48dvh, 16px);
++  padding: clamp(8px, 1.11cqh, 12px) clamp(10px, 1.48cqh, 16px);
+   color: var(--management-text);
+   background: #f8fbfb;
+   font-size: var(--management-small-font-size);
+@@ -612,19 +630,19 @@ button.management-add-display-config kbd {
+   z-index: 20;
+   display: grid;
+   place-items: center;
+-  padding: clamp(16px, 2.22dvh, 24px);
++  padding: clamp(16px, 2.22cqh, 24px);
+   background: rgba(214, 228, 232, 0.86);
+ }
+ 
+ .management-auth-loading-panel {
+   display: none;
+   justify-items: center;
+-  gap: clamp(6px, 0.93dvh, 10px);
++  gap: clamp(6px, 0.93cqh, 10px);
+   width: min(100%, 320px);
+   border-radius: var(--management-radius);
+   background: #ffffff;
+   box-shadow: 0 16px 40px rgba(27, 39, 47, 0.14);
+-  padding: clamp(20px, 3.33dvh, 36px);
++  padding: clamp(20px, 3.33cqh, 36px);
+   color: var(--management-text);
+   text-align: center;
+ }
+@@ -664,17 +682,17 @@ html[data-management-locale="zh-HK"] .management-auth-loading-panel[data-managem
+     minmax(0, var(--management-filter-label-width))
+     minmax(280px, var(--management-filter-control-width));
+   align-items: center;
+-  min-height: clamp(46px, 5dvh, 54px);
++  min-height: clamp(46px, 5cqh, 54px);
+   width: min(
+     100%,
+     calc(var(--management-filter-label-width) + var(--management-filter-control-width))
+   );
+-  margin-bottom: clamp(12px, 1.48dvh, 16px);
++  margin-bottom: clamp(12px, 1.48cqh, 16px);
+ }
+ 
+ .management-filter-form label {
+   justify-self: end;
+-  padding-right: clamp(10px, 1.57dvh, 17px);
++  padding-right: clamp(10px, 1.57cqh, 17px);
+   color: var(--management-text);
+   font-size: var(--management-body-font-size);
+   font-style: normal;
+@@ -689,7 +707,7 @@ html[data-management-locale="zh-HK"] .management-auth-loading-panel[data-managem
+   align-items: center;
+   width: 100%;
+   min-width: 0;
+-  height: clamp(36px, 3.52dvh, 38px);
++  height: clamp(36px, 3.52cqh, 38px);
+   border: 1px solid var(--management-muted-border);
+   border-radius: var(--management-control-radius);
+   padding: 0;
+@@ -702,7 +720,7 @@ html[data-management-locale="zh-HK"] .management-auth-loading-panel[data-managem
+   width: 100%;
+   height: 100%;
+   min-width: 0;
+-  gap: clamp(6px, 0.93dvh, 10px);
++  gap: clamp(6px, 0.93cqh, 10px);
+   border: 0;
+   border-radius: inherit;
+   background: transparent;
+@@ -711,8 +729,8 @@ html[data-management-locale="zh-HK"] .management-auth-loading-panel[data-managem
+   font: inherit;
+   font-size: var(--management-body-font-size);
+   line-height: 1.5;
+-  padding: clamp(6px, 0.65dvh, 7px) clamp(34px, 3.7dvh, 40px)
+-    clamp(6px, 0.65dvh, 7px) clamp(10px, 1.2dvh, 13px);
++  padding: clamp(6px, 0.65cqh, 7px) clamp(34px, 3.7cqh, 40px)
++    clamp(6px, 0.65cqh, 7px) clamp(10px, 1.2cqh, 13px);
+   text-align: left;
+ }
+ 
+@@ -733,7 +751,7 @@ html[data-management-locale="zh-HK"] .management-auth-loading-panel[data-managem
+ 
+ .management-select .management-custom-select-trigger > svg:last-child {
+   position: absolute;
+-  right: clamp(10px, 1.2dvh, 13px);
++  right: clamp(10px, 1.2cqh, 13px);
+   pointer-events: none;
+   color: var(--management-text);
+   transition: transform 160ms ease;
+@@ -781,15 +799,15 @@ html[data-management-locale="zh-HK"] .management-auth-loading-panel[data-managem
+   z-index: 100;
+   display: flex;
+   flex-direction: column;
+-  gap: clamp(1px, 0.19dvh, 2px);
++  gap: clamp(1px, 0.19cqh, 2px);
+   border: 1px solid #90afbb;
+-  border-radius: clamp(6px, 0.74dvh, 8px);
++  border-radius: clamp(6px, 0.74cqh, 8px);
+   background: #ffffff;
+   box-shadow: 0 12px 28px rgba(27, 39, 47, 0.2);
+   overflow-x: hidden;
+   overflow-y: auto;
+   overscroll-behavior: contain;
+-  padding: clamp(4px, 0.56dvh, 6px);
++  padding: clamp(4px, 0.56cqh, 6px);
+   color: #1b272f;
+   scrollbar-color: #90afbb #f8f9fa;
+   scrollbar-gutter: stable;
+@@ -797,7 +815,7 @@ html[data-management-locale="zh-HK"] .management-auth-loading-panel[data-managem
+ }
+ 
+ .management-custom-select-listbox::-webkit-scrollbar {
+-  width: clamp(8px, 0.93dvh, 10px);
++  width: clamp(8px, 0.93cqh, 10px);
+ }
+ 
+ .management-custom-select-listbox::-webkit-scrollbar-track {
+@@ -816,16 +834,16 @@ html[data-management-locale="zh-HK"] .management-auth-loading-panel[data-managem
+   flex: 0 0 auto;
+   align-items: center;
+   width: 100%;
+-  min-height: clamp(36px, 4.07dvh, 44px);
+-  gap: clamp(8px, 0.93dvh, 10px);
++  min-height: clamp(36px, 4.07cqh, 44px);
++  gap: clamp(8px, 0.93cqh, 10px);
+   border: 0;
+-  border-radius: clamp(4px, 0.56dvh, 6px);
++  border-radius: clamp(4px, 0.56cqh, 6px);
+   background: transparent;
+   color: #1b272f;
+   cursor: pointer;
+   font: inherit;
+   font-weight: 400;
+-  padding: clamp(6px, 0.74dvh, 8px) clamp(14px, 1.48dvh, 16px);
++  padding: clamp(6px, 0.74cqh, 8px) clamp(14px, 1.48cqh, 16px);
+   text-align: left;
+ }
+ 
+@@ -850,8 +868,8 @@ html[data-management-locale="zh-HK"] .management-auth-loading-panel[data-managem
+ 
+ .management-custom-select-option-check {
+   flex: 0 0 auto;
+-  width: clamp(14px, 1.48dvh, 16px);
+-  height: clamp(14px, 1.48dvh, 16px);
++  width: clamp(14px, 1.48cqh, 16px);
++  height: clamp(14px, 1.48cqh, 16px);
+   visibility: hidden;
+ }
+ 
+@@ -922,13 +940,14 @@ html[data-management-locale="zh-HK"] .management-auth-loading-panel[data-managem
+ .management-table th,
+ .management-table td {
+   height: var(--management-table-row-height);
+-  padding: clamp(6px, 0.74dvh, 8px) clamp(16px, 2.22dvh, 24px);
++  padding: clamp(6px, 0.74cqh, 8px) clamp(16px, 2.22cqh, 24px);
+   font-size: var(--management-body-font-size);
+   vertical-align: middle;
+ }
+ 
+ .management-table th {
+   font-weight: 700;
++  white-space: nowrap;
+ }
+ 
+ .management-table td {
+@@ -940,7 +959,7 @@ html[data-management-locale="zh-HK"] .management-auth-loading-panel[data-managem
+ }
+ 
+ .management-table td.management-table-state {
+-  height: clamp(72px, 9.26dvh, 100px);
++  height: clamp(72px, 9.26cqh, 100px);
+   color: #4f6974;
+   text-align: center;
+ }
+@@ -952,7 +971,7 @@ html[data-management-locale="zh-HK"] .management-auth-loading-panel[data-managem
+   place-items: center;
+   min-width: 0;
+   min-height: 0;
+-  padding: clamp(12px, 1.4815dvh, 16px);
++  padding: clamp(12px, 1.4815cqh, 16px);
+   background: #ffffff;
+ }
+ 
+@@ -980,9 +999,9 @@ html[data-management-locale="zh-HK"] .management-auth-loading-panel[data-managem
+ }
+ 
+ .management-loading-spinner {
+-  width: clamp(16px, 1.85dvh, 20px);
+-  height: clamp(16px, 1.85dvh, 20px);
+-  margin-right: clamp(6px, 0.74dvh, 8px);
++  width: clamp(16px, 1.85cqh, 20px);
++  height: clamp(16px, 1.85cqh, 20px);
++  margin-right: clamp(6px, 0.74cqh, 8px);
+   color: var(--management-primary);
+   vertical-align: middle;
+   animation: management-auth-spin 1s linear infinite;
+@@ -997,11 +1016,11 @@ html[data-management-locale="zh-HK"] .management-auth-loading-panel[data-managem
+ }
+ 
+ .management-actions-column {
+-  width: clamp(190px, 19.82dvh, 214px);
++  width: clamp(190px, 19.82cqh, 214px);
+ }
+ 
+ html[lang="en"] .management-actions-column {
+-  width: clamp(270px, 27dvh, 292px);
++  width: clamp(270px, 27cqh, 292px);
+ }
+ 
+ .management-display-link {
+@@ -1146,13 +1165,13 @@ html[lang="en"] .management-actions-column {
+   color: var(--management-text);
+   font-size: var(--management-copy-config-body-font-size);
+   line-height: 1.5;
+-  padding: clamp(6px, 0.6482dvh, 7px) clamp(34px, 3.7038dvh, 40px)
+-    clamp(6px, 0.6482dvh, 7px) clamp(10px, 1.2038dvh, 13px);
++  padding: clamp(6px, 0.6482cqh, 7px) clamp(34px, 3.7038cqh, 40px)
++    clamp(6px, 0.6482cqh, 7px) clamp(10px, 1.2038cqh, 13px);
+ }
+ 
+ .management-copy-config-select .management-custom-select-trigger > svg:last-child {
+   position: absolute;
+-  right: clamp(10px, 1.2038dvh, 13px);
++  right: clamp(10px, 1.2038cqh, 13px);
+   width: var(--management-copy-config-icon-size);
+   height: var(--management-copy-config-icon-size);
+   color: var(--management-text);
+@@ -1213,7 +1232,7 @@ html[lang="en"] .management-actions-column {
+   width: var(--management-copy-config-checkbox-size);
+   height: var(--management-copy-config-checkbox-size);
+   border: var(--management-copy-config-border-width) solid var(--management-primary);
+-  border-radius: clamp(3px, 0.3704dvh, 4px);
++  border-radius: clamp(3px, 0.3704cqh, 4px);
+   background: var(--management-primary);
+ }
+ 
+@@ -1222,10 +1241,10 @@ html[lang="en"] .management-actions-column {
+   position: absolute;
+   left: 50%;
+   top: 46%;
+-  width: clamp(4px, 0.463dvh, 5px);
+-  height: clamp(7px, 0.7408dvh, 8px);
++  width: clamp(4px, 0.463cqh, 5px);
++  height: clamp(7px, 0.7408cqh, 8px);
+   border: solid #ffffff;
+-  border-width: 0 clamp(1.5px, 0.1852dvh, 2px) clamp(1.5px, 0.1852dvh, 2px) 0;
++  border-width: 0 clamp(1.5px, 0.1852cqh, 2px) clamp(1.5px, 0.1852cqh, 2px) 0;
+   transform: translate(-50%, -58%) rotate(45deg);
+ }
+ 
+@@ -1240,8 +1259,8 @@ html[lang="en"] .management-actions-column {
+ }
+ 
+ .management-copy-config-checkbox input:focus-visible + .management-copy-config-checkbox-box {
+-  outline: clamp(2px, 0.2778dvh, 3px) solid rgba(14, 124, 132, 0.28);
+-  outline-offset: clamp(2px, 0.2778dvh, 3px);
++  outline: clamp(2px, 0.2778cqh, 3px) solid rgba(14, 124, 132, 0.28);
++  outline-offset: clamp(2px, 0.2778cqh, 3px);
+ }
+ 
+ .management-copy-config-checkbox span:last-child {
+@@ -1268,7 +1287,7 @@ html[lang="en"] .management-actions-column {
+   height: var(--management-copy-config-button-height);
+   gap: var(--management-copy-config-action-gap);
+   border-radius: var(--management-copy-config-control-radius);
+-  padding: clamp(6px, 0.6482dvh, 7px) var(--management-copy-config-button-padding-inline);
++  padding: clamp(6px, 0.6482cqh, 7px) var(--management-copy-config-button-padding-inline);
+   font-size: var(--management-copy-config-body-font-size);
+   font-weight: 700;
+   line-height: 1.5;
+@@ -1300,8 +1319,8 @@ html[lang="en"] .management-actions-column {
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+-  min-width: clamp(18px, 1.8519dvh, 20px);
+-  min-height: clamp(18px, 1.8519dvh, 20px);
++  min-width: clamp(18px, 1.8519cqh, 20px);
++  min-height: clamp(18px, 1.8519cqh, 20px);
+   border-radius: var(--management-copy-config-control-radius);
+   padding: var(--management-copy-config-hotkey-padding-block)
+     var(--management-copy-config-hotkey-padding-inline);
+@@ -1327,23 +1346,16 @@ html[lang="en"] .management-actions-column {
+   color: #577c8d;
+ }
+ 
+-@media (max-width: 480px) {
+-  .management-language-menu {
+-    top: calc(100% + clamp(1px, 0.19dvh, 2px));
+-    right: 0;
+-  }
+-}
+-
+ .management-table-actions {
+   display: flex;
+   align-items: center;
+   justify-content: flex-start;
+-  gap: clamp(10px, 1.48dvh, 16px);
++  gap: clamp(10px, 1.48cqh, 16px);
+ }
+ 
+ .management-table-action {
+   height: auto;
+-  gap: clamp(4px, 0.56dvh, 6px);
++  gap: clamp(4px, 0.56cqh, 6px);
+   border: 0;
+   background: transparent;
+   color: var(--management-primary);
+@@ -1376,21 +1388,21 @@ html[lang="en"] .management-actions-column {
+ }
+ 
+ .management-edit-content {
+-  --management-edit-card-padding: clamp(16px, 2.22dvh, 24px);
+-  --management-edit-section-gap: clamp(6px, 0.74dvh, 8px);
+-  --management-edit-form-label-width: clamp(120px, 9.9vw, 190px);
+-  --management-edit-form-control-width: clamp(360px, 28.55vw, 548px);
+-  --management-edit-control-height: clamp(36px, 3.7dvh, 40px);
+-  --management-edit-icon-size: clamp(18px, 2.16dvh, 20px);
+-  --management-edit-small-icon-size: clamp(14px, 1.48dvh, 16px);
+-  --management-edit-checkbox-size: clamp(14px, 1.48dvh, 16px);
+-  --management-edit-action-size: clamp(36px, 3.7dvh, 40px);
+-  --management-edit-upload-logo-size: clamp(40px, 4.44dvh, 48px);
+-  --management-edit-swatch-size: clamp(24px, 2.59dvh, 28px);
+-  --management-edit-color-preview-size: clamp(20px, 2.22dvh, 24px);
+-  --management-edit-title-size: clamp(18px, 2.16dvh, 20px);
+-  --management-edit-helper-font-size: clamp(13px, 1.3dvh, 14px);
+-  --management-edit-video-row-gap: clamp(6px, 0.74dvh, 8px);
++  --management-edit-card-padding: clamp(16px, 2.22cqh, 24px);
++  --management-edit-section-gap: clamp(6px, 0.74cqh, 8px);
++  --management-edit-form-label-width: clamp(120px, 9.9cqw, 190px);
++  --management-edit-form-control-width: clamp(360px, 28.55cqw, 548px);
++  --management-edit-control-height: clamp(36px, 3.7cqh, 40px);
++  --management-edit-icon-size: clamp(18px, 2.16cqh, 20px);
++  --management-edit-small-icon-size: clamp(14px, 1.48cqh, 16px);
++  --management-edit-checkbox-size: clamp(14px, 1.48cqh, 16px);
++  --management-edit-action-size: clamp(36px, 3.7cqh, 40px);
++  --management-edit-upload-logo-size: clamp(40px, 4.44cqh, 48px);
++  --management-edit-swatch-size: clamp(24px, 2.59cqh, 28px);
++  --management-edit-color-preview-size: clamp(20px, 2.22cqh, 24px);
++  --management-edit-title-size: clamp(18px, 2.16cqh, 20px);
++  --management-edit-helper-font-size: clamp(13px, 1.3cqh, 14px);
++  --management-edit-video-row-gap: clamp(6px, 0.74cqh, 8px);
+   --management-edit-video-row-height: var(--management-edit-action-size);
+ 
+   box-sizing: border-box;
+@@ -1435,7 +1447,7 @@ html[lang="en"] .management-actions-column {
+ 
+ .management-edit-section-heading {
+   min-height: 24px;
+-  gap: clamp(6px, 0.74dvh, 8px);
++  gap: clamp(6px, 0.74cqh, 8px);
+   color: var(--management-primary);
+ }
+ 
+@@ -1461,7 +1473,7 @@ html[lang="en"] .management-actions-column {
+ 
+ .management-edit-section-divider {
+   height: 1px;
+-  margin: clamp(12px, 1.48dvh, 16px) 0;
++  margin: clamp(12px, 1.48cqh, 16px) 0;
+   background: var(--management-border);
+ }
+ 
+@@ -1473,7 +1485,7 @@ html[lang="en"] .management-actions-column {
+ 
+ .management-edit-page-header > div {
+   min-width: 0;
+-  gap: clamp(6px, 0.74dvh, 8px);
++  gap: clamp(6px, 0.74cqh, 8px);
+ }
+ 
+ .management-edit-page-header h1 {
+@@ -1499,10 +1511,10 @@ html[lang="en"] .management-actions-column {
+   display: inline-flex;
+   align-items: center;
+   height: var(--management-control-height);
+-  gap: clamp(4px, 0.56dvh, 6px);
++  gap: clamp(4px, 0.56cqh, 6px);
+   border-radius: var(--management-control-radius);
+   background: var(--management-primary);
+-  padding: clamp(6px, 0.74dvh, 8px) clamp(10px, 1.2dvh, 13px);
++  padding: clamp(6px, 0.74cqh, 8px) clamp(10px, 1.2cqh, 13px);
+   color: #ffffff;
+   cursor: pointer;
+   font-size: var(--management-body-font-size);
+@@ -1534,7 +1546,7 @@ html[lang="en"] .management-actions-column {
+ }
+ 
+ .management-edit-clinic-row {
+-  margin-bottom: clamp(20px, 2.22dvh, 24px);
++  margin-bottom: clamp(20px, 2.22cqh, 24px);
+ }
+ 
+ .management-edit-clinic-select {
+@@ -1547,11 +1559,11 @@ html[lang="en"] .management-actions-column {
+   grid-template-columns: var(--management-edit-form-label-width) minmax(0, var(--management-edit-form-control-width));
+   align-items: center;
+   width: min(100%, calc(var(--management-edit-form-label-width) + var(--management-edit-form-control-width)));
+-  min-height: clamp(46px, 5dvh, 54px);
++  min-height: clamp(46px, 5cqh, 54px);
+ }
+ 
+ .management-edit-form-row > label {
+-  padding-right: clamp(10px, 1.57dvh, 17px);
++  padding-right: clamp(10px, 1.57cqh, 17px);
+   color: var(--management-text);
+   font-size: var(--management-body-font-size);
+   font-weight: 400;
+@@ -1592,13 +1604,13 @@ html[lang="en"] .management-actions-column {
+   border-radius: inherit;
+   color: inherit;
+   font-size: var(--management-body-font-size);
+-  padding: 7px clamp(38px, 3.7dvh, 40px) 7px 13px;
++  padding: 7px clamp(38px, 3.7cqh, 40px) 7px 13px;
+ }
+ 
+ .management-edit-select-control .management-custom-select-trigger > svg:last-child {
+   position: absolute;
+   top: 50%;
+-  right: clamp(10px, 1.2dvh, 13px);
++  right: clamp(10px, 1.2cqh, 13px);
+   width: var(--management-edit-small-icon-size);
+   height: var(--management-edit-small-icon-size);
+   color: var(--management-text);
+@@ -1617,7 +1629,7 @@ html[lang="en"] .management-actions-column {
+ }
+ 
+ .management-edit-settings-heading {
+-  margin-top: clamp(4px, 0.74dvh, 8px);
++  margin-top: clamp(4px, 0.74cqh, 8px);
+ }
+ 
+ .management-edit-settings-fields {
+@@ -1676,7 +1688,7 @@ html[lang="en"] .management-actions-column {
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+-  gap: clamp(6px, 0.74dvh, 8px);
++  gap: clamp(6px, 0.74cqh, 8px);
+   width: min(100%, calc(var(--management-edit-form-label-width) + var(--management-edit-form-control-width)));
+ }
+ 
+@@ -1757,8 +1769,8 @@ html[lang="en"] .management-actions-column {
+ }
+ 
+ .management-edit-checkbox svg {
+-  width: clamp(10px, 1.11dvh, 12px);
+-  height: clamp(10px, 1.11dvh, 12px);
++  width: clamp(10px, 1.11cqh, 12px);
++  height: clamp(10px, 1.11cqh, 12px);
+   opacity: 0;
+   stroke-width: 3;
+ }
+@@ -1781,7 +1793,7 @@ html[lang="en"] .management-actions-column {
+   position: relative;
+   display: inline-flex;
+   align-items: center;
+-  height: clamp(36px, 3.52dvh, 38px);
++  height: clamp(36px, 3.52cqh, 38px);
+   gap: 8px;
+   overflow: hidden;
+   border-radius: var(--management-control-radius);
+@@ -1868,7 +1880,7 @@ html[lang="en"] .management-actions-column {
+ .management-edit-configuration-section {
+   display: grid;
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+-  gap: clamp(24px, 2.08vw, 40px);
++  gap: clamp(24px, 2.08cqw, 40px);
+ }
+ 
+ .management-edit-config-column {
+@@ -1879,7 +1891,7 @@ html[lang="en"] .management-actions-column {
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+-  gap: clamp(8px, 1.11dvh, 12px);
++  gap: clamp(8px, 1.11cqh, 12px);
+ }
+ 
+ .management-edit-promotion-row,
+@@ -1888,7 +1900,7 @@ html[lang="en"] .management-actions-column {
+   flex-wrap: wrap;
+   align-items: center;
+   width: 100%;
+-  gap: clamp(12px, 2.08vw, 40px);
++  gap: clamp(12px, 2.08cqw, 40px);
+ }
+ 
+ .management-edit-switch {
+@@ -1907,7 +1919,7 @@ html[lang="en"] .management-actions-column {
+ 
+ .management-edit-switch > span {
+   position: relative;
+-  width: clamp(28px, 2.96dvh, 32px);
++  width: clamp(28px, 2.96cqh, 32px);
+   height: var(--management-edit-checkbox-size);
+   border-radius: 999px;
+   background: var(--management-muted-border);
+@@ -1918,8 +1930,8 @@ html[lang="en"] .management-actions-column {
+   position: absolute;
+   top: 2px;
+   left: 2px;
+-  width: clamp(10px, 1.11dvh, 12px);
+-  height: clamp(10px, 1.11dvh, 12px);
++  width: clamp(10px, 1.11cqh, 12px);
++  height: clamp(10px, 1.11cqh, 12px);
+   border-radius: 50%;
+   background: #ffffff;
+   transition: transform 160ms ease;
+@@ -1969,7 +1981,7 @@ html[lang="en"] .management-actions-column {
+ }
+ 
+ .management-edit-video-list::-webkit-scrollbar {
+-  width: clamp(4px, 0.37dvh, 6px);
++  width: clamp(4px, 0.37cqh, 6px);
+ }
+ 
+ .management-edit-video-list::-webkit-scrollbar-thumb {
+@@ -2008,14 +2020,14 @@ html[lang="en"] .management-actions-column {
+ .management-edit-doctor-options {
+   display: grid;
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+-  gap: clamp(8px, 1.11dvh, 12px) clamp(24px, 4.17vw, 80px);
++  gap: clamp(8px, 1.11cqh, 12px) clamp(24px, 4.17cqw, 80px);
+ }
+ 
+ .management-edit-theme-content {
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+-  gap: clamp(6px, 0.74dvh, 8px);
++  gap: clamp(6px, 0.74cqh, 8px);
+ }
+ 
+ .management-edit-theme-content > p,
+@@ -2100,17 +2112,17 @@ html[lang="en"] .management-actions-column {
+ }
+ 
+ .management-edit-content.is-new-device {
+-  --management-edit-card-padding: clamp(16px, 1.4797dvh, 24px);
+-  --management-edit-inner-padding: clamp(12px, 0.9865dvh, 16px);
+-  --management-edit-section-gap: clamp(6px, 0.4933dvh, 8px);
+-  --management-edit-control-height: clamp(36px, 2.3428dvh, 38px);
+-  --management-edit-action-size: clamp(36px, 2.4661dvh, 40px);
+-  --management-edit-swatch-size: clamp(32px, 2.4661dvh, 40px);
+-  --management-edit-row-height: clamp(36px, 2.3428dvh, 38px);
+-  --management-edit-form-row-height: clamp(46px, 3.3292dvh, 54px);
+-  --management-edit-layout-gap: clamp(3px, 0.2467dvh, 4px);
+-  --management-edit-divider-top-gap: clamp(12px, 0.9865dvh, 16px);
+-  --management-edit-divider-bottom-gap: clamp(18px, 1.418dvh, 23px);
++  --management-edit-card-padding: clamp(16px, 1.4797cqh, 24px);
++  --management-edit-inner-padding: clamp(12px, 0.9865cqh, 16px);
++  --management-edit-section-gap: clamp(6px, 0.4933cqh, 8px);
++  --management-edit-control-height: clamp(36px, 2.3428cqh, 38px);
++  --management-edit-action-size: clamp(36px, 2.4661cqh, 40px);
++  --management-edit-swatch-size: clamp(32px, 2.4661cqh, 40px);
++  --management-edit-row-height: clamp(36px, 2.3428cqh, 38px);
++  --management-edit-form-row-height: clamp(46px, 3.3292cqh, 54px);
++  --management-edit-layout-gap: clamp(3px, 0.2467cqh, 4px);
++  --management-edit-divider-top-gap: clamp(12px, 0.9865cqh, 16px);
++  --management-edit-divider-bottom-gap: clamp(18px, 1.418cqh, 23px);
+ 
+   min-height: 0;
+   scrollbar-gutter: auto;
+@@ -2138,7 +2150,7 @@ html[lang="en"] .management-actions-column {
+ }
+ 
+ .is-new-device .management-edit-settings-section > .management-edit-page-header + .management-edit-section-divider {
+-  margin-bottom: clamp(12px, 0.9248dvh, 15px);
++  margin-bottom: clamp(12px, 0.9248cqh, 15px);
+ }
+ 
+ .is-new-device .management-edit-clinic-row,
+@@ -2149,7 +2161,7 @@ html[lang="en"] .management-actions-column {
+ 
+ .is-new-device .management-edit-clinic-row {
+   min-height: var(--management-edit-form-row-height);
+-  margin-bottom: clamp(20px, 1.4797dvh, 24px);
++  margin-bottom: clamp(20px, 1.4797cqh, 24px);
+ }
+ 
+ .is-new-device .management-edit-settings-heading {
+@@ -2175,7 +2187,7 @@ html[lang="en"] .management-actions-column {
+   display: flex;
+   flex-direction: column;
+   width: 100%;
+-  min-height: clamp(71px, 4.8706dvh, 79px);
++  min-height: clamp(71px, 4.8706cqh, 79px);
+ }
+ 
+ .is-new-device .management-edit-basic-logo-option > .management-edit-check-option {
+@@ -2186,7 +2198,7 @@ html[lang="en"] .management-actions-column {
+   box-sizing: border-box;
+   min-height: 21px;
+   padding-top: var(--management-edit-layout-gap);
+-  padding-bottom: clamp(12px, 0.9865dvh, 16px);
++  padding-bottom: clamp(12px, 0.9865cqh, 16px);
+   line-height: 21px;
+ }
+ 
+@@ -2195,8 +2207,8 @@ html[lang="en"] .management-actions-column {
+   display: flex;
+   align-items: flex-start;
+   width: 100%;
+-  min-height: clamp(50px, 3.3292dvh, 54px);
+-  padding-bottom: clamp(12px, 0.9865dvh, 16px);
++  min-height: clamp(50px, 3.3292cqh, 54px);
++  padding-bottom: clamp(12px, 0.9865cqh, 16px);
+ }
+ 
+ .is-new-device .management-edit-upload-button {
+@@ -2205,7 +2217,7 @@ html[lang="en"] .management-actions-column {
+ 
+ .is-new-device.management-edit-configuration-section {
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+-  gap: clamp(24px, 2.0834vw, 40px);
++  gap: clamp(24px, 2.0834cqw, 40px);
+   padding-inline: calc(var(--management-edit-card-padding) + var(--management-edit-inner-padding));
+ }
+ 
+@@ -2228,7 +2240,7 @@ html[lang="en"] .management-actions-column {
+ .is-new-device .management-edit-promotion-row {
+   display: grid;
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+-  gap: clamp(8px, 0.5209vw, 10px);
++  gap: clamp(8px, 0.5209cqw, 10px);
+ }
+ 
+ .is-new-device .management-edit-video-list {
+@@ -2257,7 +2269,7 @@ html[lang="en"] .management-actions-column {
+ }
+ 
+ .is-new-device .management-edit-doctor-options {
+-  gap: var(--management-edit-layout-gap) clamp(24px, 2.0834vw, 40px);
++  gap: var(--management-edit-layout-gap) clamp(24px, 2.0834cqw, 40px);
+ }
+ 
+ .is-new-device .management-edit-theme-content {
+@@ -2284,221 +2296,10 @@ html[lang="en"] .management-actions-column {
+   height: var(--management-edit-control-height);
+ }
+ 
+-@media (min-width: 921px) {
++@media (min-width: 1024px) and (min-height: 720px) {
+   .management-shell.is-edit-page {
+     position: fixed;
+     inset: 0;
+     width: 100%;
+   }
+ }
+-
+-@media (max-width: 920px) {
+-  .management-shell.is-edit-page {
+-    height: auto;
+-    min-height: 100dvh;
+-    overflow: visible;
+-  }
+-
+-  .management-body {
+-    grid-template-columns: 1fr;
+-    height: auto;
+-    min-height: calc(100dvh - var(--management-topbar-height));
+-    overflow: visible;
+-  }
+-
+-  .management-sidebar {
+-    height: auto;
+-  }
+-
+-  .management-table-card.is-empty {
+-    flex-basis: auto;
+-    min-height: clamp(320px, 55dvh, 520px);
+-  }
+-
+-  .management-sidebar-panel {
+-    padding: clamp(14px, 2.22dvh, 24px);
+-  }
+-
+-  .management-menu-group {
+-    gap: clamp(8px, 1.11dvh, 12px);
+-  }
+-
+-  .management-menu-group h2 {
+-    margin: 0;
+-  }
+-
+-  .management-menu-item {
+-    width: min(100%, 360px);
+-  }
+-
+-  .management-edit-content {
+-    overflow: visible;
+-  }
+-
+-  .management-edit-configuration-section {
+-    grid-template-columns: 1fr;
+-  }
+-
+-  .is-new-device.management-edit-configuration-section {
+-    grid-template-columns: 1fr;
+-  }
+-}
+-
+-@media (max-width: 760px) {
+-  .management-edit-content {
+-    --management-edit-video-row-height: clamp(108px, 13dvh, 124px);
+-  }
+-
+-  .management-topbar {
+-    align-items: flex-start;
+-    flex-direction: column;
+-    height: auto;
+-    min-height: var(--management-topbar-height);
+-  }
+-
+-  .management-topbar-start,
+-  .management-topbar-actions {
+-    width: 100%;
+-  }
+-
+-  .management-topbar-start {
+-    flex-wrap: wrap;
+-  }
+-
+-  .management-topnav {
+-    margin-left: auto;
+-  }
+-
+-  .management-topbar-actions {
+-    justify-content: flex-end;
+-  }
+-
+-  .management-filter-form {
+-    grid-template-columns: 1fr;
+-    gap: clamp(6px, 0.93dvh, 10px);
+-    width: 100%;
+-  }
+-
+-  .management-filter-form label {
+-    justify-self: start;
+-    padding-right: 0;
+-  }
+-
+-  .management-edit-form-row,
+-  .management-edit-video-row {
+-    grid-template-columns: 1fr;
+-    gap: 6px;
+-    width: 100%;
+-  }
+-
+-  .management-edit-form-row {
+-    padding: 6px 0;
+-  }
+-
+-  .management-edit-form-row > label {
+-    padding-right: 0;
+-  }
+-
+-  .management-edit-video-row > button {
+-    justify-self: end;
+-  }
+-
+-  .management-edit-doctor-options {
+-    grid-template-columns: 1fr;
+-  }
+-
+-  .management-table,
+-  .management-table thead,
+-  .management-table tbody,
+-  .management-table th,
+-  .management-table td,
+-  .management-table tr {
+-    display: block;
+-  }
+-
+-  .management-table thead {
+-    display: none;
+-  }
+-
+-  .management-empty-state {
+-    inset-block-start: 0;
+-  }
+-
+-  .management-table tbody {
+-    padding: clamp(12px, 1.48dvh, 16px);
+-  }
+-
+-  .management-table tr {
+-    display: grid;
+-    gap: clamp(10px, 1.48dvh, 16px);
+-    border-bottom: 0;
+-  }
+-
+-  .management-table td {
+-    display: grid;
+-    grid-template-columns: minmax(96px, 34%) minmax(0, 1fr);
+-    align-items: start;
+-    gap: clamp(8px, 1.11dvh, 12px);
+-    width: 100%;
+-    height: auto;
+-    padding: 0;
+-  }
+-
+-  .management-table td::before {
+-    content: attr(data-label);
+-    color: var(--management-text);
+-    font-weight: 700;
+-  }
+-
+-  .management-display-link {
+-    white-space: normal;
+-    overflow-wrap: anywhere;
+-  }
+-
+-  .management-table-actions {
+-    flex-wrap: wrap;
+-  }
+-}
+-
+-@media (max-width: 460px) {
+-  .management-current-time {
+-    width: calc(100% - var(--management-logo-size) - 16px);
+-  }
+-
+-  .management-topnav {
+-    width: 100%;
+-    margin-left: 0;
+-  }
+-
+-  .management-topnav-item,
+-  .management-clinic-switcher {
+-    width: 100%;
+-  }
+-
+-  .management-topbar-actions {
+-    align-items: stretch;
+-    flex-direction: column;
+-  }
+-
+-  .management-user-button {
+-    align-self: flex-end;
+-    max-width: 100%;
+-  }
+-
+-  .management-user-menu {
+-    align-self: flex-end;
+-  }
+-
+-  .management-table td {
+-    grid-template-columns: 1fr;
+-  }
+-
+-  .management-edit-page-header {
+-    align-items: flex-start;
+-    flex-direction: column;
+-  }
+-
+-  .management-edit-save {
+-    align-self: flex-end;
+-  }
+-}
+diff --git a/src/features/display-screen/DisplayScreenPage.tsx b/src/features/display-screen/DisplayScreenPage.tsx
+index cedb889..b7ddb57 100644
+--- a/src/features/display-screen/DisplayScreenPage.tsx
++++ b/src/features/display-screen/DisplayScreenPage.tsx
+@@ -1009,7 +1009,7 @@ const DoctorCard = ({
+       >
+         {visibility.latestCall ? (
+           <div className="queue-stat-latest">
+-            <AutoFitText as="dt">最新叫號 Last Call</AutoFitText>
++            <dt>最新叫號 Last Call</dt>
+             <AutoFitText as="dd">{doctor.latestCall}</AutoFitText>
+           </div>
+         ) : null}
+diff --git a/src/features/display-screen/display-screen.css b/src/features/display-screen/display-screen.css
+index 8ad70ed..5552540 100644
+--- a/src/features/display-screen/display-screen.css
++++ b/src/features/display-screen/display-screen.css
+@@ -1,6 +1,8 @@
+ /* Display screen feature styles. Loaded only by display-screen routes. */
+ 
+ .display-shell {
++  --csx-page-min-width: 500px;
++  --csx-page-min-height: 765px;
+   --screen-background: #edf3fc;
+   --surface: #ffffff;
+   --text: #303133;
+@@ -9,18 +11,19 @@
+   --brand: #3baca2;
+   --brand-dark: #2d8f86;
+ 
+-  width: 100vw;
+-  width: 100dvw;
+-  height: 100vh;
+-  height: 100dvh;
+-  min-height: 100vh;
++  container-type: size;
+   overflow: hidden;
+   display: flex;
+   background: var(--screen-background);
+ }
+ 
++.display-shell:has(.display-screen-horizontal) {
++  --csx-page-min-width: 1280px;
++  --csx-page-min-height: 720px;
++}
++
+ .display-screen {
+-  --portrait-unit: min(0.130208dvw, 0.073206dvh);
++  --portrait-unit: min(0.130208cqw, 0.073206cqh);
+   --display-unit: var(--portrait-unit);
+   --figma-card-queue-label-font-size: 18px;
+   --figma-card-next-ticket-number-font-size: 48px;
+@@ -30,38 +33,38 @@
+   --doctors-stage-height: 67.349927%;
+   --doctors-stage-height-with-queue: 63.17716%;
+   --media-panel-height: 26.793558%;
+-  --screen-inline-padding: clamp(10px, 3.125dvw, 24px);
+-  --header-gap: clamp(4px, 1.302dvw, 10px);
+-  --brand-gap: clamp(4px, 1.042dvw, 8px);
+-  --queue-gap: clamp(4px, 0.911dvw, 7px);
+-  --queue-title-gap: clamp(6px, 1.563dvw, 12px);
+-  --clinic-header-padding-y: clamp(2px, 1.171dvh, 16px);
+-  --clinic-brand-mark-size: clamp(18px, 3.514dvh, 48px);
++  --screen-inline-padding: clamp(10px, 3.125cqw, 24px);
++  --header-gap: clamp(4px, 1.302cqw, 10px);
++  --brand-gap: clamp(4px, 1.042cqw, 8px);
++  --queue-gap: clamp(4px, 0.911cqw, 7px);
++  --queue-title-gap: clamp(6px, 1.563cqw, 12px);
++  --clinic-header-padding-y: clamp(2px, 1.171cqh, 16px);
++  --clinic-brand-mark-size: clamp(18px, 3.514cqh, 48px);
+   --clinic-brand-font-size: clamp(8px, calc(var(--portrait-unit) * 16), 16px);
+   --time-font-size: clamp(12px, calc(var(--portrait-unit) * 24), 24px);
+   --date-font-size: clamp(9px, calc(var(--portrait-unit) * 18), 18px);
+   --queue-title-font-size: clamp(12px, calc(var(--portrait-unit) * 24), 24px);
+   --queue-total-font-size: clamp(16px, calc(var(--portrait-unit) * 32), 32px);
+-  --featured-avatar-size: clamp(28px, 7.028dvh, 96px);
+-  --featured-video-badge-size: clamp(12px, 2.05dvh, 28px);
+-  --featured-top-padding: clamp(2px, 1.757dvh, 24px);
+-  --featured-inline-padding: clamp(10px, 5.208dvw, 40px);
+-  --featured-content-gap: clamp(6px, 1.391dvh, 19px);
+-  --featured-divider-gap: clamp(10px, 3.125dvw, 24px);
++  --featured-avatar-size: clamp(28px, 7.028cqh, 96px);
++  --featured-video-badge-size: clamp(12px, 2.05cqh, 28px);
++  --featured-top-padding: clamp(2px, 1.757cqh, 24px);
++  --featured-inline-padding: clamp(10px, 5.208cqw, 40px);
++  --featured-content-gap: clamp(6px, 1.391cqh, 19px);
++  --featured-divider-gap: clamp(10px, 3.125cqw, 24px);
+   --featured-title-font-size: clamp(20px, calc(var(--portrait-unit) * 40), 40px);
+   --featured-name-en-font-size: clamp(14px, calc(var(--portrait-unit) * 28), 28px);
+   --featured-label-font-size: clamp(14px, calc(var(--portrait-unit) * 28), 28px);
+   --featured-call-label-font-size: clamp(9px, calc(var(--portrait-unit) * 18), 18px);
+-  --featured-number-box-height: clamp(54px, 7.394dvh, 101px);
+-  --featured-number-box-min-width: clamp(96px, 15.081dvh, 206px);
++  --featured-number-box-height: clamp(54px, 7.394cqh, 101px);
++  --featured-number-box-min-width: clamp(96px, 15.081cqh, 206px);
+   --featured-number-font-size: clamp(40px, calc(var(--portrait-unit) * 80), 80px);
+   --tag-font-size: clamp(8px, calc(var(--portrait-unit) * 16), 16px);
+-  --tag-padding-y: clamp(2px, 0.293dvh, 4px);
+-  --tag-padding-x: clamp(4px, 1.042dvw, 8px);
+-  --room-padding-x: clamp(3px, 1.042dvw, 8px);
+-  --card-padding-block: clamp(8px, 1.757dvh, 24px);
+-  --card-padding-inline: clamp(8px, 3.125dvw, 24px);
+-  --card-avatar-size: clamp(24px, 5.857dvh, 80px);
++  --tag-padding-y: clamp(2px, 0.293cqh, 4px);
++  --tag-padding-x: clamp(4px, 1.042cqw, 8px);
++  --room-padding-x: clamp(3px, 1.042cqw, 8px);
++  --card-padding-block: clamp(8px, 1.757cqh, 24px);
++  --card-padding-inline: clamp(8px, 3.125cqw, 24px);
++  --card-avatar-size: clamp(24px, 5.857cqh, 80px);
+   --card-title-font-size: clamp(20px, calc(var(--portrait-unit) * 40), 40px);
+   --card-name-en-font-size: clamp(12px, calc(var(--portrait-unit) * 24), 24px);
+   --card-call-label-font-size: clamp(
+@@ -88,68 +91,70 @@
+     var(--figma-card-latest-call-number-font-size)
+   );
+   --card-tag-font-size: clamp(8px, calc(var(--portrait-unit) * 16), 16px);
+-  --card-tag-padding-y: clamp(2px, 0.293dvh, 4px);
+-  --card-profile-main-row-height: clamp(48px, 6.442dvh, 88px);
+-  --card-profile-english-gap: clamp(8px, 1.171dvh, 16px);
+-  --card-last-call-number-box-height: clamp(56px, 10.029dvh, 137px);
+-  --card-last-call-gap: clamp(2px, 0.293dvh, 4px);
++  --card-tag-padding-y: clamp(2px, 0.293cqh, 4px);
++  --card-profile-main-row-height: clamp(48px, 6.442cqh, 88px);
++  --card-profile-english-gap: clamp(8px, 1.171cqh, 16px);
++  --card-last-call-number-box-height: clamp(56px, 10.029cqh, 137px);
++  --card-last-call-gap: clamp(2px, 0.293cqh, 4px);
+   --card-latest-call-bottom-gap: clamp(4px, calc(var(--portrait-unit) * 24), 24px);
+-  --card-profile-row-gap: clamp(6px, 1.171dvh, 16px);
+-  --card-profile-column-gap: clamp(12px, 1.757dvh, 24px);
++  --card-profile-row-gap: clamp(6px, 1.171cqh, 16px);
++  --card-profile-column-gap: clamp(12px, 1.757cqh, 24px);
+   --doctor-bio-font-size: clamp(8px, calc(var(--portrait-unit) * 16), 16px);
+-  --doctor-bio-gap: clamp(4px, 0.586dvh, 8px);
+-  --doctor-bio-scroll-gap: clamp(24px, 3.514dvh, 48px);
+-  --carousel-progress-height: clamp(2px, 0.439dvh, 6px);
+-  --doctor-grid-gap: clamp(4px, 1.042dvw, 8px);
+-  --doctor-grid-padding-top: clamp(4px, 0.586dvh, 8px);
+-  --doctor-card-inner-gap: clamp(2px, 0.293dvh, 4px);
+-  --carousel-label-bottom: clamp(3px, 0.512dvh, 7px);
+-  --carousel-label-gap: clamp(2px, 0.521dvw, 4px);
+-  --carousel-label-padding-y: clamp(1px, 0.146dvh, 2px);
+-  --carousel-label-padding-x: clamp(3px, 0.651dvw, 5px);
++  --doctor-bio-gap: clamp(4px, 0.586cqh, 8px);
++  --doctor-bio-scroll-gap: clamp(24px, 3.514cqh, 48px);
++  --carousel-progress-height: clamp(2px, 0.439cqh, 6px);
++  --doctor-grid-gap: clamp(4px, 1.042cqw, 8px);
++  --doctor-grid-padding-top: clamp(4px, 0.586cqh, 8px);
++  --doctor-card-inner-gap: clamp(2px, 0.293cqh, 4px);
++  --carousel-label-bottom: clamp(3px, 0.512cqh, 7px);
++  --carousel-label-gap: clamp(2px, 0.521cqw, 4px);
++  --carousel-label-padding-y: clamp(1px, 0.146cqh, 2px);
++  --carousel-label-padding-x: clamp(3px, 0.651cqw, 5px);
+   --carousel-label-font-size: clamp(6px, calc(var(--portrait-unit) * 8), 8px);
+-  --media-timer-top: clamp(1px, 0.146dvh, 2px);
+-  --media-timer-offset: clamp(-10px, -0.732dvh, -3px);
+-  --media-timer-min-width: clamp(36px, 4.685dvh, 64px);
+-  --media-timer-padding-y: clamp(2px, 0.366dvh, 5px);
+-  --media-timer-padding-x: clamp(4px, 0.586dvh, 8px);
++  --media-timer-top: clamp(1px, 0.146cqh, 2px);
++  --media-timer-offset: clamp(-10px, -0.732cqh, -3px);
++  --media-timer-min-width: clamp(36px, 4.685cqh, 64px);
++  --media-timer-padding-y: clamp(2px, 0.366cqh, 5px);
++  --media-timer-padding-x: clamp(4px, 0.586cqh, 8px);
+   --media-timer-font-size: clamp(7px, calc(var(--portrait-unit) * 13), 13px);
+-  --self-service-border-width: clamp(2px, 0.439dvh, 6px);
+-  --self-service-radius: clamp(4px, 0.732dvh, 10px);
+-  --self-service-panel-width: clamp(48px, 7.966dvh, 109px);
+-  --self-service-panel-min-height: clamp(52px, 9.142dvh, 125px);
+-  --self-service-panel-padding-top: clamp(18px, 3.148dvh, 43px);
+-  --self-service-qr-size: clamp(36px, 7.033dvh, 96px);
+-  --self-service-inner-padding: clamp(5px, 1.054dvh, 10px);
++  --self-service-border-width: clamp(2px, 0.439cqh, 6px);
++  --self-service-radius: clamp(4px, 0.732cqh, 10px);
++  --self-service-panel-width: clamp(48px, 7.966cqh, 109px);
++  --self-service-panel-min-height: clamp(52px, 9.142cqh, 125px);
++  --self-service-panel-padding-top: clamp(18px, 3.148cqh, 43px);
++  --self-service-qr-size: clamp(36px, 7.033cqh, 96px);
++  --self-service-inner-padding: clamp(5px, 1.054cqh, 10px);
+   --self-service-title-font-size: clamp(10px, calc(var(--portrait-unit) * 20), 20px);
+   --self-service-body-font-size: clamp(8px, calc(var(--portrait-unit) * 15), 15px);
+-  --self-service-arrow-width: clamp(18px, 2.9dvh, 40px);
+-  --self-service-arrow-height: clamp(10px, 1.845dvh, 25px);
+-  --self-service-arrow-half-height: clamp(5px, 0.923dvh, 13px);
+-  --self-service-arrow-head-width: clamp(6px, 0.879dvh, 12px);
+-  --empty-state-gap: clamp(8px, 1.391dvh, 19px);
+-  --empty-state-padding-y: clamp(16px, 2.343dvh, 32px);
+-  --empty-state-padding-x: clamp(20px, 5.208dvw, 40px);
+-  --empty-illustration-size: clamp(72px, 11.713dvh, 160px);
+-  --empty-illustration-halo-size: clamp(48px, 8.053dvh, 110px);
+-  --empty-card-width: clamp(56px, 7.613dvh, 104px);
+-  --empty-card-height: clamp(18px, 2.196dvh, 30px);
+-  --empty-card-gap: clamp(4px, 1.042dvw, 8px);
+-  --empty-card-padding-y: clamp(3px, 0.366dvh, 5px);
+-  --empty-card-padding-x: clamp(5px, 0.659dvh, 9px);
+-  --empty-card-avatar-size: clamp(10px, 1.171dvh, 16px);
+-  --empty-card-line-height: clamp(4px, 0.512dvh, 7px);
++  --self-service-arrow-width: clamp(18px, 2.9cqh, 40px);
++  --self-service-arrow-height: clamp(10px, 1.845cqh, 25px);
++  --self-service-arrow-half-height: clamp(5px, 0.923cqh, 13px);
++  --self-service-arrow-head-width: clamp(6px, 0.879cqh, 12px);
++  --empty-state-gap: clamp(8px, 1.391cqh, 19px);
++  --empty-state-padding-y: clamp(16px, 2.343cqh, 32px);
++  --empty-state-padding-x: clamp(20px, 5.208cqw, 40px);
++  --empty-illustration-size: clamp(72px, 11.713cqh, 160px);
++  --empty-illustration-halo-size: clamp(48px, 8.053cqh, 110px);
++  --empty-card-width: clamp(56px, 7.613cqh, 104px);
++  --empty-card-height: clamp(18px, 2.196cqh, 30px);
++  --empty-card-gap: clamp(4px, 1.042cqw, 8px);
++  --empty-card-padding-y: clamp(3px, 0.366cqh, 5px);
++  --empty-card-padding-x: clamp(5px, 0.659cqh, 9px);
++  --empty-card-avatar-size: clamp(10px, 1.171cqh, 16px);
++  --empty-card-line-height: clamp(4px, 0.512cqh, 7px);
+   --empty-copy-font-size: clamp(8px, calc(var(--portrait-unit) * 14), 14px);
+   --state-title-font-size: clamp(12px, calc(var(--portrait-unit) * 24), 24px);
+   --state-copy-font-size: clamp(6px, calc(var(--portrait-unit) * 12), 12px);
+-  --state-button-gap: clamp(3px, 0.651dvw, 5px);
+-  --state-button-padding-y: clamp(4px, 0.512dvh, 7px);
+-  --state-button-padding-x: clamp(7px, 0.805dvh, 11px);
++  --state-button-gap: clamp(3px, 0.651cqw, 5px);
++  --state-button-padding-y: clamp(4px, 0.512cqh, 7px);
++  --state-button-padding-x: clamp(7px, 0.805cqh, 11px);
+ 
+   position: relative;
++  flex: 1 1 auto;
+   width: 100%;
+   min-width: 0;
+   height: 100%;
++  min-height: 100%;
+   overflow: hidden;
+   display: grid;
+   grid-template-columns: minmax(0, 1fr);
+@@ -243,7 +248,7 @@
+ 
+ .clinic-brand-copy span {
+   max-width: 100%;
+-  margin-top: clamp(1px, 0.146dvh, 2px);
++  margin-top: clamp(1px, 0.146cqh, 2px);
+   overflow: hidden;
+   font-size: var(--clinic-brand-font-size);
+   font-weight: 700;
+@@ -368,7 +373,7 @@
+ 
+ .featured-doctor-empty {
+   justify-content: center;
+-  padding: clamp(12px, 2.343dvh, 32px) var(--featured-inline-padding);
++  padding: clamp(12px, 2.343cqh, 32px) var(--featured-inline-padding);
+ }
+ 
+ .featured-doctor-empty p {
+@@ -422,7 +427,7 @@
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+-  gap: clamp(4px, 0.586dvh, 8px);
++  gap: clamp(4px, 0.586cqh, 8px);
+   padding-left: var(--featured-divider-gap);
+   border-left: 2px solid var(--line);
+ }
+@@ -438,7 +443,7 @@
+   max-width: 100%;
+   display: flex;
+   align-items: center;
+-  gap: clamp(4px, 0.586dvh, 8px);
++  gap: clamp(4px, 0.586cqh, 8px);
+   flex-wrap: nowrap;
+   overflow: hidden;
+ }
+@@ -524,12 +529,14 @@
+ }
+ 
+ .featured-last-call span {
++  overflow: visible;
+   color: rgba(96, 98, 102, 1);
+   font-family: Roboto, Arial, "Helvetica Neue", Helvetica, sans-serif;
+   font-size: var(--featured-call-label-font-size);
+   font-style: normal;
+   font-weight: 400;
+   line-height: 1.2;
++  white-space: nowrap;
+ }
+ 
+ .featured-last-call strong {
+@@ -835,7 +842,7 @@
+ }
+ 
+ .doctor-heading h2 {
+-  margin: clamp(2px, 0.586dvh, 8px) 0 0;
++  margin: clamp(2px, 0.586cqh, 8px) 0 0;
+   overflow: hidden;
+   color: rgba(48, 49, 51, 1);
+   font-size: var(--card-title-font-size);
+@@ -1012,14 +1019,20 @@
+   order: 1;
+ }
+ 
+-.queue-stats .queue-stat-next-ticket,
+-.queue-stats .queue-stat-waiting-count {
++.queue-stats .queue-stat-next-ticket {
+   flex-direction: row;
+   align-items: center;
+   justify-content: space-between;
+   text-align: left;
+ }
+ 
++.queue-stats .queue-stat-waiting-count {
++  flex-direction: column;
++  align-items: flex-start;
++  justify-content: flex-end;
++  text-align: left;
++}
++
+ .queue-stats dt {
+   overflow: hidden;
+   color: rgba(96, 98, 102, 1);
+@@ -1058,7 +1071,13 @@
+ }
+ 
+ .queue-stat-latest dt {
++  flex: 0 0 auto;
++  width: max-content;
++  max-width: none;
+   margin-top: var(--card-last-call-gap);
++  overflow: visible;
++  white-space: nowrap;
++  text-overflow: clip;
+ }
+ 
+ .queue-stat-next-ticket dt {
+@@ -1093,7 +1112,7 @@
+   width: auto;
+   min-width: 1ch;
+   font-size: var(--card-number-font-size);
+-  text-align: right;
++  text-align: left;
+ }
+ 
+ .queue-stats-both {
+@@ -1563,7 +1582,7 @@
+ }
+ 
+ .display-screen-horizontal {
+-  --landscape-unit: min(0.078125dvw, 0.138889dvh);
++  --landscape-unit: min(0.078125cqw, 0.138889cqh);
+   --display-unit: var(--landscape-unit);
+   --clinic-header-height: 11.111111%;
+   --screen-inline-padding: clamp(0.5rem, calc(var(--landscape-unit) * 24), 1.5rem);
+@@ -1779,8 +1798,7 @@
+   justify-content: center;
+ }
+ 
+-.display-screen-horizontal .queue-stats:not(.queue-stats-both) .queue-stat-next-ticket,
+-.display-screen-horizontal .queue-stats:not(.queue-stats-both) .queue-stat-waiting-count {
++.display-screen-horizontal .queue-stats:not(.queue-stats-both) .queue-stat-next-ticket {
+   flex-direction: row;
+   align-items: center;
+   justify-content: space-between;
+@@ -1808,18 +1826,6 @@
+   bottom: clamp(0.1875rem, calc(var(--landscape-unit) * 11), 0.6875rem);
+ }
+ 
+-@media (max-height: 600px) {
+-  .display-screen {
+-    --featured-top-padding: clamp(2px, 1dvh, 8px);
+-    --featured-content-gap: clamp(2px, 0.625dvh, 3px);
+-    --featured-number-font-size: clamp(
+-      20px,
+-      min(calc(var(--display-unit) * 80), 4.2dvh),
+-      80px
+-    );
+-  }
+-}
+-
+ @media (prefers-reduced-motion: reduce) {
+   .carousel-status div {
+     animation-timing-function: linear;

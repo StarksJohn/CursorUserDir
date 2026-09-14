@@ -1,0 +1,12 @@
+---
+description: Never put Cursor/AI attribution in git commits or PRs
+alwaysApply: true
+---
+
+# No tool attribution in git
+
+Never add `Co-authored-by: Cursor`, `Made with Cursor`, `Made-with: Cursor`, `cursoragent@cursor.com`, or any Cursor/AI trailer to commit messages, `git notes`, or PR bodies.
+
+When committing, use only the subject/body you wrote. Do not pass `--trailer`. If a cherry-pick, amend, or reused message already contains those trailers, strip them before creating the new commit.
+
+Do not mention Cursor, the agent, or AI tooling in commit messages or PR descriptions.
