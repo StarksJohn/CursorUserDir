@@ -1,0 +1,24 @@
+{
+  "name": "list_file_shaders",
+  "description": "Lists the shader effects and shader fills used in a Figma file. Returns each shader as { id, name, description, type, version, published, truncated, files }, where type is \"effect\" (post-effect that samples an input raster) or \"fill\" (generates pixels directly), published indicates whether the shader is a published library version, and files is a manifest of its authored source files as { filename, uri }. When truncated is true, the manifest hit its 10,000-file safety cap and is not exhaustive. The top-level truncated field is true when a referenced shader could not be returned, including when the file references more than the 100 returned shaders. Read each file's contents from its uri as an MCP resource (contents are not inlined here). Requires view access to the file. Use this to inspect shaders in a file you can open, including ones you do not own. Source reads are pinned to the exact shader version referenced by the file.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "fileKey": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[0-9a-zA-Z]{22,128}$",
+        "description": "The key of the Figma file to use. If the URL is provided, extract the file key from the URL. The given URL must be in the format https://figma.com/design/:fileKey/:fileName?node-id=:int1-:int2. The extracted fileKey would be `:fileKey`."
+      }
+    },
+    "required": [
+      "fileKey"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}
