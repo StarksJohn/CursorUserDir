@@ -1,0 +1,405 @@
+Creating HEAD program...
+HEAD program created in 4749 ms
+Loading base file contents...
+Creating BASE program...
+BASE program created in 3083 ms
+WROTE /tmp/csx-pr538-tsdiag.json
+HEAD changed-file semantic counts:
+src/api/api-types.ts sem=0 syn=0 sug=1
+src/api/api.ts sem=118 syn=0 sug=7
+src/pages/NewlyAddedPatients/NewlyAddedPatients.styles.ts sem=0 syn=0 sug=0
+src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx sem=100 syn=0 sug=172
+src/pages/Diagnosis/DiagnosisPage.tsx sem=67 syn=0 sug=39
+src/pages/AllergyPage/AllergyPage.tsx sem=35 syn=0 sug=42
+src/pages/SignInEcPage/SignInEcPages.tsx sem=33 syn=0 sug=30
+INTRODUCED semantic 236
+INTRODUCED suggestion 152
+TS2345 src/api/api.ts:94:37 Argument of type 'string' is not assignable to parameter of type '"AddAppointment"'.
+TS2339 src/api/api.ts:245:20 Property 'name' does not exist on type '{}'.
+TS2339 src/api/api.ts:246:23 Property 'message' does not exist on type '{}'.
+TS2339 src/api/api.ts:247:25 Property 'isTimeout' does not exist on type '{}'.
+TS2339 src/api/api.ts:248:21 Property 'stack' does not exist on type '{}'.
+TS2339 src/api/api.ts:252:14 Property 'isTimeout' does not exist on type '{}'.
+TS2339 src/api/api.ts:253:14 Property 'message' does not exist on type '{}'.
+TS2339 src/api/api.ts:254:14 Property 'name' does not exist on type '{}'.
+TS2339 src/api/api.ts:261:25 Property 'name' does not exist on type '{}'.
+TS2339 src/api/api.ts:281:31 Property 'name' does not exist on type '{}'.
+TS2339 src/api/api.ts:282:29 Property 'name' does not exist on type '{}'.
+TS2339 src/api/api.ts:283:30 Property 'name' does not exist on type '{}'.
+TS7053 src/api/api.ts:386:7 Element implicitly has an 'any' type because expression of type '"finished"' can't be used to index type '{ clinicId: string; doctorId: string; }'.
+TS7053 src/api/api.ts:389:7 Element implicitly has an 'any' type because expression of type '"consulted"' can't be used to index type '{ clinicId: string; doctorId: string; }'.
+TS7006 src/api/api.ts:408:75 Parameter 'index' implicitly has an 'any' type.
+TS7006 src/api/api.ts:408:82 Parameter 'arr' implicitly has an 'any' type.
+TS7053 src/api/api.ts:648:52 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ id: string; showTemporaryData: boolean; }'.
+TS7031 src/api/api.ts:715:44 Binding element 'pageIndex' implicitly has an 'any' type.
+TS7031 src/api/api.ts:716:44 Binding element 'idType' implicitly has an 'any' type.
+TS7031 src/api/api.ts:717:44 Binding element 'contract' implicitly has an 'any' type.
+TS7031 src/api/api.ts:718:44 Binding element 'insuranceNo' implicitly has an 'any' type.
+TS7031 src/api/api.ts:719:44 Binding element 'referral' implicitly has an 'any' type.
+TS7031 src/api/api.ts:720:44 Binding element 'referralCategory' implicitly has an 'any' type.
+TS7031 src/api/api.ts:721:44 Binding element 'doctorInCharge' implicitly has an 'any' type.
+TS7031 src/api/api.ts:765:46 Binding element 'patientId' implicitly has an 'any' type.
+TS7031 src/api/api.ts:766:46 Binding element 'remarks' implicitly has an 'any' type.
+TS7031 src/api/api.ts:767:46 Binding element 'pageIndex' implicitly has an 'any' type.
+TS7031 src/api/api.ts:768:46 Binding element 'clinicId' implicitly has an 'any' type.
+TS7031 src/api/api.ts:769:46 Binding element 'doctorId' implicitly has an 'any' type.
+TS7031 src/api/api.ts:770:46 Binding element 'startDate' implicitly has an 'any' type.
+TS7031 src/api/api.ts:771:46 Binding element 'endDate' implicitly has an 'any' type.
+TS2366 src/api/api.ts:810:83 Function lacks ending return statement and return type does not include 'undefined'.
+TS7053 src/api/api.ts:883:52 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ patientId: string; }'.
+TS7006 src/api/api.ts:1289:38 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:1322:46 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:1366:44 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:1408:49 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:1440:38 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:1473:38 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:1506:50 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:1533:45 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:1564:52 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:1595:36 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:1626:38 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:1685:40 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:1722:53 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:1749:42 Parameter 'p' implicitly has an 'any' type.
+TS7053 src/api/api.ts:1814:52 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+TS7053 src/api/api.ts:1852:52 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+TS7053 src/api/api.ts:1890:52 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+TS7006 src/api/api.ts:1920:39 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:1949:27 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:1984:39 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:2015:43 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:2042:36 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:2069:41 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:2110:44 Parameter 'p' implicitly has an 'any' type.
+TS2339 src/api/api.ts:2208:27 Property 'type' does not exist on type '{ biometricsId: string; secret: string; publicKey: string; username: string; tenantID: string; }'.
+TS7006 src/api/api.ts:2231:45 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:2278:37 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:2309:37 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:2340:42 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:2464:43 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:2496:43 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:2523:34 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:2616:46 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:2680:49 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:2730:42 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:2761:54 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:2831:45 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3038:45 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3065:51 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3100:45 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3159:45 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3186:60 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3213:55 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3241:46 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3280:45 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3315:55 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3471:50 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3499:53 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3564:47 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3592:38 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3622:53 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3649:45 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3687:44 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3835:49 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3862:35 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:3927:45 Parameter 'p' implicitly has an 'any' type.
+TS7053 src/api/api.ts:3970:52 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ langEnv: string; }'.
+TS7006 src/api/api.ts:3996:45 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:4030:50 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:4057:45 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:4084:43 Parameter 'p' implicitly has an 'any' type.
+TS7053 src/api/api.ts:4127:52 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+TS7053 src/api/api.ts:4187:52 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+TS7006 src/api/api.ts:4213:56 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:4240:53 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:4267:51 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:4297:44 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:4328:57 Parameter 'p' implicitly has an 'any' type.
+TS7006 src/api/api.ts:4359:44 Parameter 'p' implicitly has an 'any' type.
+TS7053 src/api/api.ts:4450:52 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+TS7006 src/api/api.ts:4475:32 Parameter 'curAccount' implicitly has an 'any' type.
+TS7006 src/api/api.ts:4475:44 Parameter 'navigation' implicitly has an 'any' type.
+TS7006 src/api/api.ts:4475:56 Parameter 'dispatch' implicitly has an 'any' type.
+TS2345 src/api/api.ts:4494:32 Argument of type 'string' is not assignable to parameter of type '"AddAppointment"'.
+TS7031 src/api/api.ts:4592:41 Binding element 'appointmentId' implicitly has an 'any' type.
+TS7031 src/api/api.ts:4592:56 Binding element 'diagnosisJsonAsString' implicitly has an 'any' type.
+TS7031 src/api/api.ts:4592:79 Binding element 'currencyCode' implicitly has an 'any' type.
+TS7031 src/api/api.ts:4592:93 Binding element 'expenseItems' implicitly has an 'any' type.
+TS7053 src/api/api.ts:4654:52 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ ticketId: string; }'.
+TS7053 src/api/api.ts:4688:52 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ ticketId: string; }'.
+TS7006 src/api/api.ts:4890:40 Parameter 'p' implicitly has an 'any' type.
+TS7053 src/api/api.ts:5030:52 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+TS7053 src/api/api.ts:5425:52 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+TS2322 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:321:7 Type '(props: pageProps, parentRef: any) => Element' is not assignable to type 'FC<pageProps>'.
+TS7006 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:321:68 Parameter 'parentRef' implicitly has an 'any' type.
+TS2339 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:324:10 Property 'pageData' does not exist on type '{}'.
+TS2554 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:489:24 Expected 1 arguments, but got 0.
+TS2554 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:490:20 Expected 1 arguments, but got 0.
+TS2554 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:491:21 Expected 1 arguments, but got 0.
+TS2554 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:492:26 Expected 1 arguments, but got 0.
+TS2554 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:495:33 Expected 1 arguments, but got 0.
+TS2554 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:496:34 Expected 1 arguments, but got 0.
+TS2554 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:497:35 Expected 1 arguments, but got 0.
+TS2554 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:498:23 Expected 1 arguments, but got 0.
+TS2554 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:499:26 Expected 1 arguments, but got 0.
+TS2554 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:500:42 Expected 1 arguments, but got 0.
+TS2749 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:504:30 'TouchableOpacity' refers to a value, but is being used as a type here. Did you mean 'typeof TouchableOpacity'?
+TS2554 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:509:31 Expected 1 arguments, but got 0.
+TS2554 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:510:25 Expected 1 arguments, but got 0.
+TS7006 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:562:43 Parameter 'a' implicitly has an 'any' type.
+TS7006 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:562:46 Parameter 'b' implicitly has an 'any' type.
+TS7031 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:580:22 Binding element 'payorId' implicitly has an 'any' type.
+TS7031 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:581:22 Binding element 'insuranceContent' implicitly has an 'any' type.
+TS7031 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:582:22 Binding element 'insuranceNo' implicitly has an 'any' type.
+TS7031 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:583:22 Binding element 'isDefault' implicitly has an 'any' type.
+TS7031 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:584:22 Binding element 'membershipId' implicitly has an 'any' type.
+TS7031 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:585:22 Binding element 'payor' implicitly has an 'any' type.
+TS7031 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:586:22 Binding element 'policyId' implicitly has an 'any' type.
+TS7031 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:587:22 Binding element 'patientInsuranceId' implicitly has an 'any' type.
+TS7006 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:588:23 Parameter 'index' implicitly has an 'any' type.
+TS7006 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:588:30 Parameter 'array' implicitly has an 'any' type.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:644:26 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+TS7006 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:675:65 Parameter 'item' implicitly has an 'any' type.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:730:60 Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+TS18047 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:789:20 'currentValue.payor' is possibly 'null'.
+TS18047 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:789:46 'state.editingInsuranceInfo.payor' is possibly 'null'.
+TS7006 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:835:10 Parameter 'item' implicitly has an 'any' type.
+TS7006 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:835:16 Parameter 'index' implicitly has an 'any' type.
+TS7006 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:835:23 Parameter 'array' implicitly has an 'any' type.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1168:26 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+TS2339 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1203:64 Property 'clearSelectedItem' does not exist on type '{}'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1314:28 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+TS2339 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1577:59 Property '_id' does not exist on type 'SelectedItem'.
+TS2339 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1869:64 Property '_id' does not exist on type 'SelectedItem'.
+TS2322 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2027:13 Type 'RefObject<KeyboardAwareScrollView | null>' is not assignable to type 'RefObject<KeyboardAwareScrollView>'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2070:24 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2097:28 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+TS2322 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2125:17 Type 'RefObject<KeyboardAwareScrollView | null>' is not assignable to type 'RefObject<KeyboardAwareScrollView>'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2313:28 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2451:26 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2539:26 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2637:26 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2709:26 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+TS2322 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2736:13 Type 'RefObject<KeyboardAwareScrollView | null>' is not assignable to type 'RefObject<KeyboardAwareScrollView>'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2786:24 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2813:28 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+TS2322 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3156:15 Type 'RefObject<KeyboardAwareScrollView | null>' is not assignable to type 'RefObject<KeyboardAwareScrollView>'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3208:26 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3234:30 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+TS18047 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3366:71 'item.payor' is possibly 'null'.
+TS2769 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3544:33 No overload matches this call.
+TS18047 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3546:74 'prevState.editingInsuranceInfo.payor' is possibly 'null'.
+TS2739 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3602:10 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+TS2739 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3672:10 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+TS2739 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3724:10 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+TS2739 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3774:10 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+TS2739 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3821:10 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+TS2739 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3856:10 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+TS2739 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3891:10 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+TS2739 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3947:10 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+TS2739 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4002:10 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+TS2739 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4057:10 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+TS2739 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4141:10 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+TS2339 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4158:32 Property 'name' does not exist on type '{}'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4159:28 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+TS2322 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4187:15 Type '{ label: string; value: IdType; }[]' is not assignable to type 'WheelPickerItemProps<WheelPickerItemValue>[]'.
+TS2322 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4197:15 Type '{ label: string; value: IdType | null; }' is not assignable to type 'WheelPickerItemValue | undefined'.
+TS2739 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4221:10 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+TS2739 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4249:10 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+TS2739 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4347:10 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+TS2739 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4397:10 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4533:39 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4536:39 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4540:35 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4543:35 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4554:28 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4564:29 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+TS18047 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4645:31 'state.baseInfo.identityDocumentType' is possibly 'null'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4711:41 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4721:35 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4831:25 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4896:33 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4900:29 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4904:29 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+TS2739 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4917:10 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+TS2739 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4965:10 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+TS7031 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5009:43 Binding element 'viewableItems' implicitly has an 'any' type.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5034:33 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5037:33 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5041:29 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+TS2345 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5044:29 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+TS2741 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5194:28 Property 'childrenHeight' is missing in type '{ id: string; title: string; style: any[]; expanded: true; renderHeader: any; renderChildren: () => Element; }' but required in type 'Props'.
+TS2339 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5199:48 Property 'renderHeader' does not exist on type '{ id: string; title: string; renderChildren: () => Element; }'.
+TS2339 src/pages/Diagnosis/DiagnosisPage.tsx:211:26 Property 'isReferral' does not exist on type 'waitingListItem | AppointmentCard | PatientQueryItems'.
+TS2339 src/pages/Diagnosis/DiagnosisPage.tsx:214:85 Property 'patientName' does not exist on type 'waitingListItem | AppointmentCard | PatientQueryItems'.
+TS2339 src/pages/Diagnosis/DiagnosisPage.tsx:270:35 Property 'clinicId' does not exist on type 'waitingListItem | AppointmentCard | PatientQueryItems'.
+TS2339 src/pages/Diagnosis/DiagnosisPage.tsx:270:97 Property 'clinicId' does not exist on type 'waitingListItem | AppointmentCard | PatientQueryItems'.
+TS2339 src/pages/Diagnosis/DiagnosisPage.tsx:271:35 Property 'doctorId' does not exist on type 'waitingListItem | AppointmentCard | PatientQueryItems'.
+TS2339 src/pages/Diagnosis/DiagnosisPage.tsx:271:97 Property 'doctorId' does not exist on type 'waitingListItem | AppointmentCard | PatientQueryItems'.
+TS2345 src/pages/Diagnosis/DiagnosisPage.tsx:651:16 Argument of type '(prevState: StateProps) => { patients: { patientName: string; gender: any; age: string; birthDate: any; patientMobileAreaCode: any; patientMobile: any; patientOtherPhoneAreaCode: any; patientOtherPhone: any; } | { ...; } | { ...; } | { ...; }; ... 16 more ...; loading_CallHistoryList: boolean; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+TS2322 src/pages/Diagnosis/DiagnosisPage.tsx:930:21 Type 'waitingListItem | AppointmentCard | PatientQueryItems | null' is not assignable to type 'waitingListItem | AppointmentCard | null'.
+TS2339 src/pages/Diagnosis/DiagnosisPage.tsx:1006:53 Property 'patientName' does not exist on type 'waitingListItem | AppointmentCard | PatientQueryItems'.
+TS2339 src/pages/Diagnosis/DiagnosisPage.tsx:1007:57 Property 'enName' does not exist on type 'waitingListItem | AppointmentCard | PatientQueryItems'.
+TS2339 src/pages/Diagnosis/DiagnosisPage.tsx:1007:84 Property 'zhName' does not exist on type 'waitingListItem | AppointmentCard | PatientQueryItems'.
+TS2322 src/pages/Diagnosis/DiagnosisPage.tsx:1190:9 Type 'waitingListItem | AppointmentCard | PatientQueryItems' is not assignable to type 'waitingListItem | AppointmentCard'.
+TS2551 src/pages/Diagnosis/DiagnosisPage.tsx:1420:79 Property 'patientCode' does not exist on type 'waitingListItem | AppointmentCard | PatientQueryItems'. Did you mean 'patientId'?
+TS2339 src/pages/Diagnosis/DiagnosisPage.tsx:1420:110 Property 'code' does not exist on type 'waitingListItem | AppointmentCard | PatientQueryItems'.
+TS2339 src/pages/Diagnosis/DiagnosisPage.tsx:1638:30 Property 'patientName' does not exist on type 'waitingListItem | AppointmentCard | PatientQueryItems'.
+TS2339 src/pages/Diagnosis/DiagnosisPage.tsx:1638:63 Property 'enName' does not exist on type 'waitingListItem | AppointmentCard | PatientQueryItems'.
+TS2339 src/pages/Diagnosis/DiagnosisPage.tsx:1638:90 Property 'zhName' does not exist on type 'waitingListItem | AppointmentCard | PatientQueryItems'.
+TS2339 src/pages/Diagnosis/DiagnosisPage.tsx:2142:32 Property 'patientName' does not exist on type 'waitingListItem | AppointmentCard | PatientQueryItems'.
+TS2339 src/pages/Diagnosis/DiagnosisPage.tsx:2142:65 Property 'enName' does not exist on type 'waitingListItem | AppointmentCard | PatientQueryItems'.
+TS2339 src/pages/Diagnosis/DiagnosisPage.tsx:2142:92 Property 'zhName' does not exist on type 'waitingListItem | AppointmentCard | PatientQueryItems'.
+--- suggestions ---
+TS6133 src/api/api.ts:1196:41 'token' is declared but its value is never read.
+TS6133 src/api/api.ts:112:34 'url' is declared but its value is never read.
+TS6133 src/api/api.ts:1776:60 'onProgress' is declared but its value is never read.
+TS6133 src/api/api.ts:1882:35 'installationId' is declared but its value is never read.
+TS6133 src/api/api.ts:408:75 'index' is declared but its value is never read.
+TS6133 src/api/api.ts:408:82 'arr' is declared but its value is never read.
+TS6385 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:68:9 'TextInputSubmitEditingEventData' is deprecated.
+TS6385 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2087:55 'TextInputSubmitEditingEventData' is deprecated.
+TS6385 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2185:59 'TextInputSubmitEditingEventData' is deprecated.
+TS6385 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2803:55 'TextInputSubmitEditingEventData' is deprecated.
+TS6385 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3225:57 'TextInputSubmitEditingEventData' is deprecated.
+TS6385 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5088:18 'SafeAreaView' is deprecated.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:322:22 'scene' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:455:5 'showCommonAlertModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:455:52 'commonAlertModalTitle' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:455:101 'commonAlertModalContent' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:460:5 'setShowCommonAutocompleteDropdownModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:462:5 'setRef_CommonAutocompleteDropdown' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:466:25 'setMode' is declared but its value is never read.
+TS6198 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:845:9 All destructured elements are unused.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:326:9 'store' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:327:9 'dispatch' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:474:9 'expensiveCalculation' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:489:9 'ref_GenderBt' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:490:9 'ref_call' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:491:9 'ref_group' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:492:9 'ref_blood_type' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:493:9 'ref_Wireless_telephone' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:494:9 'ref_telephone' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:495:9 'ref_Residential_areas' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:496:9 'ref_Residential_zoning' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:497:9 'ref_Category_introducer' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:498:9 'ref_Referee' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:499:9 'ref_telephone1' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:500:9 'ref_Relationship_with_patients' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:503:9 'groupTextInputRef' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:504:9 'ref_groupBt' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:505:9 'groupTextRef' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:819:9 'onPressSex' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:828:9 '_get_setting_data_model_list' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3599:9 'renderSexModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3669:9 'renderReferralCategoryModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3721:9 'renderhouseAreaModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3771:9 'renderHouseDistrictModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3818:9 'renderOfficeAreaModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3853:9 'renderOfficeDistrictModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3888:9 'renderCallModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3944:9 'renderAreaCodeModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3999:9 'renderTelAreaCodeModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4054:9 'renderEmergencyAreaCodeModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4138:9 'renderDocTypeModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4218:9 'renderrelatedPatientsRelationshipModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4246:9 'renderRefereeModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4344:9 'renderBloodTypeModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4394:9 'renderEmergencyContactRelationshipModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4519:9 'renderbottomButtonRow' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4914:9 'renderOccupationModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4962:9 'renderGroupModal' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5009:9 'onViewableItemsChanged' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:830:14 'err' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:103:10 'theme' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:788:31 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:788:38 'arr' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:835:16 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:835:23 'array' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4771:16 'err' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5084:11 'theme' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:588:23 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:588:30 'array' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:586:22 'policyId' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:559:22 'err' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:730:22 'err' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:533:18 'err' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1066:35 'pageSize' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1144:35 'pageSize' is declared but its value is never read.
+TS6198 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1221:31 All destructured elements are unused.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1291:37 'pageSize' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2134:46 'searchQuery' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2213:42 'array' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2290:37 'pageSize' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2428:35 'pageSize' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2516:35 'pageSize' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2614:35 'pageSize' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2685:35 'pageSize' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3061:37 'pageSize' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4629:24 'err' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5028:18 'err' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:953:40 'event' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1153:53 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1153:60 'array' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1298:71 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1298:78 'array' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2048:82 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2146:86 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2300:77 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2300:84 'array' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2438:75 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2438:82 'array' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2526:75 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2526:82 'array' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2621:75 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2621:82 'array' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2695:65 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2695:72 'array' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2764:82 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2942:35 'pageSize' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3071:77 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3071:84 'array' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3186:84 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3467:43 'item' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3495:43 'item' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3739:26 'err' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3789:26 'err' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3906:26 'err' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4205:33 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4264:26 'err' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4362:26 'err' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4412:26 'err' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4527:24 'err' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4931:26 'err' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4980:26 'err' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1492:78 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1492:85 'arr' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1495:79 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1495:86 'arr' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1498:82 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1498:89 'arr' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1551:41 'pageSize' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1784:80 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1784:87 'arr' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1787:81 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1787:88 'arr' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1790:84 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1790:91 'arr' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1843:43 'pageSize' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2949:73 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2949:80 'array' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1558:79 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1558:86 'array' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1576:97 'i' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1850:81 'index' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1850:88 'array' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1868:111 'i' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5159:31 'viewportHeight' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5160:31 'contentHeight' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3519:78 'item' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3522:45 'array' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1511:60 'array' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1803:65 'array' is declared but its value is never read.
+TS6196 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:272:11 'Occupation' is declared but never used.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:67:9 'LayoutChangeEvent' is declared but its value is never read.
+TS6133 src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:78:7 'screenHeight' is declared but its value is never read.

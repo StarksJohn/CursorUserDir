@@ -1,0 +1,1251 @@
+diff --git a/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx b/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx
+index f3b0d9e1..409a6f1b 100644
+--- a/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx
++++ b/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx
+@@ -44,41 +44,42 @@ import {
+   delete_patient, confirm_remote_ticket, confirm_remote_ticket_option, getDoctorById, getClinicById, get_all_allergic_reaction_terms, list_hkctt_dxpx_terms, list_doctor_medical_terms
+ } from "api/api";
+ import {useGlobalEventListener, useGlobalEventEmitter, globalEventName} from 'tools/useGlobalEventEmitter'
+ import {useLanguage} from "useHooks/useLanguage";
+ import textInputStyle from "components/common-styles/textInputStyle";
+ import {useLoading} from 'components/LoadingModal/LoadingContext';
+ import {AutocompleteDropdownContextProvider, type AutocompleteDropdownRef} from 'react-native-autocomplete-dropdown';
+ import {WheelPicker} from 'react-native-ui-lib';
+ import CommonModalChild from 'components/commonModal/CommonModalChild';
+ import {useCommonAutocompleteDropdownModal} from 'components/CommonAutocompleteDropdown/CommonAutocompleteDropdownProvider'
+ import CommonAutocompleteDropdownModal from "components/CommonAutocompleteDropdown/CommonAutocompleteDropdownModal";
+ import {useCommonModal} from "components/commonModal/CommonModalProvider";
+ import {setNonSafeZoneBackgroundColorAction} from "actions/app-actions";
+ import {ArrowUpDown, Delete, Remove} from 'assets/svg/index';
+ import {
+   Patient_config_data_occupation,
+   Prefix,
+   AreaCode,
+   PatientDataSettingItem,
+   IrefferalTypes,
+-  RefferalItem, IdType
++  RefferalItem, IdType,
++  InsuranceInfo
+ } from "api/api-types";
+ import {LayoutChangeEvent, NativeSyntheticEvent} from "react-native/Libraries/Types/CoreEventTypes";
+ import {TextInputSubmitEditingEventData} from "react-native/Libraries/Components/TextInput/TextInput";
+ import DatePicker from "components/date-picker/date-picker";
+ import {useThemeProvider} from "components/theme/theme-provider";
+ import {useCommonAlertModal, ButtonDirection} from 'components/CommonAlertModal/CommonAlertModalContext'
+ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+ import RNAutoPositionedPopup, { AutoPositionedPopupEventNames, RootViewProvider } from 'react-native-auto-positioned-popup';
+ import type {SelectedItem as RNSelectedItem, Data as AutoPositionedPopupData} from 'react-native-auto-positioned-popup';
+ import type { RNAutoPositionedPopupCustomRowProps} from "react-native-auto-positioned-popup/lib/AutoPositionedPopupProps";
+ 
+ 
+ const screenHeight = Dimensions.get('window').height;
+ const DatePickerBox: React.FC<{
+   updateState: (key: string, value: any) => void;
+   children?: any,
+   selectedItem: string | undefined,
+   uiTheme: UITheme,
+   baseInfo: { birthDate: string | null }
+   onDayPress: () => void
+@@ -257,40 +258,75 @@ const InsuranceCompanyBtChildren: React.FC<OccupationCustomRowProps> = memo(({
+   );
+   console.log('insuranceCompany render=', {
+     selectedItem, searchQuery
+   })
+   return (
+     <>
+       <Text
+         style={[styles.selectBtText, ((selectedItem || searchQuery) && { color: uiTheme.colors.$text })]}>{searchQuery ? searchQuery : (selectedItem ? (selectedItem.title || selectedItem.item) : global.i18n.t('Please_enter'))}
+       </Text>
+       <ArrowUpDown/>
+     </>
+   );
+ });
+ 
+ interface Occupation {
+   id: string;
+   title?: string;
+   item: string;
+ }
+ 
++interface MobileItemBasic {
++  mobile: string;
++  mobileAreaCode: string;
++  mobileRemark: string;
++}
++
++interface MobileItem extends MobileItemBasic {
++  id: string;
++}
++
++interface TelephoneItemBasic {
++  telephone: string;
++  telephoneAreaCode: string;
++  telephoneRemark: string;
++}
++interface TelephoneItem extends TelephoneItemBasic {
++  id: string;
++  telephone: string;
++  telephoneAreaCode: string;
++  telephoneRemark: string;
++}
++
++interface InsuranceInfoState {
++  id: string | null;
++  patientInsuranceId?: string | null;
++  payor: { id: string; name?: string; item?: string } | null;
++  policyId?: string | null;
++  insuranceNo: string;
++  policyNo: string;
++  membershipId: string;
++  membershipNo: string;
++  insuranceContent: string;
++  editing?: boolean;
++  isDefault: boolean;
++}
+ /**
+  * 新增编辑病人资料 | 病人签到前的
+  * PureComponent
+  * @param props
+  * @param parentRef
+  * @returns {*}
+  * @constructor
+  */
+ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) => {
+   const {navigation, scene, route} = props
+   console.log('NewlyAddedPatients props=', props)
+   const {pageData} = route?.params ?? {} as { pageData?: pageDataProps };//类型断言
+   //整个 src/csxStore/store.ts
+   const store = useSelector((state: object) => state)
+   const dispatch = useDispatch();
+   /**
+    setState(prevState => {
+    return {
+    ...prevState, // 复制原来的状态
+    baseInfo: {
+@@ -321,74 +357,74 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+       prefix: null as {
+         "id": string,
+         "identifier": string,
+         "code": string,
+         "gender": number,
+         "name": {
+           "en": string,
+           "zh": string
+         }
+       } | null,
+       birthDate: null,//<string|null> ;'2007-05-18'; Patient/Get 可能不返回此字段 ;
+       identityDocumentType: null as IdType | null,
+       identityDocumentNumber: '',
+       //無線電話
+       // mobile: {
+       //   areaCode: null, // 数据接口 query/patient-intial-data, 关联areacodes.code
+       //   number: '',//手机号码
+       // },
+       // mobileCountryCode: '',
+       // mobileNumber: '',
+-      mobiles: [{id: '0', mobile: '', mobileAreaCode: ''}] as [{ id: string, mobile: string, mobileAreaCode: string }],
++      mobiles: [{ id: '0', mobile: '', mobileAreaCode: '', mobileRemark: '' }] as MobileItem[],
+       //電話
+       // tel: {
+       //   areaCode: null,
+       //   number: ''
+       // },
+-      telephones: [{id: '0', telephone: '', telephoneAreaCode: ''}] as [{ id: string, telephone: string, telephoneAreaCode: string }],
++      telephones: [{ id: '0', telephone: '', telephoneAreaCode: '', telephoneRemark: '' }] as TelephoneItem[],
+       blood: null as PatientDataSettingItem | null, ehrNumber: '', remark: '', email: '', otherIdentityNumber: '',
+       //職業
+       occupation: null as PatientDataSettingItem | null,
+       //類別
+       group:  [] as string[]
+     }, otherInfo: {
+       houseArea: null as PatientDataSettingItem | null,
+       houseDistrict: null as PatientDataSettingItem | null,
+       houseAddress: '',
+       officeArea: global.i18n.t('PleaseSelect'),
+       officeDistrict: global.i18n.t('PleaseSelect'),
+       officeAddress: '',
+       referralCategory: null as IrefferalTypes | null,
+       referralDescription: null as RefferalItem | null,
+       doctorInCharge: null as PatientDataSettingItem | null,
+       //家族歷史
+       familyHistory: '',
+     }, emergencyContactInfo: {
+       emergencyContactName: '',
+       emergencyContactAreaCode: '',
+       emergencyContactPhone: '',
+       emergencyContactRelationship: '',
+       emergencyContactRelationshipID: '',
+       emergencyContactRemark: '',
+     },
+     //保险资料列表,用于 保险资料里的表格
+-    insuranceInfos: [],
++    insuranceInfos: [] as InsuranceInfoState[],
+     //正在编辑的 保险资料
+     editingInsuranceInfo: {
+       payor: null as PatientDataSettingItem | null,
+       insuranceNo: '',//保险编号
+       //會員編號
+       membershipId: '',
+       //保險備註
+       insuranceContent: '',
+     },
+     houseAreaList: ['香港島', '九龍', '新界', '離島'],
+     houseDistrictList: ['中西區', '灣仔區', '東區', '南區', '九龍城區', '觀塘區', '深水埗區', '黃大仙區', '油尖旺區', '離島區', '葵青區', '荃灣區', '屯門區', '元朗區', '北區', '大埔區', '沙田區', '西貢區'],
+     officeAreaList: ['香港島', '九龍', '新界', '離島'],
+     officeDistrictList: ['中西區', '灣仔區', '東區', '南區', '九龍城區', '觀塘區', '深水埗區', '黃大仙區', '油尖旺區', '離島區', '葵青區', '荃灣區', '屯門區', '元朗區', '北區', '大埔區', '沙田區', '西貢區'],
+     showHouseAreaModal: false, showHouseDistrictModal: false, showOfficeAreaModal: false, showOfficeDistrictModal: false,
+     rBtDisabled: false, addInsuranceInfoBtDisabled: true,
+     showDoctorInChargeModal: false,
+     receiveMarketingMessage: false,
+     responsibleDoctorList: ['醫生', '代理', '病人', '其他'],
+     //關聯病人
+     relatedPatients: '',
+@@ -456,40 +492,52 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+   const ref_blood_type = useRef();
+   const ref_Wireless_telephone = useRef([]);
+   const ref_telephone = useRef([]);
+   const ref_Residential_areas = useRef();
+   const ref_Residential_zoning = useRef();
+   const ref_Category_introducer = useRef();
+   const ref_Referee = useRef();
+   const ref_telephone1 = useRef();
+   const ref_Relationship_with_patients = useRef();
+   const scrollViewRef = useRef<KeyboardAwareScrollView>(null);
+   const tabScrollViewRef = useRef<ScrollView>(null);
+   const groupTextInputRef = useRef<TextInput>(null);
+   const ref_groupBt = useRef<TouchableOpacity>(null);
+   const groupTextRef = useRef<string>('');
+   const itemPositions = useRef<number[]>([]);
+   const isScrollingProgrammatically = useRef(false);
+   const tabPositions = useRef<number[]>([]);
+   const groupTextTimeoutRef = useRef<NodeJS.Timeout>();
+   const ref_DateBirth = useRef();
+   const [selectedTab, setSelectedTab] = useState(0); // 当前选中的 Tab 索引
++
++  const toMobilePayload = (item: MobileItem): Omit<MobileItem, 'id'> => ({
++    mobile: item.mobile,
++    mobileAreaCode: item.mobileAreaCode,
++    mobileRemark: item.mobileRemark,
++  });
++
++  const toTelephonePayload = (item: TelephoneItem): Omit<TelephoneItem, 'id'> => ({
++    telephone: item.telephone,
++    telephoneAreaCode: item.telephoneAreaCode,
++    telephoneRemark: item.telephoneRemark,
++  });
+   /**
+    * componentDidMount && componentWillUnmount
+    */
+   useEffect(
+     /*The async keyword cannot be added to the first parameter https://juejin.im/post/6844903985338400782#heading-27 */
+     () => {
+       // console.log(`NewlyAddedPatients componentDidMount`)
+       (async () => {
+         {
+           const [err, data1] = await tool.to(patient_intial_data(language))
+           console.log('NewlyAddedPatients patient_intial_data data1=', data1)
+           if (data1.idTypes) {
+             setState(prevState => {
+               return {
+                 ...prevState,
+                 idTypeOptions: data1.idTypes,
+                 areaCodeOptions: data1.areaCodes,
+                 refferalTypes: data1.refferalTypes
+               }
+             })
+@@ -539,74 +587,101 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+                      patientInsuranceId
+                    }, index, array) => {
+                     return {
+                       id: patientInsuranceId,
+                       payor: {
+                         id: payorId,
+                         name: payor, item: payor
+                       },
+                       insuranceNo,
+                       policyNo: insuranceNo,
+                       membershipId,
+                       membershipNo: membershipId,
+                       insuranceContent: insuranceContent,
+                       editing: false,
+                       isDefault: isDefault,
+                       patientInsuranceId
+                     }
+                   }
+                 )
+                 console.log('NewlyAddedPatients componentDidMount _insuranceInfos=', _insuranceInfos)
++
++                const baseMobile: MobileItemBasic | null = data.baseInfo.mobileNumber && data.baseInfo.mobileCountryCode
++                  ? {
++                    mobile: data.baseInfo.mobileNumber,
++                    mobileAreaCode: data.baseInfo.mobileCountryCode,
++                    mobileRemark: data.baseInfo.mobileRemark || ''
++                  }
++                  : null;
++
++                const additionalMobiles: MobileItemBasic[] = data.patientMobiles || [];
++
++                const mobiles: MobileItem[] = [...(baseMobile ? [baseMobile] : []), ...additionalMobiles]
++                  .map((item, index): MobileItem => ({
++                    id: String(index),
++                    mobile: item.mobile ?? '',
++                    mobileAreaCode: item.mobileAreaCode ?? '',
++                    mobileRemark: item.mobileRemark ?? '',
++                  }));
++
++                const baseTelephone: TelephoneItemBasic | null = data.baseInfo.telephone && data.baseInfo.telephoneAreaCode
++                  ? {
++                    telephone: data.baseInfo.telephone,
++                    telephoneAreaCode: data.baseInfo.telephoneAreaCode,
++                    telephoneRemark: data.baseInfo.telephoneRemark || ''
++                  }
++                  : null;
++
++                const additionalTelephones: TelephoneItemBasic[] = data.patientTelephones || [];
++
++                const telephones: TelephoneItem[] = [...(baseTelephone ? [baseTelephone] : []), ...additionalTelephones]
++                  .map((item, index): TelephoneItem => ({
++                    id: String(index),
++                    telephone: item.telephone ?? '',
++                    telephoneAreaCode: item.telephoneAreaCode ?? '',
++                    telephoneRemark: item.telephoneRemark ?? '',
++                  }));
++
+                 setState(prevState => {
+                   return {
+                     ...prevState,
+                     baseInfo: {
+                       ...prevState.baseInfo, // 复制 baseInfo 对象
+                       ...data.baseInfo,
+                       patientCode: data.baseInfo.code,
+                       gender: `${data.baseInfo.gender}`,
+                       //無線電話
+                       // mobile: {
+                       //   areaCode: {
+                       //     code: data.baseInfo.mobileCountryCode
+                       //   },
+                       //   number: data.baseInfo.mobileNumber,//手机号码
+                       // },
+-                      mobiles: [
+-                        ...(data.baseInfo.mobileNumber && data.baseInfo.mobileCountryCode
+-                          ? [{mobile: data.baseInfo.mobileNumber, mobileAreaCode: data.baseInfo.mobileCountryCode}]
+-                          : [{mobile: '', mobileAreaCode: ''}]),
+-                        ...(data.patientMobiles || [])
+-                      ],
++                      mobiles: mobiles,
+                       //電話
+                       // tel: {
+                       //   areaCode: {
+                       //     code: data.baseInfo.telephoneAreaCode || ''
+                       //   },
+                       //   number: data.baseInfo.telephone
+                       // },
+-                      telephones: [
+-                        ...(data.baseInfo.telephone && data.baseInfo.telephoneAreaCode
+-                          ? [{telephone: data.baseInfo.telephone, telephoneAreaCode: data.baseInfo.telephoneAreaCode}]
+-                          : [{telephone: '', telephoneAreaCode: ''}]),
+-                        ...(data.patientTelephones || [])
+-                      ],
++                      telephones: telephones,
+                       prefix: (_prefix ? {
+                         code: _prefix[0],
+                         name: {
+                           zh: _prefix[3],
+                           en: _prefix[2]
+                         }, identifier: data.baseInfo.prefix
+                       } : null),
+                       identityDocumentType: data1.idTypes.find((item) => item.code === data.baseInfo.identityDocumentType),
+                       blood: {
+                         item: data.baseInfo.blood
+                       },
+                       occupation: {
+                         item: data.baseInfo.occupation, id: data.baseInfo.occupation, title: data.baseInfo.occupation
+                       },
+                       group: data.baseInfo.group?.split('|')
+                     },
+                     otherInfo: {
+                       ...prevState.otherInfo, // 复制 otherInfo 对象
+                       ...data.otherInfo,
+                       houseArea: {
+@@ -1307,41 +1382,41 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+                     baseInfo: {
+                       ...prevState.baseInfo, // 复制 baseInfo 对象
+                       otherIdentityNumber,
+                     }
+                   }
+                 })
+               }
+               placeholder={global.i18n.t('Please_enter')}
+               placeholderTextColor={uiTheme.colors.$infoInputColor}
+               style={styles.AccordionListRowInput}
+               returnKeyType="done"
+               underlineColorAndroid="transparent"
+               // onSubmitEditing={on_insurance_code_SubmitEditing}
+             />
+             <View style={styles.divider}></View>
+           </View>
+           {/*無線電話*/}
+           <FlatList
+             data={state.baseInfo.mobiles}
+             keyExtractor={item => item.id}
+-            renderItem={({item, index}: { item: { id: string, mobile: string, mobileAreaCode: string }, index: number }) => (
++            renderItem={({ item, index }: { item: MobileItem, index: number }) => (
+               <>
+                 {/*<View style={styles.AccordionListRow}>*/}
+                 {/*  <View style={[styles.phoneLeftView, {alignItems: 'center'}]}>*/}
+                 {/*    {state.baseInfo.mobiles.length !== 1 && <TouchableOpacity style={styles.phoneLeftRemoveBt} onPress={() => {*/}
+                 {/*      setState(prevState => {*/}
+                 {/*        let mobiles = [...prevState.baseInfo.mobiles];*/}
+                 {/*        mobiles.splice(index, 1);*/}
+                 {/*        mobiles = mobiles.map(*/}
+                 {/*          (item: { id: string, mobile: string, mobileAreaCode: string }, _index, array) => {*/}
+                 {/*            return {*/}
+                 {/*              ...item,*/}
+                 {/*              id: `${_index}`,*/}
+                 {/*            }*/}
+                 {/*          }*/}
+                 {/*        )*/}
+                 {/*        return {*/}
+                 {/*          ...prevState,*/}
+                 {/*          baseInfo: {*/}
+                 {/*            ...prevState.baseInfo,*/}
+                 {/*            mobiles*/}
+@@ -1416,41 +1491,41 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+                     selectedItem={{
+                       ...state.areaCodeOptions.find((currentValue: AreaCode, index, arr) => {
+                         return item.mobileAreaCode === currentValue.code
+                       }),
+                       id: state.areaCodeOptions.find((currentValue: AreaCode, index, arr) => {
+                         return item.mobileAreaCode === currentValue.code
+                       }) ? item.mobileAreaCode : '',
+                       title: state.areaCodeOptions.find((currentValue: AreaCode, index, arr) => {
+                         return item.mobileAreaCode === currentValue.code
+                       })?.code,
+                     }}
+                     themeMode={mode}
+                     CustomRow={({children}) => {
+                       return (
+                         <View style={[styles.AccordionListRow, {width: '60%',}]}>
+                           {state.baseInfo.mobiles.length !== 1 && <TouchableOpacity style={styles.phoneLeftRemoveBt} onPress={() => {
+                             setState(prevState => {
+                               let mobiles = [...prevState.baseInfo.mobiles];
+                               mobiles.splice(index, 1);
+                               mobiles = mobiles.map(
+-                                (item: { id: string, mobile: string, mobileAreaCode: string }, _index, array) => {
++                                (item: MobileItem, _index, array) => {
+                                   return {
+                                     ...item,
+                                     id: `${_index}`,
+                                   }
+                                 }
+                               )
+                               return {
+                                 ...prevState,
+                                 baseInfo: {
+                                   ...prevState.baseInfo,
+                                   mobiles
+                                 }
+                               };
+                             })
+                           }}>
+                             {Remove()}
+                           </TouchableOpacity>}
+                           <Text adjustsFontSizeToFit={true} numberOfLines={1} style={styles.phoneTitleLabel}>
+                             {global.i18n.t('Wireless_telephone')}{state.baseInfo.mobiles.length !== 1 && index + 1}
+                             {state.baseInfo.mobiles.length === 1 && index === 0 && <Text style={{color: 'red'}}> *</Text>}
+@@ -1481,41 +1556,41 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+                       try {
+                         return {
+                           items: state.areaCodeOptions?.map((_item: AreaCode, index, array) => {
+                             return {
+                               ..._item,
+                               title: _item.code,
+                               id: _item.code,
+                               _id: item.id
+                             };
+                           }) || [],
+                           pageIndex: pageIndex,
+                           needLoadMore: false,
+                         } as AutoPositionedPopupData;
+                       } catch (e) {
+                       }
+                       return Promise.resolve(null);
+                     }}
+                     onItemSelected={(item: RNSelectedItem) => {
+                       console.log('onItemSelected=', item);
+                       setState(prevState => {
+-                        const mobiles = prevState.baseInfo.mobiles.map((mobileItem: { id: string, mobile: string, mobileAreaCode: string }, i: number) => {
++                        const mobiles = prevState.baseInfo.mobiles.map((mobileItem: MobileItem, i: number) => {
+                             return mobileItem.id === item._id ? {...mobileItem, "mobileAreaCode": item.title} : mobileItem
+                           }
+                         );
+                         return {
+                           ...prevState, showAreaCodeModal: false,
+                           baseInfo: {
+                             ...prevState.baseInfo,
+                             mobiles,
+                           },
+                         }
+                       })
+                     }}
+                     emptyText={i18n.t('no_data')}
+                   ></RNAutoPositionedPopup>
+                   <TextInput
+                     style={styles.phonenInput}
+                     accessible={true}
+                     value={item.mobile}
+                     autoCapitalize="none"
+                     autoFocus={false}
+@@ -1527,69 +1602,112 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+                       setState(prevState => {
+                         const mobiles = prevState.baseInfo.mobiles.map((mobileItem, i) =>
+                           i === index ? {...mobileItem, mobile: number} : mobileItem
+                         );
+                         return {
+                           ...prevState,
+                           baseInfo: {
+                             ...prevState.baseInfo,
+                             mobiles,
+                           }
+                         }
+                       })
+                     }
+                     placeholder={global.i18n.t('Please_enter')}
+                     placeholderTextColor={uiTheme.colors.$infoInputColor}
+                     returnKeyType="done"
+                     keyboardType="phone-pad"
+                     underlineColorAndroid="transparent"
+                     // onSubmitEditing={on_insurance_code_SubmitEditing}
+                   />
++                  <View style={styles.divider2}></View>
++                </View>
++                <View style={[styles.AccordionListRow, { paddingLeft: 0 }]}>
++                  <View style={styles.AccordionListRemarkRow}>
++                    <Text adjustsFontSizeToFit={true} numberOfLines={1} style={[styles.phoneTitleLabel, { marginLeft: state.baseInfo.mobiles.length === 1 ? 8 : 34 }]}>
++                      {global.i18n.t('Remarks')}
++                    </Text>
++                  </View>
++                  <TextInput
++                    style={styles.phonenRemarkInput}
++                    accessible={true}
++                    multiline={true}
++                    value={item.mobileRemark}
++                    autoCapitalize="none"
++                    autoFocus={false}
++                    selectTextOnFocus={false}
++                    autoCorrect={false}
++                    onFocus={() => {
++                    }}
++                    onChangeText={mobileRemark =>
++                      setState(prevState => {
++                        const mobiles = prevState.baseInfo.mobiles.map((mobileItem, i) =>
++                          i === index ? { ...mobileItem, mobileRemark: mobileRemark } : mobileItem
++                        );
++                        return {
++                          ...prevState,
++                          baseInfo: {
++                            ...prevState.baseInfo,
++                            mobiles,
++                          }
++                        }
++                      })
++                    }
++                    placeholder={global.i18n.t('Please_enter')}
++                    placeholderTextColor={uiTheme.colors.$infoInputColor}
++                    returnKeyType="done"
++                    underlineColorAndroid="transparent"
++                    maxLength={200}
++                  // onSubmitEditing={on_insurance_code_SubmitEditing}
++                  />
++                  <View style={styles.divider2}></View>
+                 </View>
+               </>
+             )}
+             ListFooterComponent={() =>
+-              state.baseInfo.mobiles.length !== 5 && <View style={{height: 54, width: '100%', alignItems: 'flex-end', justifyContent: 'center'}}>
+-                <TouchableOpacity style={{marginRight: 8, padding: 8, backgroundColor: '#007AFF1A', borderRadius: 8}} onPress={() => {
+-                  setState(prevState => ({
+-                    ...prevState,
+-                    baseInfo: {
+-                      ...prevState.baseInfo,
+-                      mobiles: [
+-                        ...prevState.baseInfo.mobiles,
+-                        {id: `${prevState.baseInfo.mobiles.length}`, mobile: '', mobileAreaCode: ''}
+-                      ]
+-                    }
+-                  }));
+-                }}
+-                >
+-                  <Text style={styles.addMobileBtText}>{global.i18n.t('add_mobile_phone')}</Text>
+-                </TouchableOpacity>
+-                <View style={styles.divider}></View>
+-              </View>
++              state.baseInfo.mobiles.length !== 5 ? (
++                <View style={styles.addPhoneBtView}>
++                  <TouchableOpacity style={{ padding: 8, backgroundColor: '#007AFF1A', borderRadius: 8 }} onPress={() => {
++                    setState(prevState => ({
++                      ...prevState,
++                      baseInfo: {
++                        ...prevState.baseInfo,
++                        mobiles: [
++                          ...prevState.baseInfo.mobiles,
++                          { id: `${prevState.baseInfo.mobiles.length}`, mobile: '', mobileAreaCode: '', mobileRemark: '' },
++                        ]
++                      }
++                    }));
++                  }}
++                  >
++                    <Text style={styles.addMobileBtText}>{global.i18n.t('add_mobile_phone')}</Text>
++                  </TouchableOpacity>
++                  <View style={styles.divider}></View>
++                </View>
++              ) : null
+             }
+           />
+           {/*電話*/}
+           <FlatList
+             data={state.baseInfo.telephones}
+             keyExtractor={item => item.id}
+-            renderItem={({item, index}: { item: { id: string, telephone: string, telephoneAreaCode: string }, index: number }) => (
++            renderItem={({ item, index }: { item: TelephoneItem, index: number }) => (
+               <>
+                 {/*<View style={styles.AccordionListRow}>*/}
+                 {/*  <View style={[styles.phoneLeftView, {alignItems: 'center'}]}>*/}
+                 {/*    {state.baseInfo.telephones.length !== 1 && <TouchableOpacity style={{marginLeft: 8}} onPress={() => {*/}
+                 {/*      setState(prevState => {*/}
+                 {/*        let telephones = [...prevState.baseInfo.telephones];*/}
+                 {/*        if (telephones.length === 1) {*/}
+                 {/*          return {*/}
+                 {/*            ...prevState,*/}
+                 {/*            baseInfo: {*/}
+                 {/*              ...prevState.baseInfo,*/}
+                 {/*              telephones: [{telephone: '', telephoneAreaCode: ''}]*/}
+                 {/*            }*/}
+                 {/*          };*/}
+                 {/*        } else {*/}
+                 {/*          telephones.splice(index, 1);*/}
+                 {/*          return {*/}
+                 {/*            ...prevState,*/}
+                 {/*            baseInfo: {*/}
+                 {/*              ...prevState.baseInfo,*/}
+@@ -1640,67 +1758,66 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+                 {/*          i === index ? {...telephoneItem, telephone: number} : telephoneItem*/}
+                 {/*        );*/}
+                 {/*        return {*/}
+                 {/*          ...prevState,*/}
+                 {/*          baseInfo: {*/}
+                 {/*            ...prevState.baseInfo,*/}
+                 {/*            telephones,*/}
+                 {/*          }*/}
+                 {/*        }*/}
+                 {/*      })*/}
+                 {/*    }*/}
+                 {/*    placeholder={global.i18n.t('Please_enter')}*/}
+                 {/*    placeholderTextColor={uiTheme.colors.$placeholderTextColor}*/}
+                 {/*    returnKeyType="done"*/}
+                 {/*    keyboardType="phone-pad"*/}
+                 {/*    underlineColorAndroid="transparent"*/}
+                 {/*    // onSubmitEditing={on_insurance_code_SubmitEditing}*/}
+                 {/*  />*/}
+                 {/*  <View style={styles.divider}></View>*/}
+                 {/*</View>*/}
+-                {
+                   <View style={[styles.AccordionListRow, {paddingLeft: 0}]}>
+                     <RNAutoPositionedPopup
+                       tag={`telephones+${item.id}`}
+                       localSearch={false}
+                       useTextInput={false}
+                       selectedItem={{
+                         ...state.areaCodeOptions.find((currentValue: AreaCode, index, arr) => {
+                           return item.telephoneAreaCode === currentValue.code
+                         }),
+                         id: state.areaCodeOptions.find((currentValue: AreaCode, index, arr) => {
+                           return item.telephoneAreaCode === currentValue.code
+                         }) ? item.telephoneAreaCode : '',
+                         title: state.areaCodeOptions.find((currentValue: AreaCode, index, arr) => {
+                           return item.telephoneAreaCode === currentValue.code
+                         })?.code,
+                       }}
+                       themeMode={mode}
+                       CustomRow={({children}) => {
+                         return (
+                           <View style={[styles.AccordionListRow, {width: '60%'}]}>
+                             {state.baseInfo.telephones.length !== 1 && <TouchableOpacity style={styles.phoneLeftRemoveBt} onPress={() => {
+                               setState(prevState => {
+                                 let telephones = [...prevState.baseInfo.telephones];
+                                 telephones.splice(index, 1);
+                                 telephones = telephones.map(
+-                                  (item: { id: string, telephone: string, telephoneAreaCode: string }, _index, array) => {
++                                  (item: TelephoneItem, _index, array) => {
+                                     return {
+                                       ...item,
+                                       id: `${_index}`,
+                                     }
+                                   }
+                                 )
+                                 return {
+                                   ...prevState,
+                                   baseInfo: {
+                                     ...prevState.baseInfo,
+                                     telephones
+                                   }
+                                 };
+                               })
+                             }}>
+                               {Remove()}
+                             </TouchableOpacity>}
+                             <Text adjustsFontSizeToFit={true} numberOfLines={1} style={styles.phoneTitleLabel}>
+                               {global.i18n.t('telephone')}{state.baseInfo.telephones.length !== 1 && index + 1}
+                               {state.baseInfo.telephones.length === 1 && index === 0 && <Text style={{color: 'red'}}> *</Text>}
+@@ -1731,41 +1848,41 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+                         try {
+                           return {
+                             items: state.areaCodeOptions?.map((_item: AreaCode, index, array) => {
+                               return {
+                                 ..._item,
+                                 title: _item.code,
+                                 id: _item.code,
+                                 _id: item.id
+                               };
+                             }) || [],
+                             pageIndex: pageIndex,
+                             needLoadMore: false,
+                           } as AutoPositionedPopupData;
+                         } catch (e) {
+                         }
+                         return Promise.resolve(null);
+                       }}
+                       onItemSelected={(item: RNSelectedItem) => {
+                         console.log('onItemSelected=', item);
+                         setState(prevState => {
+-                          const telephones = prevState.baseInfo.telephones.map((telephoneItem: { id: string, telephone: string, telephoneAreaCode: string }, i: number) => {
++                          const telephones = prevState.baseInfo.telephones.map((telephoneItem: TelephoneItem, i: number) => {
+                               return telephoneItem.id === item._id ? {...telephoneItem, "telephoneAreaCode": item.title} : telephoneItem
+                             }
+                           );
+                           return {
+                             ...prevState, showAreaCodeModal: false,
+                             baseInfo: {
+                               ...prevState.baseInfo,
+                               telephones,
+                             },
+                           }
+                         })
+                       }}
+                       emptyText={i18n.t('no_data')}
+                     ></RNAutoPositionedPopup>
+                     <TextInput
+                       style={styles.phonenInput}
+                       accessible={true}
+                       value={item.telephone}
+                       autoCapitalize="none"
+                       autoFocus={false}
+@@ -1775,63 +1892,105 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+                         setState(prevState => {
+                           const telephones = prevState.baseInfo.telephones.map((telephoneItem, i) =>
+                             i === index ? {...telephoneItem, telephone: number} : telephoneItem
+                           );
+                           return {
+                             ...prevState,
+                             baseInfo: {
+                               ...prevState.baseInfo,
+                               telephones,
+                             }
+                           }
+                         })
+                       }
+                       placeholder={global.i18n.t('Please_enter')}
+                       placeholderTextColor={uiTheme.colors.$infoInputColor}
+                       returnKeyType="done"
+                       keyboardType="phone-pad"
+                       underlineColorAndroid="transparent"
+                       // onSubmitEditing={on_insurance_code_SubmitEditing}
+                     />
++                  <View style={styles.divider2}></View>
+                   </View>
+-                }
++                <View style={[styles.AccordionListRow, { paddingLeft: 0 }]}>
++                  <View style={styles.AccordionListRemarkRow}>
++                    <Text adjustsFontSizeToFit={true} numberOfLines={1} style={[styles.phoneTitleLabel, { marginLeft: state.baseInfo.telephones.length === 1 ? 8 : 34 }]}>
++                      {global.i18n.t('Remarks')}
++                    </Text>
++                  </View>
++                  <TextInput
++                    style={styles.phonenRemarkInput}
++                    accessible={true}
++                    multiline={true}
++                    value={item.telephoneRemark}
++                    autoCapitalize="none"
++                    autoFocus={false}
++                    selectTextOnFocus={false}
++                    autoCorrect={false}
++                    onFocus={() => {
++                    }}
++                    onChangeText={telephoneRemark =>
++                      setState(prevState => {
++                        const telephones = prevState.baseInfo.telephones.map((telephoneItem, i) =>
++                          i === index ? { ...telephoneItem, telephoneRemark: telephoneRemark } : telephoneItem
++                        );
++                        return {
++                          ...prevState,
++                          baseInfo: {
++                            ...prevState.baseInfo,
++                            telephones,
++                          }
++                        }
++                      })
++                    }
++                    placeholder={global.i18n.t('Please_enter')}
++                    placeholderTextColor={uiTheme.colors.$infoInputColor}
++                    returnKeyType="done"
++                    underlineColorAndroid="transparent"
++                    maxLength={200}
++                  // onSubmitEditing={on_insurance_code_SubmitEditing}
++                  />
++                  <View style={styles.divider2}></View>
++                </View>
+               </>
+             )}
+             ListFooterComponent={() =>
+-              state.baseInfo.telephones.length !== 5 && <View style={{height: 54, width: '100%', alignItems: 'flex-end', justifyContent: 'center'}}>
+-                <TouchableOpacity style={{marginRight: 8, padding: 8, backgroundColor: '#007AFF1A', borderRadius: 8}} onPress={() => {
+-                  setState(prevState => ({
+-                    ...prevState,
+-                    baseInfo: {
+-                      ...prevState.baseInfo,
+-                      telephones: [
+-                        ...prevState.baseInfo.telephones,
+-                        {id: `${prevState.baseInfo.telephones.length}`, telephone: '', telephoneAreaCode: ''}
+-                      ]
+-                    }
+-                  }));
+-                }}
+-                >
+-                  <Text style={styles.addMobileBtText}>{global.i18n.t('add_telephone')}</Text>
+-                </TouchableOpacity>
+-                <View style={styles.divider}></View>
+-              </View>
++              state.baseInfo.telephones.length !== 5 ? (
++                <View style={styles.addPhoneBtView}>
++                  <TouchableOpacity style={{ padding: 8, backgroundColor: '#007AFF1A', borderRadius: 8 }} onPress={() => {
++                    setState(prevState => ({
++                      ...prevState,
++                      baseInfo: {
++                        ...prevState.baseInfo,
++                        telephones: [
++                          ...prevState.baseInfo.telephones,
++                          { id: `${prevState.baseInfo.telephones.length}`, telephone: '', telephoneAreaCode: '', telephoneRemark: '' }
++                        ]
++                      }
++                    }));
++                  }}
++                  >
++                    <Text style={styles.addMobileBtText}>{global.i18n.t('add_telephone')}</Text>
++                  </TouchableOpacity>
++                  <View style={styles.divider}></View>
++                </View>
++              ) : null
+             }
+           />
+           {/*郵箱*/}
+           <View style={styles.AccordionListRow}>
+             <Text style={styles.AccordionListRowLabel}>{global.i18n.t('Email')}</Text>
+             <TextInput
+               accessible={true}
+               // value={state.baseInfo.email}
+               value={
+                 Platform.OS === 'ios' && state.baseInfo.email?.endsWith(' ')
+                   ? state.baseInfo.email + '\u200D'
+                   : state.baseInfo.email
+               }
+               autoCapitalize="none"
+               autoFocus={false}
+               selectTextOnFocus={false}
+               autoCorrect={false}
+               onChangeText={email =>
+                 setState(prevState => {
+                   return {
+@@ -4422,123 +4581,138 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+    */
+     // const renderDocument_typePicker = useCallback(
+     //     () => {
+     //         return (
+     //             <Picker
+     //                 selectedValue={state.Document_type}
+     //                 style={styles.picker}
+     //                 // onValueChange={(itemValue, itemIndex) => onYearValueChange(itemValue)}
+     //             >
+     //                 {/* Placeholder item */}
+     //                 <Picker.Item style={styles.pickerPlaceholder} label="請選擇" value="" />
+     //                 {/* 实际选项 */}
+     //                 {/*{years.map((year) => (*/}
+     //                 {/*    <Picker.Item key={year} label={year.toString()} value={year} />*/}
+     //                 {/*))}*/}
+     //             </Picker>
+     //         )
+     //     },
+     //     [state.Document_type],
+     //   );
++
++  const toInsurancePayload = (
++    list: InsuranceInfoState[],
++    defIndex: number
++  ): InsuranceInfo[] =>
++    list.map((item, index): InsuranceInfo => ({
++      patientInsuranceId: item.patientInsuranceId ?? item.id ?? '',
++      payor: item.payor?.name ?? item.payor?.item ?? null,
++      payorId: item.payor?.id ?? null,
++      policyId: item.policyId ?? null,
++      insuranceNo: item.insuranceNo ?? item.policyNo ?? null,
++      membershipId: item.membershipId ?? item.membershipNo ?? null,
++      insuranceContent: item.insuranceContent ?? null,
++      isDefault: index === defIndex,
++    }));
+     //render
+     // 確定
+   const renderRightBt = useCallback(
+-      () => {
++    (): React.JSX.Element => {
+         console.log('NewlyAddedPatients.tsx renderRightBt pageData.pageType=', pageData.pageType, ' WaitingSchedulingDetailPageType=', pageData.WaitingSchedulingDetailPageType)
+         return (
+           <TouchableOpacity disabled={disabledSave} style={[styles.sideButton]} onPress={async () => {
+             setLoading(true)
+             await onSave()
+             setLoading(false)
+             {
+               if (pageData.pageType === 1) {
+                 setLoading(true)
+                 const [err, data] = await tool.to(confirm_remote_ticket({appointmentId: pageData.appointmentId}))
+                 console.log('confirm_remote_ticket data=', data)
+                 if (data) {
+                   if (!state.patientId) {
+-                    await tool.to(update_patient({
++                    const validMobiles = state.baseInfo.mobiles.filter(item => item.mobileAreaCode && item.mobile).map(toMobilePayload);
++                    const [firstMobile, ...otherMobiles] = validMobiles;
++
++                    const validTelephones = state.baseInfo.telephones.filter(item => item.telephoneAreaCode && item.telephone).map(toTelephonePayload);
++                    const [firstTelephone, ...otherTelephones] = validTelephones;
++                    const [updateError, updatedPatient] = await tool.to(update_patient({
+                       id: data.patientId,
+                       gender: state.baseInfo.gender,
+                       prefix: state.baseInfo.prefix?.identifier,
+                       dateOfBirth: state.baseInfo.birthDate,
+                       documentId: {
+                         //證件類型
+                         type: state.baseInfo.identityDocumentType.code,
+                         //證件編號
+                         number: state.baseInfo.identityDocumentNumber,
+                         // 其他證件編號
+                         otherNumber: state.baseInfo.otherIdentityNumber
+                       },
+                       name: {
+                         en: state.baseInfo.enName, zh: state.baseInfo.zhName
+                       },
+                       blood: state.baseInfo.blood?.item,
+                       doctorInCharge: state.otherInfo.doctorInCharge?.item,
+                       familyHistory: state.otherInfo.familyHistory,
+                       remark: state.baseInfo.remark,
+                       receiveMarketingMessage: state.receiveMarketingMessage,
+                       emergencyContactAreaCode: state.emergencyContactInfo.emergencyContactAreaCode,
+                       emergencyContactName: state.emergencyContactInfo.emergencyContactName,
+                       emergencyContactPhone: state.emergencyContactInfo.emergencyContactPhone,
+                       emergencyContactRelationship: state.emergencyContactInfo.emergencyContactRelationship,
+                       emergencyContactRemark: state.emergencyContactInfo.emergencyContactRemark,
+                       contact: {
+                         //無線電話
+                         mobile: {
+-                          areaCode: state.baseInfo.mobileCountryCode, // 数据接口query/patient-intial-data, 关联areacodes.code
+-                          number: state.baseInfo.mobileNumber
++                          areaCode: firstMobile.mobileAreaCode, // 数据接口query/patient-intial-data, 关联areacodes.code
++                          number: firstMobile.mobile,
++                          remark: firstMobile.mobileRemark || ''
+                         },
+                         // 電話
+                         tel: {
+-                          areaCode: state.baseInfo.tel?.areaCode?.code,
+-                          number: state.baseInfo.tel.number
++                          areaCode: firstTelephone?.telephoneAreaCode,
++                          number: firstTelephone?.telephone,
++                          remark: firstTelephone?.telephoneRemark || ''
+                         },
+                         email: state.baseInfo.email
+                       },
++                      patientMobiles: otherMobiles,
++                      patientTelephones: otherTelephones,
+                       houseAddress: {
+                         area: state.otherInfo.houseArea?.item, // 数据接口query/patient-data-setting, 类别area, 关联item
+                         district: state.otherInfo.houseDistrict?.item, // 数据接口query/patient-data-setting, 类别district, 关联item
+                         street: state.otherInfo.houseAddress // free text, 详细地址
+                       },
+                       referral: {
+                         category: state.otherInfo.referralCategory?.code, // 数据接口query/patient-intial-data, 关联 refferalType.code
+                         description: state.otherInfo.referralDescription?.value // 数据接口query/refferal, catagory取refferalType.code, 关联value
+                       },
+-                      insurance: state.insuranceInfos.map(
+-                        (item, index, array) => {
+-                          return {
+-                            id: item.id,
+-                            payor: {
+-                              id: item.payor?.id,
+-                              name: item.payor.name
+-                            },
+-                            policyNo: item.policyNo,
+-                            membershipNo: item.membershipNo,
+-                            insuranceContent: item.insuranceContent,
+-                            isDefault: index == state.defIndex ? true : false
+-                          }
+-                        }
+-                      ),
++                      insurance: toInsurancePayload(state.insuranceInfos, state.defIndex),
+                       occupation: state.baseInfo.occupation?.item,
+                       Group: state.baseInfo.group
+                     }))
++                    if (updateError || !updatedPatient) {
++                      setLoading(false);
++                      console.log('NewlyAddedPatients.tsx update_patient error');
++                      return;
++                    }
+                   }
+                   if (pageData.WaitingSchedulingDetailPageType === 1) {
+                     try {
+                       const data1 = await confirm_remote_ticket_option({
+                         appointmentId: data.appointmentId,
+                         checkInInsuranceId: data.checkInInsuranceId,
+                         patientId: data.patientId,
+                         doctorId: pageData.doctorId
+                       });
+                       console.log('NewlyAddedPatients confirm_remote_ticket_option data1=', data1)
+                       if (!data1.eligibilityChecked) {
+                         setLoading(false);
+                         routes.navigate(navigation, routes.AppointmentListPage.routeName, {});
+                         emitEvent(globalEventName.changehomeType, 0)
+                         return false;
+                       }
+                     } catch (error) {
+                       console.error('Error refreshing page:', error);
+                     } finally {
+                     }
+@@ -4552,201 +4726,182 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+                         // patientData: state,
+                         patientId: data.patientId,
+                         doctorId: pageData.doctorId,
+                         confirmPatientData:data.confirmPatientData
+                       }
+                     }
+                   )
+                 }
+               }
+             }
+             setLoading(false)
+           }}>
+             <Text style={[styles.buttonText, (disabledSave ? {color: '#B7B7B9'} : null)]}>{global.i18n.t('confirm')}</Text>
+           </TouchableOpacity>
+         )
+       },
+       [state, state.pageType, state.insuranceInfos, pageData, disabledSave],
+     );
+ 
+   // 去掉 首尾空格，iOS中\u200D
+-  const cleanZWJ = (str?: string) => str ? str.replace(/\u200D/g, ' ').trim() : str;
++  const cleanZWJ = (str?: string): string => {
++    if (!str) return '';
++    return str.replace(/\u200D/g, ' ').trim();
++  };
+ 
+   const onSave = useCallback(
+-    async () => {
++    async (): Promise<boolean | void> => {
+       console.log('NewlyAddedPatients.tsx onSave state=', state)
+       if (!state.baseInfo.identityDocumentType) {
+         console.log('请选择證件類型')
+         return false
+       }
+       if (!state.baseInfo.identityDocumentNumber) {
+         console.log('請輸入證件編號')
+         return false
+       }
+ 
+       // 去掉id 否则对后端保存造成影响
+-      const validMobiles = state.baseInfo.mobiles.filter(
+-        item => item.mobileAreaCode && item.mobile
+-      ).map(item => {
+-        // 创建一个不包含 id 属性的新对象
+-        const {id, ...rest} = item;
+-        return rest;
+-      });
++      const validMobiles = state.baseInfo.mobiles.filter(item => item.mobileAreaCode && item.mobile).map(toMobilePayload);
+       const [firstMobile, ...otherMobiles] = validMobiles;
+ 
+-      const validTelephones = state.baseInfo.telephones.filter(
+-        item => item.telephoneAreaCode && item.telephone
+-      ).map(item => {
+-        // 创建一个不包含 id 属性的新对象
+-        const {id, ...rest} = item;
+-        return rest;
+-      });
+-      const [firsTelephone, ...otherTelephones] = validTelephones;
++      const validTelephones = state.baseInfo.telephones.filter(item => item.telephoneAreaCode && item.telephone).map(toTelephonePayload);
++      const [firstTelephone, ...otherTelephones] = validTelephones;
+ 
+       if (state.pageType === -1) {//新增
+         const [err, data] = await tool.to(create_patient({
+-          clinicCode: global.curClinicData.code,
+-          doctorCode: global.curDoctorData.code,
++          clinicCode: global.curClinicData?.code ?? '',
++          doctorCode: global.curDoctorData?.code ?? '',
+           patientCode: state.baseInfo.patientCode,
+           gender: state.baseInfo.gender,
+           prefix: state.baseInfo.prefix?.identifier,
+           dateOfBirth: state.baseInfo.birthDate,
+           documentId: {
+             //證件類型
+             type: state.baseInfo.identityDocumentType.code,
+             //證件編號
+             number: cleanZWJ(state.baseInfo.identityDocumentNumber),
+             // 其他證件編號
+             otherNumber: cleanZWJ(state.baseInfo.otherIdentityNumber)
+           },
+           name: {
+             en: cleanZWJ(state.baseInfo.enName), zh: cleanZWJ(state.baseInfo.zhName)
+           },
+           blood: state.baseInfo.blood?.item,
+           doctorInCharge: state.otherInfo.doctorInCharge?.item,
+           familyHistory: cleanZWJ(state.otherInfo.familyHistory),
+           remark: cleanZWJ(state.baseInfo.remark),
+           receiveMarketingMessage: state.receiveMarketingMessage,
+           emergencyContactAreaCode: state.emergencyContactInfo.emergencyContactAreaCode,
+           emergencyContactName: cleanZWJ(state.emergencyContactInfo.emergencyContactName),
+           emergencyContactPhone: state.emergencyContactInfo.emergencyContactPhone,
+           emergencyContactRelationship: state.emergencyContactInfo.emergencyContactRelationship,
+           emergencyContactRemark: cleanZWJ(state.emergencyContactInfo.emergencyContactRemark),
+           contact: {
+             //無線電話
+             mobile: {
+               areaCode: firstMobile.mobileAreaCode, // 数据接口query/patient-intial-data, 关联areacodes.code
+-              number: firstMobile.mobile
++              number: firstMobile.mobile,
++              remark: firstMobile.mobileRemark || ''
+             },
+             // 電話
+             tel: {
+-              areaCode: firsTelephone?.telephoneAreaCode,
+-              number: firsTelephone?.telephone,
++              areaCode: firstTelephone?.telephoneAreaCode,
++              number: firstTelephone?.telephone,
++              remark: firstTelephone?.telephoneRemark || ''
+             },
+             email: cleanZWJ(state.baseInfo.email)
+           },
+           patientMobiles: otherMobiles,
+           patientTelephones: otherTelephones,
+           houseAddress: {
+             area: state.otherInfo.houseArea?.item, // 数据接口query/patient-data-setting, 类别area, 关联item
+             district: state.otherInfo.houseDistrict?.item, // 数据接口query/patient-data-setting, 类别district, 关联item
+             street: state.otherInfo.houseAddress // free text, 详细地址
+           },
+           referral: {
+             category: state.otherInfo.referralCategory?.code, // 数据接口query/patient-intial-data, 关联 refferalType.code
+             description: state.otherInfo.referralDescription?.value // 数据接口query/refferal, catagory取refferalType.code, 关联value
+           },
+-          insurance: state.insuranceInfos,
++          insurance: toInsurancePayload(state.insuranceInfos, state.defIndex),
+           occupation: state.baseInfo.occupation?.item,
+           Group: state.baseInfo.group
+         }))
+         if (data) {
+           emitEvent(globalEventName.refreshPatientList, '1')
+           routes.goBack(navigation);
+         }
+       } else if (state.pageType === 0 || state.pageType === 1) {//編輯 |签到前
+         try {
+           const data = await update_patient({
+             id: state.patientId,
+             gender: state.baseInfo.gender,
+             prefix: state.baseInfo.prefix?.identifier,
+             dateOfBirth: state.baseInfo.birthDate,
+             documentId: {
+               //證件類型
+               type: state.baseInfo.identityDocumentType.code,
+               //證件編號
+               number: cleanZWJ(state.baseInfo.identityDocumentNumber),
+               // 其他證件編號
+               otherNumber: cleanZWJ(state.baseInfo.otherIdentityNumber)
+             },
+             name: {
+               en: cleanZWJ(state.baseInfo.enName), zh: cleanZWJ(state.baseInfo.zhName)
+             },
+             blood: state.baseInfo.blood?.item,
+             doctorInCharge: state.otherInfo.doctorInCharge?.item,
+             familyHistory: cleanZWJ(state.otherInfo.familyHistory),
+             remark: cleanZWJ(state.baseInfo.remark),
+             receiveMarketingMessage: state.receiveMarketingMessage,
+             emergencyContactAreaCode: state.emergencyContactInfo.emergencyContactAreaCode,
+             emergencyContactName: cleanZWJ(state.emergencyContactInfo.emergencyContactName),
+             emergencyContactPhone: state.emergencyContactInfo.emergencyContactPhone,
+             emergencyContactRelationship: state.emergencyContactInfo.emergencyContactRelationship,
+             emergencyContactRemark: cleanZWJ(state.emergencyContactInfo.emergencyContactRemark),
+             contact: {
+               //無線電話
+               mobile: {
+                 areaCode: firstMobile.mobileAreaCode, // 数据接口query/patient-intial-data, 关联areacodes.code
+-                number: firstMobile.mobile
++                number: firstMobile.mobile,
++                remark: firstMobile.mobileRemark || ''
+               },
+               // 電話
+               tel: {
+-                areaCode: firsTelephone?.telephoneAreaCode,
+-                number: firsTelephone?.telephone,
++                areaCode: firstTelephone?.telephoneAreaCode,
++                number: firstTelephone?.telephone,
++                remark: firstTelephone?.telephoneRemark || ''
+               },
+               email: cleanZWJ(state.baseInfo.email)
+             },
+             patientMobiles: otherMobiles,
+             patientTelephones: otherTelephones,
+             houseAddress: {
+               area: state.otherInfo.houseArea?.item, // 数据接口query/patient-data-setting, 类别area, 关联item
+               district: state.otherInfo.houseDistrict?.item, // 数据接口query/patient-data-setting, 类别district, 关联item
+               street: state.otherInfo.houseAddress // free text, 详细地址
+             },
+             referral: {
+               category: state.otherInfo.referralCategory?.code, // 数据接口query/patient-intial-data, 关联 refferalType.code
+               description: state.otherInfo.referralDescription?.value // 数据接口query/refferal, catagory取refferalType.code, 关联value
+             },
+-            insurance: state.insuranceInfos.map(
+-              (item, index, array) => {
+-                return {
+-                  id: item.id,
+-                  payor: {
+-                    id: item.payor?.id,
+-                    name: item.payor.name
+-                  },
+-                  policyNo: item.policyNo,
+-                  membershipNo: item.membershipNo,
+-                  insuranceContent: item.insuranceContent,
+-                  isDefault: index == state.defIndex ? true : false
+-                }
+-              }
+-            ),
++            insurance: toInsurancePayload(state.insuranceInfos, state.defIndex),
+             occupation: state.baseInfo.occupation?.item,
+             Group: state.baseInfo.group
+           })
+           console.log('NewlyAddedPatients.tsx onSave data=', data)
+           if (data) {
+             if (pageData.from == routes.WaitingSchedulingDetailPage.routeName) {
+               if (pageData.WaitingSchedulingDetailPageType == 0 && state.pageType === 0) {//编辑排队
+                 emitEvent(globalEventName.refreshHomeWaittinglist, '1')
+                 routes.navigate(navigation, routes.AppointmentListPage.routeName, {})
+               }
+             } else if (pageData.from == routes.DiagnosisPage.routeName) {
+               emitEvent(globalEventName.updatePatientInfoInDiagnosisPage, '1')
+               routes.goBack(navigation);
+             } else {
+               console.log('NewlyAddedPatients.tsx onSave emitEvent refreshPatientList')
+               emitEvent(globalEventName.refreshPatientList, '1')
+               routes.goBack(navigation);
+             }
+           }
+         } catch (e) {
