@@ -1,0 +1,18 @@
+---
+pid: 50189
+cwd: "/Users/stark/Desktop/work/RN/circleapp"
+command: "sleep 58\nadb -s 4ae24c72 shell uiautomator dump /sdcard/rn-ui-window.xml >/dev/null\nadb -s 4ae24c72 pull /sdcard/rn-ui-window.xml /tmp/tech-8982-fullwidth-toast/ready.xml >/dev/null\npython3 - <<'PY'\nimport xml.etree.ElementTree as ET\nroot=ET.parse('/tmp/tech-8982-fullwidth-toast/ready.xml').getroot()\nfor n in root.iter('node'):\n    text=n.attrib.get('text') or ''\n    desc=n.attrib.get('content-desc') or ''\n    if 'OTP' in text or 'OTP' in desc or 'gmail' in text:\n        print(f\"{n.attrib.get('bounds')}\\t{text[:80]!r}\\t{desc[:40]!r}\")\nPY"
+title: "Wait for OTP cooldown then dump Get OTP state"
+status: succeeded
+started_at: 2026-09-16T12:29:41.064Z
+running_for_ms: 61065    
+---
+[157,923][810,1044]	'ggh@gmail.com'	'Email'
+[843,956][989,1011]	''	'Get OTP'
+[843,956][989,1011]	'Get OTP'	''
+
+---
+exit_code: 0
+elapsed_ms: 61065
+ended_at: 2026-09-16T12:30:42.129Z
+---
