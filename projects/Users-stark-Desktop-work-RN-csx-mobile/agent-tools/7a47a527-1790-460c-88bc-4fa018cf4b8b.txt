@@ -1,0 +1,522 @@
+parseErrors 0
+fileCount 401
+
+==== FILE src/api/api-types.ts sourceFile= true ====
+syntactic 0 semantic 0 suggestion 1
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types.ts:4:1 [Suggestion] TS6192 All imports in import declaration are unused.
+
+==== FILE src/api/api.ts sourceFile= true ====
+syntactic 0 semantic 118 suggestion 7
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:8:27 [Error] TS7016 Could not find a declaration file for module 'crypto-js'. '/Users/stark/Desktop/work/RN/csx-mobile/node_modules/crypto-js/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/crypto-js` if it exists or add a new declaration (.d.ts) file containing `declare module 'crypto-js';`
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:94:37 [Error] TS2345 Argument of type 'string' is not assignable to parameter of type '"AddAppointment"'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:245:20 [Error] TS2339 Property 'name' does not exist on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:246:23 [Error] TS2339 Property 'message' does not exist on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:247:25 [Error] TS2339 Property 'isTimeout' does not exist on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:248:21 [Error] TS2339 Property 'stack' does not exist on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:251:30 [Error] TS2339 Property 'name' does not exist on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:252:14 [Error] TS2339 Property 'isTimeout' does not exist on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:253:14 [Error] TS2339 Property 'message' does not exist on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:254:14 [Error] TS2339 Property 'name' does not exist on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:261:25 [Error] TS2339 Property 'name' does not exist on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:281:31 [Error] TS2339 Property 'name' does not exist on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:282:29 [Error] TS2339 Property 'name' does not exist on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:283:30 [Error] TS2339 Property 'name' does not exist on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:386:7 [Error] TS7053 Element implicitly has an 'any' type because expression of type '"finished"' can't be used to index type '{ clinicId: string; doctorId: string; }'.
+  Property 'finished' does not exist on type '{ clinicId: string; doctorId: string; }'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:389:7 [Error] TS7053 Element implicitly has an 'any' type because expression of type '"consulted"' can't be used to index type '{ clinicId: string; doctorId: string; }'.
+  Property 'consulted' does not exist on type '{ clinicId: string; doctorId: string; }'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:408:75 [Error] TS7006 Parameter 'index' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:408:82 [Error] TS7006 Parameter 'arr' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:648:52 [Error] TS7053 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ id: string; showTemporaryData: boolean; }'.
+  No index signature with a parameter of type 'string' was found on type '{ id: string; showTemporaryData: boolean; }'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:715:44 [Error] TS7031 Binding element 'pageIndex' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:716:44 [Error] TS7031 Binding element 'idType' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:717:44 [Error] TS7031 Binding element 'contract' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:718:44 [Error] TS7031 Binding element 'insuranceNo' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:719:44 [Error] TS7031 Binding element 'referral' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:720:44 [Error] TS7031 Binding element 'referralCategory' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:721:44 [Error] TS7031 Binding element 'doctorInCharge' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:765:46 [Error] TS7031 Binding element 'patientId' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:766:46 [Error] TS7031 Binding element 'remarks' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:767:46 [Error] TS7031 Binding element 'pageIndex' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:768:46 [Error] TS7031 Binding element 'clinicId' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:769:46 [Error] TS7031 Binding element 'doctorId' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:770:46 [Error] TS7031 Binding element 'startDate' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:771:46 [Error] TS7031 Binding element 'endDate' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:810:83 [Error] TS2366 Function lacks ending return statement and return type does not include 'undefined'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:883:52 [Error] TS7053 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ patientId: string; }'.
+  No index signature with a parameter of type 'string' was found on type '{ patientId: string; }'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1289:38 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1322:46 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1366:44 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1408:49 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1440:38 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1473:38 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1506:50 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1533:45 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1564:52 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1595:36 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1626:38 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1685:40 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1722:53 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1749:42 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1814:52 [Error] TS7053 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1852:52 [Error] TS7053 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1890:52 [Error] TS7053 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1920:39 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1949:27 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1984:39 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:2015:43 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:2042:36 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:2069:41 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:2110:44 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:2208:27 [Error] TS2339 Property 'type' does not exist on type '{ biometricsId: string; secret: string; publicKey: string; username: string; tenantID: string; }'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:2231:45 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:2278:37 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:2309:37 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:2340:42 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:2464:43 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:2496:43 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:2523:34 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:2616:46 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:2680:49 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:2730:42 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:2761:54 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:2831:45 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3038:45 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3065:51 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3100:45 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3159:45 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3186:60 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3213:55 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3241:46 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3280:45 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3315:55 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3471:50 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3499:53 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3564:47 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3592:38 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3622:53 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3649:45 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3687:44 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3835:49 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3862:35 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3927:45 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3970:52 [Error] TS7053 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ langEnv: string; }'.
+  No index signature with a parameter of type 'string' was found on type '{ langEnv: string; }'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:3996:45 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4030:50 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4057:45 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4084:43 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4127:52 [Error] TS7053 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4187:52 [Error] TS7053 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4213:56 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4240:53 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4267:51 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4297:44 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4328:57 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4359:44 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4450:52 [Error] TS7053 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4475:32 [Error] TS7006 Parameter 'curAccount' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4475:44 [Error] TS7006 Parameter 'navigation' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4475:56 [Error] TS7006 Parameter 'dispatch' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4494:32 [Error] TS2345 Argument of type 'string' is not assignable to parameter of type '"AddAppointment"'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4592:41 [Error] TS7031 Binding element 'appointmentId' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4592:56 [Error] TS7031 Binding element 'diagnosisJsonAsString' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4592:79 [Error] TS7031 Binding element 'currencyCode' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4592:93 [Error] TS7031 Binding element 'expenseItems' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4654:52 [Error] TS7053 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ ticketId: string; }'.
+  No index signature with a parameter of type 'string' was found on type '{ ticketId: string; }'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4688:52 [Error] TS7053 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ ticketId: string; }'.
+  No index signature with a parameter of type 'string' was found on type '{ ticketId: string; }'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:4890:40 [Error] TS7006 Parameter 'p' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:5030:52 [Error] TS7053 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:5425:52 [Error] TS7053 Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:112:34 [Suggestion] TS6133 'url' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1196:41 [Suggestion] TS6133 'token' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1776:60 [Suggestion] TS6133 'onProgress' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:1882:35 [Suggestion] TS6133 'installationId' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:408:75 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:408:82 [Suggestion] TS6133 'arr' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/api/api.ts:11:9 [Suggestion] TS6133 'encryptWithPrivateKey' is declared but its value is never read.
+
+==== FILE src/pages/NewlyAddedPatients/NewlyAddedPatients.styles.ts sourceFile= true ====
+syntactic 0 semantic 0 suggestion 0
+
+==== FILE src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx sourceFile= true ====
+syntactic 0 semantic 100 suggestion 172
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:321:7 [Error] TS2322 Type '(props: pageProps, parentRef: any) => Element' is not assignable to type 'FC<pageProps>'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:321:68 [Error] TS7006 Parameter 'parentRef' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:324:10 [Error] TS2339 Property 'pageData' does not exist on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:489:24 [Error] TS2554 Expected 1 arguments, but got 0.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:490:20 [Error] TS2554 Expected 1 arguments, but got 0.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:491:21 [Error] TS2554 Expected 1 arguments, but got 0.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:492:26 [Error] TS2554 Expected 1 arguments, but got 0.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:495:33 [Error] TS2554 Expected 1 arguments, but got 0.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:496:34 [Error] TS2554 Expected 1 arguments, but got 0.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:497:35 [Error] TS2554 Expected 1 arguments, but got 0.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:498:23 [Error] TS2554 Expected 1 arguments, but got 0.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:499:26 [Error] TS2554 Expected 1 arguments, but got 0.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:500:42 [Error] TS2554 Expected 1 arguments, but got 0.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:504:30 [Error] TS2749 'TouchableOpacity' refers to a value, but is being used as a type here. Did you mean 'typeof TouchableOpacity'?
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:509:31 [Error] TS2554 Expected 1 arguments, but got 0.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:510:25 [Error] TS2554 Expected 1 arguments, but got 0.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:562:43 [Error] TS7006 Parameter 'a' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:562:46 [Error] TS7006 Parameter 'b' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:580:22 [Error] TS7031 Binding element 'payorId' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:581:22 [Error] TS7031 Binding element 'insuranceContent' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:582:22 [Error] TS7031 Binding element 'insuranceNo' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:583:22 [Error] TS7031 Binding element 'isDefault' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:584:22 [Error] TS7031 Binding element 'membershipId' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:585:22 [Error] TS7031 Binding element 'payor' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:586:22 [Error] TS7031 Binding element 'policyId' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:587:22 [Error] TS7031 Binding element 'patientInsuranceId' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:588:23 [Error] TS7006 Parameter 'index' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:588:30 [Error] TS7006 Parameter 'array' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:644:26 [Error] TS2345 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+  Type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }'. Two different types with this name exist, but they are unrelated.
+    Call signature return types '{ baseInfo: any; otherInfo: any; emergencyContactInfo: any; insuranceInfos: any; editingInsuranceInfo: {}; receiveMarketingMessage: any; pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; ... 41 more ...; docTypeList: string[]; }' and '{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }' are incompatible.
+      The types of 'editingInsuranceInfo' are incompatible between these types.
+        Type '{}' is missing the following properties from type '{ payor: PatientDataSettingItem | null; insuranceNo: string; membershipId: string; insuranceContent: string; }': payor, insuranceNo, membershipId, insuranceContent
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:675:65 [Error] TS7006 Parameter 'item' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:730:60 [Error] TS2345 Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:789:20 [Error] TS18047 'currentValue.payor' is possibly 'null'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:789:46 [Error] TS18047 'state.editingInsuranceInfo.payor' is possibly 'null'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:835:10 [Error] TS7006 Parameter 'item' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:835:16 [Error] TS7006 Parameter 'index' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:835:23 [Error] TS7006 Parameter 'array' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1168:26 [Error] TS2345 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+  Type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }'. Two different types with this name exist, but they are unrelated.
+    Call signature return types '{ baseInfo: { prefix: SelectedItem; patientCode: string; autoGeneratePatientCode: boolean; enName: string; zhName: string; gender: string; birthDate: null; identityDocumentType: IdType | null; ... 9 more ...; group: string[]; }; ... 49 more ...; docTypeList: string[]; }' and '{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }' are incompatible.
+      The types of 'baseInfo.prefix' are incompatible between these types.
+        Type 'SelectedItem' is missing the following properties from type '{ id: string; identifier: string; code: string; gender: number; name: { en: string; zh: string; }; }': "identifier", "code", "gender", "name"
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1203:64 [Error] TS2339 Property 'clearSelectedItem' does not exist on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1314:28 [Error] TS2345 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+  Type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }'. Two different types with this name exist, but they are unrelated.
+    Call signature return types '{ baseInfo: { identityDocumentType: SelectedItem; patientCode: string; autoGeneratePatientCode: boolean; enName: string; zhName: string; gender: string; prefix: { id: string; identifier: string; code: string; gender: number; name: { ...; }; } | null; ... 10 more ...; group: string[]; }; ... 49 more ...; docTypeList:...' and '{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }' are incompatible.
+      The types of 'baseInfo.identityDocumentType' are incompatible between these types.
+        Type 'SelectedItem' is missing the following properties from type 'IdType': code, name, regexExpression, isDefault
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1577:59 [Error] TS2339 Property '_id' does not exist on type 'SelectedItem'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1869:64 [Error] TS2339 Property '_id' does not exist on type 'SelectedItem'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2027:13 [Error] TS2322 Type 'RefObject<KeyboardAwareScrollView | null>' is not assignable to type 'RefObject<KeyboardAwareScrollView>'.
+  Type 'KeyboardAwareScrollView | null' is not assignable to type 'KeyboardAwareScrollView'.
+    Type 'null' is not assignable to type 'ScrollableComponent<KeyboardAwareScrollViewProps, KeyboardAwareState>'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2070:24 [Error] TS2345 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+  Type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }'. Two different types with this name exist, but they are unrelated.
+    Call signature return types '{ baseInfo: { occupation: SelectedItem; patientCode: string; autoGeneratePatientCode: boolean; enName: string; zhName: string; gender: string; prefix: { id: string; identifier: string; code: string; gender: number; name: { ...; }; } | null; ... 10 more ...; group: string[]; }; ... 49 more ...; docTypeList: string[]; }' and '{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }' are incompatible.
+      The types of 'baseInfo.occupation' are incompatible between these types.
+        Type 'SelectedItem' is missing the following properties from type 'PatientDataSettingItem': "category", "item"
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2097:28 [Error] TS2345 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+  Type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }'. Two different types with this name exist, but they are unrelated.
+    Call signature return types '{ baseInfo: { occupation: { item: string; id: string; title: string; }; patientCode: string; autoGeneratePatientCode: boolean; enName: string; zhName: string; gender: string; prefix: { id: string; identifier: string; code: string; gender: number; name: { ...; }; } | null; ... 10 more ...; group: string[]; }; ... 49 ...' and '{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }' are incompatible.
+      The types of 'baseInfo.occupation' are incompatible between these types.
+        Property '"category"' is missing in type '{ item: string; id: string; title: string; }' but required in type 'PatientDataSettingItem'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2125:17 [Error] TS2322 Type 'RefObject<KeyboardAwareScrollView | null>' is not assignable to type 'RefObject<KeyboardAwareScrollView>'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2313:28 [Error] TS2345 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+  Type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }'. Two different types with this name exist, but they are unrelated.
+    Call signature return types '{ baseInfo: { blood: SelectedItem; patientCode: string; autoGeneratePatientCode: boolean; enName: string; zhName: string; gender: string; prefix: { id: string; identifier: string; code: string; gender: number; name: { ...; }; } | null; ... 10 more ...; group: string[]; }; ... 49 more ...; docTypeList: string[]; }' and '{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }' are incompatible.
+      The types of 'baseInfo.blood' are incompatible between these types.
+        Type 'SelectedItem' is not assignable to type 'PatientDataSettingItem'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2451:26 [Error] TS2345 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+  Type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }'. Two different types with this name exist, but they are unrelated.
+    Call signature return types '{ otherInfo: { houseArea: SelectedItem; houseDistrict: PatientDataSettingItem | null; houseAddress: string; officeArea: string; officeDistrict: string; ... 4 more ...; familyHistory: string; }; ... 49 more ...; docTypeList: string[]; }' and '{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }' are incompatible.
+      The types of 'otherInfo.houseArea' are incompatible between these types.
+        Type 'SelectedItem' is not assignable to type 'PatientDataSettingItem'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2539:26 [Error] TS2345 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+  Type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }'. Two different types with this name exist, but they are unrelated.
+    Call signature return types '{ otherInfo: { houseDistrict: SelectedItem; houseArea: PatientDataSettingItem | null; houseAddress: string; officeArea: string; officeDistrict: string; ... 4 more ...; familyHistory: string; }; ... 49 more ...; docTypeList: string[]; }' and '{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }' are incompatible.
+      The types of 'otherInfo.houseDistrict' are incompatible between these types.
+        Type 'SelectedItem' is not assignable to type 'PatientDataSettingItem'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2637:26 [Error] TS2345 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+  Type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }'. Two different types with this name exist, but they are unrelated.
+    Call signature return types '{ otherInfo: { referralCategory: SelectedItem; referralDescription: null; houseArea: PatientDataSettingItem | null; houseDistrict: PatientDataSettingItem | null; ... 5 more ...; familyHistory: string; }; ... 49 more ...; docTypeList: string[]; }' and '{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }' are incompatible.
+      The types of 'otherInfo.referralCategory' are incompatible between these types.
+        Type 'SelectedItem' is missing the following properties from type 'IrefferalTypes': code, name
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2709:26 [Error] TS2345 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+  Type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }'. Two different types with this name exist, but they are unrelated.
+    Call signature return types '{ otherInfo: { referralDescription: SelectedItem; houseArea: PatientDataSettingItem | null; houseDistrict: PatientDataSettingItem | null; ... 6 more ...; familyHistory: string; }; ... 49 more ...; docTypeList: string[]; }' and '{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }' are incompatible.
+      The types of 'otherInfo.referralDescription' are incompatible between these types.
+        Type 'SelectedItem' is missing the following properties from type 'RefferalItem': category, value
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2736:13 [Error] TS2322 Type 'RefObject<KeyboardAwareScrollView | null>' is not assignable to type 'RefObject<KeyboardAwareScrollView>'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2786:24 [Error] TS2345 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+  Type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }'. Two different types with this name exist, but they are unrelated.
+    Call signature return types '{ otherInfo: { doctorInCharge: SelectedItem; houseArea: PatientDataSettingItem | null; houseDistrict: PatientDataSettingItem | null; ... 6 more ...; familyHistory: string; }; ... 49 more ...; docTypeList: string[]; }' and '{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }' are incompatible.
+      The types of 'otherInfo.doctorInCharge' are incompatible between these types.
+        Type 'SelectedItem' is not assignable to type 'PatientDataSettingItem'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2813:28 [Error] TS2345 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+  Type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }'. Two different types with this name exist, but they are unrelated.
+    Call signature return types '{ otherInfo: { doctorInCharge: { item: string; id: string; title: string; }; houseArea: PatientDataSettingItem | null; houseDistrict: PatientDataSettingItem | null; ... 6 more ...; familyHistory: string; }; ... 49 more ...; docTypeList: string[]; }' and '{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }' are incompatible.
+      The types of 'otherInfo.doctorInCharge' are incompatible between these types.
+        Property '"category"' is missing in type '{ item: string; id: string; title: string; }' but required in type 'PatientDataSettingItem'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3156:15 [Error] TS2322 Type 'RefObject<KeyboardAwareScrollView | null>' is not assignable to type 'RefObject<KeyboardAwareScrollView>'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3208:26 [Error] TS2345 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+  Type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }'. Two different types with this name exist, but they are unrelated.
+    Call signature return types '{ editingInsuranceInfo: { payor: SelectedItem; insuranceNo: string; membershipId: string; insuranceContent: string; }; pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; ... 46 more ...; docTypeList: string[]; }' and '{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }' are incompatible.
+      The types of 'editingInsuranceInfo.payor' are incompatible between these types.
+        Type 'SelectedItem' is not assignable to type 'PatientDataSettingItem'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3234:30 [Error] TS2345 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+  Type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }'. Two different types with this name exist, but they are unrelated.
+    Call signature return types '{ editingInsuranceInfo: { payor: { item: string; id: string; title: string; }; insuranceNo: string; membershipId: string; insuranceContent: string; }; pageType: any; idTypeOptions: IdType[]; ... 47 more ...; docTypeList: string[]; }' and '{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }' are incompatible.
+      The types of 'editingInsuranceInfo.payor' are incompatible between these types.
+        Property '"category"' is missing in type '{ item: string; id: string; title: string; }' but required in type 'PatientDataSettingItem'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3366:71 [Error] TS18047 'item.payor' is possibly 'null'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3544:33 [Error] TS2769 No overload matches this call.
+  Overload 1 of 2, '(...items: ConcatArray<InsuranceInfoState>[]): InsuranceInfoState[]', gave the following error.
+    Argument of type '{ id: null; payor: { name: string; id?: string | undefined; category?: string | undefined; item?: string | undefined; title?: string | undefined; }; insuranceNo: string; policyNo: string; membershipId: string; membershipNo: string; insuranceContent: string; editing: boolean; isDefault: boolean; }' is not assignable to parameter of type 'ConcatArray<InsuranceInfoState>'.
+      Object literal may only specify known properties, and 'id' does not exist in type 'ConcatArray<InsuranceInfoState>'.
+  Overload 2 of 2, '(...items: (InsuranceInfoState | ConcatArray<InsuranceInfoState>)[]): InsuranceInfoState[]', gave the following error.
+    Type '{ name: string; id?: string | undefined; category?: string | undefined; item?: string | undefined; title?: string | undefined; }' is not assignable to type '{ id: string; name?: string | undefined; item?: string | undefined; }'.
+      Types of property 'id' are incompatible.
+        Type 'string | undefined' is not assignable to type 'string'.
+          Type 'undefined' is not assignable to type 'string'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3546:74 [Error] TS18047 'prevState.editingInsuranceInfo.payor' is possibly 'null'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3602:10 [Error] TS2739 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3672:10 [Error] TS2739 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3724:10 [Error] TS2739 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3774:10 [Error] TS2739 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3821:10 [Error] TS2739 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3856:10 [Error] TS2739 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3891:10 [Error] TS2739 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3947:10 [Error] TS2739 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4002:10 [Error] TS2739 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4057:10 [Error] TS2739 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4141:10 [Error] TS2739 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4158:32 [Error] TS2339 Property 'name' does not exist on type '{}'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4159:28 [Error] TS2345 Argument of type '(prevState: { pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to parameter of type 'SetStateAction<{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }>'.
+  Type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }' is not assignable to type '(prevState: { pageType: any; idTypeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").IdType[]; areaCodeOptions: import("/Users/stark/Desktop/work/RN/csx-mobile/src/api/api-types").AreaCode[]; ... 47 more ...; docTypeList: string[]; }) => { ...; }'. Two different types with this name exist, but they are unrelated.
+    Call signature return types '{ baseInfo: { identityDocumentType: {}; patientCode: string; autoGeneratePatientCode: boolean; enName: string; zhName: string; gender: string; prefix: { id: string; identifier: string; code: string; gender: number; name: { ...; }; } | null; ... 10 more ...; group: string[]; }; ... 49 more ...; docTypeList: string[]; }' and '{ pageType: any; idTypeOptions: IdType[]; areaCodeOptions: AreaCode[]; refferalTypes: IrefferalTypes[]; showEmergencyAreaCodeModal: boolean; patientId: any; ... 44 more ...; docTypeList: string[]; }' are incompatible.
+      The types of 'baseInfo.identityDocumentType' are incompatible between these types.
+        Type '{}' is missing the following properties from type 'IdType': code, name, regexExpression, isDefault
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4187:15 [Error] TS2322 Type '{ label: string; value: IdType; }[]' is not assignable to type 'WheelPickerItemProps<WheelPickerItemValue>[]'.
+  Type '{ label: string; value: IdType; }' is not assignable to type 'WheelPickerItemProps<WheelPickerItemValue>'.
+    Types of property 'value' are incompatible.
+      Type 'IdType' is not assignable to type 'WheelPickerItemValue'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4197:15 [Error] TS2322 Type '{ label: string; value: IdType | null; }' is not assignable to type 'WheelPickerItemValue | undefined'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4221:10 [Error] TS2739 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4249:10 [Error] TS2739 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4347:10 [Error] TS2739 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4397:10 [Error] TS2739 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4533:39 [Error] TS2345 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+  Type 'undefined' is not assignable to type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4536:39 [Error] TS2345 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+  Type 'undefined' is not assignable to type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4540:35 [Error] TS2345 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+  Type 'undefined' is not assignable to type 'StackNavigationProp<csxStackParamList>'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4543:35 [Error] TS2345 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+  Type 'undefined' is not assignable to type 'StackNavigationProp<csxStackParamList>'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4554:28 [Error] TS2345 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+  Type 'undefined' is not assignable to type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4564:29 [Error] TS2345 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+  Type 'undefined' is not assignable to type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4648:31 [Error] TS18047 'state.baseInfo.identityDocumentType' is possibly 'null'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4714:41 [Error] TS2345 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+  Type 'undefined' is not assignable to type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4724:35 [Error] TS2345 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+  Type 'undefined' is not assignable to type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4834:25 [Error] TS2345 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+  Type 'undefined' is not assignable to type 'StackNavigationProp<csxStackParamList>'.
+    Type 'undefined' is not assignable to type 'Omit<NavigationHelpersCommon<csxStackParamList, StackNavigationState<csxStackParamList>>, "getParent">'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4899:33 [Error] TS2345 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+  Type 'undefined' is not assignable to type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+    Type 'undefined' is not assignable to type 'Omit<NavigationHelpersCommon<csxStackParamList, StackNavigationState<csxStackParamList>>, "getParent">'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4903:29 [Error] TS2345 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+  Type 'undefined' is not assignable to type 'StackNavigationProp<csxStackParamList>'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4907:29 [Error] TS2345 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+  Type 'undefined' is not assignable to type 'StackNavigationProp<csxStackParamList>'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4920:10 [Error] TS2739 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4968:10 [Error] TS2739 Type '{ children: Element; onClose: () => void; }' is missing the following properties from type 'props': modalOverlayStyle, closeWhenClickingMask, outSafeAreaTopStyle
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5012:43 [Error] TS7031 Binding element 'viewableItems' implicitly has an 'any' type.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5037:33 [Error] TS2345 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+  Type 'undefined' is not assignable to type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5040:33 [Error] TS2345 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+  Type 'undefined' is not assignable to type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5044:29 [Error] TS2345 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+  Type 'undefined' is not assignable to type 'StackNavigationProp<csxStackParamList>'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5047:29 [Error] TS2345 Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+  Type 'undefined' is not assignable to type 'StackNavigationProp<csxStackParamList>'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5197:28 [Error] TS2741 Property 'childrenHeight' is missing in type '{ id: string; title: string; style: any[]; expanded: true; renderHeader: any; renderChildren: () => Element; }' but required in type 'Props'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5202:48 [Error] TS2339 Property 'renderHeader' does not exist on type '{ id: string; title: string; renderChildren: () => Element; }'.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:10:13 [Suggestion] TS6385 'SafeAreaView' is deprecated.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:68:9 [Suggestion] TS6385 'TextInputSubmitEditingEventData' is deprecated.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2087:55 [Suggestion] TS6385 'TextInputSubmitEditingEventData' is deprecated.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2185:59 [Suggestion] TS6385 'TextInputSubmitEditingEventData' is deprecated.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2803:55 [Suggestion] TS6385 'TextInputSubmitEditingEventData' is deprecated.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3225:57 [Suggestion] TS6385 'TextInputSubmitEditingEventData' is deprecated.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5091:18 [Suggestion] TS6385 'SafeAreaView' is deprecated.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:322:22 [Suggestion] TS6133 'scene' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:455:5 [Suggestion] TS6133 'showCommonAlertModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:455:52 [Suggestion] TS6133 'commonAlertModalTitle' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:455:101 [Suggestion] TS6133 'commonAlertModalContent' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:460:5 [Suggestion] TS6133 'setShowCommonAutocompleteDropdownModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:462:5 [Suggestion] TS6133 'setRef_CommonAutocompleteDropdown' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:466:25 [Suggestion] TS6133 'setMode' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:845:9 [Suggestion] TS6198 All destructured elements are unused.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:326:9 [Suggestion] TS6133 'store' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:327:9 [Suggestion] TS6133 'dispatch' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:474:9 [Suggestion] TS6133 'expensiveCalculation' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:489:9 [Suggestion] TS6133 'ref_GenderBt' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:490:9 [Suggestion] TS6133 'ref_call' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:491:9 [Suggestion] TS6133 'ref_group' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:492:9 [Suggestion] TS6133 'ref_blood_type' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:493:9 [Suggestion] TS6133 'ref_Wireless_telephone' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:494:9 [Suggestion] TS6133 'ref_telephone' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:495:9 [Suggestion] TS6133 'ref_Residential_areas' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:496:9 [Suggestion] TS6133 'ref_Residential_zoning' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:497:9 [Suggestion] TS6133 'ref_Category_introducer' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:498:9 [Suggestion] TS6133 'ref_Referee' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:499:9 [Suggestion] TS6133 'ref_telephone1' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:500:9 [Suggestion] TS6133 'ref_Relationship_with_patients' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:503:9 [Suggestion] TS6133 'groupTextInputRef' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:504:9 [Suggestion] TS6133 'ref_groupBt' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:505:9 [Suggestion] TS6133 'groupTextRef' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:819:9 [Suggestion] TS6133 'onPressSex' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:828:9 [Suggestion] TS6133 '_get_setting_data_model_list' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3599:9 [Suggestion] TS6133 'renderSexModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3669:9 [Suggestion] TS6133 'renderReferralCategoryModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3721:9 [Suggestion] TS6133 'renderhouseAreaModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3771:9 [Suggestion] TS6133 'renderHouseDistrictModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3818:9 [Suggestion] TS6133 'renderOfficeAreaModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3853:9 [Suggestion] TS6133 'renderOfficeDistrictModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3888:9 [Suggestion] TS6133 'renderCallModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3944:9 [Suggestion] TS6133 'renderAreaCodeModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3999:9 [Suggestion] TS6133 'renderTelAreaCodeModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4054:9 [Suggestion] TS6133 'renderEmergencyAreaCodeModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4138:9 [Suggestion] TS6133 'renderDocTypeModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4218:9 [Suggestion] TS6133 'renderrelatedPatientsRelationshipModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4246:9 [Suggestion] TS6133 'renderRefereeModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4344:9 [Suggestion] TS6133 'renderBloodTypeModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4394:9 [Suggestion] TS6133 'renderEmergencyContactRelationshipModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4519:9 [Suggestion] TS6133 'renderbottomButtonRow' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4917:9 [Suggestion] TS6133 'renderOccupationModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4965:9 [Suggestion] TS6133 'renderGroupModal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5012:9 [Suggestion] TS6133 'onViewableItemsChanged' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:830:14 [Suggestion] TS6133 'err' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:103:10 [Suggestion] TS6133 'theme' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:788:31 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:788:38 [Suggestion] TS6133 'arr' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:835:16 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:835:23 [Suggestion] TS6133 'array' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4774:16 [Suggestion] TS6133 'err' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5087:11 [Suggestion] TS6133 'theme' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:588:23 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:588:30 [Suggestion] TS6133 'array' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:586:22 [Suggestion] TS6133 'policyId' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:559:22 [Suggestion] TS6133 'err' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:730:22 [Suggestion] TS6133 'err' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:533:18 [Suggestion] TS6133 'err' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1066:35 [Suggestion] TS6133 'pageSize' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1144:35 [Suggestion] TS6133 'pageSize' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1221:31 [Suggestion] TS6198 All destructured elements are unused.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1291:37 [Suggestion] TS6133 'pageSize' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2134:46 [Suggestion] TS6133 'searchQuery' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2213:42 [Suggestion] TS6133 'array' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2290:37 [Suggestion] TS6133 'pageSize' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2428:35 [Suggestion] TS6133 'pageSize' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2516:35 [Suggestion] TS6133 'pageSize' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2614:35 [Suggestion] TS6133 'pageSize' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2685:35 [Suggestion] TS6133 'pageSize' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3061:37 [Suggestion] TS6133 'pageSize' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4632:24 [Suggestion] TS6133 'err' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5031:18 [Suggestion] TS6133 'err' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:953:40 [Suggestion] TS6133 'event' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1153:53 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1153:60 [Suggestion] TS6133 'array' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1298:71 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1298:78 [Suggestion] TS6133 'array' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2048:82 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2146:86 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2300:77 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2300:84 [Suggestion] TS6133 'array' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2438:75 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2438:82 [Suggestion] TS6133 'array' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2526:75 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2526:82 [Suggestion] TS6133 'array' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2621:75 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2621:82 [Suggestion] TS6133 'array' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2695:65 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2695:72 [Suggestion] TS6133 'array' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2764:82 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2942:35 [Suggestion] TS6133 'pageSize' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3071:77 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3071:84 [Suggestion] TS6133 'array' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3186:84 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3467:43 [Suggestion] TS6133 'item' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3495:43 [Suggestion] TS6133 'item' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3739:26 [Suggestion] TS6133 'err' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3789:26 [Suggestion] TS6133 'err' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3906:26 [Suggestion] TS6133 'err' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4205:33 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4264:26 [Suggestion] TS6133 'err' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4362:26 [Suggestion] TS6133 'err' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4412:26 [Suggestion] TS6133 'err' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4527:24 [Suggestion] TS6133 'err' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4934:26 [Suggestion] TS6133 'err' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:4983:26 [Suggestion] TS6133 'err' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1492:78 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1492:85 [Suggestion] TS6133 'arr' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1495:79 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1495:86 [Suggestion] TS6133 'arr' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1498:82 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1498:89 [Suggestion] TS6133 'arr' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1551:41 [Suggestion] TS6133 'pageSize' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1784:80 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1784:87 [Suggestion] TS6133 'arr' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1787:81 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1787:88 [Suggestion] TS6133 'arr' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1790:84 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1790:91 [Suggestion] TS6133 'arr' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1843:43 [Suggestion] TS6133 'pageSize' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2949:73 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:2949:80 [Suggestion] TS6133 'array' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1558:79 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1558:86 [Suggestion] TS6133 'array' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1576:97 [Suggestion] TS6133 'i' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1850:81 [Suggestion] TS6133 'index' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1850:88 [Suggestion] TS6133 'array' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1868:111 [Suggestion] TS6133 'i' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5162:31 [Suggestion] TS6133 'viewportHeight' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:5163:31 [Suggestion] TS6133 'contentHeight' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3519:78 [Suggestion] TS6133 'item' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:3522:45 [Suggestion] TS6133 'array' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1511:60 [Suggestion] TS6133 'array' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1803:65 [Suggestion] TS6133 'array' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:272:11 [Suggestion] TS6196 'Occupation' is declared but never used.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1:106 [Suggestion] TS6133 'ReactNode' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:1:117 [Suggestion] TS6133 'ComponentType' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:7:3 [Suggestion] TS6133 'ActivityIndicator' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:10:3 [Suggestion] TS6133 'Animated' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:11:3 [Suggestion] TS6133 'LayoutAnimation' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:12:3 [Suggestion] TS6133 'UIManager' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:14:3 [Suggestion] TS6133 'StyleSheet' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:14:15 [Suggestion] TS6133 'Alert' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:16:3 [Suggestion] TS6133 'KeyboardAvoidingView' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:16:36 [Suggestion] TS6133 'Modal' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:27:9 [Suggestion] TS6133 'arrowdown' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:27:20 [Suggestion] TS6133 'arrowUp' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:27:29 [Suggestion] TS6133 'chooseDoctorArrow' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:27:48 [Suggestion] TS6133 'checked' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:27:57 [Suggestion] TS6133 'unchecked' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:27:80 [Suggestion] TS6133 'addbt' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:27:87 [Suggestion] TS6133 'addBt_disabled' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:44:72 [Suggestion] TS6133 'getDoctorById' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:44:87 [Suggestion] TS6133 'getClinicById' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:44:102 [Suggestion] TS6133 'get_all_allergic_reaction_terms' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:44:135 [Suggestion] TS6133 'list_hkctt_dxpx_terms' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:44:158 [Suggestion] TS6133 'list_doctor_medical_terms' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:48:1 [Suggestion] TS6133 'textInputStyle' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:50:51 [Suggestion] TS6133 'AutocompleteDropdownRef' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:56:1 [Suggestion] TS6133 'setNonSafeZoneBackgroundColorAction' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:67:9 [Suggestion] TS6133 'LayoutChangeEvent' is declared but its value is never read.
+/Users/stark/Desktop/work/RN/csx-mobile/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx:78:7 [Suggestion] TS6133 'screenHeight' is declared but its value is never read.
+
+==== preEmit intersection count 218 ====

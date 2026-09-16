@@ -1,0 +1,16 @@
+---
+pid: 97635
+cwd: "/Users/stark/Desktop/work/RN/circleapp"
+command: "APP_PID=$(adb -s 4ae24c72 shell pidof com.circleapp.cdv.dev | tr -d '\\r')\necho \"pid=$APP_PID\"\nadb -s 4ae24c72 logcat -T 1 -v threadtime >/tmp/tech-8982-pics/logcat-before.txt\n# Tap the underlined PICS phrase (second line of second TNC paragraph)\nadb -s 4ae24c72 shell input tap 360 1595\nsleep 2.5\nadb -s 4ae24c72 shell dumpsys window | rg -m 8 'mCurrentFocus|mFocusedApp'\nadb -s 4ae24c72 exec-out screencap -p > /tmp/tech-8982-pics/after-pics-tap.png\nadb -s 4ae24c72 shell uiautomator dump /sdcard/rn-ui-window.xml\nadb -s 4ae24c72 pull /sdcard/rn-ui-window.xml /tmp/tech-8982-pics/after-pics-tap.xml >/dev/null\nadb -s 4ae24c72 logcat --pid=\"$APP_PID\" -T 20s -d -v threadtime | rg -i 'webview-screen|PDFScreen|Linking|openURL|pics|Navigation|ReactNativeJS' | tail -n 80\npython3 - <<'PY'\nimport xml.etree.ElementTree as ET\nroot=ET.parse('/tmp/tech-8982-pics/after-pics-tap.xml').getroot()\ntexts=[(n.attrib.get('text') or '') for n in root.iter('node') if n.attrib.get('text')]\nprint('--- texts ---')\nfor t in texts:\n    print(t[:160])\nPY"
+title: "Tap PICS link and check in-app navigation"
+status: failed   
+started_at: 2026-09-16T08:51:57.734Z
+running_for_ms: 172750   
+---
+pid=30993
+
+---
+exit_code: unknown
+elapsed_ms: 172750
+ended_at: 2026-09-16T08:54:50.484Z
+---

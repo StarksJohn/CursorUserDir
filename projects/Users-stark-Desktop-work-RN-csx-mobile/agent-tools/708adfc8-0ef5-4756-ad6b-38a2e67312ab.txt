@@ -1,0 +1,11615 @@
+{
+ "openapi": "3.0.1",
+ "info": {
+ "title": "CS Mobile Service",
+ "version": "v1"
+ },
+ "paths": {
+ "/api/Account/login": {
+ "post": {
+ "tags": [
+ "Account"
+ ],
+ "summary": "用户密码登录",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/LoginInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/LoginInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/LoginInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/LoginResponseInvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Account/loginFromQRCodeAsync": {
+ "post": {
+ "tags": [
+ "Account"
+ ],
+ "summary": "使用csx的二维码登录",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "description": "",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/LoginFromQRCodeInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/LoginFromQRCodeInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/LoginFromQRCodeInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/LoginFromQRCodeResponseInvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Account/mfa-2": {
+ "post": {
+ "tags": [
+ "Account"
+ ],
+ "summary": "MFA登录",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "description": "",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/MFAInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/MFAInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/MFAInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/MFAResponseInvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Account/open-biometrics-auth": {
+ "post": {
+ "tags": [
+ "Account"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OpenBiometricsAuthRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OpenBiometricsAuthRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/OpenBiometricsAuthRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OpenBiometricsAuthResultInvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Account/close-biometrics-auth": {
+ "post": {
+ "tags": [
+ "Account"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/CloseBiometricsAuthRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/CloseBiometricsAuthRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/CloseBiometricsAuthRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/Result"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Account/sign-in-by-biometrics": {
+ "post": {
+ "tags": [
+ "Account"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/CheckBiometricsRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/CheckBiometricsRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/CheckBiometricsRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/LoginResponseInvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Account/reset-password": {
+ "post": {
+ "tags": [
+ "Account"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ResetPasswordCommand"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ResetPasswordCommand"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/ResetPasswordCommand"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Account/GetUserPermission": {
+ "get": {
+ "tags": [
+ "Account"
+ ],
+ "summary": "获取用户模块权限",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "type": "string"
+ }
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Account/GetUserInfo": {
+ "get": {
+ "tags": [
+ "Account"
+ ],
+ "summary": "获取用户信息",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/UserInfoAResponse"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Account/QueryPhoneBindStatus": {
+ "get": {
+ "tags": [
+ "Account"
+ ],
+ "summary": "获取当前用户的手机绑定状态",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "type": "boolean"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Account/SendBindPhoneVerificationCode": {
+ "post": {
+ "tags": [
+ "Account"
+ ],
+ "summary": "发送用户绑定手机验证码",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SendBindPhoneVerificationInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SendBindPhoneVerificationInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/SendBindPhoneVerificationInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SendBindPhoneVerificationCodeResponse"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Account/BindPhoneNumber": {
+ "post": {
+ "tags": [
+ "Account"
+ ],
+ "summary": "绑定手机",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/BindPhoneNumberInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/BindPhoneNumberInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/BindPhoneNumberInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "type": "boolean"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Account/SendOTPPassword": {
+ "post": {
+ "tags": [
+ "Account"
+ ],
+ "summary": "发送一次性校验密码",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "type": "boolean"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Account/login-logs": {
+ "post": {
+ "tags": [
+ "Account"
+ ],
+ "summary": "登录日志",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/BaseQueryPageInfo"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/BaseQueryPageInfo"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/BaseQueryPageInfo"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/LoginLogDtoOutputPageInfo"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Account/ForgotPasswordValid": {
+ "post": {
+ "tags": [
+ "Account"
+ ],
+ "summary": "验证是否能进行忘记密码",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ForgotPasswordValidInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ForgotPasswordValidInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/ForgotPasswordValidInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ForgotPasswordValidOutput"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Account/send-otp-for-forgot-password": {
+ "post": {
+ "tags": [
+ "Account"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SendOTPForForgotPasswordCommand"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SendOTPForForgotPasswordCommand"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/SendOTPForForgotPasswordCommand"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SendOTPForForgotPasswordResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Account/setup-user-data": {
+ "post": {
+ "tags": [
+ "Account"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SetupUserDataCommand"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SetupUserDataCommand"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/SetupUserDataCommand"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SetupUserDataResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Account/sign-out": {
+ "post": {
+ "tags": [
+ "Account"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "type": "boolean"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Account/unbind-user-phonenumber": {
+ "get": {
+ "tags": [
+ "Account"
+ ],
+ "summary": "解绑单个用户的电话号码",
+ "parameters": [
+ {
+ "name": "InstallationId",
+ "in": "query",
+ "schema": {
+ "type": "string"
+ }
+ },
+ {
+ "name": "userName",
+ "in": "query",
+ "description": "用户名",
+ "schema": {
+ "type": "string"
+ }
+ },
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OperationResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/agreements/v1/last-unsigned": {
+ "post": {
+ "tags": [
+ "Agreement"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/GetLastUnsignedRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/GetLastUnsignedRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/GetLastUnsignedRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/UnsignedAgreementDtoResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/UnsignedAgreementDtoResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/UnsignedAgreementDtoResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/agreement": {
+ "get": {
+ "tags": [
+ "Agreement"
+ ],
+ "parameters": [
+ {
+ "name": "Id",
+ "in": "query",
+ "schema": {
+ "type": "string"
+ }
+ },
+ {
+ "name": "Signature",
+ "in": "query",
+ "schema": {
+ "type": "string"
+ }
+ },
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success"
+ }
+ }
+ }
+ },
+ "/api/agreements/v1/sign": {
+ "post": {
+ "tags": [
+ "Agreement"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SignAgreementRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SignAgreementRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/SignAgreementRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/Result"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/Result"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/Result"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/app/v1/configurations": {
+ "get": {
+ "tags": [
+ "App"
+ ],
+ "summary": "app配置",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success"
+ }
+ }
+ }
+ },
+ "/api/Bill/send-bill-to-pay": {
+ "post": {
+ "tags": [
+ "Bill"
+ ],
+ "summary": "发送账单",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "description": "",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SendBillRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SendBillRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/SendBillRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SendBillResponseResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Bill/check-transaction-status": {
+ "get": {
+ "tags": [
+ "Bill"
+ ],
+ "summary": "检查交易是否完成",
+ "parameters": [
+ {
+ "name": "ticketId",
+ "in": "query",
+ "description": "",
+ "required": true,
+ "schema": {
+ "type": "string"
+ }
+ },
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/GetTransactionStatusResponseResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Bill/get-sent-bill-by-ticketid": {
+ "get": {
+ "tags": [
+ "Bill"
+ ],
+ "summary": "根据ticketid获取已发送的账单",
+ "parameters": [
+ {
+ "name": "ticketId",
+ "in": "query",
+ "description": "",
+ "required": true,
+ "schema": {
+ "type": "string"
+ }
+ },
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/GetSentBillByTicketIdResponseResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/billings/v1/list": {
+ "post": {
+ "tags": [
+ "Billing"
+ ],
+ "summary": "账单列表",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListBillingRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListBillingRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListBillingRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/BillingDtoOutputPageInfo"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/BillingDtoOutputPageInfo"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/BillingDtoOutputPageInfo"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/calendar/v1/list-schedules": {
+ "post": {
+ "tags": [
+ "Calendar"
+ ],
+ "summary": "获取日程",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListCalendarSchedulesRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListCalendarSchedulesRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListCalendarSchedulesRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/CalendarScheduleDto"
+ }
+ }
+ },
+ "application/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/CalendarScheduleDto"
+ }
+ }
+ },
+ "text/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/CalendarScheduleDto"
+ }
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/calendar/v1/delete-schedules": {
+ "post": {
+ "tags": [
+ "Calendar"
+ ],
+ "summary": "获取日程",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/DeleteCalendarSchedulesRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/DeleteCalendarSchedulesRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/DeleteCalendarSchedulesRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/call-logs/v1/list": {
+ "post": {
+ "tags": [
+ "CallLog"
+ ],
+ "summary": "",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/CallLogListRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/CallLogListRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/CallLogListRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/CallLogDto"
+ }
+ }
+ },
+ "application/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/CallLogDto"
+ }
+ }
+ },
+ "text/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/CallLogDto"
+ }
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/call-logs/v1/save": {
+ "post": {
+ "tags": [
+ "CallLog"
+ ],
+ "summary": "",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SaveCallLogRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SaveCallLogRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/SaveCallLogRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success"
+ }
+ }
+ }
+ },
+ "/api/Clinic/Query": {
+ "post": {
+ "tags": [
+ "Clinic"
+ ],
+ "summary": "诊所列表",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "description": "",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ClinicPageQueryInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ClinicPageQueryInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/ClinicPageQueryInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ClinicPageOutputOutputPageInfo"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Clinic/Get/{id}": {
+ "get": {
+ "tags": [
+ "Clinic"
+ ],
+ "summary": "获取诊所详情",
+ "parameters": [
+ {
+ "name": "id",
+ "in": "path",
+ "description": "",
+ "required": true,
+ "schema": {
+ "type": "string",
+ "format": "uuid"
+ }
+ },
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ClinicPageOutput"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Consultation/GetPatientConsultationStatus": {
+ "get": {
+ "tags": [
+ "Consultation"
+ ],
+ "summary": "获取病人的诊症状态",
+ "parameters": [
+ {
+ "name": "patientId",
+ "in": "query",
+ "description": "",
+ "schema": {
+ "type": "string",
+ "format": "uuid"
+ }
+ },
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/ConsultationDataStatusOntput"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ConsultationDataStatusOntput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ConsultationDataStatusOntput"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Consultation/QueryPage": {
+ "post": {
+ "tags": [
+ "Consultation"
+ ],
+ "summary": "诊症分页列表",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "description": "",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ConsultationPageQueryInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ConsultationPageQueryInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/ConsultationPageQueryInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/ConsultationPageQueryOutputOutputPageInfoInvokeResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ConsultationPageQueryOutputOutputPageInfoInvokeResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ConsultationPageQueryOutputOutputPageInfoInvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Consultation/GetLatestMedicalRecord": {
+ "get": {
+ "tags": [
+ "Consultation"
+ ],
+ "summary": "获取病人最近的病历",
+ "parameters": [
+ {
+ "name": "patientId",
+ "in": "query",
+ "schema": {
+ "type": "string",
+ "format": "uuid"
+ }
+ },
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/MedicalInfo"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/MedicalInfo"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/MedicalInfo"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Consultation/GetLatestPrescription": {
+ "get": {
+ "tags": [
+ "Consultation"
+ ],
+ "summary": "获取病人最近的药方\r\ncsmobile数据不是很全,得通过药方id查询csx里的数据",
+ "parameters": [
+ {
+ "name": "patientId",
+ "in": "query",
+ "schema": {
+ "type": "string",
+ "format": "uuid"
+ }
+ },
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/PrescriptionInfo"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PrescriptionInfo"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PrescriptionInfo"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Consultation/QueryPatientHealthData": {
+ "post": {
+ "tags": [
+ "Consultation"
+ ],
+ "summary": "获取病人的健康数据列表",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientHealthDataQueryInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientHealthDataQueryInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientHealthDataQueryInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PatientHealthDataQueryOutput"
+ }
+ }
+ },
+ "application/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PatientHealthDataQueryOutput"
+ }
+ }
+ },
+ "text/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PatientHealthDataQueryOutput"
+ }
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Consultation/QueryPatientAllergy": {
+ "post": {
+ "tags": [
+ "Consultation"
+ ],
+ "summary": "查询病人的过敏信息",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientAllergyQueryInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientAllergyQueryInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientAllergyQueryInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PatientAllergyQueryOutput"
+ }
+ }
+ },
+ "application/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PatientAllergyQueryOutput"
+ }
+ }
+ },
+ "text/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PatientAllergyQueryOutput"
+ }
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Consultation/QueryPatientImmunisation": {
+ "post": {
+ "tags": [
+ "Consultation"
+ ],
+ "summary": "查询病人的免疫记录",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientImmunisationQueryInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientImmunisationQueryInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientImmunisationQueryInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PatientImmunisationQueryOutput"
+ }
+ }
+ },
+ "application/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PatientImmunisationQueryOutput"
+ }
+ }
+ },
+ "text/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PatientImmunisationQueryOutput"
+ }
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Consultation/QueryOtherMedicalInfo": {
+ "get": {
+ "tags": [
+ "Consultation"
+ ],
+ "summary": "查询病人的其他医疗信息",
+ "parameters": [
+ {
+ "name": "patientId",
+ "in": "query",
+ "schema": {
+ "type": "string",
+ "format": "uuid"
+ }
+ },
+ {
+ "name": "doctorId",
+ "in": "query",
+ "schema": {
+ "type": "string",
+ "format": "uuid"
+ }
+ },
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/OtherMedicalInfoOutput"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OtherMedicalInfoOutput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OtherMedicalInfoOutput"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Consultation/ListProvidersForSecondConsultation": {
+ "post": {
+ "tags": [
+ "Consultation"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListProvidersForSecondConsultationQuery"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListProvidersForSecondConsultationQuery"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListProvidersForSecondConsultationQuery"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/SecondConsultationProviderDtoOutputPageInfoInvokeResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SecondConsultationProviderDtoOutputPageInfoInvokeResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SecondConsultationProviderDtoOutputPageInfoInvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Consultation/CreateSecondConsultation": {
+ "post": {
+ "tags": [
+ "Consultation"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/CreateSecondConsultationCommand"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/CreateSecondConsultationCommand"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/CreateSecondConsultationCommand"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/CreateSecondConsultationResultInvokeResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/CreateSecondConsultationResultInvokeResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/CreateSecondConsultationResultInvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Consultation/GetTicketQuestionnaireResponse": {
+ "post": {
+ "tags": [
+ "Consultation"
+ ],
+ "summary": "获取健康问卷及答案",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/GetTicketQuestionnaireResponseQuery"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/GetTicketQuestionnaireResponseQuery"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/GetTicketQuestionnaireResponseQuery"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/TicketQuestionnaireResponseDto"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/TicketQuestionnaireResponseDto"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/TicketQuestionnaireResponseDto"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/consultations/v1/list-patient-file-directories": {
+ "post": {
+ "tags": [
+ "ConsultationFile"
+ ],
+ "summary": "获取病人文件目录",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListPatientTermsRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListPatientTermsRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListPatientTermsRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PatientTermItem"
+ }
+ }
+ },
+ "application/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PatientTermItem"
+ }
+ }
+ },
+ "text/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PatientTermItem"
+ }
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/consultations/v1/list-patient-files": {
+ "post": {
+ "tags": [
+ "ConsultationFile"
+ ],
+ "summary": "获取病人文件",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListPatientFilesRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListPatientFilesRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListPatientFilesRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientFileItemOutputPageInfo"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientFileItemOutputPageInfo"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientFileItemOutputPageInfo"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/consultations/v1/upload-patient-file": {
+ "post": {
+ "tags": [
+ "ConsultationFile"
+ ],
+ "summary": "上传病人文件",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "multipart/form-data": {
+ "schema": {
+ "type": "object",
+ "properties": {
+ "PatientId": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "CategoryId": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "ClinicId": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "DoctorId": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "File": {
+ "type": "string",
+ "format": "binary"
+ },
+ "Date": {
+ "type": "string",
+ "format": "date-time"
+ }
+ }
+ },
+ "encoding": {
+ "PatientId": {
+ "style": "form"
+ },
+ "CategoryId": {
+ "style": "form"
+ },
+ "ClinicId": {
+ "style": "form"
+ },
+ "DoctorId": {
+ "style": "form"
+ },
+ "File": {
+ "style": "form"
+ },
+ "Date": {
+ "style": "form"
+ }
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientImageDataInvokeResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientImageDataInvokeResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientImageDataInvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/consultations/v1/remove-patient-file": {
+ "post": {
+ "tags": [
+ "ConsultationFile"
+ ],
+ "summary": "删除病人文件",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/IdsRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/IdsRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/IdsRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/CsxRpc/{method}": {
+ "post": {
+ "tags": [
+ "CsxRpc"
+ ],
+ "summary": "进行csx的新增、修改和公共数据查询的rpc调用",
+ "parameters": [
+ {
+ "name": "method",
+ "in": "path",
+ "description": "cax对应的方法名(详情参见文档)",
+ "required": true,
+ "schema": {
+ "type": "string"
+ }
+ },
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "description": "对应方法的入参(详情参见文档)",
+ "content": {
+ "application/json": {
+ "schema": {
+ "type": "object",
+ "additionalProperties": {
+ "$ref": "#/components/schemas/JsonNode"
+ },
+ "default": "{}"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "type": "object",
+ "additionalProperties": {
+ "$ref": "#/components/schemas/JsonNode"
+ },
+ "default": "{}"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "type": "object",
+ "additionalProperties": {
+ "$ref": "#/components/schemas/JsonNode"
+ },
+ "default": "{}"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success"
+ }
+ }
+ }
+ },
+ "/api/Doctor/Query": {
+ "post": {
+ "tags": [
+ "Doctor"
+ ],
+ "summary": "医生列表",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "description": "",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/DoctorPageQueryInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/DoctorPageQueryInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/DoctorPageQueryInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/DoctorPageOutputOutputPageInfo"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Doctor/Get/{id}": {
+ "get": {
+ "tags": [
+ "Doctor"
+ ],
+ "summary": "获取医生详情",
+ "parameters": [
+ {
+ "name": "id",
+ "in": "path",
+ "description": "",
+ "required": true,
+ "schema": {
+ "type": "string",
+ "format": "uuid"
+ }
+ },
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/DoctorPageOutput"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Doctor/CheckHaveDoctor/{docotrId}": {
+ "get": {
+ "tags": [
+ "Doctor"
+ ],
+ "summary": "校验当前用户是否包含该医生权限",
+ "parameters": [
+ {
+ "name": "docotrId",
+ "in": "path",
+ "description": "",
+ "required": true,
+ "schema": {
+ "type": "string",
+ "format": "uuid"
+ }
+ },
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "type": "boolean"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/ehr/data-record-sharing/v1/list-clinics": {
+ "post": {
+ "tags": [
+ "EhrDataRecordSharing"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/EhrDataRecordSharingClinicIEnumerableInvokeResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/EhrDataRecordSharingClinicIEnumerableInvokeResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/EhrDataRecordSharingClinicIEnumerableInvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/ehr/data-record-sharing/v1/histories": {
+ "post": {
+ "tags": [
+ "EhrDataRecordSharing"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/HcpSharingHistoriesPageRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/HcpSharingHistoriesPageRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/HcpSharingHistoriesPageRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/HcpSharingHistoryDtoOutputPageInfoInvokeResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/HcpSharingHistoryDtoOutputPageInfoInvokeResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/HcpSharingHistoryDtoOutputPageInfoInvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/ehr/data-record-sharing/v1/details": {
+ "post": {
+ "tags": [
+ "EhrDataRecordSharing"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/IdRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/IdRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/IdRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/HcpSharingDetailsDtoInvokeResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/HcpSharingDetailsDtoInvokeResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/HcpSharingDetailsDtoInvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Encounter/GetCurrentEncounterOverview": {
+ "post": {
+ "tags": [
+ "Encounter"
+ ],
+ "summary": "获取当前预约简况",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/EncounterOverviewInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/EncounterOverviewInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/EncounterOverviewInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/EncounterOverviewOutput"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Encounter/QueryEncounterDateRecord": {
+ "post": {
+ "tags": [
+ "Encounter"
+ ],
+ "summary": "根据时间段,获取预约日期记录",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "description": "",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryEncounterDateRecordInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryEncounterDateRecordInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryEncounterDateRecordInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "type": "string",
+ "format": "date-time"
+ }
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Encounter/QueryQueue": {
+ "post": {
+ "tags": [
+ "Encounter"
+ ],
+ "summary": "排队列表",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "description": "",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryQueueInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryQueueInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryQueueInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/QueueInfoOutput"
+ }
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Encounter/QueryAppointment": {
+ "post": {
+ "tags": [
+ "Encounter"
+ ],
+ "summary": "预约列表",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "description": "",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryAppointmentInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryAppointmentInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryAppointmentInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/AppointmentInfoOutput"
+ }
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Encounter/InsuranceBenefitEligibilityCheck": {
+ "post": {
+ "tags": [
+ "Encounter"
+ ],
+ "summary": "保险资格检查",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/InsuranceBenefitEligibilityCheckCommand"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/InsuranceBenefitEligibilityCheckCommand"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/InsuranceBenefitEligibilityCheckCommand"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/InsuranceBenefitEligibilityCheckResultInvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/files/p/{id}": {
+ "get": {
+ "tags": [
+ "File"
+ ],
+ "parameters": [
+ {
+ "name": "id",
+ "in": "path",
+ "required": true,
+ "schema": {
+ "type": "string"
+ }
+ },
+ {
+ "name": "Ts",
+ "in": "query",
+ "schema": {
+ "type": "string"
+ }
+ },
+ {
+ "name": "Signature",
+ "in": "query",
+ "schema": {
+ "type": "string"
+ }
+ },
+ {
+ "name": "Resize",
+ "in": "query",
+ "description": "e.g. w_100,h_100",
+ "schema": {
+ "type": "string"
+ }
+ },
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success"
+ }
+ }
+ }
+ },
+ "/files/attachment/base64/{id}": {
+ "get": {
+ "tags": [
+ "File"
+ ],
+ "parameters": [
+ {
+ "name": "id",
+ "in": "path",
+ "required": true,
+ "schema": {
+ "type": "string"
+ }
+ },
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/DownloadFileResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/DownloadFileResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/DownloadFileResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/health-data/setting/v1/items": {
+ "post": {
+ "tags": [
+ "HealthDataSetting"
+ ],
+ "summary": "获取健康设定项",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListHealthSettingItemsRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListHealthSettingItemsRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListHealthSettingItemsRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/HealthSettingItemDto"
+ }
+ }
+ },
+ "application/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/HealthSettingItemDto"
+ }
+ }
+ },
+ "text/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/HealthSettingItemDto"
+ }
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/health-data/setting/v1/clinic/get": {
+ "post": {
+ "tags": [
+ "HealthDataSetting"
+ ],
+ "summary": "获取诊所健康数据设置",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/GetClinicHealthDataSettingRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/GetClinicHealthDataSettingRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/GetClinicHealthDataSettingRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/ClinicHealthDataSettingDto"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ClinicHealthDataSettingDto"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ClinicHealthDataSettingDto"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/health-data/setting/v2/items": {
+ "post": {
+ "tags": [
+ "HealthDataSettingV2"
+ ],
+ "summary": "获取健康设定项",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListHealthSettingItemsRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListHealthSettingItemsRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/ListHealthSettingItemsRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/HealthDataGroup"
+ }
+ }
+ },
+ "application/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/HealthDataGroup"
+ }
+ }
+ },
+ "text/json": {
+ "schema": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/HealthDataGroup"
+ }
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/health-data/setting/v2/clinic/get": {
+ "post": {
+ "tags": [
+ "HealthDataSettingV2"
+ ],
+ "summary": "获取诊所健康数据设置",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/GetClinicHealthDataSettingRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/GetClinicHealthDataSettingRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/GetClinicHealthDataSettingRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/ClinicHealthDataSettingDto"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ClinicHealthDataSettingDto"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ClinicHealthDataSettingDto"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/messages/v1/paging": {
+ "post": {
+ "tags": [
+ "Message"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/MessagePageRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/MessagePageRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/MessagePageRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/MessagePageItemDtoOutputPageInfo"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/MessagePageItemDtoOutputPageInfo"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/MessagePageItemDtoOutputPageInfo"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/messages/v1/get": {
+ "post": {
+ "tags": [
+ "Message"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/IdRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/IdRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/IdRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/MessageDetailsDto"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/MessageDetailsDto"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/MessageDetailsDto"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/messages/v1/update-read-state": {
+ "post": {
+ "tags": [
+ "Message"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/UpdateMessageReadStateRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/UpdateMessageReadStateRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/UpdateMessageReadStateRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/notification/v1/push/register-client": {
+ "post": {
+ "tags": [
+ "Notification"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/RegisterPushClientRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/RegisterPushClientRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/RegisterPushClientRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/Result"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/Result"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/Result"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/notification/v1/push/unregister-client": {
+ "post": {
+ "tags": [
+ "Notification"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/UnregisterPushClientRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/UnregisterPushClientRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/UnregisterPushClientRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/Result"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/Result"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/Result"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/notification/v1/push/send": {
+ "post": {
+ "tags": [
+ "Notification"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SendPushRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SendPushRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/SendPushRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/Result"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/Result"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/Result"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Overview/report-inputs": {
+ "post": {
+ "tags": [
+ "Overview"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewReportInputsRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewReportInputsRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewReportInputsRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewReportInputsDtoInvokeResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewReportInputsDtoInvokeResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewReportInputsDtoInvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Overview/income-report": {
+ "post": {
+ "tags": [
+ "Overview"
+ ],
+ "summary": "收入图表",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewIncomeReportRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewIncomeReportRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewIncomeReportRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewIncomeReportDtoInvokeResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewIncomeReportDtoInvokeResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewIncomeReportDtoInvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Overview/transaction-report": {
+ "post": {
+ "tags": [
+ "Overview"
+ ],
+ "summary": "交易图表",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewTransactionReportRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewTransactionReportRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewTransactionReportRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewIncomeReportDtoInvokeResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewIncomeReportDtoInvokeResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewIncomeReportDtoInvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Overview/contract-filters": {
+ "get": {
+ "tags": [
+ "Overview"
+ ],
+ "summary": "我的合同过滤条件",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewContractFilters"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewContractFilters"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewContractFilters"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Overview/list-contracts": {
+ "post": {
+ "tags": [
+ "Overview"
+ ],
+ "summary": "我的合同",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewListContractsRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewListContractsRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewListContractsRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewContractItemDtoOutputPageInfo"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewContractItemDtoOutputPageInfo"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewContractItemDtoOutputPageInfo"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Overview/contract-details": {
+ "post": {
+ "tags": [
+ "Overview"
+ ],
+ "summary": "合同详情",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewContractDetailsRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewContractDetailsRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewContractDetailsRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewContractDetailsDto"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewContractDetailsDto"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/OverviewContractDetailsDto"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Overview/query-marketing": {
+ "get": {
+ "tags": [
+ "Overview"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": { }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Patient/Query": {
+ "post": {
+ "tags": [
+ "Patient"
+ ],
+ "summary": "病人列表",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "description": "",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientPageQueryInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientPageQueryInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientPageQueryInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientPageOutputOutputPageInfo"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Patient/SeniorQuery": {
+ "post": {
+ "tags": [
+ "Patient"
+ ],
+ "summary": "高级病人列表",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "description": "",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SeniorPatientPageQueryInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/SeniorPatientPageQueryInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/SeniorPatientPageQueryInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientPageOutputOutputPageInfo"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Patient/Get": {
+ "get": {
+ "tags": [
+ "Patient"
+ ],
+ "summary": "病人详情",
+ "parameters": [
+ {
+ "name": "id",
+ "in": "query",
+ "description": "",
+ "schema": {
+ "type": "string",
+ "format": "uuid"
+ }
+ },
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientDetailOutput"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Patient/GetOptionSetting": {
+ "get": {
+ "tags": [
+ "Patient"
+ ],
+ "summary": "获取病人的证件和区号的选项配置",
+ "parameters": [
+ {
+ "name": "langEnv",
+ "in": "query",
+ "description": "英文:en\r\n简体:zh-CN\r\n繁体:zh-HK",
+ "schema": {
+ "type": "string"
+ }
+ },
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/GetOptionSettingResponseDto"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Patient/QueryFutureAppointment": {
+ "post": {
+ "tags": [
+ "Patient"
+ ],
+ "summary": "查询病人的未来预约",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "description": "",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryPatientEncounterRecordInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryPatientEncounterRecordInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryPatientEncounterRecordInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryPatientEncounterRecordOutputOutputPageInfo"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Patient/QueryFailAppointment": {
+ "post": {
+ "tags": [
+ "Patient"
+ ],
+ "summary": "查询病人的失败预约",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "description": "",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryPatientEncounterRecordInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryPatientEncounterRecordInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryPatientEncounterRecordInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryPatientEncounterRecordOutputOutputPageInfo"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/Patient/QueryEncounterRecord": {
+ "post": {
+ "tags": [
+ "Patient"
+ ],
+ "summary": "查询病人的求诊记录",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "description": "",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryPatientEncounterRecordInput"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryPatientEncounterRecordInput"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryPatientEncounterRecordInput"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/QueryPatientEncounterRecordOutputOutputPageInfo"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/patient/health/v1/get": {
+ "post": {
+ "tags": [
+ "PatientHealth"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/GetPatientHealthRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/GetPatientHealthRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/GetPatientHealthRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientHealthDto"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientHealthDto"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/PatientHealthDto"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/trusted-devices/v1/confirm": {
+ "post": {
+ "tags": [
+ "TrustedDevice"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ConfirmTrustedDeviceRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ConfirmTrustedDeviceRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/ConfirmTrustedDeviceRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/ConfirmTrustedDeviceResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ConfirmTrustedDeviceResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ConfirmTrustedDeviceResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/trusted-devices/v1/verify": {
+ "post": {
+ "tags": [
+ "TrustedDevice"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/VerifyWithTrustedDeviceRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/VerifyWithTrustedDeviceRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/VerifyWithTrustedDeviceRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/VerifyWithTrustedDeviceResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/VerifyWithTrustedDeviceResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/VerifyWithTrustedDeviceResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/trusted-devices/v1/remove": {
+ "post": {
+ "tags": [
+ "TrustedDevice"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/VerifyWithTrustedDeviceRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/VerifyWithTrustedDeviceRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/VerifyWithTrustedDeviceRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/trusted-devices/v1/apply": {
+ "post": {
+ "tags": [
+ "TrustedDevice"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ApplyTrustedDeviceRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ApplyTrustedDeviceRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/ApplyTrustedDeviceRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/ApplyToBecomeTrustedDeviceResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ApplyToBecomeTrustedDeviceResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/ApplyToBecomeTrustedDeviceResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/trusted-devices/v1/reject": {
+ "post": {
+ "tags": [
+ "TrustedDevice"
+ ],
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/RejectTrustedDeviceRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/RejectTrustedDeviceRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/RejectTrustedDeviceRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/trusted-devices/v1/fingerprint": {
+ "post": {
+ "tags": [
+ "TrustedDevice"
+ ],
+ "summary": "TDA推送可信设备认证通知，CSM提交指纹信息",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/FingerprintForTrustedDeviceRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/FingerprintForTrustedDeviceRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/FingerprintForTrustedDeviceRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "/api/trusted-devices/v1/check": {
+ "post": {
+ "tags": [
+ "TrustedDevice"
+ ],
+ "summary": "判断当前设备是否是可信设备",
+ "parameters": [
+ {
+ "name": "session-clinicId",
+ "in": "header",
+ "description": "clinic"
+ },
+ {
+ "name": "session-doctorId",
+ "in": "header",
+ "description": "doctorId"
+ }
+ ],
+ "requestBody": {
+ "content": {
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/CheckForTrustedDeviceRequest"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/CheckForTrustedDeviceRequest"
+ }
+ },
+ "application/*+json": {
+ "schema": {
+ "$ref": "#/components/schemas/CheckForTrustedDeviceRequest"
+ }
+ }
+ }
+ },
+ "responses": {
+ "200": {
+ "description": "Success",
+ "content": {
+ "text/plain": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ },
+ "application/json": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ },
+ "text/json": {
+ "schema": {
+ "$ref": "#/components/schemas/InvokeResult"
+ }
+ }
+ }
+ }
+ }
+ }
+ }
+ },
+ "components": {
+ "schemas": {
+ "ApplyToBecomeTrustedDeviceResult": {
+ "type": "object",
+ "properties": {
+ "trustedDeviceRequestId": {
+ "type": "string",
+ "nullable": true
+ },
+ "serverSecret": {
+ "type": "string",
+ "nullable": true
+ },
+ "publicKey": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "ApplyTrustedDeviceRequest": {
+ "type": "object",
+ "properties": {
+ "deviceId": {
+ "type": "string",
+ "nullable": true
+ },
+ "deviceModel": {
+ "type": "string",
+ "nullable": true
+ },
+ "deviceOS": {
+ "type": "string",
+ "nullable": true
+ },
+ "deviceFingerprintPlaintext": {
+ "type": "string",
+ "nullable": true
+ },
+ "deviceFingerprint": {
+ "type": "string",
+ "description": "设备指纹哈希",
+ "nullable": true
+ },
+ "trustLevel": {
+ "$ref": "#/components/schemas/TrustedDeviceTrustLevel"
+ },
+ "publicKey": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "AppointmentInfo": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "remarks": {
+ "type": "string",
+ "description": "备注",
+ "nullable": true
+ },
+ "gender": {
+ "type": "integer",
+ "description": "性别\r\n0:女士\r\n1:男士\r\n255:未知",
+ "format": "int32",
+ "nullable": true
+ },
+ "appointTime": {
+ "type": "string",
+ "description": "病人登记的预约时间\r\n如果所需时间为0,返回带时间段的时间\r\n否者返回以-分割的带时间段的两个时间",
+ "nullable": true,
+ "readOnly": true
+ },
+ "appointStartTime": {
+ "type": "string",
+ "description": "约会开始时间\r\n带时间段的时间",
+ "nullable": true,
+ "readOnly": true
+ },
+ "appointEndTime": {
+ "type": "string",
+ "description": "约会结束时间\r\n带时间段的时间",
+ "nullable": true,
+ "readOnly": true
+ },
+ "appointmentInterval": {
+ "type": "integer",
+ "description": "所需时间",
+ "format": "int32",
+ "nullable": true
+ },
+ "appointmentRemarksColor": {
+ "type": "string",
+ "description": "所需时间的备注颜色",
+ "nullable": true
+ },
+ "creationTime": {
+ "type": "string",
+ "description": "创建日期",
+ "format": "date-time",
+ "nullable": true
+ },
+ "doctorColor": {
+ "type": "string",
+ "description": "医生颜色标识",
+ "nullable": true
+ },
+ "isPatientHasPharmacy": {
+ "type": "boolean",
+ "description": "病人是否有药方",
+ "nullable": true
+ },
+ "isPatientHasDiagnosis": {
+ "type": "boolean",
+ "description": "病人是否有诊症",
+ "nullable": true
+ },
+ "recordTime": {
+ "type": "string",
+ "description": "记录排队的日期时间",
+ "format": "date-time",
+ "nullable": true
+ },
+ "voucherNo": {
+ "type": "string",
+ "description": "保险号",
+ "nullable": true
+ },
+ "isVideoConference": {
+ "type": "boolean",
+ "description": "是否视频诊疗",
+ "nullable": true
+ },
+ "isTemporary": {
+ "type": "boolean",
+ "description": "是否临时病人",
+ "nullable": true
+ },
+ "appointStartDateTime": {
+ "type": "string",
+ "description": "预约的日期时间",
+ "format": "date-time",
+ "nullable": true
+ },
+ "appointEndDateTime": {
+ "type": "string",
+ "description": "预约的结束日期时间",
+ "format": "date-time",
+ "nullable": true
+ },
+ "appointmentStatus": {
+ "type": "integer",
+ "description": "预约状态",
+ "format": "int32",
+ "nullable": true
+ },
+ "appointState": {
+ "type": "integer",
+ "description": "预约状态\r\nNotArrive = 0\r\nArrived = 1\r\nCheckIn = 2\r\nPrescribed = 3\r\nConsulted = 4\r\nBilled = 5\r\nFinish = 6",
+ "format": "int32",
+ "readOnly": true
+ },
+ "patientId": {
+ "type": "string",
+ "description": "病人id",
+ "format": "uuid",
+ "nullable": true
+ },
+ "patientCode": {
+ "type": "string",
+ "description": "病人code",
+ "nullable": true
+ },
+ "patientName": {
+ "type": "string",
+ "description": "病人名,会增加称谓",
+ "nullable": true
+ },
+ "patientMobileAreaCode": {
+ "type": "string",
+ "description": "病人手机区号",
+ "nullable": true
+ },
+ "patientMobile": {
+ "type": "string",
+ "description": "病人手机号",
+ "nullable": true
+ },
+ "patientOtherPhoneAreaCode": {
+ "type": "string",
+ "description": "病人电话区号",
+ "nullable": true
+ },
+ "patientOtherPhone": {
+ "type": "string",
+ "description": "病人电话",
+ "nullable": true
+ },
+ "birthDate": {
+ "type": "string",
+ "description": "病人出生日期",
+ "nullable": true
+ },
+ "age": {
+ "type": "string",
+ "description": "病人年龄",
+ "nullable": true
+ },
+ "doctorId": {
+ "type": "string",
+ "description": "医生Id",
+ "format": "uuid",
+ "nullable": true
+ },
+ "doctorCode": {
+ "type": "string",
+ "description": "医生code",
+ "nullable": true
+ },
+ "clinicId": {
+ "type": "string",
+ "description": "诊所Id",
+ "format": "uuid",
+ "nullable": true
+ },
+ "clinicCode": {
+ "type": "string",
+ "description": "诊所code",
+ "nullable": true
+ },
+ "ticketId": {
+ "type": "string",
+ "description": "远程ticketId",
+ "nullable": true
+ },
+ "departureTime": {
+ "type": "string",
+ "description": "离开日期时间",
+ "format": "date-time",
+ "nullable": true
+ },
+ "arrivalTime": {
+ "type": "string",
+ "description": "到达日期时间",
+ "format": "date-time",
+ "nullable": true
+ },
+ "queueNo": {
+ "type": "string",
+ "description": "队列编号",
+ "nullable": true
+ },
+ "queueType": {
+ "type": "string",
+ "description": "排队类型",
+ "nullable": true
+ },
+ "queueSequence": {
+ "type": "string",
+ "description": "排队号",
+ "nullable": true
+ },
+ "attended": {
+ "type": "string",
+ "description": "出席状态\r\n出席:A\r\n未出席:N",
+ "nullable": true
+ },
+ "source": {
+ "type": "string",
+ "description": "来源,相当于csx的VisitSource",
+ "nullable": true
+ },
+ "videoToken": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/HealsVideoConferenceData"
+ },
+ "description": "视频诊症token",
+ "nullable": true
+ },
+ "consultStatus": {
+ "type": "integer",
+ "description": "诊症状态\r\n0:诊症中\r\n1:完成诊症",
+ "format": "int32",
+ "nullable": true
+ },
+ "billingStatus": {
+ "type": "integer",
+ "description": "账单状态\r\n1:已付",
+ "format": "int32",
+ "nullable": true
+ },
+ "checkinStatus": {
+ "type": "integer",
+ "description": "签到状态\r\n1:已签",
+ "format": "int32",
+ "nullable": true
+ },
+ "ticketStates": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/TicketState"
+ },
+ "description": "远程ticket状态",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "AppointmentInfoOutput": {
+ "type": "object",
+ "properties": {
+ "appointStartTime": {
+ "type": "string",
+ "description": "预约开始时间",
+ "nullable": true
+ },
+ "appointEndTime": {
+ "type": "string",
+ "description": "预约结束时间",
+ "nullable": true
+ },
+ "appointments": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/AppointmentInfo"
+ },
+ "description": "预约数据",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "BaseQueryPageInfo": {
+ "type": "object",
+ "properties": {
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "pageSize": {
+ "type": "integer",
+ "format": "int32",
+ "default": "50"
+ },
+ "skip": {
+ "type": "integer",
+ "format": "int32",
+ "readOnly": true
+ },
+ "sorts": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/SortInfo"
+ },
+ "default": "null",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "Benefit": {
+ "type": "object",
+ "properties": {
+ "insurer": {
+ "$ref": "#/components/schemas/Insurer"
+ },
+ "benefit_code": {
+ "type": "string",
+ "nullable": true
+ },
+ "description": {
+ "type": "string",
+ "nullable": true
+ },
+ "remark": {
+ "type": "string",
+ "nullable": true
+ },
+ "credit_limit": {
+ "type": "string",
+ "nullable": true
+ },
+ "copayment_type": {
+ "type": "string",
+ "nullable": true
+ },
+ "copayment_amount": {
+ "type": "string",
+ "nullable": true
+ },
+ "preferential_discount": {
+ "type": "string",
+ "nullable": true
+ },
+ "package": {
+ "type": "string",
+ "nullable": true
+ },
+ "total_approved_amount": {
+ "type": "string",
+ "nullable": true
+ },
+ "default_currency_code": {
+ "type": "string",
+ "nullable": true
+ },
+ "benefit_items": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/Benefit_item"
+ },
+ "nullable": true
+ },
+ "medical_card": {
+ "$ref": "#/components/schemas/Benefit_medical_card"
+ }
+ },
+ "additionalProperties": false
+ },
+ "Benefit_item": {
+ "type": "object",
+ "properties": {
+ "tx_code": {
+ "type": "string",
+ "nullable": true
+ },
+ "tx_description": {
+ "type": "string",
+ "nullable": true
+ },
+ "tx_limit": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "remark": {
+ "type": "string",
+ "nullable": true
+ },
+ "amount": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "doctor_fee": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "cover_type": {
+ "type": "string",
+ "nullable": true
+ },
+ "copayment_type": {
+ "type": "string",
+ "nullable": true
+ },
+ "copayment_amount": {
+ "type": "string",
+ "nullable": true
+ },
+ "benefit_limit_amount": {
+ "type": "number",
+ "format": "double",
+ "nullable": true
+ },
+ "gp_copay_amount": {
+ "type": "number",
+ "format": "double",
+ "nullable": true
+ },
+ "sp_copay_amount": {
+ "type": "number",
+ "format": "double",
+ "nullable": true
+ },
+ "benefit_id": {
+ "type": "string",
+ "nullable": true
+ },
+ "currency_code": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "Benefit_medical_card": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "nullable": true
+ },
+ "user_id": {
+ "type": "string",
+ "nullable": true
+ },
+ "insurer_id": {
+ "type": "string",
+ "nullable": true
+ },
+ "benefit_id": {
+ "type": "string",
+ "nullable": true
+ },
+ "plan_id": {
+ "type": "string",
+ "nullable": true
+ },
+ "plan_name": {
+ "type": "string",
+ "nullable": true
+ },
+ "policy_no": {
+ "type": "string",
+ "nullable": true
+ },
+ "bc_policy_no": {
+ "type": "string",
+ "nullable": true
+ },
+ "valid_from": {
+ "type": "string",
+ "nullable": true
+ },
+ "valid_to": {
+ "type": "string",
+ "nullable": true
+ },
+ "max_amount": {
+ "type": "number",
+ "format": "double",
+ "nullable": true
+ },
+ "crm_id": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "BillItem": {
+ "type": "object",
+ "properties": {
+ "name": {
+ "type": "string",
+ "nullable": true
+ },
+ "itemCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "currencyCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "incurredAmount": {
+ "type": "number",
+ "format": "double"
+ },
+ "quantity": {
+ "type": "number",
+ "format": "double"
+ }
+ },
+ "additionalProperties": false
+ },
+ "BillingDto": {
+ "type": "object",
+ "properties": {
+ "date": {
+ "type": "string",
+ "nullable": true
+ },
+ "transactionCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "clinicCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "doctorCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "total": {
+ "type": "number",
+ "format": "double"
+ },
+ "claimsTotal": {
+ "type": "number",
+ "description": "报销金额",
+ "format": "double"
+ },
+ "paid": {
+ "type": "number",
+ "description": "已付",
+ "format": "double"
+ },
+ "status": {
+ "$ref": "#/components/schemas/BillingStatus"
+ }
+ },
+ "additionalProperties": false
+ },
+ "BillingDtoOutputPageInfo": {
+ "type": "object",
+ "properties": {
+ "items": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/BillingDto"
+ },
+ "nullable": true
+ },
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "totalCount": {
+ "type": "integer",
+ "format": "int64"
+ },
+ "totalPage": {
+ "type": "integer",
+ "format": "int64"
+ }
+ },
+ "additionalProperties": false
+ },
+ "BillingStatus": {
+ "enum": [
+ 0,
+ 1,
+ 10
+ ],
+ "type": "BillingStatus",
+ "description": "0: Created\n1: Paid\n10: Completed\n",
+ "format": "BillingStatus"
+ },
+ "BindPhoneNumberInput": {
+ "type": "object",
+ "properties": {
+ "verificationCode": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "CalendarScheduleDto": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "title": {
+ "$ref": "#/components/schemas/Multilingual"
+ },
+ "descr": {
+ "$ref": "#/components/schemas/Multilingual"
+ },
+ "start": {
+ "type": "string",
+ "format": "date-time"
+ },
+ "duration": {
+ "type": "integer",
+ "description": "Unit is minute",
+ "format": "int64"
+ }
+ },
+ "additionalProperties": false
+ },
+ "CallLogDto": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "patientCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "clinicCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "doctorCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "type": {
+ "$ref": "#/components/schemas/CallType"
+ },
+ "date": {
+ "type": "string",
+ "description": "Format is dd/MM/yyyy",
+ "nullable": true
+ },
+ "timestamp": {
+ "type": "string",
+ "description": "日期+时间",
+ "format": "date-time"
+ },
+ "remarks": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "CallLogListRequest": {
+ "type": "object",
+ "properties": {
+ "clinicCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "doctorCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "patientCode": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "CallType": {
+ "enum": [
+ 0,
+ 1,
+ 2
+ ],
+ "type": "CallType",
+ "description": "0: Unknown\n1: In\n2: Out\n",
+ "format": "CallType"
+ },
+ "CheckBiometricsRequest": {
+ "type": "object",
+ "properties": {
+ "clientId": {
+ "type": "string",
+ "nullable": true,
+ "readOnly": true
+ },
+ "type": {
+ "type": "integer",
+ "description": "0=Fingerprint, 1=Face",
+ "format": "int32"
+ },
+ "signature": {
+ "type": "string",
+ "description": "When no PlainText argument, this value should be calculated with steps below: \r\nStep 1: MD5(Authorization header) output 32-bit lowercase character string\r\nStep 2: encrypt result of step 1 with private key",
+ "nullable": true
+ },
+ "halg": {
+ "type": "string",
+ "description": "PlainText encryption hash algorithm name, enumeration is MD5/SHA1/SHA256/SHA384/SHA512, default is SHA512",
+ "nullable": true
+ },
+ "biometricsId": {
+ "type": "string",
+ "nullable": true
+ },
+ "plainText": {
+ "type": "string",
+ "description": "any string",
+ "nullable": true
+ },
+ "data": {
+ "type": "string",
+ "description": "Encrypted text like v1|{secret}",
+ "nullable": true
+ },
+ "encryptionPadding": {
+ "type": "string",
+ "description": "Data encryption padding, enumeration is Pkcs1/OaepSHA1/OaepSHA256/OaepSHA384/OaepSHA512, default is Pkcs1",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "CheckForTrustedDeviceRequest": {
+ "type": "object",
+ "properties": {
+ "deviceId": {
+ "type": "string",
+ "nullable": true
+ },
+ "deviceFingerprintPlaintext": {
+ "type": "string",
+ "nullable": true
+ },
+ "deviceFingerprint": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "ClinicHealthDataSettingDto": {
+ "type": "object",
+ "properties": {
+ "clinicCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "preset": {
+ "$ref": "#/components/schemas/HealthDataPreset"
+ },
+ "visibleHealthDatas": {
+ "type": "array",
+ "items": {
+ "type": "string"
+ },
+ "description": "Health data items visible to the clinic",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "ClinicPageOutput": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "code": {
+ "type": "string",
+ "nullable": true
+ },
+ "enName": {
+ "type": "string",
+ "nullable": true
+ },
+ "zhName": {
+ "type": "string",
+ "nullable": true
+ },
+ "startAt": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "endAt": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "interval": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "tel": {
+ "type": "string",
+ "nullable": true
+ },
+ "fax": {
+ "type": "string",
+ "nullable": true
+ },
+ "address": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "ClinicPageOutputOutputPageInfo": {
+ "type": "object",
+ "properties": {
+ "items": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/ClinicPageOutput"
+ },
+ "nullable": true
+ },
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "totalCount": {
+ "type": "integer",
+ "format": "int64"
+ },
+ "totalPage": {
+ "type": "integer",
+ "format": "int64"
+ }
+ },
+ "additionalProperties": false
+ },
+ "ClinicPageQueryInput": {
+ "type": "object",
+ "properties": {
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "pageSize": {
+ "type": "integer",
+ "format": "int32",
+ "default": "50"
+ },
+ "skip": {
+ "type": "integer",
+ "format": "int32",
+ "readOnly": true
+ },
+ "sorts": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/SortInfo"
+ },
+ "default": "null",
+ "nullable": true
+ },
+ "code": {
+ "maxLength": 50,
+ "minLength": 0,
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "CloseBiometricsAuthRequest": {
+ "type": "object",
+ "properties": {
+ "clientId": {
+ "type": "string",
+ "nullable": true,
+ "readOnly": true
+ },
+ "type": {
+ "type": "integer",
+ "description": "0=Fingerprint, 1=Face",
+ "format": "int32"
+ },
+ "signature": {
+ "type": "string",
+ "description": "When no PlainText argument, this value should be calculated with steps below: \r\nStep 1: MD5(Authorization header) output 32-bit lowercase character string\r\nStep 2: encrypt result of step 1 with private key",
+ "nullable": true
+ },
+ "halg": {
+ "type": "string",
+ "description": "PlainText encryption hash algorithm name, enumeration is MD5/SHA1/SHA256/SHA384/SHA512, default is SHA512",
+ "nullable": true
+ },
+ "userId": {
+ "type": "string",
+ "description": "Frontend ignore this",
+ "nullable": true,
+ "readOnly": true
+ },
+ "plainText": {
+ "type": "string",
+ "nullable": true,
+ "readOnly": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "ConfirmTrustedDeviceRequest": {
+ "type": "object",
+ "properties": {
+ "trustedDeviceRequestId": {
+ "type": "string",
+ "nullable": true
+ },
+ "verificationCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "deviceId": {
+ "type": "string",
+ "nullable": true
+ },
+ "deviceModel": {
+ "type": "string",
+ "description": "设备型号",
+ "nullable": true
+ },
+ "deviceOS": {
+ "type": "string",
+ "nullable": true
+ },
+ "deviceFingerprintPlaintext": {
+ "type": "string",
+ "nullable": true
+ },
+ "deviceFingerprint": {
+ "type": "string",
+ "description": "设备指纹哈希",
+ "nullable": true
+ },
+ "trustLevel": {
+ "$ref": "#/components/schemas/TrustedDeviceTrustLevel"
+ },
+ "publicKey": {
+ "type": "string",
+ "description": "APP端生成RSA密钥对，将公钥赋予此参数",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "ConfirmTrustedDeviceResult": {
+ "type": "object",
+ "properties": {
+ "trustedDeviceId": {
+ "type": "string",
+ "nullable": true
+ },
+ "serverSecret": {
+ "type": "string",
+ "nullable": true
+ },
+ "publicKey": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "ConsultationDataStatusOntput": {
+ "type": "object",
+ "properties": {
+ "existsAllergy": {
+ "type": "boolean",
+ "description": "存在过敏信息"
+ },
+ "existsMedicalHistory": {
+ "type": "boolean",
+ "description": "存在已往病历"
+ },
+ "existsImmunization": {
+ "type": "boolean",
+ "description": "存在免疫记录"
+ },
+ "existsHealthData": {
+ "type": "boolean",
+ "description": "存在健康数据"
+ },
+ "existsImage": {
+ "type": "boolean",
+ "description": "存在文件图片"
+ },
+ "existsOthers": {
+ "type": "boolean",
+ "description": "包含其他"
+ }
+ },
+ "additionalProperties": false
+ },
+ "ConsultationPageQueryInput": {
+ "required": [
+ "patientId"
+ ],
+ "type": "object",
+ "properties": {
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "pageSize": {
+ "type": "integer",
+ "format": "int32",
+ "default": "50"
+ },
+ "skip": {
+ "type": "integer",
+ "format": "int32",
+ "readOnly": true
+ },
+ "patientId": {
+ "type": "string",
+ "description": "病人Id",
+ "format": "uuid"
+ },
+ "consultationStartDate": {
+ "type": "string",
+ "description": "起始日期(大于等于),格式yyyy-MM-dd",
+ "format": "date-time",
+ "default": "2020-01-01",
+ "nullable": true
+ },
+ "consultationEndDate": {
+ "type": "string",
+ "description": "结束日期(小于),格式yyyy-MM-dd",
+ "format": "date-time",
+ "default": "2020-01-02",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "ConsultationPageQueryOutput": {
+ "type": "object",
+ "properties": {
+ "consultationId": {
+ "type": "string",
+ "description": "诊症Id",
+ "format": "uuid"
+ },
+ "clinicId": {
+ "type": "string",
+ "description": "诊所Id",
+ "format": "uuid"
+ },
+ "clinicCode": {
+ "type": "string",
+ "description": "诊所Code",
+ "nullable": true
+ },
+ "doctorId": {
+ "type": "string",
+ "description": "医生Id",
+ "format": "uuid"
+ },
+ "doctorCode": {
+ "type": "string",
+ "description": "医生Code",
+ "nullable": true
+ },
+ "date": {
+ "type": "string",
+ "description": "诊症日期\r\n如果有多个诊断,只筛选出第一个",
+ "nullable": true
+ },
+ "medical": {
+ "$ref": "#/components/schemas/MedicalInfo"
+ },
+ "medicalLatestUpdateRecord": {
+ "$ref": "#/components/schemas/MedicalInfoLatestModifyRecordDto"
+ },
+ "prescriptions": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PrescriptionInfo"
+ },
+ "description": "药方记录\r\n诊症关联的所有药方记录",
+ "nullable": true
+ },
+ "isReferral": {
+ "type": "boolean",
+ "description": "是否是二次诊症"
+ },
+ "medicalCertificates": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/MedicalCertificateInfo"
+ },
+ "nullable": true
+ },
+ "referralLetters": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/ReferralLetterInfo"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "ConsultationPageQueryOutputOutputPageInfo": {
+ "type": "object",
+ "properties": {
+ "items": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/ConsultationPageQueryOutput"
+ },
+ "nullable": true
+ },
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "totalCount": {
+ "type": "integer",
+ "format": "int64"
+ },
+ "totalPage": {
+ "type": "integer",
+ "format": "int64"
+ }
+ },
+ "additionalProperties": false
+ },
+ "ConsultationPageQueryOutputOutputPageInfoInvokeResult": {
+ "type": "object",
+ "properties": {
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "code": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "message": {
+ "type": "string",
+ "nullable": true
+ },
+ "success": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "data": {
+ "$ref": "#/components/schemas/ConsultationPageQueryOutputOutputPageInfo"
+ }
+ },
+ "additionalProperties": false
+ },
+ "ContactType": {
+ "enum": [
+ 0,
+ 1
+ ],
+ "type": "ContactType",
+ "description": "0: MobilePhone\n1: Email\n",
+ "format": "ContactType"
+ },
+ "ContractStatus": {
+ "enum": [
+ 0,
+ 1,
+ 2
+ ],
+ "type": "ContractStatus",
+ "description": "0: Inactive\n1: Active\n2: Expired\n",
+ "format": "ContractStatus"
+ },
+ "CreateSecondConsultationCommand": {
+ "type": "object",
+ "properties": {
+ "appointmentId": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "providerId": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "CreateSecondConsultationResult": {
+ "type": "object",
+ "properties": {
+ "ticketId": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "CreateSecondConsultationResultInvokeResult": {
+ "type": "object",
+ "properties": {
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "code": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "message": {
+ "type": "string",
+ "nullable": true
+ },
+ "success": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "data": {
+ "$ref": "#/components/schemas/CreateSecondConsultationResult"
+ }
+ },
+ "additionalProperties": false
+ },
+ "DecimalChartAxis": {
+ "type": "object",
+ "properties": {
+ "name": {
+ "type": "string",
+ "nullable": true
+ },
+ "data": {
+ "type": "array",
+ "items": {
+ "type": "number",
+ "format": "double"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "DeleteCalendarSchedulesRequest": {
+ "type": "object",
+ "properties": {
+ "contains": {
+ "type": "array",
+ "items": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "description": "要删除的日历中的AppointmentID",
+ "nullable": true
+ },
+ "all": {
+ "type": "boolean",
+ "description": "删除所有日历中的预约单"
+ }
+ },
+ "additionalProperties": false
+ },
+ "DoctorPageOutput": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "code": {
+ "type": "string",
+ "nullable": true
+ },
+ "enName": {
+ "type": "string",
+ "nullable": true
+ },
+ "zhName": {
+ "type": "string",
+ "nullable": true
+ },
+ "tel": {
+ "type": "string",
+ "nullable": true
+ },
+ "fax": {
+ "type": "string",
+ "nullable": true
+ },
+ "address": {
+ "type": "string",
+ "nullable": true
+ },
+ "textColor": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "DoctorPageOutputOutputPageInfo": {
+ "type": "object",
+ "properties": {
+ "items": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/DoctorPageOutput"
+ },
+ "nullable": true
+ },
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "totalCount": {
+ "type": "integer",
+ "format": "int64"
+ },
+ "totalPage": {
+ "type": "integer",
+ "format": "int64"
+ }
+ },
+ "additionalProperties": false
+ },
+ "DoctorPageQueryInput": {
+ "type": "object",
+ "properties": {
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "pageSize": {
+ "type": "integer",
+ "format": "int32",
+ "default": "50"
+ },
+ "skip": {
+ "type": "integer",
+ "format": "int32",
+ "readOnly": true
+ },
+ "sorts": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/SortInfo"
+ },
+ "default": "null",
+ "nullable": true
+ },
+ "code": {
+ "maxLength": 50,
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "DownloadFileResult": {
+ "type": "object",
+ "properties": {
+ "mimeType": {
+ "type": "string",
+ "nullable": true
+ },
+ "contentAsBase64": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "EhrDRSDoctor": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "doctorCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "name": {
+ "type": "string",
+ "nullable": true
+ },
+ "oName": {
+ "type": "string",
+ "nullable": true
+ },
+ "title": {
+ "type": "string",
+ "nullable": true
+ },
+ "oTitle": {
+ "type": "string",
+ "nullable": true
+ },
+ "tel": {
+ "type": "string",
+ "nullable": true
+ },
+ "email": {
+ "type": "string",
+ "nullable": true
+ },
+ "healsDoctorId": {
+ "type": "string",
+ "nullable": true
+ },
+ "textColor": {
+ "type": "string",
+ "nullable": true
+ },
+ "defaultSetting": {
+ "type": "string",
+ "nullable": true
+ },
+ "printerTitle": {
+ "type": "string",
+ "nullable": true
+ },
+ "userId": {
+ "type": "string",
+ "format": "uuid",
+ "nullable": true
+ },
+ "inactive": {
+ "type": "boolean"
+ },
+ "signatureImgFileId": {
+ "type": "string",
+ "format": "uuid",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "EhrDataRecordSharingClinic": {
+ "type": "object",
+ "properties": {
+ "clinicHcpid": {
+ "type": "string",
+ "nullable": true,
+ "readOnly": true
+ },
+ "hcpId": {
+ "type": "string",
+ "nullable": true
+ },
+ "clinicId": {
+ "type": "string",
+ "nullable": true
+ },
+ "clinicCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "clinicName": {
+ "type": "string",
+ "nullable": true
+ },
+ "clinicOName": {
+ "type": "string",
+ "nullable": true
+ },
+ "clinicAddress": {
+ "type": "string",
+ "nullable": true
+ },
+ "doctorList": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/EhrDRSDoctor"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "EhrDataRecordSharingClinicIEnumerableInvokeResult": {
+ "type": "object",
+ "properties": {
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "code": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "message": {
+ "type": "string",
+ "nullable": true
+ },
+ "success": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "data": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/EhrDataRecordSharingClinic"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "EhrDataSharingAuditDataAllergy": {
+ "type": "object",
+ "properties": {
+ "date": {
+ "type": "string",
+ "format": "date-time",
+ "nullable": true
+ },
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "allergen": {
+ "type": "string",
+ "nullable": true
+ },
+ "type": {
+ "type": "string",
+ "nullable": true
+ },
+ "reaction": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "EhrDataSharingAuditDataEncounter": {
+ "type": "object",
+ "properties": {
+ "date": {
+ "type": "string",
+ "format": "date-time",
+ "nullable": true
+ },
+ "status": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "EhrDataSharingAuditDataImmunisation": {
+ "type": "object",
+ "properties": {
+ "date": {
+ "type": "string",
+ "format": "date-time",
+ "nullable": true
+ },
+ "description": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "EhrDataSharingAuditDataMedication": {
+ "type": "object",
+ "properties": {
+ "date": {
+ "type": "string",
+ "format": "date-time",
+ "nullable": true
+ },
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "drug": {
+ "type": "string",
+ "nullable": true
+ },
+ "reaction": {
+ "type": "string",
+ "nullable": true
+ },
+ "quantity": {
+ "type": "string",
+ "nullable": true
+ },
+ "frequency": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "EhrDataSharingAuditDataProblem": {
+ "type": "object",
+ "properties": {
+ "date": {
+ "type": "string",
+ "format": "date-time",
+ "nullable": true
+ },
+ "description": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "EhrDataSharingAuditDataProcedure": {
+ "type": "object",
+ "properties": {
+ "date": {
+ "type": "string",
+ "format": "date-time",
+ "nullable": true
+ },
+ "procedure": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "ElectrocardiogramInfo": {
+ "type": "object",
+ "properties": {
+ "heartRate": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "hrv": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "mood": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "respiratoryRate": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "rriMax": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "rriMin": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "paperSpeed": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "gain": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "recordTime": {
+ "type": "string",
+ "format": "date-time",
+ "nullable": true
+ },
+ "waveData": {
+ "type": "array",
+ "items": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "EncounterOverviewInput": {
+ "required": [
+ "clinicId"
+ ],
+ "type": "object",
+ "properties": {
+ "clinicId": {
+ "type": "string",
+ "description": "诊所Id",
+ "format": "uuid"
+ },
+ "doctorId": {
+ "type": "string",
+ "description": "医生Id",
+ "format": "uuid",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "EncounterOverviewOutput": {
+ "type": "object",
+ "properties": {
+ "queueCount": {
+ "type": "integer",
+ "description": "排队总数",
+ "format": "int32"
+ },
+ "appointmentCount": {
+ "type": "integer",
+ "description": "预约总数",
+ "format": "int32"
+ }
+ },
+ "additionalProperties": false
+ },
+ "Error": {
+ "type": "object",
+ "properties": {
+ "code": {
+ "type": "string",
+ "nullable": true
+ },
+ "message": {
+ "type": "string",
+ "nullable": true
+ },
+ "arguments": {
+ "type": "array",
+ "items": { },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "ExpenseItem": {
+ "type": "object",
+ "properties": {
+ "benefitId": {
+ "type": "string",
+ "nullable": true
+ },
+ "name": {
+ "type": "string",
+ "nullable": true
+ },
+ "itemCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "incurredAmount": {
+ "type": "number",
+ "format": "double"
+ },
+ "quantity": {
+ "type": "number",
+ "format": "double"
+ }
+ },
+ "additionalProperties": false
+ },
+ "Field": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "nullable": true
+ },
+ "name": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "FingerprintForTrustedDeviceRequest": {
+ "type": "object",
+ "properties": {
+ "trustedDeviceRequestId": {
+ "type": "string",
+ "nullable": true
+ },
+ "deviceFingerprintPlaintext": {
+ "type": "string",
+ "nullable": true
+ },
+ "deviceFingerprint": {
+ "type": "string",
+ "nullable": true
+ },
+ "plainTextForSigning": {
+ "type": "string",
+ "description": "同verify接口",
+ "nullable": true
+ },
+ "signature": {
+ "type": "string",
+ "description": "同verify接口",
+ "nullable": true
+ },
+ "data": {
+ "type": "string",
+ "description": "算法同verify接口，区别是原文格式为 v1|${serverSecret}|${deviceFingerprint}",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "ForgotPasswordValidInput": {
+ "type": "object",
+ "properties": {
+ "installationId": {
+ "type": "string",
+ "nullable": true
+ },
+ "userName": {
+ "maxLength": 100,
+ "type": "string",
+ "description": "用户名",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "ForgotPasswordValidOutput": {
+ "type": "object",
+ "properties": {
+ "needMFA": {
+ "type": "boolean",
+ "description": "是否需要多步验证"
+ },
+ "supportTOTP": {
+ "type": "boolean",
+ "description": "是否支持totp"
+ },
+ "contactsForOTP": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/UserContactDto"
+ },
+ "description": "多重验证的联系方式",
+ "nullable": true
+ },
+ "forgotPasswordEnable": {
+ "type": "boolean",
+ "description": "是否拥有忘记密码的权限"
+ }
+ },
+ "additionalProperties": false
+ },
+ "GetClinicHealthDataSettingRequest": {
+ "type": "object",
+ "properties": {
+ "clinicCode": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "GetLastUnsignedRequest": {
+ "type": "object",
+ "properties": {
+ "name": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "GetOptionSettingResponseDto": {
+ "type": "object",
+ "properties": {
+ "idTypeOptions": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/OptionDto"
+ },
+ "description": "证件号选项",
+ "nullable": true
+ },
+ "areaCodeOptions": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/OptionDto"
+ },
+ "description": "区号选项",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "GetPatientHealthRequest": {
+ "type": "object",
+ "properties": {
+ "patientId": {
+ "type": "string",
+ "format": "uuid"
+ }
+ },
+ "additionalProperties": false
+ },
+ "GetSentBillByTicketIdResponse": {
+ "type": "object",
+ "properties": {
+ "ticketId": {
+ "type": "string",
+ "nullable": true
+ },
+ "billItems": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/BillItem"
+ },
+ "nullable": true
+ },
+ "isBillSented": {
+ "type": "boolean"
+ }
+ },
+ "additionalProperties": false
+ },
+ "GetSentBillByTicketIdResponseResult": {
+ "type": "object",
+ "properties": {
+ "title": {
+ "type": "string",
+ "nullable": true
+ },
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "isSuccess": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "errors": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/Error"
+ },
+ "nullable": true
+ },
+ "data": {
+ "$ref": "#/components/schemas/GetSentBillByTicketIdResponse"
+ }
+ },
+ "additionalProperties": false
+ },
+ "GetTicketQuestionnaireResponseQuery": {
+ "type": "object",
+ "properties": {
+ "appointmentId": {
+ "type": "string",
+ "format": "uuid"
+ }
+ },
+ "additionalProperties": false
+ },
+ "GetTransactionStatusResponse": {
+ "type": "object",
+ "properties": {
+ "isCompleted": {
+ "type": "boolean"
+ }
+ },
+ "additionalProperties": false
+ },
+ "GetTransactionStatusResponseResult": {
+ "type": "object",
+ "properties": {
+ "title": {
+ "type": "string",
+ "nullable": true
+ },
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "isSuccess": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "errors": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/Error"
+ },
+ "nullable": true
+ },
+ "data": {
+ "$ref": "#/components/schemas/GetTransactionStatusResponse"
+ }
+ },
+ "additionalProperties": false
+ },
+ "HcpSharingDetailsData": {
+ "type": "object",
+ "properties": {
+ "encounters": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/EhrDataSharingAuditDataEncounter"
+ },
+ "nullable": true
+ },
+ "allergies": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/EhrDataSharingAuditDataAllergy"
+ },
+ "nullable": true
+ },
+ "medication": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/EhrDataSharingAuditDataMedication"
+ },
+ "nullable": true
+ },
+ "procedures": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/EhrDataSharingAuditDataProcedure"
+ },
+ "nullable": true
+ },
+ "problems": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/EhrDataSharingAuditDataProblem"
+ },
+ "nullable": true
+ },
+ "immunisations": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/EhrDataSharingAuditDataImmunisation"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "HcpSharingDetailsDto": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "nullable": true
+ },
+ "clinicCoreId": {
+ "type": "string",
+ "nullable": true
+ },
+ "doctorCoreId": {
+ "type": "string",
+ "nullable": true
+ },
+ "hcpId": {
+ "type": "string",
+ "nullable": true
+ },
+ "hciId": {
+ "type": "string",
+ "nullable": true
+ },
+ "ehrNumber": {
+ "type": "string",
+ "nullable": true
+ },
+ "description": {
+ "type": "string",
+ "description": "Patient info",
+ "nullable": true
+ },
+ "data": {
+ "$ref": "#/components/schemas/HcpSharingDetailsData"
+ },
+ "createdAt": {
+ "type": "string",
+ "format": "date-time"
+ }
+ },
+ "additionalProperties": false
+ },
+ "HcpSharingDetailsDtoInvokeResult": {
+ "type": "object",
+ "properties": {
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "code": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "message": {
+ "type": "string",
+ "nullable": true
+ },
+ "success": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "data": {
+ "$ref": "#/components/schemas/HcpSharingDetailsDto"
+ }
+ },
+ "additionalProperties": false
+ },
+ "HcpSharingHistoriesPageRequest": {
+ "type": "object",
+ "properties": {
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "pageSize": {
+ "type": "integer",
+ "format": "int32",
+ "default": "50"
+ },
+ "skip": {
+ "type": "integer",
+ "format": "int32",
+ "readOnly": true
+ },
+ "sorts": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/SortInfo"
+ },
+ "default": "null",
+ "nullable": true
+ },
+ "clinicId": {
+ "type": "string",
+ "nullable": true
+ },
+ "doctorId": {
+ "type": "string",
+ "nullable": true
+ },
+ "hcpId": {
+ "type": "string",
+ "nullable": true
+ },
+ "hciId": {
+ "type": "string",
+ "nullable": true
+ },
+ "startDate": {
+ "type": "string",
+ "format": "date",
+ "nullable": true
+ },
+ "endDate": {
+ "type": "string",
+ "format": "date",
+ "nullable": true
+ },
+ "patientId": {
+ "type": "string",
+ "nullable": true
+ },
+ "order": {
+ "type": "string",
+ "description": "ASC:升序,DESC:降序\r\n不传默认降序",
+ "nullable": true
+ },
+ "dates": {
+ "type": "array",
+ "items": {
+ "type": "string",
+ "format": "date-time"
+ },
+ "nullable": true,
+ "readOnly": true
+ },
+ "page": {
+ "type": "integer",
+ "format": "int32",
+ "readOnly": true
+ },
+ "size": {
+ "type": "integer",
+ "format": "int32",
+ "readOnly": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "HcpSharingHistoryDto": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "nullable": true
+ },
+ "ehrNumber": {
+ "type": "string",
+ "nullable": true
+ },
+ "description": {
+ "type": "string",
+ "description": "Patient info",
+ "nullable": true
+ },
+ "createdAt": {
+ "type": "string",
+ "format": "date-time"
+ }
+ },
+ "additionalProperties": false
+ },
+ "HcpSharingHistoryDtoOutputPageInfo": {
+ "type": "object",
+ "properties": {
+ "items": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/HcpSharingHistoryDto"
+ },
+ "nullable": true
+ },
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "totalCount": {
+ "type": "integer",
+ "format": "int64"
+ },
+ "totalPage": {
+ "type": "integer",
+ "format": "int64"
+ }
+ },
+ "additionalProperties": false
+ },
+ "HcpSharingHistoryDtoOutputPageInfoInvokeResult": {
+ "type": "object",
+ "properties": {
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "code": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "message": {
+ "type": "string",
+ "nullable": true
+ },
+ "success": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "data": {
+ "$ref": "#/components/schemas/HcpSharingHistoryDtoOutputPageInfo"
+ }
+ },
+ "additionalProperties": false
+ },
+ "HealsVideoConferenceData": {
+ "type": "object",
+ "properties": {
+ "meetId": {
+ "type": "string",
+ "nullable": true
+ },
+ "appId": {
+ "type": "string",
+ "nullable": true
+ },
+ "uid": {
+ "type": "string",
+ "nullable": true
+ },
+ "name": {
+ "type": "string",
+ "nullable": true
+ },
+ "uidType": {
+ "type": "string",
+ "nullable": true
+ },
+ "rtcToken": {
+ "type": "string",
+ "nullable": true
+ },
+ "rtmToken": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "HealthDataGroup": {
+ "type": "object",
+ "properties": {
+ "group": {
+ "$ref": "#/components/schemas/HealthDataGroupEnum"
+ },
+ "en_US": {
+ "type": "string",
+ "nullable": true
+ },
+ "zh_HANT": {
+ "type": "string",
+ "nullable": true
+ },
+ "zh_HANS": {
+ "type": "string",
+ "nullable": true
+ },
+ "items": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/HealthDataItem"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "HealthDataGroupEnum": {
+ "enum": [
+ 0,
+ 1,
+ 2
+ ],
+ "type": "HealthDataGroupEnum",
+ "description": "0: Basic\n1: Pediatric\n2: Obstetric\n",
+ "format": "HealthDataGroupEnum"
+ },
+ "HealthDataItem": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "nullable": true
+ },
+ "abbreviation": {
+ "type": "string",
+ "nullable": true
+ },
+ "en_US": {
+ "type": "string",
+ "nullable": true
+ },
+ "zh_HANT": {
+ "type": "string",
+ "nullable": true
+ },
+ "zh_HANS": {
+ "type": "string",
+ "nullable": true
+ },
+ "unit": {
+ "type": "string",
+ "nullable": true
+ },
+ "dataType": {
+ "type": "string",
+ "nullable": true
+ },
+ "dataFormat": {
+ "type": "string",
+ "nullable": true
+ },
+ "editable": {
+ "type": "boolean"
+ }
+ },
+ "additionalProperties": false
+ },
+ "HealthDataPreset": {
+ "enum": [
+ 1,
+ 2,
+ 3
+ ],
+ "type": "HealthDataPreset",
+ "description": "1: Child\n2: Adult\n3: AdultAndChild\n",
+ "format": "HealthDataPreset"
+ },
+ "HealthItem": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "data": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "HealthItemLatestModifyRecordDto": {
+ "type": "object",
+ "properties": {
+ "referenceType": {
+ "type": "string",
+ "nullable": true
+ },
+ "latestUpdateUserName": {
+ "type": "string",
+ "description": "最后修改用户名",
+ "nullable": true
+ },
+ "latestUpdateDateTime": {
+ "type": "string",
+ "description": "最后修改时间",
+ "format": "date-time"
+ },
+ "latestValue": {
+ "$ref": "#/components/schemas/HealthItem"
+ }
+ },
+ "additionalProperties": false,
+ "description": "最后变更记录"
+ },
+ "HealthSettingItemDto": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "nullable": true,
+ "readOnly": true
+ },
+ "name": {
+ "$ref": "#/components/schemas/Multilingual"
+ },
+ "unit": {
+ "type": "string",
+ "nullable": true
+ },
+ "abbreviation": {
+ "type": "string",
+ "nullable": true
+ },
+ "dataFormat": {
+ "type": "string",
+ "nullable": true
+ },
+ "preset": {
+ "$ref": "#/components/schemas/HealthDataPreset"
+ }
+ },
+ "additionalProperties": false
+ },
+ "IdRequest": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ }
+ },
+ "additionalProperties": false
+ },
+ "IdsRequest": {
+ "type": "object",
+ "properties": {
+ "ids": {
+ "type": "array",
+ "items": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "InsuranceBenefitEligibilityCheckCommand": {
+ "type": "object",
+ "properties": {
+ "appointmentId": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "insuranceId": {
+ "type": "string",
+ "format": "uuid"
+ }
+ },
+ "additionalProperties": false
+ },
+ "InsuranceBenefitEligibilityCheckResult": {
+ "type": "object",
+ "properties": {
+ "isPassing": {
+ "type": "boolean"
+ },
+ "failureReason": {
+ "type": "string",
+ "nullable": true
+ },
+ "benefits": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/Benefit"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "InsuranceBenefitEligibilityCheckResultInvokeResult": {
+ "type": "object",
+ "properties": {
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "code": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "message": {
+ "type": "string",
+ "nullable": true
+ },
+ "success": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "data": {
+ "$ref": "#/components/schemas/InsuranceBenefitEligibilityCheckResult"
+ }
+ },
+ "additionalProperties": false
+ },
+ "Insurer": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "nullable": true
+ },
+ "name": {
+ "type": "string",
+ "nullable": true
+ },
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "fields": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/Field"
+ },
+ "nullable": true
+ },
+ "image": {
+ "type": "string",
+ "nullable": true
+ },
+ "style": {
+ "$ref": "#/components/schemas/Style"
+ }
+ },
+ "additionalProperties": false
+ },
+ "InvokeResult": {
+ "type": "object",
+ "properties": {
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "code": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "message": {
+ "type": "string",
+ "nullable": true
+ },
+ "success": {
+ "type": "boolean",
+ "readOnly": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "JsonNode": {
+ "type": "object",
+ "properties": {
+ "options": {
+ "$ref": "#/components/schemas/JsonNodeOptions"
+ },
+ "parent": {
+ "$ref": "#/components/schemas/JsonNode"
+ },
+ "root": {
+ "$ref": "#/components/schemas/JsonNode"
+ }
+ },
+ "additionalProperties": false
+ },
+ "JsonNodeOptions": {
+ "type": "object",
+ "properties": {
+ "propertyNameCaseInsensitive": {
+ "type": "boolean"
+ }
+ },
+ "additionalProperties": false
+ },
+ "ListBillingRequest": {
+ "type": "object",
+ "properties": {
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "pageSize": {
+ "type": "integer",
+ "format": "int32",
+ "default": "50"
+ },
+ "skip": {
+ "type": "integer",
+ "format": "int32",
+ "readOnly": true
+ },
+ "sorts": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/SortInfo"
+ },
+ "default": "null",
+ "nullable": true
+ },
+ "patientCode": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "ListCalendarSchedulesRequest": {
+ "type": "object",
+ "properties": {
+ "lastRequest": {
+ "type": "string",
+ "description": "上次请求时间，首次则为null",
+ "format": "date-time",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "ListHealthSettingItemsRequest": {
+ "type": "object",
+ "additionalProperties": false
+ },
+ "ListPatientFilesRequest": {
+ "type": "object",
+ "properties": {
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "pageSize": {
+ "type": "integer",
+ "format": "int32",
+ "default": "50"
+ },
+ "skip": {
+ "type": "integer",
+ "format": "int32",
+ "readOnly": true
+ },
+ "sorts": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/SortInfo"
+ },
+ "default": "null",
+ "nullable": true
+ },
+ "patientId": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "categoryId": {
+ "type": "string",
+ "format": "uuid",
+ "nullable": true
+ },
+ "type": {
+ "$ref": "#/components/schemas/PatientImageDataType"
+ },
+ "date": {
+ "type": "string",
+ "format": "date-time",
+ "nullable": true
+ },
+ "doctorId": {
+ "type": "string",
+ "format": "uuid",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "ListPatientTermsRequest": {
+ "type": "object",
+ "properties": {
+ "patientId": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "category": {
+ "$ref": "#/components/schemas/MedicalDataType"
+ },
+ "doctorId": {
+ "type": "string",
+ "format": "uuid",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "ListProvidersForSecondConsultationQuery": {
+ "type": "object",
+ "properties": {
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "pageSize": {
+ "type": "integer",
+ "format": "int32",
+ "default": "50"
+ },
+ "skip": {
+ "type": "integer",
+ "format": "int32",
+ "readOnly": true
+ },
+ "sorts": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/SortInfo"
+ },
+ "default": "null",
+ "nullable": true
+ },
+ "appointmentId": {
+ "type": "string",
+ "format": "uuid"
+ }
+ },
+ "additionalProperties": false
+ },
+ "LoginFromQRCodeInput": {
+ "required": [
+ "qrCode"
+ ],
+ "type": "object",
+ "properties": {
+ "qrCode": {
+ "minLength": 1,
+ "type": "string"
+ }
+ },
+ "additionalProperties": false
+ },
+ "LoginFromQRCodeResponse": {
+ "type": "object",
+ "properties": {
+ "installationId": {
+ "type": "string",
+ "nullable": true
+ },
+ "userName": {
+ "type": "string",
+ "nullable": true
+ },
+ "jwtToken": {
+ "type": "string",
+ "nullable": true
+ },
+ "tokenExpireOn": {
+ "type": "string",
+ "description": "token过期日期",
+ "format": "date-time",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "LoginFromQRCodeResponseInvokeResult": {
+ "type": "object",
+ "properties": {
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "code": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "message": {
+ "type": "string",
+ "nullable": true
+ },
+ "success": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "data": {
+ "$ref": "#/components/schemas/LoginFromQRCodeResponse"
+ }
+ },
+ "additionalProperties": false
+ },
+ "LoginInput": {
+ "required": [
+ "installationId",
+ "password",
+ "userName"
+ ],
+ "type": "object",
+ "properties": {
+ "installationId": {
+ "maxLength": 50,
+ "minLength": 1,
+ "type": "string"
+ },
+ "userName": {
+ "maxLength": 50,
+ "minLength": 1,
+ "type": "string"
+ },
+ "password": {
+ "maxLength": 50,
+ "minLength": 1,
+ "type": "string"
+ },
+ "ignoreMFA": {
+ "type": "boolean",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "LoginLogDto": {
+ "type": "object",
+ "properties": {
+ "ip": {
+ "type": "string",
+ "nullable": true
+ },
+ "loginAt": {
+ "type": "string",
+ "format": "date-time"
+ }
+ },
+ "additionalProperties": false
+ },
+ "LoginLogDtoOutputPageInfo": {
+ "type": "object",
+ "properties": {
+ "items": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/LoginLogDto"
+ },
+ "nullable": true
+ },
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "totalCount": {
+ "type": "integer",
+ "format": "int64"
+ },
+ "totalPage": {
+ "type": "integer",
+ "format": "int64"
+ }
+ },
+ "additionalProperties": false
+ },
+ "LoginResponse": {
+ "type": "object",
+ "properties": {
+ "jwtToken": {
+ "type": "string",
+ "nullable": true
+ },
+ "tokenExpireOn": {
+ "type": "string",
+ "description": "token过期日期",
+ "format": "date-time",
+ "nullable": true
+ },
+ "needMFA": {
+ "type": "boolean",
+ "description": "是否需要进行MFA",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "LoginResponseInvokeResult": {
+ "type": "object",
+ "properties": {
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "code": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "message": {
+ "type": "string",
+ "nullable": true
+ },
+ "success": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "data": {
+ "$ref": "#/components/schemas/LoginResponse"
+ }
+ },
+ "additionalProperties": false
+ },
+ "MFAInput": {
+ "required": [
+ "code"
+ ],
+ "type": "object",
+ "properties": {
+ "code": {
+ "maxLength": 50,
+ "minLength": 1,
+ "type": "string"
+ }
+ },
+ "additionalProperties": false
+ },
+ "MFAResponse": {
+ "type": "object",
+ "properties": {
+ "jwtToken": {
+ "type": "string",
+ "nullable": true
+ },
+ "tokenExpireOn": {
+ "type": "string",
+ "description": "token过期日期",
+ "format": "date-time",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "MFAResponseInvokeResult": {
+ "type": "object",
+ "properties": {
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "code": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "message": {
+ "type": "string",
+ "nullable": true
+ },
+ "success": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "data": {
+ "$ref": "#/components/schemas/MFAResponse"
+ }
+ },
+ "additionalProperties": false
+ },
+ "MedicalCertificateInfo": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "issueDate": {
+ "type": "string",
+ "format": "date-time"
+ },
+ "startDate": {
+ "type": "string",
+ "format": "date-time"
+ },
+ "endDate": {
+ "type": "string",
+ "format": "date-time"
+ },
+ "startDateDuration": {
+ "type": "string",
+ "nullable": true
+ },
+ "endDateDuration": {
+ "type": "string",
+ "nullable": true
+ },
+ "noOfDay": {
+ "type": "number",
+ "format": "double"
+ },
+ "fileId": {
+ "type": "string",
+ "format": "uuid",
+ "nullable": true
+ },
+ "type": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "MedicalDataType": {
+ "enum": [
+ 0,
+ 1,
+ 2,
+ 3,
+ 4,
+ 5,
+ 6,
+ 7,
+ 8,
+ 9,
+ 10,
+ 11,
+ 12,
+ 13,
+ 999
+ ],
+ "type": "MedicalDataType",
+ "description": "0: ImageCategory\n1: ImageName\n2: MedicalGroup\n3: MedicalHistory\n4: DrugHistory\n5: ImmunizationItem\n6: LaboratoryItem\n7: LaboratoryProvider\n8: PaymentItemGroup\n9: Allergy\n10: Action\n11: Complaint\n12: Diagnosis\n13: Findings\n999: Other\n",
+ "format": "MedicalDataType"
+ },
+ "MedicalInfo": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "description": "/诊断Id",
+ "format": "uuid"
+ },
+ "diagnosis": {
+ "type": "string",
+ "description": "诊断",
+ "nullable": true
+ },
+ "diagnosisJson": {
+ "type": "string",
+ "description": "诊断Json",
+ "nullable": true
+ },
+ "procedure": {
+ "type": "string",
+ "description": "医疗程序",
+ "nullable": true
+ },
+ "procedureJson": {
+ "type": "string",
+ "description": "医疗程序Json",
+ "nullable": true
+ },
+ "complaint": {
+ "type": "string",
+ "description": "不适征兆",
+ "nullable": true
+ },
+ "finding": {
+ "type": "string",
+ "description": "其他征兆",
+ "nullable": true
+ },
+ "action": {
+ "type": "string",
+ "description": "跟进",
+ "nullable": true
+ },
+ "notes": {
+ "type": "string",
+ "description": "其他",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "MedicalInfoLatestModifyRecordDto": {
+ "type": "object",
+ "properties": {
+ "referenceType": {
+ "type": "string",
+ "nullable": true
+ },
+ "latestUpdateUserName": {
+ "type": "string",
+ "description": "最后修改用户名",
+ "nullable": true
+ },
+ "latestUpdateDateTime": {
+ "type": "string",
+ "description": "最后修改时间",
+ "format": "date-time"
+ },
+ "latestValue": {
+ "$ref": "#/components/schemas/MedicalInfo"
+ }
+ },
+ "additionalProperties": false,
+ "description": "最后变更记录"
+ },
+ "Message": {
+ "type": "object",
+ "properties": {
+ "title": {
+ "type": "string",
+ "nullable": true
+ },
+ "body": {
+ "type": "string",
+ "nullable": true
+ },
+ "imageUrl": {
+ "type": "string",
+ "nullable": true
+ },
+ "extras": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/StringStringKeyValuePair"
+ },
+ "description": "Effective for backend",
+ "nullable": true
+ },
+ "data": {
+ "type": "object",
+ "additionalProperties": {
+ "type": "string"
+ },
+ "nullable": true
+ },
+ "clientId": {
+ "type": "string",
+ "nullable": true
+ },
+ "clientTenantId": {
+ "type": "string",
+ "nullable": true
+ },
+ "userIds": {
+ "type": "array",
+ "items": {
+ "type": "string"
+ },
+ "nullable": true
+ },
+ "deviceId": {
+ "type": "string",
+ "nullable": true
+ },
+ "topic": {
+ "type": "string",
+ "nullable": true
+ },
+ "condition": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "MessageDetailsDto": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "type": {
+ "type": "string",
+ "nullable": true
+ },
+ "from": {
+ "type": "string",
+ "nullable": true
+ },
+ "title": {
+ "type": "string",
+ "nullable": true
+ },
+ "content": {
+ "type": "string",
+ "nullable": true
+ },
+ "sentTime": {
+ "type": "string",
+ "format": "date-time"
+ },
+ "isRead": {
+ "type": "boolean"
+ }
+ },
+ "additionalProperties": false
+ },
+ "MessagePageItemDto": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "type": {
+ "type": "string",
+ "nullable": true
+ },
+ "title": {
+ "type": "string",
+ "nullable": true
+ },
+ "from": {
+ "type": "string",
+ "nullable": true
+ },
+ "sentTime": {
+ "type": "string",
+ "format": "date-time"
+ },
+ "isRead": {
+ "type": "boolean"
+ }
+ },
+ "additionalProperties": false
+ },
+ "MessagePageItemDtoOutputPageInfo": {
+ "type": "object",
+ "properties": {
+ "items": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/MessagePageItemDto"
+ },
+ "nullable": true
+ },
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "totalCount": {
+ "type": "integer",
+ "format": "int64"
+ },
+ "totalPage": {
+ "type": "integer",
+ "format": "int64"
+ }
+ },
+ "additionalProperties": false
+ },
+ "MessagePageRequest": {
+ "type": "object",
+ "properties": {
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "pageSize": {
+ "type": "integer",
+ "format": "int32",
+ "default": "50"
+ },
+ "skip": {
+ "type": "integer",
+ "format": "int32",
+ "readOnly": true
+ },
+ "sorts": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/SortInfo"
+ },
+ "default": "null",
+ "nullable": true
+ },
+ "type": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "Multilingual": {
+ "type": "object",
+ "properties": {
+ "en": {
+ "type": "string",
+ "nullable": true
+ },
+ "zhHans": {
+ "type": "string",
+ "nullable": true
+ },
+ "zhHant": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "MultilingualOptionDto": {
+ "type": "object",
+ "properties": {
+ "label": {
+ "$ref": "#/components/schemas/Multilingual"
+ },
+ "value": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "Name": {
+ "type": "object",
+ "properties": {
+ "top": {
+ "type": "string",
+ "nullable": true
+ },
+ "left": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "OpenBiometricsAuthRequest": {
+ "type": "object",
+ "properties": {
+ "clientId": {
+ "type": "string",
+ "nullable": true,
+ "readOnly": true
+ },
+ "type": {
+ "type": "integer",
+ "description": "0=Fingerprint, 1=Face",
+ "format": "int32"
+ },
+ "signature": {
+ "type": "string",
+ "description": "When no PlainText argument, this value should be calculated with steps below: \r\nStep 1: MD5(Authorization header) output 32-bit lowercase character string\r\nStep 2: encrypt result of step 1 with private key",
+ "nullable": true
+ },
+ "halg": {
+ "type": "string",
+ "description": "PlainText encryption hash algorithm name, enumeration is MD5/SHA1/SHA256/SHA384/SHA512, default is SHA512",
+ "nullable": true
+ },
+ "userId": {
+ "type": "string",
+ "description": "Frontend ignore this",
+ "nullable": true,
+ "readOnly": true
+ },
+ "plainText": {
+ "type": "string",
+ "nullable": true,
+ "readOnly": true
+ },
+ "publicKey": {
+ "type": "string",
+ "nullable": true
+ },
+ "extrasAsString": {
+ "type": "string",
+ "nullable": true,
+ "readOnly": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "OpenBiometricsAuthResult": {
+ "type": "object",
+ "properties": {
+ "biometricsId": {
+ "type": "string",
+ "nullable": true
+ },
+ "secret": {
+ "type": "string",
+ "nullable": true
+ },
+ "publicKey": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "OpenBiometricsAuthResultInvokeResult": {
+ "type": "object",
+ "properties": {
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "code": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "message": {
+ "type": "string",
+ "nullable": true
+ },
+ "success": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "data": {
+ "$ref": "#/components/schemas/OpenBiometricsAuthResult"
+ }
+ },
+ "additionalProperties": false
+ },
+ "OperationResult": {
+ "type": "object",
+ "properties": {
+ "userName": {
+ "type": "string",
+ "nullable": true
+ },
+ "success": {
+ "type": "boolean"
+ },
+ "message": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "OptionDto": {
+ "type": "object",
+ "properties": {
+ "label": {
+ "type": "string",
+ "description": "标签值",
+ "nullable": true
+ },
+ "value": {
+ "type": "string",
+ "description": "对应值",
+ "nullable": true
+ },
+ "isDefault": {
+ "type": "boolean",
+ "description": "是否默认"
+ },
+ "regexExpression": {
+ "type": "string",
+ "description": "正则校验",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "OtherMedicalInfoOutput": {
+ "type": "object",
+ "properties": {
+ "other": {
+ "type": "string",
+ "description": "其他信息",
+ "nullable": true
+ },
+ "otherLatestUpdateRecord": {
+ "$ref": "#/components/schemas/OtherMedicalInfoOutputLatestModifyRecordDto"
+ },
+ "doctorRemark": {
+ "type": "string",
+ "description": "医生备注",
+ "nullable": true
+ },
+ "doctorRemarkLatestUpdateRecord": {
+ "$ref": "#/components/schemas/OtherMedicalInfoOutputLatestModifyRecordDto"
+ }
+ },
+ "additionalProperties": false
+ },
+ "OtherMedicalInfoOutputLatestModifyRecordDto": {
+ "type": "object",
+ "properties": {
+ "referenceType": {
+ "type": "string",
+ "nullable": true
+ },
+ "latestUpdateUserName": {
+ "type": "string",
+ "description": "最后修改用户名",
+ "nullable": true
+ },
+ "latestUpdateDateTime": {
+ "type": "string",
+ "description": "最后修改时间",
+ "format": "date-time"
+ },
+ "latestValue": {
+ "$ref": "#/components/schemas/OtherMedicalInfoOutput"
+ }
+ },
+ "additionalProperties": false,
+ "description": "最后变更记录"
+ },
+ "OverviewContractDetailsDto": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "nullable": true
+ },
+ "payorName": {
+ "type": "string",
+ "nullable": true
+ },
+ "planName": {
+ "type": "string",
+ "nullable": true
+ },
+ "issueDate": {
+ "type": "string",
+ "format": "date-time",
+ "nullable": true
+ },
+ "effectiveDate": {
+ "type": "string",
+ "format": "date-time",
+ "nullable": true
+ },
+ "expirationDate": {
+ "type": "string",
+ "format": "date-time",
+ "nullable": true
+ },
+ "isActive": {
+ "type": "boolean"
+ },
+ "clinicName": {
+ "type": "string",
+ "nullable": true
+ },
+ "description": {
+ "type": "string",
+ "nullable": true
+ },
+ "services": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/Service"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "OverviewContractDetailsRequest": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "OverviewContractFilters": {
+ "type": "object",
+ "properties": {
+ "payors": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PayorOption"
+ },
+ "nullable": true
+ },
+ "doctors": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/OptionDto"
+ },
+ "nullable": true
+ },
+ "agreementStatuses": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/OptionDto"
+ },
+ "nullable": true
+ },
+ "statuses": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/OptionDto"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "OverviewContractItemDto": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "nullable": true
+ },
+ "payorName": {
+ "type": "string",
+ "nullable": true
+ },
+ "planName": {
+ "type": "string",
+ "nullable": true
+ },
+ "issueDate": {
+ "type": "string",
+ "format": "date-time",
+ "nullable": true
+ },
+ "effectiveDate": {
+ "type": "string",
+ "format": "date-time",
+ "nullable": true
+ },
+ "expirationDate": {
+ "type": "string",
+ "format": "date-time",
+ "nullable": true
+ },
+ "status": {
+ "$ref": "#/components/schemas/ContractStatus"
+ }
+ },
+ "additionalProperties": false
+ },
+ "OverviewContractItemDtoOutputPageInfo": {
+ "type": "object",
+ "properties": {
+ "items": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/OverviewContractItemDto"
+ },
+ "nullable": true
+ },
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "totalCount": {
+ "type": "integer",
+ "format": "int64"
+ },
+ "totalPage": {
+ "type": "integer",
+ "format": "int64"
+ }
+ },
+ "additionalProperties": false
+ },
+ "OverviewIncomeReportDto": {
+ "type": "object",
+ "properties": {
+ "x": {
+ "$ref": "#/components/schemas/StringChartAxis"
+ },
+ "series": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/DecimalChartAxis"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "OverviewIncomeReportDtoInvokeResult": {
+ "type": "object",
+ "properties": {
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "code": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "message": {
+ "type": "string",
+ "nullable": true
+ },
+ "success": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "data": {
+ "$ref": "#/components/schemas/OverviewIncomeReportDto"
+ }
+ },
+ "additionalProperties": false
+ },
+ "OverviewIncomeReportRequest": {
+ "type": "object",
+ "properties": {
+ "clinicId": {
+ "type": "string",
+ "format": "uuid",
+ "nullable": true
+ },
+ "doctorId": {
+ "type": "string",
+ "format": "uuid",
+ "nullable": true
+ },
+ "paymentAccount": {
+ "type": "string",
+ "nullable": true
+ },
+ "period": {
+ "$ref": "#/components/schemas/OverviewReportTimePeriod"
+ }
+ },
+ "additionalProperties": false
+ },
+ "OverviewListContractsRequest": {
+ "type": "object",
+ "properties": {
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "pageSize": {
+ "type": "integer",
+ "format": "int32",
+ "default": "50"
+ },
+ "skip": {
+ "type": "integer",
+ "format": "int32",
+ "readOnly": true
+ },
+ "sorts": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/SortInfo"
+ },
+ "default": "null",
+ "nullable": true
+ },
+ "payorId": {
+ "type": "string",
+ "nullable": true
+ },
+ "planId": {
+ "type": "string",
+ "nullable": true
+ },
+ "doctorId": {
+ "type": "string",
+ "nullable": true
+ },
+ "agreementStatus": {
+ "type": "string",
+ "nullable": true
+ },
+ "status": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "OverviewReportInputsDto": {
+ "type": "object",
+ "properties": {
+ "totalIncome": {
+ "type": "number",
+ "format": "double"
+ },
+ "totalTransaction": {
+ "type": "number",
+ "format": "double"
+ },
+ "clinics": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/MultilingualOptionDto"
+ },
+ "nullable": true
+ },
+ "doctors": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/MultilingualOptionDto"
+ },
+ "nullable": true
+ },
+ "paymentAccounts": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/OptionDto"
+ },
+ "nullable": true
+ },
+ "todayIncome": {
+ "type": "number",
+ "format": "double"
+ }
+ },
+ "additionalProperties": false
+ },
+ "OverviewReportInputsDtoInvokeResult": {
+ "type": "object",
+ "properties": {
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "code": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "message": {
+ "type": "string",
+ "nullable": true
+ },
+ "success": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "data": {
+ "$ref": "#/components/schemas/OverviewReportInputsDto"
+ }
+ },
+ "additionalProperties": false
+ },
+ "OverviewReportInputsRequest": {
+ "type": "object",
+ "properties": {
+ "clinicId": {
+ "type": "string",
+ "format": "uuid",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "OverviewReportTimePeriod": {
+ "enum": [
+ 1,
+ 2,
+ 3
+ ],
+ "type": "OverviewReportTimePeriod",
+ "description": "1: Day\n2: Week\n3: Month\n",
+ "format": "OverviewReportTimePeriod"
+ },
+ "OverviewTransactionReportRequest": {
+ "type": "object",
+ "properties": {
+ "clinicId": {
+ "type": "string",
+ "format": "uuid",
+ "nullable": true
+ },
+ "doctorId": {
+ "type": "string",
+ "format": "uuid",
+ "nullable": true
+ },
+ "paymentAccount": {
+ "type": "string",
+ "nullable": true
+ },
+ "period": {
+ "$ref": "#/components/schemas/OverviewReportTimePeriod"
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientAllergyQueryInput": {
+ "type": "object",
+ "properties": {
+ "patientId": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "typeOfAllergen": {
+ "type": "string",
+ "description": "过敏类型\r\n药物过敏:Drug\r\n非药物过敏:Non-Drug\r\n其他:Other",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientAllergyQueryOutput": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "typeOfAllergen": {
+ "type": "string",
+ "description": "过敏类型",
+ "nullable": true
+ },
+ "category": {
+ "type": "string",
+ "description": "分类\r\n药物过敏有值",
+ "nullable": true
+ },
+ "allergenId": {
+ "type": "string",
+ "description": "项目Id\r\n药物过敏有值",
+ "nullable": true
+ },
+ "allergen": {
+ "type": "string",
+ "description": "项目名",
+ "nullable": true
+ },
+ "certainty": {
+ "type": "string",
+ "description": "疑似/确认\r\n疑似:Suspected\r\n确认:Certain",
+ "nullable": true
+ },
+ "allergicReactionId": {
+ "type": "string",
+ "description": "过敏反应Id",
+ "nullable": true
+ },
+ "allergicReactionDescription": {
+ "type": "string",
+ "description": "过敏反应注释",
+ "nullable": true
+ },
+ "updatedBy": {
+ "type": "string",
+ "nullable": true
+ },
+ "updatedTime": {
+ "type": "string",
+ "format": "date-time"
+ },
+ "latestUpdateRecord": {
+ "$ref": "#/components/schemas/PatientAllergyQueryOutputLatestModifyRecordDto"
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientAllergyQueryOutputLatestModifyRecordDto": {
+ "type": "object",
+ "properties": {
+ "referenceType": {
+ "type": "string",
+ "nullable": true
+ },
+ "latestUpdateUserName": {
+ "type": "string",
+ "description": "最后修改用户名",
+ "nullable": true
+ },
+ "latestUpdateDateTime": {
+ "type": "string",
+ "description": "最后修改时间",
+ "format": "date-time"
+ },
+ "latestValue": {
+ "$ref": "#/components/schemas/PatientAllergyQueryOutput"
+ }
+ },
+ "additionalProperties": false,
+ "description": "最后变更记录"
+ },
+ "PatientBaseInfo": {
+ "type": "object",
+ "properties": {
+ "code": {
+ "type": "string",
+ "description": "病人编号",
+ "nullable": true
+ },
+ "enName": {
+ "type": "string",
+ "description": "病人英文名",
+ "nullable": true
+ },
+ "zhName": {
+ "type": "string",
+ "description": "病人中文名",
+ "nullable": true
+ },
+ "prefix": {
+ "type": "string",
+ "description": "病人称呼",
+ "nullable": true
+ },
+ "ehrNumber": {
+ "type": "string",
+ "nullable": true
+ },
+ "identityDocumentNumber": {
+ "type": "string",
+ "description": "身份证号",
+ "nullable": true
+ },
+ "identityDocumentType": {
+ "type": "string",
+ "description": "身份证类型",
+ "nullable": true
+ },
+ "otherIdentityNumber": {
+ "type": "string",
+ "description": "其他证件号",
+ "nullable": true
+ },
+ "birthDate": {
+ "type": "string",
+ "description": "出生日期",
+ "nullable": true
+ },
+ "gender": {
+ "type": "integer",
+ "description": "性别",
+ "format": "int32",
+ "nullable": true
+ },
+ "mobileCountryCode": {
+ "type": "string",
+ "description": "手机区号",
+ "nullable": true
+ },
+ "mobileNumber": {
+ "type": "string",
+ "description": "手机号",
+ "nullable": true
+ },
+ "telephoneAreaCode": {
+ "type": "string",
+ "description": "座机区号",
+ "nullable": true
+ },
+ "telephone": {
+ "type": "string",
+ "description": "座机号",
+ "nullable": true
+ },
+ "blood": {
+ "type": "string",
+ "description": "血型",
+ "nullable": true
+ },
+ "remark": {
+ "type": "string",
+ "description": "备注",
+ "nullable": true
+ },
+ "email": {
+ "type": "string",
+ "description": "邮箱",
+ "nullable": true
+ },
+ "occupation": {
+ "type": "string",
+ "description": "职业",
+ "nullable": true
+ },
+ "group": {
+ "type": "string",
+ "description": "类别",
+ "nullable": true
+ },
+ "mobileRemark": {
+ "type": "string",
+ "nullable": true
+ },
+ "telephoneRemark": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientDetailOutput": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "baseInfo": {
+ "$ref": "#/components/schemas/PatientBaseInfo"
+ },
+ "otherInfo": {
+ "$ref": "#/components/schemas/PatientOtherInfo"
+ },
+ "emergencyContactInfo": {
+ "$ref": "#/components/schemas/PatientEmergencyContactInfo"
+ },
+ "insuranceInfos": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PatientInsuranceInfo"
+ },
+ "nullable": true
+ },
+ "patientTelephones": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PatientTelephone"
+ },
+ "nullable": true
+ },
+ "patientMobiles": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PatientMobile"
+ },
+ "nullable": true
+ },
+ "receiveMarketingMessage": {
+ "type": "boolean",
+ "description": "接收市场推广讯息",
+ "nullable": true
+ },
+ "nkda": {
+ "type": "boolean",
+ "description": "NKDA未有已知药物过敏",
+ "nullable": true
+ },
+ "isTemporary": {
+ "type": "boolean",
+ "description": "是否临时病人",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientEmergencyContactInfo": {
+ "type": "object",
+ "properties": {
+ "emergencyContactName": {
+ "type": "string",
+ "description": "紧急联系人姓名",
+ "nullable": true
+ },
+ "emergencyContactPhone": {
+ "type": "string",
+ "description": "紧急联系电话",
+ "nullable": true
+ },
+ "emergencyContactAreaCode": {
+ "type": "string",
+ "description": "紧急联系电话，例如中国大陆为86",
+ "nullable": true
+ },
+ "emergencyContactRelationship": {
+ "type": "string",
+ "description": "与紧急联系人关系",
+ "nullable": true
+ },
+ "emergencyContactRemark": {
+ "type": "string",
+ "description": "紧急联系人备注",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientFileItem": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "fileId": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "imageName": {
+ "type": "string",
+ "nullable": true
+ },
+ "fileType": {
+ "type": "string",
+ "nullable": true
+ },
+ "fileSuffix": {
+ "type": "string",
+ "nullable": true
+ },
+ "date": {
+ "type": "string",
+ "format": "date-time"
+ },
+ "categoryId": {
+ "type": "string",
+ "format": "uuid",
+ "nullable": true
+ },
+ "category": {
+ "type": "string",
+ "nullable": true
+ },
+ "type": {
+ "$ref": "#/components/schemas/PatientImageDataType"
+ },
+ "writeTemplateId": {
+ "type": "string",
+ "format": "uuid",
+ "nullable": true
+ },
+ "writeTemplateName": {
+ "type": "string",
+ "nullable": true
+ },
+ "isRead": {
+ "type": "boolean"
+ },
+ "size": {
+ "type": "integer",
+ "format": "int64",
+ "nullable": true
+ },
+ "url": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientFileItemOutputPageInfo": {
+ "type": "object",
+ "properties": {
+ "items": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PatientFileItem"
+ },
+ "nullable": true
+ },
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "totalCount": {
+ "type": "integer",
+ "format": "int64"
+ },
+ "totalPage": {
+ "type": "integer",
+ "format": "int64"
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientHealthDataQueryInput": {
+ "type": "object",
+ "properties": {
+ "patientId": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "pageSize": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientHealthDataQueryOutput": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "patientAge": {
+ "type": "string",
+ "description": "病人年龄",
+ "nullable": true
+ },
+ "date": {
+ "type": "string",
+ "description": "日期",
+ "format": "date-time"
+ },
+ "height": {
+ "type": "number",
+ "description": "身高(cm)",
+ "format": "double",
+ "nullable": true
+ },
+ "weight": {
+ "type": "number",
+ "description": "体重(kg)",
+ "format": "double",
+ "nullable": true
+ },
+ "temperature": {
+ "type": "number",
+ "description": "体温(摄氏度)",
+ "format": "double",
+ "nullable": true
+ },
+ "head": {
+ "type": "number",
+ "description": "头维",
+ "format": "double",
+ "nullable": true
+ },
+ "arm": {
+ "type": "number",
+ "description": "臂维",
+ "format": "double",
+ "nullable": true
+ },
+ "triceps": {
+ "type": "number",
+ "description": "三头肌",
+ "format": "double",
+ "nullable": true
+ },
+ "subscapular": {
+ "type": "number",
+ "description": "肌腱",
+ "format": "double",
+ "nullable": true
+ },
+ "sitHeight": {
+ "type": "number",
+ "description": "坐立高度(cm)",
+ "format": "double",
+ "nullable": true
+ },
+ "bmi": {
+ "type": "number",
+ "description": "体重指数",
+ "format": "double",
+ "nullable": true,
+ "readOnly": true
+ },
+ "glucose": {
+ "type": "number",
+ "description": "血糖",
+ "format": "double",
+ "nullable": true
+ },
+ "hba1c": {
+ "type": "number",
+ "description": "血糖化蛋白",
+ "format": "double",
+ "nullable": true
+ },
+ "cholesterol": {
+ "type": "number",
+ "description": "胆固醇",
+ "format": "double",
+ "nullable": true
+ },
+ "triglycerides": {
+ "type": "number",
+ "description": "血脂",
+ "format": "double",
+ "nullable": true
+ },
+ "systolic": {
+ "type": "number",
+ "description": "收缩血压",
+ "format": "double",
+ "nullable": true
+ },
+ "diastolic": {
+ "type": "number",
+ "description": "舒张血压",
+ "format": "double",
+ "nullable": true
+ },
+ "pulse": {
+ "type": "number",
+ "description": "脉搏",
+ "format": "double",
+ "nullable": true
+ },
+ "oxygenSaturation": {
+ "type": "number",
+ "description": "血氧饱和度",
+ "format": "double",
+ "nullable": true
+ },
+ "electrocardiogram": {
+ "$ref": "#/components/schemas/ElectrocardiogramInfo"
+ },
+ "vitalCapacity": {
+ "type": "number",
+ "format": "double",
+ "nullable": true
+ },
+ "lastMenstrualPeriod": {
+ "type": "string",
+ "format": "date-time",
+ "nullable": true
+ },
+ "menstrualCycleLength": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "gravida": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "parity": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "prePregnantWeight": {
+ "type": "number",
+ "format": "double",
+ "nullable": true
+ },
+ "expectedDateOfConfinement": {
+ "type": "string",
+ "format": "date-time",
+ "nullable": true
+ },
+ "gestationalAgeAtProgressDateWeek": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "gestationalAgeAtProgressDateDay": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "symphysialFundalHeight": {
+ "type": "number",
+ "format": "double",
+ "nullable": true
+ },
+ "uterineSize": {
+ "type": "number",
+ "format": "double",
+ "nullable": true
+ },
+ "numberOfFoetusInObstetricUltrasound": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "foetalOrderInObstetricUltrasound": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "foetalCrownRumpLength": {
+ "type": "number",
+ "format": "double",
+ "nullable": true
+ },
+ "foetalBiparietalDiameter": {
+ "type": "number",
+ "format": "double",
+ "nullable": true
+ },
+ "foetalHeadCircumference": {
+ "type": "number",
+ "format": "double",
+ "nullable": true
+ },
+ "foetalAbdominalCircumference": {
+ "type": "number",
+ "format": "double",
+ "nullable": true
+ },
+ "foetalFemurLength": {
+ "type": "number",
+ "format": "double",
+ "nullable": true
+ },
+ "estimatedFoetalWeight": {
+ "type": "number",
+ "format": "double",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientHealthDto": {
+ "type": "object",
+ "properties": {
+ "medicalHistory": {
+ "$ref": "#/components/schemas/HealthItem"
+ },
+ "medicalHistoryLatestModifyRecord": {
+ "$ref": "#/components/schemas/HealthItemLatestModifyRecordDto"
+ },
+ "drugHistory": {
+ "$ref": "#/components/schemas/HealthItem"
+ },
+ "drugHistoryLatestModifyRecord": {
+ "$ref": "#/components/schemas/HealthItemLatestModifyRecordDto"
+ },
+ "allergies": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/HealthItem"
+ },
+ "description": "过敏",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientImageData": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "installationId": {
+ "type": "string",
+ "nullable": true
+ },
+ "createdTime": {
+ "type": "string",
+ "format": "date-time"
+ },
+ "updatedTime": {
+ "type": "string",
+ "format": "date-time"
+ },
+ "isDeleted": {
+ "type": "boolean",
+ "nullable": true
+ },
+ "patientId": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "patientCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "categoryId": {
+ "type": "string",
+ "format": "uuid",
+ "nullable": true
+ },
+ "category": {
+ "type": "string",
+ "nullable": true
+ },
+ "clinicId": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "clinicCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "doctorId": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "doctorCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "fileId": {
+ "type": "string",
+ "description": "图片id",
+ "format": "uuid"
+ },
+ "imageName": {
+ "type": "string",
+ "nullable": true
+ },
+ "fileType": {
+ "type": "string",
+ "description": "文件流类型",
+ "nullable": true
+ },
+ "fileSuffix": {
+ "type": "string",
+ "description": "文件后缀",
+ "nullable": true
+ },
+ "date": {
+ "type": "string",
+ "format": "date-time"
+ },
+ "type": {
+ "$ref": "#/components/schemas/PatientImageDataType"
+ },
+ "writeTemplateId": {
+ "type": "string",
+ "format": "uuid",
+ "nullable": true
+ },
+ "writeTemplateName": {
+ "type": "string",
+ "nullable": true
+ },
+ "isRead": {
+ "type": "boolean"
+ },
+ "lastModifyDate": {
+ "maxLength": 64,
+ "minLength": 0,
+ "type": "string",
+ "description": "文件最后修改时间",
+ "nullable": true
+ },
+ "fileKey": {
+ "maxLength": 256,
+ "minLength": 0,
+ "type": "string",
+ "description": "文件关联Key",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientImageDataInvokeResult": {
+ "type": "object",
+ "properties": {
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "code": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "message": {
+ "type": "string",
+ "nullable": true
+ },
+ "success": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "data": {
+ "$ref": "#/components/schemas/PatientImageData"
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientImageDataType": {
+ "enum": [
+ 0,
+ 1,
+ 2
+ ],
+ "type": "PatientImageDataType",
+ "description": "0: File\n1: Write\n2: VoiceMessage\n",
+ "format": "PatientImageDataType"
+ },
+ "PatientImmunisationQueryInput": {
+ "type": "object",
+ "properties": {
+ "patientId": {
+ "type": "string",
+ "format": "uuid"
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientImmunisationQueryOutput": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "type": {
+ "type": "integer",
+ "description": "类型\r\n0: 免疫记录\r\n1: 备注",
+ "format": "int32"
+ },
+ "administrationDate": {
+ "type": "string",
+ "description": "日期",
+ "format": "date-time",
+ "nullable": true
+ },
+ "vaccineDescription": {
+ "type": "string",
+ "description": "项目名称",
+ "nullable": true
+ },
+ "remarks": {
+ "type": "string",
+ "description": "备注",
+ "nullable": true
+ },
+ "dose": {
+ "type": "string",
+ "description": "注射次数",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientInsuranceInfo": {
+ "type": "object",
+ "properties": {
+ "patientInsuranceId": {
+ "type": "string",
+ "description": "病人保险信息Id",
+ "format": "uuid"
+ },
+ "payor": {
+ "type": "string",
+ "description": "保险公司",
+ "nullable": true
+ },
+ "payorId": {
+ "type": "string",
+ "description": "保险公司Id",
+ "format": "uuid",
+ "nullable": true
+ },
+ "policyId": {
+ "type": "string",
+ "nullable": true
+ },
+ "insuranceNo": {
+ "type": "string",
+ "description": "保险编号",
+ "nullable": true
+ },
+ "membershipId": {
+ "type": "string",
+ "description": "会员Id",
+ "nullable": true
+ },
+ "insuranceContent": {
+ "type": "string",
+ "description": "保险内容",
+ "nullable": true
+ },
+ "isDefault": {
+ "type": "boolean",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientMobile": {
+ "type": "object",
+ "properties": {
+ "patientMobileId": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "patientId": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "mobileAreaCode": {
+ "type": "string",
+ "description": "手机区号",
+ "nullable": true
+ },
+ "mobile": {
+ "type": "string",
+ "description": "无线电话",
+ "nullable": true
+ },
+ "mobileRemark": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientOtherInfo": {
+ "type": "object",
+ "properties": {
+ "houseAddress": {
+ "type": "string",
+ "description": "住宅地址",
+ "nullable": true
+ },
+ "houseDistrict": {
+ "type": "string",
+ "description": "住宅分区",
+ "nullable": true
+ },
+ "houseArea": {
+ "type": "string",
+ "description": "住宅地区",
+ "nullable": true
+ },
+ "referralCategory": {
+ "type": "string",
+ "description": "介绍人类型",
+ "nullable": true
+ },
+ "referralDescription": {
+ "type": "string",
+ "description": "介绍人",
+ "nullable": true
+ },
+ "doctorInCharge": {
+ "type": "string",
+ "description": "负责医生",
+ "nullable": true
+ },
+ "familyHistory": {
+ "type": "string",
+ "description": "家族历史",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientPageOutput": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "code": {
+ "type": "string",
+ "nullable": true
+ },
+ "enName": {
+ "type": "string",
+ "nullable": true
+ },
+ "zhName": {
+ "type": "string",
+ "nullable": true
+ },
+ "ehrNumber": {
+ "type": "string",
+ "nullable": true
+ },
+ "hkicNumber": {
+ "type": "string",
+ "nullable": true
+ },
+ "identityDocumentNumber": {
+ "type": "string",
+ "nullable": true
+ },
+ "identityDocumentType": {
+ "type": "string",
+ "nullable": true
+ },
+ "birthDate": {
+ "type": "string",
+ "nullable": true
+ },
+ "gender": {
+ "type": "integer",
+ "format": "int32",
+ "nullable": true
+ },
+ "mobileCountryCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "mobileNumber": {
+ "type": "string",
+ "nullable": true
+ },
+ "otherPhoneCountryCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "otherPhoneNumber": {
+ "type": "string",
+ "nullable": true
+ },
+ "isTemporary": {
+ "type": "boolean",
+ "nullable": true
+ },
+ "referralCategory": {
+ "type": "string",
+ "nullable": true
+ },
+ "referralDescription": {
+ "type": "string",
+ "nullable": true
+ },
+ "email": {
+ "type": "string",
+ "nullable": true
+ },
+ "age": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientPageOutputOutputPageInfo": {
+ "type": "object",
+ "properties": {
+ "items": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/PatientPageOutput"
+ },
+ "nullable": true
+ },
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "totalCount": {
+ "type": "integer",
+ "format": "int64"
+ },
+ "totalPage": {
+ "type": "integer",
+ "format": "int64"
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientPageQueryInput": {
+ "type": "object",
+ "properties": {
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "pageSize": {
+ "type": "integer",
+ "format": "int32",
+ "default": "50"
+ },
+ "skip": {
+ "type": "integer",
+ "format": "int32",
+ "readOnly": true
+ },
+ "sorts": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/SortInfo"
+ },
+ "default": "null",
+ "nullable": true
+ },
+ "inputKey": {
+ "maxLength": 50,
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientTelephone": {
+ "type": "object",
+ "properties": {
+ "patientTelephoneId": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "patientId": {
+ "type": "string",
+ "description": "病人id",
+ "format": "uuid"
+ },
+ "telephoneAreaCode": {
+ "type": "string",
+ "description": "座机区号",
+ "nullable": true
+ },
+ "telephone": {
+ "type": "string",
+ "description": "座机号码",
+ "nullable": true
+ },
+ "telephoneRemark": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "PatientTermItem": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "term": {
+ "type": "string",
+ "nullable": true
+ },
+ "fileCount": {
+ "type": "integer",
+ "format": "int32"
+ }
+ },
+ "additionalProperties": false
+ },
+ "PayorOption": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "nullable": true
+ },
+ "name": {
+ "type": "string",
+ "nullable": true
+ },
+ "plans": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/Plan"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "Plan": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "nullable": true
+ },
+ "code": {
+ "type": "string",
+ "nullable": true
+ },
+ "name": {
+ "$ref": "#/components/schemas/Multilingual"
+ }
+ },
+ "additionalProperties": false
+ },
+ "Policy_no": {
+ "type": "object",
+ "properties": {
+ "top": {
+ "type": "string",
+ "nullable": true
+ },
+ "left": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "PrescriptionInfo": {
+ "type": "object",
+ "properties": {
+ "prescriptionId": {
+ "type": "string",
+ "description": "药方Id",
+ "format": "uuid"
+ },
+ "drugName": {
+ "type": "string",
+ "description": "药品名",
+ "nullable": true
+ },
+ "dosage": {
+ "type": "string",
+ "description": "用法(DOS)",
+ "nullable": true
+ },
+ "frequency": {
+ "type": "string",
+ "description": "次数(FEQ)",
+ "nullable": true
+ },
+ "day": {
+ "type": "string",
+ "description": "日数(DAY)",
+ "nullable": true
+ },
+ "quantity": {
+ "type": "number",
+ "description": "数量(QTY)",
+ "format": "double"
+ },
+ "activeIngredients": {
+ "type": "object",
+ "additionalProperties": {
+ "type": "string"
+ },
+ "description": "主要成分",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "QueryAppointmentInput": {
+ "required": [
+ "clinicId"
+ ],
+ "type": "object",
+ "properties": {
+ "clinicId": {
+ "type": "string",
+ "description": "诊所Id",
+ "format": "uuid"
+ },
+ "doctorId": {
+ "type": "string",
+ "description": "医生Id",
+ "format": "uuid",
+ "nullable": true
+ },
+ "dateTime": {
+ "type": "string",
+ "description": "预约日期,格式yyyy-MM-dd",
+ "format": "date-time",
+ "default": "2020-01-01",
+ "nullable": true
+ },
+ "appointStatus": {
+ "type": "integer",
+ "description": "约会状态 \r\n0:已完成\r\n1:排队\r\n2:预约\r\n3:预约和完成\r\n4:已完成、排队和预约",
+ "format": "int32",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "QueryEncounterDateRecordInput": {
+ "required": [
+ "clinicId",
+ "endDate",
+ "startDate"
+ ],
+ "type": "object",
+ "properties": {
+ "clinicId": {
+ "type": "string",
+ "description": "诊所Id",
+ "format": "uuid"
+ },
+ "doctorId": {
+ "type": "string",
+ "description": "医生Id",
+ "format": "uuid",
+ "nullable": true
+ },
+ "startDate": {
+ "type": "string",
+ "description": "起始日期,格式yyyy-MM-dd",
+ "format": "date-time",
+ "default": "2020-01-01"
+ },
+ "endDate": {
+ "type": "string",
+ "description": "结束日期(包含该日期的数据),格式yyyy-MM-dd",
+ "format": "date-time",
+ "default": "2020-01-01"
+ }
+ },
+ "additionalProperties": false
+ },
+ "QueryPatientEncounterRecordInput": {
+ "required": [
+ "patientId"
+ ],
+ "type": "object",
+ "properties": {
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "pageSize": {
+ "type": "integer",
+ "format": "int32",
+ "default": "50"
+ },
+ "skip": {
+ "type": "integer",
+ "format": "int32",
+ "readOnly": true
+ },
+ "sorts": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/SortInfo"
+ },
+ "default": "null",
+ "nullable": true
+ },
+ "patientId": {
+ "type": "string",
+ "description": "病人Id",
+ "format": "uuid"
+ },
+ "clinicId": {
+ "type": "string",
+ "description": "诊所Id",
+ "format": "uuid",
+ "nullable": true
+ },
+ "doctorId": {
+ "type": "string",
+ "description": "医生Id",
+ "format": "uuid",
+ "nullable": true
+ },
+ "startDate": {
+ "type": "string",
+ "description": "起始日期,格式yyyy-MM-dd HH:mm",
+ "format": "date-time",
+ "default": "2020-01-01 00:00",
+ "nullable": true
+ },
+ "endDate": {
+ "type": "string",
+ "description": "结束日期,格式yyyy-MM-dd HH:mm",
+ "format": "date-time",
+ "default": "2020-01-01 00:00",
+ "nullable": true
+ },
+ "remarks": {
+ "maxLength": 50,
+ "type": "string",
+ "description": "备注信息",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "QueryPatientEncounterRecordOutput": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "description": "预约记录Id",
+ "format": "uuid"
+ },
+ "appointDate": {
+ "type": "string",
+ "description": "预约日期",
+ "nullable": true
+ },
+ "appointTime": {
+ "type": "string",
+ "description": "预约时间",
+ "nullable": true
+ },
+ "arrivalTime": {
+ "type": "string",
+ "description": "到达时间",
+ "nullable": true
+ },
+ "leaveTime": {
+ "type": "string",
+ "description": "离开时间",
+ "nullable": true
+ },
+ "billAmount": {
+ "type": "number",
+ "description": "支付金额",
+ "format": "double"
+ },
+ "consultationInterval": {
+ "type": "string",
+ "description": "所需时间",
+ "nullable": true
+ },
+ "clinicCode": {
+ "type": "string",
+ "description": "诊所编号",
+ "nullable": true
+ },
+ "doctorCode": {
+ "type": "string",
+ "description": "医生编号",
+ "nullable": true
+ },
+ "remarks": {
+ "type": "string",
+ "description": "备注",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "QueryPatientEncounterRecordOutputOutputPageInfo": {
+ "type": "object",
+ "properties": {
+ "items": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/QueryPatientEncounterRecordOutput"
+ },
+ "nullable": true
+ },
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "totalCount": {
+ "type": "integer",
+ "format": "int64"
+ },
+ "totalPage": {
+ "type": "integer",
+ "format": "int64"
+ }
+ },
+ "additionalProperties": false
+ },
+ "QueryQueueInput": {
+ "required": [
+ "clinicId"
+ ],
+ "type": "object",
+ "properties": {
+ "clinicId": {
+ "type": "string",
+ "description": "诊所Id",
+ "format": "uuid"
+ },
+ "doctorId": {
+ "type": "string",
+ "description": "医生Id",
+ "format": "uuid",
+ "nullable": true
+ },
+ "finished": {
+ "type": "boolean",
+ "description": "完成状态\r\nnull:完成和未完成的数据\r\ntrue:已完成的数据\r\nfalse:未完成的数据",
+ "nullable": true
+ },
+ "consulted": {
+ "type": "boolean",
+ "description": "是否已诊症",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "Question": {
+ "type": "object",
+ "properties": {
+ "text": {
+ "type": "object",
+ "additionalProperties": {
+ "type": "string"
+ },
+ "nullable": true
+ },
+ "answer": {
+ "type": "array",
+ "items": {
+ "type": "string"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "QueueInfoOutput": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "remarks": {
+ "type": "string",
+ "description": "备注",
+ "nullable": true
+ },
+ "gender": {
+ "type": "integer",
+ "description": "性别\r\n0:女士\r\n1:男士\r\n255:未知",
+ "format": "int32",
+ "nullable": true
+ },
+ "appointTime": {
+ "type": "string",
+ "description": "病人登记的预约时间\r\n如果所需时间为0,返回带时间段的时间\r\n否者返回以-分割的带时间段的两个时间",
+ "nullable": true,
+ "readOnly": true
+ },
+ "appointStartTime": {
+ "type": "string",
+ "description": "约会开始时间\r\n带时间段的时间",
+ "nullable": true,
+ "readOnly": true
+ },
+ "appointEndTime": {
+ "type": "string",
+ "description": "约会结束时间\r\n带时间段的时间",
+ "nullable": true,
+ "readOnly": true
+ },
+ "appointmentInterval": {
+ "type": "integer",
+ "description": "所需时间",
+ "format": "int32",
+ "nullable": true
+ },
+ "appointmentRemarksColor": {
+ "type": "string",
+ "description": "所需时间的备注颜色",
+ "nullable": true
+ },
+ "creationTime": {
+ "type": "string",
+ "description": "创建日期",
+ "format": "date-time",
+ "nullable": true
+ },
+ "doctorColor": {
+ "type": "string",
+ "description": "医生颜色标识",
+ "nullable": true
+ },
+ "isPatientHasPharmacy": {
+ "type": "boolean",
+ "description": "病人是否有药方",
+ "nullable": true
+ },
+ "isPatientHasDiagnosis": {
+ "type": "boolean",
+ "description": "病人是否有诊症",
+ "nullable": true
+ },
+ "recordTime": {
+ "type": "string",
+ "description": "记录排队的日期时间",
+ "format": "date-time",
+ "nullable": true
+ },
+ "voucherNo": {
+ "type": "string",
+ "description": "保险号",
+ "nullable": true
+ },
+ "isVideoConference": {
+ "type": "boolean",
+ "description": "是否视频诊疗",
+ "nullable": true
+ },
+ "isTemporary": {
+ "type": "boolean",
+ "description": "是否临时病人",
+ "nullable": true
+ },
+ "appointStartDateTime": {
+ "type": "string",
+ "description": "预约的日期时间",
+ "format": "date-time",
+ "nullable": true
+ },
+ "appointEndDateTime": {
+ "type": "string",
+ "description": "预约的结束日期时间",
+ "format": "date-time",
+ "nullable": true
+ },
+ "appointmentStatus": {
+ "type": "integer",
+ "description": "预约状态",
+ "format": "int32",
+ "nullable": true
+ },
+ "appointState": {
+ "type": "integer",
+ "description": "预约状态\r\nNotArrive = 0\r\nArrived = 1\r\nCheckIn = 2\r\nPrescribed = 3\r\nConsulted = 4\r\nBilled = 5\r\nFinish = 6",
+ "format": "int32",
+ "readOnly": true
+ },
+ "patientId": {
+ "type": "string",
+ "description": "病人id",
+ "format": "uuid",
+ "nullable": true
+ },
+ "patientCode": {
+ "type": "string",
+ "description": "病人code",
+ "nullable": true
+ },
+ "patientName": {
+ "type": "string",
+ "description": "病人名,会增加称谓",
+ "nullable": true
+ },
+ "patientMobileAreaCode": {
+ "type": "string",
+ "description": "病人手机区号",
+ "nullable": true
+ },
+ "patientMobile": {
+ "type": "string",
+ "description": "病人手机号",
+ "nullable": true
+ },
+ "patientOtherPhoneAreaCode": {
+ "type": "string",
+ "description": "病人电话区号",
+ "nullable": true
+ },
+ "patientOtherPhone": {
+ "type": "string",
+ "description": "病人电话",
+ "nullable": true
+ },
+ "birthDate": {
+ "type": "string",
+ "description": "病人出生日期",
+ "nullable": true
+ },
+ "age": {
+ "type": "string",
+ "description": "病人年龄",
+ "nullable": true
+ },
+ "doctorId": {
+ "type": "string",
+ "description": "医生Id",
+ "format": "uuid",
+ "nullable": true
+ },
+ "doctorCode": {
+ "type": "string",
+ "description": "医生code",
+ "nullable": true
+ },
+ "clinicId": {
+ "type": "string",
+ "description": "诊所Id",
+ "format": "uuid",
+ "nullable": true
+ },
+ "clinicCode": {
+ "type": "string",
+ "description": "诊所code",
+ "nullable": true
+ },
+ "ticketId": {
+ "type": "string",
+ "description": "远程ticketId",
+ "nullable": true
+ },
+ "departureTime": {
+ "type": "string",
+ "description": "离开日期时间",
+ "format": "date-time",
+ "nullable": true
+ },
+ "arrivalTime": {
+ "type": "string",
+ "description": "到达日期时间",
+ "format": "date-time",
+ "nullable": true
+ },
+ "queueNo": {
+ "type": "string",
+ "description": "队列编号",
+ "nullable": true
+ },
+ "queueType": {
+ "type": "string",
+ "description": "排队类型",
+ "nullable": true
+ },
+ "queueSequence": {
+ "type": "string",
+ "description": "排队号",
+ "nullable": true
+ },
+ "attended": {
+ "type": "string",
+ "description": "出席状态\r\n出席:A\r\n未出席:N",
+ "nullable": true
+ },
+ "source": {
+ "type": "string",
+ "description": "来源,相当于csx的VisitSource",
+ "nullable": true
+ },
+ "videoToken": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/HealsVideoConferenceData"
+ },
+ "description": "视频诊症token",
+ "nullable": true
+ },
+ "consultStatus": {
+ "type": "integer",
+ "description": "诊症状态\r\n0:诊症中\r\n1:完成诊症",
+ "format": "int32",
+ "nullable": true
+ },
+ "billingStatus": {
+ "type": "integer",
+ "description": "账单状态\r\n1:已付",
+ "format": "int32",
+ "nullable": true
+ },
+ "checkinStatus": {
+ "type": "integer",
+ "description": "签到状态\r\n1:已签",
+ "format": "int32",
+ "nullable": true
+ },
+ "ticketStates": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/TicketState"
+ },
+ "description": "远程ticket状态",
+ "nullable": true
+ },
+ "isSimplifed": {
+ "type": "boolean",
+ "nullable": true
+ },
+ "isReferral": {
+ "type": "boolean",
+ "description": "是否是二次诊症"
+ }
+ },
+ "additionalProperties": false
+ },
+ "ReferralLetterInfo": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "issueDate": {
+ "type": "string",
+ "format": "date-time"
+ },
+ "title": {
+ "type": "string",
+ "nullable": true
+ },
+ "fileId": {
+ "type": "string",
+ "format": "uuid"
+ }
+ },
+ "additionalProperties": false
+ },
+ "RegisterPushClientRequest": {
+ "type": "object",
+ "properties": {
+ "clientId": {
+ "type": "string",
+ "nullable": true
+ },
+ "deviceId": {
+ "type": "string",
+ "nullable": true
+ },
+ "token": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "RejectTrustedDeviceRequest": {
+ "type": "object",
+ "properties": {
+ "trustedDeviceRequestId": {
+ "type": "string",
+ "nullable": true
+ },
+ "verificationCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "deviceId": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "ResetPasswordCommand": {
+ "type": "object",
+ "properties": {
+ "oldPassword": {
+ "type": "string",
+ "nullable": true
+ },
+ "newPassword": {
+ "type": "string",
+ "nullable": true
+ },
+ "force": {
+ "type": "boolean",
+ "description": "强制？"
+ }
+ },
+ "additionalProperties": false
+ },
+ "Result": {
+ "type": "object",
+ "properties": {
+ "title": {
+ "type": "string",
+ "nullable": true
+ },
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "isSuccess": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "errors": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/Error"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false,
+ "description": "Reference RFC7807"
+ },
+ "SaveCallLogRequest": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid",
+ "nullable": true
+ },
+ "patientCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "clinicCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "doctorCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "type": {
+ "$ref": "#/components/schemas/CallType"
+ },
+ "date": {
+ "type": "string",
+ "description": "Format is dd/MM/yyyy",
+ "nullable": true
+ },
+ "time": {
+ "type": "string",
+ "description": "Format is HH:mm:ss",
+ "nullable": true
+ },
+ "remarks": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "SecondConsultationProviderDto": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "nullable": true
+ },
+ "clinicName": {
+ "type": "string",
+ "nullable": true
+ },
+ "clinicCountry": {
+ "type": "string",
+ "nullable": true
+ },
+ "doctorName": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "SecondConsultationProviderDtoOutputPageInfo": {
+ "type": "object",
+ "properties": {
+ "items": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/SecondConsultationProviderDto"
+ },
+ "nullable": true
+ },
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "totalCount": {
+ "type": "integer",
+ "format": "int64"
+ },
+ "totalPage": {
+ "type": "integer",
+ "format": "int64"
+ }
+ },
+ "additionalProperties": false
+ },
+ "SecondConsultationProviderDtoOutputPageInfoInvokeResult": {
+ "type": "object",
+ "properties": {
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "code": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "message": {
+ "type": "string",
+ "nullable": true
+ },
+ "success": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "data": {
+ "$ref": "#/components/schemas/SecondConsultationProviderDtoOutputPageInfo"
+ }
+ },
+ "additionalProperties": false
+ },
+ "SendBillRequest": {
+ "type": "object",
+ "properties": {
+ "appointmentId": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "diagnosisJsonAsString": {
+ "type": "string",
+ "nullable": true
+ },
+ "currencyCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "expenseItems": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/ExpenseItem"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "SendBillResponse": {
+ "type": "object",
+ "properties": {
+ "ticketId": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "SendBillResponseResult": {
+ "type": "object",
+ "properties": {
+ "title": {
+ "type": "string",
+ "nullable": true
+ },
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "isSuccess": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "errors": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/Error"
+ },
+ "nullable": true
+ },
+ "data": {
+ "$ref": "#/components/schemas/SendBillResponse"
+ }
+ },
+ "additionalProperties": false
+ },
+ "SendBindPhoneVerificationCodeResponse": {
+ "type": "object",
+ "properties": {
+ "expiredAt": {
+ "type": "string",
+ "format": "date-time"
+ }
+ },
+ "additionalProperties": false
+ },
+ "SendBindPhoneVerificationInput": {
+ "type": "object",
+ "properties": {
+ "areaCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "phoneNumber": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "SendOTPForForgotPasswordCommand": {
+ "type": "object",
+ "properties": {
+ "installationId": {
+ "type": "string",
+ "nullable": true
+ },
+ "userName": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "SendOTPForForgotPasswordResult": {
+ "type": "object",
+ "properties": {
+ "enabled": {
+ "type": "boolean",
+ "description": "Forgot password is enabled?"
+ },
+ "phoneNumber": {
+ "type": "string",
+ "nullable": true
+ },
+ "error": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "SendPushRequest": {
+ "type": "object",
+ "properties": {
+ "messages": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/Message"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "SeniorPatientPageQueryInput": {
+ "type": "object",
+ "properties": {
+ "pageIndex": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "pageSize": {
+ "type": "integer",
+ "format": "int32",
+ "default": "50"
+ },
+ "skip": {
+ "type": "integer",
+ "format": "int32",
+ "readOnly": true
+ },
+ "sorts": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/SortInfo"
+ },
+ "default": "null",
+ "nullable": true
+ },
+ "idType": {
+ "maxLength": 50,
+ "type": "string",
+ "description": "证件类型,下拉列表",
+ "nullable": true
+ },
+ "idNumber": {
+ "maxLength": 200,
+ "type": "string",
+ "description": "证件号",
+ "nullable": true
+ },
+ "contract": {
+ "maxLength": 200,
+ "type": "string",
+ "description": "保险公司,下拉列表",
+ "nullable": true
+ },
+ "insuranceNo": {
+ "maxLength": 200,
+ "type": "string",
+ "description": "保险编号",
+ "nullable": true
+ },
+ "referral": {
+ "maxLength": 200,
+ "type": "string",
+ "description": "介绍人,下拉列表",
+ "nullable": true
+ },
+ "referralCategory": {
+ "maxLength": 200,
+ "type": "string",
+ "description": "介绍人类别,下拉列表",
+ "nullable": true
+ },
+ "doctorInCharge": {
+ "maxLength": 200,
+ "type": "string",
+ "description": "负责医生,下拉列表",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "Service": {
+ "type": "object",
+ "properties": {
+ "name": {
+ "type": "string",
+ "nullable": true
+ },
+ "amount": {
+ "type": "number",
+ "format": "double"
+ },
+ "currency": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "SetupUserDataCommand": {
+ "type": "object",
+ "additionalProperties": false
+ },
+ "SetupUserDataResult": {
+ "type": "object",
+ "properties": {
+ "isOver": {
+ "type": "boolean"
+ }
+ },
+ "additionalProperties": false
+ },
+ "SignAgreementRequest": {
+ "type": "object",
+ "properties": {
+ "agreementId": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "SortInfo": {
+ "type": "object",
+ "properties": {
+ "propertyName": {
+ "type": "string",
+ "nullable": true
+ },
+ "isAscending": {
+ "type": "boolean"
+ }
+ },
+ "additionalProperties": false
+ },
+ "StringChartAxis": {
+ "type": "object",
+ "properties": {
+ "name": {
+ "type": "string",
+ "nullable": true
+ },
+ "data": {
+ "type": "array",
+ "items": {
+ "type": "string"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "StringStringKeyValuePair": {
+ "type": "object",
+ "properties": {
+ "key": {
+ "type": "string",
+ "nullable": true
+ },
+ "value": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "Style": {
+ "type": "object",
+ "properties": {
+ "name": {
+ "$ref": "#/components/schemas/Name"
+ },
+ "policy_no": {
+ "$ref": "#/components/schemas/Policy_no"
+ }
+ },
+ "additionalProperties": false
+ },
+ "TicketQuestionnaireResponseDto": {
+ "type": "object",
+ "properties": {
+ "name": {
+ "type": "string",
+ "nullable": true
+ },
+ "questions": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/Question"
+ },
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "TicketState": {
+ "type": "object",
+ "properties": {
+ "key": {
+ "type": "string",
+ "nullable": true
+ },
+ "value": {
+ "type": "string",
+ "nullable": true
+ },
+ "timeStamp": {
+ "type": "string",
+ "format": "date-time",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "TrustedDeviceTrustLevel": {
+ "enum": [
+ 0,
+ 1
+ ],
+ "type": "TrustedDeviceTrustLevel",
+ "description": "0: HIGH\n1: MEDIUM\n",
+ "format": "TrustedDeviceTrustLevel"
+ },
+ "UnregisterPushClientRequest": {
+ "type": "object",
+ "properties": {
+ "clientId": {
+ "type": "string",
+ "nullable": true
+ },
+ "deviceId": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "UnsignedAgreementDto": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "nullable": true
+ },
+ "url": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "UnsignedAgreementDtoResult": {
+ "type": "object",
+ "properties": {
+ "title": {
+ "type": "string",
+ "nullable": true
+ },
+ "status": {
+ "type": "string",
+ "nullable": true
+ },
+ "isSuccess": {
+ "type": "boolean",
+ "readOnly": true
+ },
+ "errors": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/Error"
+ },
+ "nullable": true
+ },
+ "data": {
+ "$ref": "#/components/schemas/UnsignedAgreementDto"
+ }
+ },
+ "additionalProperties": false
+ },
+ "UpdateMessageReadStateRequest": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid"
+ },
+ "isRead": {
+ "type": "boolean"
+ },
+ "userId": {
+ "type": "string",
+ "nullable": true,
+ "readOnly": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "UserContactDto": {
+ "type": "object",
+ "properties": {
+ "id": {
+ "type": "string",
+ "format": "uuid",
+ "nullable": true
+ },
+ "contactType": {
+ "$ref": "#/components/schemas/ContactType"
+ },
+ "contact": {
+ "type": "string",
+ "nullable": true
+ },
+ "append": {
+ "type": "string",
+ "nullable": true
+ },
+ "sortIndex": {
+ "type": "integer",
+ "format": "int32"
+ }
+ },
+ "additionalProperties": false
+ },
+ "UserInfoAResponse": {
+ "type": "object",
+ "properties": {
+ "needMFA": {
+ "type": "boolean",
+ "description": "是否需要多重验证"
+ },
+ "supportTOTP": {
+ "type": "boolean",
+ "description": "是否支持TOTP"
+ },
+ "contactsForOTP": {
+ "type": "array",
+ "items": {
+ "$ref": "#/components/schemas/UserContactDto"
+ },
+ "description": "多重验证的联系方式",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "VerifyWithTrustedDeviceRequest": {
+ "type": "object",
+ "properties": {
+ "trustedDeviceRequestId": {
+ "type": "string",
+ "nullable": true
+ },
+ "deviceFingerprintPlaintext": {
+ "type": "string",
+ "nullable": true
+ },
+ "deviceFingerprint": {
+ "type": "string",
+ "description": "设备指纹哈希",
+ "nullable": true
+ },
+ "verificationCode": {
+ "type": "string",
+ "nullable": true
+ },
+ "plainTextForSigning": {
+ "type": "string",
+ "description": "RSA签名的原文，可以是任意的字符串",
+ "nullable": true
+ },
+ "signature": {
+ "type": "string",
+ "description": "使用RSA的私钥对PlainTextForSigning进行签名，\r\n私钥为与confirm接口参数publicKey配对的私钥，即APP端自己生成的RSA密钥对中的私钥，\r\n签名参数halg应为SHA256",
+ "nullable": true
+ },
+ "data": {
+ "type": "string",
+ "description": "使用confirm接口返回的publicKey对数据进行加密，加密参数padding应为Pkcs1， \r\n加密原文格式为：v1|${serverSecret}|${verificationCode} 样例：v1|abcdex|123456 \r\nserverSecret来自于confirm接口返回的serverSecret，\r\nverificationCode来自于APP收到的推送消息",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ },
+ "VerifyWithTrustedDeviceResult": {
+ "type": "object",
+ "properties": {
+ "appId": {
+ "type": "string",
+ "nullable": true
+ },
+ "installationId": {
+ "type": "string",
+ "nullable": true
+ },
+ "userId": {
+ "type": "string",
+ "nullable": true
+ }
+ },
+ "additionalProperties": false
+ }
+ },
+ "securitySchemes": {
+ "bearerAuth": {
+ "type": "http",
+ "description": "JWT Authorization header using the Bearer scheme.",
+ "scheme": "bearer",
+ "bearerFormat": "JWT"
+ }
+ }
+ },
+ "security": [
+ {
+ "bearerAuth": [ ]
+ }
+ ]
+}
