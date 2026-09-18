@@ -1,0 +1,10 @@
+---
+pid: 23370
+cwd: "/Users/stark/Desktop/work/RN/circleapp/android"
+command: "SERIAL=4ae24c72; APP=com.circleapp.cdv.dev; PID=$(adb -s $SERIAL shell pidof $APP | tr -d '\\r '); echo PID=$PID; adb -s $SERIAL logcat --pid=\"$PID\" -v threadtime > /tmp/circleapp-rn-verify-20260918/pid-logcat.txt"
+title: "Capture ongoing app logcat to file"
+status: running  
+started_at: 2026-09-18T02:49:10.301Z
+running_for_ms: 810329   
+---
+PID=16030
