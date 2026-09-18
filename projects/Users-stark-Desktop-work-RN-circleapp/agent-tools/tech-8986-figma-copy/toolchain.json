@@ -1,0 +1,68 @@
+{
+  "projectRoot": "/Users/stark/Desktop/work/RN/circleapp",
+  "reactNativeProject": true,
+  "localPolicy": {
+    "schemaVersion": 1,
+    "devices": {
+      "4ae24c72": {
+        "platform": "android",
+        "model": "PJJ110",
+        "preferredRuntimeTools": [
+          "appium-uiautomator2",
+          "adb-uiautomator"
+        ],
+        "preserveSecuritySettings": true
+      }
+    }
+  },
+  "levels": {
+    "globalAvailable": "the CLI can start; this is not project E2E evidence",
+    "projectConfigured": "the repository has tool-specific dependencies/config/flows; this is not proof that a test passes",
+    "currentRunVerified": "false here by design; only an actual passing run against the current build and target state creates E2E evidence"
+  },
+  "tools": {
+    "adb": {
+      "available": true,
+      "path": "/Users/stark/Library/Android/sdk/platform-tools/adb",
+      "versionCheck": {
+        "ok": true,
+        "exitCode": 0,
+        "output": "Android Debug Bridge version 1.0.41\nVersion 34.0.5-10900879\nInstalled as /Users/stark/Library/Android/sdk/platform-tools/adb\nRunning on Darwin 25.4.0 (x86_64)"
+      }
+    },
+    "xcrun": {
+      "available": true,
+      "path": "/usr/bin/xcrun"
+    },
+    "appium": {
+      "available": true,
+      "path": "/Users/stark/.nvm/versions/node/v20.20.2/bin/appium",
+      "versionCheck": {
+        "ok": true,
+        "exitCode": 0,
+        "output": "3.6.0"
+      },
+      "globalPackageVersion": "3.6.0",
+      "driverCheck": {
+        "ok": true,
+        "exitCode": 0,
+        "output": "- Listing installed drivers (rerun with --verbose for more info)\n✔ Listing installed drivers (rerun with --verbose for more info)\n- uiautomator2@8.4.0 [installed (npm)]\n- xcuitest@12.5.0 [installed (npm)]"
+      },
+      "projectConfigured": false,
+      "clientDependency": false,
+      "configOrTestFileCount": 0,
+      "currentRunVerified": false
+    },
+    "detox": {
+      "available": true,
+      "path": "/Users/stark/.nvm/versions/node/v20.20.2/bin/detox",
+      "globalCliVersion": "20.51.4",
+      "projectConfigured": false,
+      "localDependency": false,
+      "configPresent": false,
+      "testFileCount": 0,
+      "currentRunVerified": false,
+      "note": "The global detox-cli only forwards to a repository-local Detox executable."
+    }
+  }
+}

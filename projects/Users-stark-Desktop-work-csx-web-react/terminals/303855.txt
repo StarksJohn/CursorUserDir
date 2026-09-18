@@ -1,90 +1,0 @@
----
-pid: 16577
-cwd: "/Users/stark/Desktop/work/csx-web-react"
-command: "echo '=== env proxy ==='; env | rg -i 'proxy|clash|vpn' || true; echo '=== network interfaces ==='; ifconfig | rg -A2 '^(en|utun|ppp|ipsec)' || true; echo '=== dns ==='; dscacheutil -q host -a name csx-poc.clinicsolution.hk; echo '=== nslookup ==='; nslookup csx-poc.clinicsolution.hk 2>&1 | head -40; echo '=== curl no-proxy 15s ==='; curl -sS -I --max-time 12 --noproxy '*' 'https://csx-poc.clinicsolution.hk/display-screen-config/tvScreenNew/?clinicCode=TES' || true; echo '=== curl default 15s ==='; curl -sS -I --max-time 12 'https://csx-poc.clinicsolution.hk/display-screen-config/tvScreenNew/?clinicCode=TES' || true; echo '=== curl verbose first lines ==='; curl -v --max-time 12 --noproxy '*' 'https://csx-poc.clinicsolution.hk/display-screen-config/tvScreenNew/?clinicCode=TES' -o /dev/null 2>&1 | tail -40"
-title: "Check DNS, proxy, and direct HTTPS"
-status: succeeded
-started_at: 2026-09-15T06:50:58.309Z
-running_for_ms: 100533   
----
-=== env proxy ===
-HTTPS_PROXY=http://127.0.0.1:4782
-HTTP_PROXY=http://127.0.0.1:4782
-NO_PROXY=localhost,127.0.0.1,::1,.local,*.local,192.168.99.29,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
-http_proxy=http://127.0.0.1:4782
-https_proxy=http://127.0.0.1:4782
-no_proxy=localhost,127.0.0.1,::1,.local,*.local,192.168.99.29,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
-=== network interfaces ===
-en7: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 16000
-	ether ac:de:48:00:11:22
-	inet6 fe80::aede:48ff:fe00:1122%en7 prefixlen 64 scopeid 0x4 
---
-en0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
-	options=6460<TSO4,TSO6,CHANNEL_IO,PARTIAL_CSUM,ZEROINVERT_CSUM>
-	ether 02:06:1a:31:60:d3
---
-en3: flags=8963<UP,BROADCAST,SMART,RUNNING,PROMISC,SIMPLEX,MULTICAST> mtu 1500
-	options=460<TSO4,TSO6,CHANNEL_IO>
-	ether 82:47:67:e2:a8:05
---
-en2: flags=8963<UP,BROADCAST,SMART,RUNNING,PROMISC,SIMPLEX,MULTICAST> mtu 1500
-	options=460<TSO4,TSO6,CHANNEL_IO>
-	ether 82:47:67:e2:a8:00
---
-en4: flags=8963<UP,BROADCAST,SMART,RUNNING,PROMISC,SIMPLEX,MULTICAST> mtu 1500
-	options=460<TSO4,TSO6,CHANNEL_IO>
-	ether 82:47:67:e2:a8:04
---
-en1: flags=8963<UP,BROADCAST,SMART,RUNNING,PROMISC,SIMPLEX,MULTICAST> mtu 1500
-	options=460<TSO4,TSO6,CHANNEL_IO>
-	ether 82:47:67:e2:a8:01
---
-utun0: flags=8051<UP,POINTOPOINT,RUNNING,MULTICAST> mtu 1500
-	inet6 fe80::598:8332:4576:e782%utun0 prefixlen 64 scopeid 0xe 
-	nd6 options=201<PERFORMNUD,DAD>
-utun1: flags=8051<UP,POINTOPOINT,RUNNING,MULTICAST> mtu 1380
-	inet6 fe80::824b:8517:e8aa:2087%utun1 prefixlen 64 scopeid 0xf 
-	nd6 options=201<PERFORMNUD,DAD>
-utun2: flags=8051<UP,POINTOPOINT,RUNNING,MULTICAST> mtu 2000
-	inet6 fe80::b0b0:6de5:9578:b21d%utun2 prefixlen 64 scopeid 0x10 
-	nd6 options=201<PERFORMNUD,DAD>
-utun3: flags=8051<UP,POINTOPOINT,RUNNING,MULTICAST> mtu 1000
-	inet6 fe80::ce81:b1c:bd2c:69e%utun3 prefixlen 64 scopeid 0x11 
-	nd6 options=201<PERFORMNUD,DAD>
-=== dns ===
-=== nslookup ===
-;; connection timed out; no servers could be reached
-
-=== curl no-proxy 15s ===
-curl: (28) Resolving timed out after 12003 milliseconds
-=== curl default 15s ===
-HTTP/1.1 200 Connection established
-
-HTTP/2 200 
-date: Tue, 15 Sep 2026 06:52:26 GMT
-content-type: text/html
-content-length: 18042
-server: nginx/1.28.1
-last-modified: Tue, 15 Sep 2026 06:49:54 GMT
-etag: "200b4b5a4014575716aa886c2c7365f1"
-x-amz-server-side-encryption: AES256
-accept-ranges: bytes
-x-cache: Error from cloudfront
-via: 1.1 ff773c46b9656e6740829193cd32d18a.cloudfront.net (CloudFront)
-x-amz-cf-pop: HKG54-P2
-x-amz-cf-id: tfa8ErrnKTmEDLJhA7FhIDARN29YiyXXifZ5wU5-lXN-B_jEOZgzMQ==
-age: 27
-
-=== curl verbose first lines ===
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:03 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:04 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:05 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:06 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:07 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:08 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:09 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:10 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:11 --:--:--     0* Resolving timed out after 12004 milliseconds
-  0     0    0     0    0     0      0      0 --:--:--  0:00:12 --:--:--     0
-* Closing connection
-curl: (28) Resolving timed out after 12004 milliseconds
-
----
-exit_code: 0
-elapsed_ms: 100533
-ended_at: 2026-09-15T06:52:38.842Z
----
