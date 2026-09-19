@@ -1,0 +1,978 @@
+commit 6f14960fbddb7c230c8075345fc0ec8cb791ab9f
+Author: StarksZhang <stark.zhang@heals.asia>
+Date:   Fri Jun 20 16:32:50 2025 +0800
+
+    https://app.clickup.com/t/8553538/TECH-6331?comment=90180134363244
+
+ .env                                               |    22 +
+ .env.development                                   |    22 +
+ .env.production                                    |    22 +
+ .env.staging                                       |    21 +
+ .gitignore                                         |    61 +
+ .npmrc                                             |     2 +
+ App.tsx                                            |   281 +
+ Gemfile                                            |     8 +
+ README.md                                          |   148 +-
+ android/KEYSTORE_INFO.md                           |    43 +
+ android/app/build.gradle                           |   166 +
+ android/app/debug.keystore                         |   Bin 0 -> 2257 bytes
+ android/app/lint-baseline.xml                      |   684 ++
+ android/app/proguard-rules.pro                     |    10 +
+ android/app/release.keystore                       |   Bin 0 -> 2782 bytes
+ android/app/src/debug/AndroidManifest.xml          |     9 +
+ android/app/src/dev/google-services.json           |    29 +
+ android/app/src/dev/res/values/string.xml          |     4 +
+ android/app/src/main/AndroidManifest.xml           |    60 +
+ android/app/src/main/assets/custom/font.css        |    36 +
+ .../app/src/main/assets/fonts/Comfortaa-Bold.ttf   |   Bin 0 -> 111168 bytes
+ .../app/src/main/assets/fonts/Comfortaa-Light.ttf  |   Bin 0 -> 111264 bytes
+ .../app/src/main/assets/fonts/Comfortaa-Medium.ttf |   Bin 0 -> 111316 bytes
+ .../src/main/assets/fonts/Comfortaa-Regular.ttf    |   Bin 0 -> 111272 bytes
+ .../src/main/assets/fonts/Comfortaa-SemiBold.ttf   |   Bin 0 -> 111404 bytes
+ .../assets/fonts/Comfortaa-VariableFont_wght.ttf   |   Bin 0 -> 201292 bytes
+ .../src/main/java/com/circleapp/MainActivity.kt    |    29 +
+ .../src/main/java/com/circleapp/MainApplication.kt |    43 +
+ .../src/main/res/drawable-hdpi/bootsplash_logo.png |   Bin 0 -> 10222 bytes
+ .../src/main/res/drawable-mdpi/bootsplash_logo.png |   Bin 0 -> 6479 bytes
+ .../main/res/drawable-xhdpi/bootsplash_logo.png    |   Bin 0 -> 14897 bytes
+ .../main/res/drawable-xxhdpi/bootsplash_logo.png   |   Bin 0 -> 25671 bytes
+ .../main/res/drawable-xxxhdpi/bootsplash_logo.png  |   Bin 0 -> 36547 bytes
+ .../app/src/main/res/drawable/launch_screen.png    |   Bin 0 -> 71505 bytes
+ .../main/res/drawable/rn_edit_text_material.xml    |    37 +
+ .../app/src/main/res/mipmap-hdpi/ic_launcher.png   |   Bin 0 -> 4488 bytes
+ .../src/main/res/mipmap-hdpi/ic_launcher_round.png |   Bin 0 -> 5024 bytes
+ .../app/src/main/res/mipmap-mdpi/ic_launcher.png   |   Bin 0 -> 2520 bytes
+ .../src/main/res/mipmap-mdpi/ic_launcher_round.png |   Bin 0 -> 2858 bytes
+ .../app/src/main/res/mipmap-xhdpi/ic_launcher.png  |   Bin 0 -> 8116 bytes
+ .../main/res/mipmap-xhdpi/ic_launcher_round.png    |   Bin 0 -> 7098 bytes
+ .../app/src/main/res/mipmap-xxhdpi/ic_launcher.png |   Bin 0 -> 12530 bytes
+ .../main/res/mipmap-xxhdpi/ic_launcher_round.png   |   Bin 0 -> 10676 bytes
+ .../src/main/res/mipmap-xxxhdpi/ic_launcher.png    |   Bin 0 -> 19397 bytes
+ .../main/res/mipmap-xxxhdpi/ic_launcher_round.png  |   Bin 0 -> 15523 bytes
+ android/app/src/main/res/values/colors.xml         |     3 +
+ android/app/src/main/res/values/strings.xml        |     4 +
+ android/app/src/main/res/values/styles.xml         |    14 +
+ .../src/main/res/xml/network_security_config.xml   |     6 +
+ android/app/src/prod/google-services.json          |    29 +
+ android/build.gradle                               |    22 +
+ android/debug.keystore                             |   Bin 0 -> 2257 bytes
+ android/google-services.json                       |    55 +
+ android/gradle.properties                          |    45 +
+ android/gradle/wrapper/gradle-wrapper.properties   |     7 +
+ android/gradlew                                    |   249 +
+ android/gradlew.bat                                |    92 +
+ android/link-assets-manifest.json                  |    33 +
+ android/release.keystore                           |   Bin 0 -> 2592 bytes
+ android/sentry.properties                          |     7 +
+ android/settings.gradle                            |    10 +
+ app.json                                           |     4 +
+ assets/bootsplash/logo.png                         |   Bin 0 -> 5945 bytes
+ assets/bootsplash/logo@1,5x.png                    |   Bin 0 -> 9336 bytes
+ assets/bootsplash/logo@2x.png                      |   Bin 0 -> 13535 bytes
+ assets/bootsplash/logo@3x.png                      |   Bin 0 -> 21830 bytes
+ assets/bootsplash/logo@4x.png                      |   Bin 0 -> 31082 bytes
+ assets/bootsplash/manifest.json                    |     7 +
+ babel.config.js                                    |    49 +
+ index.js                                           |    27 +
+ ios/.xcode.env                                     |    11 +
+ ios/Config.xcconfig                                |     9 +
+ ios/File.txt                                       |     1 +
+ ...ce-Info.com.healshealthcare.healspass.dev.plist |    30 +
+ ...ervice-Info.com.healshealthcare.healspass.plist |    34 +
+ ios/Heals.xcodeproj/project.pbxproj                |  1212 ++
+ .../xcshareddata/IDEWorkspaceChecks.plist          |     8 +
+ .../xcshareddata/xcschemes/Dev.xcscheme            |   119 +
+ .../xcshareddata/xcschemes/Heals.xcscheme          |   124 +
+ ios/Heals/AppDelegate.h                            |     6 +
+ ios/Heals/AppDelegate.mm                           |    46 +
+ ios/Heals/BootSplash.storyboard                    |    46 +
+ .../Contents.json                                  |    20 +
+ ios/Heals/Heals.entitlements                       |    12 +
+ ios/Heals/HealsDev Debug.entitlements              |    17 +
+ ios/Heals/HealsDev.entitlements                    |    17 +
+ ios/Heals/HealsRelease.entitlements                |    17 +
+ .../AppIcon.appiconset/AppIcon_180pt.png           |   Bin 0 -> 17314 bytes
+ .../AppIcon.appiconset/AppIcon_58pt.png            |   Bin 0 -> 3143 bytes
+ .../AppIcon.appiconset/AppIcon_60pt.png            |   Bin 0 -> 3315 bytes
+ .../AppIcon.appiconset/AppIcon_80pt.png            |   Bin 0 -> 5074 bytes
+ .../AppIcon.appiconset/AppIcon_87pt.png            |   Bin 0 -> 5650 bytes
+ .../AppIcon.appiconset/Contents.json               |    62 +
+ .../AppIcon.appiconset/Icon-App-1024x1024@1x.png   |   Bin 0 -> 199778 bytes
+ .../AppIcon.appiconset/Icon-App-40x40@1x.png       |   Bin 0 -> 2052 bytes
+ .../AppIcon.appiconset/Icon-App-60x60@2x 1.png     |   Bin 0 -> 9760 bytes
+ .../AppIcon.appiconset/Icon-App-60x60@2x.png       |   Bin 0 -> 9760 bytes
+ .../BootSplashLogo-d8ada0.imageset/Contents.json   |    23 +
+ .../BootSplashLogo-d8ada0.imageset/logo-d8ada0.png |   Bin 0 -> 5945 bytes
+ .../logo-d8ada0@2x.png                             |   Bin 0 -> 13535 bytes
+ .../logo-d8ada0@3x.png                             |   Bin 0 -> 21830 bytes
+ ios/Heals/Images.xcassets/Contents.json            |     6 +
+ ios/Heals/Info.plist                               |    88 +
+ ios/Heals/LaunchScreen.storyboard                  |    47 +
+ ios/Heals/PrivacyInfo.xcprivacy                    |    48 +
+ ios/Heals/main.m                                   |    10 +
+ ios/HealsTests/HealsTests.m                        |    66 +
+ ios/HealsTests/Info.plist                          |    24 +
+ ios/Podfile                                        |    48 +
+ ios/Pods-Heals-HealsTests.dev.xcconfig             |    19 +
+ ios/Pods-Heals.dev.xcconfig                        |    19 +
+ ios/en.lproj/InfoPlist.strings                     |    10 +
+ ios/fil-PH.lproj/InfoPlist.strings                 |    11 +
+ ios/fil.lproj/InfoPlist.strings                    |    10 +
+ ios/id.lproj/InfoPlist.strings                     |    10 +
+ ios/link-assets-manifest.json                      |    33 +
+ ios/ms.lproj/InfoPlist.strings                     |    12 +
+ ios/sentry.properties                              |     7 +
+ ios/th.lproj/InfoPlist.strings                     |    11 +
+ ios/tmp.xcconfig                                   |     5 +
+ ios/vi.lproj/InfoPlist.strings                     |    11 +
+ ios/zh-Hans.lproj/InfoPlist.strings                |    10 +
+ ios/zh-Hant.lproj/InfoPlist.strings                |    10 +
+ jest.config.js                                     |     3 +
+ metro.config.js                                    |    32 +
+ package.json                                       |   123 +
+ patches/react-native-snap-carousel+3.9.1.patch     |  1006 ++
+ react-native.config.js                             |     3 +
+ src/api/api-client.ts                              |   188 +
+ src/api/api-types.ts                               |  1030 ++
+ src/api/api.ts                                     |   927 ++
+ src/api/dto/FCMTokenStoreRequestDTO.ts             |     4 +
+ src/api/dto/FCMTokenStoreResponseDTO.ts            |    13 +
+ src/api/urls.ts                                    |    54 +
+ src/api/wallet-pass-api.ts                         |    28 +
+ src/assets/fonts/comfortaa/Comfortaa-Bold.ttf      |   Bin 0 -> 111168 bytes
+ src/assets/fonts/comfortaa/Comfortaa-Light.ttf     |   Bin 0 -> 111264 bytes
+ src/assets/fonts/comfortaa/Comfortaa-Medium.ttf    |   Bin 0 -> 111316 bytes
+ src/assets/fonts/comfortaa/Comfortaa-Regular.ttf   |   Bin 0 -> 111272 bytes
+ src/assets/fonts/comfortaa/Comfortaa-SemiBold.ttf  |   Bin 0 -> 111404 bytes
+ .../comfortaa/Comfortaa-VariableFont_wght.ttf      |   Bin 0 -> 201292 bytes
+ src/assets/fonts/font.css                          |    36 +
+ src/assets/images/AppleWalletButton.png            |   Bin 0 -> 2977 bytes
+ src/assets/images/Appointments.png                 |   Bin 0 -> 1767 bytes
+ src/assets/images/Bills.png                        |   Bin 0 -> 1399 bytes
+ src/assets/images/ContactUs.png                    |   Bin 0 -> 31248 bytes
+ src/assets/images/GoogleWalletButton.png           |   Bin 0 -> 4613 bytes
+ src/assets/images/Location.svg                     |     7 +
+ src/assets/images/No_appointments.png              |   Bin 0 -> 29096 bytes
+ src/assets/images/Offline.png                      |   Bin 0 -> 2449 bytes
+ src/assets/images/PA.svg                           |    10 +
+ src/assets/images/PageRightBtImg.png               |   Bin 0 -> 894 bytes
+ src/assets/images/PageTopBar0.png                  |   Bin 0 -> 15584 bytes
+ src/assets/images/PageTopBar1.png                  |   Bin 0 -> 1246 bytes
+ src/assets/images/SplashLogo.png                   |   Bin 0 -> 71505 bytes
+ src/assets/images/Visit_a_Clinic.png               |   Bin 0 -> 1906 bytes
+ src/assets/images/activation_code.svg              |   208 +
+ src/assets/images/add_to_wallet_apple_large.svg    |    13 +
+ src/assets/images/address_down.png                 |   Bin 0 -> 874 bytes
+ src/assets/images/address_search.png               |   Bin 0 -> 1542 bytes
+ src/assets/images/appBtBackImg.png                 |   Bin 0 -> 96008 bytes
+ src/assets/images/apple-signin.svg                 |     5 +
+ src/assets/images/apple_wallet.svg                 |    12 +
+ .../AR/CMYK/AR_Add_to_Apple_Wallet_CMYK_101421.eps |   Bin 0 -> 1258262 bytes
+ .../AR/RGB/AR_Add_to_Apple_Wallet_RGB_101421.eps   |   Bin 0 -> 662378 bytes
+ .../AR/RGB/AR_Add_to_Apple_Wallet_RGB_101421.svg   |   269 +
+ .../AZ/CMYK/AZ_Add_to_Apple_Wallet_CMYK_101821.eps |   Bin 0 -> 1260326 bytes
+ .../AZ/RGB/AZ_Add_to_Apple_Wallet_RGB_101821.eps   |   Bin 0 -> 659474 bytes
+ .../AZ/RGB/AZ_Add_to_Apple_Wallet_RGB_101821.svg   |   275 +
+ .../BG/CMYK/BG_Add_to_Apple_Wallet_CMYK_101421.eps |   Bin 0 -> 1259910 bytes
+ .../BG/RGB/BG_Add_to_Apple_Wallet_RGB_101421.eps   |   Bin 0 -> 661806 bytes
+ .../BG/RGB/BG_Add_to_Apple_Wallet_RGB_101421.svg   |   275 +
+ .../CMYK/CAES_Add_to_Apple_Wallet_CMYK_101421.eps  |   Bin 0 -> 1263170 bytes
+ .../RGB/CAES_Add_to_Apple_Wallet_RGB_101421.eps    |   Bin 0 -> 664818 bytes
+ .../RGB/CAES_Add_to_Apple_Wallet_RGB_101421.svg    |   292 +
+ .../CMYK/CAFR_Add_to_Apple_Wallet_CMYK_102921.eps  |   Bin 0 -> 1267914 bytes
+ .../RGB/CAFR_Add_to_Apple_Wallet_RGB_102921.eps    |   Bin 0 -> 668862 bytes
+ .../RGB/CAFR_Add_to_Apple_Wallet_RGB_102921.svg    |   309 +
+ .../CN/CMYK/CN_Add_to_Apple_Wallet_CKMY_101821.eps |   Bin 0 -> 1237926 bytes
+ .../CN/RGB/CN_Add_to_Apple_Wallet_RGB_101821.eps   |   Bin 0 -> 635118 bytes
+ .../CN/RGB/CN_Add_to_Apple_Wallet_RGB_101821.svg   |   279 +
+ .../CZ/CMYK/CZ_Add_to_Apple_Wallet_CMYK_101421.eps |   Bin 0 -> 1263250 bytes
+ .../CZ/RGB/CZ_Add_to_Apple_Wallet_RGB_101421.eps   |   Bin 0 -> 665050 bytes
+ .../CZ/RGB/CZ_Add_to_Apple_Wallet_RGB_101421.svg   |   288 +
+ .../DE/CMYK/DE_Add_to_Apple_Wallet_CMYK_101421.eps |   Bin 0 -> 1261934 bytes
+ .../DE/RGB/DE_Add_to_Apple_Wallet_RGB_101421.eps   |   Bin 0 -> 664066 bytes
+ .../DE/RGB/DE_Add_to_Apple_Wallet_RGB_101421.svg   |   282 +
+ .../DK/CMYK/DK_Add_to_Apple_Wallet_CMYK_101821.eps |   Bin 0 -> 1256330 bytes
+ .../DK/RGB/DK_Add_to_Apple_Wallet_RGB_101821.eps   |   Bin 0 -> 657090 bytes
+ .../DK/RGB/DK_Add_to_Apple_Wallet_RGB_101821.svg   |   267 +
+ .../EE/CMYK/EE_Add_to_Apple_Wallet_CMYK_102121.eps |   Bin 0 -> 1259994 bytes
+ .../EE/RGB/EE_Add_to_Apple_Wallet_RGB_102121.eps   |   Bin 0 -> 661950 bytes
+ .../EE/RGB/EE_Add_to_Apple_Wallet_RGB_102121.svg   |   279 +
+ .../ES/CMYK/ES_Add_to_Apple_Wallet_CMYK_101921.eps |   Bin 0 -> 1264334 bytes
+ .../ES/RGB/ES_Add_to_Apple_Wallet_RGB_101921.eps   |   Bin 0 -> 665570 bytes
+ .../ES/RGB/ES_Add_to_Apple_Wallet_RGB_101921.svg   |   291 +
+ .../CMYK/ESMX_Add_to_Apple_Wallet_CMYK_101821.eps  |   Bin 0 -> 1235530 bytes
+ .../RGB/ESMX_Add_to_Apple_Wallet_RGB_101821.eps    |   Bin 0 -> 630302 bytes
+ .../RGB/ESMX_Add_to_Apple_Wallet_RGB_101821.svg    |   277 +
+ .../FI/CMYK/FI_Add_to_Apple_Wallet_CMYK_102921.eps |   Bin 0 -> 1261226 bytes
+ .../FI/RGB/FI_Add_to_Apple_Wallet_RGB_102921.eps   |   Bin 0 -> 662298 bytes
+ .../FI/RGB/FI_Add_to_Apple_Wallet_RGB_102921.svg   |   287 +
+ .../FR/CMYK/FR_Add_to_Apple_Wallet_CMYK_102921.eps |   Bin 0 -> 1265098 bytes
+ .../FR/RGB/FR_Add_to_Apple_Wallet_RGB_102921.eps   |   Bin 0 -> 665466 bytes
+ .../FR/RGB/FR_Add_to_Apple_Wallet_RGB_102921.svg   |   295 +
+ .../GR/CMYK/GR_Add_to_Apple_Wallet_CMYK_102121.eps |   Bin 0 -> 1268466 bytes
+ .../GR/RGB/GR_Add_to_Apple_Wallet_RGB_102121.eps   |   Bin 0 -> 669262 bytes
+ .../GR/RGB/GR_Add_to_Apple_Wallet_RGB_102121.svg   |   298 +
+ .../HB/CMYK/HB_Add_to_Apple_Wallet_CMYK_102021.eps |   Bin 0 -> 1260546 bytes
+ .../HB/RGB/HB_Add_to_Apple_Wallet_RGB_102021.eps   |   Bin 0 -> 661434 bytes
+ .../HB/RGB/HB_Add_to_Apple_Wallet_RGB_102021.svg   |   274 +
+ .../HK/CMYK/HK_Add_to_Apple_Wallet_CMYK_101921.eps |   Bin 0 -> 1255902 bytes
+ .../HK/RGB/HK_Add_to_Apple_Wallet_RGB_101921.eps   |   Bin 0 -> 656294 bytes
+ .../HK/RGB/HK_Add_to_Apple_Wallet_RGB_101921.svg   |   265 +
+ .../HR/CMYK/HR_Add_to_Apple_Wallet_CMYK_101421.eps |   Bin 0 -> 1260078 bytes
+ .../HR/RGB/HR_Add_to_Apple_Wallet_RGB_101421.eps   |   Bin 0 -> 659554 bytes
+ .../HR/RGB/HR_Add_to_Apple_Wallet_RGB_101421.svg   |   277 +
+ .../HU/CMYK/HU_Add_to_Apple_Wallet_CMYK_101421.eps |   Bin 0 -> 1266454 bytes
+ .../HU/RGB/HU_Add_to_Apple_Wallet_RGB_101421.eps   |   Bin 0 -> 666790 bytes
+ .../HU/RGB/HU_Add_to_Apple_Wallet_RGB_101421.svg   |   302 +
+ .../ID/CMYK/ID_Add_to_Apple_Wallet_CMYK_101821.eps |   Bin 0 -> 1238550 bytes
+ .../ID/RGB/ID_Add_to_Apple_Wallet_RGB_102121.eps   |   Bin 0 -> 667626 bytes
+ .../ID/RGB/ID_Add_to_Apple_Wallet_RGB_102121.svg   |   284 +
+ .../IN/CMYK/IN_Add_to_Apple_Wallet_RGB_102921.eps  |   Bin 0 -> 1263258 bytes
+ .../IN/RGB/IN_Add_to_Apple_Wallet_RGB_102921.eps   |   Bin 0 -> 663626 bytes
+ .../IN/RGB/IN_Add_to_Apple_Wallet_RGB_102921.svg   |   227 +
+ .../IT/CMYK/IT_Add_to_Apple_Wallet_CMYK_101821.eps |   Bin 0 -> 1265818 bytes
+ .../IT/RGB/IT_Add_to_Apple_Wallet_RGB_101821.eps   |   Bin 0 -> 666926 bytes
+ .../IT/RGB/IT_Add_to_Apple_Wallet_RGB_101821.svg   |   280 +
+ .../JP/CMYK/JP_Add_to_Apple_Wallet_CMYK_101821.eps |   Bin 0 -> 1257274 bytes
+ .../JP/RGB/JP_Add_to_Apple_Wallet_RGB_101821.eps   |   Bin 0 -> 656254 bytes
+ .../JP/RGB/JP_Add_to_Apple_Wallet_RGB_101821.svg   |   268 +
+ .../KR/CMYK/KR_Add_to_Apple_Wallet_CMYK_102121.eps |   Bin 0 -> 1255166 bytes
+ .../KR/RGB/KR_Add_to_Apple_Wallet_RGB_102221.eps   |   Bin 0 -> 657838 bytes
+ .../KR/RGB/KR_Add_to_Apple_Wallet_RGB_102221.svg   |   266 +
+ .../LT/CMYK/LT_Add_to_Apple_Wallet_CMYK_101821.eps |   Bin 0 -> 1266898 bytes
+ .../LT/RGB/LT_Add_to_Apple_Wallet_RGB_101821.eps   |   Bin 0 -> 663026 bytes
+ .../LT/RGB/LT_Add_to_Apple_Wallet_RGB_101821.svg   |   283 +
+ .../LV/CMYK/LV_Add_to_Apple_Wallet_CMYK_101921.eps |   Bin 0 -> 1260094 bytes
+ .../LV/RGB/LV_Add_to_Apple_Wallet_RGB_101921.eps   |   Bin 0 -> 659298 bytes
+ .../LV/RGB/LV_Add_to_Apple_Wallet_RGB_101921.svg   |   277 +
+ .../MT/CMYK/MT_Add_to_Apple_Wallet_CMYK_101921.eps |   Bin 0 -> 1256134 bytes
+ .../MT/RGB/MT_Add_to_Apple_Wallet_RGB_101921.eps   |   Bin 0 -> 655982 bytes
+ .../MT/RGB/MT_Add_to_Apple_Wallet_RGB_101921.svg   |   268 +
+ .../MY/CMYK/MY_Add_to_Apple_Wallet_CMYK_102921.eps |   Bin 0 -> 1259370 bytes
+ .../MY/RGB/MY_Add_to_Apple_Wallet_RGB_102921.eps   |   Bin 0 -> 660426 bytes
+ .../MY/RGB/MY_Add_to_Apple_Wallet_RGB_102921.svg   |   280 +
+ .../NL/CMYK/NL_Add_to_Apple_Wallet_CMYK_101921.eps |   Bin 0 -> 1263710 bytes
+ .../NL/RGB/NL_Add_to_Apple_Wallet_RGB_101921.eps   |   Bin 0 -> 663538 bytes
+ .../NL/RGB/NL_Add_to_Apple_Wallet_RGB_101921.svg   |   290 +
+ .../NO/CMYK/NO_Add_to_Apple_Wallet_CMYK_101921.eps |   Bin 0 -> 1260490 bytes
+ .../NO/RGB/NO_Add_to_Apple_Wallet_RGB_101921.eps   |   Bin 0 -> 660546 bytes
+ .../NO/RGB/NO_Add_to_Apple_Wallet_RGB_101921.svg   |   284 +
+ .../PH/CMYK/PH_Add_to_Apple_Wallet_CMYK_102121.eps |   Bin 0 -> 1265782 bytes
+ .../PH/RGB/PH_Add_to_Apple_Wallet_RGB_102121.eps   |   Bin 0 -> 666402 bytes
+ .../PH/RGB/PH_Add_to_Apple_Wallet_RGB_102121.svg   |   292 +
+ .../PL/CMYK/PL_Add_to_Apple_Wallet_CMYK_102121.eps |   Bin 0 -> 1260538 bytes
+ .../PL/RGB/PL_Add_to_Apple_Wallet_RGB_102121.eps   |   Bin 0 -> 664950 bytes
+ .../PL/RGB/PL_Add_to_Apple_Wallet_RGB_102121.svg   |   280 +
+ .../PT/CMYK/PT_Add_to_Apple_Wallet_CMYK_102021.eps |   Bin 0 -> 1263178 bytes
+ .../PT/RGB/PT_Add_to_Apple_Wallet_RGB_102021.eps   |   Bin 0 -> 664142 bytes
+ .../PT/RGB/PT_Add_to_Apple_Wallet_RGB_102021.svg   |   290 +
+ .../CMYK/PTBR_Add_to_Apple_Wallet_CMYK_102121.eps  |   Bin 0 -> 1266886 bytes
+ .../RGB/PTBR_Add_to_Apple_Wallet_RGB_102121.eps    |   Bin 0 -> 667190 bytes
+ .../RGB/PTBR_Add_to_Apple_Wallet_RGB_102121.svg    |   300 +
+ .../RO/CMYK/RO_Add_to_Apple_Wallet_CMYK_102121.eps |   Bin 0 -> 1263858 bytes
+ .../RO/RGB/RO_Add_to_Apple_Wallet_RGB_102121.eps   |   Bin 0 -> 664862 bytes
+ .../RO/RGB/RO_Add_to_Apple_Wallet_RGB_102121.svg   |   290 +
+ .../RU/CMYK/RU_Add_to_Apple_Wallet_CMYK_102121.eps |   Bin 0 -> 1259722 bytes
+ .../RU/RGB/RU_Add_to_Apple_Wallet_RGB_102121.eps   |   Bin 0 -> 660866 bytes
+ .../RU/RGB/RU_Add_to_Apple_Wallet_RGB_102121.svg   |   279 +
+ .../SE/CMYK/SE_Add_to_Apple_Wallet_CMYK_102021.eps |   Bin 0 -> 1262894 bytes
+ .../SE/RGB/SE_Add_to_Apple_Wallet_RGB_102021.eps   |   Bin 0 -> 662366 bytes
+ .../SE/RGB/SE_Add_to_Apple_Wallet_RGB_102021.svg   |   287 +
+ .../SI/CMYK/SI_Add_to_Apple_Wallet_CMYK_102221.eps |   Bin 0 -> 1259078 bytes
+ .../SI/RGB/SI_Add_to_Apple_Wallet_RGB_102221.eps   |   Bin 0 -> 660006 bytes
+ .../SI/RGB/SI_Add_to_Apple_Wallet_RGB_102221.svg   |   269 +
+ .../SK/CMYK/SK_Add_to_Apple_Wallet_CMYK_102121.eps |   Bin 0 -> 1262502 bytes
+ .../SK/RGB/SK_Add_to_Apple_Wallet_RGB_102121.eps   |   Bin 0 -> 663842 bytes
+ .../SK/RGB/SK_Add_to_Apple_Wallet_RGB_102121.svg   |   288 +
+ .../TH/CMYK/TH_Add_to_Apple_Wallet_CMYK_102921.eps |   Bin 0 -> 1257070 bytes
+ .../TH/RGB/TH_Add_to_Apple_Wallet_RGB_102921.eps   |   Bin 0 -> 656666 bytes
+ .../TH/RGB/TH_Add_to_Apple_Wallet_RGB_102921.svg   |   277 +
+ .../TR/CMYK/TR_Add_to_Apple_Wallet_CMYK_102121.eps |   Bin 0 -> 1256326 bytes
+ .../TR/RGB/TR_Add_to_Apple_Wallet_RGB_102121.eps   |   Bin 0 -> 656330 bytes
+ .../TR/RGB/TR_Add_to_Apple_Wallet_RGB_102121.svg   |   273 +
+ .../CMYK/TWTC_Add_to_Apple_Wallet_CMYK_102121.eps  |   Bin 0 -> 1259354 bytes
+ .../RGB/TWTC_Add_to_Apple_Wallet_RGB_102121.eps    |   Bin 0 -> 660478 bytes
+ .../RGB/TWTC_Add_to_Apple_Wallet_RGB_102121.svg    |   278 +
+ .../UA/CMYK/UA_Add_to_Apple_Wallet_CMYK_102121.eps |   Bin 0 -> 1258746 bytes
+ .../UA/RGB/UA_Add_to_Apple_Wallet_RGB_102121.eps   |   Bin 0 -> 659846 bytes
+ .../UA/RGB/UA_Add_to_Apple_Wallet_RGB_102121.svg   |   274 +
+ .../CMYK/US-UK_Add_to_Apple_Wallet_CMYK_101421.eps |   Bin 0 -> 1217614 bytes
+ .../RGB/US-UK_Add_to_Apple_Wallet_RGB_101421.eps   |   Bin 0 -> 616318 bytes
+ .../RGB/US-UK_Add_to_Apple_Wallet_RGB_101421.svg   |   259 +
+ .../VN/CMYK/VN_Add_to_Apple_Wallet_CMYK_101921.eps |   Bin 0 -> 1257026 bytes
+ .../VN/RGB/VN_Add_to_Apple_Wallet_RGB_101921.eps   |   Bin 0 -> 657650 bytes
+ .../VN/RGB/VN_Add_to_Apple_Wallet_RGB_101921.svg   |   259 +
+ src/assets/images/arrowDown.png                    |   Bin 0 -> 408 bytes
+ src/assets/images/arrowR.png                       |   Bin 0 -> 896 bytes
+ src/assets/images/arrowUp.png                      |   Bin 0 -> 389 bytes
+ src/assets/images/axa-ico.svg                      |     9 +
+ src/assets/images/axa-logo.svg                     |     9 +
+ src/assets/images/back.png                         |   Bin 0 -> 310 bytes
+ src/assets/images/bell.png                         |   Bin 0 -> 1448 bytes
+ src/assets/images/bell.svg                         |     3 +
+ src/assets/images/bg.svg                           |   130 +
+ src/assets/images/book.svg                         |     8 +
+ src/assets/images/book_white.svg                   |     8 +
+ src/assets/images/booking/physical-visit.svg       |     4 +
+ src/assets/images/booking/queue/empty.svg          |     8 +
+ src/assets/images/booking/queue/full.svg           |     8 +
+ src/assets/images/booking/teleconsultation.svg     |     4 +
+ src/assets/images/building.svg                     |     8 +
+ src/assets/images/call.svg                         |     3 +
+ src/assets/images/check-circle.svg                 |     4 +
+ src/assets/images/check.svg                        |     4 +
+ src/assets/images/check_mark.png                   |   Bin 0 -> 544 bytes
+ src/assets/images/close-fade-grey.svg              |     6 +
+ src/assets/images/close.svg                        |     4 +
+ src/assets/images/closeBtn.png                     |   Bin 0 -> 707 bytes
+ src/assets/images/close_icon.png                   |   Bin 0 -> 467 bytes
+ src/assets/images/cog.svg                          |     5 +
+ src/assets/images/configBt.png                     |   Bin 0 -> 1802 bytes
+ src/assets/images/contact-us.svg                   |  1023 ++
+ src/assets/images/default_avatar.png               |   Bin 0 -> 2292 bytes
+ src/assets/images/doctor_icon.png                  |   Bin 0 -> 14167 bytes
+ src/assets/images/dot.svg                          |     3 +
+ src/assets/images/dot_empty.svg                    |     3 +
+ src/assets/images/dropdown.svg                     |     5 +
+ src/assets/images/dsi/backdrop.svg                 |    69 +
+ src/assets/images/dsi/building.svg                 |     6 +
+ src/assets/images/dsi/card-bottom.svg              |    61 +
+ src/assets/images/dsi/card-top.svg                 |     7 +
+ src/assets/images/dsi/download-icon.svg            |     5 +
+ src/assets/images/dsi/dsi-round-icon.svg           |     9 +
+ src/assets/images/dsi/duo.svg                      |   151 +
+ src/assets/images/dsi/email.svg                    |     3 +
+ src/assets/images/dsi/home.svg                     |     3 +
+ .../images/dsi/home/icon-appointment-history.png   |   Bin 0 -> 6917 bytes
+ src/assets/images/dsi/home/icon-claims.png         |   Bin 0 -> 8991 bytes
+ src/assets/images/dsi/home/icon-coverage.png       |   Bin 0 -> 9142 bytes
+ .../images/dsi/home/icon-download-document.png     |   Bin 0 -> 6376 bytes
+ src/assets/images/dsi/home/icon-endoscopy.png      |   Bin 0 -> 10804 bytes
+ src/assets/images/dsi/home/icon-search-doctor.png  |   Bin 0 -> 8271 bytes
+ .../images/dsi/home/icon-tele-consultation.png     |   Bin 0 -> 9493 bytes
+ src/assets/images/dsi/home/icon-vaccine.png        |   Bin 0 -> 12135 bytes
+ .../images/dsi/home/icon-wellness-channel.png      |   Bin 0 -> 6831 bytes
+ src/assets/images/dsi/home/logo.svg                |     6 +
+ src/assets/images/dsi/home_active.svg              |    10 +
+ src/assets/images/dsi/icon-adress-book.svg         |     3 +
+ src/assets/images/dsi/icon-eye.svg                 |     4 +
+ src/assets/images/dsi/icon-location.svg            |     5 +
+ src/assets/images/dsi/icon-setting.svg             |     3 +
+ src/assets/images/dsi/icon-transaction.svg         |     6 +
+ src/assets/images/dsi/info-pink.svg                |     4 +
+ src/assets/images/dsi/logo.svg                     |     5 +
+ src/assets/images/dsi/med-card-active.svg          |     4 +
+ src/assets/images/dsi/med-card-white.svg           |     3 +
+ src/assets/images/dsi/med-card.svg                 |     3 +
+ src/assets/images/dsi/pdf-icon.svg                 |     6 +
+ src/assets/images/dsi/person-active.svg            |     5 +
+ src/assets/images/dsi/person-white.svg             |     4 +
+ src/assets/images/dsi/person.svg                   |     4 +
+ src/assets/images/dsi/phone.svg                    |     3 +
+ src/assets/images/dsi/pin.svg                      |     4 +
+ src/assets/images/dsi/primary-frame-long.svg       |    69 +
+ src/assets/images/dsi/primary-frame.svg            |    69 +
+ src/assets/images/dsi/queue.svg                    |     8 +
+ src/assets/images/dsi/shield.svg                   |     5 +
+ src/assets/images/duo.svg                          |   151 +
+ src/assets/images/empty-notifications.svg          |    71 +
+ src/assets/images/emptyData.svg                    |    72 +
+ src/assets/images/enUS_add_to_google_wallet.svg    |    16 +
+ src/assets/images/face_id.svg                      |     3 +
+ src/assets/images/facebook-signin.svg              |     1 +
+ src/assets/images/files.svg                        |     8 +
+ src/assets/images/globe-green.svg                  |     5 +
+ src/assets/images/globe.svg                        |     5 +
+ src/assets/images/google-signin.svg                |    13 +
+ .../ar/Save to Google Pay - Arabic (Dark).svg      |    53 +
+ ... to Google Pay - Arabic (Light with Stroke).svg |    32 +
+ .../ar/Save to Google Pay - Arabic (Light).svg     |    51 +
+ .../cs/Save to Google Pay - Czech (Dark).svg       |    51 +
+ ...e to Google Pay - Czech (Light with Stroke).svg |    32 +
+ .../cs/Save to Google Pay - Czech (Light).svg      |    51 +
+ .../da/Save to Google Pay - Danish (Dark).svg      |    51 +
+ ... to Google Pay - Danish (Light with Stroke).svg |    32 +
+ .../da/Save to Google Pay - Danish (Light).svg     |    51 +
+ .../de/Save to Google Pay - German (Dark).svg      |    51 +
+ ... to Google Pay - German (Light with Stroke).svg |    32 +
+ .../de/Save to Google Pay - German (Light).svg     |    51 +
+ ...to Google Pay - English (Light with Stroke).svg |    32 +
+ .../en/Save to Google Pay - English (Light).svg    |    51 +
+ .../en/google_wallet_pass.svg                      |    51 +
+ .../es/Save to Google Pay - Spanish (Dark).svg     |    51 +
+ ...to Google Pay - Spanish (Light with Stroke).svg |    32 +
+ .../es/Save to Google Pay - Spanish (Light).svg    |    51 +
+ .../fi/Save to Google Pay - Finnish (Dark).svg     |    51 +
+ ...to Google Pay - Finnish (Light with Stroke).svg |    32 +
+ .../fi/Save to Google Pay - Finnish (Light).svg    |    51 +
+ .../fr/Save to Google Pay - French (Dark).svg      |    51 +
+ ... to Google Pay - French (Light with Stroke).svg |    32 +
+ .../fr/Save to Google Pay - French (Light).svg     |    51 +
+ .../hr/Save to Google Pay - Croatian (Dark).svg    |    51 +
+ ...o Google Pay - Croatian (Light with Stroke).svg |    32 +
+ .../hr/Save to Google Pay - Croatian (Light).svg   |    51 +
+ .../in/Save to Google Pay - Indonesian (Dark).svg  |    51 +
+ ...Google Pay - Indonesian (Light with Stroke).svg |    32 +
+ .../in/Save to Google Pay - Indonesian (Light).svg |    51 +
+ .../it/Save to Google Pay - Italian (Dark).svg     |    51 +
+ ...to Google Pay - Italian (Light with Stroke).svg |    32 +
+ .../it/Save to Google Pay - Italian (Light).svg    |    51 +
+ .../ja/Save to Google Pay - Japanese (Dark).svg    |    51 +
+ ...o Google Pay - Japanese (Light with Stroke).svg |    32 +
+ .../ja/Save to Google Pay - Japanese (Light).svg   |    51 +
+ .../ko/Save to Google Pay - Korean (Dark).svg      |    51 +
+ ... to Google Pay - Korean (Light with Stroke).svg |    32 +
+ .../ko/Save to Google Pay - Korean (Light).svg     |    51 +
+ .../nl/Save to Google Pay - Dutch (Dark).svg       |    51 +
+ ...e to Google Pay - Dutch (Light with Stroke).svg |    32 +
+ .../nl/Save to Google Pay - Dutch (Light).svg      |    51 +
+ .../no/Save to Google Pay - Norwegian (Dark).svg   |    51 +
+ ... Google Pay - Norwegian (Light with Stroke).svg |    32 +
+ .../no/Save to Google Pay - Norwegian (Light).svg  |    51 +
+ .../pl/Save to Google Pay - Polish (Dark).svg      |    51 +
+ ... to Google Pay - Polish (Light with Stroke).svg |    32 +
+ .../pl/Save to Google Pay - Polish (Light).svg     |    51 +
+ ... to Google Pay - Portuguese (Brazil) (Dark).svg |    51 +
+ ...y - Portuguese (Brazil) (Light with Stroke).svg |    32 +
+ ...to Google Pay - Portuguese (Brazil) (Light).svg |    51 +
+ .../ru/Save to Google Pay - Russian (Dark).svg     |    51 +
+ ...to Google Pay - Russian (Light with Stroke).svg |    32 +
+ .../ru/Save to Google Pay - Russian (Light).svg    |    51 +
+ .../sk/Save to Google Pay - Slovak (Dark).svg      |    51 +
+ ... to Google Pay - Slovak (Light with Stroke).svg |    32 +
+ .../sk/Save to Google Pay - Slovak (Light).svg     |    51 +
+ .../sv/Save to Google Pay - Swedish (Dark).svg     |    51 +
+ ...to Google Pay - Swedish (Light with Stroke).svg |    32 +
+ .../sv/Save to Google Pay - Swedish (Light).svg    |    51 +
+ .../th/Save to Google Pay - Thai (Dark).svg        |    51 +
+ ...ve to Google Pay - Thai (Light with Stroke).svg |    32 +
+ .../th/Save to Google Pay - Thai (Light).svg       |    51 +
+ .../uk/Save to Google Pay - Ukrainian (Dark).svg   |    51 +
+ ... Google Pay - Ukrainian (Light with Stroke).svg |    32 +
+ .../uk/Save to Google Pay - Ukrainian (Light).svg  |    51 +
+ ...to Google Pay - Chinese (Simplified) (Dark).svg |    51 +
+ ... - Chinese (Simplified) (Light with Stroke).svg |    32 +
+ ...o Google Pay - Chinese (Simplified) (Light).svg |    51 +
+ ... to Google Pay - Traditional Chinese (Dark).svg |    51 +
+ ...y - Traditional Chinese (Light with Stroke).svg |    32 +
+ ...to Google Pay - Traditional Chinese (Light).svg |    51 +
+ src/assets/images/google_wallet.svg                |    16 +
+ .../enUS_add_to_google_wallet_add-wallet-badge.svg |    16 +
+ .../id_add_to_google_wallet_add-wallet-badge.svg   |    16 +
+ .../pl_add_to_google_wallet_add-wallet-badge.svg   |    16 +
+ .../th_add_to_google_wallet_add-wallet-badge.svg   |    16 +
+ .../vi_add_to_google_wallet_add-wallet-badge.svg   |    16 +
+ .../zhHK_add_to_google_wallet_add-wallet-badge.svg |    16 +
+ .../zhTW_add_to_google_wallet_add-wallet-badge.svg |    16 +
+ src/assets/images/green_circle.png                 |   Bin 0 -> 498 bytes
+ src/assets/images/handshake.svg                    |    14 +
+ src/assets/images/handshake_white.svg              |     4 +
+ src/assets/images/heals.svg                        |    24 +
+ src/assets/images/heals_logo_tree.svg              |    10 +
+ src/assets/images/heals_white.svg                  |    12 +
+ src/assets/images/heart.svg                        |     3 +
+ src/assets/images/heart_white.svg                  |     3 +
+ src/assets/images/helpdesk_icon.png                |   Bin 0 -> 1444 bytes
+ src/assets/images/hsbc-ico.svg                     |     3 +
+ src/assets/images/hsbc_axa-ico.svg                 |    15 +
+ src/assets/images/indicator.svg                    |    10 +
+ src/assets/images/indicator1.svg                   |     8 +
+ src/assets/images/indicator2.svg                   |     8 +
+ src/assets/images/indicator3.svg                   |     8 +
+ src/assets/images/indicator4.svg                   |     8 +
+ src/assets/images/indicator5.svg                   |     8 +
+ src/assets/images/indicator6.svg                   |     8 +
+ src/assets/images/info.svg                         |     4 +
+ src/assets/images/line.svg                         |    11 +
+ src/assets/images/link.svg                         |     4 +
+ src/assets/images/location.png                     |   Bin 0 -> 2646 bytes
+ src/assets/images/location_pin.svg                 |     7 +
+ src/assets/images/location_pin_white.svg           |     7 +
+ src/assets/images/logo.png                         |   Bin 0 -> 7730 bytes
+ src/assets/images/logo.svg                         |    24 +
+ src/assets/images/logo_white_bg.png                |   Bin 0 -> 13239 bytes
+ src/assets/images/medicine.png                     |   Bin 0 -> 257636 bytes
+ src/assets/images/member_card.png                  |   Bin 0 -> 2195 bytes
+ src/assets/images/new.svg                          |     3 +
+ src/assets/images/no_appointment.png               |   Bin 0 -> 20074 bytes
+ src/assets/images/online.png                       |   Bin 0 -> 2294 bytes
+ src/assets/images/opening_hour.png                 |   Bin 0 -> 2796 bytes
+ src/assets/images/pass_camera.png                  |   Bin 0 -> 534 bytes
+ src/assets/images/pass_location.png                |   Bin 0 -> 1204 bytes
+ src/assets/images/pay-meth.svg                     |    21 +
+ src/assets/images/person.png                       |   Bin 0 -> 989 bytes
+ src/assets/images/phone.png                        |   Bin 0 -> 1075 bytes
+ src/assets/images/phone.svg                        |     5 +
+ src/assets/images/pill.svg                         |     4 +
+ src/assets/images/pin.svg                          |     8 +
+ src/assets/images/pingan-ico.png                   |   Bin 0 -> 319 bytes
+ src/assets/images/postion.png                      |   Bin 0 -> 6146 bytes
+ src/assets/images/product_list_dot.png             |   Bin 0 -> 10902 bytes
+ src/assets/images/profile-card.svg                 |     3 +
+ src/assets/images/profile_arrow.png                |   Bin 0 -> 897 bytes
+ src/assets/images/profile_arrow_bg.png             |   Bin 0 -> 887 bytes
+ src/assets/images/profile_card.png                 |   Bin 0 -> 1030 bytes
+ src/assets/images/profile_info.png                 |   Bin 0 -> 3085 bytes
+ src/assets/images/profile_location.png             |   Bin 0 -> 1724 bytes
+ src/assets/images/profile_setting.png              |   Bin 0 -> 1354 bytes
+ src/assets/images/profile_wallet.png               |   Bin 0 -> 989 bytes
+ src/assets/images/question_feel0.png               |   Bin 0 -> 6762 bytes
+ src/assets/images/question_feel1.png               |   Bin 0 -> 5232 bytes
+ src/assets/images/question_feel2.png               |   Bin 0 -> 4959 bytes
+ src/assets/images/question_feel3.png               |   Bin 0 -> 5164 bytes
+ src/assets/images/question_feel4.png               |   Bin 0 -> 5330 bytes
+ src/assets/images/question_feel5.png               |   Bin 0 -> 5441 bytes
+ src/assets/images/question_feel6.png               |   Bin 0 -> 3697 bytes
+ src/assets/images/radio.png                        |   Bin 0 -> 1198 bytes
+ src/assets/images/radio_unselect.png               |   Bin 0 -> 1353 bytes
+ src/assets/images/remider_icon.png                 |   Bin 0 -> 942 bytes
+ src/assets/images/search-outline.svg               |     8 +
+ src/assets/images/sellPoints.png                   |   Bin 0 -> 1446 bytes
+ src/assets/images/shopping-cart.png                |   Bin 0 -> 1606 bytes
+ src/assets/images/splash_logo.png                  |   Bin 0 -> 71505 bytes
+ src/assets/images/tab_home_select.png              |   Bin 0 -> 12336 bytes
+ src/assets/images/tab_home_unselect.png            |   Bin 0 -> 865 bytes
+ src/assets/images/tab_pass_select_1.png            |   Bin 0 -> 816 bytes
+ src/assets/images/tab_pass_unselect.png            |   Bin 0 -> 1146 bytes
+ src/assets/images/tab_profile_select_0.png         |   Bin 0 -> 3488 bytes
+ src/assets/images/tab_profile_select_1.png         |   Bin 0 -> 715 bytes
+ src/assets/images/tab_profile_unselect.png         |   Bin 0 -> 1010 bytes
+ src/assets/images/touch_id.svg                     |    31 +
+ src/assets/images/union-brown.svg                  |     3 +
+ src/assets/images/videocamera-icon.png             |   Bin 0 -> 844 bytes
+ src/assets/images/videocamera.png                  |   Bin 0 -> 844 bytes
+ src/assets/images/videocamera.svg                  |    14 +
+ src/assets/images/wallet.svg                       |     6 +
+ src/assets/images/wbschina/banner1.png             |   Bin 0 -> 106913 bytes
+ src/assets/images/wechat-signin.svg                |    11 +
+ src/assets/images/wechat.svg                       |    12 +
+ src/assets/images/welcome-book.svg                 |     8 +
+ src/assets/images/welcome-home.svg                 |     3 +
+ src/assets/images/welcome-location.svg             |     7 +
+ src/assets/images/welcome-med.svg                  |     4 +
+ src/assets/images/welcome-scan.svg                 |     5 +
+ src/assets/images/welcome-wallet.svg               |     9 +
+ src/assets/images/whatsapp.svg                     |    11 +
+ src/assets/index.ts                                |    70 +
+ src/assets/json/bloodtype.json                     |    40 +
+ src/assets/json/countries-address.json             |  2907 +++++
+ src/assets/json/countries-original.json            |  8904 +++++++++++++++
+ src/assets/json/countries.json                     | 11246 +++++++++++++++++++
+ src/assets/json/country-arecode.json               |  2904 +++++
+ src/assets/json/languages.json                     |    36 +
+ src/assets/json/nationalities.json                 |   776 ++
+ src/assets/json/relationship.json                  |    53 +
+ src/assets/svg/ArrowRight.tsx                      |    26 +
+ src/assets/svg/Bluetooth.tsx                       |    30 +
+ src/assets/svg/HealthMonitoring.tsx                |    26 +
+ src/assets/svg/Vector.tsx                          |    26 +
+ src/assets/svg/VideoConsultation.tsx               |    30 +
+ src/assets/svg/add-dark.tsx                        |    22 +
+ src/assets/svg/anticoagulant.tsx                   |    82 +
+ src/assets/svg/antihypertensive.tsx                |    90 +
+ src/assets/svg/arrow-right-green.tsx               |    18 +
+ src/assets/svg/arrow-white.tsx                     |    21 +
+ src/assets/svg/assignment.tsx                      |    15 +
+ src/assets/svg/back-btn-number.tsx                 |    19 +
+ src/assets/svg/background-mask.tsx                 |    37 +
+ src/assets/svg/bin.tsx                             |    35 +
+ src/assets/svg/black-shade-bell.tsx                |    18 +
+ src/assets/svg/blur-off.tsx                        |    20 +
+ src/assets/svg/blur-on.tsx                         |    19 +
+ src/assets/svg/camera.tsx                          |    24 +
+ src/assets/svg/cardiovascular.tsx                  |    74 +
+ src/assets/svg/cart-green.tsx                      |    18 +
+ src/assets/svg/cart-white.tsx                      |    18 +
+ src/assets/svg/check-box-green.tsx                 |    30 +
+ src/assets/svg/check-square.tsx                    |    16 +
+ src/assets/svg/chevron-right.tsx                   |    21 +
+ src/assets/svg/cholesterol.tsx                     |    94 +
+ src/assets/svg/circle-check.tsx                    |    22 +
+ src/assets/svg/close-transparent.tsx               |    20 +
+ src/assets/svg/close.tsx                           |    22 +
+ src/assets/svg/clotting.tsx                        |    78 +
+ src/assets/svg/common-drug.tsx                     |    70 +
+ src/assets/svg/diabetes.tsx                        |    90 +
+ src/assets/svg/download.tsx                        |    15 +
+ src/assets/svg/downloadFileIcon.tsx                |    23 +
+ src/assets/svg/edit.tsx                            |    16 +
+ src/assets/svg/end-call.tsx                        |    28 +
+ src/assets/svg/faceid.tsx                          |    20 +
+ src/assets/svg/globe.tsx                           |    20 +
+ src/assets/svg/healsLogo.tsx                       |    35 +
+ src/assets/svg/index.ts                            |   146 +
+ src/assets/svg/info-dark.tsx                       |    21 +
+ src/assets/svg/info-red.tsx                        |    22 +
+ src/assets/svg/info.tsx                            |    26 +
+ src/assets/svg/lock.tsx                            |    23 +
+ src/assets/svg/medication-place-holder.tsx         |    55 +
+ src/assets/svg/mic-off.tsx                         |    33 +
+ src/assets/svg/mic-on.tsx                          |    23 +
+ src/assets/svg/minus-dark.tsx                      |    22 +
+ src/assets/svg/minus-grey.tsx                      |    21 +
+ src/assets/svg/not-check-square.tsx                |    16 +
+ src/assets/svg/plus-green-add.tsx                  |    22 +
+ src/assets/svg/plus-white.tsx                      |    21 +
+ src/assets/svg/red-timer.tsx                       |    62 +
+ src/assets/svg/redalert.tsx                        |    18 +
+ src/assets/svg/row-waiting.tsx                     |    43 +
+ src/assets/svg/search-white.tsx                    |    22 +
+ src/assets/svg/small-clock-circle.tsx              |    26 +
+ src/assets/svg/small-video-icon.tsx                |    22 +
+ src/assets/svg/supplement.tsx                      |    70 +
+ src/assets/svg/teleconsult-pin.tsx                 |    22 +
+ src/assets/svg/uric-acid.tsx                       |   126 +
+ src/assets/svg/video-call.tsx                      |    27 +
+ src/assets/svg/video-off.tsx                       |    38 +
+ src/assets/svg/video.tsx                           |    22 +
+ src/assets/svg/whatsapp.tsx                        |    20 +
+ src/cache-module/cacheKeys.ts                      |    11 +
+ src/cache-module/index.ts                          |    50 +
+ src/components/QRCodeBt/QRCodeBt.props.ts          |     5 +
+ src/components/QRCodeBt/QRCodeBt.styles.ts         |    40 +
+ src/components/QRCodeBt/QRCodeBt.tsx               |    83 +
+ src/components/Text/Text.styles.ts                 |     8 +
+ src/components/Text/Text.tsx                       |    18 +
+ .../activate-modal/activate-modal.props.ts         |     3 +
+ .../activate-modal/activate-modal.style.ts         |    59 +
+ src/components/activate-modal/activate-modal.tsx   |   300 +
+ .../activation-modal/activation-modal.props.ts     |     6 +
+ .../activation-modal/activation-modal.styles.ts    |   277 +
+ .../activation-modal/activation-modal.tsx          |   167 +
+ .../add-emergency-contact-component.props.ts       |     3 +
+ .../add-emergency-contact-component.styles.ts      |     0
+ .../add-emergency-contact-component.tsx            |   207 +
+ .../add-google-wallet/add-google-wallet.props.ts   |     3 +
+ .../add-google-wallet/add-google-wallet.tsx        |    21 +
+ .../all-rights-reserved-component.tsx              |    27 +
+ src/components/app-text/app-text.props.ts          |    20 +
+ src/components/app-text/app-text.styles.ts         |    29 +
+ src/components/app-text/app-text.tsx               |    39 +
+ .../blood-type-chooser-component.props.ts          |     4 +
+ .../blood-type-chooser-component.styles.ts         |     0
+ .../blood-type-chooser-component.tsx               |   108 +
+ .../common-flatList/common-flatList.props.ts       |    26 +
+ .../common-flatList/common-flatList.styles.ts      |    15 +
+ src/components/common-flatList/common-flatList.tsx |   160 +
+ .../common-list-empty/common-list-empty.props.ts   |     6 +
+ .../common-list-empty/common-list-empty.styles.ts  |    17 +
+ .../common-list-empty/common-list-empty.tsx        |    21 +
+ .../common-modal-bt/common-modal-bt.props.ts       |    16 +
+ .../common-modal-bt/common-modal-bt.styles.ts      |    51 +
+ src/components/common-modal-bt/common-modal-bt.tsx |    93 +
+ .../common-modal/common-modal-child.props.ts       |     8 +
+ src/components/common-modal/common-modal-child.tsx |    49 +
+ .../common-modal/common-modal-provider.tsx         |    86 +
+ src/components/common-modal/common-modal.props.ts  |    11 +
+ src/components/common-modal/common-modal.styles.ts |   129 +
+ src/components/common-modal/common-modal.tsx       |   145 +
+ .../common-search-bar/common-search-bar.props.ts   |    23 +
+ .../common-search-bar/common-search-bar.styles.ts  |    29 +
+ .../common-search-bar/common-search-bar.tsx        |   157 +
+ .../contact-us-modal/contact-us-modal.props.ts     |     3 +
+ .../contact-us-modal/contact-us-modal.style.ts     |    50 +
+ .../contact-us-modal/contact-us-modal.tsx          |   104 +
+ .../countries-bottom-sheet-component.props.ts      |     5 +
+ .../countries-bottom-sheet-component.styles.ts     |    49 +
+ .../countries-bottom-sheet-component.tsx           |   124 +
+ src/components/dashLine/dashLine.tsx               |    35 +
+ .../doctor-avatar/doctor-avatar.props.ts           |     6 +
+ .../doctor-avatar/doctor-avatar.styles.ts          |    12 +
+ src/components/doctor-avatar/doctor-avatar.tsx     |    48 +
+ src/components/error-modal/error-modal.tsx         |    45 +
+ .../gender-bottom-sheet-component.props.ts         |     4 +
+ .../gender-bottom-sheet-component.styles.ts        |     0
+ .../gender-bottom-sheet-component.tsx              |   136 +
+ src/components/gradient-bt/gradient-bt.props.ts    |    10 +
+ src/components/gradient-bt/gradient-bt.styles.ts   |    14 +
+ src/components/gradient-bt/gradient-bt.tsx         |    31 +
+ .../gradient-button-component.props.ts             |    10 +
+ .../gradient-button-component.styles.ts            |     0
+ .../gradient-button-component.tsx                  |    66 +
+ src/components/language-bt/language-bt.props.ts    |     4 +
+ src/components/language-bt/language-bt.styles.ts   |    68 +
+ src/components/language-bt/language-bt.tsx         |    95 +
+ .../language-chooser-component.props.ts            |     7 +
+ .../language-chooser-component.styles.ts           |    71 +
+ .../language-chooser-component.tsx                 |   113 +
+ src/components/loading-modal/loading-context.tsx   |    41 +
+ .../loading-modal/loading-modal.styles.ts          |    46 +
+ src/components/loading-modal/loading-modal.tsx     |    66 +
+ src/components/logout-modal/logout-modal.props.ts  |     4 +
+ src/components/logout-modal/logout-modal.styles.ts |    40 +
+ src/components/logout-modal/logout-modal.tsx       |    92 +
+ .../mobile-number-component.props.ts               |     6 +
+ .../mobile-number-component.styles.ts              |   171 +
+ .../mobile-number-component.tsx                    |   459 +
+ .../nationality-bottom-sheet-component.props.ts    |     5 +
+ .../nationality-bottom-sheet-component.styles.ts   |     0
+ .../nationality-bottom-sheet-component.tsx         |   133 +
+ .../navigation-bar/navigation-bar.props.ts         |    22 +
+ .../navigation-bar/navigation-bar.styles.ts        |    52 +
+ src/components/navigation-bar/navigation-bar.tsx   |   103 +
+ .../notification-bell-componen.props.ts            |     3 +
+ .../notification-bell-component.styles.ts          |     9 +
+ .../notification-bell-component.tsx                |    72 +
+ src/components/number-pad/number-pad.props.ts      |     4 +
+ src/components/number-pad/number-pad.tsx           |    49 +
+ .../page-right-bt/page-right-bt.props.ts           |     3 +
+ .../page-right-bt/page-right-bt.styles.ts          |    17 +
+ src/components/page-right-bt/page-right-bt.tsx     |   104 +
+ src/components/page-top-bar/page-top-bar.props.ts  |     4 +
+ src/components/page-top-bar/page-top-bar.styles.ts |   195 +
+ src/components/page-top-bar/page-top-bar.tsx       |   235 +
+ .../profile-row-item/profile-row-item.props.ts     |     4 +
+ .../profile-row-item/profile-row-item.styles.ts    |    43 +
+ .../profile-row-item/profile-row-item.tsx          |    89 +
+ .../radio-button-component.props.ts                |     3 +
+ .../radio-button-component.styles.ts               |    35 +
+ .../radio-button-component.tsx                     |    25 +
+ .../relationship-chooser-component.props.ts        |     3 +
+ .../relationship-chooser-component.styles.ts       |     0
+ .../relationship-chooser-component.tsx             |   122 +
+ src/components/safe-view/safe-view.props.ts        |     7 +
+ src/components/safe-view/safe-view.tsx             |    83 +
+ .../shimmer-loading-home-screen.styles.ts          |    71 +
+ .../shimmer-loading-home-screen.tsx                |    64 +
+ src/components/success-modal/success-modal.tsx     |    43 +
+ .../text-input-component.props.ts                  |    13 +
+ .../text-input-component.styles.ts                 |    12 +
+ .../text-input-component/text-input-component.tsx  |    36 +
+ src/components/tree-icon/tree-icon.props.ts        |     5 +
+ src/components/tree-icon/tree-icon.tsx             |    22 +
+ src/components/walletSvg/walletSvg.tsx             |    74 +
+ src/components/webView-comp/webView-comp.props.ts  |     8 +
+ src/components/webView-comp/webView-comp.styles.ts |    14 +
+ src/components/webView-comp/webView-comp.tsx       |    55 +
+ src/config/index.ts                                |    11 +
+ src/constants/index.ts                             |   165 +
+ src/helper/file-manager-helper.ts                  |    26 +
+ src/helper/linking-helper.ts                       |    20 +
+ src/helper/push-notification-message-helper.ts     |     7 +
+ src/helper/use-file-handler.ts                     |    59 +
+ src/hooks/auth-hook-context.tsx                    |    53 +
+ src/i18n/i18n.ts                                   |    26 +
+ src/i18n/locale/Indonesia.ts                       |  1616 +++
+ src/i18n/locale/Melayu.ts                          |  1606 +++
+ src/i18n/locale/en.ts                              |  1697 +++
+ src/i18n/locale/ph.ts                              |  1504 +++
+ src/i18n/locale/th.ts                              |  1166 ++
+ src/i18n/locale/vn.ts                              |  1676 +++
+ src/i18n/locale/zh.ts                              |  1715 +++
+ src/i18n/locale/zh_tw.ts                           |  1715 +++
+ src/navigation/auth-stack.tsx                      |   135 +
+ src/navigation/global-navigation.ts                |    45 +
+ src/navigation/main-stack.tsx                      |   131 +
+ .../main-tab/main-tab-navigator.styles.ts          |   251 +
+ src/navigation/main-tab/main-tab-navigator.tsx     |   632 ++
+ src/navigation/route-names.ts                      |    38 +
+ src/navigation/types.ts                            |    38 +
+ .../doctor-detail-screen.props.ts                  |    67 +
+ .../doctor-detail-screen.styles.ts                 |   319 +
+ .../doctor-detail-screen/doctor-detail-screen.tsx  |  1206 ++
+ .../doctor-list-screen/doctor-list-screen.props.ts |    18 +
+ .../doctor-list-screen.styles.ts                   |   339 +
+ .../doctor-list-screen/doctor-list-screen.tsx      |  1021 ++
+ .../forgot-password-screen.props.ts                |     0
+ .../forgot-password-screen.styles.ts               |    40 +
+ .../forgot-password-screen.tsx                     |   529 +
+ .../heals-guide-screen/heals-guide-screen.props.ts |     0
+ .../heals-guide-screen.styles.ts                   |    17 +
+ .../heals-guide-screen/heals-guide-screen.tsx      |   205 +
+ .../heals-plan-membership.props.ts                 |     3 +
+ .../heals-plan-membership.styles.ts                |   202 +
+ .../heals-plan-membership.tsx                      |   299 +
+ .../health-monitoring-screen.props.ts              |     4 +
+ .../health-monitoring-screen.styles.ts             |   190 +
+ .../health-monitoring-screen.tsx                   |   212 +
+ src/screens/home/home-screen/home-screen.props.ts  |     9 +
+ src/screens/home/home-screen/home-screen.styles.ts |   640 ++
+ src/screens/home/home-screen/home-screen.tsx       |   850 ++
+ .../login/login-screen/login-screen.props.ts       |     0
+ .../login/login-screen/login-screen.styles.ts      |   125 +
+ src/screens/login/login-screen/login-screen.tsx    |   659 ++
+ src/screens/login/otp-screen/otp-screen.props.ts   |     0
+ src/screens/login/otp-screen/otp-screen.styles.ts  |   120 +
+ src/screens/login/otp-screen/otp-screen.tsx        |   581 +
+ src/screens/medication-list-screen/index.ts        |     1 +
+ .../medication-detailed-screen/index.ts            |     1 +
+ .../medication-detailed-screen.props.ts            |     0
+ .../medication-detailed-screen.styles.ts           |    55 +
+ .../medication-detailed-screen.tsx                 |   203 +
+ .../medication-list-screen-item.tsx                |   117 +
+ .../medication-list-screen.props.ts                |     5 +
+ .../medication-list-screen.styles.ts               |    76 +
+ .../medication-list-screen.tsx                     |   371 +
+ .../my-appointment-list-screen.props.ts            |     3 +
+ .../my-appointment-list-screen.styles.ts           |   142 +
+ .../my-appointment-list-screen.tsx                 |   374 +
+ .../my-appointment-screen.props.ts                 |    23 +
+ .../my-appointment-screen.styles.ts                |   321 +
+ .../my-appointment-screen.tsx                      |  1469 +++
+ .../my-plans-screen/my-plans-screen.props.ts       |    17 +
+ .../my-plans-screen/my-plans-screen.styles.ts      |   308 +
+ src/screens/my-plans-screen/my-plans-screen.tsx    |   642 ++
+ .../notification-item/notification-item.props.ts   |    16 +
+ .../notification-item/notification-item.styles.ts  |     0
+ .../notification-item/notification-item.tsx        |   100 +
+ .../notification-screen.props.ts                   |     0
+ .../notification-screen.styles.ts                  |     0
+ .../notification-screen/notification-screen.tsx    |    96 +
+ src/screens/opening-hours-screen/index.ts          |     1 +
+ .../opening-hours-screen.styles.ts                 |    36 +
+ .../opening-hours-screen/opening-hours-screen.tsx  |    92 +
+ src/screens/pass/pass-screen.props.ts              |     8 +
+ src/screens/pass/pass-screen.styles.ts             |   183 +
+ src/screens/pass/pass-screen.tsx                   |   554 +
+ .../product-waiting-room.props.ts                  |     3 +
+ .../product-waiting-room.styles.ts                 |    14 +
+ .../product-waiting-room/product-waiting-room.tsx  |   153 +
+ .../profile-address/profile-address-edit.props.ts  |     0
+ .../profile-address/profile-address-edit.styles.ts |    42 +
+ .../profile-address/profile-address-edit.tsx       |   576 +
+ .../profile-address/profile-address.props.ts       |     0
+ .../profile-address/profile-address.styles.ts      |    33 +
+ .../profile/profile-address/profile-address.tsx    |   248 +
+ .../profile-dependants/profile-dependants.props.ts |     0
+ .../profile-dependants.styles.ts                   |    32 +
+ .../profile-dependants/profile-dependants.tsx      |    98 +
+ .../profile-edit-screen.props.ts                   |     0
+ .../profile-edit-screen.styles.ts                  |    61 +
+ .../profile-edit-screen/profile-edit-screen.tsx    |   396 +
+ .../profile-healthInfo-screen.props.ts             |     0
+ .../profile-healthInfo-screen.styles.ts            |    44 +
+ .../profile-healthInfo-screen.tsx                  |   667 ++
+ .../profile-healsplan-screen.props.ts              |     0
+ .../profile-healsplan-screen.styles.ts             |    58 +
+ .../profile-healsplan-screen.tsx                   |   327 +
+ .../profile/profile-screen/profile-screen.props.ts |     0
+ .../profile-screen/profile-screen.styles.ts        |    22 +
+ .../profile/profile-screen/profile-screen.tsx      |   188 +
+ .../change-screen/change-password-screen.props.ts  |     0
+ .../change-screen/change-password-screen.styles.ts |    40 +
+ .../change-screen/change-password-screen.tsx       |   536 +
+ .../profile-settings-screen.props.ts               |     0
+ .../profile-settings-screen.styles.ts              |   102 +
+ .../profile-settings-screen.tsx                    |   336 +
+ .../questionnaire/questionnaire-screen.props.ts    |     3 +
+ .../questionnaire/questionnaire-screen.styles.ts   |   105 +
+ src/screens/questionnaire/questionnaire-screen.tsx |   786 ++
+ .../health-info-screen/health-info-screen.props.ts |     5 +
+ .../health-info-screen.styles.ts                   |   130 +
+ .../health-info-screen/health-info-screen.tsx      |   467 +
+ .../register-screen/register-screen.props.ts       |     0
+ .../register-screen/register-screen.styles.ts      |   116 +
+ src/screens/register-screen/register-screen.tsx    |   833 ++
+ src/screens/shopping-cart-screen/index.ts          |     0
+ .../shopping-cart-screen-item.tsx                  |   188 +
+ .../shopping-cart-screen.props.ts                  |     0
+ .../shopping-cart-screen.styles.ts                 |    37 +
+ .../shopping-cart-screen/shopping-cart-screen.tsx  |   234 +
+ .../teleconsult-screen/teleconsult-screen.props.ts |    17 +
+ .../teleconsult-screen.styles.ts                   |   299 +
+ .../teleconsult-screen/teleconsult-screen.tsx      |   463 +
+ src/screens/tnc-screen/index.ts                    |     1 +
+ src/screens/tnc-screen/tnc-screen.props.ts         |     6 +
+ src/screens/tnc-screen/tnc-screen.styles.ts        |     0
+ src/screens/tnc-screen/tnc-screen.tsx              |    32 +
+ .../transaction-history.props.ts                   |     3 +
+ .../transaction-history.styles.ts                  |    30 +
+ .../transaction-history/transaction-history.tsx    |   120 +
+ src/services/firebase/pushnotification.ts          |   140 +
+ src/store/AppContext.tsx                           |   459 +
+ src/style/common-styles/border-style.ts            |     7 +
+ .../gradient-background-color-bt.style.ts          |    30 +
+ src/style/common-styles/pageContainer.style.ts     |     8 +
+ src/style/common-styles/scrollView.style.ts        |    14 +
+ src/style/common-styles/text-input-style.ts        |    18 +
+ src/style/theme/theme-common.ts                    |    23 +
+ src/style/theme/theme-context.tsx                  |    13 +
+ src/style/theme/theme-dark.ts                      |    58 +
+ src/style/theme/theme-light.ts                     |    59 +
+ src/style/theme/theme-provider.tsx                 |   148 +
+ src/style/theme/theme.ts                           |    46 +
+ src/types/Theme.ts                                 |    85 +
+ src/types/types.d.ts                               |    32 +
+ src/utils/ErrorBoundary.tsx                        |    39 +
+ src/utils/links.ts                                 |    19 +
+ src/utils/yup-fields.ts                            |    11 +
+ tsconfig.json                                      |    84 +
+ 893 files changed, 98814 insertions(+), 20 deletions(-)
+==== hunk ====
+17-+import constants from '@constants';
+18-+import Animated, {FadeInRight, FadeInUp, FadeOutDown} from 'react-native-reanimated';
+19-+import { NavigationProp, RouteProp } from '@react-navigation/native';
+20-+import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs';
+21-+import styles from './main-tab-navigator.styles'
+22-+import type { UITheme, Theme } from '@types/Theme.ts';
+23-+import { ThemeContext } from "@style/theme/theme-context.tsx";
+24-+import assets from '@assets';
+25-+import HomeScreen from '@screens/home/home-screen/home-screen';
+26-+import ProfileScreen from '@screens/profile/profile-screen/profile-screen';
+27:+import PassScreen from '@screens/pass/pass-screen';
+28-+import AppText from '@components/app-text/app-text';
+29-+import {
+30-+  SVGCloseTransparentComponent,
+31-+  SVGCloseComponent,
+32-+  SVGFaceIDComponent,
+33-+  SVGRedTimerComponent,
+34-+  SVGBackBtnNumberPadComponent,
+35-+} from '../../assets/svg/index';
+36-+import NumberPad from '@components/number-pad/number-pad';
+37-+import GradientButtonComponent from '@components/gradient-button-component/gradient-button-component';
+--
+151-+            </View>
+152-+            <AppText
+153-+              size='small'
+154-+              style={styles.callOurService}
+155-+            >
+156-+              {constants.i18n.t('call_or_send')}
+157-+            </AppText>
+158-+            <View style={styles.padding24} >
+159-+              <GradientButtonComponent
+160-+                title={constants.i18n.t('call_now')}
+161:+                disabled={false}
+162-+                onPressCallback={() => {
+163-+                  const phoneNumber = `tel:+85225925321`;
+164-+                  Linking.openURL(phoneNumber).catch(e => console.log(e));
+165-+                }}
+166-+                activityIndicator={true}
+167-+                width={'100%'}
+168-+                textStyle={styles.buttonTextStyle}
+169-+              />
+170-+              <TouchableOpacity
+171-+                style={[styles.whatsapp, {flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}]}
+--
+586-+                  tabBarStyle: [styles.tabBarStyle],
+587-+                  tabBarActiveTintColor: theme.uiTheme?.colors.$tabBarActiveTintColor,
+588-+                  tabBarInactiveTintColor: theme.uiTheme?.colors.$tabBarInActiveTintColor,
+589-+                  tabBarLabelStyle: styles.tabBarLabelStyle,
+590-+                })}
+591-+              >
+592-+                <Tab.Screen
+593-+                  key={constants.routeNames.pass}
+594-+                  name={constants.routeNames.pass}
+595-+                  initialParams={{}}
+596:+                  component={PassScreen}
+597-+                  options={{
+598-+                    tabBarLabel: constants.i18n.t('my_pass'),
+599-+                  }}
+600-+                />
+601-+                <Tab.Screen
+602-+                  key={constants.routeNames.home}
+603-+                  name={constants.routeNames.home}
+604-+                  initialParams={{}}
+605-+                  component={HomeScreen}
+606-+                  options={{
+607-+                    tabBarLabel: constants.i18n.t('index.home'),
+608:+                    tabBarButton: (props) => (
+609-+                      <TouchableOpacity
+610-+                        {...props}
+611-+                        onLongPress={() => {
+612-+                          setShowGlobalAssist(true)
+613-+                          setTimeout(() => {
+614-+                            setTimeLeft(3);
+615-+                            setIsRunning(true)
+616-+                          }, 300)
+617-+                        }}
+618-+                      />

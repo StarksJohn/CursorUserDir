@@ -1,0 +1,615 @@
+=== unique commits vs 1.0.3 ===
+b85ef04 2026-09-18 15:46:12 +0800 Merge branch '1.0.3' into 1.0.3-stark
+eabe707 2026-09-18 15:13:34 +0800 fix(global-assistance): stop RN 0.81 crash after long-pressing Home tab
+=== eabe707 files ===
+commit eabe707b3b640b7e3d22f46d603fc0048e216904
+Author:     cham1985 <397866153@qq.com>
+AuthorDate: Fri Sep 18 15:13:34 2026 +0800
+Commit:     cham1985 <397866153@qq.com>
+CommitDate: Fri Sep 18 15:14:06 2026 +0800
+
+    fix(global-assistance): stop RN 0.81 crash after long-pressing Home tab
+    
+    Long-pressing the Home tab opened Global Assistance, then crashed when
+    the countdown finished. The device error was TypeError: undefined is
+    not a function inside react-native-modal, because RN 0.81 removed
+    BackHandler.removeEventListener. ErrorBoundary only showed the generic
+    "unknown error, restarting soon" alert.
+    
+    react-native-modal 13.0.1:
+    - Keep the hardwareBackPress subscription from addEventListener.
+    - Call subscription.remove() on unmount instead of the deleted API.
+    - Persist the change with patch-package so postinstall reapplies it.
+    
+    Main tab Global Assistance:
+    - Keep the react-native-modal mounted and toggle isVisible.
+    - After the countdown, close the overlay first and open the contact
+      dialog from onModalHide so Android does not unmount one Modal while
+      showing another.
+    - Cancel/swipe still clears the pending-contact flag.
+    
+    ErrorBoundary:
+    - Log the real error in development so the next crash is not silent.
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+
+patches/react-native-modal+13.0.1.patch
+src/navigation/main-tab/main-tab-navigator.tsx
+src/utils/ErrorBoundary.tsx
+=== 1.0.3 already merged 1.0.3-stark PRs ===
+92637f3 Merged in 1.0.3-stark (pull request #175)
+772d238 Merged 1.0.3 into 1.0.3-stark
+f76f81c Merged in 1.0.3-stark (pull request #174)
+da42185 Merged 1.0.3 into 1.0.3-stark
+2b51626 Merged in 1.0.3-stark (pull request #173)
+=== is eabe707 in origin/1.0.3? ===
+no
+=== when were previous stark merges vs eabe707 ===
+eabe707 2026-09-18 15:13:34 +0800 fix(global-assistance): stop RN 0.81 crash after long-pressing Home tab
+92637f3 2026-09-18 07:07:16 +0000 Merged in 1.0.3-stark (pull request #175)
+772d238 2026-09-18 06:54:09 +0000 Merged 1.0.3 into 1.0.3-stark
+6709343 2026-09-18 14:49:11 +0800 fix(global-assistance): hide WhatsApp entry and keep Call Immediately only
+f76f81c 2026-09-18 03:21:25 +0000 Merged in 1.0.3-stark (pull request #174)
+da42185 2026-09-18 03:14:32 +0000 Merged 1.0.3 into 1.0.3-stark
+dd48247 2026-09-18 11:08:25 +0800 fix(runtime): silence RN 0.81 compatibility warnings and match Figma Call Immediately copy
+2b51626 2026-09-18 02:14:25 +0000 Merged in 1.0.3-stark (pull request #173)
+47107df 2026-09-18 10:13:01 +0800 revert(doctor-list): restore 1.0.3 provider-options fetch in DoctorListScreen
+6325f55 2026-09-17 17:57:11 +0800 feat(auth): complete email-OTP session flows for logout, biometric lock, and account deletion
+2850fab 2026-09-16 20:49:27 +0800 feat(login): replace phone password login with email OTP and harden client checks
+c3aa24c 2026-07-13 09:40:51 +0000 Merged in 1.0.2-ivan (pull request #172)
+d78ec3f 2026-06-18 16:12:59 +0800 update pbxproj
+9ccbce1 2026-06-16 01:47:26 +0000 Merged in 1.0.2-ivan (pull request #171)
+4859971 2026-06-16 09:38:46 +0800 sync pbxproj
+164a6b7 2026-06-15 17:22:03 +0800 Merge branch '1.0.2' into 1.0.2-ivan
+7393f10 2026-06-15 17:20:58 +0800 ITMS-90683: Missing purpose string in Info.plist
+a224b1e 2026-06-15 09:12:40 +0000 Merged in 1.0.2-ivan (pull request #170)
+4662dae 2026-06-15 17:03:48 +0800 no message
+b8b06d6 2026-06-15 16:19:18 +0800 no message
+7a583bd 2026-06-15 16:11:13 +0800 iOS remove Health Monitoring from Home page
+af66a3b 2026-04-21 08:15:09 +0000 Merged in 1.0.2-stark (pull request #169)
+3515cb4 2026-04-21 16:13:22 +0800 https://app.clickup.com/t/8553538/TECH-7196?comment=90180212419246
+65ebd69 2026-04-21 07:43:03 +0000 Merged in 1.0.2-stark (pull request #168)
+439fb9c 2026-04-21 15:39:55 +0800 Merge branch '1.0.2' into 1.0.2-stark
+2a02285 2026-04-21 15:37:31 +0800 https://app.clickup.com/t/8553538/TECH-7196?comment=90180212356248&threadedComment=90180212399125
+a433f0f 2026-04-21 15:26:02 +0800 https://app.clickup.com/t/8553538/TECH-7196?comment=90180212356248&threadedComment=90180212399125
+a8698da 2026-04-20 10:10:56 +0000 Merged in 1.0.2-stark (pull request #167)
+37fb9cf 2026-04-20 18:08:16 +0800 https://app.clickup.com/t/8553538/TECH-7196?comment=90180212061677
+61e78b9 2026-04-20 17:57:54 +0800 https://app.clickup.com/t/8553538/TECH-7196?comment=90180212061677
+5fac3ff 2026-02-13 17:43:09 +0800 https://app.clickup.com/t/8553538/TECH-7196?comment=90180193284884
+253b8b0 2025-11-28 09:04:35 +0000 Merged in 1.0.2-stark (pull request #166)
+56f39ce 2025-11-28 17:01:46 +0800 https://app.clickup.com/t/8553538/TECH-7604?comment=90180172806910
+605a7c8 2025-11-27 11:13:56 +0000 Merged in 1.0.2-ivan (pull request #165)
+fc51ac3 2025-11-27 18:54:57 +0800 https://app.clickup.com/t/8553538/TECH-7599
+85633af 2025-11-27 18:51:54 +0800 Cancel the wrong submission
+60c6beb 2025-11-27 18:36:56 +0800 no message
+f4cbf1b 2025-11-27 18:33:04 +0800 Merge branch '1.0.2' into 1.0.2-ivan
+16fb735 2025-11-27 18:31:39 +0800 Merge branch '1.0.2-ivan' of https://bitbucket.org/healshealthcare/circleapp into 1.0.2-ivan
+18b8510 2025-11-27 18:31:05 +0800 https://app.clickup.com/t/8553538/TECH-7599
+50c9e7b 2025-11-27 18:25:30 +0800 https://app.clickup.com/t/8553538/TECH-7599
+fb67543 2025-11-25 07:22:58 +0000 Merged in 1.0.2-ivan (pull request #164)
+d5a492c 2025-11-25 15:10:19 +0800 Merge branch '1.0.2' into 1.0.2-ivan
+87ebb83 2025-11-25 15:09:43 +0800 https://app.clickup.com/t/8553538/TECH-7543
+342fda9 2025-11-24 10:03:36 +0000 Merged in 1.0.2-ivan (pull request #163)
+34d9e61 2025-11-24 18:00:55 +0800 Merge branch '1.0.2' into 1.0.2-ivan
+e9df92f 2025-11-24 18:00:34 +0800 working https://app.clickup.com/t/8553538/TECH-7543
+72de61d 2025-11-24 14:30:24 +0800 https://app.clickup.com/t/8553538/TECH-7541
+895e55a 2025-11-21 07:54:47 +0000 Merged in 1.0.2-ivan (pull request #162)
+e95a1d4 2025-11-21 15:29:58 +0800 Merge branch '1.0.2' into 1.0.2-ivan
+036ac84 2025-11-21 15:29:27 +0800 https://app.clickup.com/t/8553538/TECH-7538
+c226065 2025-11-21 02:05:41 +0000 Merged in 1.0.2-ivan (pull request #161)
+18c6441 2025-11-21 09:47:34 +0800 Merge branch '1.0.2' into 1.0.2-ivan
+47d23a5 2025-11-21 09:41:51 +0800 display the Email filled in when registering
+0aa99f0 2025-11-20 08:45:47 +0000 Merged in 1.0.2-ivan (pull request #160)
+9096f22 2025-11-20 15:26:41 +0800 Merge branch '1.0.2' into 1.0.2-ivan
+e22f174 2025-11-20 15:25:17 +0800 https://app.clickup.com/t/8553538/TECH-7528
+6ed8895 2025-11-20 15:24:32 +0800 fix OTP page default area code
+75f5d9d 2025-11-19 09:07:20 +0000 Merged in 1.0.2-ivan (pull request #159)
+068d7a9 2025-11-19 17:04:25 +0800 Merge branch '1.0.2' into 1.0.2-ivan
+5db4e2b 2025-11-19 17:03:54 +0800 https://app.clickup.com/t/8553538/TECH-7527
+73557fb 2025-11-19 16:40:46 +0800 https://app.clickup.com/t/8553538/TECH-7526
+d14b74b 2025-11-18 09:10:09 +0000 Merged in 1.0.2-ivan (pull request #158)
+81276a5 2025-11-18 16:22:56 +0800 fix questionnaire page froze
+54332d1 2025-11-18 16:22:20 +0800 add parameters for OTP api
+0400d8c 2025-10-31 06:09:55 +0000 Merged in 1.0.2-ivan (pull request #157)
+fa84579 2025-10-31 14:08:14 +0800 https://app.clickup.com/t/8553538/TECH-7383
+72d5ee5 2025-10-31 05:46:20 +0000 Merged in 1.0.2-stark (pull request #156)
+400ecfd 2025-10-31 13:44:32 +0800 https://app.clickup.com/t/8553538/TECH-7382
+f3b757b 2025-10-30 07:32:46 +0000 Merged in 1.0.2-stark (pull request #155)
+b440d1b 2025-10-30 15:25:45 +0800 https://app.clickup.com/t/8553538/TECH-7379
+012a38f 2025-10-27 09:17:38 +0000 Merged in 1.0.2-ivan (pull request #154)
+f45a2b3 2025-10-27 17:15:31 +0800 Merge branch '1.0.1-ivan' into 1.0.2-ivan
+a10cbf8 2025-10-27 17:09:34 +0800 Merge branch '1.0.1' into 1.0.1-ivan
+5b5d645 2025-10-27 17:09:05 +0800 fix dob issue with renderSpinner
+ea6a14b 2025-10-22 10:19:08 +0000 Merged in 1.0.2-stark (pull request #153)
+880118f 2025-10-22 18:13:51 +0800 https://app.clickup.com/t/8553538/TECH-7258
+920f7e7 2025-10-22 17:34:03 +0800 added
+a1bfba6 2025-10-22 17:33:16 +0800 added
+be2b573 2025-10-16 08:07:38 +0000 Merged in 1.0.1-google-service (pull request #152)
+2f7d43c 2025-10-16 21:03:06 +1300 Added new firebase config
+487dc6d 2025-10-16 06:45:40 +0000 Merged in 1.0.1-stark (pull request #151)
+d991a8f 2025-10-16 12:01:06 +0800 https://app.clickup.com/t/8553538/TECH-7199 https://app.clickup.com/t/8553538/TECH-7196
+2b00a87 2025-10-15 08:13:20 +0000 Merged in 1.0.1-stark (pull request #150)
+a58bb04 2025-10-15 16:11:20 +0800 https://app.clickup.com/t/8553538/TECH-7189?comment=90180161708668
+326b207 2025-10-15 06:14:43 +0000 Merged in 1.0.1-ivan (pull request #149)
+4f28b6e 2025-10-15 13:49:53 +0800 Merge branch '1.0.1' into 1.0.1-ivan
+82f32a4 2025-10-15 13:49:27 +0800 https://app.clickup.com/t/8553538/TECH-7185
+6c3ea42 2025-10-15 04:07:53 +0000 Merged in 1.0.1-ivan (pull request #148)
+dc93c57 2025-10-15 12:02:46 +0800 adjust styles
+122c3b0 2025-10-13 07:57:00 +0000 Merged in 1.0.1-stark (pull request #147)
+c588f24 2025-10-13 15:54:26 +0800 chore: remove logs directory from Git tracking
+ba7069f 2025-10-13 15:49:28 +0800 Merge branch '1.0.1' into 1.0.1-stark
+a3d36b7 2025-10-13 15:48:40 +0800 https://app.clickup.com/t/8553538/TECH-7164
+9f9172f 2025-10-13 07:34:32 +0000 Merged in 1.0.1-bert (pull request #146)
+dfe2945 2025-10-13 20:33:26 +1300 fixed edges for safe area view
+c5a81f8 2025-10-13 13:57:25 +0800 Merge branch '1.0.1' into 1.0.1-stark
+0db93d9 2025-10-13 13:56:15 +0800 https://app.clickup.com/t/8553538/TECH-7164
+3ace202 2025-10-10 10:53:25 +0000 Merged in 1.0.1-stark (pull request #145)
+a99eb6b 2025-10-10 18:50:21 +0800 https://app.clickup.com/t/8553538/TECH-7122
+140cd39 2025-10-10 10:22:35 +0000 Merged in 1.0.1-bert (pull request #144)
+b2f5462 2025-10-10 23:12:42 +1300 Fixed privacy policy & removed unused code
+1f3fce0 2025-10-10 22:50:34 +1300 Fixed pdf to html
+c170781 2025-10-10 08:06:52 +0000 Merged in 1.0.1-ivan (pull request #143)
+dfb37fe 2025-10-10 15:55:32 +0800 adjust translate
+fbc440e 2025-10-10 07:08:31 +0000 Merged in 1.0.1-stark (pull request #142)
+dc68a28 2025-10-10 15:04:58 +0800 Merge branch '1.0.1' into 1.0.1-stark
+f5b99bf 2025-10-10 15:04:12 +0800 https://app.clickup.com/t/8553538/TECH-7156
+720759d 2025-10-10 04:04:37 +0000 Merged in 1.0.1-stark (pull request #141)
+3106550 2025-10-10 12:02:58 +0800 Merge branch '1.0.1' into 1.0.1-stark
+8e32d04 2025-10-10 12:02:13 +0800 https://app.clickup.com/t/8553538/TECH-7144
+8c26e63 2025-10-10 03:40:45 +0000 Merged in 1.0.1-ivan (pull request #140)
+098267d 2025-10-10 11:38:19 +0800 Merge branch '1.0.1' into 1.0.1-ivan
+da81faf 2025-10-10 11:37:34 +0800 fix bugs
+50072dc 2025-10-10 01:31:25 +0000 Merged in 1.0.1-ivan (pull request #139)
+1c136f1 2025-10-10 08:59:58 +0800 no message
+455664e 2025-10-10 08:51:12 +0800 https://app.clickup.com/t/8553538/TECH-7144?comment=90180160338547 7132 - translation issues 7132- emergency flow - can not enter video 7132 - non-emergency flow - empty doctors' list
+db30d45 2025-10-09 08:14:10 +0000 Merged in 1.0.1-ivan (pull request #137)
+c23b22d 2025-10-09 16:10:41 +0800 no message
+f5ae162 2025-10-09 15:40:36 +0800 Merge branch '1.0.1' into 1.0.1-ivan
+d8597cc 2025-10-09 15:40:17 +0800 Merge branch '1.0.1' into 1.0.1-ivan
+e7fda4d 2025-10-09 07:27:27 +0000 Merged in 1.0.1-stark (pull request #135)
+ec62a52 2025-10-09 15:11:20 +0800 https://app.clickup.com/t/8553538/TECH-7137?comment=90180160278476
+53a4f1c 2025-10-09 14:53:35 +0800 https://app.clickup.com/t/8553538/TECH-7144?comment=90180160213910
+715e532 2025-10-09 14:39:09 +0800 https://app.clickup.com/t/8553538/TECH-7136 https://app.clickup.com/t/8553538/TECH-7132?comment=90180158296687&threadedComment=90180160270568
+eb42a74 2025-10-09 03:32:25 +0000 Merged in update-images-gif (pull request #134)
+04d0bd4 2025-10-09 03:30:06 +0000 Merged 1.0.1 into update-images-gif
+d76cb8a 2025-10-09 16:29:20 +1300 Update images and gif
+202e15d 2025-10-09 02:50:58 +0000 Merged in 1.0.1-stark (pull request #133)
+1b25622 2025-10-09 10:48:00 +0800 https://app.clickup.com/t/8553538/TECH-7137?comment=90180160200066
+4593735 2025-10-09 10:46:21 +0800 https://app.clickup.com/t/8553538/TECH-7137?comment=90180160200066
+aa5d9c2 2025-10-08 22:54:34 +0000 Merged in 1.0.1-bert-translation (pull request #132)
+286dc52 2025-10-09 07:03:16 +1300 Translation for 'How to Measure'
+a3e20a7 2025-10-08 12:58:01 +0000 Merged in 1.0.1-bert (pull request #131)
+2d24698 2025-10-08 23:51:35 +1300 Fixes register dob and added how to
+302c586 2025-10-08 22:10:13 +1300 Fixed dob
+953d703 2025-10-02 08:42:09 +0000 Merged in 1.0.1-jai (pull request #130)
+ec644bc 2025-10-02 16:39:15 +0800 remove 3ed bullet from Payment success
+dbf71df 2025-09-30 09:25:14 +0000 Merged in 1.0.1-ivan (pull request #129)
+a364edd 2025-09-30 17:24:08 +0800 Merge branch '1.0.1' into 1.0.1-ivan
+42f86be 2025-09-30 09:23:32 +0000 Merged in 1.0.1-stark (pull request #128)
+11068f6 2025-09-30 17:22:09 +0800 https://app.clickup.com/t/8553538/TECH-7132?comment=90180157990585
+57454af 2025-09-30 16:27:39 +0800 https://app.clickup.com/t/8553538/TECH-7132?comment=90180157998480
+13c9a82 2025-09-30 07:18:04 +0000 Merged in 1.0.1-ivan (pull request #127)
+f393721 2025-09-30 15:15:30 +0800 Merge branch '1.0.1' into 1.0.1-ivan
+3c786eb 2025-09-30 15:15:00 +0800 https://app.clickup.com/t/8553538/TECH-7099?comment=90180156977878
+dc487e7 2025-09-29 10:05:32 +0000 Merged in 1.0.1-ivan (pull request #126)
+3b3e6d2 2025-09-29 18:02:57 +0800 Merge branch '1.0.1' into 1.0.1-ivan
+0f629fa 2025-09-29 18:02:39 +0800 working TECH-7099
+80c6792 2025-09-29 08:01:42 +0000 Merged in 1.0.1-stark (pull request #125)
+3f19e56 2025-09-29 15:59:03 +0800 https://app.clickup.com/t/8553538/TECH-7099?comment=90180157680344
+972576a 2025-09-28 11:07:05 +0000 Merged in 1.0.1-stark (pull request #124)
+7f872a1 2025-09-28 18:59:25 +0800 https://app.clickup.com/t/8553538/TECH-7099?comment=90180157551192
+1fdd581 2025-09-28 10:16:01 +0000 Merged in 1.0.1-ivan (pull request #123)
+b3a1cdb 2025-09-28 18:14:14 +0800 Merge branch '1.0.1' into 1.0.1-ivan
+85d6abb 2025-09-28 17:57:52 +0800 working TECH-7099
+27d15ba 2025-09-28 08:29:55 +0000 Merged in 1.0.1-stark (pull request #122)
+394c6b6 2025-09-28 16:27:56 +0800 https://app.clickup.com/t/8553538/TECH-7099?comment=90180157541768
+03ce344 2025-09-28 02:49:15 +0000 Merged in 1.0.1-stark (pull request #121)
+a009dfa 2025-09-28 10:46:30 +0800 https://app.clickup.com/t/8553538/TECH-7099?comment=90180157242484&threadedComment=90180157475803
+47127ca 2025-09-26 10:02:47 +0000 Merged in ivan (pull request #120)
+98cc18e 2025-09-26 18:01:29 +0800 Merge branch '1.0.1' into ivan
+20f305b 2025-09-26 17:55:27 +0800 working https://app.clickup.com/t/8553538/TECH-7099
+ace101a 2025-09-26 09:06:45 +0000 Merged in 1.0.1-stark (pull request #118)
+49508ae 2025-09-26 17:02:37 +0800 https://app.clickup.com/t/8553538/TECH-7099?comment=90180157263302
+b203399 2025-09-26 16:59:05 +0800 https://app.clickup.com/t/8553538/TECH-7099?comment=90180157263302
+75e5d22 2025-09-26 16:54:10 +0800 Merge branch 'main' into stark
+30a519b 2025-09-26 16:53:19 +0800 https://app.clickup.com/t/8553538/TECH-7099?comment=90180157263302
+aabc8bc 2025-09-25 09:54:27 +0000 Merged in stark (pull request #116)
+e277d49 2025-09-25 17:52:43 +0800 https://app.clickup.com/t/8553538/TECH-7099?comment=90180157013184
+1970172 2025-09-23 06:15:02 +0000 Merged in ivan (pull request #115)
+54dfc41 2025-09-23 14:12:56 +0800 Merge branch 'main' into ivan
+a927711 2025-09-23 14:12:24 +0800 fix questionnaireResponseId null
+f3b01ba 2025-09-23 03:30:43 +0000 Merged in ivan (pull request #114)
+da57d01 2025-09-23 11:26:09 +0800 Merge branch 'main' into ivan
+962f0ed 2025-09-23 11:25:46 +0800 https://app.clickup.com/t/8553538/TECH-7095
+a89321d 2025-09-19 08:29:45 +0000 Merged in ivan (pull request #113)
+7714dea 2025-09-19 16:27:28 +0800 Merge branch 'main' into ivan
+950ab5e 2025-09-19 16:26:31 +0800 improve
+e3680a6 2025-09-19 16:11:40 +0800 improve
+b2271c9 2025-09-19 16:05:18 +0800 improve
+6f9400d 2025-09-19 10:52:00 +0800 adjust style
+0202a41 2025-09-19 10:31:04 +0800 Fix input character statistics and keyboard occlusion
+9b0a34a 2025-09-19 01:43:43 +0800 working 7034
+b763cdb 2025-09-18 10:43:38 +0000 Merged in ivan (pull request #112)
+e385fb4 2025-09-18 18:42:09 +0800 Merge branch 'main' into ivan
+f90e16f 2025-09-18 18:40:49 +0800 working https://app.clickup.com/t/8553538/TECH-7034
+a86e551 2025-09-17 10:17:08 +0000 Merged in ivan (pull request #111)
+db6be2a 2025-09-17 18:14:24 +0800 working https://app.clickup.com/t/8553538/TECH-7034
+a53552d 2025-09-17 16:13:30 +0800 working https://app.clickup.com/t/8553538/TECH-7034
+cddbd00 2025-09-09 11:00:28 +0000 Merged in fix-ios-configuration (pull request #110)
+f71535e 2025-09-09 22:58:12 +1200 updated ios config.
+fdca7b7 2025-09-08 07:26:14 +0000 Merged in stark (pull request #109)
+05da710 2025-09-08 15:24:23 +0800 https://app.clickup.com/t/8553538/TECH-6978
+c0db383 2025-09-07 08:12:10 +0000 Merged in stark (pull request #108)
+abda802 2025-09-07 15:03:00 +0800 https://app.clickup.com/t/8553538/TECH-6965
+04a44e5 2025-09-07 14:31:32 +0800 https://app.clickup.com/t/8553538/TECH-6965
+2485c6d 2025-09-07 13:58:48 +0800 Merge branch 'main' of https://bitbucket.org/healshealthcare/circleapp
+07f2851 2025-09-07 13:58:03 +0800 https://app.clickup.com/t/8553538/TECH-6965
+7cc4742 2025-09-05 12:36:49 +0000 Merged in ivan (pull request #107)
+b5bdd87 2025-09-05 20:31:31 +0800 no message
+62d5aaa 2025-09-05 12:27:06 +0000 Merged in ivan (pull request #106)
+ea36f4d 2025-09-05 20:25:48 +0800 https://app.clickup.com/t/8553538/TECH-6970
+a3d3de8 2025-09-05 19:47:17 +0800 https://app.clickup.com/t/8553538/TECH-6962
+6d1cb7d 2025-09-05 18:54:00 +0800 https://app.clickup.com/t/8553538/TECH-6966
+a615dc7 2025-09-05 06:57:15 +0000 Merged in stark (pull request #105)
+36f2c54 2025-09-05 14:55:40 +0800 https://app.clickup.com/t/8553538/TECH-6961
+b2a6b21 2025-09-05 11:06:09 +0800 added await
+ca573c3 2025-09-05 03:00:35 +0000 Merged in jai (pull request #104)
+56e246e 2025-09-04 20:53:32 +0800 Emergency Email on Send whats app
+007fe68 2025-09-04 11:16:10 +0000 Merged in stark (pull request #103)
+da32c27 2025-09-04 19:09:07 +0800 https://app.clickup.com/t/8553538/TECH-6936
+1aba42c 2025-09-04 03:19:08 +0000 Merged in ivan (pull request #102)
+06f8d5e 2025-09-04 11:15:55 +0800 Merge branch 'main' into ivan
+21751ef 2025-09-04 11:15:26 +0800 no message
+9376961 2025-09-04 11:07:14 +0800 https://app.clickup.com/t/8553538/TECH-6922
+b717ae0 2025-09-04 02:38:47 +0000 Merged in stark (pull request #101)
+465e05a 2025-09-04 10:31:54 +0800 https://app.clickup.com/t/8553538/TECH-6924
+1449e4a 2025-09-04 00:48:02 +0800 https://app.clickup.com/t/8553538/TECH-6921
+4c9d7cc 2025-09-04 00:13:21 +0800 https://app.clickup.com/t/8553538/TECH-6927
+997c1c7 2025-09-04 00:06:22 +0800 https://app.clickup.com/t/8553538/TECH-6929
+8ed2152 2025-09-02 03:03:24 +0000 Merged in stark (pull request #100)
+d7d285a 2025-09-02 11:01:32 +0800 https://app.clickup.com/t/8553538/TECH-6769?comment=90180151197993&threadedComment=90180151775828
+012f839 2025-08-29 07:49:10 +0000 Merged in ivan (pull request #99)
+a68eb52 2025-08-29 15:46:03 +0800 Merge branch 'main' into ivan
+be586f6 2025-08-29 15:45:02 +0800 https://app.clickup.com/t/8553538/TECH-6869
+6149972 2025-08-28 08:41:34 +0000 Merged in ivan (pull request #98)
+643dab5 2025-08-28 16:39:30 +0800 android hide save button
+1184566 2025-08-28 16:34:50 +0800 https://app.clickup.com/t/8553538/TECH-6861
+5874e41 2025-08-28 03:44:33 +0000 Merged in stark (pull request #97)
+83c9e21 2025-08-28 11:42:28 +0800 Merge branch 'main' into stark
+1162865 2025-08-28 11:41:56 +0800 https://app.clickup.com/t/8553538/TECH-6857
+fa11998 2025-08-27 09:27:49 +0000 Merged in ivan (pull request #96)
+caddbf3 2025-08-27 17:24:31 +0800 https://app.clickup.com/t/8553538/TECH-6805
+7386959 2025-08-27 07:08:10 +0000 Merged in stark (pull request #95)
+03480f6 2025-08-27 15:05:47 +0800 Merge branch 'main' into stark
+4084d2c 2025-08-27 14:56:47 +0800 https://app.clickup.com/t/8553538/TECH-6780
+690ac94 2025-08-27 06:41:54 +0000 Merged in ivan (pull request #94)
+9ee74f5 2025-08-27 14:06:35 +0800 Merge branch 'main' into ivan
+e94b9fd 2025-08-27 14:02:17 +0800 https://app.clickup.com/t/8553538/TECH-6785
+2108f26 2025-08-27 10:51:49 +0800 https://app.clickup.com/t/8553538/TECH-6785
+37cfcc6 2025-08-27 09:39:42 +0800 https://app.clickup.com/t/8553538/TECH-6784
+1cb9f3b 2025-08-27 00:58:30 +0000 Merged in stark (pull request #93)
+5980972 2025-08-27 01:40:22 +0800 https://app.clickup.com/t/8553538/TECH-6780
+7741f68 2025-08-27 01:39:44 +0800 Merge branch 'main' into stark
+19ea678 2025-08-27 01:39:05 +0800 https://app.clickup.com/t/8553538/TECH-6780
+5da9372 2025-08-27 01:37:41 +0800 https://app.clickup.com/t/8553538/TECH-6780
+dac9179 2025-08-26 11:29:02 +0000 Merged in ivan (pull request #92)
+f75d09b 2025-08-26 19:27:07 +0800 Merge branch 'main' into ivan
+036740b 2025-08-26 19:25:14 +0800 https://app.clickup.com/t/8553538/TECH-6790
+e69512e 2025-08-26 11:00:14 +0000 Merged in stark (pull request #91)
+933f36a 2025-08-26 18:58:35 +0800 https://app.clickup.com/t/8553538/TECH-6789
+3d9e710 2025-08-26 08:36:44 +0000 Merged in stark (pull request #90)
+bdb76fa 2025-08-26 16:34:01 +0800 https://app.clickup.com/t/8553538/TECH-6786
+556786d 2025-08-26 08:13:59 +0000 Merged in stark (pull request #89)
+d8709e4 2025-08-26 16:09:48 +0800 https://app.clickup.com/t/8553538/TECH-6787
+df6b933 2025-08-22 08:14:58 +0000 Merged in ivan (pull request #88)
+cb6dd00 2025-08-22 16:13:10 +0800 Merge branch 'main' into ivan
+07f27bc 2025-08-22 16:12:44 +0800 https://app.clickup.com/t/8553538/TECH-6748
+2ae7251 2025-08-22 06:04:47 +0000 Merged in ivan (pull request #87)
+0ecd1d3 2025-08-22 14:01:54 +0800 https://app.clickup.com/t/8553538/TECH-6748
+59ad2ef 2025-08-21 00:58:05 +0000 Merged in stark (pull request #86)
+44fdc99 2025-08-20 23:05:04 +0800 https://app.clickup.com/t/8553538/TECH-6732?comment=90180148889057
+ce8f437 2025-08-19 12:04:59 +0000 Merged in stark (pull request #85)
+b56ab08 2025-08-19 20:02:10 +0800 https://app.clickup.com/t/8553538/TECH-6732?comment=90180148517015
+8c8c87f 2025-08-19 09:00:12 +0000 Merged in stark (pull request #84)
+d0def3d 2025-08-19 16:57:09 +0800 https://app.clickup.com/t/8553538/TECH-6732?comment=90180148456136
+6adbf16 2025-08-19 07:38:18 +0000 Merged in stark (pull request #83)
+12e0bba 2025-08-19 15:36:02 +0800 https://app.clickup.com/t/8553538/TECH-6748
+fd5330c 2025-08-19 02:46:26 +0000 Merged in stark (pull request #82)
+6c00b6a 2025-08-19 10:44:36 +0800 https://app.clickup.com/t/8553538/TECH-6745
+6c85854 2025-08-18 12:17:19 +0000 Merged in stark (pull request #81)
+9b9007a 2025-08-18 20:14:06 +0800 https://app.clickup.com/t/8553538/TECH-6569?comment=90180148137250
+66b7fe7 2025-08-18 15:28:51 +0800 Merge branch 'main' into stark
+0eedd37 2025-08-18 15:28:21 +0800 add
+cf969f6 2025-08-13 09:06:55 +0000 Merged in stark (pull request #80)
+f7ca83c 2025-08-13 17:01:59 +0800 Merge branch 'main' into stark
+04ec23e 2025-08-13 17:01:08 +0800 https://app.clickup.com/t/8553538/TECH-6655?comment=90180146466715
+9c7d6b0 2025-08-13 11:21:28 +0800 Merge branch 'stark' into 6655
+3fa1d24 2025-08-12 13:30:06 +0000 Merged in stark (pull request #79)
+73b244c 2025-08-12 21:23:18 +0800 https://app.clickup.com/t/8553538/TECH-6714
+8cb0e04 2025-08-12 15:21:46 +0800 https://app.clickup.com/t/8553538/TECH-6655?comment=90180146466715
+7677433 2025-08-11 22:30:20 +0800 https://app.clickup.com/t/8553538/TECH-6643?comment=90180145019748
+9ac20fb 2025-08-11 19:19:01 +0800 https://app.clickup.com/t/8553538/TECH-6655
+3e2d1d1 2025-08-11 10:48:46 +0800 Merge branch 'stark' into 6655
+c2136f0 2025-08-08 16:55:37 +0800 Merge branch 'main' into stark
+bc3a9b8 2025-08-08 16:53:33 +0800 6655
+6916dc8 2025-08-08 16:53:09 +0800 Merge branch 'main' into stark
+8ae3a51 2025-08-08 06:57:44 +0000 Merged in ivan (pull request #78)
+3b2085d 2025-08-08 14:55:43 +0800 https://app.clickup.com/t/8553538/TECH-6665
+fb183e9 2025-08-07 09:49:52 +0800 Merge branch 'main' into ivan
+0921c53 2025-08-06 17:53:34 +0800 https://app.clickup.com/t/8553538/TECH-6667
+f4f17f4 2025-08-06 08:59:56 +0000 Merged in ivan (pull request #77)
+7639b75 2025-08-06 16:57:02 +0800 Merge branch 'main' into ivan
+6cd6dfb 2025-08-06 16:56:31 +0800 https://app.clickup.com/t/8553538/TECH-6653
+56a3c2c 2025-08-06 11:06:25 +0800 https://app.clickup.com/t/8553538/TECH-6652
+0ef643f 2025-08-05 16:11:38 +0800 https://app.clickup.com/t/8553538/TECH-6643?comment=90180145019748
+834984f 2025-08-05 16:11:22 +0800 https://app.clickup.com/t/8553538/TECH-6643?comment=90180145019748
+1dfc8ce 2025-08-05 08:10:42 +0000 Merged in ivan (pull request #76)
+05fe10f 2025-08-05 16:06:02 +0800 Merge branch 'main' into ivan
+9631374 2025-08-05 15:52:43 +0800 adjust Login Page
+74d6bfd 2025-08-05 07:44:34 +0000 Merged in stark (pull request #75)
+6c5c69c 2025-08-05 15:37:03 +0800 https://app.clickup.com/t/8553538/TECH-6643?comment=90180145019748
+0cf6ff9 2025-08-05 14:53:12 +0800 https://app.clickup.com/t/8553538/TECH-6644?comment=90180144972770
+75d8cb7 2025-08-05 06:32:43 +0000 Merged in stark (pull request #74)
+8bb1690 2025-08-05 14:29:49 +0800 https://app.clickup.com/t/8553538/TECH-6643?comment=90180145001968
+41b493a 2025-08-04 04:01:24 +0000 Merged in ivan (pull request #73)
+e9e9329 2025-08-04 11:57:58 +0800 Merge branch 'main' into ivan
+934034e 2025-08-04 11:57:36 +0800 fix translate
+edad120 2025-08-04 01:31:11 +0000 Merged in ivan (pull request #72)
+94c445d 2025-08-04 09:06:02 +0800 add translate
+164b255 2025-08-01 08:42:22 +0000 Merged in ivan (pull request #71)
+ec835d6 2025-08-01 08:41:30 +0000 Merged main into ivan
+8781d1d 2025-08-01 16:24:53 +0800 https://app.clickup.com/t/8553538/TECH-6637
+3db0bc3 2025-08-01 06:41:14 +0000 Merged in ivan (pull request #70)
+583c66d 2025-08-01 14:38:24 +0800 https://app.clickup.com/t/8553538/TECH-6634
+4a15659 2025-07-31 07:44:34 +0000 Merged in ivan (pull request #69)
+6e0c90d 2025-07-31 15:16:10 +0800 Merge branch 'main' into ivan
+006bf61 2025-07-31 15:15:01 +0800 https://app.clickup.com/t/8553538/TECH-6628
+9d33407 2025-07-31 10:17:04 +0800 https://app.clickup.com/t/8553538/TECH-6627
+043b072 2025-07-31 02:22:38 +0800 https://app.clickup.com/t/8553538/TECH-6500
+52d769a 2025-07-29 01:34:54 +0000 Merged in ivan (pull request #68)
+f6900a3 2025-07-29 09:31:10 +0800 Merge branch 'main' into ivan
+cbfc8b0 2025-07-29 09:30:39 +0800 adjust ECG wave
+225e030 2025-07-28 16:31:56 +0800 https://app.clickup.com/t/8553538/TECH-6605
+535ca88 2025-07-25 11:12:22 +0800 https://app.clickup.com/t/8553538/TECH-6589
+70bd34a 2025-07-24 09:17:59 +0000 Merged in ivan (pull request #67)
+95a23fc 2025-07-24 15:20:52 +0800 https://www.figma.com/design/BbN5KYq7AtfhkQ0vIt8M9I?node-id=153-6244&m=dev#1351702824
+b9552fc 2025-07-24 15:10:05 +0800 https://www.figma.com/design/BbN5KYq7AtfhkQ0vIt8M9I?node-id=251-7225&m=dev#1351700879
+56ffc2d 2025-07-23 00:19:23 +0000 Merged in stark (pull request #66)
+88e08ec 2025-07-23 00:29:55 +0800 https://app.clickup.com/t/8553538/TECH-6569?comment=90180141994243
+b07fcb5 2025-07-22 18:50:04 +0800 Merge branch 'main' into stark
+b9b294a 2025-07-22 18:49:31 +0800 https://app.clickup.com/t/8553538/TECH-6569
+476bbc0 2025-07-22 08:50:39 +0000 Merged in ivan (pull request #65)
+310cc12 2025-07-22 16:47:38 +0800 Merge branch 'main' into ivan
+bebb8f3 2025-07-22 16:46:52 +0800 adjust Appointments UI
+f1287ce 2025-07-22 14:56:29 +0800 https://app.clickup.com/t/8553538/TECH-6423 https://app.clickup.com/t/8553538/TECH-6422
+b26ab93 2025-07-21 17:57:06 +0800 Merge branch 'main' into stark
+2fd4781 2025-07-21 09:47:35 +0000 Merged in ivan (pull request #64)
+2f6bfbf 2025-07-21 17:46:05 +0800 Merge branch 'main' into ivan
+9ef6c80 2025-07-21 16:32:14 +0800 adjust Login flow style
+9fa9d1e 2025-07-21 14:20:54 +0800 Merge branch 'main' into stark
+685a1a9 2025-07-21 14:20:26 +0800 update
+ff0a102 2025-07-21 06:15:45 +0000 Merged in ivan (pull request #63)
+8ccf604 2025-07-21 13:55:48 +0800 Merge branch 'main' into ivan
+a5a3a2d 2025-07-21 13:55:18 +0800 add params for getProviderOptions
+3b78ab0 2025-07-21 13:54:44 +0800 iOS  医生头像不显示问题
+ac9f1ac 2025-07-21 03:58:30 +0000 Merged in ivan (pull request #62)
+20aab52 2025-07-21 11:57:11 +0800 Merge branch 'main' into ivan
+e18fd70 2025-07-21 11:56:47 +0800 add translate
+0d8ad76 2025-07-21 03:50:41 +0000 Merged in ivan (pull request #61)
+cb9f37f 2025-07-21 11:48:25 +0800 Merge branch 'main' into ivan
+1b2d840 2025-07-21 11:47:53 +0800 fix bugs
+4d6fd57 2025-07-21 03:38:33 +0000 Merged in stark (pull request #60)
+30d5d09 2025-07-21 11:36:25 +0800 https://app.clickup.com/t/8553538/TECH-6566
+18c8857 2025-07-21 09:11:50 +0800 Merge branch 'main' into stark
+90965d8 2025-07-21 09:10:59 +0800 add
+8d37645 2025-07-21 00:56:12 +0000 Merged in ivan (pull request #59)
+a54ec0e 2025-07-21 08:49:05 +0800 adjust UI
+03501c9 2025-07-21 01:44:59 +0800 https://app.clickup.com/t/8553538/TECH-6562
+973c39e 2025-07-19 02:06:14 +0800 https://app.clickup.com/t/8553538/TECH-6562
+285d4cb 2025-07-18 11:43:17 +0000 Merged in stark (pull request #58)
+97429a6 2025-07-18 19:38:54 +0800 https://app.clickup.com/t/8553538/TECH-6565
+5315dd6 2025-07-18 09:29:44 +0000 Merged in ivan (pull request #57)
+be80e21 2025-07-18 17:27:39 +0800 adjust UI
+7855fc3 2025-07-18 09:05:47 +0000 Merged in stark (pull request #56)
+f460b5c 2025-07-18 17:02:12 +0800 https://app.clickup.com/t/8553538/TECH-6555
+9b26a63 2025-07-18 16:46:54 +0800 https://app.clickup.com/t/8553538/TECH-6555
+fa3fa04 2025-07-18 07:08:36 +0000 Merged in ivan (pull request #55)
+56035f5 2025-07-18 15:07:12 +0800 adjust UI
+bf43fef 2025-07-18 15:03:28 +0800 Merge branch 'main' into ivan
+e21834f 2025-07-18 06:59:31 +0000 Merged in stark (pull request #54)
+2b3c2f4 2025-07-18 14:57:16 +0800 https://app.clickup.com/t/8553538/TECH-6555
+961f805 2025-07-18 14:56:04 +0800 adjust style
+43eda27 2025-07-18 14:17:32 +0800 Merge branch 'main' into ivan
+d9d54fd 2025-07-18 14:16:55 +0800 https://app.clickup.com/t/8553538/TECH-6425
+939053b 2025-07-18 14:08:49 +0800 https://app.clickup.com/t/8553538/TECH-6556
+5a725c6 2025-07-18 13:57:56 +0800 https://app.clickup.com/t/8553538/TECH-6539?comment=90180141070774
+ea17d74 2025-07-18 13:42:47 +0800 https://app.clickup.com/t/8553538/TECH-6495
+4d506db 2025-07-18 05:38:31 +0000 Merged in ivan (pull request #53)
+266c048 2025-07-18 13:21:36 +0800 Merge branch 'main' into ivan
+1b93da5 2025-07-18 05:12:01 +0000 Merged in stark (pull request #52)
+50c6aed 2025-07-18 13:08:15 +0800 https://app.clickup.com/t/8553538/TECH-6545?comment=PENDING_3336cdcf-15ca-4a6a-8463-c4384fa76ab6
+e9f23ec 2025-07-18 11:57:10 +0800 no message
+dcf942c 2025-07-18 11:38:39 +0800 iOS启动图
+b8e8733 2025-07-18 11:26:04 +0800 https://app.clickup.com/t/8553538/TECH-6420
+1058499 2025-07-17 13:47:21 +0000 Merged in stark (pull request #51)
+e8a1dfa 2025-07-17 20:07:12 +0800 https://app.clickup.com/t/8553538/TECH-6409?comment=90180140906325
+7faef1c 2025-07-17 18:15:26 +0800 https://app.clickup.com/t/8553538/TECH-6548
+c24948f 2025-07-17 09:56:17 +0000 Merged in stark (pull request #50)
+83516f7 2025-07-17 17:53:34 +0800 https://app.clickup.com/t/8553538/TECH-6409?comment=90180140862453
+c8b74ba 2025-07-17 17:50:57 +0800 Merge branch 'main' into stark
+bb86ac8 2025-07-17 17:46:27 +0800 https://app.clickup.com/t/8553538/TECH-6409?comment=90180140862453
+f69b19b 2025-07-17 08:49:14 +0000 Merged in ivan (pull request #49)
+b3ead01 2025-07-17 16:34:42 +0800 https://app.clickup.com/t/8553538/TECH-6529
+c6bbbad 2025-07-17 15:55:19 +0800 https://app.clickup.com/t/8553538/TECH-6547
+42dc509 2025-07-17 15:27:03 +0800 AppLogo and welcome message
+c1602f5 2025-07-17 14:51:32 +0800 no message
+8caa364 2025-07-17 14:11:48 +0800 https://app.clickup.com/t/8553538/TECH-6546 https://app.clickup.com/t/8553538/TECH-6540
+416b733 2025-07-17 13:49:22 +0800 Merge branch 'main' into ivan
+86570d5 2025-07-17 05:47:18 +0000 Merged in stark (pull request #48)
+d405657 2025-07-17 13:43:56 +0800 Merge branch 'main' into stark
+e747595 2025-07-17 13:41:37 +0800 https://app.clickup.com/t/8553538/TECH-6541
+4aca22e 2025-07-17 04:06:45 +0000 Merged in jai (pull request #47)
+2291044 2025-07-17 11:38:33 +0800 Merge branch 'main' of bitbucket.org:healshealthcare/circleapp into jai
+a734a10 2025-07-17 11:37:00 +0800 Text updates
+9ce8858 2025-07-17 10:48:06 +0800 https://app.clickup.com/t/8553538/TECH-6526
+46ff8f4 2025-07-16 13:17:53 +0000 Merged in stark (pull request #46)
+c22828a 2025-07-16 20:11:06 +0800 https://app.clickup.com/t/8553538/TECH-6409?comment=90180140600097
+6ea8f55 2025-07-16 18:11:34 +0800 Merge branch 'main' into stark
+f04ceb2 2025-07-16 18:11:29 +0800 Merge branch 'stark' of https://bitbucket.org/healshealthcare/circleapp into stark
+49b0798 2025-07-16 18:09:06 +0800 https://app.clickup.com/t/8553538/TECH-6409
+121322c 2025-07-16 10:05:54 +0000 Merged in ivan (pull request #45)
+db90887 2025-07-16 17:36:54 +0800 Merge branch 'main' into ivan
+e21a5ef 2025-07-16 16:01:18 +0800 https://app.clickup.com/t/8553538/TECH-6530
+6007185 2025-07-16 15:34:11 +0800 TECH-6525
+7d2cf1d 2025-07-16 06:36:52 +0000 Merged in stark (pull request #44)
+09b9f2a 2025-07-16 06:36:28 +0000 Merged main into stark
+86c4c70 2025-07-16 14:32:25 +0800 https://app.clickup.com/t/8553538/TECH-6534
+8436623 2025-07-16 14:25:08 +0800 https://app.clickup.com/t/8553538/TECH-6537
+58145f3 2025-07-16 11:53:54 +0800 Merge branch 'main' into ivan
+ca92df8 2025-07-16 11:53:27 +0800 Blood Glucose measure
+04dd1ad 2025-07-15 09:13:30 +0000 Merged in stark (pull request #43)
+344a166 2025-07-15 17:08:20 +0800 Merge branch 'main' into stark
+b9c7263 2025-07-15 17:06:26 +0800 https://app.clickup.com/t/8553538/TECH-6518
+92c80bf 2025-07-14 09:11:14 +0000 Merged in stark (pull request #42)
+761b135 2025-07-14 17:05:34 +0800 https://app.clickup.com/t/8553538/TECH-6513
+8386d4e 2025-07-14 12:04:10 +0800 config iOS react-native-config  env script for dev/prod scheme
+f894f13 2025-07-14 03:52:06 +0000 Merged in ivan (pull request #41)
+b3da94f 2025-07-14 11:39:40 +0800 Merge branch 'main' into ivan
+2dea76c 2025-07-14 11:39:17 +0800 no message
+173542a 2025-07-14 03:25:47 +0000 Merged in stark (pull request #40)
+82b6924 2025-07-14 11:24:09 +0800 https://app.clickup.com/t/8553538/TECH-6493?comment=90180139628004
+9af54fe 2025-07-14 00:51:15 +0800 回传温度应为number
+1fdae12 2025-07-13 23:18:30 +0800 iOS权限弹窗本地化
+6a846e6 2025-07-13 11:25:56 +0000 Merged in ivan (pull request #39)
+7061a63 2025-07-13 19:24:02 +0800 Merge branch 'main' into ivan
+97a1b1d 2025-07-13 11:23:20 +0000 Merged in stark (pull request #38)
+7e6b51a 2025-07-13 19:20:46 +0800 https://app.clickup.com/t/8553538/TECH-6427?comment=90180139856161
+5d8bffb 2025-07-13 18:38:40 +0800 https://app.clickup.com/t/8553538/TECH-6509?comment=90180139856122
+0f511f9 2025-07-12 11:52:13 +0000 Merged in stark (pull request #37)
+11794ec 2025-07-12 19:50:14 +0800 https://app.clickup.com/t/8553538/TECH-6427?comment=90180139790902
+d913b5a 2025-07-12 17:41:28 +0800 https://app.clickup.com/t/8553538/TECH-6427?comment=90180139616321
+cda25f9 2025-07-12 11:15:40 +0800 https://app.clickup.com/t/8553538/TECH-6509?comment=90180139756273
+1b2050f 2025-07-12 11:06:39 +0800 https://app.clickup.com/t/8553538/TECH-6509?comment=90180139755504
+807e400 2025-07-12 10:52:38 +0800 https://app.clickup.com/t/8553538/TECH-6509?comment=90180139753519
+a6e561c 2025-07-12 10:30:51 +0800 Merge branch 'main' into ivan
+2afb492 2025-07-12 10:30:30 +0800 https://app.clickup.com/t/8553538/TECH-6509?comment=90180139752550
+1167db7 2025-07-11 11:45:54 +0000 Merged in stark (pull request #36)
+3ea402b 2025-07-11 19:44:04 +0800 https://app.clickup.com/t/8553538/TECH-6493
+0cc5064 2025-07-11 08:45:56 +0000 Merged in stark (pull request #35)
+c7bc276 2025-07-11 16:42:56 +0800 https://app.clickup.com/t/8553538/TECH-6427?comment=90180139604296
+32ddce4 2025-07-11 16:32:47 +0800 https://app.clickup.com/t/8553538/TECH-6508
+59ef511 2025-07-11 16:22:43 +0800 Merge branch 'main' into stark
+f89fd38 2025-07-11 16:19:41 +0800 https://app.clickup.com/t/8553538/TECH-6427?comment=90180139604296
+298e015 2025-07-11 08:18:32 +0000 Merged in ivan (pull request #34)
+69cbae9 2025-07-11 16:04:34 +0800 Merge branch 'main' into ivan
+2e225c9 2025-07-11 16:03:48 +0800 config bootsplash
+7c379f6 2025-07-11 07:50:01 +0000 Merged in stark (pull request #33)
+7092408 2025-07-11 15:48:04 +0800 https://app.clickup.com/t/8553538/TECH-6503
+d7d24f4 2025-07-11 15:27:03 +0800 https://app.clickup.com/t/8553538/TECH-6505
+36661aa 2025-07-11 14:13:10 +0800 https://app.clickup.com/t/8553538/TECH-6427?comment=90180139575847
+3427790 2025-07-11 14:05:06 +0800 ecg measure
+5cdc885 2025-07-11 03:56:02 +0000 Merged in stark (pull request #32)
+b024921 2025-07-11 11:53:55 +0800 https://app.clickup.com/t/8553538/TECH-6427?comment=90180139552129
+943f069 2025-07-10 23:20:33 +0800 优化iOS
+2553eaf 2025-07-10 12:50:46 +0000 Merged in stark (pull request #31)
+5373e33 2025-07-10 20:48:45 +0800 https://app.clickup.com/t/8553538/TECH-6486   https://app.clickup.com/t/8553538/TECH-6498
+c14f228 2025-07-10 16:09:07 +0800 Blood Pressure/Body Temperature/SpO2h
+f8f90c7 2025-07-10 14:52:59 +0800 Merge branch 'main' into ivan
+f6b39c5 2025-07-10 14:52:29 +0800 Merge branch 'main' into ivan
+f0b41a7 2025-07-10 06:52:01 +0000 Merged in stark (pull request #30)
+73e541a 2025-07-10 14:50:12 +0800 https://app.clickup.com/t/8553538/TECH-6427?comment=90180139332024
+f10c410 2025-07-10 14:25:03 +0800 测量调试中
+9ef42e2 2025-07-10 10:38:27 +0800 https://app.clickup.com/t/8553538/TECH-6474
+daa0188 2025-07-10 10:30:25 +0800 避免iOS闪退，iOS电量获取
+cf0c7e8 2025-07-09 13:32:10 +0000 Merged in stark (pull request #29)
+9a4480a 2025-07-09 20:05:02 +0800 https://app.clickup.com/t/8553538/TECH-6427?comment=90180139144544
+7b35d61 2025-07-09 08:10:40 +0000 Merged in stark (pull request #28)
+fe77bd0 2025-07-09 16:07:36 +0800 https://app.clickup.com/t/8553538/TECH-6
+e9cec37 2025-07-08 12:41:47 +0000 Merged in stark (pull request #27)
+527166b 2025-07-08 20:39:26 +0800 https://app.clickup.com/t/8553538/TECH-6427?comment=90180138851735
+7b72342 2025-07-08 17:26:11 +0800 https://app.clickup.com/t/8553538/TECH-6475
+f93da9d 2025-07-08 16:31:06 +0800 https://app.clickup.com/t/8553538/TECH-6475
+ed484fe 2025-07-08 07:40:10 +0000 Merged in stark (pull request #26)
+fb145da 2025-07-08 15:33:49 +0800 https://app.clickup.com/t/8553538/TECH-6421?comment=90180138759533
+982f190 2025-07-08 05:04:19 +0000 Merged in stark (pull request #25)
+d2c2edb 2025-07-08 12:09:28 +0800 https://app.clickup.com/t/8553538/TECH-6479
+63ea012 2025-07-07 15:07:27 +0000 Merged in stark (pull request #24)
+27a2dd5 2025-07-07 20:29:38 +0800 https://app.clickup.com/t/8553538/TECH-6478
+ce4054d 2025-07-07 16:56:32 +0800 https://app.clickup.com/t/8553538/TECH-6475
+b519456 2025-07-07 16:05:03 +0800 https://app.clickup.com/t/8553538/TECH-6475
+6a98738 2025-07-07 15:18:45 +0800 https://app.clickup.com/t/8553538/TECH-6475
+32434cc 2025-07-07 15:04:50 +0800 https://app.clickup.com/t/8553538/TECH-6475
+366a2c8 2025-07-07 14:59:39 +0800 Merge branch 'main' into stark
+12b32a1 2025-07-07 14:55:33 +0800 https://app.clickup.com/t/8553538/TECH-6475
+0c678cb 2025-07-07 13:35:51 +0800 Merge branch 'main' into ivan
+aef8141 2025-07-07 03:22:58 +0000 Merged in stark (pull request #23)
+0a0e523 2025-07-07 11:21:45 +0800 https://app.clickup.com/t/8553538/TECH-6473
+221f76e 2025-07-07 11:20:52 +0800 no message
+48c3ebe 2025-07-06 12:29:52 +0000 Merged in stark (pull request #22)
+cfac84d 2025-07-06 20:11:47 +0800 https://app.clickup.com/t/8553538/TECH-6426?comment=90180138294675
+9bc1149 2025-07-06 01:36:09 +0800 https://app.clickup.com/t/8553538/TECH-6426?comment=90180138226091
+12aaa55 2025-07-04 13:44:33 +0000 Merged in stark (pull request #21)
+95a2696 2025-07-04 21:42:42 +0800 https://app.clickup.com/t/8553538/TECH-6426?comment=90180138096787
+2ad1f26 2025-07-03 13:39:22 +0000 Merged in stark (pull request #20)
+874915f 2025-07-03 21:37:12 +0800 https://app.clickup.com/t/8553538/TECH-6426?comment=90180137658240
+400deaa 2025-07-03 10:46:20 +0800 Merge branch 'main' into stark
+556699a 2025-07-03 10:41:23 +0800 https://app.clickup.com/t/8553538/TECH-6426?comment=90180137658240
+65cab27 2025-07-03 01:48:20 +0000 Merged in ivan (pull request #19)
+bdeb56e 2025-07-03 00:15:46 +0800 search and connect device ok https://app.clickup.com/t/8553538/TECH-6332
+35a0a82 2025-07-02 09:17:44 +0000 Merged in stark (pull request #18)
+8f52e53 2025-07-02 17:12:31 +0800 https://app.clickup.com/t/8553538/TECH-6332?comment=90180137436696
+60a337b 2025-07-02 03:23:06 +0000 Merged in stark (pull request #17)
+074bad6 2025-07-02 11:20:47 +0800 https://app.clickup.com/t/8553538/TECH-6426?comment=90180137355084
+41ff472 2025-07-01 14:18:17 +0000 Merged in stark (pull request #16)
+084618b 2025-07-01 21:30:46 +0800 https://app.clickup.com/t/8553538/TECH-6426?comment=90180137193459
+a9a7fea 2025-07-01 10:51:39 +0000 Merged in stark (pull request #15)
+33eb66b 2025-07-01 18:49:00 +0800 https://app.clickup.com/t/8553538/TECH-6426?comment=90180137129088
+160fd7a 2025-07-01 02:20:17 +0000 Merged in ivan (pull request #14)
+8ff7a24 2025-07-01 10:03:12 +0800 Merge branch 'main' into ivan
+da8b24c 2025-07-01 10:02:36 +0800 Fix problems caused by merged code
+35b4290 2025-07-01 01:44:25 +0000 Merged in ivan (pull request #13)
+1b3267f 2025-07-01 09:26:20 +0800 no message
+ded3f76 2025-07-01 09:00:29 +0800 Merge branch 'main' into ivan
+cb7ad31 2025-07-01 08:52:15 +0800 RN和iOS原生交互实现中
+d866e54 2025-06-30 12:40:12 +0000 Merged in stark (pull request #12)
+e343908 2025-06-30 20:37:51 +0800 https://app.clickup.com/t/8553538/TECH-6426?comment=90180136662944
+2c2ba64 2025-06-30 00:58:10 +0000 Merged in stark (pull request #11)
+7bcca9d 2025-06-29 18:46:24 +0800 https://app.clickup.com/t/8553538/TECH-6426?comment=90180136371316
+f9ed243 2025-06-28 11:04:58 +0000 Merged in main (pull request #10)
+bfee413 2025-06-28 18:38:40 +0800 https://app.clickup.com/t/8553538/TECH-6426?comment=90180136247358
+1b48061 2025-06-27 09:26:58 +0000 Merged in stark (pull request #9)
+3482c34 2025-06-27 17:24:28 +0800 https://app.clickup.com/t/8553538/TECH-6426?comment=90180136056128
+cbcf4c5 2025-06-27 07:14:42 +0000 Merged in stark (pull request #8)
+d789ea4 2025-06-27 15:11:48 +0800 https://app.clickup.com/t/8553538/TECH-6426?comment=90180135622059&threadedComment=90180136004164
+2daf42c 2025-06-26 14:34:47 +0800 Merge branch 'main' into ivan
+ec72ab7 2025-06-26 14:34:20 +0800 import iOS SDK file
+1eb063a 2025-06-25 13:23:25 +0000 Merged in stark (pull request #7)
+1b90002 2025-06-25 21:20:42 +0800 https://app.clickup.com/t/8553538/TECH-6326?comment=90180135502852
+55946c9 2025-06-24 15:01:10 +0000 Merged in stark (pull request #6)
+2dbf53e 2025-06-24 21:37:43 +0800 Merge branch 'main' into stark
+ba92eed 2025-06-24 21:36:03 +0800 https://app.clickup.com/t/8553538/TECH-6326?comment=90180134922298
+4f42746 2025-06-24 10:02:04 +0800 RN update to 0.76.3
+0b47f20 2025-06-24 09:42:21 +0800 Merge branch 'main' into ivan
+9f73281 2025-06-24 09:42:05 +0800 rename iOS project Heals to Circle and run
+b757a15 2025-06-23 15:21:13 +0000 Merged in stark (pull request #5)
+11e1941 2025-06-23 23:14:19 +0800 Merge branch 'main' into stark
+822d4df 2025-06-23 23:13:25 +0800 https://app.clickup.com/t/8553538/TECH-6365
+905d16e 2025-06-23 23:12:55 +0800 https://app.clickup.com/t/8553538/TECH-6365
+356cfe5 2025-06-23 20:46:44 +0800 Merge branch 'stark' of https://bitbucket.org/healshealthcare/circleapp into stark
+cabe2ed 2025-06-23 18:13:47 +0800 https://app.clickup.com/t/8553538/TECH-6326?comment=PENDING_4d1e26ef-9740-44e3-9883-b46509228626
+63c86ee 2025-06-23 10:16:26 +0000 Merged in stark (pull request #4)
+ccac3da 2025-06-23 18:13:47 +0800 Merge branch 'main' into stark
+a1f8698 2025-06-23 18:12:10 +0800 https://app.clickup.com/t/8553538/TECH-6326?comment=90180134882249
+e1200ec 2025-06-23 08:22:22 +0000 Merged in stark (pull request #3)
+3dcfc9e 2025-06-23 16:17:41 +0800 https://app.clickup.com/t/8553538/TECH-6326?comment=90180134846786
+723938c 2025-06-23 15:25:32 +0800 https://app.clickup.com/t/8553538/TECH-6326?comment=90180134824338
+7f3e036 2025-06-22 15:06:59 +0000 Merged in stark (pull request #2)
+00f4c5b 2025-06-22 21:26:56 +0800 Merge branch 'main' into stark
+de0c4b2 2025-06-22 21:19:59 +0800 https://app.clickup.com/t/8553538/TECH-6367?comment=90180134701176
+3e91c27 2025-06-21 22:17:57 +0800 https://app.clickup.com/t/8553538/TECH-6367
+49f8fd5 2025-06-20 10:35:04 +0000 Merged in stark (pull request #1)
+92640af 2025-06-20 18:25:24 +0800 https://app.clickup.com/t/8553538/TECH-6331?comment=90180134393707
+6f14960 2025-06-20 16:32:50 +0800 https://app.clickup.com/t/8553538/TECH-6331?comment=90180134363244
+21ce2d1 2025-06-20 07:28:18 +0000 Initial commit
+=== file history vs 1.0.3 ===
+eabe707 fix(global-assistance): stop RN 0.81 crash after long-pressing Home tab
