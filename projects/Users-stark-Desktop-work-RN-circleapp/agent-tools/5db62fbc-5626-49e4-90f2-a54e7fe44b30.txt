@@ -1,0 +1,600 @@
+# 'ReactCommon/RuntimeExecutor.h' file not found when statically linked
+
+- State: closed
+- Author: saschagehlich
+- Created: 2025-08-13T20:38:59Z
+- Updated: 2025-12-08T11:18:21Z
+- Repository: software-mansion/react-native-reanimated
+- Number: #8069
+- Assignees: tjzel
+
+## Labels
+
+- Platform: iOS
+- Repro provided
+
+---
+
+### Description
+
+When adding the following to the Podfile (required for react-native-firebase): 
+
+```
+use_frameworks! :linkage => :static
+$RNFirebaseAsStaticFramework = true
+```
+
+I get the following error:
+
+ 
+
+### Steps to reproduce
+
+1. Create a fresh RN 0.81.0 project
+2. Run `yarn add @react-native-firebase/app @react-native-firebase/auth react-native-worklets react-native-reanimated`
+3. Add these lines after use_native_modules!:
+
+```
+use_frameworks! :linkage => :static
+$RNFirebaseAsStaticFramework = true
+```
+4. Run pod install
+5. Build and run using XCode
+
+### Snack or a link to a repository
+
+https://github.com/tiktory/worklets-bug-repro
+
+### Reanimated version
+
+4.0.2
+
+### Worklets version
+
+0.4.1
+
+### React Native version
+
+0.81.0
+
+### Platforms
+
+iOS
+
+### JavaScript runtime
+
+Hermes
+
+### Workflow
+
+React Native CLI
+
+### Architecture
+
+New Architecture (Fabric renderer)
+
+### Build type
+
+Debug app & dev bundle
+
+### Device
+
+Real device
+
+### Host machine
+
+macOS
+
+### Device model
+
+iPhone 13 Pro (real device), iPhone 16 Plus (sim)
+
+### Acknowledgements
+
+Yes
+
+## Timeline
+
+- github-actions[bot] added label "Missing repro"
+
+**github-actions[bot]** commented on 2025-08-13T20:39:17Z:
+
+> Hey! 👋 
+> 
+> The issue doesn't seem to contain a minimal reproduction.
+> 
+> Could you provide a snack or a link to a GitHub repository under your username that reproduces the problem?
+
+- github-actions[bot] added label "Platform: iOS"
+
+- Referenced by issue #3599: 🔧 'ReactCommon/RuntimeExecutor.h' file not found
+
+**saschagehlich** commented on 2025-08-13T20:41:03Z:
+
+> Minimal reproduction is attached in the original post, no idea why github-actions is not picking it up.
+
+**superguineapig** commented on 2025-08-13T22:55:27Z:
+
+> I have also just encountered this after upgrading to RN 0.81.0. (from 0.79.2) I also use `react-native-firebase` with the static linking directive in the Podfile.
+> 
+> I've tried downgrading `react-native-reanimated` to the latest **3.x** release (3.19.1) (without the `react-native-worklets` dep) and encounter a similar error but from a different location:
+> 
+> ```
+> /Users/abc/my-mobile-app/node_modules/react-native-reanimated/Common/cpp/worklets/Tools/JSScheduler.h:4:10: fatal error: 'ReactCommon/RuntimeExecutor.h' file not found
+> 4 | #include 
+> | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> ```
+> 
+> Will do some more troubleshooting if I get a chance later.
+
+**superguineapig** commented on 2025-08-14T00:41:21Z:
+
+> Following up: **Using the repo provided by @saschagehlich** I've also confirmed that removing the static linking from the Podfile:
+> ```
+> use_frameworks! :linkage => :static
+> $RNFirebaseAsStaticFramework = true
+> ```
+> (as well as the `react-native-firebase` deps that require it) results in a successful (XCode) build of the app.
+> 
+> Next, I'll try it with the last v80.x release of React Native
+
+- saschagehlich mentioned
+
+- saschagehlich subscribed
+
+**superguineapig** commented on 2025-08-14T01:12:01Z:
+
+> Followup no.2: I initialized a clean react native project against ReactNative v0.80.2 via
+> 
+> `npx @react-native-community/cli@19.x init WorkletsBugRN802 --version 0.80.2`
+> 
+> and added the dependencies as described by @saschagehlich including the required static linking changes to the Podfile, and the build **succeeded**
+> 
+> So it appears the offending change was between ReactNative 0.80.2 and 0.81.x
+
+- saschagehlich mentioned
+
+- saschagehlich subscribed
+
+**saschagehlich** commented on 2025-08-14T04:33:41Z:
+
+> @superguineapig Thank you so much for investigating further! I can confirm that downgrading RN to 0.80.2 (luckily this didn't require any additional changes, just switching the RN version was fine) lets the app build successfully.
+
+- superguineapig mentioned
+
+- superguineapig subscribed
+
+- nchkr subscribed
+
+**superguineapig** commented on 2025-08-14T22:24:13Z:
+
+> ### General notes for others
+> 
+> I'm really not familiar enough with the ReactNative build process to go much further in figuring out **where a proper solution lies** i.e. 
+> - a bug with ReactNative 0.81.x itself (ReactCommon and/or ReactFabric module)
+> - a change in the ReactNative native modules API for library developers
+> - a missing framework header path in `react-native-reanimated/worklets`
+> - or some compiler directive/pragma needed to "detect" RN 81 and static linking
+> 
+> For now, it seems ok to use RN 0.80.2 to keep existing projects working. However, I suspect that this issue will start cropping up more and more for others who are using `static linking` in their Podfile.
+> 
+> #### Speculation
+> 
+> Looking at the change logs between RN 0.80.2 and 0.81.x does reveal that there are changes to header paths and the output of building the `ReactCommon` package. I can only surmise that perhaps RN is in the process of changing their development API for native module developers. (or accidental omission of build outputs?)
+> 
+> ### Some findings
+> 
+> ##### not library specific
+> 
+> It should be noted that this is **NOT** an issue with `react-native-firebase` itself, as the build error will manifest itself simply by setting the linking directive:
+> 
+> ```
+> use_frameworks! :linkage => :static
+> ```
+> 
+> And given that `react-native-firebase` requires that linking be set to static, it is expected that coincidentally many of those projects also using `react-native-reanimated` on RN 0.81.x will encounter this problem. These are both very common and popular libraries.
+> 
+> ##### not isolated to either 3.x or 4.x of reanimated
+> 
+> Both 3.x and 4.x versions of `react-native-reanimated` are affected. The common thread is **RN 0.81.x with static linking (iOS Podfile)**
+> 
+> Either way, in 81.x with statically linked frameworks, the ReactCommon module/framework artifact does not expose a necessary header file that is referenced by *other react native code* <-- the compiler error is at the bottom of an include chain of several files in `ReactCommon`
+> 
+> ```
+> (reanimated v4.x) WorkletsModuleProxy.cpp - #include 
+> - (react native) UIManagerBinding.h - #include 
+> - (react native) UIManager.h - #include <-- ERROR
+> 
+> or
+> 
+> (reanimated 3.x) JSScheduler.h - #include <-- ERROR: directly references the missing file
+> ```
+> Perhaps there is a different configuration necessary for consumers of ReactNative API in 0.81.x (specifically when statically linked) or it's a bona fide bug with React Native.
+> 
+> ### Final thoughts
+> 
+> I get the sense that this is going to be a significant issue for others and it will involve some collaboration across the RN community to see a resolution as it will probably manifest itself from other libraries as well...chaos ensues 🥸
+> 
+> Unfortunately, I'm not familiar enough with all of the pieces involved to go much further with troubleshooting. Though I'm happy to help if I can.
+> 
+> @mikehardy sorry for the unsolicited tag, but I suspect you may be hearing whispers of this in the future, so this is just a friendly "something to be aware of"
+
+- mikehardy mentioned
+
+- mikehardy subscribed
+
+- harbolaez subscribed
+
+**maksymhcode-care** commented on 2025-08-15T06:00:40Z:
+
+> I hope this can be fixed
+
+- adamhongmy subscribed
+
+- stage88 subscribed
+
+- blueparrotpl subscribed
+
+- tushe-tv subscribed
+
+- rossjohnsonMP subscribed
+
+- tjzel was assigned
+
+**tjzel** commented on 2025-08-15T17:08:06Z:
+
+> This is probably a change in the header path. I'll look into it.
+
+- NoahPeeters subscribed
+
+- vanHoi subscribed
+
+- batical unsubscribed
+
+- batical subscribed
+
+- joprice subscribed
+
+- rodowd subscribed
+
+- malinjr07 subscribed
+
+**malinjr07** commented on 2025-08-18T08:15:53Z:
+
+> > Followup no.2: I initialized a clean react native project against ReactNative v0.80.2 via
+> > 
+> > `npx @react-native-community/cli@19.x init WorkletsBugRN802 --version 0.80.2`
+> > 
+> > and added the dependencies as described by @saschagehlich including the required static linking changes to the Podfile, and the build **succeeded**
+> > 
+> > So it appears the offending change was between ReactNative 0.80.2 and 0.81.x
+> 
+> Thanks @superguineapig , I have downgraded my React Native version and it works perfectly.
+
+- superguineapig mentioned
+
+- superguineapig subscribed
+
+- tjzel removed label "Missing repro"
+
+- tjzel added label "Repro provided"
+
+- kantorm subscribed
+
+**faljabi** commented on 2025-08-18T12:24:24Z:
+
+> Hi,
+> 
+> Any update on this for react native 0.81?
+
+**tjzel** commented on 2025-08-18T12:40:09Z:
+
+> We are seeing this issue in other libraries too, it could be a regression in React Native 0.81. We forwarded the issue to the React Native team, I'll let you know once we learn something more.
+
+- yuri-lomashko subscribed
+
+- mfuegger subscribed
+
+**devevecare** commented on 2025-08-19T08:45:21Z:
+
+> +1
+
+**asgarBhojani** commented on 2025-08-19T10:41:28Z:
+
+> Is there any patch available for this? I’m facing the same issue.
+
+- george-g-y-b subscribed
+
+- vitalyster subscribed
+
+- drabikowy subscribed
+
+**jerryheir** commented on 2025-08-19T23:57:12Z:
+
+> @tjzel Is there any patch available for this yet? +1 
+> 
+
+- tjzel mentioned
+
+- tjzel subscribed
+
+**hssrrw** commented on 2025-08-20T05:01:52Z:
+
+> The fix is in the main branch already https://github.com/facebook/react-native/pull/53099
+> I guess we need to wait for react-native 0.81.1
+
+**tjzel** commented on 2025-08-20T16:57:10Z:
+
+> @hssrrw I confirmed that the PR you mentioned fixes this issue. I'll close this issue since it cannot be fixed on our end and we simply need to wait for a patch release of RN.
+
+- tjzel closed
+
+- hssrrw mentioned
+
+- hssrrw subscribed
+
+- Referenced by issue #8101: [Expo 54] `'ReactCommon/RuntimeExecutor.h' file not found` with reanimated v3
+
+- huextrat marked_as_duplicate
+
+**Mukthayar1** commented on 2025-08-21T14:35:21Z:
+
+> > Followup no.2: I initialized a clean react native project against ReactNative v0.80.2 via
+> > 
+> > `npx @react-native-community/cli@19.x init WorkletsBugRN802 --version 0.80.2`
+> > 
+> > and added the dependencies as described by @saschagehlich including the required static linking changes to the Podfile, and the build **succeeded**
+> > 
+> > So it appears the offending change was between ReactNative 0.80.2 and 0.81.x
+> 
+> how can i downgrade my current version is:
+> "react-native": "0.81.0",
+
+- nthtrung09it subscribed
+
+**sabun123** commented on 2025-08-23T12:59:36Z:
+
+> > The fix is in the main branch already facebook/react-native#53099 I guess we need to wait for react-native 0.81.1
+> 
+> Thank you for sharing this! Am on RN 0.81.0 and ran into this issue with Firebase and react-native-reanimated. Since I couldn't wait for the RN 0.81.1 release I did a patch package of the fix in that PR (shoutout to @sharifhh) . Now am able to build for iOS again and both Firebase and react-native-reanimated are able to compile with these fixes.
+> 
+> Sharing my patch file for anyone who needs a quick fix whilst waiting.
+> 
+> `react-native+0.81.0.patch` :
+> ```patch
+> diff --git a/node_modules/react-native/scripts/cocoapods/new_architecture.rb b/node_modules/react-native/scripts/cocoapods/new_architecture.rb
+> index 1234567..abcdefg 100644
+> --- a/node_modules/react-native/scripts/cocoapods/new_architecture.rb
+> +++ b/node_modules/react-native/scripts/cocoapods/new_architecture.rb
+> @@ -85,6 +85,7 @@ def self.install_modules_dependencies(spec, new_arch_enabled, folly_version = He
+> .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-Fabric", "React_Fabric", ["react/renderer/components/view/platform/cxx"]))
+> .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-FabricImage", "React_FabricImage", []))
+> .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "ReactCommon", "ReactCommon", ["react/nativemodule/core"]))
+> + .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-runtimeexecutor", "React_runtimeexecutor", ["platform/ios"]))
+> .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-NativeModulesApple", "React_NativeModulesApple", []))
+> .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-RCTFabric", "RCTFabric", []))
+> .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-utils", "React_utils", []))
+> diff --git a/node_modules/react-native/scripts/cocoapods/utils.rb b/node_modules/react-native/scripts/cocoapods/utils.rb
+> index 1234567..abcdefg 100644
+> --- a/node_modules/react-native/scripts/cocoapods/utils.rb
+> +++ b/node_modules/react-native/scripts/cocoapods/utils.rb
+> @@ -313,6 +313,7 @@ def self.update_search_paths(installer)
+> header_search_paths = config.build_settings["HEADER_SEARCH_PATHS"] ||= "$(inherited)"
+> 
+> ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "ReactCommon", "ReactCommon", ["react/nativemodule/core"])
+> + .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-runtimeexecutor", "React_runtimeexecutor", ["platform/ios"]))
+> .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "ReactCommon-Samples", "ReactCommon_Samples", ["platform/ios"]))
+> .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-Fabric", "React_Fabric", ["react/renderer/components/view/platform/cxx"], false))
+> .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-NativeModulesApple", "React_NativeModulesApple", []))
+> @@ -563,6 +564,7 @@ def self.set_codegen_search_paths(target_installation_result)
+> 
+> def self.set_reactcommon_searchpaths(target_installation_result)
+> header_search_paths = ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "ReactCommon", "ReactCommon", ["react/nativemodule/core"])
+> + .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-runtimeexecutor", "React_runtimeexecutor", ["platform/ios"]))
+> .map { |search_path| "\"#{search_path}\"" }
+> ReactNativePodsUtils.update_header_paths_if_depends_on(target_installation_result, "ReactCommon", header_search_paths)
+> end
+> diff --git a/node_modules/react-native/scripts/codegen/templates/ReactCodegen.podspec.template b/node_modules/react-native/scripts/codegen/templates/ReactCodegen.podspec.template
+> index 1234567..abcdefg 100644
+> --- a/node_modules/react-native/scripts/codegen/templates/ReactCodegen.podspec.template
+> +++ b/node_modules/react-native/scripts/codegen/templates/ReactCodegen.podspec.template
+> @@ -33,6 +33,7 @@ if use_frameworks
+> .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-FabricImage", "React_FabricImage", []))
+> .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-graphics", "React_graphics", ["react/renderer/graphics/platform/ios"]))
+> .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "ReactCommon", "ReactCommon", ["react/nativemodule/core"]))
+> + .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-runtimeexecutor", "React_runtimeexecutor", ["platform/ios"]))
+> .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-NativeModulesApple", "React_NativeModulesApple", []))
+> .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-RCTFabric", "RCTFabric", []))
+> .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-debug", "React_debug", []))
+> ```
+> 
+> It will only affect iOS, so you don't have to worry about this fix affecting android in any way.
+> 
+> Steps to use it (assuming you are using Yarn 3 + New Architecture + RN 0.81.0):
+> 1. Create a `patches` folder in the root directory of your project (if one doesn't exist)
+> 2. Drop the above patch file into it (it should be named `react-native+0.81.0.patch`)
+> 3. Run `yarn patch-package`
+> 4. Then `cd ios` and `pod install`
+> 5. You should be good to go! Run `yarn ios` like normal
+> 
+> Note: You should have `patch-package` installed in your `devDependencies` for the above. If all else fails, purge all your caches, build folders and Pods folder. Then retry.
+> 
+> 
+> Confirmed the fix works, have Crashlytics and Analytics working with react-native-reanimated all at the latest versions.
+> 
+
+- sharifhh mentioned
+
+- sharifhh subscribed
+
+**NazimMertBilgi** commented on 2025-08-24T10:28:22Z:
+
+> > diff --git a/node_modules/react-native/scripts/cocoapods/new_architecture.rb b/node_modules/react-native/scripts/cocoapods/new_architecture.rb
+> > index 1234567..abcdefg 100644
+> > --- a/node_modules/react-native/scripts/cocoapods/new_architecture.rb
+> > +++ b/node_modules/react-native/scripts/cocoapods/new_architecture.rb
+> > @@ -85,6 +85,7 @@ def self.install_modules_dependencies(spec, new_arch_enabled, folly_version = He
+> > .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-Fabric", "React_Fabric", ["react/renderer/components/view/platform/cxx"]))
+> > .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-FabricImage", "React_FabricImage", []))
+> > .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "ReactCommon", "ReactCommon", ["react/nativemodule/core"]))
+> > + .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-runtimeexecutor", "React_runtimeexecutor", ["platform/ios"]))
+> > .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-NativeModulesApple", "React_NativeModulesApple", []))
+> > .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-RCTFabric", "RCTFabric", []))
+> > .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-utils", "React_utils", []))
+> > diff --git a/node_modules/react-native/scripts/cocoapods/utils.rb b/node_modules/react-native/scripts/cocoapods/utils.rb
+> > index 1234567..abcdefg 100644
+> > --- a/node_modules/react-native/scripts/cocoapods/utils.rb
+> > +++ b/node_modules/react-native/scripts/cocoapods/utils.rb
+> > @@ -313,6 +313,7 @@ def self.update_search_paths(installer)
+> > header_search_paths = config.build_settings["HEADER_SEARCH_PATHS"] ||= "$(inherited)"
+> > 
+> > ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "ReactCommon", "ReactCommon", ["react/nativemodule/core"])
+> > + .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-runtimeexecutor", "React_runtimeexecutor", ["platform/ios"]))
+> > .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "ReactCommon-Samples", "ReactCommon_Samples", ["platform/ios"]))
+> > .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-Fabric", "React_Fabric", ["react/renderer/components/view/platform/cxx"], false))
+> > .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-NativeModulesApple", "React_NativeModulesApple", []))
+> > @@ -563,6 +564,7 @@ def self.set_codegen_search_paths(target_installation_result)
+> > 
+> > def self.set_reactcommon_searchpaths(target_installation_result)
+> > header_search_paths = ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "ReactCommon", "ReactCommon", ["react/nativemodule/core"])
+> > + .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-runtimeexecutor", "React_runtimeexecutor", ["platform/ios"]))
+> > .map { |search_path| "\"#{search_path}\"" }
+> > ReactNativePodsUtils.update_header_paths_if_depends_on(target_installation_result, "ReactCommon", header_search_paths)
+> > end
+> > diff --git a/node_modules/react-native/scripts/codegen/templates/ReactCodegen.podspec.template b/node_modules/react-native/scripts/codegen/templates/ReactCodegen.podspec.template
+> > index 1234567..abcdefg 100644
+> > --- a/node_modules/react-native/scripts/codegen/templates/ReactCodegen.podspec.template
+> > +++ b/node_modules/react-native/scripts/codegen/templates/ReactCodegen.podspec.template
+> > @@ -33,6 +33,7 @@ if use_frameworks
+> > .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-FabricImage", "React_FabricImage", []))
+> > .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-graphics", "React_graphics", ["react/renderer/graphics/platform/ios"]))
+> > .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "ReactCommon", "ReactCommon", ["react/nativemodule/core"]))
+> > + .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-runtimeexecutor", "React_runtimeexecutor", ["platform/ios"]))
+> > .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-NativeModulesApple", "React_NativeModulesApple", []))
+> > .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-RCTFabric", "RCTFabric", []))
+> > .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-debug", "React_debug", []))
+> 
+> so thank u brother.
+
+**muhammadkamran5** commented on 2025-08-26T07:04:06Z:
+
+> The only solution worked for me was to downgrade react native version from 0.81.0 to 0.80.2. 
+
+**ltujiba** commented on 2025-09-02T12:11:36Z:
+
+> I can confirm that this has been resolved by upgrading the react native version to the newly released 0.81.1
+
+- rossjohnsonMP unsubscribed
+
+**Kharelg24** commented on 2025-10-08T18:40:50Z:
+
+> I am still running into the same issue. I've tried @muhammadkamran5 and @superguineapig suggestions and still encountering the same error:
+> 
+> I am attempting to use vision-camera-ocr. I was running latest react-native-version but downgraded to "0.81.0" and still getting the same issue. All installation is successful with PodFile just RuntimeExecutor.h error when building the app. Here is my Podfile:
+> 
+> ```
+> # Resolve react_native_pods.rb with node to allow for hoisting
+> require Pod::Executable.execute_command('node', ['-p',
+> 'require.resolve(
+> "react-native/scripts/react_native_pods.rb",
+> {paths: [process.argv[1]]},
+> )', __dir__]).strip
+> 
+> platform :ios, '15.1'
+> prepare_react_native_project!
+> 
+> # Use static frameworks instead of modular headers for better compatibility
+> use_frameworks!
+> 
+> linkage = ENV['USE_FRAMEWORKS']
+> if linkage != nil
+> Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+> use_frameworks! :linkage => linkage.to_sym
+> end
+> 
+> target 'nfclogger' do
+> config = use_native_modules!
+> 
+> use_react_native!(
+> :path => config[:reactNativePath],
+> # An absolute path to your application root.
+> :app_path => "#{Pod::Config.instance.installation_root}/.."
+> )
+> 
+> # Google Sign-In dependencies with compatible versions
+> pod 'GoogleSignIn', '~> 8.0'
+> pod 'GTMSessionFetcher/Core', '~> 3.3'
+> 
+> # Local MLKit podspec overrides to fix GTMSessionFetcher compatibility
+> pod 'MLKitCommon', :podspec => 'MLKitCommon.podspec.json'
+> pod 'MLKitVision', :podspec => 'MLKitVision.podspec.json'
+> 
+> post_install do |installer|
+> # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
+> react_native_post_install(
+> installer,
+> config[:reactNativePath],
+> :mac_catalyst_enabled => false,
+> # :ccache_enabled => true
+> )
+> 
+> # Fix build settings for static frameworks
+> installer.pods_project.targets.each do |target|
+> if target.name.start_with?('VisionCamera') || target.name.start_with?('React-NativeModulesApple')
+> target.build_configurations.each do |config|
+> config.build_settings['HEADER_SEARCH_PATHS'] ||= ['$(inherited)']
+> config.build_settings['HEADER_SEARCH_PATHS'] << "$(SRCROOT)/../node_modules/react-native/ReactCommon"
+> config.build_settings['HEADER_SEARCH_PATHS'] << "$(SRCROOT)/../node_modules/react-native/ReactCommon/runtimeexecutor/ReactCommon"
+> config.build_settings['HEADER_SEARCH_PATHS'] << "$(SRCROOT)/../node_modules/react-native/React-NativeModulesApple/ReactCommon"
+> config.build_settings['HEADER_SEARCH_PATHS'].uniq!
+> end
+> end
+> end
+> end
+> end 
+> ```
+> 
+> here is the build error:
+> /Users/gauravkharel/Documents/Code/nfc-logger/nfclogger/node_modules/vision-camera-ocr/ios/VisionCameraOcr-Bridging-Header.h:4:9 'VisionCamera/FrameProcessorPlugin.h' file not found
+
+- superguineapig mentioned
+
+- superguineapig subscribed
+
+- muhammadkamran5 mentioned
+
+- muhammadkamran5 subscribed
+
+**superguineapig** commented on 2025-10-09T00:19:21Z:
+
+> @Kharelg24 I haven't used VisionCamera before.
+> 
+> React Native 0.81.1 fixed the common headers that were missing in ios builds of the `reanimated` library. Can't tell if this is the same problem you have encountered with VisionCamera. The build error you've listed only shows a vision camera header (presumably it can't find the react runtime headers either?)
+> 
+> You may want to take a look at their repo's issues instead (this one is for android, but maybe a better starting point https://github.com/mrousavy/react-native-vision-camera/issues/3615) for more relevant context.
+> 
+> #### Other random suggestions (assuming ***not*** using Expo):
+> 
+> Sometimes with upgrades, some stuff gets cached
+> 
+> 1. stop any running metro servers
+> 2. XCode clean build folder (if applicable)
+> 3. close XCode workspace (if applicable)
+> 4. Delete app binary from simulator (if applicable)
+> 5. completely remove: `node_modules`, `package-lock.json` (or whatever lock file is managing npm deps), `ios/Pods`, `ios/Podfile.lock`
+> 6. upgrade to specifically ReactNative `0.81.1` (the first update that had a fix for this ticket)
+> 7. verify your deps in `package.json`
+> 8. fresh npm install (or whatever you use)
+> 9. fresh pod `update` (i've got an ancient project that I've manually upgraded over several years, so I still do manual `pod` commands and haven't switched to use the new RN CLI workflow with the other ruby stuff yet: `bundle` something...)
+> 10. try a fresh XCode build
+> 11. meh? maybe that helps? 
+
+- Kharelg24 mentioned
+
+- Kharelg24 subscribed
+
+- yuri-lomashko unsubscribed
+
+**sieta1** commented on 2025-12-08T11:18:21Z:
+
+> I had the same problem. Using https://react-native-community.github.io/upgrade-helper/ I just migrated from 0.80.1 to 0.80.2 (luckily, not much had changed) and after that I was able to build in Xcode.

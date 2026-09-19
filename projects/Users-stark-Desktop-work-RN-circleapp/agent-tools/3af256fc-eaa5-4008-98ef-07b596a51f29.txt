@@ -1,0 +1,489 @@
+# 3.16.7...3.17.0
+
+- Repository: software-mansion/react-native-reanimated
+- Status: diverged
+- Ahead by: 173
+- Behind by: 33
+- Total commits: 173
+- Files changed: 300
+
+## Commits
+
+- 4098856 Update ReducedMotionConfig.mdx (#6598)
+- ae9702e Fix crash on macos when using Layout Animations (#6600)
+- 67a9f2d Fix `CallInvokerHolderImpl` backwards compatibility (#6601)
+- b4db562 Bump reanimated version to 3.17.0 (#6609)
+- 7b3a8b1 docs: Restore logger docs changes after release (#6608)
+- da8c0c4 Update Podfile.locks (#6610)
+- 2dd2fa2 Move headers to `apple` directory (#6612)
+- 55f7e45 Remove `config[:reanimated_node_modules_dir]` in reanimated_utils.rb (#6611)
+- 16297eb Fix static linking on iOS (#6614)
+- 1d417a5 Do not make a synchronous call when canceling animation. (#6564)
+- 94593ad refactor(Worklets): Merge TypeScript type files (#6556)
+- ed853dc chore: Silence next-example linter warnings (#6633)
+- 373fda0 [LA] Update window update check (#6618)
+- 4c12f43 fix: Side effects paths in package.json (#6634)
+- 254a737 fix: create symlink to common-app (#6637)
+- 651bb21 fix: Installation of Reanimated from commit on CI (#6635)
+- 5f58cb2 refactor(Worklets): JavaScript NativeReanimatedModule (#6557)
+- 54261ba fix: Invalid shared value access displaying when code is correct (#6631)
+- 1d01027 fix: Return value of set-reanimated-version.js script (#6649)
+- 3576131 Add warning when passing incorrect transformOrigin (#6602)
+- d6f0b13 refactor: Specify each example app workspace (#6652)
+- 583411b chore: Redo tvos example for 0.76 (#6654)
+- 1bb8ae0 chore(Worklets): Add worklets validation to scripts (#6651)
+- f820cba chore: Add noop typescript worklets module (#6650)
+- 07171bf chore: Bump macos example to 0.75 (#6653)
+- cd7e201 Bump React Native to 0.76 in example apps (#6636)
+- 66a6bd0 chore: Remove duplicated yarn (#6656)
+- a440751 chore(deps): bump rexml from 3.3.6 to 3.3.9 in /apps/paper-example (#6643)
+- 8842d1c chore(deps): bump http-proxy-middleware from 2.0.6 to 2.0.7 in /packages/docs-reanimated (#6638)
+- 03aaa2e docs: Manage system color scheme changes (#6627)
+- 394c0b3 chore(deps): bump rexml from 3.3.6 to 3.3.9 in /apps/fabric-example (#6662)
+- 208a96d chore: Align with react-native@0.74 as oldest supported version (#6629)
+- 66137a6 fixed a typo— "grater" (#6675)
+- dfb1cf4 chore: Add pod install(update) to each app build script (#6575)
+- f3597c8 chore: Remove dead code for RN 73 and below (#6658)
+- ec729a7 docs: update landing copy (#6695)
+- d6bcf54 chore: migrate to screens v4 and navigation v7 (#6622)
+- 36c291a chore: Bump web example to 0.76 (#6679)
+- 7918721 chore: Use updated MetroConfig type (#6717)
+- 61e984e fix: missing headers on new arch (#6725)
+- b2b58a6 feat: Support for multiple surfaces on Fabric (#6647)
+- 8740fb3 chore: Remove reference for 0.72 tests on CI (#6716)
+- 6741b78 fix(example): Reloading to crashing screen (#6689)
+- bdfb866 feat: Add name to the Reanimated Plugin (#6705)
+- 7927605 fix: Allow TypeScript in worklet classes (#6667)
+- 0b2690a chore: Describe `isWorkletRuntime` behavior on different runtimes (#6692)
+- 1eed1a9 feat: Add fallback detection methods for Worklet Classes (#6706)
+- ef812a1 fix: Animation assignment with compiler-safe API (#6715)
+- 6fad03e feat(Worklets): Create a stub of Worklets Module (#6539)
+- 27726ec release: 3.17.0-rc.0 (#6731)
+- 7df8c5a docs: worklets on the Web are just JavaScript functions (#6737)
+- 94f4277 chore(Worklets): SingleInstanceChecker (#6694)
+- 9ef5f55 Update ReanimatedPackage to supported stable API (#6730)
+- 0448a47 chore(deps): bump cross-spawn from 6.0.5 to 6.0.6 (#6729)
+- 169c098 Replace findNodeHandle with reading _componentViewTag (#6720)
+- ef253e2 refactor(Worklets): Move shareable creation to Worklets (#6576)
+- 22e01df Fix bug in useSharedValueMock (#6742)
+- e9363bc chore: migrate npx react-native init (#6628)
+- ea6c7b8 refactor(Worklets): Move `messageQueue` to Worklets (#6577)
+- 67a7c45 fix: restore `classic` runtime for @babel/preset-react (#6760)
+- a33404b Make `makeShareableCloneRecursive` more readable (#5724)
+- e6d0a5c refactor: rename MessageQueueThread (#6750)
+- e3d8a91 Restore `nativeStateSource` in `makeShareableCloneRecursive` (#6763)
+- 85d917e refactor: rename cpp NativeReanimatedModule to ReanimatedModuleProxy (#6766)
+- 90e1c25 refactor: rename cpp NativeWorkletsModule to WorkletsModuleProxy (#6767)
+- 7a10663 Clear `operationsInBatch_` before terminating UI runtime (#6779)
+- 9d4d6c5 Assert that `workletsModuleProxy` is found (#6780)
+- 0bbc40b chore: rephrase render shared value read warning (#6785)
+- e64257a Refactor findNodeHandler (#6736)
+- 5ea4ee8 docs: fix `useEvent` typos, tweak wording of main `README` opening summary (#6690)
+- d1cd913 fix: Empty array & null checks in handleTabNavigatorChange method fixes #6698 (#6700)
+- bb47309 fix: brownfield integration (#6774)
+- 73a876d refactor(Worklets): move PlatformLogger (#6794)
+- 196e1e8 Cache `worklets` (#6758)
+- f242f7d Workaround for V8EXECUTOR_LIB NOTFOUND error in worklets CMakeLists.txt (#6603)
+- 8e7c942 Fix crash caused by using `ShareableHandle` in multiple remote runtimes (#6796)
+- 5530522 refactor: restore JSCallInvoker (#6783)
+- d59deb5 refactor(Worklets): move JSScheduler (#6762)
+- f3aada0 refactor(Worklets): move UIScheduler (#6789)
+- 7cb65eb fix: missing `.get()` in `useDerivedValue` mock (#6809)
+- 6e6e962 feat(Worklets): react-native-worklets node package stub (#6806)
+- 072709d chore: remove extraneous packageManager field (#6814)
+- dd2e24e refactor: move _WORKLET injection to Worklets decorator (#6816)
+- d3ff671 chore: add cmake formatting and linting (#6811)
+- c952069 chore: bump repo to RN 0.76.5 (#6818)
+- 498356f release: 3.17.0-rc.1
+- 04a62ee chore(deps): bump nanoid from 3.3.6 to 3.3.8 in /packages/docs-reanimated (#6815)
+- 864e18c Fix Android validation CI (#6822)
+- 98f7031 chore: remove monorepo-check github action (#6824)
+- e5685df docs: add State of React Native 2024 banner (#6831)
+- db09ffa fix: assert ReanimatedModule is loaded before initializing UI runtime (#6835)
+- f5ab12e docs: Fix FlipCard example on Android/iOS (#6823)
+- d8e5f51 docs: fix State of React Native 2024 banner styles (#6840)
+- e3be7dd Fix `MountingOverrideDelegate` initialization (#6841)
+- 95b756f Fix invalid link in docs (#6845)
+- 26fd3ac Fix `JS_RUNTIME_HERMES` flag definition (#6838)
+- bc9789c chore(deps): bump next from 15.1.1 to 15.1.3 (#6866)
+- 198ae89 Update Gemfile.lock and Podfile.lock (#6874)
+- 40363ca Add `ReanimatedSystraceSection` (#6376)
+- db5435b [Fabric LA] Fix `maybeDropAncestors` condition. (#6663)
+- e1a8cfa Add comment for `canOverrideExistingModule` in `ReactModuleInfo` constructor on Android (#6877)
+- 724fa4b Remove `CoreFeatures.h` include (#6875)
+- d6e711d Remove `shouldYield` commit option (#6876)
+- aa29fd8 Fix respecting Reduced Motion Settings in Layout Animations on Fabric (#6864)
+- f4fbb3a fix: __reanimatedLoggerConfig is not defined on edge runtime (#6880)
+- 18f3c1e Compatibility with 0.77 for findHostInstance (#6883)
+- 5150067 fix: Break circular reference in `LayoutAnimation` (#6671)
+- 3c15d33 Add missing null-check to `findHostInstanceFastPath` (#6884)
+- 4800106 Add missing `@stylexjs/babel-plugin` in web-example (#6886)
+- c6dc67d fix: Unsubscribe dangling listeners (#6696)
+- 01e8454 Bump example apps to React Native 0.77 (#6768)
+- ec7da59 Update compatibility table (#6891)
+- 0b9f39e Enable build with provenance for nightly (#6890)
+- 9b1130e Update versions in compatibility check workflow (#6892)
+- 098166d Drop pre-release tag for nightly version (#6916)
+- a1fb218 Add unhandled exception to TabNavigatorObserver catch block (#6902)
+- 7ceffef useAnimatedKeyboard fixes (iOS) (#6755)
+- fb728f8 Remove unused `REANIMATED_MAJOR_VERSION` in build.gradle (#6927)
+- 6691762 fix: Cocoapods versions used in macos and tvos examples (#6926)
+- 2ea8822 chore: use ruby3 on gh actions (#6930)
+- e9d5842 Fix layout animation crashes on the New Architecture (#6920)
+- 804dce4 Use tabular nums in performance monitor (#6936)
+- 52da9fb Add missing `targets` in build.gradle (#6946)
+- 612b2b4 Move `-DREACT_NATIVE_MINOR_VERSION` from `folly_flags` to `version_flags` in RNReanimated.podspec (#6948)
+- 52c2429 Improve readability of `HEADER_SEARCH_PATHS` in podspecs (#6949)
+- ba8035a Use `install_modules_dependencies` by default in RNWorklets.podspec (#6950)
+- 474e6c6 fix: withSpring color properties flickering (#6821)
+- 5aeaa50 fix: Make `withDecay` compatible with `withRepeat` (#6772)
+- 9ef05e8 fix: `withRepeat` using array not reversing (#6881)
+- 1c27c99 Introduce color interpolation based on the LAB color-space (#6782)
+- 6c9ad67 feat: Add support for boxShadow (#6749)
+- 9590a56 Fix slow animation on iOS (#6954)
+- 24c6a79 fix: layout animation NPE crash (#6897)
+- 751a89c chore: use yarn build when making Reanimated package (#6959)
+- 135e36f Add Keyframe animation caching (#6960)
+- dedeb29 fix: Release build failing because of missing worklets namespace (#6969)
+- 05640c5 fix:`withDecay` animation not starting if inital value is set to 0 (#6769)
+- 655bb73 fix: only intercept events with waiting handlers (#6739)
+- 549c7b4 Make Fabric event receivers init only once (#6907)
+- f42935f Set version for prefab in build.gradle (#6981)
+- d21c722 Fix error "Could not find method isReanimatedExampleApp()" (#6982)
+- 07c2ba7 chore: remove apps from node_modules (#7003)
+- 57530b0 fix: lack of `transform` in keyframes on web caused crash (#7020)
+- 9b25eba fix: `useAnimatedProps` on input component not working on web (#6964)
+- de1e53a chore(deps-dev): bump esbuild from 0.20.2 to 0.25.0 (#7009)
+- 0895c29 Fix web layout transition (#7026)
+- d020ca3 Fix iOS build with `USE_FRAMEWORKS=dynamic` (#7025)
+- d195e7f Remove `install_modules_dependencies_legacy` in RNReanimated.podspec (#7032)
+- 4a06507 chore: cleanup after cherry-pick
+- 27278d6 Add `displayName` to `forwardRef` from `AnimatedComponent` (#6978)
+- fe97a28 [Android] Add support for 16KB page size (#7037)
+- 24d66bc feat(plugin): multiple worklet referencing (#6904)
+- 8d836a0 fix: initializer file not loaded in Expo52 (#6980)
+- 6d4b1da chore: drop React Native 0.74 specific code (#6995)
+- c3ff89f chore: sort TS imports (#6975)
+- d7c3fb1 cherry-pick: Bump RN version to 0.77 stable
+- ca0cede Remaining updates
+- 503c57e cherry-pick: Add 0.78.0-rc.3 support
+- 9d0b5e3 Enable `supportsLocking` in `createWorkletRuntime` (#7033)
+- 1029086 Remove unused reference to runtime from method (#6953)
+- 99b3d0a Fix resolving ref to SVG components on Web (#6885)
+- 40d2c1a Apply changes manually
+- 4d1bd7a Remove (#6837)
+- 3eb31da Handle component internal animated ref (#7054)
+- 64f8ea7 Solve conflict
+- 505fde4 Add extraPlugins and extraOptions to babel plugin (#7072)
+- 77ba526 fix: Break circular reference in `NativeProxy` and `AndroidUIScheduler` (#6697)
+- 3b5bbc5 refactor: explicit invalidations for native and cpp (#6850)
+- a690680 fix: Memory mismanagement with UI scheduled callbacks (#6900)
+- 77c0da5 feature: Detect edge-to-edge and set isStatusBarTranslucentAndroid / isNavigationBarTranslucentAndroid (#6732)
+- b229c2c chore: apply formatting
+- f4fc219 fix: Memory mismanagement with UI scheduled callbacks (#6900)
+- 2c023b9 release: 3.17.0
+
+## Changed Files
+
+| File | Status | + | - |
+| --- | --- | --- | --- |
+| .eslintrc.js | modified | 6 | 1 |
+| .github/workflows/V8-reanimated-build-check-nightly.yml | modified | 24 | 8 |
+| .github/workflows/example-ios-build-check.yml | modified | 5 | 1 |
+| .github/workflows/example-macos-build-check.yml | modified | 6 | 1 |
+| .github/workflows/example-tvos-build-check.yml | modified | 6 | 2 |
+| .github/workflows/expo-devclient-build-check-nightly.yml | modified | 6 | 1 |
+| .github/workflows/monorepo-app-reanimated-build-check-action.yml | removed | 0 | 90 |
+| .github/workflows/monorepo-app-reanimated-build-check-nightly.yml | removed | 0 | 62 |
+| .github/workflows/npm-reanimated-package-build.yml | modified | 4 | 1 |
+| .github/workflows/react-native-nightly-reanimated-build-check-nightly.yml | modified | 15 | 13 |
+| .github/workflows/reanimated-android-validation.yml | modified | 2 | 0 |
+| .github/workflows/reanimated-compatibility-check-nightly.yml | modified | 26 | 10 |
+| .github/workflows/reanimated-release-checks.yml | modified | 2 | 8 |
+| .github/workflows/reanimated-typescript-compatibility-test-nightly.yml | modified | 1 | 4 |
+| .github/workflows/static-framework-reanimated-build-check-nightly.yml | modified | 26 | 9 |
+| .github/workflows/windows-hosted-app-reanimated-build-check-nightly.yml | modified | 21 | 6 |
+| .lintstagedrc-common.js | modified | 1 | 1 |
+| .yarn/patches/@react-native-community-slider-npm-4.5.3-6fedb47a11.patch | removed | 0 | 32 |
+| .yarn/patches/@react-native-picker-picker-npm-2.8.0-9d55144b66.patch | removed | 0 | 30 |
+| .yarn/patches/@shopify-flash-list-npm-1.7.2-2a363895ca.patch | added | 73 | 0 |
+| .yarn/patches/react-native-pager-view-npm-6.4.1-2322ade6e0.patch | removed | 0 | 35 |
+| .yarn/patches/react-native-safe-area-context-npm-4.11.0-f8b3b898df.patch | removed | 0 | 30 |
+| .yarn/patches/react-native-screens-npm-3.34.0-3babbb1374.patch | removed | 0 | 0 |
+| README.md | modified | 3 | 4 |
+| apps/common-app/package.json | modified | 14 | 18 |
+| apps/common-app/src/App.tsx | modified | 88 | 79 |
+| apps/common-app/src/examples/AboutExample.tsx | modified | 1 | 2 |
+| apps/common-app/src/examples/AmountExample.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/AnimatableRefExample.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/AnimatedKeyboardExample.tsx | modified | 6 | 7 |
+| apps/common-app/src/examples/AnimatedSensorAccelerometerExample.tsx | modified | 1 | 1 |
+| apps/common-app/src/examples/AnimatedSensorGravityExample.tsx | modified | 4 | 5 |
+| apps/common-app/src/examples/AnimatedSensorMagneticFieldExample.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/AnimatedSensorRotationExample.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/AnimatedStyleUpdateExample.tsx | modified | 4 | 4 |
+| apps/common-app/src/examples/AnimatedTabBarExample.tsx | modified | 11 | 11 |
+| apps/common-app/src/examples/AnimatedTextWidthExample.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/ArticleProgressExample.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/BabelVersionCheckExample.tsx | modified | 1 | 1 |
+| apps/common-app/src/examples/BokehExample.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/BouncingBoxExample.tsx | modified | 6 | 7 |
+| apps/common-app/src/examples/BubblesExample.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/ChatHeadsExample.tsx | modified | 6 | 6 |
+| apps/common-app/src/examples/ChessExample.tsx | modified | 7 | 8 |
+| apps/common-app/src/examples/ChessboardExample.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/ColorExample.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/ColorInterpolationExample.tsx | modified | 30 | 14 |
+| apps/common-app/src/examples/ComposedHandlerConditionalExample.tsx | modified | 1 | 1 |
+| apps/common-app/src/examples/ComposedHandlerDifferentEventsExample.tsx | modified | 1 | 1 |
+| apps/common-app/src/examples/ComposedHandlerInternalMergingExample.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/CounterExample.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/CubesExample.tsx | modified | 4 | 4 |
+| apps/common-app/src/examples/CustomHandler/AnimatedText.tsx | modified | 1 | 1 |
+| apps/common-app/src/examples/CustomHandler/PagerExample.tsx | modified | 1 | 1 |
+| apps/common-app/src/examples/CustomHandler/PagerExample.web.tsx | modified | 1 | 2 |
+| apps/common-app/src/examples/CustomHandler/useAnimatedPagerHandler.ts | modified | 2 | 2 |
+| apps/common-app/src/examples/DispatchCommandExample.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/DragAndSnapExample.tsx | modified | 7 | 7 |
+| apps/common-app/src/examples/EmojiWaterfallExample.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/EmptyExample.tsx | modified | 1 | 2 |
+| apps/common-app/src/examples/ExtrapolationExample.tsx | modified | 4 | 4 |
+| apps/common-app/src/examples/FrameCallbackExample.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/Game2048Example.tsx | modified | 3 | 4 |
+| apps/common-app/src/examples/GestureHandlerExample.tsx | modified | 7 | 8 |
+| apps/common-app/src/examples/GetViewPropExample.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/IPodExample.tsx | modified | 9 | 9 |
+| apps/common-app/src/examples/InvalidValueAccessExample.tsx | modified | 1 | 2 |
+| apps/common-app/src/examples/InvertedFlatListExample.tsx | modified | 3 | 3 |
+| apps/common-app/src/examples/JSPropsExample.tsx | modified | 7 | 7 |
+| apps/common-app/src/examples/LayoutAnimations/AnimatedList.tsx | modified | 3 | 3 |
+| apps/common-app/src/examples/LayoutAnimations/BBExample.tsx | modified | 1 | 1 |
+| apps/common-app/src/examples/LayoutAnimations/BasicLayoutAnimation.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/LayoutAnimations/BasicNestedAnimation.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/LayoutAnimations/BasicNestedLayoutAnimation.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/LayoutAnimations/BottomTabs.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/LayoutAnimations/Carousel.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/LayoutAnimations/Combined.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/LayoutAnimations/CustomLayout.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/LayoutAnimations/DefaultAnimations.tsx | modified | 9 | 9 |
+| apps/common-app/src/examples/LayoutAnimations/DeleteAncestorOfExiting.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/LayoutAnimations/HabitsExample.tsx | modified | 5 | 5 |
+| apps/common-app/src/examples/LayoutAnimations/KeyframeAnimation.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/LayoutAnimations/LayoutTransitionExample.tsx | modified | 21 | 16 |
+| apps/common-app/src/examples/LayoutAnimations/ListItemLayoutAnimation.tsx | modified | 1 | 1 |
+| apps/common-app/src/examples/LayoutAnimations/Modal.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/LayoutAnimations/ModalNewAPI.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/LayoutAnimations/MountingUnmounting.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/LayoutAnimations/NativeModals.tsx | modified | 3 | 4 |
+| apps/common-app/src/examples/LayoutAnimations/Nested.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/LayoutAnimations/NestedLayoutAnimationConfig.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/LayoutAnimations/NestedNativeStacksWithLayout.tsx | modified | 3 | 4 |
+| apps/common-app/src/examples/LayoutAnimations/OlympicAnimation.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/LayoutAnimations/ReactionsCounterExample.tsx | modified | 8 | 9 |
+| apps/common-app/src/examples/LayoutAnimations/ReducedMotionLayoutExample.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/LayoutAnimations/SpringLayoutAnimation.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/LayoutAnimations/SwipeableList.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/LayoutAnimations/ViewFlattening.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/LayoutAnimations/ViewRecyclingExample.tsx | added | 360 | 0 |
+| apps/common-app/src/examples/LightBoxExample.tsx | modified | 16 | 15 |
+| apps/common-app/src/examples/LiquidSwipe/LiquidButton.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/LiquidSwipe/LiquidSwipe.tsx | modified | 10 | 9 |
+| apps/common-app/src/examples/LiquidSwipe/LiquidSwipe.web.tsx | modified | 1 | 2 |
+| apps/common-app/src/examples/LiquidSwipe/Weave.tsx | modified | 5 | 5 |
+| apps/common-app/src/examples/LogExample.tsx | modified | 1 | 1 |
+| apps/common-app/src/examples/MatrixTransform.tsx | modified | 8 | 8 |
+| apps/common-app/src/examples/MeasureExample.tsx | modified | 1 | 2 |
+| apps/common-app/src/examples/MemoExample.tsx | modified | 6 | 6 |
+| apps/common-app/src/examples/ModifyExample.tsx | modified | 1 | 2 |
+| apps/common-app/src/examples/NewestShadowNodesRegistryRemoveExample.tsx | modified | 1 | 2 |
+| apps/common-app/src/examples/NonLayoutPropAndRenderExample.tsx | modified | 1 | 2 |
+| apps/common-app/src/examples/OldAnimatedSensorExample.tsx | modified | 3 | 3 |
+| apps/common-app/src/examples/OldMeasureExample.tsx | modified | 13 | 12 |
+| apps/common-app/src/examples/OverlappingBoxesExample.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/PendulumExample.tsx | modified | 8 | 8 |
+| apps/common-app/src/examples/PerfomanceMonitorExample.tsx | modified | 3 | 3 |
+| apps/common-app/src/examples/PinExample.tsx | modified | 8 | 8 |
+| apps/common-app/src/examples/PlanetsExample.tsx | modified | 3 | 3 |
+| apps/common-app/src/examples/RainbowExample.tsx | modified | 1 | 2 |
+| apps/common-app/src/examples/ReducedMotionExample.tsx | modified | 12 | 12 |
+| apps/common-app/src/examples/RefExample.tsx | modified | 3 | 3 |
+| apps/common-app/src/examples/RuntimeTests/ReJest/RuntimeTestsApi.ts | modified | 4 | 3 |
+| apps/common-app/src/examples/RuntimeTests/ReJest/RuntimeTestsRunner.tsx | modified | 4 | 3 |
+| apps/common-app/src/examples/RuntimeTests/ReJest/TestComponent.ts | modified | 1 | 0 |
+| apps/common-app/src/examples/RuntimeTests/ReJest/TestRunner/AnimationUpdatesRecorder.ts | modified | 2 | 1 |
+| apps/common-app/src/examples/RuntimeTests/ReJest/TestRunner/CallTrackerRegistry.ts | modified | 1 | 0 |
+| apps/common-app/src/examples/RuntimeTests/ReJest/TestRunner/NotificationRegistry.ts | modified | 5 | 1 |
+| apps/common-app/src/examples/RuntimeTests/ReJest/TestRunner/TestRunner.ts | modified | 9 | 6 |
+| apps/common-app/src/examples/RuntimeTests/ReJest/TestRunner/UpdatesContainer.ts | modified | 2 | 1 |
+| apps/common-app/src/examples/RuntimeTests/ReJest/TestRunner/ValueRegistry.ts | modified | 2 | 1 |
+| apps/common-app/src/examples/RuntimeTests/ReJest/TestRunner/WindowDimensionsMocker.ts | modified | 3 | 2 |
+| apps/common-app/src/examples/RuntimeTests/ReJest/matchers/Comparators.ts | modified | 2 | 0 |
+| apps/common-app/src/examples/RuntimeTests/ReJest/matchers/Matchers.ts | modified | 5 | 5 |
+| apps/common-app/src/examples/RuntimeTests/ReJest/matchers/rawMatchers.ts | modified | 3 | 2 |
+| apps/common-app/src/examples/RuntimeTests/ReJest/matchers/snapshotMatchers.ts | modified | 4 | 4 |
+| apps/common-app/src/examples/RuntimeTests/ReJest/types.ts | modified | 11 | 3 |
+| apps/common-app/src/examples/RuntimeTests/ReJest/utils/SyncUIRunner.ts | modified | 1 | 0 |
+| apps/common-app/src/examples/RuntimeTests/ReJest/utils/drawSnapshotTable.ts | modified | 4 | 3 |
+| apps/common-app/src/examples/RuntimeTests/ReJest/utils/stringFormatUtils.ts | modified | 1 | 0 |
+| apps/common-app/src/examples/RuntimeTests/RuntimeTestsExample.tsx | modified | 12 | 1 |
+| apps/common-app/src/examples/RuntimeTests/tests/StrictMode/StrictMode.test.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/RuntimeTests/tests/TestsOfTestingFramework.test.tsx | modified | 15 | 14 |
+| apps/common-app/src/examples/RuntimeTests/tests/advancedAPI/measure.test.tsx | modified | 6 | 5 |
+| apps/common-app/src/examples/RuntimeTests/tests/advancedAPI/useFrameCallback.test.tsx | modified | 4 | 3 |
+| apps/common-app/src/examples/RuntimeTests/tests/animations/withDecay/basic.test.tsx | modified | 6 | 5 |
+| apps/common-app/src/examples/RuntimeTests/tests/animations/withDelay/addDelays.test.tsx | modified | 9 | 8 |
+| apps/common-app/src/examples/RuntimeTests/tests/animations/withDelay/keepSnapshot.test.tsx | modified | 11 | 10 |
+| apps/common-app/src/examples/RuntimeTests/tests/animations/withSequence/arrays.test.tsx | modified | 7 | 6 |
+| apps/common-app/src/examples/RuntimeTests/tests/animations/withSequence/callbackCascade.test.tsx | modified | 8 | 7 |
+| apps/common-app/src/examples/RuntimeTests/tests/animations/withSequence/cancelAnimation.test.tsx | modified | 4 | 3 |
+| apps/common-app/src/examples/RuntimeTests/tests/animations/withSequence/colors.test.tsx | modified | 6 | 5 |
+| apps/common-app/src/examples/RuntimeTests/tests/animations/withSequence/numbers.test.tsx | modified | 7 | 6 |
+| apps/common-app/src/examples/RuntimeTests/tests/animations/withSpring/variousConfig.test.tsx | modified | 4 | 3 |
+| apps/common-app/src/examples/RuntimeTests/tests/animations/withTiming/arrays.test.tsx | modified | 4 | 3 |
+| apps/common-app/src/examples/RuntimeTests/tests/animations/withTiming/basic.test.tsx | modified | 66 | 39 |
+| apps/common-app/src/examples/RuntimeTests/tests/animations/withTiming/colors.test.tsx | modified | 4 | 3 |
+| apps/common-app/src/examples/RuntimeTests/tests/animations/withTiming/easing.test.tsx | modified | 6 | 5 |
+| apps/common-app/src/examples/RuntimeTests/tests/animations/withTiming/objects.test.tsx | modified | 5 | 4 |
+| apps/common-app/src/examples/RuntimeTests/tests/animations/withTiming/transformMatrices.test.tsx | modified | 4 | 3 |
+| apps/common-app/src/examples/RuntimeTests/tests/core/cancelAnimation.test.tsx | modified | 10 | 9 |
+| apps/common-app/src/examples/RuntimeTests/tests/core/onLayout.test.tsx | added | 72 | 0 |
+| apps/common-app/src/examples/RuntimeTests/tests/core/useAnimatedStyle/reuseAnimatedStyle.test.tsx | modified | 5 | 4 |
+| apps/common-app/src/examples/RuntimeTests/tests/core/useDerivedValue/basic.test.tsx | modified | 104 | 75 |
+| apps/common-app/src/examples/RuntimeTests/tests/core/useDerivedValue/chain.test.tsx | modified | 4 | 3 |
+| apps/common-app/src/examples/RuntimeTests/tests/core/useSharedValue/animationsCompilerApi.test.tsx | added | 154 | 0 |
+| apps/common-app/src/examples/RuntimeTests/tests/core/useSharedValue/arrays.test.tsx | modified | 4 | 3 |
+| apps/common-app/src/examples/RuntimeTests/tests/core/useSharedValue/assigningObjects.test.tsx | modified | 4 | 3 |
+| apps/common-app/src/examples/RuntimeTests/tests/core/useSharedValue/numbers.test.tsx | modified | 4 | 3 |
+| apps/common-app/src/examples/RuntimeTests/tests/core/useSharedValue/objects.test.tsx | modified | 2 | 1 |
+| apps/common-app/src/examples/RuntimeTests/tests/layoutAnimations/entering/enteringColors.test.tsx | modified | 3 | 2 |
+| apps/common-app/src/examples/RuntimeTests/tests/layoutAnimations/entering/predefinedEntering.test.tsx | modified | 18 | 17 |
+| apps/common-app/src/examples/RuntimeTests/tests/layoutAnimations/exiting/predefinedExiting.test.tsx | modified | 20 | 19 |
+| apps/common-app/src/examples/RuntimeTests/tests/layoutAnimations/keyframe/basic.test.tsx | modified | 6 | 5 |
+| apps/common-app/src/examples/RuntimeTests/tests/layoutAnimations/layout/TestComponents.tsx | modified | 3 | 2 |
+| apps/common-app/src/examples/RuntimeTests/tests/layoutAnimations/layout/custom.test.tsx | modified | 7 | 6 |
+| apps/common-app/src/examples/RuntimeTests/tests/layoutAnimations/layout/positionAndSize.test.tsx | modified | 3 | 2 |
+| apps/common-app/src/examples/RuntimeTests/tests/layoutAnimations/layout/predefinedLayoutPosition.test.tsx | modified | 3 | 2 |
+| apps/common-app/src/examples/RuntimeTests/tests/plugin/contextObjects.test.tsx | modified | 3 | 2 |
+| apps/common-app/src/examples/RuntimeTests/tests/plugin/fileWorkletization.test.tsx | modified | 4 | 3 |
+| apps/common-app/src/examples/RuntimeTests/tests/plugin/fileWorkletization.ts | modified | 8 | 3 |
+| apps/common-app/src/examples/RuntimeTests/tests/plugin/recursion.test.tsx | modified | 10 | 11 |
+| apps/common-app/src/examples/RuntimeTests/tests/plugin/workletClasses.test.tsx | modified | 46 | 2 |
+| apps/common-app/src/examples/RuntimeTests/tests/props/boxShadow.test.tsx | added | 107 | 0 |
+| apps/common-app/src/examples/RuntimeTests/tests/utilities/relativeCoords.test.tsx | modified | 3 | 2 |
+| apps/common-app/src/examples/ScreenStackExample.tsx | modified | 15 | 9 |
+| apps/common-app/src/examples/ScreenStackHeaderConfigBackgroundColorExample.tsx | modified | 7 | 8 |
+| apps/common-app/src/examples/ScreenTransitionExample.tsx | modified | 4 | 4 |
+| apps/common-app/src/examples/ScreenTransitionExample.web.tsx | modified | 1 | 2 |
+| apps/common-app/src/examples/ScrollEventExample.tsx | modified | 4 | 4 |
+| apps/common-app/src/examples/ScrollToExample.tsx | modified | 13 | 14 |
+| apps/common-app/src/examples/ScrollViewExample.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/ScrollViewOffsetExample.tsx | modified | 1 | 2 |
+| apps/common-app/src/examples/ScrollableViewExample.tsx | modified | 6 | 6 |
+| apps/common-app/src/examples/SetNativePropsExample.tsx | modified | 6 | 7 |
+| apps/common-app/src/examples/ShareableFreezingExample.tsx | modified | 3 | 4 |
+| apps/common-app/src/examples/ShareablesExample.tsx | modified | 1 | 2 |
+| apps/common-app/src/examples/SharedElementTransitions/BorderRadii.tsx | modified | 3 | 3 |
+| apps/common-app/src/examples/SharedElementTransitions/Card.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/SharedElementTransitions/ChangeTheme.tsx | modified | 7 | 9 |
+| apps/common-app/src/examples/SharedElementTransitions/CustomTransition.tsx | modified | 4 | 4 |
+| apps/common-app/src/examples/SharedElementTransitions/DuplicateTags.tsx | modified | 2 | 1 |
+| apps/common-app/src/examples/SharedElementTransitions/FlatList.tsx | modified | 5 | 5 |
+| apps/common-app/src/examples/SharedElementTransitions/Gallery.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/SharedElementTransitions/ImageStack.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/SharedElementTransitions/LayoutAnimation.tsx | modified | 4 | 6 |
+| apps/common-app/src/examples/SharedElementTransitions/ManyScreens.tsx | modified | 5 | 5 |
+| apps/common-app/src/examples/SharedElementTransitions/ManyTags.tsx | modified | 4 | 3 |
+| apps/common-app/src/examples/SharedElementTransitions/Modals.tsx | modified | 6 | 5 |
+| apps/common-app/src/examples/SharedElementTransitions/NestedRotation.tsx | modified | 4 | 4 |
+| apps/common-app/src/examples/SharedElementTransitions/NestedStacks.tsx | modified | 5 | 5 |
+| apps/common-app/src/examples/SharedElementTransitions/Profiles.tsx | modified | 10 | 10 |
+| apps/common-app/src/examples/SharedElementTransitions/ProgressTransition.tsx | modified | 6 | 6 |
+| apps/common-app/src/examples/SharedElementTransitions/ReducedMotionSharedExample.tsx | modified | 5 | 7 |
+| apps/common-app/src/examples/SharedElementTransitions/RestoreState.tsx | modified | 4 | 4 |
+| apps/common-app/src/examples/SharedElementTransitions/TabNavigatorExample.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/SharedElementTransitions/TransitionRestart.tsx | modified | 6 | 6 |
+| apps/common-app/src/examples/SharedStyleExample.tsx | modified | 4 | 4 |
+| apps/common-app/src/examples/StrictDOMExample.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/SvgExample.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/SwipeableListExample.tsx | modified | 10 | 10 |
+| apps/common-app/src/examples/TransformExample.tsx | modified | 2 | 3 |
+| apps/common-app/src/examples/UpdatePropsPerfExample.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/VolumeExample.tsx | modified | 14 | 14 |
+| apps/common-app/src/examples/WidthExample.tsx | modified | 1 | 2 |
+| apps/common-app/src/examples/WithClampExample.tsx | modified | 5 | 5 |
+| apps/common-app/src/examples/WithoutBabelPluginExample.tsx | modified | 7 | 7 |
+| apps/common-app/src/examples/WobbleExample.tsx | modified | 4 | 4 |
+| apps/common-app/src/examples/WorkletExample.tsx | modified | 8 | 9 |
+| apps/common-app/src/examples/WorkletFactoryCrashExample.tsx | modified | 1 | 1 |
+| apps/common-app/src/examples/WorkletRuntimeExample.tsx | modified | 2 | 2 |
+| apps/common-app/src/examples/index.ts | modified | 70 | 65 |
+| apps/fabric-example/Gemfile | modified | 2 | 0 |
+| apps/fabric-example/Gemfile.lock | modified | 33 | 20 |
+| apps/fabric-example/android/app/build.gradle | modified | 1 | 1 |
+| apps/fabric-example/android/build.gradle | modified | 2 | 10 |
+| apps/fabric-example/android/settings.gradle | modified | 2 | 10 |
+| apps/fabric-example/common-app | added | 1 | 0 |
+| apps/fabric-example/ios/FabricExample.xcodeproj/project.pbxproj | modified | 8 | 227 |
+| apps/fabric-example/ios/FabricExample/AppDelegate.h | removed | 0 | 6 |
+| apps/fabric-example/ios/FabricExample/AppDelegate.mm | removed | 0 | 36 |
+| apps/fabric-example/ios/FabricExample/AppDelegate.swift | added | 30 | 0 |
+| apps/fabric-example/ios/FabricExample/main.m | removed | 0 | 10 |
+| apps/fabric-example/ios/FabricExampleTests/FabricExampleTests.m | removed | 0 | 66 |
+| apps/fabric-example/ios/FabricExampleTests/Info.plist | removed | 0 | 24 |
+| apps/fabric-example/ios/Podfile | modified | 0 | 5 |
+| apps/fabric-example/ios/Podfile.lock | modified | 599 | 593 |
+| apps/fabric-example/metro.config.js | modified | 1 | 2 |
+| apps/fabric-example/package.json | modified | 25 | 23 |
+| apps/macos-example/Gemfile | modified | 3 | 4 |
+| apps/macos-example/Gemfile.lock | modified | 36 | 25 |
+| apps/macos-example/macos/MacOSExample.xcodeproj/project.pbxproj | modified | 29 | 2 |
+| apps/macos-example/macos/Podfile | modified | 1 | 6 |
+| apps/macos-example/macos/Podfile.lock | modified | 950 | 355 |
+| apps/macos-example/metro.config.js | modified | 0 | 1 |
+| apps/macos-example/package.json | modified | 23 | 21 |
+| apps/next-example/package.json | modified | 3 | 0 |
+| apps/next-example/pages/_app.js | modified | 1 | 0 |
+| apps/next-example/pages/index.js | modified | 1 | 0 |
+| apps/next-example/pages/noreanimated.js | modified | 1 | 0 |
+| apps/next-example/pages/reanimated.js | modified | 1 | 0 |
+| apps/next-example/pages/ssg.js | modified | 1 | 0 |
+| apps/next-example/pages/ssr.js | modified | 1 | 0 |
+| apps/next-example/pages/test.js | modified | 1 | 0 |
+| apps/paper-example/Gemfile | modified | 2 | 0 |
+| apps/paper-example/Gemfile.lock | modified | 3 | 3 |
+| apps/paper-example/android/app/build.gradle | modified | 1 | 1 |
+| apps/paper-example/android/build.gradle | modified | 2 | 10 |
+| apps/paper-example/android/settings.gradle | modified | 2 | 10 |
+| apps/paper-example/common-app | added | 1 | 0 |
+| apps/paper-example/ios/Podfile | modified | 0 | 5 |
+| apps/paper-example/ios/Podfile.lock | modified | 605 | 558 |
+| apps/paper-example/ios/ReanimatedExample.xcodeproj/project.pbxproj | modified | 8 | 227 |
+| apps/paper-example/ios/ReanimatedExample/AppDelegate.h | removed | 0 | 6 |
+| apps/paper-example/ios/ReanimatedExample/AppDelegate.mm | removed | 0 | 31 |
+| apps/paper-example/ios/ReanimatedExample/AppDelegate.swift | added | 30 | 0 |
+| apps/paper-example/ios/ReanimatedExample/main.m | removed | 0 | 10 |
+| apps/paper-example/ios/ReanimatedExampleTests/Info.plist | removed | 0 | 24 |
+| apps/paper-example/ios/ReanimatedExampleTests/ReanimatedExampleTests.m | removed | 0 | 66 |
+| apps/paper-example/metro.config.js | modified | 1 | 2 |
+| apps/paper-example/package.json | modified | 22 | 24 |
+| apps/tvos-example/.gitignore | modified | 9 | 4 |
+| apps/tvos-example/Gemfile | modified | 5 | 4 |
+| apps/tvos-example/Gemfile.lock | modified | 35 | 22 |
+| apps/tvos-example/android/app/build.gradle | added | 119 | 0 |
+| apps/tvos-example/android/app/debug.keystore | added | 0 | 0 |
+| apps/tvos-example/android/app/proguard-rules.pro | added | 10 | 0 |
+| apps/tvos-example/android/app/src/debug/AndroidManifest.xml | added | 9 | 0 |
+| apps/tvos-example/android/app/src/main/AndroidManifest.xml | added | 32 | 0 |
+| apps/tvos-example/android/app/src/main/java/com/tvosexample/MainActivity.kt | added | 22 | 0 |
+| apps/tvos-example/android/app/src/main/java/com/tvosexample/MainApplication.kt | added | 44 | 0 |
+| apps/tvos-example/android/app/src/main/res/drawable/rn_edit_text_material.xml | added | 37 | 0 |
+| apps/tvos-example/android/app/src/main/res/drawable/tv_banner.png | added | 0 | 0 |
+| apps/tvos-example/android/app/src/main/res/mipmap-hdpi/ic_launcher.png | added | 0 | 0 |
+| apps/tvos-example/android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png | added | 0 | 0 |
+| apps/tvos-example/android/app/src/main/res/mipmap-mdpi/ic_launcher.png | added | 0 | 0 |
+| apps/tvos-example/android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png | added | 0 | 0 |
+| apps/tvos-example/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png | added | 0 | 0 |
+| apps/tvos-example/android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png | added | 0 | 0 |
+| apps/tvos-example/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png | added | 0 | 0 |
+| apps/tvos-example/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png | added | 0 | 0 |
+| apps/tvos-example/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png | added | 0 | 0 |

@@ -1,0 +1,16 @@
+---
+pid: 25653
+cwd: "/Users/stark/Desktop/work/RN/circleapp"
+command: "set -o pipefail\nexport LANG=en_US.UTF-8\nexport LC_ALL=en_US.UTF-8\nunset HERMES_ENGINE_TARBALL_PATH\nLOG=/Users/stark/Desktop/work/RN/circleapp/ios/build/logs/pod-install-20260919-3.log\ncd ios\npod install > \"$LOG\" 2>&1\necho \"POD_INSTALL_EXIT:$?\" | tee -a \"$LOG\""
+title: "pod install after Reanimated 3.19.5 upgrade"
+status: succeeded
+started_at: 2026-09-19T09:43:08.394Z
+running_for_ms: 60585    
+---
+POD_INSTALL_EXIT:0
+
+---
+exit_code: 0
+elapsed_ms: 60585
+ended_at: 2026-09-19T09:44:08.979Z
+---

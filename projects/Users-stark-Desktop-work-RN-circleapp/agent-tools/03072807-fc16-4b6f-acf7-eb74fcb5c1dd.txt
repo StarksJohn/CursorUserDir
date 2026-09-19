@@ -1,0 +1,4673 @@
+# Solved! Build error on expo 54 / react native 0.81 (working build demonstrator script linked in comments now)
+
+- State: closed
+- Author: mzaien
+- Created: 2025-08-18T03:37:31Z
+- Updated: 2026-09-15T10:19:54Z
+- Repository: invertase/react-native-firebase
+- Number: #8657
+
+## Labels
+
+- type: bug
+- platform: ios
+- impact: build-error
+- platform: expo
+- resolution: solution-provided
+
+---
+
+# Maintainer edit: there is a build demonstrator now that works 100% with Expo 53, 54, 55 - see this comment ---> https://github.com/invertase/react-native-firebase/issues/8657#issuecomment-3764209769 (the main trick is `expo-build-properties` usage, with configuration to `forceStaticLinking` for the correct pods, all commented in the demonstrator script)
+
+## Issue
+
+build fails on the new preview of expo 54 / react native 0.81
+ 
+---
+
+## Project Files
+
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+
+### Javascript
+
+ Click To Expand 
+ 
+
+#### `package.json`:
+using latest version using `bunx expo install expo@next --check` and updated firebase to latest
+```json
+ "@react-native-firebase/analytics": "^23.0.1",
+    "@react-native-firebase/app": "^23.0.1",
+    "@react-native-firebase/messaging": "^23.0.1",
+```
+
+#### `firebase.json` for react-native-firebase v6:
+
+```json
+{
+  "react-native": {
+    "messaging_ios_auto_registration_for_remote_messages": true
+  }
+}
+```
+
+ 
+
+### iOS
+
+ Click To Expand 
+ 
+
+#### `ios/Podfile`:
+
+- [ ] I'm not using Pods
+- [x] I'm using Pods and my Podfile looks like:
+
+```ruby
+require File.join(File.dirname(`node --print "require.resolve('expo/package.json')"`), "scripts/autolinking")
+require File.join(File.dirname(`node --print "require.resolve('react-native/package.json')"`), "scripts/react_native_pods")
+
+require 'json'
+podfile_properties = JSON.parse(File.read(File.join(__dir__, 'Podfile.properties.json'))) rescue {}
+
+ENV['RCT_NEW_ARCH_ENABLED'] = '0' if podfile_properties['newArchEnabled'] == 'false'
+ENV['EX_DEV_CLIENT_NETWORK_INSPECTOR'] = podfile_properties['EX_DEV_CLIENT_NETWORK_INSPECTOR']
+ENV['RCT_USE_RN_DEP'] = '1' if podfile_properties['ios.buildReactNativeFromSource'] != 'true' && podfile_properties['newArchEnabled'] != 'false'
+ENV['RCT_USE_PREBUILT_RNCORE'] = '1' if podfile_properties['ios.buildReactNativeFromSource'] != 'true' && podfile_properties['newArchEnabled'] != 'false'
+platform :ios, podfile_properties['ios.deploymentTarget'] || '15.1'
+
+prepare_react_native_project!
+
+target 'App' do
+  use_expo_modules!
+# @generated begin add Moyasar SDK to Podfile - expo prebuild (DO NOT MODIFY) sync-40c0c3dbaa1d7876902dba7e94b7185d377221a0
+pod 'MoyasarSdk', git: 'https://github.com/moyasar/moyasar-ios-pod.git', :tag => 'v3.0.0'
+# @generated end add Moyasar SDK to Podfile
+
+  if ENV['EXPO_USE_COMMUNITY_AUTOLINKING'] == '1'
+    config_command = ['node', '-e', "process.argv=['', '', 'config'];require('@react-native-community/cli').run()"];
+  else
+    config_command = [
+      'npx',
+      'expo-modules-autolinking',
+      'react-native-config',
+      '--json',
+      '--platform',
+      'ios'
+    ]
+  end
+
+  config = use_native_modules!(config_command)
+
+  use_frameworks! :linkage => podfile_properties['ios.useFrameworks'].to_sym if podfile_properties['ios.useFrameworks']
+  use_frameworks! :linkage => ENV['USE_FRAMEWORKS'].to_sym if ENV['USE_FRAMEWORKS']
+
+  use_react_native!(
+    :path => config[:reactNativePath],
+    :hermes_enabled => podfile_properties['expo.jsEngine'] == nil || podfile_properties['expo.jsEngine'] == 'hermes',
+    # An absolute path to your application root.
+    :app_path => "#{Pod::Config.instance.installation_root}/..",
+    :privacy_file_aggregation_enabled => podfile_properties['apple.privacyManifestAggregationEnabled'] != 'false',
+  )
+
+  post_install do |installer|
+    react_native_post_install(
+      installer,
+      config[:reactNativePath],
+      :mac_catalyst_enabled => false,
+      :ccache_enabled => podfile_properties['apple.ccacheEnabled'] == 'true',
+    )
+  end
+end
+```
+
+#### `AppDelegate.swift`:
+
+```swift
+import Expo
+// @generated begin Intercom header - expo prebuild (DO NOT MODIFY) sync-f6fd06e08d30c2c66260b72f45072d393b20a2dc
+import intercom_react_native
+// @generated end Intercom header
+import Security
+import FirebaseCore
+import React
+import ReactAppDependencyProvider
+
+...
+
+    window = UIWindow(frame: UIScreen.main.bounds)
+// @generated begin @react-native-firebase/app-didFinishLaunchingWithOptions - expo prebuild (DO NOT MODIFY) sync-10e8520570672fd76b2403b7e1e27f5198a6349a
+clearKeychainIfNecessary()
+FirebaseApp.configure()
+// @generated end @react-native-firebase/app-didFinishLaunchingWithOptions
+```
+
+ 
+ 
+
+## Environment
+
+ Click To Expand 
+ 
+
+**`react-native info` output:**
+
+ 
+
+```
+System:
+  OS: macOS 15.6
+  CPU: (12) arm64 Apple M2 Pro
+  Memory: 308.64 MB / 16.00 GB
+  Shell:
+    version: "5.9"
+    path: /bin/zsh
+Binaries:
+  Node:
+    version: 22.17.0
+    path: ~/.local/share/mise/installs/node/22.17.0/bin/node
+  Yarn:
+    version: 1.22.22
+    path: ~/.yarn/bin/yarn
+  npm:
+    version: 10.9.2
+    path: ~/.local/share/mise/installs/node/22.17.0/bin/npm
+  Watchman:
+    version: 2025.08.11.00
+    path: /opt/homebrew/bin/watchman
+Managers:
+  CocoaPods:
+    version: 1.16.2
+    path: /opt/homebrew/bin/pod
+SDKs:
+  iOS SDK:
+    Platforms:
+      - DriverKit 24.5
+      - iOS 18.5
+      - macOS 15.5
+      - tvOS 18.5
+      - visionOS 2.5
+      - watchOS 11.5
+  Android SDK: Not Found
+IDEs:
+  Android Studio: 2025.1 AI-251.26094.121.2512.13840223
+  Xcode:
+    version: 16.4/16F6
+    path: /usr/bin/xcodebuild
+Languages:
+  Java:
+    version: 17.0.11
+    path: /usr/bin/javac
+  Ruby:
+    version: 3.4.5
+    path: /opt/homebrew/opt/ruby/bin/ruby
+npmPackages:
+  "@react-native-community/cli":
+    installed: 15.1.3
+    wanted: ^15.1.2
+  react:
+    installed: 19.1.0
+    wanted: 19.1.0
+  react-native:
+    installed: 0.81.0
+    wanted: 0.81.0
+  react-native-macos: Not Found
+npmGlobalPackages:
+  "*react-native*": Not Found
+Android:
+  hermesEnabled: true
+  newArchEnabled: true
+iOS:
+  hermesEnabled: true
+  newArchEnabled: true
+```
+
+ 
+
+- **Platform that you're experiencing the issue on**:
+ - [x] iOS
+ - [ ] Android
+ - [ ] **iOS** but have not tested behavior on Android
+ - [ ] **Android** but have not tested behavior on iOS
+ - [ ] Both
+- **`react-native-firebase` version you're using that has this issue:**
+ - `e.g. 5.4.3`
+- **`Firebase` module(s) you're using that has the issue:**
+ - `e.g. Instance ID`
+- **Are you using `TypeScript`?**
+ - `Y/N` & `VERSION`
+
+ 
+ 
+
+ 
+ 
+
+  Can confirm this too. Manually changing Xcode settings in an Expo Managed workflow isn’t ideal and I wasn’t able to solve this.
+
+**mzaien** commented on 2025-08-20T02:53:26Z:
+
+> I made a plugin to make it work with expo, got the fixes from https://github.com/invertase/react-native-firebase/issues/6933
+> ```js
+> const {withPodfile} = require('@expo/config-plugins');
+> const {applyImplementation} = require('./utils');
+> 
+> module.exports = function withSwiftKeychainClear(config) {
+> return withPodfile(config, config => {
+> // firebase static framework
+> config.modResults.contents = applyImplementation(
+> config.modResults.contents,
+> "use_frameworks! :linkage => ENV['USE_FRAMEWORKS'].to_sym if ENV['USE_FRAMEWORKS']",
+> ' $RNFirebaseAsStaticFramework = true',
+> );
+> config.modResults.contents = applyImplementation(
+> config.modResults.contents,
+> `react_native_post_install(
+> installer,
+> config[:reactNativePath],
+> :mac_catalyst_enabled => false,
+> :ccache_enabled => podfile_properties['apple.ccacheEnabled'] == 'true',
+> )`,
+> ` installer.pods_project.build_configurations.each do |config|
+> config.build_settings["CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES"] = "YES"
+> end`,
+> );
+> return config;
+> });
+> };
+> 
+> ```
+> 
+> applyImplementation code 
+> ```js
+> function applyImplementation(contents, find, add, replace, addBefore = false) {
+> // Make sure the project does not have the settings already
+> if (!contents.includes(add)) {
+> if (replace) {
+> return contents.replace(find, add);
+> }
+> if (addBefore) {
+> return contents.replace(find, `${add}\n${find}`);
+> }
+> return contents.replace(find, `${find}\n${add}`);
+> }
+> 
+> return contents;
+> }
+> 
+> module.exports = {
+> applyImplementation,
+> };
+> ```
+
+- github-actions[bot] added label "Needs Attention"
+
+- github-actions[bot] removed label "blocked: customer-response"
+
+**MichaelVerdon** commented on 2025-08-20T06:10:11Z:
+
+> Hey there @mzaien does this mean your issue is resolved?
+
+- mzaien mentioned
+
+- mzaien subscribed
+
+- MichaelVerdon removed label "Needs Attention"
+
+- MichaelVerdon added label "blocked: customer-response"
+
+**JustJoostNL** commented on 2025-08-20T07:07:27Z:
+
+> While the config plugin solution will probably work, I don’t think it is something for the long-term, because everyone has to add that. Ideally some fix gets implemented in this library.
+
+**mzaien** commented on 2025-08-20T07:22:20Z:
+
+> @MichaelVerdon I thought I was done but got new errors 
+> 
+> ```
+> ❌ (node_modules/@react-native-firebase/messaging/ios/RNFBMessaging/RNFBMessaging+AppDelegate.h:26:21)
+> 
+> 24 | @interface RNFBMessagingAppDelegate : NSObject 
+> 25 | 
+> > 26 | @property _Nullable RCTPromiseRejectBlock registerPromiseRejecter;
+> | ^ declaration of 'RCTPromiseRejectBlock' must be imported from module 'RNFBApp.RNFBAppModule' before it is required
+> 27 | @property _Nullable RCTPromiseResolveBlock registerPromiseResolver;
+> 28 | @property(nonatomic, strong) NSCondition *conditionBackgroundMessageHandlerSet;
+> 29 | @property(nonatomic) BOOL backgroundMessageHandlerSet;
+> 
+> › Compiling @react-native-firebase/messaging Pods/RNFBMessaging » RNFBMessaging+AppDelegate.m
+> 
+> ❌ (node_modules/@react-native-firebase/messaging/ios/RNFBMessaging/RNFBMessaging+AppDelegate.h:26:21)
+> 
+> 24 | @interface RNFBMessagingAppDelegate : NSObject 
+> 25 | 
+> > 26 | @property _Nullable RCTPromiseRejectBlock registerPromiseRejecter;
+> | ^ declaration of 'RCTPromiseRejectBlock' must be imported from module 'RNFBApp.RNFBAppModule' before it is required
+> 27 | @property _Nullable RCTPromiseResolveBlock registerPromiseResolver;
+> 28 | @property(nonatomic, strong) NSCondition *conditionBackgroundMessageHandlerSet;
+> 29 | @property(nonatomic) BOOL backgroundMessageHandlerSet;
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/messaging/ios/RNFBMessaging/RNFBMessaging+AppDelegate.m:101:10)
+> 
+> 99 | if (_registerPromiseResolver != nil) {
+> 100 | _registerPromiseResolver(@(
+> > 101 | [RCTConvert BOOL:@([UIApplication sharedApplication].isRegisteredForRemoteNotifications)]));
+> | ^ declaration of 'RCTConvert' must be imported from module 'RNFBApp.RCTConvert_FIRApp' before it is required
+> 102 | _registerPromiseResolver = nil;
+> 103 | _registerPromiseRejecter = nil;
+> 104 | }
+> 
+> › Compiling react-native-device-info Pods/RNDeviceInfo » RNDeviceInfo-dummy.m
+> › Compiling react-native-device-info Pods/RNDeviceInfo » DeviceUID.m
+> › Compiling @react-native-firebase/messaging Pods/RNFBMessaging » RNFBMessagingModule.m
+> 
+> ❌ (node_modules/@react-native-firebase/messaging/ios/RNFBMessaging/RNFBMessaging+AppDelegate.h:26:21)
+> 
+> 24 | @interface RNFBMessagingAppDelegate : NSObject 
+> 25 | 
+> > 26 | @property _Nullable RCTPromiseRejectBlock registerPromiseRejecter;
+> | ^ declaration of 'RCTPromiseRejectBlock' must be imported from module 'RNFBApp.RNFBAppModule' before it is required
+> 27 | @property _Nullable RCTPromiseResolveBlock registerPromiseResolver;
+> 28 | @property(nonatomic, strong) NSCondition *conditionBackgroundMessageHandlerSet;
+> 29 | @property(nonatomic) BOOL backgroundMessageHandlerSet;
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/messaging/ios/RNFBMessaging/RNFBMessagingModule.m:33:1)
+> 
+> 31 | #pragma mark Module Setup
+> 32 | 
+> > 33 | RCT_EXPORT_MODULE();
+> | ^ type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+> 34 | 
+> 35 | - (id)init {
+> 36 | self = [super init];
+> ```
+
+- MichaelVerdon mentioned
+
+- MichaelVerdon subscribed
+
+- github-actions[bot] added label "Needs Attention"
+
+- github-actions[bot] removed label "blocked: customer-response"
+
+- unendingblue subscribed
+
+- thulstrup subscribed
+
+- janwiebe-jump subscribed
+
+- lrenzetti subscribed
+
+- weizhe412 subscribed
+
+- byanes subscribed
+
+- anudit subscribed
+
+- nilpntr subscribed
+
+- shahnewaz469 subscribed
+
+**jrhager84** commented on 2025-08-26T03:05:45Z:
+
+> I'm having a similar issue with Expo 53. How are you guys installing firebase with expo 53 and new arch?
+
+**anudit** commented on 2025-08-26T03:07:27Z:
+
+> Running into similar issues, looks like a fix is slated for `0.81.1` https://github.com/facebook/react-native/pull/53432
+> 
+> ```bash
+> › Compiling @react-native-firebase/app-check Pods/RNFBAppCheck » RNFBAppCheckProviderFactory.m
+> 
+> ❌ (/Users/anudit/Documents/GitHub/omnidapp/node_modules/@react-native-firebase/app/ios/RNFBApp/RCTConvert+FIRApp.h:19:9)
+> 
+> 17 |
+> 18 | #import 
+> > 19 | #import 
+> | ^ include of non-modular header inside framework module 'RNFBApp.RCTConvert_FIRApp': '/Users/anudit/Documents/GitHub/omnidapp/ios/Pods/Headers/Public/React-Core/React/RCTConvert.h' [-Werror,-Wnon-modular-include-in-framework-module]
+> 20 |
+> 21 | @interface RCTConvert (FIRApp)
+> 22 | + (FIRApp *)firAppFromString:(NSString *)appName;
+> 
+> 
+> ❌ (/Users/anudit/Documents/GitHub/omnidapp/node_modules/@react-native-firebase/app/ios/RNFBApp/RCTConvert+FIROptions.h:19:9)
+> 
+> 17 |
+> 18 | #import 
+> > 19 | #import 
+> | ^ include of non-modular header inside framework module 'RNFBApp.RCTConvert_FIROptions': '/Users/anudit/Documents/GitHub/omnidapp/ios/Pods/Headers/Public/React-Core/React/RCTConvert.h' [-Werror,-Wnon-modular-include-in-framework-module]
+> 20 |
+> 21 | @interface RCTConvert (FIROptions)
+> 22 | + (FIROptions *)convertRawOptions:(NSDictionary *)rawOptions;
+> 
+> 
+> ❌ (/Users/anudit/Documents/GitHub/omnidapp/node_modules/@react-native-firebase/app/ios/RNFBApp/RNFBAppModule.h:20:9)
+> 
+> 18 | #import 
+> 19 |
+> > 20 | #import 
+> | ^ include of non-modular header inside framework module 'RNFBApp.RNFBAppModule': '/Users/anudit/Documents/GitHub/omnidapp/ios/Pods/Headers/Public/React-Core/React/RCTBridgeModule.h' [-Werror,-Wnon-modular-include-in-framework-module]
+> 21 |
+> 22 | @interface RNFBAppModule : NSObject 
+> 23 |
+> 
+> 
+> ❌ (/Users/anudit/Documents/GitHub/omnidapp/node_modules/@react-native-firebase/app/ios/RNFBApp/RNFBRCTEventEmitter.h:19:9)
+> 
+> 17 |
+> 18 | #import 
+> > 19 | #import 
+> | ^ include of non-modular header inside framework module 'RNFBApp.RNFBRCTEventEmitter': '/Users/anudit/Documents/GitHub/omnidapp/ios/Pods/Headers/Public/React-Core/React/RCTEventEmitter.h' [-Werror,-Wnon-modular-include-in-framework-module]
+> 20 |
+> 21 | /**
+> 22 | * Listeners for Firebase events and emits them to the JS layer
+> 
+> 
+> ❌ (/Users/anudit/Documents/GitHub/omnidapp/node_modules/@react-native-firebase/app/ios/RNFBApp/RNFBSharedUtils.h:22:9)
+> 
+> 20 |
+> 21 | #import 
+> > 22 | #import 
+> | ^ include of non-modular header inside framework module 'RNFBApp.RNFBSharedUtils': '/Users/anudit/Documents/GitHub/omnidapp/ios/Pods/Headers/Public/React-Core/React/RCTBridgeModule.h' [-Werror,-Wnon-modular-include-in-framework-module]
+> 23 |
+> 24 | #ifdef DEBUG
+> 25 | #define DLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+> 
+> 
+> ❌ (/Users/anudit/Documents/GitHub/omnidapp/node_modules/@react-native-firebase/app/ios/RNFBApp/RNFBUtilsModule.h:21:9)
+> 
+> 19 | #import 
+> 20 |
+> > 21 | #import 
+> | ^ include of non-modular header inside framework module 'RNFBApp.RNFBUtilsModule': '/Users/anudit/Documents/GitHub/omnidapp/ios/Pods/Headers/Public/React-Core/React/RCTBridgeModule.h' [-Werror,-Wnon-modular-include-in-framework-module]
+> 22 |
+> 23 | @interface RNFBUtilsModule : NSObject 
+> 24 |
+> 
+> 
+> ❌ (/Users/anudit/Documents/GitHub/omnidapp/node_modules/@react-native-firebase/app-check/ios/RNFBAppCheck/RNFBAppCheckProviderFactory.m:19:9)
+> 
+> 17 |
+> 18 | #import "RNFBAppCheckProviderFactory.h"
+> > 19 | #import "RNFBApp/RNFBSharedUtils.h"
+> | ^ could not build module 'RNFBApp'
+> 20 |
+> 21 | @implementation RNFBAppCheckProviderFactory
+> 22 |
+> 
+> › Compiling @react-native-firebase/app-check Pods/RNFBAppCheck » RNFBAppCheckProvider.m
+> ```
+
+**MichaelVerdon** commented on 2025-08-26T11:39:29Z:
+
+> Historically, setting 
+> ```
+> CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES
+> ```
+> in XCode was a temporary workaround maybe this could help for now?
+> 
+> Also considering fixes linked by @anudit I suspect this is a react native issue and something we may not be able to address here unfortunately.
+
+- MichaelVerdon removed label "Needs Attention"
+
+- MichaelVerdon added label "blocked: customer-response"
+
+- anudit mentioned
+
+- anudit subscribed
+
+- MichaelVerdon added label "blocked: react-native"
+
+- MichaelVerdon removed label "blocked: customer-response"
+
+- MichaelVerdon added label "Needs Attention"
+
+- ailtonvivaz subscribed
+
+- LunatiqueCoder subscribed
+
+**LeonDvlpmnt** commented on 2025-08-29T09:39:02Z:
+
+> Setting useFrameworks to static and buildReactNativeFromSource to true in the expo config seems to solve this issue:
+> 
+> ```
+> [
+> "expo-build-properties",
+> {
+> ios: {
+> useFrameworks: "static",
+> buildReactNativeFromSource: true,
+> },
+> },
+> ]
+> ```
+> 
+> Verified by using expo `54.0.0-preview.10` and react-native `0.81.1`. A better solution is being worked on by expo. 
+
+- wfern subscribed
+
+**mikehardy** commented on 2025-08-29T16:01:32Z:
+
+> That's great to hear with regard to a workaround, that flag you used `buildReactNativeFromSource` seems to indicate this is some teething problems related the new precompiled frameworks.
+> 
+> Sounds like it's not actionable here - I encourage people to subscribe to that upstream issue helpfully provided by @LeonDvlpmnt (thanks!)
+
+- LeonDvlpmnt mentioned
+
+- LeonDvlpmnt subscribed
+
+- Renamed from "Build error on expo 54 / react native 0.81" to "Build error on expo 54 / react native 0.81 (upstream Expo issue, workaround via build properties below)"
+
+- mikehardy removed label "Needs Attention"
+
+- mikehardy added label "platform: ios"
+
+- mikehardy added label "impact: build-error"
+
+- mikehardy added label "platform: expo"
+
+- mikehardy added label "resolution: solution-provided"
+
+- slvvn subscribed
+
+- Referenced by issue #3755: 'ReactCommon/RCTHost+Internal.h' file not found - React Native 0.81.1
+
+**anudit** commented on 2025-09-10T23:42:45Z:
+
+> Still running into this with `expo@54`, `RN@0.81.4` & `react-native-firebase@23.3.1` 
+
+- fkreinh subscribed
+
+- drminh2807 subscribed
+
+**cheraff** commented on 2025-09-11T04:21:28Z:
+
+> Yep same issue. Also mentioned here https://github.com/expo/expo/issues/39233
+
+**RomanSytnyk** commented on 2025-09-11T08:00:52Z:
+
+> Having the same issue after migration to Expo 54
+
+- tomkelsey subscribed
+
+- chrisid subscribed
+
+**baveku** commented on 2025-09-11T09:00:49Z:
+
+> @react-native-firebase+analytics+23.3.0.patch
+> @react-native-firebase+crashlytics+23.3.0.patch
+> @react-native-firebase+messaging+23.3.0.patch
+> 
+> I try with this patch, and it's work, @RomanSytnyk you can try my patch.
+
+- RomanSytnyk mentioned
+
+- RomanSytnyk subscribed
+
+- dawidzawadzki subscribed
+
+- tobbbe subscribed
+
+- RodolfoSilva subscribed
+
+**sohail-wayland** commented on 2025-09-11T10:14:31Z:
+
+> Can confirm, seeing an error.
+
+- g0sk subscribed
+
+- dtyrrell subscribed
+
+**anudit** commented on 2025-09-11T16:32:23Z:
+
+> @MichaelVerdon @mzaien looks like expo fixed things on their end https://github.com/expo/expo/issues/39233#issuecomment-3281166075 but still running into the issue with the new version of expo-modules-autolinking@3.0.10
+
+- mzaien mentioned
+
+- mzaien subscribed
+
+- MichaelVerdon mentioned
+
+- MichaelVerdon subscribed
+
+- jdconley subscribed
+
+- jdconley subscribed
+
+- medsystems-rafael-almeida subscribed
+
+**mzaien** commented on 2025-09-11T18:54:59Z:
+
+> > @MichaelVerdon @mzaien looks like expo fixed things on their end https://github.com/expo/expo/issues/39233#issuecomment-3281166075 but still running into the issue with the new version of expo-modules-autolinking@3.0.10
+> 
+> For me it worked and I'm not having any issues
+
+- mzaien mentioned
+
+- mzaien subscribed
+
+- MichaelVerdon mentioned
+
+- MichaelVerdon subscribed
+
+- github-actions[bot] added label "Needs Attention"
+
+**vilsongabriel** commented on 2025-09-11T20:55:44Z:
+
+> > > @MichaelVerdon @mzaien looks like expo fixed things on their end expo/expo#39233 (comment) but still running into the issue with the new version of expo-modules-autolinking@3.0.10
+> > 
+> > For me it worked and I'm not having any issues
+> 
+> Are you using any of the patches mentioned in this issue? I'm using Expo 54.0.1 and still got the error.
+
+**JoshRozin** commented on 2025-09-11T23:04:08Z:
+
+> Best fix I've found so far is setting `buildReactNativeFromSource` to true in expo-build-properties. Not ideal but hopefully can get you up and running until it's fixed.
+> 
+> "expo-build-properties",
+> {
+> ios: {
+> useFrameworks: "static",
+> deploymentTarget: "15.1",
+> buildReactNativeFromSource: true,
+> },
+
+**mzaien** commented on 2025-09-12T07:33:47Z:
+
+> @vilsongabriel i’m using the one @JoshRozin mentioned 
+
+- mzaien closed
+
+- vilsongabriel mentioned
+
+- vilsongabriel subscribed
+
+- JoshRozin mentioned
+
+- JoshRozin subscribed
+
+**danieloprado** commented on 2025-09-12T08:36:21Z:
+
+> @mzaien don't close this issue, buildReactNativeFromSource should not be the final solution. This is not an Expo only issue, this is the new prebuild react native option as you can see here: https://reactnative.dev/blog/2025/08/12/react-native-0.81#experimental-precompiled-ios-builds
+
+- mzaien mentioned
+
+- mzaien subscribed
+
+- popegg subscribed
+
+- sabaturgay subscribed
+
+**anudit** commented on 2025-09-12T13:40:52Z:
+
+> @mikehardy @mzaien I do not think this should be closed, this is still an issue. buildReactNativeFromSource is not a feature that is going away, disabling it is not a solution. Thanks!
+
+- mikehardy mentioned
+
+- mikehardy subscribed
+
+- mzaien mentioned
+
+- mzaien subscribed
+
+- mzaien reopened
+
+- blaemmle subscribed
+
+**JoshRozin** commented on 2025-09-12T15:12:39Z:
+
+> https://github.com/invertase/react-native-firebase/issues/8657#issuecomment-3284313384
+> 
+> Agreed. Should not be the final fix. Just mentioned it because it worked for me.
+
+- mysport12 subscribed
+
+- ysya subscribed
+
+- jsg2021 subscribed
+
+**1forh** commented on 2025-09-12T21:32:03Z:
+
+> same thing happening to me
+
+- raxityo subscribed
+
+- mbrcic-ad subscribed
+
+- Referenced by issue #39607: [SDK 54][iOS] Non-modular header errors when using @react-native-firebase/app + auth with useFrameworks: "static"
+
+- leemhenson subscribed
+
+- hieuhani subscribed
+
+- felix-m-p subscribed
+
+- MrFunctor subscribed
+
+- akatyrenchuk subscribed
+
+**RohovDmytro** commented on 2025-09-13T13:46:48Z:
+
+> +1 
+> 
+> Also not sure if buildReactNativeFromSource is a viable fix.
+
+- hieuhani unsubscribed
+
+- MSNexploder subscribed
+
+- MSNexploder unsubscribed
+
+- simoncar subscribed
+
+- Stephane-Homie subscribed
+
+**bfzli** commented on 2025-09-13T18:10:52Z:
+
+> For me neither the `buildReactNativeFromSource` or `Allow Non-modular Includes in Framework Modules` works
+
+- dasovm subscribed
+
+- jbohman subscribed
+
+- eeshankeni subscribed
+
+- madflanderz subscribed
+
+- junwonp subscribed
+
+- eyedroot subscribed
+
+**danielrakaczki1** commented on 2025-09-15T09:38:16Z:
+
+> +1
+> Can confirm that `buildReactNativeFromSource` is a viable fix, but absolutely not ideal long term.
+
+- mzaien unsubscribed
+
+**chrfalch** commented on 2025-09-15T10:50:13Z:
+
+> Hi All :) 
+> 
+> To clarify a bit here - the problem is that when we're building frameworks as we do when setting `use_frameworks!` in our pod file through the Expo build setting (`"useFrameworks": "static"`), we're requiring some additional rules for each pod, especially that it should not export header files from other target's private properties. 
+> 
+> This is the problem here, since Firebase implements some `RCTConvert`'ers that ends up exposing a few React Native header files. The problem is NOT Firebase, it is an issue with React Native's headers not yet being 100% modular (they often end up include C++ code that is not valid Objective-c) causing the issue we see here. 
+> 
+> This is being worked on, but is a much bigger issue to solve for now - also considering that we're moving towards a world without Cocoapods in the near future (Cocoapods are being deprecated).
+> 
+> I'm working on a solution where this is a bit easier to handle in Expo without all of the above tricks before we get a real modular set of headers in React Native.
+
+- nd-gorm subscribed
+
+- molily subscribed
+
+- mrgarest subscribed
+
+- Nasseratic subscribed
+
+- mwmcode subscribed
+
+- klandell subscribed
+
+- saulsolve subscribed
+
+- rithik-raja subscribed
+
+- GeorgiSpasov subscribed
+
+- douglasndm subscribed
+
+- schneidermr subscribed
+
+- bjornevik subscribed
+
+- richard-voicepal subscribed
+
+- jvd-za subscribed
+
+- crjc subscribed
+
+- Hazer subscribed
+
+- AtakanErmis subscribed
+
+- mzaien subscribed
+
+- mzaien unsubscribed
+
+- DaniFoldi subscribed
+
+- GiacomoMineo subscribed
+
+- rarira subscribed
+
+- iamdexterr subscribed
+
+- K-Jean subscribed
+
+- cfoster5 subscribed
+
+- chgsantos subscribed
+
+- nextsecurities subscribed
+
+- joluet subscribed
+
+- Davyd-crypto subscribed
+
+- Referenced by PR #39742: [ios] add build-props option to force pod target to be linked statically
+
+- goltra subscribed
+
+- ronaldsuwandi subscribed
+
+- cbley subscribed
+
+- ciacka subscribed
+
+- Aduomas subscribed
+
+- sainjay subscribed
+
+- CharGomez subscribed
+
+- mattgmak subscribed
+
+- elyobo subscribed
+
+- Colt45s subscribed
+
+- Referenced in commit d4d6c3e
+
+- Referenced in commit 66826d7
+
+- davidjbng subscribed
+
+- euclides-silva subscribed
+
+- Stouffi subscribed
+
+- nakapon9517 subscribed
+
+- LeongXianJun subscribed
+
+- oliverrosvall subscribed
+
+- fredtitao subscribed
+
+**elyobo** commented on 2025-09-18T22:25:13Z:
+
+> > Setting useFrameworks to static and buildReactNativeFromSource to true in the expo config seems to solve this issue:
+> > 
+> > ```
+> > [
+> > "expo-build-properties",
+> > {
+> > ios: {
+> > useFrameworks: "static",
+> > buildReactNativeFromSource: true,
+> > },
+> > },
+> > ]
+> > ```
+> > 
+> > Verified by using expo `54.0.0-preview.10` and react-native `0.81.1`. A better solution is being worked on by expo.
+> 
+> https://github.com/expo/expo/issues/39233 mentioned above is reported by @vonovak as fixing this via https://github.com/expo/expo/pull/39479 by @chrfalch, which is available in the lastest releases, but doesn't fix things for me; possibly there is some configuration needed?
+> 
+> However @chrfalch also has https://github.com/expo/expo/pull/39742 which has landed and _that_, along with `forceStaticLinking: ['RNFBApp'],` in `expo-build-properties` `ios` gets things building for me (we're only using `@react-native-firebase/app` and `@react-native-firebase/analytics`, more config might be needed for others).
+> 
+> Config snippet
+> 
+> ```js
+> [
+> 'expo-build-properties',
+> {
+> ios: {
+> useFrameworks: 'static',
+> forceStaticLinking: ['RNFBApp'],
+> },
+> },
+> ],
+> ```
+> 
+> Thanks @chrfalch for your work on this!
+
+- chrfalch mentioned
+
+- chrfalch subscribed
+
+- vonovak mentioned
+
+- vonovak subscribed
+
+- mrgarest unsubscribed
+
+**chrfalch** commented on 2025-09-19T07:46:47Z:
+
+> Thanks, @elyobo :) this is my suggested solution. I had to add other Firebase pods as well to be linked statically to build with React Native precompiled binaries - and I really hope that this doesn't have any other negative consequences. I'll contact some of the core contributors in this Repo to see if we can get some documentation updates.
+> 
+> `expo-build-properties` 1.0.9 was released last night and should support this.
+
+- elyobo mentioned
+
+- elyobo subscribed
+
+- rohiniaru subscribed
+
+**elyobo** commented on 2025-09-19T08:04:27Z:
+
+> We're still testing at the moment but looks good at this point, thanks!
+
+**jbohman** commented on 2025-09-19T08:10:25Z:
+
+> I still get multiple errors, running latest expo versions and have configured it according to https://github.com/invertase/react-native-firebase/issues/8657#issuecomment-3309893085
+> 
+> This is in a brand new expo 54 project (`pnpm create expo-app`), just adding `@react-native-firebase/app` and `@react-native-firebase/auth`. 
+> 
+> ```
+> ❌ (/project/node_modules/@react-native-firebase/app/ios/RNFBApp/RCTConvert+FIRApp.h:19:9)
+> 
+> 17 |
+> 18 | #import 
+> > 19 | #import 
+> | ^ include of non-modular header inside framework module 'RNFBApp.RCTConvert_FIRApp': '/project/ios/Pods/Headers/Public/React-Core/React/RCTConvert.h' [-Werror,-Wnon-modular-include-in-framework-module]
+> 20 |
+> 21 | @interface RCTConvert (FIRApp)
+> 22 | + (FIRApp *)firAppFromString:(NSString *)appName;
+> ```
+
+**chrfalch** commented on 2025-09-19T08:18:26Z:
+
+> @jbohman - you need to run `npx expo prebuild` (maybe even with the `--clean` flag before the change will take effect.
+
+- jbohman mentioned
+
+- jbohman subscribed
+
+**tobbbe** commented on 2025-09-19T08:24:02Z:
+
+> I had to add `@expo/config-plugins` to be able to do a build in eas (`eas build --platform ios`)
+
+**damikdk** commented on 2025-09-19T08:26:08Z:
+
+> Everything is buildable now! (CNG)
+> 
+> ```
+> "@react-native-firebase/analytics": "^23.3.1",
+> "@react-native-firebase/app": "^23.3.1",
+> "@react-native-firebase/crashlytics": "^23.3.1",
+> "expo": "^54.0.9",
+> "expo-build-properties": "~1.0.9",
+> ```
+> 
+> ```
+> [
+> "expo-build-properties",
+> {
+> "ios": {
+> "useFrameworks": "static",
+> "forceStaticLinking": ["RNFBApp"]
+> }
+> }
+> ],
+> ```
+> 
+> Thanks @chrfalch @elyobo 
+
+- elyobo mentioned
+
+- elyobo subscribed
+
+- chrfalch mentioned
+
+- chrfalch subscribed
+
+**jbohman** commented on 2025-09-19T09:08:04Z:
+
+> I had to manually upgrade to expo 54.0.9 and then it worked. 
+
+**ciacka** commented on 2025-09-19T09:20:16Z:
+
+> Confirming it works ❤️ Just remember to upgrade to `expo@^54.0.9` and `expo-build-properties@^1.0.9`
+
+- Referenced by issue #5742: iOS not building after upgrade to Expo 54
+
+- euclides-silva unsubscribed
+
+**SyncroX-N** commented on 2025-09-19T10:35:26Z:
+
+> It doesn't work for me.
+> 
+> The generated `Podfile.properties.json` shows an empty array for `ios.forceStaticLinking`:
+> 
+> ```json
+> {
+> "expo.jsEngine": "hermes",
+> "EX_DEV_CLIENT_NETWORK_INSPECTOR": "true",
+> "ios.useFrameworks": "static",
+> "ios.forceStaticLinking": "[]",
+> "apple.privacyManifestAggregationEnabled": "true"
+> }
+> ```
+> 
+> but in `app.config.ts` the property is correctly defined:
+> 
+> ```ts
+> [
+> 'expo-build-properties',
+> {
+> ios: {
+> useFrameworks: 'static',
+> forceStaticLinking: ['RNFBApp', 'RNFBMessaging', 'RNFBRemoteConfig'],
+> },
+> ],
+> ]
+> ```
+> 
+> It seems the `forceStaticLinking` values aren’t being written to `Podfile.properties.json` as expected.
+> 
+> I'm on the latest versions and I ran `npx expo prebuild --clean`.
+> ```
+> "expo": "^54.0.9",
+> "expo-build-properties": "^1.0.9",
+> ```
+
+- damikdk unsubscribed
+
+**Titozzz** commented on 2025-09-19T12:51:31Z:
+
+> 
+> @chrfalch Got the same issue as @SyncroX-N 
+> The new plugin value gets overriden if it's called multiple time, in order for it to be in the `Podfile.properties.json` I had to put expo-build-properties first in my plugins array. I believe we should find a way to merge array values, instead of replacing them. 
+
+- chrfalch mentioned
+
+- chrfalch subscribed
+
+- SyncroX-N mentioned
+
+- SyncroX-N subscribed
+
+- guytepper subscribed
+
+- schriker subscribed
+
+**Aduomas** commented on 2025-09-20T07:02:43Z:
+
+> > @chrfalch Got the same issue as @SyncroX-N The new plugin value gets overriden if it's called multiple time, in order for it to be in the `Podfile.properties.json` I had to put expo-build-properties first in my plugins array. I believe we should find a way to merge array values, instead of replacing them.
+> 
+> order indeed matters. worked for me. thanks @Titozzz 
+
+- Titozzz mentioned
+
+- Titozzz subscribed
+
+**anudit** commented on 2025-09-20T09:26:37Z:
+
+> I run into the following error,
+> 
+> ```bash
+> ⚠️ (ios/Omnid/AppDelegate.swift:3:8)
+> 
+> 1 | import Expo
+> 2 | import FirebaseCore
+> > 3 | import RNFBAppCheck
+> | ^ no such module 'RNFBAppCheck'
+> 4 | import React
+> 5 | import ReactAppDependencyProvider
+> ```
+> 
+> with the following on a clean build.
+> ```json
+> "expo": "^54.0.9",
+> "expo-build-properties": "^1.0.9",
+> ```
+> 
+> Tried keeping the `expo-build-properties` in the `app.config.ts` before and after the firebase plugins.
+> ```
+> useFrameworks: 'static',
+> forceStaticLinking: ["RNFBApp", "RNFBAppCheck"]
+> ```
+
+**Akyna** commented on 2025-09-20T10:18:52Z:
+
+> > Everything is buildable now! (CNG)
+> > 
+> > ```
+> > "@react-native-firebase/analytics": "^23.3.1",
+> > "@react-native-firebase/app": "^23.3.1",
+> > "@react-native-firebase/crashlytics": "^23.3.1",
+> > "expo": "^54.0.9",
+> > "expo-build-properties": "~1.0.9",
+> > ```
+> > 
+> > ```
+> > [
+> > "expo-build-properties",
+> > {
+> > "ios": {
+> > "useFrameworks": "static",
+> > "forceStaticLinking": ["RNFBApp"]
+> > }
+> > }
+> > ],
+> > ```
+> > 
+> > Thanks @chrfalch @elyobo
+> 
+> Confirming it works. Thx a lot
+
+- akatyrenchuk unsubscribed
+
+- lookis subscribed
+
+- ievolution subscribed
+
+**rohiniaru** commented on 2025-09-21T12:02:33Z:
+
+> I am still running into RNFBApp errors despite having the latest expo and expo-build-properties. I have also reordered expo-build-properties in my plugins array to first. I can clean the build successfully with `expo prebuild --clean` but upon trying to run the ios build, it just fails.
+> 
+> Errors:
+> ```
+> ❌ (node_modules/@react-native-firebase/app/ios/RNFBApp/RCTConvert+FIRApp.h:19:9)
+> 
+> 17 | 
+> 18 | #import 
+> > 19 | #import 
+> | ^ include of non-modular header inside framework module 'RNFBApp.RCTConvert_FIRApp': 'ios/Pods/Headers/Public/React-Core/React/RCTConvert.h' [-Werror,-Wnon-modular-include-in-framework-module]
+> 20 | 
+> 21 | @interface RCTConvert (FIRApp)
+> 22 | + (FIRApp *)firAppFromString:(NSString *)appName;
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/app/ios/RNFBApp/RCTConvert+FIROptions.h:19:9)
+> 
+> 17 | 
+> 18 | #import 
+> > 19 | #import 
+> | ^ include of non-modular header inside framework module 'RNFBApp.RCTConvert_FIROptions': 'ios/Pods/Headers/Public/React-Core/React/RCTConvert.h' [-Werror,-Wnon-modular-include-in-framework-module]
+> 20 | 
+> 21 | @interface RCTConvert (FIROptions)
+> 22 | + (FIROptions *)convertRawOptions:(NSDictionary *)rawOptions;
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/app/ios/RNFBApp/RNFBAppModule.h:20:9)
+> 
+> 18 | #import 
+> 19 | 
+> > 20 | #import 
+> | ^ include of non-modular header inside framework module 'RNFBApp.RNFBAppModule': 'ios/Pods/Headers/Public/React-Core/React/RCTBridgeModule.h' [-Werror,-Wnon-modular-include-in-framework-module]
+> 21 | 
+> 22 | @interface RNFBAppModule : NSObject 
+> 23 | 
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/app/ios/RNFBApp/RNFBRCTEventEmitter.h:19:9)
+> 
+> 17 | 
+> 18 | #import 
+> > 19 | #import 
+> | ^ include of non-modular header inside framework module 'RNFBApp.RNFBRCTEventEmitter': 'ios/Pods/Headers/Public/React-Core/React/RCTEventEmitter.h' [-Werror,-Wnon-modular-include-in-framework-module]
+> 20 | 
+> 21 | /**
+> 22 | * Listeners for Firebase events and emits them to the JS layer
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/app/ios/RNFBApp/RNFBSharedUtils.h:22:9)
+> 
+> 20 | 
+> 21 | #import 
+> > 22 | #import 
+> | ^ include of non-modular header inside framework module 'RNFBApp.RNFBSharedUtils': 'ios/Pods/Headers/Public/React-Core/React/RCTBridgeModule.h' [-Werror,-Wnon-modular-include-in-framework-module]
+> 23 | 
+> 24 | #ifdef DEBUG
+> 25 | #define DLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/app/ios/RNFBApp/RNFBUtilsModule.h:21:9)
+> 
+> 19 | #import 
+> 20 | 
+> > 21 | #import 
+> | ^ include of non-modular header inside framework module 'RNFBApp.RNFBUtilsModule': 'ios/Pods/Headers/Public/React-Core/React/RCTBridgeModule.h' [-Werror,-Wnon-modular-include-in-framework-module]
+> 22 | 
+> 23 | @interface RNFBUtilsModule : NSObject 
+> 24 | 
+> ```
+> 
+> package.json:
+> ```
+> "expo": "~54.0.7",
+> "expo-build-properties": "~1.0.9",
+> ``` 
+> 
+> app.json:
+> ```
+> {
+> "plugins": [
+> [
+> "expo-build-properties",
+> {
+> "ios": {
+> "useFrameworks": "static",
+> "forceStaticLinking": ["RNFBApp", "RNFBMessaging"]
+> }
+> }
+> ],
+> "@react-native-firebase/app",
+> "@react-native-firebase/messaging"
+> ]
+> }
+> ```
+> 
+> 
+> 
+> That being said, I have discovered that I can only run it successfully if I have `buildReactNativeFromSource` which has really increased my build time. Is there any other workaround? I am not sure how others are able to build successfully without this additional key
+> ```
+> [
+> "expo-build-properties",
+> {
+> "ios": {
+> "useFrameworks": "static",
+> "forceStaticLinking": ["RNFBApp", "RNFBMessaging"],
+> "buildReactNativeFromSource": true
+> }
+> }
+> ],
+> ```
+
+- nilpntr subscribed
+
+- nilpntr unsubscribed
+
+- MoeMamdouh subscribed
+
+**MoeMamdouh** commented on 2025-09-22T02:05:52Z:
+
+> The same issue happened, but it was fixed after adding 
+> ```
+> [
+> "expo-build-properties",
+> {
+> "ios": {
+> "useFrameworks": "static",
+> "forceStaticLinking": ["RNFBApp", "RNFBMessaging"]
+> }
+> }
+> ]
+> ```
+> then clean & prebuild
+
+- jsg2021 unsubscribed
+
+- Referenced in commit 1ab90c1
+
+- WillyReyno subscribed
+
+- gerardvanderkruijs subscribed
+
+**plrdev** commented on 2025-09-22T17:21:52Z:
+
+> @MoeMamdouh settings worked for me, after upgrading to expo 54.0.7 -> 54.0.9 and build properties 1.0.7 -> 1.0.9.
+> 
+> So no need to buildeactNativeFromSource anymore, thanks!
+
+- MoeMamdouh mentioned
+
+- MoeMamdouh subscribed
+
+- maggialejandro subscribed
+
+**Charnnarong** commented on 2025-09-23T01:09:10Z:
+
+> > I run into the following error,
+> > 
+> > ⚠️ (ios/Omnid/AppDelegate.swift:3:8)
+> > 
+> > 1 | import Expo
+> > 2 | import FirebaseCore
+> > > 3 | import RNFBAppCheck
+> > | ^ no such module 'RNFBAppCheck'
+> > 4 | import React
+> > 5 | import ReactAppDependencyProvider
+> > with the following on a clean build.
+> > 
+> > "expo": "^54.0.9",
+> > "expo-build-properties": "^1.0.9",
+> > Tried keeping the `expo-build-properties` in the `app.config.ts` before and after the firebase plugins.
+> > 
+> > ```
+> > useFrameworks: 'static',
+> > forceStaticLinking: ["RNFBApp", "RNFBAppCheck"]
+> > ```
+> 
+> @anudit , I’m in the same situation — `RNFBAppCheck` doesn’t seem to apply to this solution.
+
+- anudit mentioned
+
+- anudit subscribed
+
+**anudit** commented on 2025-09-23T01:10:49Z:
+
+> @Charnnarong yeah, removing appcheck worked
+
+- Charnnarong mentioned
+
+- Charnnarong subscribed
+
+- thejoaov subscribed
+
+**dcatindoy** commented on 2025-09-23T05:32:14Z:
+
+> > Everything is buildable now! (CNG)
+> > 
+> > ```
+> > "@react-native-firebase/analytics": "^23.3.1",
+> > "@react-native-firebase/app": "^23.3.1",
+> > "@react-native-firebase/crashlytics": "^23.3.1",
+> > "expo": "^54.0.9",
+> > "expo-build-properties": "~1.0.9",
+> > ```
+> > 
+> > ```
+> > [
+> > "expo-build-properties",
+> > {
+> > "ios": {
+> > "useFrameworks": "static",
+> > "forceStaticLinking": ["RNFBApp"]
+> > }
+> > }
+> > ],
+> > ```
+> > 
+> > Thanks @chrfalch @elyobo
+> 
+> This fix solved it for me. Don't forget to do a clean prebuild using `npx expo prebuild --clean`. Thanks to everyone who helped! 🙌 
+
+- branikclimbs subscribed
+
+- davidjbng unsubscribed
+
+- ciacka unsubscribed
+
+- Davyd-crypto unsubscribed
+
+- fawzii0x3 subscribed
+
+- fawzii0x3 subscribed
+
+- vilsongabriel unsubscribed
+
+- wmarcelino subscribed
+
+- mtutic subscribed
+
+- RonakDoshiTMI subscribed
+
+- nickh-doozy subscribed
+
+- rosskhanas subscribed
+
+- JerryBels subscribed
+
+**JerryBels** commented on 2025-09-26T09:54:16Z:
+
+> For me it didn't work and I had to use buildReactNativeFromSource: true for build to pass again. 
+> 
+> - I added all my Firebase Pods to the `forceStaticLinking` array.
+> - I have `'expo-build-properties'` first in the plugins list.
+> 
+> 
+> Installed pods, c/c from EAS logs: 
+> 
+> ```
+> link_native_modules! {:ios_packages=>[{:configurations=>[], :name=>"@react-native-async-storage/async-storage", :root=>"/Users/expo/workingdir/build/frontend/node_modules/@react-native-async-storage/async-storage", :path=>"../node_modules/@react-native-async-storage/async-storage", :podspec_path=>"/Users/expo/workingdir/build/frontend/node_modules/@react-native-async-storage/async-storage/RNCAsyncStorage.podspec", :script_phases=>[]}, {:configurations=>[], :name=>"@react-native-firebase/analytics", :root=>"/Users/expo/workingdir/build/frontend/node_modules/@react-native-firebase/analytics", :path=>"../node_modules/@react-native-firebase/analytics", :podspec_path=>"/Users/expo/workingdir/build/frontend/node_modules/@react-native-firebase/analytics/RNFBAnalytics.podspec", :script_phases=>[]}, {:configurations=>[], :name=>"@react-native-firebase/app", :root=>"/Users/expo/workingdir/build/frontend/node_modules/@react-native-firebase/app", :path=>"../node_modules/@react-native-firebase/app", :podspec_path=>"/Users/expo/workingdir/build/frontend/node_modules/@react-native-firebase/app/RNFBApp.podspec", :script_phases=>[{"name"=>"[RNFB] Core Configuration", "path"=>"./ios_config.sh", "execution_position"=>"after_compile", "input_files"=>["$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)"]}]}, {:configurations=>[], :name=>"@sentry/react-native", :root=>"/Users/expo/workingdir/build/frontend/node_modules/@sentry/react-native", :path=>"../node_modules/@sentry/react-native", :podspec_path=>"/Users/expo/workingdir/build/frontend/node_modules/@sentry/react-native/RNSentry.podspec", :script_phases=>[]}, {:configurations=>[], :name=>"expo", :root=>"/Users/expo/workingdir/build/frontend/node_modules/expo", :path=>"../node_modules/expo", :podspec_path=>"/Users/expo/workingdir/build/frontend/node_modules/expo/Expo.podspec", :script_phases=>[]}, {:configurations=>[], :name=>"react-native-gesture-handler", :root=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-gesture-handler", :path=>"../node_modules/react-native-gesture-handler", :podspec_path=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-gesture-handler/RNGestureHandler.podspec", :script_phases=>[]}, {:configurations=>[], :name=>"react-native-google-mobile-ads", :root=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-google-mobile-ads", :path=>"../node_modules/react-native-google-mobile-ads", :podspec_path=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-google-mobile-ads/RNGoogleMobileAds.podspec", :script_phases=>[{"name"=>"[RNGoogleMobileAds] Configuration", "path"=>"./ios_config.sh", "execution_position"=>"after_compile", "input_files"=>["$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)"]}]}, {:configurations=>[], :name=>"react-native-keyboard-controller", :root=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-keyboard-controller", :path=>"../node_modules/react-native-keyboard-controller", :podspec_path=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-keyboard-controller/react-native-keyboard-controller.podspec", :script_phases=>[]}, {:configurations=>[], :name=>"react-native-pager-view", :root=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-pager-view", :path=>"../node_modules/react-native-pager-view", :podspec_path=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-pager-view/react-native-pager-view.podspec", :script_phases=>[]}, {:configurations=>[], :name=>"react-native-reanimated", :root=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-reanimated", :path=>"../node_modules/react-native-reanimated", :podspec_path=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-reanimated/RNReanimated.podspec", :script_phases=>[]}, {:configurations=>[], :name=>"react-native-safe-area-context", :root=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-safe-area-context", :path=>"../node_modules/react-native-safe-area-context", :podspec_path=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-safe-area-context/react-native-safe-area-context.podspec", :script_phases=>[]}, {:configurations=>[], :name=>"react-native-screens", :root=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-screens", :path=>"../node_modules/react-native-screens", :podspec_path=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-screens/RNScreens.podspec", :script_phases=>[]}, {:configurations=>[], :name=>"react-native-share", :root=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-share", :path=>"../node_modules/react-native-share", :podspec_path=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-share/RNShare.podspec", :script_phases=>[]}, {:configurations=>[], :name=>"react-native-svg", :root=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-svg", :path=>"../node_modules/react-native-svg", :podspec_path=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-svg/RNSVG.podspec", :script_phases=>[]}, {:configurations=>[], :name=>"react-native-vision-camera", :root=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-vision-camera", :path=>"../node_modules/react-native-vision-camera", :podspec_path=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-vision-camera/VisionCamera.podspec", :script_phases=>[]}, {:configurations=>[], :name=>"react-native-vision-camera-face-detector", :root=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-vision-camera-face-detector", :path=>"../node_modules/react-native-vision-camera-face-detector", :podspec_path=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-vision-camera-face-detector/VisionCameraFaceDetector.podspec", :script_phases=>[]}, {:configurations=>[], :name=>"react-native-worklets", :root=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-worklets", :path=>"../node_modules/react-native-worklets", :podspec_path=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-worklets/RNWorklets.podspec", :script_phases=>[]}, {:configurations=>[], :name=>"react-native-worklets-core", :root=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-worklets-core", :path=>"../node_modules/react-native-worklets-core", :podspec_path=>"/Users/expo/workingdir/build/frontend/node_modules/react-native-worklets-core/react-native-worklets-core.podspec", :script_phases=>[]}], :ios_project_root_path=>"/Users/expo/workingdir/build/frontend/ios", :react_native_path=>"../node_modules/react-native"}
+> ```
+> 
+> 
+> Plugin configuration:
+> 
+> ```
+> [
+> 'expo-build-properties',
+> {
+> ios: {
+> deploymentTarget: '15.5',
+> useFrameworks: 'static',
+> forceStaticLinking: ['RNFBApp', 'RNFBAnalytics'],
+> },
+> },
+> ],
+> ```
+> 
+> Building on EAS still returns a failure without buildReactNativeFromSource: true. Which very much still feels like a workaround.
+> 
+> ```
+> Build failed: The "Run fastlane" step failed because of an error in the Xcode build process. We automatically detected following errors in your Xcode build logs:
+> - include of non-modular header inside framework module 'VisionCamera.VisionCameraProxyDelegate': '/Users/expo/workingdir/build/frontend/ios/Pods/Headers/Public/React-Core/React/RCTBridge.h' [-Werror,-Wnon-modular-include-in-framework-module]
+> - include of non-modular header inside framework module 'VisionCamera.CameraBridge': '/Users/expo/workingdir/build/frontend/ios/Pods/Headers/Public/React-Core/React/RCTEventEmitter.h' [-Werror,-Wnon-modular-include-in-framework-module]
+> - include of non-modular header inside framework module 'VisionCamera.CameraBridge': '/Users/expo/workingdir/build/frontend/ios/Pods/Headers/Public/React-Core/React/RCTUIManager.h' [-Werror,-Wnon-modular-include-in-framework-module]
+> - include of non-modular header inside framework module 'VisionCamera.CameraBridge': '/Users/expo/workingdir/build/frontend/ios/Pods/Headers/Public/React-Core/React/RCTViewManager.h' [-Werror,-Wnon-modular-include-in-framework-module]
+> Refer to "Xcode Logs" below for additional, more detailed logs.
+> ```
+> 
+> Thus, I wonder, @chrfalch (and thanks a lot for your help) - is it possible that it's an unrelated problem?
+
+- chrfalch mentioned
+
+- chrfalch subscribed
+
+**chrfalch** commented on 2025-09-26T09:56:10Z:
+
+> This has nothing to do with Firebase, but you could try to add `VisionCamera.VisionCameraProxyDelegate` and `VisionCamera.CameraBridge` to the `forceStaticLinking` array - if not, please use `buildReactNativeFromSource: true`.
+
+**JerryBels** commented on 2025-09-26T10:20:36Z:
+
+> Adding `VisionCamera` to the list of `forceStaticLinking` worked perfectly :)
+
+- Referenced by issue #3638: 🔧 EAS Build iOS - include of non-modular header inside framework module
+
+- dancixx subscribed
+
+**joshua-augustinus** commented on 2025-09-27T21:51:17Z:
+
+> If I'm using a bare workflow project (i.e. no prebuild), are there manual changes I can make to fix this issue?
+> 
+> EDIT: I think it would be this inside ios/Podfile.properties.json
+> ```
+> "ios.forceStaticLinking": "[\"RNFBApp\"]",
+> ```
+> 
+> And make sure that expo version is 54.0.9
+
+- LowellBateman subscribed
+
+- mattgmak unsubscribed
+
+- SalvadorLekan subscribed
+
+- VadymBezpalko subscribed
+
+- mnightingale subscribed
+
+**LeunensMichiel** commented on 2025-09-29T11:29:50Z:
+
+> When using 
+> ```ts
+> ios: {
+> useFrameworks: "static",
+> // iOS 16.7
+> deploymentTarget: "16.7",
+> forceStaticLinking: ["RNFBApp"]
+> },
+> ```
+> I get the following error:
+> 
+> `The 'pods_$APPNAME' target has transitive dependencies that include statically linked binaries: (ExpoModulesCore)`
+> 
+> Note, I'm on the latest expo 54.0.10 update, same for build properties and other expo-related packages
+> 
+> **Update**
+> Was because of an outdated third-party-lib that we had to import in our expo modules setup. Removing this fixed the build error, but didn't notice any speed improvements with the new precompiler
+
+- VadymBezpalko unsubscribed
+
+- patrickomeara subscribed
+
+- nowizz subscribed
+
+- adblanc subscribed
+
+- aramis-it subscribed
+
+- joshua-augustinus unsubscribed
+
+- leaskagen subscribed
+
+- justinjoyn subscribed
+
+- Goku-kun subscribed
+
+**victoriomolina** commented on 2025-10-03T12:07:57Z:
+
+> @LeunensMichiel Did you try upgrading eas-cli to v16.20.0 and rebuilding with --clear-cache flag?
+> 
+> ``` 14:05:31
+> diff --git a/apps/mobile/app.json b/apps/mobile/app.json
+> index d680ba8..9ac38fe 100644
+> --- a/apps/mobile/app.json
+> +++ b/apps/mobile/app.json
+> @@ -34,7 +34,8 @@
+> {
+> "ios": {
+> "deploymentTarget": "15.1",
+> - "useFrameworks": "static"
+> + "useFrameworks": "static",
+> + "forceStaticLinking": ["RNFBApp"]
+> }
+> }
+> ],
+> diff --git a/apps/mobile/eas.json b/apps/mobile/eas.json
+> index 7c68c20..af64042 100644
+> --- a/apps/mobile/eas.json
+> +++ b/apps/mobile/eas.json
+> @@ -1,6 +1,6 @@
+> {
+> "cli": {
+> - "version": ">= 16.19.3",
+> + "version": ">= 16.20.0",
+> "appVersionSource": "local"
+> },
+> "build": {
+> diff --git a/apps/mobile/package.json b/apps/mobile/package.json
+> index 1b095ed..f2ca7c7 100644
+> --- a/apps/mobile/package.json
+> +++ b/apps/mobile/package.json
+> @@ -44,17 +44,17 @@
+> "@react-native-firebase/app": "^23.3.1",
+> "@react-native-firebase/auth": "^23.3.1",
+> "deprecated-react-native-prop-types": "^5.0.0",
+> - "expo": "^54.0.0",
+> + "expo": "^54.0.9",
+> "expo-apple-authentication": "~8.0.7",
+> "expo-build-properties": "~1.0.9",
+> "expo-constants": "~18.0.9",
+> "expo-crypto": "~15.0.7",
+> - "expo-dev-client": "~6.0.12",
+> + "expo-dev-client": "~6.0.13",
+> "expo-font": "~14.0.8",
+> "expo-haptics": "~15.0.7",
+> "expo-linking": "~8.0.8",
+> "expo-localization": "~17.0.7",
+> - "expo-router": "~6.0.8",
+> + "expo-router": "~6.0.10",
+> ```
+
+- LeunensMichiel mentioned
+
+- LeunensMichiel subscribed
+
+**victoriomolina** commented on 2025-10-03T12:32:17Z:
+
+> To solve the issue:
+> 
+> 1) Upgrade `eas-cli` globally
+> 2) Update your `eas.json`, pointing to the latest version of EAS
+> 3) Upgrade `expo` to the last version
+> 5) Upgrade `react-native-firebase` to the last version
+> 
+> ```json
+> "@react-native-firebase/app": "^23.3.1",
+> "@react-native-firebase/auth": "^23.3.1",
+> ```
+> 
+> 6) Install `expo-build-properties@~1.0.9`
+> 7) Run `npx expo-doctor`
+> 8) Run `npx expo install --check`
+> 9) Add this code to your plugins including every RNFB module you use, with RNFBApp being the one mandatory one, followed by all the other ones you use, on your `app.json` / `app.config.js` file
+> 
+> ```jsonc
+> "plugins": [
+> // ...
+> 
+> [
+> "expo-build-properties",
+> {
+> "ios": {
+> "deploymentTarget": "15.1",
+> "useFrameworks": "static",
+> "forceStaticLinking": ["RNFBApp"]
+> }
+> }
+> ],
+> 
+> // ...
+> ]
+> ```
+> 
+> 10) Rebuild the project with `eas build --profile development --platform ios --reset-cache`
+
+- vonovak unsubscribed
+
+- colincrawford subscribed
+
+- jirka-oone subscribed
+
+- landorid subscribed
+
+- thisisgit subscribed
+
+- Referenced by issue #8721: @react-native-firebase/app@23.4.0 is not compatible with Expo SDK 54 (React Native 0.81.4)
+
+- dvaldesg subscribed
+
+**dvaldesg** commented on 2025-10-07T19:08:47Z:
+
+> Is there a way to solve this without work-arounds / lil hacks? Just went through "buildReactNativeFromSource": true and "forceStaticLinking": ["RNFBApp"] and both solve the problem, but i don´t like that solution
+
+- dnwjn subscribed
+
+**ycmjason** commented on 2025-10-09T06:26:46Z:
+
+> @victoriomolina 
+> 
+> Sorry, I just wanna clarify, do we need to specify all pods we are using in `forceStaticLinking` (as suggested in https://github.com/expo/expo/issues/39607#issuecomment-3337284928) or just `RNFBApp`?
+
+- victoriomolina mentioned
+
+- victoriomolina subscribed
+
+**chrfalch** commented on 2025-10-09T07:11:43Z:
+
+> > Sorry, I just wanna clarify, do we need to specify all pods we are using in `forceStaticLinking` (as suggested in expo/expo#39607 (comment)) or just `RNFBApp`?
+> 
+> You need to add the Firebase Pods that you're using that are failing :) So it will often include RNFBApp and a few others depending on your project.
+
+- branikclimbs unsubscribed
+
+- andordavoti subscribed
+
+- mattias-altsater subscribed
+
+- aramis-it unsubscribed
+
+- thomasorgeval subscribed
+
+- sirlisko subscribed
+
+**Darmolar** commented on 2025-10-12T19:14:51Z:
+
+> > To solve the issue:
+> > 
+> > 1. Upgrade `eas-cli` globally
+> > 2. Update your `eas.json`, pointing to the latest version of EAS
+> > 3. Upgrade `expo` to the last version
+> > 4. Upgrade `react-native-firebase` to the last version
+> > 
+> > "@react-native-firebase/app": "^23.3.1",
+> > "@react-native-firebase/auth": "^23.3.1",
+> > 6. Install `expo-build-properties@~1.0.9`
+> > 7. Run `npx expo-doctor`
+> > 8. Run `npx expo install --check`
+> > 9. Add this code to your plugins, on your `app.json` / `app.config.js` file
+> > 
+> > "plugins": [
+> > // ...
+> > 
+> > [
+> > "expo-build-properties",
+> > {
+> > "ios": {
+> > "deploymentTarget": "15.1",
+> > "useFrameworks": "static",
+> > "forceStaticLinking": ["RNFBApp"]
+> > }
+> > }
+> > ],
+> > 
+> > // ...
+> > ]
+> > 10. Rebuild the project with `eas build --profile development --platform ios --reset-cache`
+> 
+> This solved my issue. Thank you
+
+- thomasrebam subscribed
+
+**erenkulaksiz** commented on 2025-10-18T13:03:49Z:
+
+> Hello, i think that everyone is focused on work-arounds and fixes to get around to this error but is there any progress or idea why this issue is happening?
+
+- llannerblad subscribed
+
+- brianGammon subscribed
+
+- eakleven subscribed
+
+- aguglie subscribed
+
+**ksigWyatt** commented on 2025-10-22T18:58:48Z:
+
+> I struggled with this for a while even with all the workarounds documented here. In the end I had to create a custom solution. Because the workarounds didn't work.
+> 
+> Environment:
+> ```
+> Expo SDK: 54.0.12
+> React Native: 0.81.4
+> React: 19.1.0
+> @react-native-firebase/*: 23.4.1
+> expo-build-properties: 1.0.9
+> ```
+> 
+> Similar to @SyncroX-N I was also getting the same issues they were. 
+> 
+> The `forceStaticLinking` is not being written to `Podfile.properties.json` even with forceStaticLinking set correctly in the `app.config.js`.
+> ```
+> {
+> "expo.jsEngine": "hermes",
+> "EX_DEV_CLIENT_NETWORK_INSPECTOR": "true",
+> "ios.useFrameworks": "static",
+> "ios.forceStaticLinking": [],
+> "apple.privacyManifestAggregationEnabled": "true"
+> }
+> ```
+> 
+> after running 
+> ```
+> npx expo prebuild --clean
+> ```
+> 
+> ### My Workaround
+> The workaround that I came up with albeit is a little annoying, and I'll admit - its not ideal - but it works. I was okay with this approach, some might not be. But I thought I'd share what I created to hopefully help people that are still having this issue.
+> 
+> The purpose of this script is to fill in the array during the build. That way you don't have to think about it too much and it's not a manual process.
+> 
+> I updated my package.json to add some new scripts.
+> ```
+> "scripts": {
+> "prebuild": "npx expo prebuild --clean",
+> "prebuild:ios": "npx expo prebuild --clean --platform ios && node scripts/patch-podfile-properties.js && cd ios && pod install",
+> "prebuild:android": "npx expo prebuild --clean --platform android",
+> "patch-podfile": "node scripts/patch-podfile-properties.js"
+> }
+> ```
+> 
+> All you gotta do is run `npm run prebuild:ios` anytime you want to create a new build. And you can continue to use run as you normally would to use that build.
+> 
+> After running that you should see 
+> 
+> ```
+> Forcing static linking for pods: ["RNFBApp", "RNFBAnalytics", "RNFBMessaging"]
+> ```
+> 
+> 
+> Here's that script if you want to try this approach (might require a couple edits to fit your paths) 
+> 
+> ```
+> #!/usr/bin/env node
+> 
+> /**
+> * Patch ios/Podfile.properties.json to fix forceStaticLinking bug
+> * 
+> * This script works around an issun in expo-build-properties@1.0.9 where
+> * the forceStaticLinking array values are not written to Podfile.properties.json.
+> * 
+> * See: https://github.com/invertase/react-native-firebase/issues/8657
+> * 
+> * This script should be run after `npx expo prebuild` and before `pod install`.
+> */
+> 
+> const fs = require('fs');
+> const path = require('path');
+> 
+> // Path to the Podfile.properties.json file
+> const podfilePropertiesPath = path.join(__dirname, '..', 'ios', 'Podfile.properties.json');
+> 
+> // The correct forceStaticLinking value
+> const FORCE_STATIC_LINKING_PODS = ['RNFBApp', 'RNFBAnalytics', 'RNFBMessaging'];
+> 
+> console.log('Patching ios/Podfile.properties.json...');
+> 
+> try {
+> // Check if file exists
+> if (!fs.existsSync(podfilePropertiesPath)) {
+> console.error('Error: ios/Podfile.properties.json not found!');
+> console.error(' Make sure you run `npx expo prebuild` first.');
+> process.exit(1);
+> }
+> 
+> // Read the file
+> const fileContent = fs.readFileSync(podfilePropertiesPath, 'utf8');
+> const properties = JSON.parse(fileContent);
+> 
+> // Check current value
+> const currentValue = properties['ios.forceStaticLinking'];
+> console.log(` Current value: ${currentValue}`);
+> 
+> // Update the forceStaticLinking property
+> const newValue = JSON.stringify(FORCE_STATIC_LINKING_PODS);
+> properties['ios.forceStaticLinking'] = newValue;
+> 
+> // Write back to file with proper formatting
+> fs.writeFileSync(
+> podfilePropertiesPath,
+> JSON.stringify(properties, null, 2) + '\n',
+> 'utf8'
+> );
+> 
+> console.log(` New value: ${newValue}`);
+> console.log('Successfully patched ios/Podfile.properties.json');
+> console.log(' You can now run: cd ios && pod install');
+> 
+> } catch (error) {
+> console.error('Error patching Podfile.properties.json:', error.message);
+> process.exit(1);
+> }
+> ``` 
+> 
+> 
+> ### When to Use This
+> You only need to run `npm run prebuild:ios` when:
+> - Adding new native dependencies
+> - Changing native configuration in app.config.js
+> - After a clean install
+> 
+> For regular development, continue using `npx expo run:ios --device`
+
+- SyncroX-N mentioned
+
+- SyncroX-N subscribed
+
+**radvansky-tomas** commented on 2025-10-23T21:04:10Z:
+
+> This is still broken, why?! I've been trying to build firebase for weeks. Cant get my builds through EAS at all, and it fails locally too. 
+
+- kalrawi subscribed
+
+- vileikis subscribed
+
+- nacho004 subscribed
+
+- eminaliyevx subscribed
+
+- wfern unsubscribed
+
+- heziyehezkel subscribed
+
+- axross subscribed
+
+**alejandroklever** commented on 2025-10-28T04:45:17Z:
+
+> This solution worked for me.
+> 
+> I added this to my `app.config.js`:
+> ```javascript
+> export default {
+> expo: {
+> ...
+> plugins: [
+> ...
+> [
+> 'expo-build-properties',
+> {
+> ...
+> ios: {
+> useFrameworks: 'static',
+> forceStaticLinking: ['RNFBApp', 'RNFBMessaging', 'RNFBAnalytics'],
+> },
+> },
+> ],
+> ...
+> ],
+> ...
+> },
+> }
+> ```
+> 
+> These are my Firebase dependencies:
+> 
+> ```json
+> "@react-native-firebase/analytics": "23.4.1",
+> "@react-native-firebase/app": "23.4.1",
+> "@react-native-firebase/messaging": "23.4.1",
+> ```
+
+- lerkstaffie subscribed
+
+- oishiimsg subscribed
+
+- snaerth subscribed
+
+- Referenced in commit 1df340e
+
+- camilossantos2809 subscribed
+
+- luuuke subscribed
+
+**mikehardy** commented on 2025-10-30T16:35:29Z:
+
+> @ademirtemur surprised you're seeing this with a non-Expo project. I believe it relates to the new *optional* / *experimental* pre-compiled iOS react-native distribution? So you'd want to make sure you were *not* usig this / apply the reverse of this https://reactnative.dev/blog/2025/08/12/react-native-0.81#experimental-precompiled-ios-builds
+
+- ademirtemur mentioned
+
+- ademirtemur subscribed
+
+- molily unsubscribed
+
+- thenglong subscribed
+
+**mitchellmcm27** commented on 2025-11-02T01:13:39Z:
+
+> For anyone using Expo prebuild and still seeing the error, even after adding all `RNFB*` pods to `forceStaticLinking`, it seems that `"expo-build-properties", {...}` also needs to be the first item in the `plugins` array in **app.json** (or app.config.js). Otherwise somehow the forceStaticLinking array gets overwritten. You can verify by checking to make sure "ios.forceStaticLinking" in **./ios/Podfile.properties.json** is not an empty array.
+> 
+> edit: @ksigWyatt this is probably the cause of your issue
+
+- ksigWyatt mentioned
+
+- ksigWyatt subscribed
+
+- rosskhanas unsubscribed
+
+**hideg9** commented on 2025-11-07T09:32:43Z:
+
+> Since I had already created an expo bare project, I solved the problem without using expo prebuild --clear.
+> 
+> Add the following to ios/Podfile.properties.json:
+> {
+> ...............
+> "ios.useFrameworks": "static",
+> "ios.forceStaticLinking": "[\"RNFBApp\",\"RNFBAnalytics\"]",
+> }
+> 
+> rm -rf ios/Pods
+> 
+> cd ios
+> pod install
+
+**vendramini** commented on 2025-11-14T19:22:21Z:
+
+> It didn't work out here with neither of the suggested solutions. I tried: 
+> 
+> - Adding `forceStaticLinking: ['RNFBApp', 'RNFBAnalytics', 'RNFBCrashlytics', 'RNFBPerf'],` at `app.config.ts`: it doesn't insert anything into Podfile.properties.json neither Podfile itself. Nothing.
+> - Adding manually "ios.forceStaticLinking": "['RNFBApp', 'RNFBAnalytics', 'RNFBCrashlytics', 'RNFBPerf']" to Podfile.properties.json. Nothing.
+> - Adding `buildReactNativeFromSource: true` at `app.config.ts`. Nothing.
+> 
+> I also tried to manually add to Podfile:
+> ```
+> installer.pods_project.targets.each do |target|
+> # Allow non-modular includes for RNFirebase pods to fix
+> # "include of non-modular header inside framework module" errors
+> if ['RNFBApp', 'RNFBAnalytics', 'RNFBCrashlytics', 'RNFBPerf'].include?(target.name)
+> target.build_configurations.each do |config|
+> config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+> config.build_settings['DEFINES_MODULE'] = 'NO'
+> end
+> end
+> end
+> ```
+> In each attempt I prebuilt the app then I ran expo run:ios.
+> 
+> Am I missing something here?
+> 
+> I appreciate any help, I can't compile my project. Thank you!
+
+**wppaing** commented on 2025-11-15T05:19:46Z:
+
+> @alejandroklever Thanks man, you are the life saver.
+
+- Referenced by PR #389: feat(app): add remote config
+
+**Yajariyu** commented on 2025-11-22T21:44:48Z:
+
+> > This is still broken, why?! I've been trying to build firebase for weeks. Cant get my builds through EAS at all, and it fails locally too.
+> 
+> Did you find any solution? i have tried several times the things are suggested here and nothing works . 
+
+**Goku-kun** commented on 2025-11-22T21:57:04Z:
+
+> Have y'all referred to this section of the React Native Firebase library documentation?
+> 
+> For me, I usually open the node_modules directory and go through each React Native Firebase package installed and look for the `app.plugin.js` file. If the file is present, that package needs to be the plugins array in the `app.json` file.
+> 
+> For example:
+> 
+> 
+> 
+> In this image, the `@react-native-firebase/analytics` package doesn't have a app.plugin.js file but `@react-native-firebase/app` does, so I'll include that in the `app.json` as follows.
+> 
+> ```js
+> {
+> // other properties
+> "plugins": [
+> // for iOS only; setup for RNFirebase since it requires use_frameworks
+> [
+> "expo-build-properties",
+> {
+> "ios": {
+> "useFrameworks": "static",
+> "forceStaticLinking": [
+> "RNFBApp"
+> ]
+> }
+> }
+> ],
+> // list out all the package with app.plugin.js file
+> "@react-native-firebase/app",
+> // add other packages in this array if they also have app.plugin.js file in the root of the package directory
+> "@react-native-firebase/crashlytics",
+> "@react-native-firebase/messaging",
+> "@react-native-firebase/app-distribution",
+> "@react-native-firebase/auth",
+> 
+> ]
+> }
+> ```
+> 
+> This has worked for me so far.
+
+**Yajariyu** commented on 2025-11-22T22:10:01Z:
+
+> > * thing into Podfile.properties.json neither Po
+> 
+> Did you find a work around ? 
+
+**acercobra** commented on 2025-12-05T02:44:59Z:
+
+> > It didn't work out here with neither of the suggested solutions. I tried:
+> > 
+> > * Adding `forceStaticLinking: ['RNFBApp', 'RNFBAnalytics', 'RNFBCrashlytics', 'RNFBPerf'],` at `app.config.ts`: it doesn't insert anything into Podfile.properties.json neither Podfile itself. Nothing.
+> > * Adding manually "ios.forceStaticLinking": "['RNFBApp', 'RNFBAnalytics', 'RNFBCrashlytics', 'RNFBPerf']" to Podfile.properties.json. Nothing.
+> > * Adding `buildReactNativeFromSource: true` at `app.config.ts`. Nothing.
+> > 
+> > I also tried to manually add to Podfile:
+> > 
+> > ```
+> > installer.pods_project.targets.each do |target|
+> > # Allow non-modular includes for RNFirebase pods to fix
+> > # "include of non-modular header inside framework module" errors
+> > if ['RNFBApp', 'RNFBAnalytics', 'RNFBCrashlytics', 'RNFBPerf'].include?(target.name)
+> > target.build_configurations.each do |config|
+> > config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+> > config.build_settings['DEFINES_MODULE'] = 'NO'
+> > end
+> > end
+> > end
+> > ```
+> > 
+> > In each attempt I prebuilt the app then I ran expo run:ios.
+> > 
+> > Am I missing something here?
+> > 
+> > I appreciate any help, I can't compile my project. Thank you!
+> 
+> @vendramini Not sure if you still having the same issue but i found out that the file you want to change is the "app.json" file and not the "app.config.ts" file.
+
+**Salil999** commented on 2025-12-06T22:00:55Z:
+
+> I'm new to Expo / React Native development but I plan to use Firebase Auth. Ever since I installed the library I've had a few issues with builds. I _am_ able to get the app running in Expo Go and on a local EAS build but I have to run this every time:
+> 
+> ```
+> rm -rf ios; npx expo run:ios
+> ```
+> 
+> If I try to _only_ refresh the app in Expo Go then I get an error like this:
+> 
+> ```
+> ERROR [Error: Native module RNFBAppModule not found. Re-check module install, linking, configuration, build and install steps.]
+> 
+> Code: auth.ts
+> > 1 | import firebase from '@react-native-firebase/app';
+> | ^
+> 2 | import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+> 3 |
+> 4 | // Explicitly initialize if native auto-init failed (e.g. Bundle ID mismatch)
+> Call Stack
+> (services/auth.ts:1)
+> (app/(drawer)/_layout.tsx:6)
+> ```
+> 
+> I've followed through the comments in this issue and my `app.json` looks like this (made sure to put it at the beginning of the array):
+> 
+> ```
+> "plugins": [
+> [
+> "expo-build-properties",
+> {
+> "ios": {
+> "useFrameworks": "static",
+> "forceStaticLinking": [
+> "RNFBApp"
+> ]
+> }
+> }
+> ],
+> ...
+> ```
+> 
+> and using dependencies as:
+> 
+> ```
+> "@react-native-firebase/app": "^23.5.0",
+> "@react-native-firebase/auth": "^23.5.0",
+> "expo": "~54.0.10",
+> "expo-build-properties": "~1.0.10",
+> ```
+> 
+> UPDATE: I just use the iOS simulator now. It refreshes changes instantly. Seems to be only an issue on Expo Go.
+
+**Brosfeer** commented on 2025-12-07T22:17:44Z:
+
+> The better solution for resolving the "include of non-modular header inside framework module ‘RNFBApp’" error is adding this in the app.json or if u have the app.config.json this line within plugin tag under the,
+> "expo-build-properties"
+> like this one :
+> 
+> "plugins": [
+> // others plugins there......
+> [
+> "expo-build-properties",
+> {
+> "ios": {
+> "useFrameworks": "static",
+> "buildReactNativeFromSource": true
+> "forceStaticLinking": [
+> "RNFBApp"
+> ]
+> }
+> }
+> ],
+> .....
+
+**hamzalakrati** commented on 2025-12-10T14:46:43Z:
+
+> I’m running into the same error with the following setup:
+> • @react-native-firebase/app: 23.7.0
+> • react-native: 0.81.5
+> • react: 19.1.0
+> • expo: 54.0.27
+> 
+> Expo iOS build fails with:
+> 
+> 
+> 
+> I’m using expo prebuild with expo-build-properties and ios.useFrameworks = "static".
+
+**mikehardy** commented on 2025-12-10T19:55:10Z:
+
+> @Salil999 Expo Go is a pre-compiled "Expo modules only" App. It will never ever have non-Expo 3rd party native modules in it, like react-native-firebase. Expo Go will thus never be useful or give you good results if you are developing with 3rd party native modules, like when using react-native-firebase.
+
+- Referenced by issue #41556: Bare Expo 55 and use_frameworks fail ('react/renderer/runtimescheduler/RuntimeScheduler.h' file not found)
+
+**Brosfeer** commented on 2025-12-17T18:36:33Z:
+
+> Solving that a easy tips,
+> u need to add
+> `` "buildReactNativeFromSource": true
+> in the app json within the ios tag like this
+> "plugins": [
+> // others plugins there......
+> [
+> "expo-build-properties",
+> {
+> "ios": {
+> "useFrameworks": "static",
+> "buildReactNativeFromSource": true
+> "forceStaticLinking": [
+> "RNFBApp"
+> ]
+> }
+> }
+> ]
+> 
+> I wish u all the best
+
+**ashuvssut** commented on 2025-12-18T01:42:34Z:
+
+> > Solving that a easy tips,
+> > u need to add
+> > `` "buildReactNativeFromSource": true
+> > in the app json within the ios tag like this
+> > "plugins": [
+> > // others plugins there......
+> > [
+> > "expo-build-properties",
+> > {
+> > "ios": {
+> > "useFrameworks": "static",
+> > "buildReactNativeFromSource": true
+> > "forceStaticLinking": [
+> > "RNFBApp"
+> > ]
+> > }
+> > }
+> > ]
+> > 
+> > I wish u all the best
+> 
+> @Brosfeer setting `"buildReactNativeFromSource": true` disables Expo’s precompiled RN for iOS. So instead follow what Expo team has suggested
+> - Check this official solution mentioned by chrfalch from Expo
+> 
+> -----------
+> 
+> Check this snippet from one of my projects, it has this `plugins` array. Also observe the order of plugin entires in it. hope it helps
+> 
+> ```js
+> plugins: [
+> [
+> // 'expo-build-properties' must be first. See https://github.com/invertase/react-native-firebase/issues/8657#issuecomment-3312082933
+> 'expo-build-properties',
+> {
+> ios: {
+> /**
+> * RNFirebase iOS build fix using static linking (maintainer-recommended).
+> *
+> * We previously used `buildReactNativeFromSource: true` as a workaround to fix
+> * RNFirebase + Firebase iOS SDK build issues, but it disabled Expo’s precompiled RN for
+> * iOS builds and significantly increased build times.
+> * - N.B. For links & context on why `buildReactNativeFromSource: true` was added,
+> * refer to comments in the "previous commit".
+> *
+> * This `forceStaticLinking` configuration follows the Expo maintainer’s suggested solution:
+> * https://github.com/expo/expo/issues/39607#issuecomment-3337284928
+> * - Now precompiled builds are enabled and build times are reduced and RNFB builds work on iOS.
+> *
+> * ⚠️ IMPORTANT: If installing/removing react-native-firebase npm packages, ensure you also update this list.
+> * - Look for `s.name` property in node_modules/@react-native-firebase/ /.podspec to get the Pod name.
+> */
+> forceStaticLinking: [
+> 'RNFBAnalytics',
+> 'RNFBApp',
+> 'RNFBCrashlytics',
+> 'RNFBInAppMessaging',
+> 'RNFBInstallations',
+> 'RNFBPerf',
+> ],
+> /**
+> * Helps RNFB to compile correctly on iOS, since firebase-ios-sdk requires use_frameworks
+> * @see https://rnfirebase.io/#configure-react-native-firebase-modules
+> */
+> useFrameworks: 'static',
+> },
+> },
+> ],
+> '@react-native-firebase/app',
+> '@react-native-firebase/crashlytics',
+> '@react-native-firebase/perf',
+> 
+> // put other plugins after `expo-build-properties`
+> 'expo-router',
+> 'expo-localization',
+> // ...
+> // ...
+> ],
+> ```
+
+- Referenced by issue #1135: 'react/utils/FollyConvert.h' file not found
+
+- Referenced by issue #2060: Unable to install in Expo 54 using instructions from online docs
+
+**Brosfeer** commented on 2025-12-25T19:52:30Z:
+
+> Oh ,that is it
+> Thanks Bro 🤍
+> 
+> 
+> On Thu, 18 Dec 2025 at 04:43, Ashutosh Khanduala ***@***.***>
+> wrote:
+> 
+> > *ashuvssut* left a comment (invertase/react-native-firebase#8657)
+> > 
+> >
+> > Solving that a easy tips,
+> > u need to add
+> > `` "buildReactNativeFromSource": true
+> > in the app json within the ios tag like this
+> > "plugins": [
+> > // others plugins there......
+> > [
+> > "expo-build-properties",
+> > {
+> > "ios": {
+> > "useFrameworks": "static",
+> > "buildReactNativeFromSource": true
+> > "forceStaticLinking": [
+> > "RNFBApp"
+> > ]
+> > }
+> > }
+> > ]
+> >
+> > I wish u all the best
+> >
+> > @Brosfeer setting "buildReactNativeFromSource":
+> > true disables Expo’s precompiled RN for iOS
+> >. So instead
+> > follow what Expo team has suggested
+> >
+> > - Check this official solution mentioned by chrfalch from Expo
+> > 
+> >
+> > ------------------------------
+> >
+> > Check this snippet from one of my projects, it has this plugins array.
+> > Also observe the order of plugin entires in it. hope it helps
+> >
+> > plugins: [
+> > [
+> > // 'expo-build-properties' must be first. See https://github.com/invertase/react-native-firebase/issues/8657#issuecomment-3312082933
+> > 'expo-build-properties',
+> > {
+> > ios: {
+> > /** * RNFirebase iOS build fix using static linking (maintainer-recommended). * * We previously used `buildReactNativeFromSource: true` as a workaround to fix * RNFirebase + Firebase iOS SDK build issues, but it disabled Expo’s precompiled RN for * iOS builds and significantly increased build times. * - N.B. For links & context on why `buildReactNativeFromSource: true` was added, * refer to comments in the "previous commit". * * This `forceStaticLinking` configuration follows the Expo maintainer’s suggested solution: * https://github.com/expo/expo/issues/39607#issuecomment-3337284928 * - Now precompiled builds are enabled and build times are reduced and RNFB builds work on iOS. * * ⚠️ IMPORTANT: If installing/removing react-native-firebase npm packages, ensure you also update this list. * - Look for `s.name` property in ***@***.***/ /.podspec to get the Pod name. */
+> > forceStaticLinking: [
+> > 'RNFBAnalytics',
+> > 'RNFBApp',
+> > 'RNFBCrashlytics',
+> > 'RNFBInAppMessaging',
+> > 'RNFBInstallations',
+> > 'RNFBPerf',
+> > ],
+> > /** * Helps RNFB to compile correctly on iOS, since firebase-ios-sdk requires use_frameworks * @see https://rnfirebase.io/#configure-react-native-firebase-modules */
+> > useFrameworks: 'static',
+> > },
+> > },
+> > ],
+> > ***@***.***/app',
+> > ***@***.***/crashlytics',
+> > ***@***.***/perf',
+> >
+> > // put other plugins after `expo-build-properties`
+> > 'expo-router',
+> > 'expo-localization',
+> > // ...
+> > // ...
+> > ],
+> >
+> > —
+> > Reply to this email directly, view it on GitHub
+> >,
+> > or unsubscribe
+> > 
+> > .
+> > You are receiving this because you were mentioned.Message ID:
+> > ***@***.***>
+> >
+
+**SamAlexMunro** commented on 2025-12-30T15:27:44Z:
+
+> If using a barebones project using the following Podfile with the `pre-install` hook and removing `use_frameworks! :linkage => :static` and updating the `post_install` seems to do the trick; 
+> 
+> ```
+> require File.join(File.dirname(`node --print "require.resolve('expo/package.json')"`), "scripts/autolinking")
+> require File.join(File.dirname(`node --print "require.resolve('react-native/package.json')"`), "scripts/react_native_pods")
+> 
+> require 'json'
+> podfile_properties = JSON.parse(File.read(File.join(__dir__, 'Podfile.properties.json'))) rescue {}
+> 
+> def ccache_enabled?(podfile_properties)
+> # Environment variable takes precedence
+> return ENV['USE_CCACHE'] == '1' if ENV['USE_CCACHE']
+> 
+> # Fall back to Podfile properties
+> podfile_properties['apple.ccacheEnabled'] == 'true'
+> end
+> 
+> ENV['RCT_NEW_ARCH_ENABLED'] ||= '0' if podfile_properties['newArchEnabled'] == 'false'
+> ENV['EX_DEV_CLIENT_NETWORK_INSPECTOR'] ||= podfile_properties['EX_DEV_CLIENT_NETWORK_INSPECTOR']
+> ENV['RCT_USE_RN_DEP'] ||= '1' if podfile_properties['ios.buildReactNativeFromSource'] != 'true' && podfile_properties['newArchEnabled'] != 'false'
+> ENV['RCT_USE_PREBUILT_RNCORE'] ||= '1' if podfile_properties['ios.buildReactNativeFromSource'] != 'true' && podfile_properties['newArchEnabled'] != 'false'
+> platform :ios, podfile_properties['ios.deploymentTarget'] || '15.1'
+> 
+> prepare_react_native_project!
+> 
+> // <><><><> Add this <><><><><> \\
+> pre_install do |installer|
+> installer.pod_targets.each do |pod|
+> if (pod.name.start_with?('Firebase') || pod.name.start_with?('GoogleUtilities') || pod.name.start_with?('GoogleDataTransport')) && !pod.name.start_with?('RNFB')
+> def pod.build_type;
+> Pod::BuildType.static_framework
+> end
+> end
+> end
+> end
+> 
+> target 'mybarebonesproject' do
+> use_expo_modules!
+> 
+> 
+> if ENV['EXPO_USE_COMMUNITY_AUTOLINKING'] == '1'
+> config_command = ['node', '-e', "process.argv=['', '', 'config'];require('@react-native-community/cli').run()"];
+> else
+> config_command = [
+> 'npx',
+> 'expo-modules-autolinking',
+> 'react-native-config',
+> '--json',
+> '--platform',
+> 'ios'
+> ]
+> end
+> 
+> config = use_native_modules!(config_command)
+> 
+> use_frameworks! :linkage => podfile_properties['ios.useFrameworks'].to_sym if podfile_properties['ios.useFrameworks']
+> use_frameworks! :linkage => ENV['USE_FRAMEWORKS'].to_sym if ENV['USE_FRAMEWORKS']
+> 
+> use_react_native!(
+> :path => config[:reactNativePath],
+> :hermes_enabled => podfile_properties['expo.jsEngine'] == nil || podfile_properties['expo.jsEngine'] == 'hermes',
+> # An absolute path to your application root.
+> :app_path => "#{Pod::Config.instance.installation_root}/..",
+> :privacy_file_aggregation_enabled => podfile_properties['apple.privacyManifestAggregationEnabled'] != 'false',
+> )
+> 
+> post_install do |installer|
+> # Standard React Native post_install
+> react_native_post_install(
+> installer,
+> config[:reactNativePath],
+> :mac_catalyst_enabled => false,
+> :ccache_enabled => ccache_enabled?(podfile_properties),
+> )
+> 
+> // <><><><> Add this <><><><><> \\
+> installer.pods_project.targets.each do |target|
+> if target.name.start_with?('Firebase') || target.name.start_with?('Google')
+> target.build_configurations.each do |config|
+> config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
+> end
+> end
+> end
+> end
+> end
+> ```
+
+**lidemin** commented on 2025-12-31T11:23:13Z:
+
+> > > Solving that a easy tips,
+> > > u need to add
+> > > `` "buildReactNativeFromSource": true
+> > > in the app json within the ios tag like this
+> > > "plugins": [
+> > > // others plugins there......
+> > > [
+> > > "expo-build-properties",
+> > > {
+> > > "ios": {
+> > > "useFrameworks": "static",
+> > > "buildReactNativeFromSource": true
+> > > "forceStaticLinking": [
+> > > "RNFBApp"
+> > > ]
+> > > }
+> > > }
+> > > ]
+> > > I wish u all the best
+> > 
+> > @Brosfeer setting `"buildReactNativeFromSource": true` disables Expo’s precompiled RN for iOS. So instead follow what Expo team has suggested
+> > 
+> > * Check this official solution mentioned by chrfalch from Expo
+> > 
+> > Check this snippet from one of my projects, it has this `plugins` array. Also observe the order of plugin entires in it. hope it helps
+> > 
+> > plugins: [
+> > [
+> > // 'expo-build-properties' must be first. See https://github.com/invertase/react-native-firebase/issues/8657#issuecomment-3312082933
+> > 'expo-build-properties',
+> > {
+> > ios: {
+> > /**
+> > * RNFirebase iOS build fix using static linking (maintainer-recommended).
+> > *
+> > * We previously used `buildReactNativeFromSource: true` as a workaround to fix
+> > * RNFirebase + Firebase iOS SDK build issues, but it disabled Expo’s precompiled RN for
+> > * iOS builds and significantly increased build times.
+> > * - N.B. For links & context on why `buildReactNativeFromSource: true` was added,
+> > * refer to comments in the "previous commit".
+> > *
+> > * This `forceStaticLinking` configuration follows the Expo maintainer’s suggested solution:
+> > * https://github.com/expo/expo/issues/39607#issuecomment-3337284928
+> > * - Now precompiled builds are enabled and build times are reduced and RNFB builds work on iOS.
+> > *
+> > * ⚠️ IMPORTANT: If installing/removing react-native-firebase npm packages, ensure you also update this list.
+> > * - Look for `s.name` property in node_modules/@react-native-firebase/ /.podspec to get the Pod name.
+> > */
+> > forceStaticLinking: [
+> > 'RNFBAnalytics',
+> > 'RNFBApp',
+> > 'RNFBCrashlytics',
+> > 'RNFBInAppMessaging',
+> > 'RNFBInstallations',
+> > 'RNFBPerf',
+> > ],
+> > /**
+> > * Helps RNFB to compile correctly on iOS, since firebase-ios-sdk requires use_frameworks
+> > * @see https://rnfirebase.io/#configure-react-native-firebase-modules
+> > */
+> > useFrameworks: 'static',
+> > },
+> > },
+> > ],
+> > '@react-native-firebase/app',
+> > '@react-native-firebase/crashlytics',
+> > '@react-native-firebase/perf',
+> > 
+> > // put other plugins after `expo-build-properties`
+> > 'expo-router',
+> > 'expo-localization',
+> > // ...
+> > // ...
+> > ],
+> 
+> this is the only one works for me so far.
+
+**harelw** commented on 2026-01-05T14:45:47Z:
+
+> I find that you only have to specify RNFBApp for static linking and that works fine
+
+- Referenced by issue #8827: Crashlytics and Analytics fail to build on iOS with RN 0.81 / Expo SDK 54 (Swift pods require modular headers under New Architecture)
+
+- Referenced by issue #8829: [🐛] [Fixed in 23.8.4+] v23.8.0 .1 and .2 have a publishing regression - Expo plugin config is not valid - remain on 23.7.0 or wait for 23.8.4+
+
+**mikehardy** commented on 2026-01-17T18:57:00Z:
+
+> I've got an Expo specific demonstrator script now that starts from scratch and successfully compiles
+> 
+> https://github.com/mikehardy/rnfbdemo/blob/main/make-expo-demo.sh
+> 
+> - shows how to go from init, through configuring the app.json, through running it
+> - it puts the expo-build-properties as the first plugin, with forceStaticLinking static
+> - it puts all the RNFB iOS modules in the static linking array
+> - these lines in particular demonstrate that - they update the app.json and add plugins + force-static-linking https://github.com/mikehardy/rnfbdemo/blob/8766357c95f04b02fcae0e0beeb2bc59b7232331/make-expo-demo.sh#L137-L150
+> 
+> 
+> The key parts are about the static linking config elements that go in app.json in expo-build-properties block, e.g. like so assuming you use every single RNFB module (remove the ones you don't use...):
+> 
+> ```json
+> 
+> ...other stuff here
+> 
+> "plugins": [
+> [
+> "expo-build-properties",
+> {
+> "ios": {
+> "forceStaticLinking": [
+> "RNFBApp",
+> "RNFBAnalytics",
+> "RNFBAppCheck",
+> "RNFBAppDistribution",
+> "RNFBAuth",
+> "RNFBCrashlytics",
+> "RNFBDatabase",
+> "RNFBFirestore",
+> "RNFBFunctions",
+> "RNFBInAppMessaging",
+> "RNFBInstallations",
+> "RNFBMessaging",
+> "RNFBML",
+> "RNFBPerf",
+> "RNFBRemoteConfig",
+> "RNFBStorage"
+> ],
+> "useFrameworks": "static"
+> }
+> }
+> ],
+> 
+> ...other stuff here
+> 
+> ```
+> 
+> I won't close this out yet because I still need to:
+> 
+> - [ ] add documentation on rnfirebase.io about how to do all the things you need to do
+> - [x] fix AppCheck AppDelegate.swift compile issue
+> - #8867 
+> - [x] fix messaging import app hang issue
+> 
+> The build demo is working 100% now with Expo 53, 54 and 55, just needs docs on rnfirebase.io to be 100% up to date
+
+**alexcraviotto** commented on 2026-01-29T15:08:22Z:
+
+> ❌ (../../node_modules/@react-native-firebase/auth/ios/RNFBAuth/RNFBAuthModule.m:1790:15)
+> 
+> 1788 | if (actionCodeSettings[keyDynamicLinkDomain]) {
+> 1789 | NSString *dynamicLinkDomain = actionCodeSettings[keyDynamicLinkDomain];
+> > 1790 | [settings setDynamicLinkDomain:dynamicLinkDomain];
+> | ^ no visible @interface for 'FIRActionCodeSettings' declares the selector 'setDynamicLinkDomain:'
+> 1791 | }
+> 1792 |
+> 1793 | if (actionCodeSettings[keyAndroid]) {
+> 
+> 
+> I'm only getting this error wit hRNFBAuth:
+> 
+> ```
+> "expo-build-properties",
+> {
+> ios: {
+> useFrameworks: "static",
+> deploymentTarget: "15.1",
+> // NOTE: See for understanding why we need to force static linking: https://github.com/expo/expo/issues/39607#issuecomment-3337284928
+> forceStaticLinking: ["RNFBApp", "RNFBAuth"],
+> },
+> android: {},
+> },
+> ],
+> ```
+
+**mikehardy** commented on 2026-01-29T15:17:09Z:
+
+> @alexcraviotto I do not believe that is related to this issue at all. Any time I see our code here result in a build error of the form "no ... for ' declares the selector ' '"
+> 
+> it means you are for some reason not using the firebase-ios-sdk version that we expect and that we pull in automatically. You may have perhaps pinned the firebase-ios-sdk version in your Podfile or via an environment variable for some unrelated reason, but those are unsupported configurations only valid as temporary workarounds
+> 
+> remove that pin and you should be fine
+
+- Referenced by issue #8592: RNFBAppModule not found error in Expo React Native project
+
+- Referenced by PR #6966: Add new architecture support
+
+**julianD77** commented on 2026-02-10T15:13:21Z:
+
+> @mikehardy's post above helped us to solve our iOS Expo 54 (using CNG) New Architecture build issues by enforcing Static Linking of the RNFBxxxx pods. Thank You!
+> 
+> In case useful for others searching, these were the compile errors we were experiencing:
+> 
+> > #import 
+> > ^ include of non-modular header inside framework module 'RNFBApp.RNFBAppModule': '.../ios/Pods/Headers/Public/React-Core/React/RCTBridgeModule.h'
+> 
+> using 
+> 
+> ```
+> "@react-native-firebase/analytics": "^23.8.3",
+> "@react-native-firebase/app": "^23.8.5",
+> "@react-native-firebase/messaging": "^23.8.2",
+> "@react-native-firebase/perf": "^23.8.4",
+> ```
+> 
+> ```
+> "expo": "~54.0.33",
+> ```
+> 
+> ` newArchEnabled: true,`
+
+**mikehardy** commented on 2026-02-10T15:47:41Z:
+
+> ```
+> "@react-native-firebase/analytics": "^23.8.3",
+> "@react-native-firebase/app": "^23.8.5",
+> "@react-native-firebase/messaging": "^23.8.2",
+> "@react-native-firebase/perf": "^23.8.4",
+> ```
+> 
+> I realize with the `^` specifiers you will on install end up with the same version, but please keep all the versions the same. react-native-firebase follows a lock-step version policy and all versions should always be the same at all times: https://invertase.io/blog/react-native-firebase-versioning
+
+**JesusRuizEpct** commented on 2026-02-11T02:15:37Z:
+
+> encontre una solucion usando esto en el podfile
+> prepare_react_native_project!
+> use_modular_headers!
+> y ya con esto funciona bien
+
+**mikehardy** commented on 2026-02-11T10:57:17Z:
+
+> @JesusRuizEpct "use_modular_headers" is an invalid solution and will only work for you if you just happen not to use packages that have converted to swift - that will be a coincidence and your build will fail unexpectedly in the future. The only supported solutions are the ones documented / demonstrated in the make-demo and make-expo-demo script. I'm going to hide these comments so no one else is led astray.
+
+**lentonnl-spec** commented on 2026-02-15T01:13:58Z:
+
+> Hello
+> I’m currently using React Native Firebase v22.4.0 with Expo SDK 54.
+> As per the RNFirebase documentation, I configured my app.json with "usesFrameworks": "static" under the expo-build-properties plugin. I also added all Firebase pods and their dependencies (FirebaseAuth, FirebaseFirestore, FirebaseStorage, FirebaseCoreInternal, plus GoogleUtilities, FirebaseCore, FirebaseCoreExtension, FirebaseAuthInterop, FirebaseAppCheckInterop, RecaptchaInterop) in extraPods with "modular_headers": true.
+> 
+> Despite this, the iOS build still fails during the Install pods phase with the error:
+> 
+> Código
+> [!] The following Swift pods cannot yet be integrated as static libraries:
+> FirebaseAuth, FirebaseCoreInternal, FirebaseFirestore, FirebaseStorage...
+> This is exactly the CocoaPods message that suggests setting use_modular_headers! globally or specifying :modular_headers => true for those dependencies. Since Expo projects don’t allow direct Podfile edits, I’ve mirrored that configuration via expo-build-properties, but the build continues to fail.
+> 
+> Could you please provide guidance on how to properly resolve this issue in an Expo-managed workflow?
+> 
+> Is there an additional step required beyond extraPods?
+> 
+> Or is there a known limitation with RNFirebase v22.x and Expo SDK 54 when using "static" frameworks?
+> I have migrated to RNFirebase 23.8.6 and it still fails with the same logs
+
+**mikehardy** commented on 2026-02-15T14:39:11Z:
+
+> @lentonnl-spec "modular_headers": true" - Nope, don't do that.
+> 
+> Do what this does: https://github.com/mikehardy/rnfbdemo/blob/main/make-expo-demo.sh
+> 
+> Also, use current react-native-firebase, that's v23.8.6 as I type this
+
+**arlovip** commented on 2026-02-27T16:11:57Z:
+
+> How to fix this in a project using `npx @react-native-community/cli@latest init xxx`?
+
+**mikehardy** commented on 2026-03-02T12:42:25Z:
+
+> @arlovip for the RN CLI / non-Expo case, you disable "precompiled iOS binaries by default" for now (or use the Podfile `pre_install` hook posted by @vas1l3nk below)
+> 
+> official reference https://reactnative.dev/blog/2026/02/11/react-native-0.84#precompiled-binaries-on-ios-by-default
+> 
+> > If you need to build React Native from source (for example, to opt out of Hermes V1), you can disable precompiled binaries by setting RCT_USE_PREBUILT_RNCORE=0 when installing pods.
+> 
+> code ref in example: https://github.com/mikehardy/rnfbdemo/blob/3dede7501d850e51621d1c7dc22fe4b3559f340c/make-demo.sh#L94
+
+**arlovip** commented on 2026-03-02T14:14:57Z:
+
+> > @arlovip you disable "precompiled iOS binaries by default" for now
+> > 
+> > official reference https://reactnative.dev/blog/2026/02/11/react-native-0.84#precompiled-binaries-on-ios-by-default
+> > 
+> > > If you need to build React Native from source (for example, to opt out of Hermes V1), you can disable precompiled binaries by setting RCT_USE_PREBUILT_RNCORE=0 when installing pods.
+> > 
+> > code ref in example: https://github.com/mikehardy/rnfbdemo/blob/3dede7501d850e51621d1c7dc22fe4b3559f340c/make-demo.sh#L94
+> 
+> I’m getting a build error: `'react/runtime/JSRuntimeBindings.h' file not found`
+> This happens after running: `RCT_USE_RN_DEP=0 RCT_USE_PREBUILT_RNCORE=0 pod install`
+
+**vas1l3nk** commented on 2026-03-02T17:22:37Z:
+
+> [maintainer edit: this is for the RN CLI case using prebuilt react-native core, not the Expo case]
+> 
+> > I’m getting a build error: `'react/runtime/JSRuntimeBindings.h' file not found`
+> > This happens after running: `RCT_USE_RN_DEP=0 RCT_USE_PREBUILT_RNCORE=0 pod install`
+> 
+> 
+> ```ruby
+> pre_install do |installer|
+> installer.pod_targets.each do |pod|
+> if pod.name.start_with?('RNFB')
+> def pod.build_type
+> Pod::BuildType.static_library
+> end
+> end
+> end
+> end
+> ```
+> 
+> this helped me without running RCT_USE_RN_DEP=0 RCT_USE_PREBUILT_RNCORE=0 pod install
+
+- Referenced by issue #8912: [🐛] iOS build with react-native pre-compiled / RN 0.84+ requires workaround (was: Include of non-modular header inside framework module 'RNFBApp.RNFBUtilsModule')
+
+- Referenced by PR #3909: Bump the minor-and-patch group across 1 directory with 44 updates
+
+**lentonnl-spec** commented on 2026-03-05T01:21:53Z:
+
+> > @lentonnl-spec "modular_headers": true" - Nope, don't do that.
+> > 
+> > Do what this does: https://github.com/mikehardy/rnfbdemo/blob/main/make-expo-demo.sh
+> > 
+> > Also, use current react-native-firebase, that's v23.8.6 as I type this
+> 
+> Thank you for your help!
+> I managed to get the iOS build to complete successfully (before I was having compilation problems), but now when testing the app on TestFlight, the application crashes and closes immediately.
+> 
+> In the crash logs, it is clearly seen that the binary is running on Hermes (hermes.framework), with internal calls to the parser (JSParserImpl), which confirms that Hermes is still active. However, my configuration is set to use JSC. I applied this to avoid the crash, but it keeps happening: In app.json I have "jsEngine": "jsc" and "hermes_enabled": false within expo-build-properties. In eas.json I added the environment variable "EXPO_NO_HERMES": "1". I also keep the New Architecture active on iOS because Reanimated 4.x requires it. Despite this, in the pod installation logs it still shows: Code Installing hermes-engine (0.81.5) Setting USE_HERMES build settings and the crash logs show that the app runs on Hermes and closes. What I need to confirm is: how can I force Expo/EAS to actually compile with JSC on iOS while keeping the New Architecture active? Or in what other way can I avoid the Hermes crash. My configuration seems correct, but Expo SDK 54 + React Native 0.81 still include Hermes in the Podfile and in the final build. Thanks for the help.
+
+**mikehardy** commented on 2026-03-05T13:32:50Z:
+
+> @lentonnl-spec 
+> 
+> > What I need to confirm is: how can I force Expo/EAS to actually compile with JSC on iOS 
+> 
+> That is not in scope as a question for this repository, I will hide your comment and this answer as off-topic.
+> 
+> Please only post items that advance the state of the described issue / directly reference the issue title, thank you
+
+**lentonnl-spec** commented on 2026-03-05T16:50:16Z:
+
+> my apologies.
+> My inquiry is focused on a crash of the compiled app while I am trying to
+> test the app in TestFlight. The app closes immediately and has these crash
+> logs: Incident Identifier: D067ED9F-122B-4864-B96B-31F8DA908B7E
+> Distributor ID: com.apple.TestFlight
+> Hardware Model: iPhone14,2
+> Process: Serviconeccta [27567]
+> Path:
+> /private/var/containers/Bundle/Application/5ED8FFAC-89A2-4321-AED7-32EB7E7463D5/Serviconeccta.app/Serviconeccta
+> Identifier: com.nico.lenton.Serviconeccta
+> Version: 1.0.10 (72)
+> AppStoreTools: 17C503a
+> AppVariant: 1:iPhone14,2:26
+> Beta: YES
+> Code Type: ARM-64 (Native)
+> Role: Foreground
+> Parent Process: launchd [1]
+> Coalition: com.nico.lenton.Serviconeccta [4183]
+> 
+> Date/Time: 2026-03-04 20:19:51.9809 -0300
+> Launch Time: 2026-03-04 20:19:51.4972 -0300
+> OS Version: iPhone OS 26.3 (23D127)
+> Release Type: User
+> Baseband Version: 5.40.01
+> Report Version: 104
+> 
+> Exception Type: EXC_BAD_ACCESS (SIGSEGV)
+> Exception Subtype: KERN_INVALID_ADDRESS at 0x0000000000000050
+> Exception Codes: 0x0000000000000001, 0x0000000000000050
+> VM Region Info: 0x50 is not in any region. Bytes before following region:
+> 4341759920
+> REGION TYPE START - END [ VSIZE] PRT/MAX SHRMOD
+> REGION DETAIL
+> UNUSED SPACE AT START
+> --->
+> __TEXT 102ca0000-102ca4000 [ 16K] r-x/r-x SM=COW
+> /var/containers/Bundle/Application/5ED8FFAC-89A2-4321-AED7-32EB7E7463D5/Serviconeccta.app/Serviconeccta
+> Termination Reason: SIGNAL 11 Segmentation fault: 11
+> Terminating Process: exc handler [27567]
+> 
+> Triggered by Thread: 1
+> 
+> 
+> Thread 0 name:
+> Thread 0:
+> 0 hermes 0x0000000104cfda04
+> llvh::SaveAndRestore::SaveAndRestore(unsigned int&, unsigned
+> int const&) + 0 (SaveAndRestore.h:24)
+> 1 hermes 0x0000000104cfda04
+> llvh::SaveAndRestore::SaveAndRestore(unsigned int&, unsigned
+> int const&) + 0 (SaveAndRestore.h:24)
+> 2 hermes 0x0000000104cfda04
+> hermes::parser::detail::JSParserImpl::parseOptionalExpressionExceptNew_tail(hermes::parser::detail::JSParserImpl::IsConstructorCall,
+> llvh::SMLoc, hermes::ESTree::Node*) + 48 (JSParserImpl.cpp:3346)
+> 3 hermes 0x0000000104cfd734
+> hermes::parser::detail::JSParserImpl::parseOptionalExpressionExceptNew(hermes::parser::detail::JSParserImpl::IsConstructorCall)
+> + 468 (JSParserImpl.cpp:3336)
+> 4 hermes 0x0000000104cfe778
+> hermes::parser::detail::JSParserImpl::parseNewExpressionOrOptionalExpression(hermes::parser::detail::JSParserImpl::IsConstructorCall)
+> + 240 (JSParserImpl.cpp:3730)
+> 5 hermes 0x0000000104cfb474
+> hermes::parser::detail::JSParserImpl::parseLeftHandSideExpression() + 32
+> (JSParserImpl.cpp:3824)
+> 6 hermes 0x0000000104cfed38
+> hermes::parser::detail::JSParserImpl::parsePostfixExpression() + 36
+> (JSParserImpl.cpp:3881)
+> 7 hermes 0x0000000104cff044
+> hermes::parser::detail::JSParserImpl::parseUnaryExpression() + 576
+> (JSParserImpl.cpp:3998)
+> 8 hermes 0x0000000104cff1bc
+> hermes::parser::detail::JSParserImpl::parseBinaryExpression(hermes::parser::detail::Param)
+> + 124 (JSParserImpl.cpp:4182)
+> 9 hermes 0x0000000104cff81c
+> hermes::parser::detail::JSParserImpl::parseConditionalExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::CoverTypedParameters) + 60
+> (JSParserImpl.cpp:4269)
+> 10 hermes 0x0000000104d02634
+> hermes::parser::detail::JSParserImpl::parseAssignmentExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::AllowTypedArrowFunction,
+> hermes::parser::detail::JSParserImpl::C... + 764 (JSParserImpl.cpp:5888)
+> 11 hermes 0x0000000104cfa5d4
+> hermes::parser::detail::JSParserImpl::parseAssignmentExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::AllowTypedArrowFunction,
+> hermes::parser::detail::JSParserImpl::C... + 136 (JSParserImpl.cpp:6043)
+> 12 hermes 0x0000000104cfb14c
+> hermes::parser::detail::JSParserImpl::parseExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::CoverTypedParameters) + 64
+> (JSParserImpl.cpp:6100)
+> 13 hermes 0x0000000104cf7374
+> hermes::parser::detail::JSParserImpl::parseIfStatement(hermes::parser::detail::Param)
+> + 120 (JSParserImpl.cpp:1600)
+> 14 hermes 0x0000000104cf7048
+> hermes::parser::detail::JSParserImpl::parseStatement(hermes::parser::detail::Param)
+> + 228 (JSParserImpl.cpp:673)
+> 15 hermes 0x0000000104cf939c
+> hermes::parser::detail::JSParserImpl::parseStatementListItem(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::AllowImportExport,
+> llvh::simple_ilist &) + 192 (JSParserImpl.cpp:0)
+> 16 hermes 0x0000000104cf6158 llvh::Optional 
+> hermes::parser::detail::JSParserImpl::parseStatementList<>(hermes::parser::detail::Param,
+> hermes::parser::TokenKind, bool,
+> hermes::parser::detail::JSParserImpl::AllowImportExpo... + 140
+> (JSParserImpl.cpp:926)
+> 17 hermes 0x0000000104cf71f0
+> hermes::parser::detail::JSParserImpl::parseBlock(hermes::parser::detail::Param,
+> hermes::parser::JSLexer::GrammarContext, bool) + 100 (JSParserImpl.cpp:944)
+> 18 hermes 0x0000000104cf6bac
+> hermes::parser::detail::JSParserImpl::parseFunctionBody(hermes::parser::detail::Param,
+> bool, bool, bool, hermes::parser::JSLexer::GrammarContext, bool) + 212
+> (JSParserImpl.cpp:777)
+> 19 hermes 0x0000000104cf64dc
+> hermes::parser::detail::JSParserImpl::parseFunctionHelper(hermes::parser::detail::Param,
+> bool, bool) + 860 (JSParserImpl.cpp:549)
+> 20 hermes 0x0000000104cfbc8c
+> hermes::parser::detail::JSParserImpl::parseFunctionExpression(bool) + 20
+> (JSParserImpl.cpp:3237)
+> 21 hermes 0x0000000104cfbc8c
+> hermes::parser::detail::JSParserImpl::parsePrimaryExpression() + 1308
+> (JSParserImpl.cpp:0)
+> 22 hermes 0x0000000104cfd714
+> hermes::parser::detail::JSParserImpl::parseOptionalExpressionExceptNew(hermes::parser::detail::JSParserImpl::IsConstructorCall)
+> + 436 (JSParserImpl.cpp:3330)
+> 23 hermes 0x0000000104cfe778
+> hermes::parser::detail::JSParserImpl::parseNewExpressionOrOptionalExpression(hermes::parser::detail::JSParserImpl::IsConstructorCall)
+> + 240 (JSParserImpl.cpp:3730)
+> 24 hermes 0x0000000104cfb474
+> hermes::parser::detail::JSParserImpl::parseLeftHandSideExpression() + 32
+> (JSParserImpl.cpp:3824)
+> 25 hermes 0x0000000104cfed38
+> hermes::parser::detail::JSParserImpl::parsePostfixExpression() + 36
+> (JSParserImpl.cpp:3881)
+> 26 hermes 0x0000000104cff044
+> hermes::parser::detail::JSParserImpl::parseUnaryExpression() + 576
+> (JSParserImpl.cpp:3998)
+> 27 hermes 0x0000000104cff1bc
+> hermes::parser::detail::JSParserImpl::parseBinaryExpression(hermes::parser::detail::Param)
+> + 124 (JSParserImpl.cpp:4182)
+> 28 hermes 0x0000000104cff81c
+> hermes::parser::detail::JSParserImpl::parseConditionalExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::CoverTypedParameters) + 60
+> (JSParserImpl.cpp:4269)
+> 29 hermes 0x0000000104d02634
+> hermes::parser::detail::JSParserImpl::parseAssignmentExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::AllowTypedArrowFunction,
+> hermes::parser::detail::JSParserImpl::C... + 764 (JSParserImpl.cpp:5888)
+> 30 hermes 0x0000000104cfa5d4
+> hermes::parser::detail::JSParserImpl::parseAssignmentExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::AllowTypedArrowFunction,
+> hermes::parser::detail::JSParserImpl::C... + 136 (JSParserImpl.cpp:6043)
+> 31 hermes 0x0000000104cfe128
+> hermes::parser::detail::JSParserImpl::parseArguments(llvh::simple_ilist &,
+> llvh::SMLoc&) + 216 (JSParserImpl.cpp:3423)
+> 32 hermes 0x0000000104cfe420
+> hermes::parser::detail::JSParserImpl::parseCallExpression(llvh::SMLoc,
+> hermes::ESTree::Node*, hermes::ESTree::Node*, bool, bool) + 600
+> (JSParserImpl.cpp:3644)
+> 33 hermes 0x0000000104cfecdc
+> hermes::parser::detail::JSParserImpl::parseLeftHandSideExpressionTail(llvh::SMLoc,
+> hermes::ESTree::Node*) + 440 (JSParserImpl.cpp:3869)
+> 34 hermes 0x0000000104cfb48c
+> hermes::parser::detail::JSParserImpl::parseLeftHandSideExpression() + 56
+> (JSParserImpl.cpp:3828)
+> 35 hermes 0x0000000104cfed38
+> hermes::parser::detail::JSParserImpl::parsePostfixExpression() + 36
+> (JSParserImpl.cpp:3881)
+> 36 hermes 0x0000000104cff044
+> hermes::parser::detail::JSParserImpl::parseUnaryExpression() + 576
+> (JSParserImpl.cpp:3998)
+> 37 hermes 0x0000000104cff1bc
+> hermes::parser::detail::JSParserImpl::parseBinaryExpression(hermes::parser::detail::Param)
+> + 124 (JSParserImpl.cpp:4182)
+> 38 hermes 0x0000000104cff81c
+> hermes::parser::detail::JSParserImpl::parseConditionalExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::CoverTypedParameters) + 60
+> (JSParserImpl.cpp:4269)
+> 39 hermes 0x0000000104d02634
+> hermes::parser::detail::JSParserImpl::parseAssignmentExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::AllowTypedArrowFunction,
+> hermes::parser::detail::JSParserImpl::C... + 764 (JSParserImpl.cpp:5888)
+> 40 hermes 0x0000000104cfa5d4
+> hermes::parser::detail::JSParserImpl::parseAssignmentExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::AllowTypedArrowFunction,
+> hermes::parser::detail::JSParserImpl::C... + 136 (JSParserImpl.cpp:6043)
+> 41 hermes 0x0000000104cfb14c
+> hermes::parser::detail::JSParserImpl::parseExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::CoverTypedParameters) + 64
+> (JSParserImpl.cpp:6100)
+> 42 hermes 0x0000000104cf8c40
+> hermes::parser::detail::JSParserImpl::parseExpressionOrLabelledStatement(hermes::parser::detail::Param)
+> + 272 (JSParserImpl.cpp:1538)
+> 43 hermes 0x0000000104cf7038
+> hermes::parser::detail::JSParserImpl::parseStatement(hermes::parser::detail::Param)
+> + 212 (JSParserImpl.cpp:712)
+> 44 hermes 0x0000000104cf939c
+> hermes::parser::detail::JSParserImpl::parseStatementListItem(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::AllowImportExport,
+> llvh::simple_ilist &) + 192 (JSParserImpl.cpp:0)
+> 45 hermes 0x0000000104cf6158 llvh::Optional 
+> hermes::parser::detail::JSParserImpl::parseStatementList<>(hermes::parser::detail::Param,
+> hermes::parser::TokenKind, bool,
+> hermes::parser::detail::JSParserImpl::AllowImportExpo... + 140
+> (JSParserImpl.cpp:926)
+> 46 hermes 0x0000000104cf71f0
+> hermes::parser::detail::JSParserImpl::parseBlock(hermes::parser::detail::Param,
+> hermes::parser::JSLexer::GrammarContext, bool) + 100 (JSParserImpl.cpp:944)
+> 47 hermes 0x0000000104cf6bac
+> hermes::parser::detail::JSParserImpl::parseFunctionBody(hermes::parser::detail::Param,
+> bool, bool, bool, hermes::parser::JSLexer::GrammarContext, bool) + 212
+> (JSParserImpl.cpp:777)
+> 48 hermes 0x0000000104cf64dc
+> hermes::parser::detail::JSParserImpl::parseFunctionHelper(hermes::parser::detail::Param,
+> bool, bool) + 860 (JSParserImpl.cpp:549)
+> 49 hermes 0x0000000104cfbc8c
+> hermes::parser::detail::JSParserImpl::parseFunctionExpression(bool) + 20
+> (JSParserImpl.cpp:3237)
+> 50 hermes 0x0000000104cfbc8c
+> hermes::parser::detail::JSParserImpl::parsePrimaryExpression() + 1308
+> (JSParserImpl.cpp:0)
+> 51 hermes 0x0000000104cfd714
+> hermes::parser::detail::JSParserImpl::parseOptionalExpressionExceptNew(hermes::parser::detail::JSParserImpl::IsConstructorCall)
+> + 436 (JSParserImpl.cpp:3330)
+> 52 hermes 0x0000000104cfe778
+> hermes::parser::detail::JSParserImpl::parseNewExpressionOrOptionalExpression(hermes::parser::detail::JSParserImpl::IsConstructorCall)
+> + 240 (JSParserImpl.cpp:3730)
+> 53 hermes 0x0000000104cfb474
+> hermes::parser::detail::JSParserImpl::parseLeftHandSideExpression() + 32
+> (JSParserImpl.cpp:3824)
+> 54 hermes 0x0000000104cfed38
+> hermes::parser::detail::JSParserImpl::parsePostfixExpression() + 36
+> (JSParserImpl.cpp:3881)
+> 55 hermes 0x0000000104cff044
+> hermes::parser::detail::JSParserImpl::parseUnaryExpression() + 576
+> (JSParserImpl.cpp:3998)
+> 56 hermes 0x0000000104cff1bc
+> hermes::parser::detail::JSParserImpl::parseBinaryExpression(hermes::parser::detail::Param)
+> + 124 (JSParserImpl.cpp:4182)
+> 57 hermes 0x0000000104cff81c
+> hermes::parser::detail::JSParserImpl::parseConditionalExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::CoverTypedParameters) + 60
+> (JSParserImpl.cpp:4269)
+> 58 hermes 0x0000000104d02634
+> hermes::parser::detail::JSParserImpl::parseAssignmentExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::AllowTypedArrowFunction,
+> hermes::parser::detail::JSParserImpl::C... + 764 (JSParserImpl.cpp:5888)
+> 59 hermes 0x0000000104cfa5d4
+> hermes::parser::detail::JSParserImpl::parseAssignmentExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::AllowTypedArrowFunction,
+> hermes::parser::detail::JSParserImpl::C... + 136 (JSParserImpl.cpp:6043)
+> 60 hermes 0x0000000104cfcc08
+> hermes::parser::detail::JSParserImpl::parsePropertyAssignment(bool) + 1516
+> (JSParserImpl.cpp:3083)
+> 61 hermes 0x0000000104cfc064
+> hermes::parser::detail::JSParserImpl::parseObjectLiteral() + 100
+> (JSParserImpl.cpp:2618)
+> 62 hermes 0x0000000104cfb8d0
+> hermes::parser::detail::JSParserImpl::parsePrimaryExpression() + 352
+> (JSParserImpl.cpp:2430)
+> 63 hermes 0x0000000104cfd714
+> hermes::parser::detail::JSParserImpl::parseOptionalExpressionExceptNew(hermes::parser::detail::JSParserImpl::IsConstructorCall)
+> + 436 (JSParserImpl.cpp:3330)
+> 64 hermes 0x0000000104cfe778
+> hermes::parser::detail::JSParserImpl::parseNewExpressionOrOptionalExpression(hermes::parser::detail::JSParserImpl::IsConstructorCall)
+> + 240 (JSParserImpl.cpp:3730)
+> 65 hermes 0x0000000104cfb474
+> hermes::parser::detail::JSParserImpl::parseLeftHandSideExpression() + 32
+> (JSParserImpl.cpp:3824)
+> 66 hermes 0x0000000104cfed38
+> hermes::parser::detail::JSParserImpl::parsePostfixExpression() + 36
+> (JSParserImpl.cpp:3881)
+> 67 hermes 0x0000000104cff044
+> hermes::parser::detail::JSParserImpl::parseUnaryExpression() + 576
+> (JSParserImpl.cpp:3998)
+> 68 hermes 0x0000000104cff1bc
+> hermes::parser::detail::JSParserImpl::parseBinaryExpression(hermes::parser::detail::Param)
+> + 124 (JSParserImpl.cpp:4182)
+> 69 hermes 0x0000000104cff81c
+> hermes::parser::detail::JSParserImpl::parseConditionalExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::CoverTypedParameters) + 60
+> (JSParserImpl.cpp:4269)
+> 70 hermes 0x0000000104d02634
+> hermes::parser::detail::JSParserImpl::parseAssignmentExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::AllowTypedArrowFunction,
+> hermes::parser::detail::JSParserImpl::C... + 764 (JSParserImpl.cpp:5888)
+> 71 hermes 0x0000000104cfa5d4
+> hermes::parser::detail::JSParserImpl::parseAssignmentExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::AllowTypedArrowFunction,
+> hermes::parser::detail::JSParserImpl::C... + 136 (JSParserImpl.cpp:6043)
+> 72 hermes 0x0000000104cfb14c
+> hermes::parser::detail::JSParserImpl::parseExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::CoverTypedParameters) + 64
+> (JSParserImpl.cpp:6100)
+> 73 hermes 0x0000000104cf80c8
+> hermes::parser::detail::JSParserImpl::parseReturnStatement() + 128
+> (JSParserImpl.cpp:2013)
+> 74 hermes 0x0000000104cf70b8
+> hermes::parser::detail::JSParserImpl::parseStatement(hermes::parser::detail::Param)
+> + 340 (JSParserImpl.cpp:689)
+> 75 hermes 0x0000000104cf939c
+> hermes::parser::detail::JSParserImpl::parseStatementListItem(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::AllowImportExport,
+> llvh::simple_ilist &) + 192 (JSParserImpl.cpp:0)
+> 76 hermes 0x0000000104cf6158 llvh::Optional 
+> hermes::parser::detail::JSParserImpl::parseStatementList<>(hermes::parser::detail::Param,
+> hermes::parser::TokenKind, bool,
+> hermes::parser::detail::JSParserImpl::AllowImportExpo... + 140
+> (JSParserImpl.cpp:926)
+> 77 hermes 0x0000000104cf71f0
+> hermes::parser::detail::JSParserImpl::parseBlock(hermes::parser::detail::Param,
+> hermes::parser::JSLexer::GrammarContext, bool) + 100 (JSParserImpl.cpp:944)
+> 78 hermes 0x0000000104cf6bac
+> hermes::parser::detail::JSParserImpl::parseFunctionBody(hermes::parser::detail::Param,
+> bool, bool, bool, hermes::parser::JSLexer::GrammarContext, bool) + 212
+> (JSParserImpl.cpp:777)
+> 79 hermes 0x0000000104cf64dc
+> hermes::parser::detail::JSParserImpl::parseFunctionHelper(hermes::parser::detail::Param,
+> bool, bool) + 860 (JSParserImpl.cpp:549)
+> 80 hermes 0x0000000104cfbc8c
+> hermes::parser::detail::JSParserImpl::parseFunctionExpression(bool) + 20
+> (JSParserImpl.cpp:3237)
+> 81 hermes 0x0000000104cfbc8c
+> hermes::parser::detail::JSParserImpl::parsePrimaryExpression() + 1308
+> (JSParserImpl.cpp:0)
+> 82 hermes 0x0000000104cfd714
+> hermes::parser::detail::JSParserImpl::parseOptionalExpressionExceptNew(hermes::parser::detail::JSParserImpl::IsConstructorCall)
+> + 436 (JSParserImpl.cpp:3330)
+> 83 hermes 0x0000000104cfe778
+> hermes::parser::detail::JSParserImpl::parseNewExpressionOrOptionalExpression(hermes::parser::detail::JSParserImpl::IsConstructorCall)
+> + 240 (JSParserImpl.cpp:3730)
+> 84 hermes 0x0000000104cfb474
+> hermes::parser::detail::JSParserImpl::parseLeftHandSideExpression() + 32
+> (JSParserImpl.cpp:3824)
+> 85 hermes 0x0000000104cfed38
+> hermes::parser::detail::JSParserImpl::parsePostfixExpression() + 36
+> (JSParserImpl.cpp:3881)
+> 86 hermes 0x0000000104cff044
+> hermes::parser::detail::JSParserImpl::parseUnaryExpression() + 576
+> (JSParserImpl.cpp:3998)
+> 87 hermes 0x0000000104cff1bc
+> hermes::parser::detail::JSParserImpl::parseBinaryExpression(hermes::parser::detail::Param)
+> + 124 (JSParserImpl.cpp:4182)
+> 88 hermes 0x0000000104cff81c
+> hermes::parser::detail::JSParserImpl::parseConditionalExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::CoverTypedParameters) + 60
+> (JSParserImpl.cpp:4269)
+> 89 hermes 0x0000000104d02634
+> hermes::parser::detail::JSParserImpl::parseAssignmentExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::AllowTypedArrowFunction,
+> hermes::parser::detail::JSParserImpl::C... + 764 (JSParserImpl.cpp:5888)
+> 90 hermes 0x0000000104cfa5d4
+> hermes::parser::detail::JSParserImpl::parseAssignmentExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::AllowTypedArrowFunction,
+> hermes::parser::detail::JSParserImpl::C... + 136 (JSParserImpl.cpp:6043)
+> 91 hermes 0x0000000104cfb14c
+> hermes::parser::detail::JSParserImpl::parseExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::CoverTypedParameters) + 64
+> (JSParserImpl.cpp:6100)
+> 92 hermes 0x0000000104cfbc08
+> hermes::parser::detail::JSParserImpl::parsePrimaryExpression() + 1176
+> (JSParserImpl.cpp:2457)
+> 93 hermes 0x0000000104cfd714
+> hermes::parser::detail::JSParserImpl::parseOptionalExpressionExceptNew(hermes::parser::detail::JSParserImpl::IsConstructorCall)
+> + 436 (JSParserImpl.cpp:3330)
+> 94 hermes 0x0000000104cfe778
+> hermes::parser::detail::JSParserImpl::parseNewExpressionOrOptionalExpression(hermes::parser::detail::JSParserImpl::IsConstructorCall)
+> + 240 (JSParserImpl.cpp:3730)
+> 95 hermes 0x0000000104cfb474
+> hermes::parser::detail::JSParserImpl::parseLeftHandSideExpression() + 32
+> (JSParserImpl.cpp:3824)
+> 96 hermes 0x0000000104cfed38
+> hermes::parser::detail::JSParserImpl::parsePostfixExpression() + 36
+> (JSParserImpl.cpp:3881)
+> 97 hermes 0x0000000104cff044
+> hermes::parser::detail::JSParserImpl::parseUnaryExpression() + 576
+> (JSParserImpl.cpp:3998)
+> 98 hermes 0x0000000104cff1bc
+> hermes::parser::detail::JSParserImpl::parseBinaryExpression(hermes::parser::detail::Param)
+> + 124 (JSParserImpl.cpp:4182)
+> 99 hermes 0x0000000104cff81c
+> hermes::parser::detail::JSParserImpl::parseConditionalExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::CoverTypedParameters) + 60
+> (JSParserImpl.cpp:4269)
+> 100 hermes 0x0000000104d02634
+> hermes::parser::detail::JSParserImpl::parseAssignmentExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::AllowTypedArrowFunction,
+> hermes::parser::detail::JSParserImpl::C... + 764 (JSParserImpl.cpp:5888)
+> 101 hermes 0x0000000104cfa5d4
+> hermes::parser::detail::JSParserImpl::parseAssignmentExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::AllowTypedArrowFunction,
+> hermes::parser::detail::JSParserImpl::C... + 136 (JSParserImpl.cpp:6043)
+> 102 hermes 0x0000000104cfb14c
+> hermes::parser::detail::JSParserImpl::parseExpression(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::CoverTypedParameters) + 64
+> (JSParserImpl.cpp:6100)
+> 103 hermes 0x0000000104cf8c40
+> hermes::parser::detail::JSParserImpl::parseExpressionOrLabelledStatement(hermes::parser::detail::Param)
+> + 272 (JSParserImpl.cpp:1538)
+> 104 hermes 0x0000000104cf7038
+> hermes::parser::detail::JSParserImpl::parseStatement(hermes::parser::detail::Param)
+> + 212 (JSParserImpl.cpp:712)
+> 105 hermes 0x0000000104cf939c
+> hermes::parser::detail::JSParserImpl::parseStatementListItem(hermes::parser::detail::Param,
+> hermes::parser::detail::JSParserImpl::AllowImportExport,
+> llvh::simple_ilist &) + 192 (JSParserImpl.cpp:0)
+> 106 hermes 0x0000000104cf6158 llvh::Optional 
+> hermes::parser::detail::JSParserImpl::parseStatementList<>(hermes::parser::detail::Param,
+> hermes::parser::TokenKind, bool,
+> hermes::parser::detail::JSParserImpl::AllowImportExpo... + 140
+> (JSParserImpl.cpp:926)
+> 107 hermes 0x0000000104cf59f4
+> hermes::parser::detail::JSParserImpl::parseProgram() + 76
+> (JSParserImpl.cpp:347)
+> 108 hermes 0x0000000104cf597c
+> hermes::parser::detail::JSParserImpl::parse() + 44 (JSParserImpl.cpp:155)
+> 109 hermes 0x0000000104ca5788
+> hermes::hbc::BCProviderFromSrc::createBCProviderFromSrcImpl(std::__1::unique_ptr<hermes::Buffer,
+> std::__1::default_delete >, llvh::StringRef,
+> std::__1::unique_ptr<hermes::SourceMap, ... + 1548
+> (BytecodeProviderFromSrc.cpp:217)
+> 110 hermes 0x0000000104ca5148
+> hermes::hbc::BCProviderFromSrc::createBCProviderFromSrc(std::__1::unique_ptr<hermes::Buffer,
+> std::__1::default_delete >, llvh::StringRef,
+> std::__1::unique_ptr<hermes::SourceMap, std:... + 56
+> (BytecodeProviderFromSrc.cpp:106)
+> 111 hermes 0x0000000104c6a1b0
+> hermes::vm::evalInEnvironment(hermes::vm::Runtime&, llvh::StringRef,
+> hermes::vm::Handle, hermes::ScopeChain const&,
+> hermes::vm::Handle, bool, bool) + 496 (eval.cpp:74)
+> 112 hermes 0x0000000104c6a530
+> hermes::vm::directEval(hermes::vm::Runtime&,
+> hermes::vm::Handle, hermes::ScopeChain const&,
+> bool, bool) + 324 (eval.cpp:119)
+> 113 hermes 0x0000000104bdd978
+> hermes::vm::Interpreter::caseDirectEval(hermes::vm::Runtime&,
+> hermes::vm::PinnedHermesValue*, hermes::inst::Inst const*) + 516
+> (Interpreter-slowpaths.cpp:85)
+> 114 hermes 0x0000000104bdc6a8
+> hermes::vm::CallResult<hermes::vm::HermesValue,
+> (hermes::vm::detail::CallResultSpecialize)2>
+> hermes::vm::Interpreter::interpretFunction<false,
+> false>(hermes::vm::Runtime&, hermes::vm::InterpreterSt... + 19800
+> (Interpreter.cpp:3435)
+> 115 hermes 0x0000000104bd7928
+> hermes::vm::Runtime::interpretFunctionImpl(hermes::vm::CodeBlock*) + 52
+> (Interpreter.cpp:811)
+> 116 hermes 0x0000000104bca288
+> hermes::vm::JSFunction::_callImpl(hermes::vm::Handle,
+> hermes::vm::Runtime&) + 40 (Callable.cpp:1110)
+> 117 hermes 0x0000000104baf804
+> hermes::vm::Callable::call(hermes::vm::Handle,
+> hermes::vm::Runtime&) + 44 (Callable.h:253)
+> 118 hermes 0x0000000104baf804
+> facebook::hermes::(anonymous
+> namespace)::HermesRuntimeImpl::call(facebook::jsi::Function const&,
+> facebook::jsi::Value const&, facebook::jsi::Value const*, unsigned long) +
+> 300 (hermes.cpp:2513)
+> 119 Serviconeccta 0x0000000103320d70
+> facebook::jsi::WithRuntimeDecorator<worklets::AroundLock,
+> facebook::jsi::Runtime,
+> facebook::jsi::Runtime>::call(facebook::jsi::Function const&,
+> facebook::jsi::Value const&, facebook::jsi::Value con... + 96
+> (decorator.h:933)
+> 120 Serviconeccta 0x000000010331793c facebook::jsi::Value
+> facebook::jsi::Function::call<facebook::jsi::Value&,
+> facebook::jsi::String>(facebook::jsi::Runtime&, facebook::jsi::Value&,
+> facebook::jsi::String&&) const + 144 (jsi-inl.h:295)
+> 121 Serviconeccta 0x0000000103317820
+> worklets::SerializableWorklet::toJSValue(facebook::jsi::Runtime&) + 100
+> (Serializable.cpp:443)
+> 122 Serviconeccta 0x0000000103319fbc
+> worklets::RetainingSerializable::toJSValue(facebook::jsi::Runtime&)
+> + 132 (Serializable.cpp:285)
+> 123 Serviconeccta 0x0000000103316890
+> worklets::SerializableObject::toJSValue(facebook::jsi::Runtime&) + 180
+> (Serializable.cpp:362)
+> 124 Serviconeccta 0x00000001033197d8
+> worklets::RetainingSerializable::toJSValue(facebook::jsi::Runtime&)
+> + 132 (Serializable.cpp:285)
+> 125 Serviconeccta 0x0000000103316890
+> worklets::SerializableObject::toJSValue(facebook::jsi::Runtime&) + 180
+> (Serializable.cpp:362)
+> 126 Serviconeccta 0x00000001033177dc
+> worklets::SerializableWorklet::toJSValue(facebook::jsi::Runtime&) + 32
+> (Serializable.cpp:442)
+> 127 Serviconeccta 0x0000000103319fbc
+> worklets::RetainingSerializable::toJSValue(facebook::jsi::Runtime&)
+> + 132 (Serializable.cpp:285)
+> 128 Serviconeccta 0x0000000103315d44
+> worklets::SerializableArray::toJSValue(facebook::jsi::Runtime&) + 132
+> (Serializable.cpp:312)
+> 129 Serviconeccta 0x0000000103319174
+> worklets::RetainingSerializable::toJSValue(facebook::jsi::Runtime&)
+> + 132 (Serializable.cpp:285)
+> 130 Serviconeccta 0x0000000103315d44
+> worklets::SerializableArray::toJSValue(facebook::jsi::Runtime&) + 132
+> (Serializable.cpp:312)
+> 131 Serviconeccta 0x0000000103319174
+> worklets::RetainingSerializable::toJSValue(facebook::jsi::Runtime&)
+> + 132 (Serializable.cpp:285)
+> 132 Serviconeccta 0x0000000103316890
+> worklets::SerializableObject::toJSValue(facebook::jsi::Runtime&) + 180
+> (Serializable.cpp:362)
+> 133 Serviconeccta 0x00000001033197d8
+> worklets::RetainingSerializable::toJSValue(facebook::jsi::Runtime&)
+> + 132 (Serializable.cpp:285)
+> 134 Serviconeccta 0x0000000103316890
+> worklets::SerializableObject::toJSValue(facebook::jsi::Runtime&) + 180
+> (Serializable.cpp:362)
+> 135 Serviconeccta 0x00000001033177dc
+> worklets::SerializableWorklet::toJSValue(facebook::jsi::Runtime&) + 32
+> (Serializable.cpp:442)
+> 136 Serviconeccta 0x0000000103319fbc
+> worklets::RetainingSerializable::toJSValue(facebook::jsi::Runtime&)
+> + 132 (Serializable.cpp:285)
+> 137 Serviconeccta 0x000000010330f444
+> worklets::scheduleOnUI(std::__1::shared_ptr const&,
+> std::__1::weak_ptr const&,
+> facebook::jsi::Runtime&, facebook::jsi::Value const&)::'lambda'()::op... +
+> 116 (JSIWorkletsModuleProxy.cpp:50)
+> 138 Serviconeccta 0x000000010331bb60
+> worklets::UIScheduler::triggerUI() + 92 (UIScheduler.cpp:15)
+> 139 Serviconeccta 0x0000000103306fc8 invocation function
+> for block in worklets::IOSUIScheduler::scheduleOnUI(std::__1::function  ()>) + 68 (IOSUIScheduler.mm:18)
+> 140 libdispatch.dylib 0x00000001d0a24adc
+> _dispatch_call_block_and_release + 32 (init.c:1575)
+> 141 libdispatch.dylib 0x00000001d0a3e7fc
+> _dispatch_client_callout + 16 (client_callout.mm:85)
+> 142 libdispatch.dylib 0x00000001d0a5bb10
+> _dispatch_main_queue_drain.cold.5 + 812 (queue.c:8181)
+> 143 libdispatch.dylib 0x00000001d0a33ec8
+> _dispatch_main_queue_drain + 180 (queue.c:8162)
+> 144 libdispatch.dylib 0x00000001d0a33e04
+> _dispatch_main_queue_callback_4CF + 44 (queue.c:8341)
+> 145 CoreFoundation 0x0000000197d692b4
+> __CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__ + 16 (CFRunLoop.c:1820)
+> 146 CoreFoundation 0x0000000197d1cb3c __CFRunLoopRun + 1944
+> (CFRunLoop.c:3177)
+> 147 CoreFoundation 0x0000000197d1ba6c
+> _CFRunLoopRunSpecificWithOptions + 532 (CFRunLoop.c:3462)
+> 148 GraphicsServices 0x000000023c68d498 GSEventRunModal + 120
+> (GSEvent.c:2049)
+> 149 UIKitCore 0x000000019d7cbdf8 -[UIApplication _run]
+> + 792 (UIApplication.m:3904)
+> 150 UIKitCore 0x000000019d774e54 UIApplicationMain +
+> 336 (UIApplication.m:5579)
+> 151 Serviconeccta 0x0000000102ca5638 main + 64
+> (AppDelegate.swift:7)
+> 152 dyld 0x0000000194cf6e28 start + 7116
+> (dyldMain.cpp:1477)
+> 
+> Thread 1 name:
+> Thread 1 Crashed:
+> 0 hermes 0x0000000104c71ef4
+> std::__1::chrono::time_point<std::__1::chrono::steady_clock,
+> std::__1::chrono::duration  1000000000l>>>::time_since_epochabi:nn180100 const + 0 (time_point.h:58)
+> 1 hermes 0x0000000104c71ef4
+> std::__1::common_type<std::__1::chrono::duration  std::__1::ratio<1l, 1000000000l>>, std::__1::chrono::duration  std::__1::ratio<1l, 1000000000l>>>::type std::__1::chrono::opera... + 0
+> (time_point.h:214)
+> 2 hermes 0x0000000104c71ef4
+> hermes::vm::HadesGC::CollectionStats::getElapsedTime() + 4 (HadesGC.cpp:302)
+> 3 hermes 0x0000000104c71ef4
+> hermes::vm::HadesGC::updateYoungGenSizeFactor() + 24 (HadesGC.cpp:2688)
+> 4 hermes 0x0000000104c6f428
+> hermes::vm::HadesGC::youngGenCollection(std::__1::basic_string<char,
+> std::__1::char_traits, std::__1::allocator >, bool) + 916
+> (HadesGC.cpp:2534)
+> 5 hermes 0x0000000104c71594
+> hermes::vm::HadesGC::allocSlow(unsigned int) + 56 (HadesGC.cpp:2197)
+> 6 hermes 0x0000000104c1b0a8 void*
+> hermes::vm::HadesGC::allocWork<false, (hermes::vm::HasFinalizer)0>(unsigned
+> int) + 8 (HadesGC.h:1117)
+> 7 hermes 0x0000000104c1b0a8
+> hermes::vm::DynamicStringPrimitive<char, false>*
+> hermes::vm::HadesGC::makeA<hermes::vm::DynamicStringPrimitive<char, false>,
+> false, (hermes::vm::HasFinalizer)0, (hermes::vm::LongLived)0, unsigned i...
+> + 8 (HadesGC.h:1095)
+> 8 hermes 0x0000000104c1b0a8
+> hermes::vm::DynamicStringPrimitive<char, false>*
+> hermes::vm::GCBase::makeA<hermes::vm::DynamicStringPrimitive<char, false>,
+> false, (hermes::vm::HasFinalizer)0, (hermes::vm::LongLived)0, unsigned
+> in... + 8 (GCBase-inline.h:71)
+> 9 hermes 0x0000000104c1b0a8
+> hermes::vm::DynamicStringPrimitive<char, false>*
+> hermes::vm::GCBase::makeAVariable<hermes::vm::DynamicStringPrimitive<char,
+> false>, (hermes::vm::HasFinalizer)0, (hermes::vm::LongLived)0, unsigned
+> i... + 88 (GCBase-inline.h:47)
+> 10 hermes 0x0000000104c18d70
+> hermes::vm::DynamicStringPrimitive<char, false>*
+> hermes::vm::Runtime::makeAVariable<hermes::vm::DynamicStringPrimitive<char,
+> false>, (hermes::vm::HasFinalizer)0, (hermes::vm::LongLived)0, unsigned ...
+> + 12 (Runtime.h:1972)
+> 11 hermes 0x0000000104c18d70
+> hermes::vm::DynamicStringPrimitive<char,
+> false>::create(hermes::vm::Runtime&, unsigned int) + 20
+> (StringPrimitive.cpp:444)
+> 12 hermes 0x0000000104c18d70
+> hermes::vm::StringPrimitive::create(hermes::vm::Runtime&, unsigned int,
+> bool) + 32 (StringPrimitive.h:907)
+> 13 hermes 0x0000000104c18d70
+> hermes::vm::CallResult<hermes::vm::HermesValue,
+> (hermes::vm::detail::CallResultSpecialize)2>
+> hermes::vm::StringPrimitive::createEfficientImpl (hermes::vm::Runtime&,
+> llvh::ArrayRef, std::... + 176 (StringPrimitive.cpp:94)
+> 14 hermes 0x0000000104c18e94
+> hermes::vm::StringPrimitive::createEfficient(hermes::vm::Runtime&,
+> llvh::ArrayRef) + 20 (StringPrimitive.cpp:118)
+> 15 hermes 0x0000000104c18e94
+> hermes::vm::StringPrimitive::createEfficient(hermes::vm::Runtime&,
+> llvh::ArrayRef, bool) + 80 (StringPrimitive.cpp:168)
+> 16 hermes 0x0000000104bb5f38
+> facebook::hermes::(anonymous
+> namespace)::HermesRuntimeImpl::stringHVFromUtf8(unsigned char const*,
+> unsigned long) + 28 (hermes.cpp:2644)
+> 17 hermes 0x0000000104bad174
+> facebook::hermes::(anonymous
+> namespace)::HermesRuntimeImpl::createStringFromUtf8(unsigned char const*,
+> unsigned long) + 132 (hermes.cpp:1956)
+> 18 Serviconeccta 0x000000010347969c
+> facebook::react::TurboModuleConvertUtils::convertNSStringToJSIString(facebook::jsi::Runtime&,
+> NSString*) + 136 (RCTTurboModule.mm:60)
+> 19 Serviconeccta 0x00000001034794d4
+> facebook::react::TurboModuleConvertUtils::convertObjCObjectToJSIValue(facebook::jsi::Runtime&,
+> objc_object*) + 84 (RCTTurboModule.mm:93)
+> 20 Serviconeccta 0x00000001034799b0
+> facebook::react::TurboModuleConvertUtils::convertNSArrayToJSIArray(facebook::jsi::Runtime&,
+> NSArray*) + 140 (RCTTurboModule.mm:76)
+> 21 Serviconeccta 0x000000010347af0c
+> facebook::react::TurboModuleConvertUtils::convertNSExceptionToJSError(facebook::jsi::Runtime&,
+> NSException*, std::__1::basic_string<char, std::__1::char_traits,
+> std::__1::allocator > con... + 252 (RCTTurboModule.mm:222)
+> 22 Serviconeccta 0x000000010347b96c invocation function
+> for block in
+> facebook::react::ObjCTurboModule::performVoidMethodInvocation(facebook::jsi::Runtime&,
+> char const*, NSInvocation*, NSMutableArray*) + 336 (RCTTurboModule.mm:438)
+> 23 Serviconeccta 0x0000000103480430
+> std::__1::__function::__func<facebook::react::ObjCTurboModule::performVoidMethodInvocation(facebook::jsi::Runtime&,
+> char const*, NSInvocation*, NSMutableArray*)::$_1,
+> std::__1::allocator<facebook::... + 104 (function.h:319)
+> 24 libdispatch.dylib 0x00000001d0a24adc
+> _dispatch_call_block_and_release + 32 (init.c:1575)
+> 25 libdispatch.dylib 0x00000001d0a3e7fc
+> _dispatch_client_callout + 16 (client_callout.mm:85)
+> 26 libdispatch.dylib 0x00000001d0a2d468
+> _dispatch_lane_serial_drain + 740 (queue.c:3991)
+> 27 libdispatch.dylib 0x00000001d0a2df44 _dispatch_lane_invoke
+> + 388 (queue.c:4082)
+> 28 libdispatch.dylib 0x00000001d0a383ec
+> _dispatch_root_queue_drain_deferred_wlh + 292 (queue.c:7265)
+> 29 libdispatch.dylib 0x00000001d0a37ce4
+> _dispatch_workloop_worker_thread + 692 (queue.c:6859)
+> 30 libsystem_pthread.dylib 0x00000001f486d3b8 _pthread_wqthread +
+> 292 (pthread.c:2696)
+> 31 libsystem_pthread.dylib 0x00000001f486c8c0 start_wqthread + 8
+> (:-1)
+> 
+> Thread 2:
+> 
+> Thread 3:
+> 
+> Thread 4:
+> 
+> Thread 5:
+> 
+> Thread 6 name:
+> Thread 6:
+> 0 libsystem_kernel.dylib 0x00000002454b2cd4 mach_msg2_trap + 8
+> (:-1)
+> 1 libsystem_kernel.dylib 0x00000002454b62f8 mach_msg2_internal +
+> 76 (mach_msg.c:201)
+> 2 libsystem_kernel.dylib 0x00000002454b6214 mach_msg_overwrite +
+> 428 (mach_msg.c:0)
+> 3 libsystem_kernel.dylib 0x00000002454b605c mach_msg + 24
+> (mach_msg.c:323)
+> 4 CoreFoundation 0x0000000197d45868
+> __CFRunLoopServiceMachPort + 160 (CFRunLoop.c:2650)
+> 5 CoreFoundation 0x0000000197d1c848 __CFRunLoopRun + 1188
+> (CFRunLoop.c:3035)
+> 6 CoreFoundation 0x0000000197d1ba6c
+> _CFRunLoopRunSpecificWithOptions + 532 (CFRunLoop.c:3462)
+> 7 Foundation 0x0000000195cdbf54
+> -[NSRunLoop(NSRunLoop) runMode:beforeDate:] + 212 (NSRunLoop.m:375)
+> 8 Foundation 0x0000000195cdc12c
+> -[NSRunLoop(NSRunLoop) runUntilDate:] + 64 (NSRunLoop.m:422)
+> 9 UIKitCore 0x000000019d7a1094 -[UIEventFetcher
+> threadMain] + 408 (UIEventFetcher.m:1333)
+> 10 Foundation 0x000000019539b21c __NSThread__start__ +
+> 732 (NSThread.m:997)
+> 11 libsystem_pthread.dylib 0x00000001f487044c _pthread_start + 136
+> (pthread.c:931)
+> 12 libsystem_pthread.dylib 0x00000001f486c8cc thread_start + 8 (:-1)
+> 
+> Thread 7:
+> 
+> Thread 8:
+> 
+> Thread 9:
+> 
+> Thread 10:
+> 
+> Thread 11 name:
+> Thread 11:
+> 0 libsystem_kernel.dylib 0x00000002454b90b4 __psynch_mutexwait +
+> 8 (:-1)
+> 1 libsystem_pthread.dylib 0x00000001f486dc94
+> _pthread_mutex_firstfit_lock_wait + 84 (pthread_mutex.c:1414)
+> 2 libsystem_pthread.dylib 0x00000001f486ccac
+> _pthread_mutex_firstfit_lock_slow + 220 (pthread_mutex.c:1490)
+> 3 libc++.1.dylib 0x00000001a70849cc
+> std::__1::recursive_mutex::lock() + 16 (mutex.cpp:58)
+> 4 hermes 0x0000000104c6fff8
+> hermes::vm::HadesGC::pauseBackgroundTask() + 52 (HadesGC.cpp:1648)
+> 5 hermes 0x0000000104bd413c
+> hermes::vm::HadesGC::ensureBackgroundTaskPaused() + 8 (HadesGC.h:924)
+> 6 hermes 0x0000000104bd413c
+> hermes::vm::HiddenClass*
+> hermes::vm::HadesGC::makeA<hermes::vm::HiddenClass, true,
+> (hermes::vm::HasFinalizer)1, (hermes::vm::LongLived)1,
+> hermes::vm::Runtime&, hermes::vm::ClassFlags&, hermes::vm::... + 8
+> (HadesGC.h:1089)
+> 7 hermes 0x0000000104bd413c
+> hermes::vm::HiddenClass* hermes::vm::GCBase::makeA<hermes::vm::HiddenClass,
+> true, (hermes::vm::HasFinalizer)1, (hermes::vm::LongLived)1,
+> hermes::vm::Runtime&, hermes::vm::ClassFlags&, hermes::vm::H... + 68
+> (GCBase-inline.h:71)
+> 8 hermes 0x0000000104bd1c20
+> hermes::vm::HiddenClass*
+> hermes::vm::GCBase::makeAFixed<hermes::vm::HiddenClass,
+> (hermes::vm::HasFinalizer)1, (hermes::vm::LongLived)1,
+> hermes::vm::Runtime&, hermes::vm::ClassFlags&, hermes::vm::Ha... + 32
+> (GCBase-inline.h:31)
+> 9 hermes 0x0000000104bd1c20
+> hermes::vm::HiddenClass*
+> hermes::vm::Runtime::makeAFixed<hermes::vm::HiddenClass,
+> (hermes::vm::HasFinalizer)1, (hermes::vm::LongLived)1,
+> hermes::vm::Runtime&, hermes::vm::ClassFlags&, hermes::vm::H... + 40
+> (Runtime.h:1955)
+> 10 hermes 0x0000000104bd1c20
+> hermes::vm::HiddenClass::create(hermes::vm::Runtime&,
+> hermes::vm::ClassFlags, hermes::vm::Handle,
+> hermes::vm::SymbolID, hermes::vm::PropertyFlags, unsigned int) + 76
+> (HiddenClass.cpp:186)
+> 11 hermes 0x0000000104bd25f4
+> hermes::vm::HiddenClass::addProperty(hermes::vm::Handle,
+> hermes::vm::Runtime&, hermes::vm::SymbolID, hermes::vm::PropertyFlags) +
+> 644 (HiddenClass.cpp:490)
+> 12 hermes 0x0000000104bea7ac
+> hermes::vm::JSObject::addOwnPropertyImpl(hermes::vm::Handle,
+> hermes::vm::Runtime&, hermes::vm::SymbolID, hermes::vm::PropertyFlags,
+> hermes::vm::Handle) + 144 (JSObject.cpp:2753)
+> 13 hermes 0x0000000104be8f20
+> hermes::vm::JSObject::addOwnProperty(hermes::vm::Handle,
+> hermes::vm::Runtime&, hermes::vm::SymbolID,
+> hermes::vm::DefinePropertyFlags,
+> hermes::vm::Handle<hermes::vm::HermesValu... + 148 (JSObject.cpp:2731)
+> 14 hermes 0x0000000104be8354
+> hermes::vm::JSObject::putNamedWithReceiver_RJS(hermes::vm::Handle,
+> hermes::vm::Runtime&, hermes::vm::SymbolID,
+> hermes::vm::Handle, hermes::vm::Handle<... + 780
+> (JSObject.cpp:1509)
+> 15 hermes 0x0000000104bae490
+> facebook::hermes::(anonymous
+> namespace)::HermesRuntimeImpl::setPropertyValue(facebook::jsi::Object
+> const&, facebook::jsi::PropNameID const&, facebook::jsi::Value const&) +
+> 176 (hermes.cpp:2298)
+> 16 Serviconeccta 0x0000000103807088
+> facebook::jsi::valueFromDynamic(facebook::jsi::Runtime&, folly::dynamic
+> const&) + 252 (JSIDynamic.cpp:89)
+> 17 Serviconeccta 0x00000001034b09c0
+> std::__1::__function::__func<facebook::react::ReactInstance::callFunctionOnModule(std::__1::basic_string<char,
+> std::__1::char_traits, std::__1::allocator > const&,
+> std::__1::basic_string... + 332 (function.h:319)
+> 18 Serviconeccta 0x00000001034d92dc
+> facebook::react::Task::execute(facebook::jsi::Runtime&, bool) + 240
+> (Task.cpp:60)
+> 19 Serviconeccta 0x00000001034d4940
+> facebook::react::RuntimeScheduler_Modern::executeTask(facebook::jsi::Runtime&,
+> facebook::react::Task&, bool) const + 132 (RuntimeScheduler_Modern.cpp:375)
+> 20 Serviconeccta 0x00000001034d50d4
+> facebook::react::RuntimeScheduler_Modern::runEventLoopTick(facebook::jsi::Runtime&,
+> facebook::react::Task&) + 176 (RuntimeScheduler_Modern.cpp:312)
+> 21 Serviconeccta 0x00000001034d4e18
+> facebook::react::RuntimeScheduler_Modern::runEventLoop(facebook::jsi::Runtime&)
+> + 112 (RuntimeScheduler_Modern.cpp:266)
+> 22 Serviconeccta 0x00000001034ae5a8
+> _ZNSt3__110__function6__funcIZZN8facebook5react13ReactInstanceC1ENS_10unique_ptrINS3_9JSRuntimeENS_14default_deleteIS6_EEEENS_10shared_ptrINS3_18MessageQueueThreadEEENSA_INS3_12TimerManagerEEENS_8f...
+> + 140 (function.h:319)
+> 23 Serviconeccta 0x0000000103348274
+> facebook::react::tryAndReturnError(std::__1::function const&) + 32
+> (RCTCxxUtils.mm:76)
+> 24 Serviconeccta 0x0000000103354b58
+> facebook::react::RCTMessageThread::tryFunc(std::__1::function 
+> const&) + 24 (RCTMessageThread.mm:68)
+> 25 Serviconeccta 0x0000000103354964 invocation function
+> for block in
+> facebook::react::RCTMessageThread::runAsync(std::__1::function) +
+> 44 (RCTMessageThread.mm:44)
+> 26 CoreFoundation 0x0000000197d1b320
+> __CFRUNLOOP_IS_CALLING_OUT_TO_A_BLOCK__ + 28 (CFRunLoop.c:1845)
+> 27 CoreFoundation 0x0000000197d1afec __CFRunLoopDoBlocks +
+> 396 (CFRunLoop.c:1897)
+> 28 CoreFoundation 0x0000000197d1ccd8 __CFRunLoopRun + 2356
+> (CFRunLoop.c:3231)
+> 29 CoreFoundation 0x0000000197d1ba6c
+> _CFRunLoopRunSpecificWithOptions + 532 (CFRunLoop.c:3462)
+> 30 Serviconeccta 0x00000001034aa1f8 +[RCTJSThreadManager
+> runRunLoop] + 212 (RCTJSThreadManager.mm:102)
+> 31 Foundation 0x000000019539b21c __NSThread__start__ +
+> 732 (NSThread.m:997)
+> 32 libsystem_pthread.dylib 0x00000001f487044c _pthread_start + 136
+> (pthread.c:931)
+> 33 libsystem_pthread.dylib 0x00000001f486c8cc thread_start + 8 (:-1)
+> 
+> Thread 12 name:
+> Thread 12:
+> 0 libsystem_kernel.dylib 0x00000002454b85d4 __psynch_cvwait + 8
+> (:-1)
+> 1 libsystem_pthread.dylib 0x00000001f486eb58 _pthread_cond_wait +
+> 984 (pthread_cond.c:862)
+> 2 libc++.1.dylib 0x00000001a7083704
+> std::__1::condition_variable::wait(std::__1::unique_lock<std::__1::mutex>&)
+> + 32 (condition_variable.cpp:30)
+> 3 hermes 0x0000000104c739c4 void
+> std::__1::condition_variable::wait<hermes::vm::HadesGC::Executor::worker()::'lambda'()>(std::__1::unique_lock<std::__1::mutex>&,
+> hermes::vm::HadesGC::Executor::worker()::'lambda'()) + 28
+> (condition_variable.h:146)
+> 4 hermes 0x0000000104c739c4
+> hermes::vm::HadesGC::Executor::worker() + 116 (HadesGC.cpp:1062)
+> 5 hermes 0x0000000104c7392c
+> hermes::vm::HadesGC::Executor::Executor()::'lambda'()::operator()() const +
+> 4 (HadesGC.cpp:1033)
+> 6 hermes 0x0000000104c7392c
+> decltype(std::declval<hermes::vm::HadesGC::Executor::Executor()::'lambda'()>()())
+> std::__1::__invoke[abi:nn180100]<hermes::vm::HadesGC::Executor::Executor()::'lambda'()>(hermes::vm::HadesGC::Execut...
+> + 4 (invoke.h:344)
+> 7 hermes 0x0000000104c7392c void
+> std::__1::__thread_execute[abi:nn180100]<std::__1::unique_ptr<std::__1::__thread_struct,
+> std::__1::default_delete<std::__1::__thread_struct>>,
+> hermes::vm::HadesGC::Executor::Executor()::'lambd... + 4 (thread.h:199)
+> 8 hermes 0x0000000104c7392c void*
+> std::__1::__thread_proxy[abi:nn180100]<std::__1::tuple<std::__1::unique_ptr<std::__1::__thread_struct,
+> std::__1::default_delete<std::__1::__thread_struct>>,
+> hermes::vm::HadesGC::Executor::Exe... + 44 (thread.h:208)
+> 9 libsystem_pthread.dylib 0x00000001f487044c _pthread_start + 136
+> (pthread.c:931)
+> 10 libsystem_pthread.dylib 0x00000001f486c8cc thread_start + 8 (:-1)
+> 
+> Thread 13 name:
+> Thread 13:
+> 0 libsystem_kernel.dylib 0x00000002454b85d4 __psynch_cvwait + 8
+> (:-1)
+> 1 libsystem_pthread.dylib 0x00000001f486eb58 _pthread_cond_wait +
+> 984 (pthread_cond.c:862)
+> 2 libc++.1.dylib 0x00000001a7083704
+> std::__1::condition_variable::wait(std::__1::unique_lock<std::__1::mutex>&)
+> + 32 (condition_variable.cpp:30)
+> 3 hermes 0x0000000104c739c4 void
+> std::__1::condition_variable::wait<hermes::vm::HadesGC::Executor::worker()::'lambda'()>(std::__1::unique_lock<std::__1::mutex>&,
+> hermes::vm::HadesGC::Executor::worker()::'lambda'()) + 28
+> (condition_variable.h:146)
+> 4 hermes 0x0000000104c739c4
+> hermes::vm::HadesGC::Executor::worker() + 116 (HadesGC.cpp:1062)
+> 5 hermes 0x0000000104c7392c
+> hermes::vm::HadesGC::Executor::Executor()::'lambda'()::operator()() const +
+> 4 (HadesGC.cpp:1033)
+> 6 hermes 0x0000000104c7392c
+> decltype(std::declval<hermes::vm::HadesGC::Executor::Executor()::'lambda'()>()())
+> std::__1::__invoke[abi:nn180100]<hermes::vm::HadesGC::Executor::Executor()::'lambda'()>(hermes::vm::HadesGC::Execut...
+> + 4 (invoke.h:344)
+> 7 hermes 0x0000000104c7392c void
+> std::__1::__thread_execute[abi:nn180100]<std::__1::unique_ptr<std::__1::__thread_struct,
+> std::__1::default_delete<std::__1::__thread_struct>>,
+> hermes::vm::HadesGC::Executor::Executor()::'lambd... + 4 (thread.h:199)
+> 8 hermes 0x0000000104c7392c void*
+> std::__1::__thread_proxy[abi:nn180100]<std::__1::tuple<std::__1::unique_ptr<std::__1::__thread_struct,
+> std::__1::default_delete<std::__1::__thread_struct>>,
+> hermes::vm::HadesGC::Executor::Exe... + 44 (thread.h:208)
+> 9 libsystem_pthread.dylib 0x00000001f487044c _pthread_start + 136
+> (pthread.c:931)
+> 10 libsystem_pthread.dylib 0x00000001f486c8cc thread_start + 8 (:-1)
+> 
+> 
+> Thread 1 crashed with ARM Thread State (64-bit):
+> x0: 0x00025c71b47b47c5 x1: 0x000000016d1e6130 x2:
+> 0x00000000000120a8 x3: 0x000000010f1799e8
+> x4: 0x000000010f1e0e00 x5: 0x0000000000000018 x6:
+> 0x0000000104bb70d4 x7: 0x0000000000000000
+> x8: 0x00000000000a2411 x9: 0x0000000016cbddc5 x10:
+> 0x000000003b9aca00 x11: 0x0000010000000000
+> x12: 0x00000000fffffffd x13: 0x0000000000000000 x14:
+> 0x0000000000000000 x15: 0x0000000000000000
+> x16: 0x00000002454b3110 x17: 0x0000000000000002 x18:
+> 0x0000000000000000 x19: 0x0000000109efe388
+> x20: 0x0000000000000000 x21: 0x000000016d1e6378 x22:
+> 0x0000000000000001 x23: 0x0000000109efe6a0
+> x24: 0x0000000109f00178 x25: 0x00000000000000c8 x26:
+> 0x0000000109f00178 x27: 0x0000000000000000
+> x28: 0x0000000000000260 fp: 0x000000016d1e6160 lr: 0x0000000104c71ef4
+> sp: 0x000000016d1e6150 pc: 0x0000000104c71ef4 cpsr: 0x60001000
+> esr: 0x92000006 (Data Abort) byte read Translation fault
+> 
+> 
+> Binary Images:
+> 0x102ca0000 - 0x103d6ffff Serviconeccta arm64
+> 
+> /var/containers/Bundle/Application/5ED8FFAC-89A2-4321-AED7-32EB7E7463D5/Serviconeccta.app/Serviconeccta
+> 0x10446c000 - 0x104477fff libobjc-trampolines.dylib arm64e
+> <1954b963897d321f88be880ecef5b408>
+> /private/preboot/Cryptexes/OS/usr/lib/libobjc-trampolines.dylib
+> 0x1045ac000 - 0x104633fff ReactNativeDependencies arm64
+> 
+> /private/var/containers/Bundle/Application/5ED8FFAC-89A2-4321-AED7-32EB7E7463D5/Serviconeccta.app/Frameworks/ReactNativeDependencies.framework/ReactNativeDependencies
+> 0x104ba4000 - 0x104da7fff hermes arm64
+> <80d5528f2c783b90b90f747e89a9f880>
+> /private/var/containers/Bundle/Application/5ED8FFAC-89A2-4321-AED7-32EB7E7463D5/Serviconeccta.app/Frameworks/hermes.framework/hermes
+> 0x194cf2000 - 0x194d91347 dyld arm64e
+> <7631b298c24e3532b62500a1ad73c1fd> /usr/lib/dyld
+> 0x195339000 - 0x19617fc9f Foundation arm64e
+> <4c3912d2e14a3a21926b54bef625be89>
+> /System/Library/Frameworks/Foundation.framework/Foundation
+> 0x197cff000 - 0x19828573f CoreFoundation arm64e
+> 
+> /System/Library/Frameworks/CoreFoundation.framework/CoreFoundation
+> 0x19d72e000 - 0x19fb8d9bf UIKitCore arm64e
+> 
+> /System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore
+> 0x1a3240000 - 0x1a3283d2f libsystem_malloc.dylib arm64e
+> /usr/lib/system/libsystem_malloc.dylib
+> 0x1a7061000 - 0x1a70f3e23 libc++.1.dylib arm64e
+> /usr/lib/libc++.1.dylib
+> 0x1d0a23000 - 0x1d0a6921f libdispatch.dylib arm64e
+> <904d48a3d99e3962bfa9c3dfb66bba83> /usr/lib/system/libdispatch.dylib
+> 0x1f486c000 - 0x1f487845f libsystem_pthread.dylib arm64e
+> <4f94107b94d23e888542f5403c581b50> /usr/lib/system/libsystem_pthread.dylib
+> 0x23c68c000 - 0x23c6947ff GraphicsServices arm64e
+> <12a401ff966436029f17f3047446e62b>
+> /System/Library/PrivateFrameworks/GraphicsServices.framework/GraphicsServices
+> 0x2454b2000 - 0x2454ecd2b libsystem_kernel.dylib arm64e
+> <8d8301292cbe32a9b61ece493eecb399> /usr/lib/system/libsystem_kernel.dylib
+> 0x2b29ae000 - 0x2b29b5f3b libsystem_platform.dylib arm64e
+> <440513f7c74e35a6a34ad06a9df88547> /usr/lib/system/libsystem_platform.dylib
+> 
+> EOF
+> 
+> El jue, 5 mar 2026 a la(s) 10:33 a.m., Mike Hardy ***@***.***)
+> escribió:
+> 
+> > *mikehardy* left a comment (invertase/react-native-firebase#8657)
+> > 
+> >
+> > @lentonnl-spec 
+> >
+> > What I need to confirm is: how can I force Expo/EAS to actually compile
+> > with JSC on iOS
+> >
+> > That is not in scope as a question for this repository, I will hide your
+> > comment and this answer as off-topic.
+> >
+> > Please only post items that advance the state of the described issue /
+> > directly reference the issue title, thank you
+> >
+> > —
+> > Reply to this email directly, view it on GitHub
+> >,
+> > or unsubscribe
+> > 
+> > .
+> > You are receiving this because you were mentioned.Message ID:
+> > ***@***.***>
+> >
+
+**mikehardy** commented on 2026-03-05T23:01:48Z:
+
+> @lentonnl-spec 
+> 
+> > My inquiry is focused on a crash of the compiled app while I am trying to
+> > test the app in TestFlight. The app closes immediately and has these crash
+> 
+> [ gigantic crash trace with no apparent relation to this issue deleted ]
+> 
+> Your inquiry has nothing to do with this issue. Please do not post unrelated items on issues - as I have asked before - if you continue to do so I will have to take moderator action. Thank you.
+
+**ayanko** commented on 2026-03-11T00:28:09Z:
+
+> What about no hacks?
+> 
+> https://docs.expo.dev/versions/latest/sdk/build-properties/#pluginconfigtypeios
+> 
+> ### forceStaticLinking
+> 
+> > List of CocoaPods that should be linked statically instead of as frameworks.
+> > This is only relevant when use_frameworks! is enabled. Some pods— especially React Native prebuilt binaries—can fail due to > modular header issues when built as dynamic frameworks. Declaring them here ensures they are linked statically, avoiding those compatibility problems.
+> 
+> Example for `app.config.js`
+> 
+> ```js
+> plugins: [
+> [
+> "expo-build-properties",
+> {
+> "ios": {
+> "useFrameworks": "static",
+> "forceStaticLinking": [
+> "RNFBApp",
+> "RNFBAuth"
+> ]
+> }
+> }
+> ],
+> "@react-native-firebase/app",
+> "@react-native-firebase/auth",
+> ]
+> ```
+
+**lavor** commented on 2026-03-12T08:11:43Z:
+
+> > What about no hacks?
+> > 
+> > https://docs.expo.dev/versions/latest/sdk/build-properties/#pluginconfigtypeios
+> > 
+> > ### forceStaticLinking
+> > 
+> > > List of CocoaPods that should be linked statically instead of as frameworks.
+> > > This is only relevant when use_frameworks! is enabled. Some pods— especially React Native prebuilt binaries—can fail due to > modular header issues when built as dynamic frameworks. Declaring them here ensures they are linked statically, avoiding those compatibility problems.
+> > 
+> > Example for `app.config.js`
+> > 
+> > plugins: [
+> > [
+> > "expo-build-properties",
+> > {
+> > "ios": {
+> > "useFrameworks": "static",
+> > "forceStaticLinking": [
+> > "RNFBApp",
+> > "RNFBAuth"
+> > ]
+> > }
+> > }
+> > ],
+> > "@react-native-firebase/app",
+> > "@react-native-firebase/auth",
+> > ]
+> 
+> I can confirm that this helped and is working also in Expo 55. Thanks.
+
+**mikehardy** commented on 2026-03-12T11:25:09Z:
+
+> @ayanko you have discovered and posted exactly what my linked comment posted as the solution for people tells you to do, so I'm hiding that as "duplicate" since it doesn't add to the conversation --> https://github.com/invertase/react-native-firebase/issues/8657#issuecomment-3764209769
+
+**hotairbag** commented on 2026-03-23T05:26:01Z:
+
+> how is this still not fixed? unreal
+
+**Gungoril** commented on 2026-03-26T06:49:27Z:
+
+> I have spent weeks trying to solve this with AI. I followed every solution AI suggested, without any result and burning my build limits... 
+> It looks like good old MANUAL search was the key...
+> This solved it for me: 
+> "plugins": [ 
+> [
+> "expo-build-properties",
+> {
+> "ios": {
+> "deploymentTarget": "15.1",
+> "useFrameworks": "static",
+> "forceStaticLinking": ["RNFBApp", "RNFBMessaging", "RNFBPerf" ]
+> }
+> }
+> ],
+> "@react-native-firebase/app",
+> "@react-native-firebase/messaging",
+> "@react-native-firebase/perf"
+> ],
+> 
+> Thank you all for your support...
+> This post should be bookmarked by all who use Firebase Native and React / Expo...
+
+**harelw** commented on 2026-04-05T16:28:53Z:
+
+> Worth noting that you may not need to list every RNFB module in forceStaticLinking. I think that since useFrameworks: "static" already tells CocoaPods to build all pods as static frameworks globally, the forceStaticLinking array is only needed for pods that resist that setting.
+> 
+> In our case, we use 6 RNFB packages (app, auth, firestore, functions, messaging, storage) but only have RNFBApp in forceStaticLinking — and it builds fine on Expo 55. The other modules just follow the global static setting without issue.
+> 
+> ```
+> "expo-build-properties": {
+> "ios": {
+> "useFrameworks": "static",
+> "forceStaticLinking": ["RNFBApp"]
+> }
+> }
+> ```
+> 
+> So the conservative approach of listing all modules works, but a minimal config may be sufficient for most setups.
+> 
+> > I've got an Expo specific demonstrator script now that starts from scratch and successfully compiles
+> > 
+> > https://github.com/mikehardy/rnfbdemo/blob/main/make-expo-demo.sh
+> > 
+> > * shows how to go from init, through configuring the app.json, through running it
+> > 
+> > * it puts the expo-build-properties as the first plugin, with forceStaticLinking static
+> > * it puts all the RNFB iOS modules in the static linking array
+> > * these lines in particular demonstrate that - they update the app.json and add plugins + force-static-linking https://github.com/mikehardy/rnfbdemo/blob/8766357c95f04b02fcae0e0beeb2bc59b7232331/make-expo-demo.sh#L137-L150
+> > 
+> > The key parts are about the static linking config elements that go in app.json in expo-build-properties block, e.g. like so assuming you use every single RNFB module (remove the ones you don't use...):
+> > 
+> > ...other stuff here
+> > 
+> > "plugins": [
+> > [
+> > "expo-build-properties",
+> > {
+> > "ios": {
+> > "forceStaticLinking": [
+> > "RNFBApp",
+> > "RNFBAnalytics",
+> > "RNFBAppCheck",
+> > "RNFBAppDistribution",
+> > "RNFBAuth",
+> > "RNFBCrashlytics",
+> > "RNFBDatabase",
+> > "RNFBFirestore",
+> > "RNFBFunctions",
+> > "RNFBInAppMessaging",
+> > "RNFBInstallations",
+> > "RNFBMessaging",
+> > "RNFBML",
+> > "RNFBPerf",
+> > "RNFBRemoteConfig",
+> > "RNFBStorage"
+> > ],
+> > "useFrameworks": "static"
+> > }
+> > }
+> > ],
+> > 
+> > ...other stuff here
+> > I won't close this out yet because I still need to:
+> > 
+> > * [ ] add documentation on rnfirebase.io about how to do all the things you need to do* [x] fix AppCheck AppDelegate.swift compile issue
+> > 
+> > * fix(app-check): use bridging header instead of Swift module import #8867[x] fix messaging import app hang issue
+> > 
+> > The build demo is working 100% now with Expo 53, 54 and 55, just needs docs on rnfirebase.io to be 100% up to date
+> 
+
+**Gungoril** commented on 2026-04-06T10:19:19Z:
+
+> This is also very valuable... Thanks...
+> 
+> > Worth noting that you may not need to list every RNFB module in forceStaticLinking. I think that since useFrameworks: "static" already tells CocoaPods to build all pods as static frameworks globally, the forceStaticLinking array is only needed for pods that resist that setting.
+> > 
+> > In our case, we use 6 RNFB packages (app, auth, firestore, functions, messaging, storage) but only have RNFBApp in forceStaticLinking — and it builds fine on Expo 55. The other modules just follow the global static setting without issue.
+> > 
+> > ```
+> > "expo-build-properties": {
+> > "ios": {
+> > "useFrameworks": "static",
+> > "forceStaticLinking": ["RNFBApp"]
+> > }
+> > }
+> > ```
+> > 
+> > So the conservative approach of listing all modules works, but a minimal config may be sufficient for most setups.
+> > 
+> > > I've got an Expo specific demonstrator script now that starts from scratch and successfully compiles
+> > > https://github.com/mikehardy/rnfbdemo/blob/main/make-expo-demo.sh
+> > > 
+> > > * shows how to go from init, through configuring the app.json, through running it
+> > > 
+> > > * it puts the expo-build-properties as the first plugin, with forceStaticLinking static
+> > > * it puts all the RNFB iOS modules in the static linking array
+> > > * these lines in particular demonstrate that - they update the app.json and add plugins + force-static-linking https://github.com/mikehardy/rnfbdemo/blob/8766357c95f04b02fcae0e0beeb2bc59b7232331/make-expo-demo.sh#L137-L150
+> > > 
+> > > The key parts are about the static linking config elements that go in app.json in expo-build-properties block, e.g. like so assuming you use every single RNFB module (remove the ones you don't use...):
+> > > ```
+> > > ...other stuff here
+> > > 
+> > > "plugins": [
+> > > [
+> > > "expo-build-properties",
+> > > {
+> > > "ios": {
+> > > "forceStaticLinking": [
+> > > "RNFBApp",
+> > > "RNFBAnalytics",
+> > > "RNFBAppCheck",
+> > > "RNFBAppDistribution",
+> > > "RNFBAuth",
+> > > "RNFBCrashlytics",
+> > > "RNFBDatabase",
+> > > "RNFBFirestore",
+> > > "RNFBFunctions",
+> > > "RNFBInAppMessaging",
+> > > "RNFBInstallations",
+> > > "RNFBMessaging",
+> > > "RNFBML",
+> > > "RNFBPerf",
+> > > "RNFBRemoteConfig",
+> > > "RNFBStorage"
+> > > ],
+> > > "useFrameworks": "static"
+> > > }
+> > > }
+> > > ],
+> > > 
+> > > ...other stuff here
+> > > ```
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > I won't close this out yet because I still need to:
+> > > 
+> > > 
+> > > * * [ ] 
+> > > [ ] add documentation on rnfirebase.io about how to do all the things you need to do* [x] fix AppCheck AppDelegate.swift compile issue
+> > > 
+> > > * fix(app-check): use bridging header instead of Swift module import #8867[x] fix messaging import app hang issue
+> > > The build demo is working 100% now with Expo 53, 54 and 55, just needs docs on rnfirebase.io to be 100% up to date
+> 
+
+- Referenced by issue #8960: [🐛] iOS build fails either with Expo 55.0.10 (use 55.0.9?) or if not using required Expo configuration for Expo 84+
+
+**harelw** commented on 2026-04-09T19:31:39Z:
+
+> This 'trick' no longer works with most recent version of RNFB, sorry!
+> 
+> > Worth noting that you may not need to list every RNFB module in forceStaticLinking. I think that since useFrameworks: "static" already tells CocoaPods to build all pods as static frameworks globally, the forceStaticLinking array is only needed for pods that resist that setting.
+> > 
+> > In our case, we use 6 RNFB packages (app, auth, firestore, functions, messaging, storage) but only have RNFBApp in forceStaticLinking — and it builds fine on Expo 55. The other modules just follow the global static setting without issue.
+> > 
+> > ```
+> > "expo-build-properties": {
+> > "ios": {
+> > "useFrameworks": "static",
+> > "forceStaticLinking": ["RNFBApp"]
+> > }
+> > }
+> > ```
+> > 
+> > So the conservative approach of listing all modules works, but a minimal config may be sufficient for most setups.
+> > 
+> > > I've got an Expo specific demonstrator script now that starts from scratch and successfully compiles
+> > > https://github.com/mikehardy/rnfbdemo/blob/main/make-expo-demo.sh
+> > > 
+> > > * shows how to go from init, through configuring the app.json, through running it
+> > > 
+> > > * it puts the expo-build-properties as the first plugin, with forceStaticLinking static
+> > > * it puts all the RNFB iOS modules in the static linking array
+> > > * these lines in particular demonstrate that - they update the app.json and add plugins + force-static-linking https://github.com/mikehardy/rnfbdemo/blob/8766357c95f04b02fcae0e0beeb2bc59b7232331/make-expo-demo.sh#L137-L150
+> > > 
+> > > The key parts are about the static linking config elements that go in app.json in expo-build-properties block, e.g. like so assuming you use every single RNFB module (remove the ones you don't use...):
+> > > ```
+> > > ...other stuff here
+> > > 
+> > > "plugins": [
+> > > [
+> > > "expo-build-properties",
+> > > {
+> > > "ios": {
+> > > "forceStaticLinking": [
+> > > "RNFBApp",
+> > > "RNFBAnalytics",
+> > > "RNFBAppCheck",
+> > > "RNFBAppDistribution",
+> > > "RNFBAuth",
+> > > "RNFBCrashlytics",
+> > > "RNFBDatabase",
+> > > "RNFBFirestore",
+> > > "RNFBFunctions",
+> > > "RNFBInAppMessaging",
+> > > "RNFBInstallations",
+> > > "RNFBMessaging",
+> > > "RNFBML",
+> > > "RNFBPerf",
+> > > "RNFBRemoteConfig",
+> > > "RNFBStorage"
+> > > ],
+> > > "useFrameworks": "static"
+> > > }
+> > > }
+> > > ],
+> > > 
+> > > ...other stuff here
+> > > ```
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > I won't close this out yet because I still need to:
+> > > 
+> > > 
+> > > * * [ ] 
+> > > [ ] add documentation on rnfirebase.io about how to do all the things you need to do* [x] fix AppCheck AppDelegate.swift compile issue
+> > > 
+> > > * fix(app-check): use bridging header instead of Swift module import #8867[x] fix messaging import app hang issue
+> > > The build demo is working 100% now with Expo 53, 54 and 55, just needs docs on rnfirebase.io to be 100% up to date
+> 
+
+**Gungoril** commented on 2026-04-10T07:53:28Z:
+
+> I followed this advice 3 days ago and the build worked without any problems. Was there a recent update tat causes errors now? 
+> This was my app.json and I'm using Firestore, Firebase analytics but only added RNFBApp. 
+> 
+> "plugins": [
+> "expo-router",
+> [
+> "expo-build-properties",
+> {
+> "ios": {
+> "deploymentTarget": "15.1",
+> "useFrameworks": "static",
+> "forceStaticLinking": [
+> "RNFBApp"
+> ]
+> },
+> "android": {
+> "minSdkVersion": 23
+> }
+> }
+> ],
+> "@react-native-firebase/app",
+> "@react-native-firebase/messaging",
+> "@react-native-community/datetimepicker",
+> "expo-sharing"
+> ],
+> 
+> > This 'trick' no longer works with most recent version of RNFB, sorry!
+> > 
+> > > Worth noting that you may not need to list every RNFB module in forceStaticLinking. I think that since useFrameworks: "static" already tells CocoaPods to build all pods as static frameworks globally, the forceStaticLinking array is only needed for pods that resist that setting.
+> > > In our case, we use 6 RNFB packages (app, auth, firestore, functions, messaging, storage) but only have RNFBApp in forceStaticLinking — and it builds fine on Expo 55. The other modules just follow the global static setting without issue.
+> > > ```
+> > > "expo-build-properties": {
+> > > "ios": {
+> > > "useFrameworks": "static",
+> > > "forceStaticLinking": ["RNFBApp"]
+> > > }
+> > > }
+> > > ```
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > So the conservative approach of listing all modules works, but a minimal config may be sufficient for most setups.
+> > > > I've got an Expo specific demonstrator script now that starts from scratch and successfully compiles
+> > > > https://github.com/mikehardy/rnfbdemo/blob/main/make-expo-demo.sh
+> > > > 
+> > > > * shows how to go from init, through configuring the app.json, through running it
+> > > > 
+> > > > * it puts the expo-build-properties as the first plugin, with forceStaticLinking static
+> > > > * it puts all the RNFB iOS modules in the static linking array
+> > > > * these lines in particular demonstrate that - they update the app.json and add plugins + force-static-linking https://github.com/mikehardy/rnfbdemo/blob/8766357c95f04b02fcae0e0beeb2bc59b7232331/make-expo-demo.sh#L137-L150
+> > > > 
+> > > > The key parts are about the static linking config elements that go in app.json in expo-build-properties block, e.g. like so assuming you use every single RNFB module (remove the ones you don't use...):
+> > > > ```
+> > > > ...other stuff here
+> > > > 
+> > > > "plugins": [
+> > > > [
+> > > > "expo-build-properties",
+> > > > {
+> > > > "ios": {
+> > > > "forceStaticLinking": [
+> > > > "RNFBApp",
+> > > > "RNFBAnalytics",
+> > > > "RNFBAppCheck",
+> > > > "RNFBAppDistribution",
+> > > > "RNFBAuth",
+> > > > "RNFBCrashlytics",
+> > > > "RNFBDatabase",
+> > > > "RNFBFirestore",
+> > > > "RNFBFunctions",
+> > > > "RNFBInAppMessaging",
+> > > > "RNFBInstallations",
+> > > > "RNFBMessaging",
+> > > > "RNFBML",
+> > > > "RNFBPerf",
+> > > > "RNFBRemoteConfig",
+> > > > "RNFBStorage"
+> > > > ],
+> > > > "useFrameworks": "static"
+> > > > }
+> > > > }
+> > > > ],
+> > > > 
+> > > > ...other stuff here
+> > > > ```
+> > > > 
+> > > > 
+> > > > 
+> > > > 
+> > > > 
+> > > > 
+> > > > 
+> > > > 
+> > > > 
+> > > > 
+> > > > 
+> > > > I won't close this out yet because I still need to:
+> > > > 
+> > > > * * [ ]
+> > > > [ ] add documentation on rnfirebase.io about how to do all the things you need to do* [x] fix AppCheck AppDelegate.swift compile issue
+> > > > 
+> > > > * fix(app-check): use bridging header instead of Swift module import #8867[x] fix messaging import app hang issue
+> > > > The build demo is working 100% now with Expo 53, 54 and 55, just needs docs on rnfirebase.io to be 100% up to date
+> 
+
+**harelw** commented on 2026-04-10T14:10:44Z:
+
+> Hey @Gungoril. It stopped working for me when I upgraded RNFB to 24. Maybe one of the modules I depend on requires it to be explicitly marked for static linking. Haven't looked into it too deeply.
+> 
+> > I followed this advice 3 days ago and the build worked without any problems. Was there a recent update tat causes errors now? This was my app.json and I'm using Firestore, Firebase analytics but only added RNFBApp.
+> > 
+> > "plugins": [ "expo-router", [ "expo-build-properties", { "ios": { "deploymentTarget": "15.1", "useFrameworks": "static", "forceStaticLinking": [ "RNFBApp" ] }, "android": { "minSdkVersion": 23 } } ], "@react-native-firebase/app", "@react-native-firebase/messaging", "@react-native-community/datetimepicker", "expo-sharing" ],
+
+**razvangeangu** commented on 2026-04-22T17:31:56Z:
+
+> Can confirm this works perfectly for me as well! For anyone using Expo SDK 55.0.17 / React Native 0.83.6 and running into these implicit-int and missing type specifier errors with the Firebase modules, adding `buildReactNativeFromSource: true` natively resolves the static framework header resolution issues.
+> 
+> Here is the exact configuration for `expo-build-properties` inside `app.json` that worked:
+> 
+> ```json
+> {
+> "expo": {
+> "plugins": [
+> [
+> "expo-build-properties",
+> {
+> "ios": {
+> "useFrameworks": "static",
+> "buildReactNativeFromSource": true
+> }
+> }
+> ]
+> ]
+> }
+> }
+> ```
+
+**RodolfoSilva** commented on 2026-04-22T19:53:41Z:
+
+> @razvangeangu Building React Native from source will slow down the build process. It's better to use:
+> 
+> ```json
+> "forceStaticLinking": [
+> "RNFBApp",
+> "RNFBAnalytics",
+> "RNFBAppCheck",
+> "RNFBAppDistribution",
+> "RNFBAuth",
+> "RNFBCrashlytics",
+> "RNFBDatabase",
+> "RNFBFirestore",
+> "RNFBFunctions",
+> "RNFBInAppMessaging",
+> "RNFBInstallations",
+> "RNFBMessaging",
+> "RNFBML",
+> "RNFBPerf",
+> "RNFBRemoteConfig",
+> "RNFBStorage"
+> ],
+> ```
+> You only need to include the modules that are crashing, and you're good to go.
+
+**razvangeangu** commented on 2026-04-22T19:55:18Z:
+
+> > @razvangeangu Building React Native from source will slow down the build process. It's better to use:
+> > 
+> > ```json
+> > "forceStaticLinking": [
+> > "RNFBApp",
+> > "RNFBAnalytics",
+> > "RNFBAppCheck",
+> > "RNFBAppDistribution",
+> > "RNFBAuth",
+> > "RNFBCrashlytics",
+> > "RNFBDatabase",
+> > "RNFBFirestore",
+> > "RNFBFunctions",
+> > "RNFBInAppMessaging",
+> > "RNFBInstallations",
+> > "RNFBMessaging",
+> > "RNFBML",
+> > "RNFBPerf",
+> > "RNFBRemoteConfig",
+> > "RNFBStorage"
+> > ],
+> > ```
+> > You only need to include the modules that are crashing, and you're good to go.
+> 
+> Oh I like that honestly, it's really been slow indeed.
+
+- Referenced by issue #8988: 🔥 [🐛] iOS build fails: cannot find 'RCTPromiseRejectBlock' in scope in RNFBFirestoreCommon.h (v24 + Expo SDK 55 + use_frameworks!:static)
+
+**mikehardy** commented on 2026-04-26T23:42:47Z:
+
+> > It stopped working for me when I upgraded RNFB to 24.
+> 
+> Saw this mentioned in a comment I will collapse as resolved, because I updated my demonstrator script to RNFB v24 and it works fine.
+> 
+> There is no issue compiling Expo 55 with RNFB v24 and current react-native. If you don't follow what my demonstrator script does and what I document above in the very explicit comment saying how to do it, then your problems are your own
+> 
+> I demonstrate what works and strongly advise folks to follow it :-)
+> 
+> Here is a link to the comment (in case github collapses it) that shows Expo build details: https://github.com/invertase/react-native-firebase/issues/8657#issuecomment-3764209769
+> 
+> Here is a sort-of off topic but useful link to a comment showing the non-Expo RN CLI version (in case someone ends up here looking for that): https://github.com/invertase/react-native-firebase/issues/8657#issuecomment-3985785611
+> 
+> It took a while but we have rnfirebase.io on a new site-hosting provider and with the reference API documentation now being built in a modern way that handles the typescript conversions we have been doing as a repo refactor here.
+> 
+> I appreciate everyone's patience while our documentation has lagged but please be aware that we take build issues seriously and to my knowledge we've had known solutions for all build issues discovered and commented as quickly as we can (like, January...) - we're not ignoring anyone we promise!
+
+- Referenced by PR #40: feat(crash-reporting): add Crashlytics + React error boundary
+
+**github-actions[bot]** commented on 2026-05-10T23:51:23Z:
+
+> Hello 👋, to help manage issues we automatically close stale issues.
+> 
+> This issue has been automatically marked as stale because it has not had activity for quite some time.Has this issue been fixed, or does it still require attention?
+> 
+> > This issue will be closed in 15 days if no further activity occurs.
+> 
+> Thank you for your contributions.
+
+**human2040** commented on 2026-05-11T16:13:27Z:
+
+> This issue is still not resolved. @razvangeangu suggestion does not work and if I add the forceStaticLinking it also fails with errors:
+> 
+> `❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.h:22:44)
+> 
+> 20 | #import 
+> 21 |
+> > 22 | @interface RNFBAnalyticsModule : NSObject 
+> | ^ declaration of 'RCTBridgeModule' must be imported from module 'RNFBApp.RNFBAppModule' before it is required
+> 23 |
+> 24 | @end
+> 25 |
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.m:39:1)
+> 
+> 37 | #pragma mark Module Setup
+> 38 |
+> > 39 | RCT_EXPORT_MODULE();
+> | ^ type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+> 40 |
+> 41 | - (dispatch_queue_t)methodQueue {
+> 42 | return dispatch_get_main_queue();
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.m:48:19)
+> 
+> 46 | #pragma mark Firebase Analytics Methods
+> 47 |
+> > 48 | RCT_EXPORT_METHOD(logEvent
+> | ^ type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+> 49 | : (NSString *)name params
+> 50 | : (NSDictionary *)params resolver
+> 51 | : (RCTPromiseResolveBlock)resolve rejecter
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.m:49:19)
+> 
+> 47 |
+> 48 | RCT_EXPORT_METHOD(logEvent
+> > 49 | : (NSString *)name params
+> | ^ expected ')'
+> 50 | : (NSDictionary *)params resolver
+> 51 | : (RCTPromiseResolveBlock)resolve rejecter
+> 52 | : (RCTPromiseRejectBlock)reject) {
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.m:48:1)
+> 
+> 46 | #pragma mark Firebase Analytics Methods
+> 47 |
+> > 48 | RCT_EXPORT_METHOD(logEvent
+> | ^ type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+> 49 | : (NSString *)name params
+> 50 | : (NSDictionary *)params resolver
+> 51 | : (RCTPromiseResolveBlock)resolve rejecter
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.m:62:19)
+> 
+> 60 | }
+> 61 |
+> > 62 | RCT_EXPORT_METHOD(setAnalyticsCollectionEnabled
+> | ^ type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+> 63 | : (BOOL)enabled resolver
+> 64 | : (RCTPromiseResolveBlock)resolve rejecter
+> 65 | : (RCTPromiseRejectBlock)reject) {
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.m:63:19)
+> 
+> 61 |
+> 62 | RCT_EXPORT_METHOD(setAnalyticsCollectionEnabled
+> > 63 | : (BOOL)enabled resolver
+> | ^ expected ')'
+> 64 | : (RCTPromiseResolveBlock)resolve rejecter
+> 65 | : (RCTPromiseRejectBlock)reject) {
+> 66 | @try {
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.m:62:1)
+> 
+> 60 | }
+> 61 |
+> > 62 | RCT_EXPORT_METHOD(setAnalyticsCollectionEnabled
+> | ^ type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+> 63 | : (BOOL)enabled resolver
+> 64 | : (RCTPromiseResolveBlock)resolve rejecter
+> 65 | : (RCTPromiseRejectBlock)reject) {
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.m:75:19)
+> 
+> 73 | }
+> 74 |
+> > 75 | RCT_EXPORT_METHOD(setUserId
+> | ^ type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+> 76 | : (NSString *)id resolver
+> 77 | : (RCTPromiseResolveBlock)resolve rejecter
+> 78 | : (RCTPromiseRejectBlock)reject) {
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.m:76:19)
+> 
+> 74 |
+> 75 | RCT_EXPORT_METHOD(setUserId
+> > 76 | : (NSString *)id resolver
+> | ^ expected ')'
+> 77 | : (RCTPromiseResolveBlock)resolve rejecter
+> 78 | : (RCTPromiseRejectBlock)reject) {
+> 79 | @try {
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.m:75:1)
+> 
+> 73 | }
+> 74 |
+> > 75 | RCT_EXPORT_METHOD(setUserId
+> | ^ type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+> 76 | : (NSString *)id resolver
+> 77 | : (RCTPromiseResolveBlock)resolve rejecter
+> 78 | : (RCTPromiseRejectBlock)reject) {
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.m:87:19)
+> 
+> 85 | }
+> 86 |
+> > 87 | RCT_EXPORT_METHOD(setUserProperty
+> | ^ type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+> 88 | : (NSString *)name value
+> 89 | : (NSString *)value resolver
+> 90 | : (RCTPromiseResolveBlock)resolve rejecter
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.m:88:19)
+> 
+> 86 |
+> 87 | RCT_EXPORT_METHOD(setUserProperty
+> > 88 | : (NSString *)name value
+> | ^ expected ')'
+> 89 | : (NSString *)value resolver
+> 90 | : (RCTPromiseResolveBlock)resolve rejecter
+> 91 | : (RCTPromiseRejectBlock)reject) {
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.m:87:1)
+> 
+> 85 | }
+> 86 |
+> > 87 | RCT_EXPORT_METHOD(setUserProperty
+> | ^ type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+> 88 | : (NSString *)name value
+> 89 | : (NSString *)value resolver
+> 90 | : (RCTPromiseResolveBlock)resolve rejecter
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.m:100:19)
+> 
+> 98 | }
+> 99 |
+> > 100 | RCT_EXPORT_METHOD(setUserProperties
+> | ^ type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+> 101 | : (NSDictionary *)properties resolver
+> 102 | : (RCTPromiseResolveBlock)resolve rejecter
+> 103 | : (RCTPromiseRejectBlock)reject) {
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.m:101:19)
+> 
+> 99 |
+> 100 | RCT_EXPORT_METHOD(setUserProperties
+> > 101 | : (NSDictionary *)properties resolver
+> | ^ expected ')'
+> 102 | : (RCTPromiseResolveBlock)resolve rejecter
+> 103 | : (RCTPromiseRejectBlock)reject) {
+> 104 | @try {
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.m:100:1)
+> 
+> 98 | }
+> 99 |
+> > 100 | RCT_EXPORT_METHOD(setUserProperties
+> | ^ type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+> 101 | : (NSDictionary *)properties resolver
+> 102 | : (RCTPromiseResolveBlock)resolve rejecter
+> 103 | : (RCTPromiseRejectBlock)reject) {
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.m:114:19)
+> 
+> 112 | }
+> 113 |
+> > 114 | RCT_EXPORT_METHOD(resetAnalyticsData
+> | ^ type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+> 115 | : (RCTPromiseResolveBlock)resolve rejecter
+> 116 | : (RCTPromiseRejectBlock)reject) {
+> 117 | @try {
+> 
+> 
+> ❌ (node_modules/@react-native-firebase/analytics/ios/RNFBAnalytics/RNFBAnalyticsModule.m:115:19)
+> 
+> 113 |
+> 114 | RCT_EXPORT_METHOD(resetAnalyticsData
+> > 115 | : (RCTPromiseResolveBlock)resolve rejecter
+> | ^ expected ')'
+> 116 | : (RCTPromiseRejectBlock)reject) {
+> 117 | @try {
+> 118 | [FIRAnalytics resetAnalyticsData];
+> 
+> 
+> ❌ fatal error: too many errors emitted, stopping now [-ferror-limit=]`
+
+**razvangeangu** commented on 2026-05-11T16:15:43Z:
+
+> @RodolfoSilva's suggestion still works for me @human2040 
+> 
+> ```json
+> [
+> "expo-build-properties",
+> {
+> "ios": {
+> "useFrameworks": "static",
+> "forceStaticLinking": [
+> "RNFBAnalytics",
+> "RNFBApp",
+> "RNFBAppCheck",
+> "RNFBAuth",
+> "RNFBCrashlytics",
+> "RNFBFirestore",
+> "RNFBMessaging",
+> "RNFBRemoteConfig",
+> "RNFBStorage"
+> ]
+> }
+> }
+> ]
+> ```
+
+**ashuvssut** commented on 2026-05-11T16:19:07Z:
+
+> Mike (project maintainer) has already provided the solution. please check Mike's last comment. I am using Expo 55 with rnfb latest. His solution works fine. Please read through their solution and try it first
+> 
+> We should lock this issue to avoid unnecessary clutter because the working solution is already given by the maintainer
+
+**matteomelotti** commented on 2026-05-13T12:50:42Z:
+
+> > Mike (project maintainer) has already provided the solution. please check Mike's last comment. I am using Expo 55 with rnfb latest. His solution works fine. Please read through their solution and try it first
+> > 
+> > We should lock this issue to avoid unnecessary clutter because the working solution is already given by the maintainer
+> 
+> I'm also on Expo 55, rnfb 24, RN 0.85.3, expo-build-properties 55.0.14.
+> app.json updated as suggested but receiving the same error
+
+- Referenced by PR #7: Implement learn page
+
+**mikehardy** commented on 2026-05-22T02:13:47Z:
+
+> Indeed I am locking this issue *not* because it is resolved satisfactorily - there is still a lot of work happening in the area - but because there *is* a workaround and it *does* work, but it keeps getting buried in a torrent of comments that are about all sorts of things but don't seem to help people.
+> 
+> The workaround has reported success by lots of people, and I reproduce success with it here in frequent testing --> https://github.com/mikehardy/rnfbdemo/blob/main/make-expo-demo.sh
+> 
+> 
+> The workaround for Expo (include all the RNFB modules you use! no need to include ones you do not use)
+> 
+> I have also added this to the main docs page in the Expo install section, I know this is a big pain point for people
+> 
+> ```json
+> [
+> "expo-build-properties",
+> {
+> "ios": {
+> "useFrameworks": "static",
+> "forceStaticLinking": [
+> "RNFBAnalytics",
+> "RNFBApp",
+> "RNFBAppCheck",
+> "RNFBAuth",
+> "RNFBCrashlytics",
+> "RNFBFirestore",
+> "RNFBMessaging",
+> "RNFBRemoteConfig",
+> "RNFBStorage",
+> "RNFBSomeOtherRNFBModuleYouAreUsing",
+> ]
+> }
+> }
+> ]
+> ```
+> 
+> 
+> If you are using RN CLI - not Expo - you want to add this pre_install block to your Podfile:
+> 
+> ```ruby
+> pre_install do |installer|
+> installer.pod_targets.each do |pod|
+> if pod.name.start_with?('RNFB')
+> def pod.build_type
+> Pod::BuildType.static_library
+> end
+> end
+> end
+> end
+> ```
+
+**russellwheatley** commented on 2026-09-15T10:17:07Z:
+
+> Closing out. The Expo 54 / RN 0.81 demonstrator in the comments was a workaround for that generation (`expo-build-properties` + `forceStaticLinking`).
+> 
+> We now have CI on a later Expo (SDK 57 / RN 0.86) that links the documented path: SPM on, `useFrameworks: "dynamic"`, prebuilt RNCore, no `forceStaticLinking`. Workflow: https://github.com/invertase/react-native-firebase/blob/main/.github/workflows/test_expo_ios_link.yml. Green on main: https://github.com/invertase/react-native-firebase/actions/runs/33937195034
+> 
+> That extra setup is not needed on current Expo. Please open a new issue with a minimal repro if this still fails on a current release.

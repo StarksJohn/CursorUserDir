@@ -1,0 +1,1198 @@
+openapi: 3.0.1
+info:
+ title: App Store Connect AccessibilityDeclarations BuildUploads API
+ version: 4.3.1
+ x-platforms:
+ app_store_connect_api: App Store Connect API
+ description: The App Store Connect API is the standards-based REST API Apple provides to automate tasks across App Store Connect, Xcode, and Certificates, Identifiers & Profiles. It covers apps, builds, TestFlight, in-app purchases, subscriptions, Game Center, Xcode Cloud, provisioning, pricing and availability, and the full reporting surface (analytics, sales and trends, financial reports, power and performance). This spec is the official OpenAPI 3.0 document published by Apple at https://developer.apple.com/app-store-connect/api/ — mirrored here unmodified except for title-cased operation summaries.
+servers:
+- url: https://api.appstoreconnect.apple.com/
+security:
+- itc-bearer-token: []
+tags:
+- name: BuildUploads
+paths:
+ /v1/buildUploads:
+ post:
+ tags:
+ - BuildUploads
+ operationId: buildUploads_createInstance
+ requestBody:
+ description: BuildUpload representation
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/BuildUploadCreateRequest'
+ required: true
+ responses:
+ '400':
+ description: Parameter error(s)
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '401':
+ description: Unauthorized error(s)
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '403':
+ description: Forbidden error
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '422':
+ description: Unprocessable request entity error(s)
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '201':
+ description: Single BuildUpload
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/BuildUploadResponse'
+ '409':
+ description: Request entity error(s)
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '429':
+ description: Rate limit exceeded error
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ summary: Create Build Uploads
+ /v1/buildUploads/{id}:
+ parameters:
+ - name: id
+ in: path
+ description: the id of the requested resource
+ schema:
+ type: string
+ style: simple
+ required: true
+ get:
+ tags:
+ - BuildUploads
+ operationId: buildUploads_getInstance
+ parameters:
+ - name: fields[buildUploads]
+ in: query
+ description: the fields to include for returned resources of type buildUploads
+ schema:
+ type: array
+ items:
+ type: string
+ enum:
+ - cfBundleShortVersionString
+ - cfBundleVersion
+ - createdDate
+ - state
+ - platform
+ - uploadedDate
+ - build
+ - assetFile
+ - assetDescriptionFile
+ - assetSpiFile
+ - buildUploadFiles
+ style: form
+ explode: false
+ required: false
+ - name: fields[builds]
+ in: query
+ description: the fields to include for returned resources of type builds
+ schema:
+ type: array
+ items:
+ type: string
+ enum:
+ - version
+ - uploadedDate
+ - expirationDate
+ - expired
+ - minOsVersion
+ - lsMinimumSystemVersion
+ - computedMinMacOsVersion
+ - computedMinVisionOsVersion
+ - iconAssetToken
+ - processingState
+ - buildAudienceType
+ - usesNonExemptEncryption
+ - preReleaseVersion
+ - individualTesters
+ - betaGroups
+ - betaBuildLocalizations
+ - appEncryptionDeclaration
+ - betaAppReviewSubmission
+ - app
+ - buildBetaDetail
+ - appStoreVersion
+ - icons
+ - buildBundles
+ - buildUpload
+ - perfPowerMetrics
+ - diagnosticSignatures
+ style: form
+ explode: false
+ required: false
+ - name: fields[buildUploadFiles]
+ in: query
+ description: the fields to include for returned resources of type buildUploadFiles
+ schema:
+ type: array
+ items:
+ type: string
+ enum:
+ - assetDeliveryState
+ - assetToken
+ - assetType
+ - fileName
+ - fileSize
+ - sourceFileChecksums
+ - uploadOperations
+ - uti
+ style: form
+ explode: false
+ required: false
+ - name: include
+ in: query
+ description: comma-separated list of relationships to include
+ schema:
+ type: array
+ items:
+ type: string
+ enum:
+ - build
+ - assetFile
+ - assetDescriptionFile
+ - assetSpiFile
+ style: form
+ explode: false
+ required: false
+ responses:
+ '400':
+ description: Parameter error(s)
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '401':
+ description: Unauthorized error(s)
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '403':
+ description: Forbidden error
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '404':
+ description: Not found error
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '200':
+ description: Single BuildUpload
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/BuildUploadResponse'
+ '429':
+ description: Rate limit exceeded error
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ summary: Get Build Uploads
+ delete:
+ tags:
+ - BuildUploads
+ operationId: buildUploads_deleteInstance
+ responses:
+ '400':
+ description: Parameter error(s)
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '401':
+ description: Unauthorized error(s)
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '403':
+ description: Forbidden error
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '404':
+ description: Not found error
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '204':
+ description: Success (no content)
+ '429':
+ description: Rate limit exceeded error
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ summary: Delete Build Uploads
+ /v1/buildUploads/{id}/relationships/buildUploadFiles:
+ parameters:
+ - name: id
+ in: path
+ description: the id of the requested resource
+ schema:
+ type: string
+ style: simple
+ required: true
+ get:
+ tags:
+ - BuildUploads
+ operationId: buildUploads_buildUploadFiles_getToManyRelationship
+ parameters:
+ - name: limit
+ in: query
+ description: maximum resources per page
+ schema:
+ type: integer
+ maximum: 200
+ style: form
+ responses:
+ '400':
+ description: Parameter error(s)
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '401':
+ description: Unauthorized error(s)
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '403':
+ description: Forbidden error
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '404':
+ description: Not found error
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '200':
+ description: List of related linkages
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/BuildUploadBuildUploadFilesLinkagesResponse'
+ '429':
+ description: Rate limit exceeded error
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ summary: List Related Build Uploads / Build Upload Files
+ /v1/buildUploads/{id}/buildUploadFiles:
+ parameters:
+ - name: id
+ in: path
+ description: the id of the requested resource
+ schema:
+ type: string
+ style: simple
+ required: true
+ get:
+ tags:
+ - BuildUploads
+ operationId: buildUploads_buildUploadFiles_getToManyRelated
+ parameters:
+ - name: fields[buildUploadFiles]
+ in: query
+ description: the fields to include for returned resources of type buildUploadFiles
+ schema:
+ type: array
+ items:
+ type: string
+ enum:
+ - assetDeliveryState
+ - assetToken
+ - assetType
+ - fileName
+ - fileSize
+ - sourceFileChecksums
+ - uploadOperations
+ - uti
+ style: form
+ explode: false
+ - name: limit
+ in: query
+ description: maximum resources per page
+ schema:
+ type: integer
+ maximum: 200
+ style: form
+ responses:
+ '400':
+ description: Parameter error(s)
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '401':
+ description: Unauthorized error(s)
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '403':
+ description: Forbidden error
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '404':
+ description: Not found error
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ '200':
+ description: List of BuildUploadFiles
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/BuildUploadFilesResponse'
+ '429':
+ description: Rate limit exceeded error
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/ErrorResponse'
+ summary: List Related Build Uploads / Build Upload Files
+components:
+ schemas:
+ ImageAsset:
+ type: object
+ properties:
+ templateUrl:
+ type: string
+ width:
+ type: integer
+ height:
+ type: integer
+ PagedDocumentLinks:
+ type: object
+ properties:
+ self:
+ type: string
+ format: uri-reference
+ first:
+ type: string
+ format: uri-reference
+ next:
+ type: string
+ format: uri-reference
+ required:
+ - self
+ BuildUploadFilesResponse:
+ type: object
+ title: BuildUploadFilesResponse
+ properties:
+ data:
+ type: array
+ items:
+ $ref: '#/components/schemas/BuildUploadFile'
+ links:
+ $ref: '#/components/schemas/PagedDocumentLinks'
+ meta:
+ $ref: '#/components/schemas/PagingInformation'
+ required:
+ - data
+ - links
+ ResourceLinks:
+ type: object
+ properties:
+ self:
+ type: string
+ format: uri-reference
+ ErrorSourceParameter:
+ type: object
+ title: Parameter
+ properties:
+ parameter:
+ type: string
+ required:
+ - parameter
+ ErrorLinks:
+ type: object
+ properties:
+ about:
+ type: string
+ format: uri-reference
+ associated:
+ oneOf:
+ - type: string
+ format: uri-reference
+ - type: object
+ properties:
+ href:
+ type: string
+ format: uri-reference
+ meta:
+ type: object
+ properties:
+ source:
+ type: string
+ StateDetail:
+ type: object
+ properties:
+ code:
+ type: string
+ description:
+ type: string
+ AppMediaAssetState:
+ type: object
+ properties:
+ errors:
+ type: array
+ items:
+ $ref: '#/components/schemas/AppMediaStateError'
+ warnings:
+ type: array
+ items:
+ $ref: '#/components/schemas/AppMediaStateError'
+ state:
+ type: string
+ enum:
+ - AWAITING_UPLOAD
+ - UPLOAD_COMPLETE
+ - COMPLETE
+ - FAILED
+ Platform:
+ type: string
+ enum:
+ - IOS
+ - MAC_OS
+ - TV_OS
+ - VISION_OS
+ DocumentLinks:
+ type: object
+ properties:
+ self:
+ type: string
+ format: uri-reference
+ required:
+ - self
+ BuildUploadFile:
+ type: object
+ title: BuildUploadFile
+ properties:
+ type:
+ type: string
+ enum:
+ - buildUploadFiles
+ id:
+ type: string
+ attributes:
+ type: object
+ properties:
+ assetDeliveryState:
+ $ref: '#/components/schemas/AppMediaAssetState'
+ assetToken:
+ type: string
+ assetType:
+ type: string
+ enum:
+ - ASSET
+ - ASSET_DESCRIPTION
+ - ASSET_SPI
+ fileName:
+ type: string
+ fileSize:
+ type: integer
+ format: int64
+ maximum: 9007199254740991
+ minimum: 1
+ sourceFileChecksums:
+ $ref: '#/components/schemas/Checksums'
+ uploadOperations:
+ type: array
+ items:
+ $ref: '#/components/schemas/DeliveryFileUploadOperation'
+ uti:
+ type: string
+ enum:
+ - com.apple.binary-property-list
+ - com.apple.ipa
+ - com.apple.pkg
+ - com.apple.xml-property-list
+ - com.pkware.zip-archive
+ links:
+ $ref: '#/components/schemas/ResourceLinks'
+ required:
+ - id
+ - type
+ BuildUpload:
+ type: object
+ title: BuildUpload
+ properties:
+ type:
+ type: string
+ enum:
+ - buildUploads
+ id:
+ type: string
+ attributes:
+ type: object
+ properties:
+ cfBundleShortVersionString:
+ type: string
+ cfBundleVersion:
+ type: string
+ createdDate:
+ type: string
+ format: date-time
+ state:
+ type: object
+ properties:
+ errors:
+ type: array
+ items:
+ $ref: '#/components/schemas/StateDetail'
+ warnings:
+ type: array
+ items:
+ $ref: '#/components/schemas/StateDetail'
+ infos:
+ type: array
+ items:
+ $ref: '#/components/schemas/StateDetail'
+ state:
+ $ref: '#/components/schemas/BuildUploadState'
+ platform:
+ $ref: '#/components/schemas/Platform'
+ uploadedDate:
+ type: string
+ format: date-time
+ relationships:
+ type: object
+ properties:
+ build:
+ type: object
+ properties:
+ data:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - builds
+ id:
+ type: string
+ required:
+ - id
+ - type
+ assetFile:
+ type: object
+ properties:
+ data:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - buildUploadFiles
+ id:
+ type: string
+ required:
+ - id
+ - type
+ assetDescriptionFile:
+ type: object
+ properties:
+ data:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - buildUploadFiles
+ id:
+ type: string
+ required:
+ - id
+ - type
+ assetSpiFile:
+ type: object
+ properties:
+ data:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - buildUploadFiles
+ id:
+ type: string
+ required:
+ - id
+ - type
+ buildUploadFiles:
+ type: object
+ properties:
+ links:
+ $ref: '#/components/schemas/RelationshipLinks'
+ links:
+ $ref: '#/components/schemas/ResourceLinks'
+ required:
+ - id
+ - type
+ Checksums:
+ type: object
+ properties:
+ file:
+ type: object
+ properties:
+ hash:
+ type: string
+ algorithm:
+ $ref: '#/components/schemas/ChecksumAlgorithm'
+ composite:
+ type: object
+ properties:
+ hash:
+ type: string
+ algorithm:
+ type: string
+ enum:
+ - MD5
+ BuildUploadResponse:
+ type: object
+ title: BuildUploadResponse
+ properties:
+ data:
+ $ref: '#/components/schemas/BuildUpload'
+ included:
+ type: array
+ items:
+ oneOf:
+ - $ref: '#/components/schemas/BuildUploadFile'
+ - $ref: '#/components/schemas/Build'
+ discriminator:
+ propertyName: type
+ mapping:
+ buildUploadFiles: '#/components/schemas/BuildUploadFile'
+ builds: '#/components/schemas/Build'
+ links:
+ $ref: '#/components/schemas/DocumentLinks'
+ required:
+ - data
+ - links
+ ErrorResponse:
+ type: object
+ properties:
+ errors:
+ type: array
+ items:
+ type: object
+ properties:
+ id:
+ type: string
+ status:
+ type: string
+ code:
+ type: string
+ title:
+ type: string
+ detail:
+ type: string
+ source:
+ oneOf:
+ - $ref: '#/components/schemas/ErrorSourcePointer'
+ - $ref: '#/components/schemas/ErrorSourceParameter'
+ links:
+ $ref: '#/components/schemas/ErrorLinks'
+ meta:
+ type: object
+ additionalProperties: {}
+ required:
+ - code
+ - detail
+ - status
+ - title
+ Build:
+ type: object
+ title: Build
+ properties:
+ type:
+ type: string
+ enum:
+ - builds
+ id:
+ type: string
+ attributes:
+ type: object
+ properties:
+ version:
+ type: string
+ uploadedDate:
+ type: string
+ format: date-time
+ expirationDate:
+ type: string
+ format: date-time
+ expired:
+ type: boolean
+ minOsVersion:
+ type: string
+ lsMinimumSystemVersion:
+ type: string
+ computedMinMacOsVersion:
+ type: string
+ computedMinVisionOsVersion:
+ type: string
+ iconAssetToken:
+ $ref: '#/components/schemas/ImageAsset'
+ processingState:
+ type: string
+ enum:
+ - PROCESSING
+ - FAILED
+ - INVALID
+ - VALID
+ buildAudienceType:
+ $ref: '#/components/schemas/BuildAudienceType'
+ usesNonExemptEncryption:
+ type: boolean
+ relationships:
+ type: object
+ properties:
+ preReleaseVersion:
+ type: object
+ properties:
+ links:
+ $ref: '#/components/schemas/RelationshipLinks'
+ data:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - preReleaseVersions
+ id:
+ type: string
+ required:
+ - id
+ - type
+ individualTesters:
+ type: object
+ properties:
+ links:
+ $ref: '#/components/schemas/RelationshipLinks'
+ meta:
+ $ref: '#/components/schemas/PagingInformation'
+ data:
+ type: array
+ items:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - betaTesters
+ id:
+ type: string
+ required:
+ - id
+ - type
+ betaGroups:
+ type: object
+ properties:
+ links:
+ $ref: '#/components/schemas/RelationshipLinks'
+ meta:
+ $ref: '#/components/schemas/PagingInformation'
+ data:
+ type: array
+ items:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - betaGroups
+ id:
+ type: string
+ required:
+ - id
+ - type
+ betaBuildLocalizations:
+ type: object
+ properties:
+ links:
+ $ref: '#/components/schemas/RelationshipLinks'
+ meta:
+ $ref: '#/components/schemas/PagingInformation'
+ data:
+ type: array
+ items:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - betaBuildLocalizations
+ id:
+ type: string
+ required:
+ - id
+ - type
+ appEncryptionDeclaration:
+ type: object
+ properties:
+ links:
+ $ref: '#/components/schemas/RelationshipLinks'
+ data:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - appEncryptionDeclarations
+ id:
+ type: string
+ required:
+ - id
+ - type
+ betaAppReviewSubmission:
+ type: object
+ properties:
+ links:
+ $ref: '#/components/schemas/RelationshipLinks'
+ data:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - betaAppReviewSubmissions
+ id:
+ type: string
+ required:
+ - id
+ - type
+ app:
+ type: object
+ properties:
+ links:
+ $ref: '#/components/schemas/RelationshipLinks'
+ data:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - apps
+ id:
+ type: string
+ required:
+ - id
+ - type
+ buildBetaDetail:
+ type: object
+ properties:
+ links:
+ $ref: '#/components/schemas/RelationshipLinks'
+ data:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - buildBetaDetails
+ id:
+ type: string
+ required:
+ - id
+ - type
+ appStoreVersion:
+ type: object
+ properties:
+ links:
+ $ref: '#/components/schemas/RelationshipLinks'
+ data:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - appStoreVersions
+ id:
+ type: string
+ required:
+ - id
+ - type
+ icons:
+ type: object
+ properties:
+ links:
+ $ref: '#/components/schemas/RelationshipLinks'
+ meta:
+ $ref: '#/components/schemas/PagingInformation'
+ data:
+ type: array
+ items:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - buildIcons
+ id:
+ type: string
+ required:
+ - id
+ - type
+ buildBundles:
+ type: object
+ properties:
+ meta:
+ $ref: '#/components/schemas/PagingInformation'
+ data:
+ type: array
+ items:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - buildBundles
+ id:
+ type: string
+ required:
+ - id
+ - type
+ buildUpload:
+ type: object
+ properties:
+ data:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - buildUploads
+ id:
+ type: string
+ required:
+ - id
+ - type
+ perfPowerMetrics:
+ type: object
+ properties:
+ links:
+ $ref: '#/components/schemas/RelationshipLinks'
+ diagnosticSignatures:
+ type: object
+ properties:
+ links:
+ $ref: '#/components/schemas/RelationshipLinks'
+ links:
+ $ref: '#/components/schemas/ResourceLinks'
+ required:
+ - id
+ - type
+ RelationshipLinks:
+ type: object
+ properties:
+ self:
+ type: string
+ format: uri-reference
+ related:
+ type: string
+ format: uri-reference
+ ChecksumAlgorithm:
+ type: string
+ enum:
+ - MD5
+ - SHA_256
+ BuildUploadState:
+ type: string
+ enum:
+ - AWAITING_UPLOAD
+ - PROCESSING
+ - FAILED
+ - COMPLETE
+ ErrorSourcePointer:
+ type: object
+ title: JsonPointer
+ properties:
+ pointer:
+ type: string
+ required:
+ - pointer
+ BuildUploadBuildUploadFilesLinkagesResponse:
+ type: object
+ properties:
+ data:
+ type: array
+ items:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - buildUploadFiles
+ id:
+ type: string
+ required:
+ - id
+ - type
+ links:
+ $ref: '#/components/schemas/PagedDocumentLinks'
+ meta:
+ $ref: '#/components/schemas/PagingInformation'
+ required:
+ - data
+ - links
+ PagingInformation:
+ type: object
+ properties:
+ paging:
+ type: object
+ properties:
+ total:
+ type: integer
+ limit:
+ type: integer
+ nextCursor:
+ type: string
+ required:
+ - limit
+ required:
+ - paging
+ BuildAudienceType:
+ type: string
+ enum:
+ - INTERNAL_ONLY
+ - APP_STORE_ELIGIBLE
+ DeliveryFileUploadOperation:
+ type: object
+ properties:
+ method:
+ type: string
+ url:
+ type: string
+ length:
+ type: integer
+ format: int64
+ maximum: 9007199254740991
+ minimum: 1
+ offset:
+ type: integer
+ format: int64
+ maximum: 9007199254740991
+ minimum: 0
+ requestHeaders:
+ type: array
+ items:
+ $ref: '#/components/schemas/HttpHeader'
+ expiration:
+ type: string
+ format: date-time
+ partNumber:
+ type: integer
+ format: int64
+ maximum: 9007199254740991
+ minimum: 1
+ entityTag:
+ type: string
+ AppMediaStateError:
+ type: object
+ properties:
+ code:
+ type: string
+ description:
+ type: string
+ BuildUploadCreateRequest:
+ type: object
+ title: BuildUploadCreateRequest
+ properties:
+ data:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - buildUploads
+ attributes:
+ type: object
+ properties:
+ cfBundleShortVersionString:
+ type: string
+ cfBundleVersion:
+ type: string
+ platform:
+ $ref: '#/components/schemas/Platform'
+ required:
+ - cfBundleVersion
+ - cfBundleShortVersionString
+ - platform
+ relationships:
+ type: object
+ properties:
+ app:
+ type: object
+ properties:
+ data:
+ type: object
+ properties:
+ type:
+ type: string
+ enum:
+ - apps
+ id:
+ type: string
+ required:
+ - id
+ - type
+ required:
+ - data
+ required:
+ - app
+ required:
+ - relationships
+ - attributes
+ - type
+ required:
+ - data
+ HttpHeader:
+ type: object
+ properties:
+ name:
+ type: string
+ value:
+ type: string
+ securitySchemes:
+ itc-bearer-token:
+ type: http
+ scheme: bearer
+ bearerFormat: JWT

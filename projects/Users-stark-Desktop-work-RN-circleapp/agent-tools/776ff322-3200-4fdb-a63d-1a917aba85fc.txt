@@ -1,0 +1,515 @@
+# Xcode 26.0.1 Seems to be missing Swift Runtime Components
+
+- State: closed
+- Author: bdaz
+- Created: 2025-10-05T05:21:57Z
+- Updated: 2026-03-06T11:52:48Z
+- Repository: actions/runner-images
+- Number: #13135
+- Assignees: shamil-mubarakshin
+
+## Labels
+
+- Area: Xcode
+- OS: macOS
+- bug report
+
+---
+
+### Description
+
+Running on `macOS-15`, the Xcode 26.0.1 installation seems to be missing Swift compatibility libraries. This is a regression from the Xcode 26.0 installation, which didn't have these issues.
+
+```
+Warning: ld: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.1.324.0.uSQZWr/Metal.xctoolchain/usr/lib/swift/iphoneos' not found
+Warning: ld: Could not find or use auto-linked library 'swiftCompatibility50': library 'swiftCompatibility50' not found
+Warning: ld: Could not find or use auto-linked library 'swiftCompatibility51': library 'swiftCompatibility51' not found
+Warning: ld: Could not find or use auto-linked library 'swiftCompatibility56': library 'swiftCompatibility56' not found
+Warning: ld: Could not find or use auto-linked library 'swiftCompatibilityConcurrency': library 'swiftCompatibilityConcurrency' not found
+Warning: ld: Could not find or use auto-linked library 'swiftCompatibilityDynamicReplacements': library 'swiftCompatibilityDynamicReplacements' not found
+Warning: ld: Could not find or use auto-linked library 'swiftCompatibilityPacks': library 'swiftCompatibilityPacks' not found
+Warning: ld: Could not find or use auto-linked framework 'CoreAudioTypes': framework 'CoreAudioTypes' not found
+Warning: ld: Could not find or use auto-linked framework 'UIUtilities': framework 'UIUtilities' not found
+Warning: ld: Could not parse or use implicit file '/Applications/Xcode_26.0.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/SwiftUICore.framework/SwiftUICore.tbd': cannot link directly with 'SwiftUICore' because product being built is not an allowed client of it
+Error: Undefined symbols for architecture arm64
+Error:   "__swift_FORCE_LOAD_$_swiftCompatibility50", referenced from:
+Warning:       __swift_FORCE_LOAD_$_swiftCompatibility50_$_FirebaseAnalytics in FirebaseAnalytics17
+Error:   "__swift_FORCE_LOAD_$_swiftCompatibility51", referenced from:
+Warning:       __swift_FORCE_LOAD_$_swiftCompatibility51_$_FirebaseAnalytics in FirebaseAnalytics17
+Error:   "__swift_FORCE_LOAD_$_swiftCompatibility56", referenced from:
+Warning:       __swift_FORCE_LOAD_$_swiftCompatibility56_$_FirebaseAnalytics in FirebaseAnalytics17
+Error:   "__swift_FORCE_LOAD_$_swiftCompatibilityConcurrency", referenced from:
+Warning:       __swift_FORCE_LOAD_$_swiftCompatibilityConcurrency_$_FirebaseAnalytics in FirebaseAnalytics17
+Error:   "__swift_FORCE_LOAD_$_swiftCompatibilityDynamicReplacements", referenced from:
+Warning:       __swift_FORCE_LOAD_$_swiftCompatibilityDynamicReplacements_$_FirebaseAnalytics in FirebaseAnalytics17
+Error: ld: symbol(s) not found for architecture arm64
+Error: clang: error: linker command failed with exit code 1 (use -v to see invocation)
+```
+
+### Platforms affected
+
+- [ ] Azure DevOps
+- [x] GitHub Actions - Standard Runners
+- [ ] GitHub Actions - Larger Runners
+
+### Runner images affected
+
+- [ ] Ubuntu 22.04
+- [ ] Ubuntu 24.04
+- [ ] macOS 13
+- [ ] macOS 13 Arm64
+- [ ] macOS 14
+- [ ] macOS 14 Arm64
+- [x] macOS 15
+- [x] macOS 15 Arm64
+- [ ] macOS 26 Arm64
+- [ ] Windows Server 2019
+- [ ] Windows Server 2022
+- [ ] Windows Server 2025
+
+### Image version and build link
+
+ Image: macos-15-arm64
+ Version: 20250928.2397
+
+### Is it regression?
+
+Yes. Didn't happen with Image: macos-15-arm64 Version: 20250922.2357.
+
+### Expected behavior
+
+Swift compatibility libraries should be available, and the linker should not error out
+
+### Actual behavior
+
+Linker failure
+
+### Repro steps
+
+In this case it's `FirebaseAnalytics` (latest version) that's first trying to link with the swift compatibility libraries. So build an app that depends on FirebaseAnalytics with a GitHub workflow.
+
+## Timeline
+
+- bdaz added label "needs triage"
+
+- bdaz added label "bug report"
+
+**bdaz** commented on 2025-10-05T05:24:19Z:
+
+> I'm not sure what the deployment process is for runner images, but this is the doc change for the actual image change I would assume is causing this: https://github.com/actions/runner-images/pull/13102
+
+**shamil-mubarakshin** commented on 2025-10-06T08:40:53Z:
+
+> Hey @bdaz, thanks for bringing this up. There were a few changes to macOS 15 images when going to `20250928.2397` which I would like to test.
+> While coming up with the `FirebaseAnalytics` based app for repro would take some time, providing a sample project could speed things up
+
+- bdaz mentioned
+
+- bdaz subscribed
+
+- shamil-mubarakshin removed label "needs triage"
+
+- shamil-mubarakshin added label "Area: Apple"
+
+- shamil-mubarakshin added label "OS: macOS"
+
+- shamil-mubarakshin was assigned
+
+**lxr-mwhite** commented on 2025-10-06T20:26:05Z:
+
+> I have a very similar issue that also started when the macOS-15 build agent was updated with Xcode 26.0.1.
+> ```
+> INFO [2025-10-06 19:45:51.83]: ▸ ⚠️ ld: search path '/Users/runner/Library/Developer/DVTDownloads/MetalToolchain/mounts/4ab058bc1c53034b8c0a9baca6fba2d2b78bb965/Metal.xctoolchain/usr/lib/swift/iphoneos' not found
+> INFO [2025-10-06 19:45:51.83]: ▸ ⚠️ ld: Could not find or use auto-linked library 'swiftCompatibility56': library 'swiftCompatibility56' not found
+> INFO [2025-10-06 19:45:51.83]: ▸ ⚠️ ld: Could not find or use auto-linked library 'swiftCompatibilityPacks': library 'swiftCompatibilityPacks' not found
+> INFO [2025-10-06 19:45:51.83]: ▸ ⚠️ ld: Could not find or use auto-linked framework 'UIUtilities': framework 'UIUtilities' not found
+> INFO [2025-10-06 19:45:51.83]: ▸ ⚠️ ld: Could not parse or use implicit file '/Applications/Xcode_26.0.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/SwiftUICore.framework/SwiftUICore.tbd': cannot link directly with 'SwiftUICore' because product being built is not an allowed client of it
+> INFO [2025-10-06 19:45:51.83]: ▸ ❌ Undefined symbols for architecture arm64
+> INFO [2025-10-06 19:45:51.83]: ▸ ❌ "__swift_FORCE_LOAD_$_swiftCompatibility56", referenced from:
+> INFO [2025-10-06 19:45:51.83]: ▸ ⚠️ __swift_FORCE_LOAD_$_swiftCompatibility56_$_FirebaseCoreInternal in libFirebaseCoreInternal.a3
+> INFO [2025-10-06 19:45:51.83]: ▸ ❌ ld: symbol(s) not found for architecture arm64
+> INFO [2025-10-06 19:45:51.83]: ▸ ❌ clang: error: linker command failed with exit code 1 (use -v to see invocation)
+> ```
+> 
+> This issue doesn't happen on my own MacBook when using Xcode 26.0.1.
+> 
+> @shamil-mubarakshin Not sure if the following build task would help identify if something was missed or changed during the Xcode update but adding this task to my build pipeline before building my iOS app resulted in a successful build. 
+> 
+> ```yaml
+> - script: |
+> set -e
+> TOOLCHAIN="$(xcode-select -p)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos"
+> SDK="$(xcrun --sdk iphoneos --show-sdk-path)/usr/lib/swift"
+> 
+> echo "Restoring Swift compatibility libs with symlink if needed..."
+> if [ -f "$TOOLCHAIN/libswiftCompatibility56.a" ]; then
+> echo "✅ Found libswiftCompatibility56.a in toolchain"
+> if [ ! -f "$SDK/libswiftCompatibility56.tbd" ] && [ ! -f "$SDK/libswiftCompatibility56.a" ]; then
+> echo "⚡ Creating symlink in SDK path"
+> ln -s "$TOOLCHAIN/libswiftCompatibility56.a" "$SDK/libswiftCompatibility56.a"
+> else
+> echo "Already present in SDK path"
+> fi
+> else
+> echo "❌ libswiftCompatibility56.a not found in toolchain"
+> fi
+> 
+> echo "Final SDK contents:"
+> ls -l "$SDK" | grep Compatibility || echo "No Compatibility libs found in SDK"
+> displayName: "Symlink Swift Compatibility56 Library"
+> ```
+> 
+> @bdaz If you haven't found a workaround for your issue yet, maybe this can help in the meantime? Just ensure that Xcode 26.0.1 is selected before you run this task. Or if you did find a workaround, can you please share what your solution is?
+> 
+> --EDIT--
+> Update: I am working on two different projects and one of them does not have this issue despite being built with the same Xcode version and Firebase dependencies + versions. I suspect it may be a project setting discrepancy that I will look into further and provide updates if I find anything.
+
+- bdaz mentioned
+
+- bdaz subscribed
+
+- shamil-mubarakshin mentioned
+
+- shamil-mubarakshin subscribed
+
+**bdaz** commented on 2025-10-07T00:06:56Z:
+
+> @lxr-mwhite Thanks! That approach worked for me after generalizing to work for a number of swift compatibility libraries:
+> 
+> ```
+> - name: Fix Missing Swift Compatibility Libraries
+> run: |
+> set -euo pipefail
+> 
+> TOOLCHAIN="$(xcode-select -p)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos"
+> SDK="$(xcrun --sdk iphoneos --show-sdk-path)/usr/lib/swift"
+> 
+> echo "🔧 Restoring missing Swift Compatibility libraries if needed..."
+> echo "Toolchain path: $TOOLCHAIN"
+> echo "SDK path: $SDK"
+> 
+> # List of possible compatibility libraries to restore
+> LIBS=(
+> libswiftCompatibility50.a
+> libswiftCompatibility51.a
+> libswiftCompatibility56.a
+> libswiftCompatibilityConcurrency.a
+> libswiftCompatibilityDynamicReplacements.a
+> libswiftCompatibilityPacks.a
+> )
+> 
+> for LIB in "${LIBS[@]}"; do
+> TOOLCHAIN_LIB="$TOOLCHAIN/$LIB"
+> SDK_LIB_A="$SDK/$LIB"
+> SDK_LIB_TBD="${SDK_LIB_A%.a}.tbd"
+> 
+> if [ -f "$TOOLCHAIN_LIB" ]; then
+> if [ ! -f "$SDK_LIB_A" ] && [ ! -f "$SDK_LIB_TBD" ]; then
+> echo "⚡ Creating symlink for $LIB"
+> ln -s "$TOOLCHAIN_LIB" "$SDK_LIB_A"
+> else
+> echo "✅ $LIB already exists in SDK"
+> fi
+> else
+> echo "⚠️ $LIB not found in toolchain"
+> fi
+> done
+> 
+> echo ""
+> echo "🧩 Final Swift SDK contents:"
+> ls -l "$SDK" | grep Compatibility || echo "No Compatibility libs found."
+> 
+> echo ""
+> echo "Checking for missing Apple frameworks..."
+> SYSFWK="$(xcrun --sdk iphoneos --show-sdk-path)/System/Library/Frameworks"
+> for FWK in CoreAudioTypes UIUtilities; do
+> if [ ! -d "$SYSFWK/$FWK.framework" ]; then
+> echo "⚠️ Framework $FWK not found in $SYSFWK"
+> else
+> echo "✅ Framework $FWK found"
+> fi
+> done
+> 
+> echo ""
+> echo "Swift compatibility library repair complete."
+> ```
+> 
+> Fair warning: I didn't generalize this, ChatGPT did. But it worked for me.
+> 
+> @shamil-mubarakshin Appreciate you looking into this. Hopefully the above workaround is helpful context. Would be great to ditch the hack above when we can.
+> 
+> I've attached a sample project that has `FirebaseAnalytics` as a Cocoapod dependency, which is what I suspect is sufficient to break the Github action when it tries to build it.
+> 
+> (@lxr-mwhite are you using Cocoapods out of curiosity?)
+> 
+> SwiftCompatibilityLibTest.zip
+
+- lxr-mwhite mentioned
+
+- lxr-mwhite subscribed
+
+- shamil-mubarakshin mentioned
+
+- shamil-mubarakshin subscribed
+
+**lxr-mwhite** commented on 2025-10-07T13:03:33Z:
+
+> @bdaz Yes I am using CocoaPods in a React Native project that uses Firebase. I'm working on two different apps which are both using the same versions of Firebase dependencies. I haven't figured out yet why one appears to work as is but the other needs this workaround. 
+
+- bdaz mentioned
+
+- bdaz subscribed
+
+**lxr-mwhite** commented on 2025-10-07T17:05:49Z:
+
+> @bdaz Do your logs have a few extra lines above and below the ones you shared that may identify any of your classes?
+> On my end I figured out the issue, but it doesn't necessarily mean it should be the accepted solution. But I did mention earlier that I have one project that works and one that started failing on Xcode 26.0.1. 
+> 
+> Both of my projects have a NotificationService extension, but the issue for me was that the failing project's NotificationService was still in Objective-C. I've converted it to Swift and now I don't have issues with the build. 
+
+- bdaz mentioned
+
+- bdaz subscribed
+
+**bdaz** commented on 2025-10-07T17:40:47Z:
+
+> @lxr-mwhite None of my own classes are identified in the logs, no. Just `FirebaseAnalytics`. Worth noting though, I have a huge amount of Objective-C in my app. It's probably 90%+ ObjC.
+
+- lxr-mwhite mentioned
+
+- lxr-mwhite subscribed
+
+- menzerath subscribed
+
+**netog-ppb** commented on 2025-10-10T12:29:06Z:
+
+> Having the same issue, the build:
+> - Works with mac 15 + Xcode 16.4
+> - Works with mac 26 + Xcode 16.4 (Same runner image that breaks on Xcode 26.0.1)
+> - Works with mac 26 + Xcode 26.0.0 (Previous runner image, no longer available)
+> - Breaks with mac 15 + Xcode 26.0.1
+> - Breaks with mac 26 + Xcode 26.0.1
+> - Breaks with mac 26 + Xcode 26.1.0-beta
+> 
+> Locally my build works just fine with Mac 15 + Xcode 26.0.1
+
+**shamil-mubarakshin** commented on 2025-10-13T15:08:47Z:
+
+> @bdaz, thanks for the provided sample, I was able to build and reproduce the issue, but manually linking libraries suggested here didn't work me. I also didn't find noticeable difference in `TOOLCHAIN` and `SDK` folder contents for Xcode 16.4 and Xcode 26.0.1.
+> After some investigations, I am leaning towards changes introduced by `MetalToolchain` addition #13088 for `Xcode 26.*`, which was requested by some users a few weeks back.
+> Removing assets downloaded by `xcodebuild -downloadComponent MetalToolchain` workarounds the issue in my case:
+> ```yml
+> - name: Try metalToolchain cleanup
+> run: |
+> sudo rm -rf /System/Library/AssetsV2/com_apple_MobileAsset_MetalToolchain
+> ```
+> I will dig around more to see if we should introduce fixes to the image and will appreciate your inputs as well.
+> 
+> Upd. Setting `TOOLCHAINS` var works as well `export TOOLCHAINS=com.apple.dt.toolchain.XcodeDefault`
+
+- bdaz mentioned
+
+- bdaz subscribed
+
+**bdaz** commented on 2025-10-16T20:28:16Z:
+
+> > @bdaz, thanks for the provided sample, I was able to build and reproduce the issue, but manually linking libraries suggested here didn't work me. I also didn't find noticeable difference in `TOOLCHAIN` and `SDK` folder contents for Xcode 16.4 and Xcode 26.0.1. After some investigations, I am leaning towards changes introduced by `MetalToolchain` addition #13088 for `Xcode 26.*`, which was requested by some users a few weeks back. Removing assets downloaded by `xcodebuild -downloadComponent MetalToolchain` workarounds the issue in my case:
+> > 
+> > - name: Try metalToolchain cleanup
+> > run: |
+> > sudo rm -rf /System/Library/AssetsV2/com_apple_MobileAsset_MetalToolchain
+> > I will dig around more to see if we should introduce fixes to the image and will appreciate your inputs as well.
+> > 
+> > Upd. Setting `TOOLCHAINS` var works as well `export TOOLCHAINS=com.apple.dt.toolchain.XcodeDefault`
+> 
+> Unfortunately the latter fix (`export TOOLCHAINS…`) did not work. Same errors as above. Will try your original proposed fix shortly (edit: it works!)
+
+**shamil-mubarakshin** commented on 2025-10-21T11:54:16Z:
+
+> After additional investigations and internal discussion, we decided not to remove MetalToolchain component from the images at this time.
+> To summarize, issue started happening after `MetalToolchain` component was added to Xcode 26+. I have reproduced it for both Xcode 26.0.0 and 26.0.1. Build logs show, search paths are updated with new toolchain that don't contain swift compatibility libraries/links, which is most likely by design. I assume search paths are determined automatically, as in the provided test project I couldn't find related settings.
+> ```
+> 2025-10-07T15:10:49.1002420Z export TOOLCHAINS\=com.apple.dt.toolchain.Metal.32023\ com.apple.dt.toolchain.XcodeDefault
+> 2025-10-07T15:10:49.1003020Z export TOOLCHAIN_DIR\=/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.1.324.0.UlrGHs/Metal.xctoolchain
+> ```
+> There are a few options available, which fixed builds for the provided sample project:
+> - define `TOOLCHAINS=com.apple.dt.toolchain.XcodeDefault` environment variable, e.g. in the xcodebuild execution step
+> - invoke `xcodebuild` with `-toolchain com.apple.dt.toolchain.XcodeDefault` flag
+> - remove `MetalToolchain` with xcodebuild -deleteComponent metalToolchain
+> I will be closing the issue for now. Let me know if there are further inputs/concerns
+
+- shamil-mubarakshin closed
+
+- Referenced by issue #15413: [FirebaseAnalytics]_swift_FORCE_LOAD_$_swiftCompatibility56_ _$_FirebaseAnalytics in FirebaseAnalytics(Analytics+StoreKit.o)
+
+**asterpang** commented on 2025-11-21T09:31:54Z:
+
+> > After additional investigations and internal discussion, we decided not to remove MetalToolchain component from the images at this time. To summarize, issue started happening after `MetalToolchain` component was added to Xcode 26+. I have reproduced it for both Xcode 26.0.0 and 26.0.1. Build logs show, search paths are updated with new toolchain that don't contain swift compatibility libraries/links, which is most likely by design. I assume search paths are determined automatically, as in the provided test project I couldn't find related settings.
+> > 
+> > ```
+> > 2025-10-07T15:10:49.1002420Z export TOOLCHAINS\=com.apple.dt.toolchain.Metal.32023\ com.apple.dt.toolchain.XcodeDefault
+> > 2025-10-07T15:10:49.1003020Z export TOOLCHAIN_DIR\=/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.1.324.0.UlrGHs/Metal.xctoolchain
+> > ```
+> > 
+> > There are a few options available, which fixed builds for the provided sample project: - define `TOOLCHAINS=com.apple.dt.toolchain.XcodeDefault` environment variable, e.g. in the xcodebuild execution step - invoke `xcodebuild` with `-toolchain com.apple.dt.toolchain.XcodeDefault` flag - remove `MetalToolchain` with xcodebuild -deleteComponent metalToolchain I will be closing the issue for now. Let me know if there are further inputs/concerns
+> 
+> in my project, I use the first option, define TOOLCHAINS in xcode ide scheme, but still have issues.
+> Version 26.1.1 (17B100, mac os 26.1 (25B78)
+> 
+> I use meta so could not remove MetalToolchain.
+> 
+> Showing Recent Errors Only
+> Undefined symbol: __swift_FORCE_LOAD_$_swiftCompatibility50
+> 
+> Undefined symbol: __swift_FORCE_LOAD_$_swiftCompatibility51
+> 
+> Undefined symbol: __swift_FORCE_LOAD_$_swiftCompatibility56
+> 
+> Undefined symbol: __swift_FORCE_LOAD_$_swiftCompatibilityConcurrency
+> 
+> Undefined symbol: __swift_FORCE_LOAD_$_swiftCompatibilityDynamicReplacements
+> 
+
+**xntop** commented on 2025-11-22T01:37:00Z:
+
+> Undefined symbols for architecture arm64:
+> "__swift_FORCE_LOAD_$_swiftCompatibility50", referenced from:
+> __swift_FORCE_LOAD_$_swiftCompatibility50_$_FirebaseAnalytics in FirebaseAnalytics17
+> "__swift_FORCE_LOAD_$_swiftCompatibility51", referenced from:
+> __swift_FORCE_LOAD_$_swiftCompatibility51_$_FirebaseAnalytics in FirebaseAnalytics17
+> "__swift_FORCE_LOAD_$_swiftCompatibility56", referenced from:
+> __swift_FORCE_LOAD_$_swiftCompatibility56_$_FirebaseAnalytics in FirebaseAnalytics17
+> __swift_FORCE_LOAD_$_swiftCompatibility56_$_firebase_analytics in firebase_analytics4
+> "__swift_FORCE_LOAD_$_swiftCompatibilityConcurrency", referenced from:
+> __swift_FORCE_LOAD_$_swiftCompatibilityConcurrency_$_FirebaseAnalytics in FirebaseAnalytics17
+> "__swift_FORCE_LOAD_$_swiftCompatibilityDynamicReplacements", referenced from:
+> __swift_FORCE_LOAD_$_swiftCompatibilityDynamicReplacements_$_FirebaseAnalytics in FirebaseAnalytics17
+> ld: symbol(s) not found for architecture arm64
+
+**erik-bershel** commented on 2025-11-24T14:30:45Z:
+
+> Hey @asterpang and @xntop!
+> 
+> MetalToolchain is not available with Xcode 26.1 yet in our images, only with Xcode 26.0.1.
+> 
+> You have two options:
+> - Use `xcodebuild -downloadComponent MetalToolchain` after selecting Xcode, but before the launch.
+> - Wait for the next release with the component being available.
+
+- xntop mentioned
+
+- xntop subscribed
+
+- asterpang mentioned
+
+- asterpang subscribed
+
+- Referenced by PR #13343: [macOS] Enable runtimes and re-caching for Xcode 26.1 and later
+
+**gregavola** commented on 2025-11-26T10:50:47Z:
+
+> @erik-bershel Thanks for all your help with this! I am trying to understand what I need to do my side with 26.0.1 - as I have installed toolchain
+> 
+> ```
+> set -euo pipefail
+> set -x
+> 
+> sudo xcode-select -s /Applications/Xcode_26.0.1.app/Contents/Developer
+> sudo xcodebuild -license accept || true
+> 
+> # ✅ Reliable detection: is the Metal compiler available?
+> if xcrun -f metal >/dev/null 2>&1; then
+> echo "Metal Toolchain present."
+> else
+> echo "Metal Toolchain NOT present. Installing…"
+> tmpdir="$(mktemp -d)"
+> xcodebuild -downloadComponent MetalToolchain -exportPath "$tmpdir"
+> for bundle in "$tmpdir"/*.exportedBundle; do
+> # If it's already installed, this can return the "Asset is already installed" error—treat as success.
+> sudo xcodebuild -importComponent MetalToolchain -importPath "$bundle" || true
+> done
+> rm -rf "$tmpdir"
+> 
+> # Re-check to be safe
+> xcrun -f metal >/dev/null 2>&1 || { echo "Metal Toolchain still missing after install"; exit 1; }
+> fi
+> 
+> # 🔒 Guardrail: fail if stale cache paths are baked into your project
+> if grep -R "DVTDownloads/MetalToolchain" ios/*.xcodeproj/project.pbxproj; then
+> echo "ERROR: Found stale MetalToolchain cache path in project.pbxproj. Remove it from build settings."; exit 1
+> fi
+> 
+> 
+> ```
+> 
+> Output
+> ```
+> sudo xcode-select -s /Applications/Xcode_26.0.1.app/Contents/Developer
+> + sudo xcodebuild -license accept
+> + xcrun -f metal
+> + echo 'Metal Toolchain present.'
+> Metal Toolchain present.
+> + grep -R DVTDownloads/MetalToolchain ios/***App.xcodeproj/project.pbxproj
+> ````
+> 
+> , but still get Undefined symbols for architecture arm64:
+> "_swift_FORCE_LOAD$_swiftCompatibility50",
+> 
+> Do I need to wait for the runner to be updated - I am using azure build pipelines for this.
+
+- erik-bershel mentioned
+
+- erik-bershel subscribed
+
+- netog-ppb unsubscribed
+
+**erik-bershel** commented on 2025-11-27T12:40:06Z:
+
+> Hey @gregavola!
+> 
+> See there: https://github.com/actions/runner-images/issues/13135#issuecomment-3397914993
+> 
+> There's no need to wait. The issue is related to compatibility between the default (Swift) and additional (Metal) toolchains.
+
+- gregavola mentioned
+
+- gregavola subscribed
+
+**soumyamahunt** commented on 2026-01-08T05:40:31Z:
+
+> Adding the following step in action fixes the issue:
+> ```yaml
+> - name: Set Xcode Toolchain
+> shell: bash
+> run: |
+> echo "TOOLCHAINS=com.apple.dt.toolchain.XcodeDefault" >> $GITHUB_ENV
+> ```
+
+- Referenced in commit ecb00a4
+
+- Referenced by issue #8702: [🐛] Linker errors with React Native 0.76.9 + Firebase 23.3.1 on Xcode 26 / M1 Mac
+
+**Hukutus** commented on 2026-03-06T11:52:48Z:
+
+> For anyone using Azure DevOps runners:
+> ```yml
+> - script: |
+> echo "##vso[task.setvariable variable=TOOLCHAINS]com.apple.dt.toolchain.XcodeDefault"
+> displayName: Xcode 26 CI workaround
+> ```
+
+- Referenced by issue #15066: [bug] iOS build fails with Xcode 26 — linker error: library not found for -lswiftCompatibility56
+
+- Referenced by PR #16049: fix(ci): address GHA issue for missing swift sdk with static frameworks 
+
+- Referenced in commit 72e9526
+
+- Referenced in commit 9521d6f
+
+- Referenced in commit 18189e6
+
+- Referenced by PR #74: fix(ci): pin iOS release job to macos-15 (Xcode 16.4)
+
+- Referenced by PR #29: bug(iOS): Fix iOS Xcode 26 Swift Runtime Linking
+
+- Referenced by PR #239: chore(deps): bump actions/checkout from 6 to 7
