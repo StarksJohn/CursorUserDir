@@ -1,0 +1,853 @@
+# Xcode 26.4b1/b2/b3/RC • FMT Compile Errors (it needs upgrading) • REPRO **IS** included despite the erroneous label
+
+- State: closed
+- Author: Brett-Best
+- Created: 2026-02-18T05:21:13Z
+- Updated: 2026-04-27T09:49:55Z
+- Repository: react/react-native
+- Number: #55601
+
+## Labels
+
+- Needs: Repro
+- Needs: Attention
+
+---
+
+### Description
+
+FMT needs upgrading so that it will compile with Xcode 26.4b1.
+
+I modified the FMT and RCT-Folly pod specs to use `12.1.0` and the compilation succeeded.
+
+I am not 100% sure but I'm suspecting this https://github.com/fmtlib/fmt/pull/4065 may be the fix for the problem.
+
+We currently depend on the legacy architecture so would be hoping this fix would qualify for an 0.81.x release.
+
+NOTE: I did not need to fork the reproducer or use as a template because no changes were required to produce the problem.
+
+### Steps to reproduce
+
+1. `npm install`
+2. `cd ReproducerApp/ios`
+3. `pod install`
+4. `DEVELOPER_DIR=/Applications/Xcode\ 26.4b1.app/Contents/Developer/ xed .`
+5. Select the simulator and build
+
+### React Native Version
+
+0.83.1
+
+### Affected Platforms
+
+Build - MacOS
+
+### Output of `npx @react-native-community/cli info`
+
+```text
+brettbest@Bretts-MacBook-Pro ~/D/r/ReproducerApp (main)> DEVELOPER_DIR=/Applications/Xcode\ 26.4b1.app/Contents/Developer/ npx @react-native-community/cli info
+info Fetching system and libraries information...
+System:
+  OS: macOS 26.4
+  CPU: (12) arm64 Apple M2 Pro
+  Memory: 144.23 MB / 16.00 GB
+  Shell:
+    version: "5.9"
+    path: /bin/zsh
+Binaries:
+  Node:
+    version: 24.13.0
+    path: /Users/brettbest/.local/share/mise/installs/node/24.13.0/bin/node
+  Yarn:
+    version: 1.22.22
+    path: /opt/homebrew/bin/yarn
+  npm:
+    version: 11.6.2
+    path: /Users/brettbest/.local/share/mise/installs/node/24.13.0/bin/npm
+  Watchman:
+    version: 2026.01.12.00
+    path: /opt/homebrew/bin/watchman
+Managers:
+  CocoaPods:
+    version: 1.16.2
+    path: /opt/homebrew/bin/pod
+SDKs:
+  iOS SDK:
+    Platforms:
+      - DriverKit 25.4
+      - iOS 26.4
+      - macOS 26.4
+      - tvOS 26.4
+      - visionOS 26.4
+      - watchOS 26.4
+  Android SDK: Not Found
+IDEs:
+  Android Studio: Not Found
+  Xcode:
+    version: 26.4/17E5159k
+    path: /usr/bin/xcodebuild
+Languages:
+  Java:
+    version: 25.0.2
+    path: /opt/homebrew/opt/openjdk/bin/javac
+  Ruby:
+    version: 3.3.0
+    path: /Users/brettbest/.local/share/mise/installs/ruby/3.3.0/bin/ruby
+npmPackages:
+  "@react-native-community/cli":
+    installed: 20.0.0
+    wanted: 20.0.0
+  react:
+    installed: 19.2.0
+    wanted: 19.2.0
+  react-native:
+    installed: 0.83.1
+    wanted: 0.83.1
+  react-native-macos: Not Found
+npmGlobalPackages:
+  "*react-native*": Not Found
+Android:
+  hermesEnabled: true
+  newArchEnabled: true
+iOS:
+  hermesEnabled: true
+  newArchEnabled: true
+
+info React Native v0.84.0 is now available (your project is running on v0.83.1).
+info Changelog: https://github.com/facebook/react-native/releases/tag/v0.84.0
+info Diff: https://react-native-community.github.io/upgrade-helper/?from=0.83.1&to=0.84.0
+info For more info, check out "https://reactnative.dev/docs/upgrading?os=macos".
+```
+
+### Stacktrace or Logs
+
+```text
+/Users/brettbest/Developer/reproducer-react-native/ReproducerApp/ios/Pods/fmt/include/fmt/format-inl.h:59:24 Call to consteval function 'fmt::basic_format_string<char, fmt::basic_string_view<char> &, const char (&)[3]>::basic_format_string<FMT_COMPILE_STRING, 0>' is not a constant expression
+
+/Users/brettbest/Developer/reproducer-react-native/ReproducerApp/ios/Pods/fmt/include/fmt/format-inl.h:60:22 Call to consteval function 'fmt::basic_format_string<char, const char (&)[7], int &>::basic_format_string<FMT_COMPILE_STRING, 0>' is not a constant expression
+
+/Users/brettbest/Developer/reproducer-react-native/ReproducerApp/ios/Pods/fmt/include/fmt/format-inl.h:1387:35 Call to consteval function 'fmt::basic_format_string<char, unsigned int &>::basic_format_string<FMT_COMPILE_STRING, 0>' is not a constant expression
+
+/Users/brettbest/Developer/reproducer-react-native/ReproducerApp/ios/Pods/fmt/include/fmt/format-inl.h:1391:33 Call to consteval function 'fmt::basic_format_string<char, unsigned int &>::basic_format_string<FMT_COMPILE_STRING, 0>' is not a constant expression
+
+/Users/brettbest/Developer/reproducer-react-native/ReproducerApp/ios/Pods/fmt/include/fmt/format-inl.h:1394:33 Call to consteval function 'fmt::basic_format_string<char, int>::basic_format_string<FMT_COMPILE_STRING, 0>' is not a constant expression
+```
+
+### MANDATORY Reproducer
+
+https://github.com/Brett-Best/rn-fmt-reproducer
+
+### Screenshots and Videos
+
+ 
+
+## Timeline
+
+- Brett-Best added label "Needs: Triage :mag:"
+
+- react-native-bot added label "Needs: Author Feedback"
+
+- react-native-bot added label "Needs: Repro"
+
+**react-native-bot** commented on 2026-02-18T05:21:44Z:
+
+> > [!WARNING]
+> > **Missing reproducer**: We could not detect a reproducible example in your issue report. Reproducers are **mandatory** and we can accept only one of those as a valid reproducer: For majority of bugs: send us a Pull Request with the RNTesterPlayground.js edited to reproduce your bug. If your bug is UI related: a Snack If your bug is build/upgrade related: a project using our Reproducer Template You can read more about about it on our website: How to report a bug.
+
+- react-native-bot removed label "Needs: Triage :mag:"
+
+**Brett-Best** commented on 2026-02-18T05:24:00Z:
+
+> See https://github.com/Brett-Best/rn-fmt-reproducer which is a direct clone of the template since no changes were needed to reproduce the problem. Hopefully this pleases the bot.
+
+- github-actions[bot] removed label "Needs: Author Feedback"
+
+- github-actions[bot] added label "Needs: Attention"
+
+- Renamed from "Xcode 26.4b1 • FMT Compile Errors (it needs upgrading)" to "Xcode 26.4b1 • FMT Compile Errors (it needs upgrading) • REPRO **IS** included despite the erroneous label"
+
+**bennettp123** commented on 2026-02-20T04:01:10Z:
+
+> Worth mentioning: I wasn't able to reproduce this after priming the build cache using Xcode 26.3.
+> 
+> It _was_ reproducible after clearing build cache, or running the following:
+> 
+> ```bash
+> touch ios/Pods/fmt/src/**/* ios/Pods/fmt/include/**/*
+> ```
+> 
+> Edit: also, my project builds fine after updating `fmt` to 12.1.0
+
+**bennettp123** commented on 2026-02-26T03:04:53Z:
+
+> Still reproducible in Xcode 26.4 beta 2.
+
+- Renamed from "Xcode 26.4b1 • FMT Compile Errors (it needs upgrading) • REPRO **IS** included despite the erroneous label" to "Xcode 26.4b1/b2 • FMT Compile Errors (it needs upgrading) • REPRO **IS** included despite the erroneous label"
+
+**leotm** commented on 2026-03-11T23:03:12Z:
+
+> was testing Xcode 26.4 beta 3, looks fixed in RN 0.84
+> 
+> can repro on RN 0.83
+> - https://github.com/Brett-Best/rn-fmt-reproducer
+> 
+> can't repro on RN 0.84/0.85
+> - https://github.com/leotm/react-native-template-new-architecture/pull/1912
+> - https://github.com/leotm/react-native-template-new-architecture/pull/1918
+
+**Brett-Best** commented on 2026-03-12T01:06:03Z:
+
+> @leotm I suspect that is because of https://reactnative.dev/blog/2026/02/11/react-native-0.84#precompiled-binaries-on-ios-by-default
+
+- leotm mentioned
+
+- leotm subscribed
+
+**leotm** commented on 2026-03-12T12:52:53Z:
+
+> works for me after disabling iOS bins w `RCT_USE_PREBUILT_RNCORE=0 bundle exec pod install` which strips
+> 
+> ```yaml
+> - React-Core-prebuilt (0.84.1):
+> - ReactNativeDependencies
+> ```
+> 
+> including all transitive
+> 
+> ```yaml
+> - React-Core-prebuilt
+> ```
+> 
+> and updates most of the spec checksums
+
+- Renamed from "Xcode 26.4b1/b2 • FMT Compile Errors (it needs upgrading) • REPRO **IS** included despite the erroneous label" to "Xcode 26.4b1/b2/b3 • FMT Compile Errors (it needs upgrading) • REPRO **IS** included despite the erroneous label"
+
+**Brett-Best** commented on 2026-03-13T01:44:07Z:
+
+> `RCT_USE_PREBUILT_RNCORE=0 RCT_USE_RN_DEP=0 bundle exec pod install`
+> 
+> I have used the latest template and using the above modification to my original steps the issue reproduces.
+> 
+> https://github.com/Brett-Best/rn-fmt-reproducer-v2 (no changes needed)
+
+**Brett-Best** commented on 2026-03-13T02:23:37Z:
+
+> @leotm I cloned the latest react native commit down and did the following:
+> 
+> 1. `yarn install`
+> 2. `node scripts/releases/prepare-ios-prebuilds.js -s`
+> 3. `node scripts/releases/prepare-ios-prebuilds.js -w`
+> 4. `node scripts/releases/prepare-ios-prebuilds.js -b -p ios-simulator -r debug`
+> 
+> In the output you can find FMT fails to compile:
+> ```
+> In file included from /Users/brettbest/Developer/react-native/packages/react-native/third-party/fmt/target/src/format.cc:8:
+> /Users/brettbest/Developer/react-native/packages/react-native/third-party/fmt/target/include/fmt/format-inl.h:1387:35: error: call to consteval function 'fmt::basic_format_string<char, unsigned int
+> &>::basic_format_string<FMT_COMPILE_STRING, 0>' is not a constant expression
+> 1387 | out = fmt::format_to(out, FMT_STRING("{:x}"), value);
+> ```
+> 
+> I derived the steps from https://github.com/facebook/react-native/blob/972a30db4ce19609dddc8553afc2c2c2844e5442/.github/workflows/prebuild-ios-dependencies.yml.
+> 
+> It also looks like the Xcode version is determined by using https://github.com/facebook/react-native/blob/972a30db4ce19609dddc8553afc2c2c2844e5442/.github/workflows/prebuild-ios-dependencies.yml#L74-L76 and then which appears to be https://github.com/facebook/react-native/blob/972a30db4ce19609dddc8553afc2c2c2844e5442/.github/actions/setup-xcode/action.yml#L7
+> 
+> I wasn't actually able to find any run of that workflow but might've been looking in the wrong place.
+> 
+> However, I was able to verify that the prebuilds for RN 0.84.1 which come from here are built with Xcode 16.4.
+> 
+> This can be checked by looking at `rn-fmt-reproducer-v2/ReproducerApp/ios/Pods/ReactNativeDependencies/framework/packages/react-native/ReactNativeDependencies.xcframework/ios-arm64/ReactNativeDependencies.framework/Info.plist` and the `DTXcode`/`DTXcodeBuild` keys.
+> 
+> Xcode 16.4 was released almost a year ago on 27 May 2025 and doesn't use the latest SDK.
+
+- leotm mentioned
+
+- leotm subscribed
+
+**leotm** commented on 2026-03-14T20:11:09Z:
+
+> > `RCT_USE_PREBUILT_RNCORE=0 RCT_USE_RN_DEP=0`
+> 
+> thanks can repro via the full opt-out 
+> 
+> > :::info
+> > If you need to build React Native from source (for example, to opt out of Hermes V1), you can disable precompiled binaries by setting `RCT_USE_PREBUILT_RNCORE=0` when installing pods.
+> > :::
+> >
+> > https://reactnative.dev/blog/2026/02/11/react-native-0.84#precompiled-binaries-on-ios-by-default
+> 
+> was only partially opting out 🙈 oops
+> 
+> `RCT_USE_PREBUILT_RNCORE=0` ... `Removing React-Core-prebuilt`
+> `RCT_USE_PREBUILT_RNCORE=0 RCT_USE_RN_DEP=0` ... `Removing ReactNativeDependencies`
+> clear in the Podfile.lock diff
+> 
+> looks like RCT_USE_RN_DEP was mentioned after all in the full opt-in earlier
+> https://reactnative.dev/blog/2025/12/10/react-native-0.83#experimental---debug-your-precompiled-binaries-on-ios
+> 
+> can see what's going on now w the flags
+> https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/ios-prebuild/__docs__/README.md
+> https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/cocoapods/rncore.rb
+> https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb
+> https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/cocoapods/rndependencies.rb
+> 
+> the FMT bump (direct or via RCT-Folly) makes sense
+
+- Referenced by PR #56099: Bump fmt to 12.1.0 to fix xcode 26.4
+
+- Renamed from "Xcode 26.4b1/b2/b3 • FMT Compile Errors (it needs upgrading) • REPRO **IS** included despite the erroneous label" to "Xcode 26.4b1/b2/b3/RC • FMT Compile Errors (it needs upgrading) • REPRO **IS** included despite the erroneous label"
+
+- meta-codesync[bot] closed
+
+- Referenced in commit faeef2b
+
+- Referenced in commit 506943c
+
+- vladimirivanoviliev subscribed
+
+**jenskuhrjorgensen** commented on 2026-03-25T10:59:45Z:
+
+> @leotm thanks for fixing this. Will patch versions to RN 82, 83 and 84 be released soon? 🙏 
+
+- leotm mentioned
+
+- leotm subscribed
+
+**alexeevayaan** commented on 2026-03-25T11:16:43Z:
+
+> i usd last version react native 0.84, and i get this error on my xcode, it is after update my xcode to last version. After this moment i try to start project with version 0.83.2 and i get this error too. 
+
+**alexeevayaan** commented on 2026-03-25T11:22:50Z:
+
+> I had a big task to complete, but for some reason I decided to update my Xcode, and after that, my projects won't launch. Since the company I work for is downsizing, I'll likely be fired simply because my projects won't launch((
+
+**alexeevayaan** commented on 2026-03-25T11:24:53Z:
+
+> Also, for some reason xcworkspace won't launch for me. GG WP
+
+**jenskuhrjorgensen** commented on 2026-03-25T11:36:11Z:
+
+> This patch might do the trick for now:
+> ```
+> diff --git a/node_modules/react-native/third-party-podspecs/RCT-Folly.podspec b/node_modules/react-native/third-party-podspecs/RCT-Folly.podspec
+> index 8852179..040c4f0 100644
+> --- a/node_modules/react-native/third-party-podspecs/RCT-Folly.podspec
+> +++ b/node_modules/react-native/third-party-podspecs/RCT-Folly.podspec
+> @@ -25,7 +25,7 @@ Pod::Spec.new do |spec|
+> spec.dependency "DoubleConversion"
+> spec.dependency "glog"
+> spec.dependency "fast_float", "8.0.0"
+> - spec.dependency "fmt", "11.0.2"
+> + spec.dependency "fmt", "12.1.0"
+> spec.compiler_flags = '-Wno-documentation -faligned-new'
+> spec.source_files = 'folly/String.cpp',
+> 'folly/Conv.cpp',
+> diff --git a/node_modules/react-native/third-party-podspecs/fmt.podspec b/node_modules/react-native/third-party-podspecs/fmt.podspec
+> index 2f38990..a40c575 100644
+> --- a/node_modules/react-native/third-party-podspecs/fmt.podspec
+> +++ b/node_modules/react-native/third-party-podspecs/fmt.podspec
+> @@ -8,14 +8,14 @@ fmt_git_url = fmt_config[:git]
+> 
+> Pod::Spec.new do |spec|
+> spec.name = "fmt"
+> - spec.version = "11.0.2"
+> + spec.version = "12.1.0"
+> spec.license = { :type => "MIT" }
+> spec.homepage = "https://github.com/fmtlib/fmt"
+> spec.summary = "{fmt} is an open-source formatting library for C++. It can be used as a safe and fast alternative to (s)printf and iostreams."
+> spec.authors = "The fmt contributors"
+> spec.source = {
+> :git => fmt_git_url,
+> - :tag => "11.0.2"
+> + :tag => "12.1.0"
+> }
+> spec.pod_target_xcconfig = {
+> "CLANG_CXX_LANGUAGE_STANDARD" => rct_cxx_language_standard(),
+> ```
+> 
+> I'm still testing it out, but sharing it now as I don't want @alexeevayaan to get fired...
+
+- alexeevayaan mentioned
+
+- alexeevayaan subscribed
+
+**vladimirivanoviliev** commented on 2026-03-25T12:38:28Z:
+
+> Hey, I currently use slightly extended patch, to include the Android change from the original fix. I tested on both XCode 26.4, 26.3, Android studio using both dev and prod builds, and everything looks correct. 
+> 
+> ```
+> diff --git a/node_modules/react-native/third-party-podspecs/RCT-Folly.podspec b/node_modules/react-native/third-party-podspecs/RCT-Folly.podspec
+> index 8852179..040c4f0 100644
+> --- a/node_modules/react-native/third-party-podspecs/RCT-Folly.podspec
+> +++ b/node_modules/react-native/third-party-podspecs/RCT-Folly.podspec
+> @@ -25,7 +25,7 @@ Pod::Spec.new do |spec|
+> spec.dependency "DoubleConversion"
+> spec.dependency "glog"
+> spec.dependency "fast_float", "8.0.0"
+> - spec.dependency "fmt", "11.0.2"
+> + spec.dependency "fmt", "12.1.0"
+> spec.compiler_flags = '-Wno-documentation -faligned-new'
+> spec.source_files = 'folly/String.cpp',
+> 'folly/Conv.cpp',
+> diff --git a/node_modules/react-native/third-party-podspecs/fmt.podspec b/node_modules/react-native/third-party-podspecs/fmt.podspec
+> index 2f38990..765acce 100644
+> --- a/node_modules/react-native/third-party-podspecs/fmt.podspec
+> +++ b/node_modules/react-native/third-party-podspecs/fmt.podspec
+> @@ -3,19 +3,23 @@
+> # This source code is licensed under the MIT license found in the
+> # LICENSE file in the root directory of this source tree.
+> 
+> +# PATCHED: bumped fmt 11.0.2 → 12.1.0 to fix Xcode 26.4 consteval build failure (Clang 22).
+> +# See: https://github.com/facebook/react-native/issues/55601
+> +# Remove this patch when React Native updates fmt to 12.1.0 or later.
+> +
+> fmt_config = get_fmt_config()
+> fmt_git_url = fmt_config[:git]
+> 
+> Pod::Spec.new do |spec|
+> spec.name = "fmt"
+> - spec.version = "11.0.2"
+> + spec.version = "12.1.0"
+> spec.license = { :type => "MIT" }
+> spec.homepage = "https://github.com/fmtlib/fmt"
+> spec.summary = "{fmt} is an open-source formatting library for C++. It can be used as a safe and fast alternative to (s)printf and iostreams."
+> spec.authors = "The fmt contributors"
+> spec.source = {
+> :git => fmt_git_url,
+> - :tag => "11.0.2"
+> + :tag => "12.1.0"
+> }
+> spec.pod_target_xcconfig = {
+> "CLANG_CXX_LANGUAGE_STANDARD" => rct_cxx_language_standard(),
+> diff --git a/node_modules/react-native/gradle/libs.versions.toml b/node_modules/react-native/gradle/libs.versions.toml
+> index f0902b7..cb88f66 100644
+> --- a/node_modules/react-native/gradle/libs.versions.toml
+> +++ b/node_modules/react-native/gradle/libs.versions.toml
+> @@ -43,7 +43,7 @@ yoga-proguard-annotations = "1.19.0"
+> boost="1_83_0"
+> doubleconversion="1.1.6"
+> fastFloat="8.0.0"
+> -fmt="11.0.2"
+> +fmt="12.1.0"
+> folly="2024.11.18.00"
+> glog="0.3.5"
+> gflags="2.2.0"
+> ```
+
+- AlecColas subscribed
+
+- arturomazda subscribed
+
+- Referenced by PR #29068: fix fmt pod for new xcode
+
+**chrisbeaver** commented on 2026-03-25T18:18:58Z:
+
+> I added a fix to my Podfile to get around this. 
+> 
+> 
+> 
+> # Workaround for Xcode 26: newer Apple Clang breaks consteval in fmt 11.0.2.
+> 
+> # Patch base.h to disable consteval since the header doesn't check for pre-defined FMT_USE_CONSTEVAL.
+> 
+> fmt_base = File.join(installer.sandbox.root, 'fmt', 'include', 'fmt', 'base.h')
+> 
+> if File.exist?(fmt_base)
+> content = File.read(fmt_base)
+> unless content.include?('Xcode 26 workaround')
+> patched = content.gsub(
+> /^(#elif defined\(__cpp_consteval\)\n# define FMT_USE_CONSTEVAL) 1/,
+> "// Xcode 26 workaround: disable consteval\n\\1 0"
+> )
+> if patched != content
+> File.chmod(0644, fmt_base)
+> File.write(fmt_base, patched)
+> end
+> end
+> end
+
+- ds-boyce subscribed
+
+- Referenced by PR #56225: Backport: Bump fmt to 12.1.0 to fix Xcode 26.4 compilation 
+
+- nbolender subscribed
+
+**roidayan1** commented on 2026-03-26T08:31:59Z:
+
+> For those on RN 0.83.x who can't upgrade to 0.84 yet, here's a minimal `patch-package` workaround that adds a `prepare_command` to the `fmt.podspec` to disable `consteval` in `base.h`:
+> 
+> ```patch
+> diff --git a/node_modules/react-native/third-party-podspecs/fmt.podspec b/node_modules/react-native/third-party-podspecs/fmt.podspec
+> index 2f38990..9b02e48 100644
+> --- a/node_modules/react-native/third-party-podspecs/fmt.podspec
+> +++ b/node_modules/react-native/third-party-podspecs/fmt.podspec
+> @@ -26,4 +26,11 @@ Pod::Spec.new do |spec|
+> spec.public_header_files = "include/fmt/*.h"
+> spec.header_mappings_dir = "include"
+> spec.source_files = ["include/fmt/*.h", "src/format.cc"]
+> +
+> + # TODO: Remove after upgrading React Native past 0.83.x
+> + # Fix fmt 11.0.2 consteval build error with Xcode 26.4 (facebook/react-native#55601)
+> + # Fixed in RN 0.84+ which bumps fmt to a compatible version.
+> + spec.prepare_command = <<~SCRIPT
+> + perl -i -pe 's/^# define FMT_USE_CONSTEVAL 1$/# define FMT_USE_CONSTEVAL 0/' include/fmt/base.h
+> + SCRIPT
+> end
+> ```
+> 
+> Save as `patches/react-native+0.83.4.patch` (adjust version as needed), then:
+> 
+> ```bash
+> cd ios && rm -rf Pods/fmt Pods/Local\ Podspecs/fmt.podspec.json && pod install
+> ```
+> 
+> This sets `FMT_USE_CONSTEVAL` to `0`, which disables `consteval` in fmt's `base.h`. Only compile-time format string validation is affected (moves to runtime `constexpr` path) — no runtime behavior change for valid format strings.
+> 
+> Tested with Xcode 26.4 + RN 0.83.4.
+
+**Maanooz18** commented on 2026-03-26T09:08:29Z:
+
+> for react native 0.80.0 what is the exact solution for this problem where my macos v is 26.4 
+> 
+> 
+
+**StaniEbo** commented on 2026-03-26T10:18:26Z:
+
+> > I added a fix to my Podfile to get around this.
+> > 
+> > ```
+> > # Workaround for Xcode 26: newer Apple Clang breaks consteval in fmt 11.0.2.
+> > 
+> > # Patch base.h to disable consteval since the header doesn't check for pre-defined FMT_USE_CONSTEVAL.
+> > 
+> > fmt_base = File.join(installer.sandbox.root, 'fmt', 'include', 'fmt', 'base.h')
+> > 
+> > if File.exist?(fmt_base)
+> > content = File.read(fmt_base)
+> > unless content.include?('Xcode 26 workaround')
+> > patched = content.gsub(
+> > /^(#elif defined\(__cpp_consteval\)\n# define FMT_USE_CONSTEVAL) 1/,
+> > "// Xcode 26 workaround: disable consteval\n\\1 0"
+> > )
+> > if patched != content
+> > File.chmod(0644, fmt_base)
+> > File.write(fmt_base, patched)
+> > end
+> > end
+> > end
+> > ```
+> 
+> This worked for me. Thanks
+
+**roidayan1** commented on 2026-03-26T10:22:39Z:
+
+> > > I added a fix to my Podfile to get around this.
+> > > ```
+> > > # Workaround for Xcode 26: newer Apple Clang breaks consteval in fmt 11.0.2.
+> > > 
+> > > # Patch base.h to disable consteval since the header doesn't check for pre-defined FMT_USE_CONSTEVAL.
+> > > 
+> > > fmt_base = File.join(installer.sandbox.root, 'fmt', 'include', 'fmt', 'base.h')
+> > > 
+> > > if File.exist?(fmt_base)
+> > > content = File.read(fmt_base)
+> > > unless content.include?('Xcode 26 workaround')
+> > > patched = content.gsub(
+> > > /^(#elif defined\(__cpp_consteval\)\n# define FMT_USE_CONSTEVAL) 1/,
+> > > "// Xcode 26 workaround: disable consteval\n\\1 0"
+> > > )
+> > > if patched != content
+> > > File.chmod(0644, fmt_base)
+> > > File.write(fmt_base, patched)
+> > > end
+> > > end
+> > > end
+> > > ```
+> > 
+> > This worked for me. Thanks
+> 
+> your fix will work. but you will need to remember to remove it when you will upgrade react native.
+> My fix above using patch package ties the version and when you will upgrade, you will get a notification to remove the patch.
+
+- Referenced in commit 07135c7
+
+- Referenced by PR #10905: fix(ios): upgrade fmt to 12.1.0 for Xcode 26.4 compatibility
+
+- Referenced in commit 51f3b69
+
+- Referenced in commit 4eb718e
+
+- Referenced by PR #889: Fix build issues when using Xcode 26.4
+
+**Diaa-Ghonim** commented on 2026-03-27T00:24:18Z:
+
+> this fixed the issue for me 
+> 
+> ```
+> installer.pods_project.targets.each do |target|
+> target.build_configurations.each do |config|
+> 
+> # fmt/base.h unconditionally redefines FMT_USE_CONSTEVAL based on __cplusplus,
+> # so preprocessor defines are overwritten. The reliable fix is to compile fmt
+> # in C++17 mode: FMT_CPLUSPLUS (201703L) < 201709L → FMT_USE_CONSTEVAL = 0.
+> # All other pods stay in C++20 (React-perflogger needs std::unordered_map::contains).
+> 
+> if target.name == 'fmt'
+> config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+> end
+> 
+> end
+> end
+> 
+> ```
+> 
+
+- Referenced in commit 0fcf3a6
+
+- Referenced by PR #10136: Add fmt patch to react-native
+
+- diminecjean subscribed
+
+- diminecjean unsubscribed
+
+- marcoizzo subscribed
+
+- Referenced by issue #1262: [0.82] Fix XCode 26.4 build errors
+
+- Referenced by issue #1263: [0.84] Fix XCode 26.4 build errors
+
+**leotm** commented on 2026-03-27T16:52:47Z:
+
+> > @leotm thanks for fixing this. Will patch versions to RN 82, 83 and 84 be released soon? 🙏
+> 
+> 0.83 likely yes (active support), 0.81 likely no (unsupported)
+> 
+> > We accepts pick requests only for versions of React Native that are currently supported
+> > The release crew evaluates each pick on a case-by-case basis
+> > The release crew have a lot of flexibility so long as they feel the change would significantly improve the quality or stability of a version of React Native
+> 
+> if we feel the latter, i've opened pick requests for 0.82 (end of cycle, unsupported 2026-04-06) and 0.84 (active support)
+> 
+> otherwise already picked for v0.85.0-rc.6 and i verified in one of the latest 0.86 nightlies
+> 
+> full details in the support policy and feel free to keep track of things here
+
+- Referenced by PR #711: Temporary fix for fmt
+
+- quocluongha subscribed
+
+- LeandraH subscribed
+
+- simondaigre subscribed
+
+**lorenc-tomasz** commented on 2026-03-30T13:07:42Z:
+
+> I solved it that way on 0.81.6:
+> 
+> ```
+> linkage = ENV['USE_FRAMEWORKS']
+> if linkage != nil
+> Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+> use_frameworks! :linkage => linkage.to_sym
+> end
+> 
+> # Bumpt fmt version to 12.1.0 to avoid build failure with Xcode 26.4+
+> # Patch both fmt.podspec and RCT-Folly.podspec before CocoaPods resolves dependencies
+> # TODO: remove after updating RN
+> fmt_podspec_path = File.join(__dir__, '..', 'node_modules', 'react-native', 'third-party-podspecs', 'fmt.podspec')
+> folly_podspec_path = File.join(__dir__, '..', 'node_modules', 'react-native', 'third-party-podspecs', 'RCT-Folly.podspec')
+> 
+> if File.exist?(fmt_podspec_path)
+> fmt_content = File.read(fmt_podspec_path)
+> fmt_content.gsub!('"11.0.2"', '"12.1.0"')
+> File.write(fmt_podspec_path, fmt_content)
+> end
+> 
+> if File.exist?(folly_podspec_path)
+> folly_content = File.read(folly_podspec_path)
+> folly_content.gsub!('spec.dependency "fmt", "11.0.2"', 'spec.dependency "fmt", "12.1.0"')
+> File.write(folly_podspec_path, folly_content)
+> end
+> 
+> target 'xyz' do
+> ```
+> 
+> but like the patch from @roidayan1 better :) Thanks. 
+
+- roidayan1 mentioned
+
+- roidayan1 subscribed
+
+- Aliveing subscribed
+
+- hendy-appetise subscribed
+
+- NiyazZiganshin subscribed
+
+- Referenced by PR #15969: [LWM] chore(react-native): patch to fix react-native fmt usage on new xcode
+
+- Referenced by issue #237: Feat: Expo SDK 55 업그레이드
+
+- Referenced by PR #856: fix(ios): patch fmt consteval build error on Xcode 26+
+
+- OmgDef subscribed
+
+**Iuriy-Budnikov** commented on 2026-04-06T13:39:38Z:
+
+> RN 0.78.3 helped
+> 
+> ```
+> # TODO: remove it later
+> # Bump fmt version to 12.1.0 to avoid build failure with Xcode 16.4+
+> # Patch all react-native podspecs that pin fmt to 11.0.2 before CocoaPods resolves dependencies
+> rn_path = File.join(__dir__, '..', 'node_modules', 'react-native')
+> Dir.glob(File.join(rn_path, '**', '*.podspec')).each do |podspec_path|
+> content = File.read(podspec_path)
+> if content.include?('"fmt", "11.0.2"') || (podspec_path.end_with?('fmt.podspec') && content.include?('"11.0.2"'))
+> content.gsub!('"fmt", "11.0.2"', '"fmt", "12.1.0"')
+> content.gsub!(/"11\.0\.2"/, '"12.1.0"') if podspec_path.end_with?('fmt.podspec')
+> File.write(podspec_path, content)
+> end
+> end
+> ```
+
+- Referenced in commit 97d9fe1
+
+- Referenced in commit 24ab497
+
+- Referenced in commit 39af511
+
+- Referenced by PR #300: feat: support RN 0.85
+
+- Referenced in commit 3dd61db
+
+- Referenced by issue #4740: FMT_STRING consteval error with Apple clang 21 (Xcode 26.4)
+
+**zhouxlin** commented on 2026-04-15T03:24:26Z:
+
+> rn: 0.81.4
+> xcode: 26.4
+> AI fixed with adding this on Podfile;
+> ```
+> installer.pods_project.targets.each do |target|
+> if target.name == 'fmt'
+> target.build_configurations.each do |config|
+> config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+> end
+> end
+> end
+> ```
+> But i think i need to upgrade rn.
+
+- Referenced in commit 050ad6c
+
+- mvrty subscribed
+
+- Referenced by issue #1081: fmt error on Xcode 26.4
+
+- Referenced by PR #376: chore(deps): upgrade to expo 54.0.33
+
+- Referenced by PR #3434: chore(examples): patch fmt consteval for Xcode 26.4 in example-expo-53
+
+- Referenced in commit e28aa29
+
+- Referenced by PR #1566: fix(ios): downgrade fmt Pod to C++17 — PR #1565's preprocessor approach didn't work
+
+- Referenced in commit 6fb93c8
+
+- Referenced by PR #841: Fix iOS build on Xcode 26.4 and lift CI Xcode cap
+
+- Referenced in commit a5bc94d
+
+- gregoryalary subscribed
+
+**ambadah** commented on 2026-04-27T09:48:11Z:
+
+> > rn: 0.81.4 xcode: 26.4 AI fixed with adding this on Podfile;
+> > 
+> > ```
+> > installer.pods_project.targets.each do |target|
+> > if target.name == 'fmt'
+> > target.build_configurations.each do |config|
+> > config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+> > end
+> > end
+> > end
+> > ```
+> > 
+> > But i think i need to upgrade rn.
+> 
+> I tried this, then build work fine :)
+> 
+> ``` 
+> post_install do |installer|
+> # Fix fmt 11.0.2 consteval errors with Xcode 26 / Clang 17+.
+> # base.h unconditionally `#define`s FMT_USE_CONSTEVAL inside its detection
+> # chain, so a -D flag is overwritten. Patch the header to force it to 0.
+> fmt_base_h = "#{Pod::Config.instance.installation_root}/Pods/fmt/include/fmt/base.h"
+> if File.exist?(fmt_base_h)
+> text = File.read(fmt_base_h)
+> marker = '// FMT_USE_CONSTEVAL override for Xcode 26 / Clang 17+'
+> if text.include?(marker)
+> puts "ℹ️ fmt/base.h already patched"
+> else
+> needle = "#if FMT_USE_CONSTEVAL\n# define FMT_CONSTEVAL consteval"
+> raise "fmt/base.h structure unexpected; cannot patch FMT_USE_CONSTEVAL" unless text.include?(needle)
+> replacement = "#{marker}\n#undef FMT_USE_CONSTEVAL\n#define FMT_USE_CONSTEVAL 0\n#{needle}"
+> File.write(fmt_base_h, text.sub(needle, replacement))
+> puts "🔧 Patched fmt/base.h to force FMT_USE_CONSTEVAL=0"
+> end
+> else
+> puts "ℹ️ fmt/base.h not found (skipping consteval patch)"
+> end
+> end
+> ```
+
+- Referenced by PR #5788: podfile: patch for xcode 26.4
+
+- Referenced in commit d8b0ad0
+
+- Referenced in commit bd8d8b7
+
+- Referenced by issue #278: Development steps do not work for me
+
+- Referenced by issue #9345: [RNWorklets] Build fails on Xcode 26.4 with __construct_at error in allocator_traits.h
+
+- Referenced in commit 79f34a1
+
+- Referenced by PR #112: feat(ios, android): add CBZ reading support for iOS and Android
+
+- Referenced by PR #4: Refresh after 2-month idle: bugfixes, UX polish, Claude Code setup, Xcode 26.4 unblock
+
+- Referenced by PR #621: fix(deps): bump react-native to 0.83.9 to unblock iOS build on Xcode 26.4 [SDK-4868]
+
+- Referenced by PR #68: fix(ci): pin Xcode 26.2 for the iOS deploy job
+
+- Referenced by PR #81: chore: source posthog-ios via SPM as opt-in
+
+- Referenced by issue #738: Remove fmt C++17 downgrade in ios/Podfile when RN ships clang-21-compatible fmt
+
+- Referenced by PR #739: [Bug]: pin fmt pod to C++17 to fix clang-21 (Xcode 26.4.1) iOS CI builds
+
+- Referenced by PR #3874: Fix iOS build on Xcode 26 (fmt consteval workaround)
+
+- Referenced by issue #93: yarn dev:ios
+
+- Referenced by PR #133: Upgrade reactnative demo to latest
+
+- Referenced by issue #1994: RNCLI incompatible with Xcode 27
+
+- Referenced by issue #1995: React Native incompatible with Xcode 26
+
+- Referenced by PR #306: fix(ios): build fmt pod as C++17 to fix Xcode 26.4+ consteval error
+
+- Referenced by PR #9: fix(eas): pin iOS build image to Xcode 26.2 (avoid 26.4 fmt build break)
+
+- Referenced by PR #4: feat: update to 13.0 alpha 1 
+
+- Referenced by issue #36: Research: what does Expo SDK 54 → 57 mean for this app?
+
+- Referenced by issue #334: Upgrade to Expo SDK 53 (RN 0.79, React 19) — scoping & risks
+
+- Referenced by PR #192: [HOTFIX] Xcode 26.4+ fmt consteval 컴파일 에러 회피
+
+- Referenced by PR #1864: Work around fmt consteval build failure on Xcode 26.4+

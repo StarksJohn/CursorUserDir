@@ -1,0 +1,50 @@
+---
+pid: 26651
+cwd: "/Users/stark/Desktop/work/RN/circleapp"
+command: "adb -s 4ae24c72 shell pidof com.circleapp.cdv.dev || echo 'app not running'\nadb -s 4ae24c72 logcat -d | rg -i 'FATAL|AndroidRuntime|crash|ReactNativeJS.*Error|Exception' | tail -30\nadb -s 4ae24c72 shell am start -n com.circleapp.cdv.dev/com.circleapp.cdv.MainActivity\nsleep 3\nadb -s 4ae24c72 shell dumpsys activity activities | rg -m 4 'topResumedActivity|mCurrentFocus'"
+title: "Restart app after accidental launcher jump"
+status: succeeded
+started_at: 2026-09-20T09:08:21.899Z
+running_for_ms: 4342     
+---
+24509
+09-20 17:08:00.519  4289  4289 W System.err: java.lang.NoSuchFieldException: No field mSnapshotBundle in class Landroid/window/TaskSnapshot; (declaration of 'android.window.TaskSnapshot' appears in /system/framework/framework.jar!classes5.dex)
+09-20 17:08:00.519  4289  4289 W System.err: 	at com.android.launcher.monitor.exception.MainThreadExceptionMonitor.startWatching$lambda$2(Unknown Source:14)
+09-20 17:08:00.519  4289  4289 W System.err: 	at com.android.launcher.monitor.exception.MainThreadExceptionMonitor.a(Unknown Source:0)
+09-20 17:08:00.569   696   730 E WeatherS_StatisticsUtils: recordLocateInterfaceCalled err:java.lang.NumberFormatException: For input string: "com.coloros.alarmclock"
+09-20 17:08:02.290 31226 31471 E APS_ALOG: CAM_ALOG_LIMIT,Fatal Err! mFd -1
+09-20 17:08:02.291 31226 31471 E APS_ALOG: CAM_ALOG_LIMIT,Fatal Err! FilePath nullptr!
+09-20 17:08:02.400 24722 24722 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+09-20 17:08:02.405 24722 24722 I AndroidRuntime: Using default boot image
+09-20 17:08:02.405 24722 24722 I AndroidRuntime: Leaving lock profiling enabled
+09-20 17:08:02.531 24722 24722 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+09-20 17:08:02.536 24722 24722 I AconfigPackage: android.crashrecovery.flags is mapped to system
+09-20 17:08:02.538 24722 24722 E FeatureFlagsImplExport: android.os.flagging.AconfigStorageReadException: ERROR_PACKAGE_NOT_FOUND: package android.xr cannot be found on the device
+09-20 17:08:02.538 24722 24722 W PlatformAconfigPackage: android.os.flagging.AconfigStorageReadException: ERROR_CANNOT_READ_STORAGE_FILE: Fail to mmap storage
+09-20 17:08:02.542  3032  5247 V AccessibilityManagerService: onUserStateChangedLocked for user 0 with forceUpdate: false mEnabledServices = [] mCrashedServices = [] hasMagnificationConnection=false
+09-20 17:08:02.561  3032  7824 V AccessibilityManagerService: onUserStateChangedLocked for user 0 with forceUpdate: false mEnabledServices = [] mCrashedServices = [] hasMagnificationConnection=false
+09-20 17:08:03.661  3032  3945 V AccessibilityManagerService: onUserStateChangedLocked for user 0 with forceUpdate: false mEnabledServices = [] mCrashedServices = [] hasMagnificationConnection=false
+09-20 17:08:03.678 24722 24722 D AndroidRuntime: Shutting down VM
+09-20 17:08:07.293 31226 31471 E APS_ALOG: CAM_ALOG_LIMIT,Fatal Err! mFd -1
+09-20 17:08:07.293 31226 31471 E APS_ALOG: CAM_ALOG_LIMIT,Fatal Err! FilePath nullptr!
+09-20 17:08:12.295 31226 31471 E APS_ALOG: CAM_ALOG_LIMIT,Fatal Err! mFd -1
+09-20 17:08:12.295 31226 31471 E APS_ALOG: CAM_ALOG_LIMIT,Fatal Err! FilePath nullptr!
+09-20 17:08:14.755  3032  3797 V AccessibilityManagerService: onUserStateChangedLocked for user 0 with forceUpdate: false mEnabledServices = [] mCrashedServices = [] hasMagnificationConnection=false
+09-20 17:08:17.296 31226 31471 E APS_ALOG: CAM_ALOG_LIMIT,Fatal Err! mFd -1
+09-20 17:08:17.297 31226 31471 E APS_ALOG: CAM_ALOG_LIMIT,Fatal Err! FilePath nullptr!
+09-20 17:08:17.474 14869 15595 E FileStrategy: java.io.IOException: Read-only file system
+09-20 17:08:22.301 31226 31471 E APS_ALOG: CAM_ALOG_LIMIT,Fatal Err! mFd -1
+09-20 17:08:22.301 31226 31471 E APS_ALOG: CAM_ALOG_LIMIT,Fatal Err! FilePath nullptr!
+09-20 17:08:22.723 22986 24824 I DRS_LOG_ExceptionDataHandler[DRS-IPC-2]: handle: receive exception from IPC, appId=3012, group=sdk_prefilter, id=client_prefilter_sample_drop, time=1789895302708, reason=client_prefilter_sample_drop|8
+09-20 17:08:22.726 22986 24824 I DRS_LOG_ExceptionDataHandler[DRS-IPC-2]: Prefilter drop recorded as RECEIVED+FILTERED: appId=3012, count=8, reason=SDK_PREFILTER_SAMPLE_DROP
+09-20 17:08:22.727 22986 24825 I IPCClientManager: reportException: IPC call success
+Starting: Intent { cmp=com.circleapp.cdv.dev/com.circleapp.cdv.MainActivity }
+Warning: Activity not started, its current task has been brought to the front
+    topResumedActivity=ActivityRecord{106286679 u0 com.circleapp.cdv.dev/com.circleapp.cdv.MainActivity t5491}
+  mCurrentFocus=Window{7fec965 u0 com.circleapp.cdv.dev/com.circleapp.cdv.MainActivity}
+
+---
+exit_code: 0
+elapsed_ms: 4342
+ended_at: 2026-09-20T09:08:26.241Z
+---

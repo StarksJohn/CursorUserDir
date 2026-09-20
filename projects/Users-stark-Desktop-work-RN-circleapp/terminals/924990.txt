@@ -1,0 +1,15 @@
+---
+pid: 65216
+cwd: "/Users/stark/Desktop/work/RN/circleapp/ios"
+command: "export PATH=\"/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/homebrew/bin:$PATH\"\nUDID=\"40CFF82C-608F-41F9-AB5E-23BCF7CCE5EB\"\n# host crash reports\nfind /Users/stark/Library /Library/Logs -name '*.ips' -mmin -60 2>/dev/null | head -20\nfind /Users/stark/Library/Logs /Users/stark/Library/Developer -name '*Circle*' -mmin -60 2>/dev/null | head -20\n# stream a few seconds around launch\nxcrun simctl terminate \"$UDID\" com.healshealthcare.circlemedical.dev 2>/dev/null || true\n# start log collect then launch\nxcrun simctl spawn \"$UDID\" log stream --level debug --style compact --predicate 'process == \"Circle\" OR process == \"ReportCrash\" OR eventMessage CONTAINS[c] \"Terminating\"' > /tmp/circle-ios-verify/stream.log 2>&1 &\nSTREAM_PID=$!\nsleep 1\nxcrun simctl launch \"$UDID\" com.healshealthcare.circlemedical.dev\nsleep 8\nkill $STREAM_PID 2>/dev/null || true\nwait $STREAM_PID 2>/dev/null || true\necho \"==== stream interesting ====\"\nrg -i 'fatal|exception|terminat|abort|SIGABRT|RCTFatal|Unhandled|crash|assert|nsexception|libc\\+\\+|Hermes|reanimated' /tmp/circle-ios-verify/stream.log | tail -50\necho \"==== stream last 30 ====\"\ntail -30 /tmp/circle-ios-verify/stream.log\necho \"==== file size ====\"\nwc -l /tmp/circle-ios-verify/stream.log"
+title: "Stream simulator logs during app launch/crash"
+status: failed   
+started_at: 2026-09-20T07:01:27.498Z
+running_for_ms: 41609    
+---
+
+---
+exit_code: unknown
+elapsed_ms: 41609
+ended_at: 2026-09-20T07:02:09.107Z
+---

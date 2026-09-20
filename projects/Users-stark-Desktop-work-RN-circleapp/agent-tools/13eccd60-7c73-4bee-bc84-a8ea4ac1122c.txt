@@ -1,0 +1,617 @@
+# Systematic EXC_BAD_ACCESS (KERN_PROTECTION_FAILURE) crash on physical devices — RN threading issue
+
+- State: closed
+- Author: societecentauri-tech
+- Created: 2026-03-29T17:47:11Z
+- Updated: 2026-06-25T05:46:53Z
+- Repository: facebook/hermes
+- Number: #1966
+
+## Labels
+
+- need more info
+
+---
+
+Hi Hermes team,
+
+Thank you for your work on Hermes. We're reporting a critical issue affecting all React Native / Expo apps on physical iOS 26 devices. We hope this detailed report helps identify and prioritize a fix.
+
+# [iOS 26] Systematic crash on physical devices — PAC pointer authentication incompatibility
+
+## Bug Description
+
+Hermes crashes **systematically** (100% reproduction rate) on **every** physical iOS 26 device at app launch. The crash signature points to ARM64 Pointer Authentication Codes (PAC) enforcement that iOS 26 has hardened on physical hardware.
+
+**This is NOT intermittent.** Every cold start on a physical iOS 26 device crashes. Simulators work fine (no PAC hardware enforcement in emulation).
+
+**Crash signature:**
+
+```
+Exception Type:  EXC_BAD_ACCESS (SIGBUS / SIGSEGV)
+Exception Subtype: KERN_PROTECTION_FAILURE
+Thread: com.facebook.react.runtime.JavaScript
+
+0  hermesvm  JSObject::getNamedDescriptorUnsafe(...)
+1  hermesvm  HiddenClass::findProperty(...)
+```
+
+The `KERN_PROTECTION_FAILURE` subtype (as opposed to `KERN_INVALID_ADDRESS` seen in #1896) is the specific kernel signal for **PAC validation failure** — the CPU detected an unsigned or incorrectly signed pointer being dereferenced.
+
+## Root Cause Analysis
+
+iOS 26 hardened PAC (Pointer Authentication Codes, ARMv8.3 / arm64e) enforcement on physical devices. PAC cryptographically signs pointers and verifies them before use. Unsigned or manipulated pointers now cause an immediate `KERN_PROTECTION_FAILURE` crash.
+
+Hermes performs raw pointer arithmetic in its VM internals — particularly in the HiddenClass property lookup chain (`HiddenClass::findProperty` -> `JSObject::getNamedDescriptorUnsafe`). These operations (pointer casting, offset arithmetic, vtable dispatch) invalidate PAC signatures, causing the CPU to reject the pointer on dereference.
+
+**Why simulators are unaffected:** iOS simulators run on x86_64 or emulated arm64 without hardware PAC enforcement. The crash only manifests on physical ARM64 devices running iOS 26+.
+
+## All Configurations Tested
+
+We exhaustively tested every viable combination:
+
+| Configuration | Hermes | Architecture | Result |
+|--------------|--------|-------------|--------|
+| Expo SDK 55 + RN 0.83 | V2 (0.14.1, default) | New Arch | **CRASH** |
+| Expo SDK 55 + RN 0.83 | V1 (override 0.10) | Old Arch | **CRASH** |
+| Expo SDK 55 + RN 0.83 | V1 | Old Arch + minimal JS layout | OK (too little JS to trigger) |
+| Expo SDK 55 + RN 0.83 | V2 | New Arch + UI framework | **CRASH** |
+| Expo SDK 54 + JSC | N/A | Old Arch | BUILD FAIL (Reanimated/Worklets require Hermes) |
+| Build from source (RCT_BUILD_HERMES_FROM_SOURCE) | V2 | New Arch | BUILD FAIL (glog config.h) |
+
+**Key observation:** A minimal JS layout (near-empty app) does not crash — the crash requires enough JS object property lookups to trigger the HiddenClass chain traversal. This confirms it is the pointer arithmetic in HiddenClass/property resolution, not initialization code.
+
+## Steps To Reproduce
+
+1. Create any non-trivial Expo/React Native app (more than a blank screen — needs object property access patterns)
+2. Build for iOS with Hermes enabled (default)
+3. Deploy to a **physical** iPhone running iOS 26+ (tested: iPhone 13 mini, iOS 26.3.1)
+4. Launch the app -> immediate crash within ~200ms
+
+**Simulator:** Works fine on any iOS 26 simulator (no PAC enforcement)
+**Device:** 100% crash rate on physical iOS 26 device
+
+> **Note:** We are preparing a minimal reproduction repository and a full Xcode crash report (with register state and ESR). We will attach them in a follow-up comment shortly.
+
+## Environment
+
+| Field | Value |
+|-------|-------|
+| **Hermes versions tested** | V1 (0.10.x) and V2 (0.14.1) |
+| **React Native versions tested** | 0.81.5, 0.83.x |
+| **Expo SDK versions tested** | 54, 55 |
+| **iOS version** | 26.3.1 |
+| **Device** | iPhone 13 mini (arm64) |
+| **Platform** | arm64 physical device |
+| **Xcode** | 26.x |
+| **macOS** | 26.x |
+
+## Impact
+
+This is a **complete blocker** for any React Native / Expo app targeting physical iOS 26 devices. There is no configuration workaround — both Hermes V1 and V2, Old and New Architecture, all crash. JSC is not a viable fallback due to ecosystem dependencies requiring Hermes.
+
+As iOS 26 adoption grows, this will affect every React Native app in production.
+
+## Suggested Fix Direction
+
+Hermes VM internals may need to be compiled with PAC support and use Apple pointer authentication intrinsics (ptrauth_sign_unauthenticated, ptrauth_auth_data, etc.) or LLVM __ptrauth qualifiers for pointer operations in:
+
+- HiddenClass property chain traversal
+- JSObject named descriptor lookups
+- GC pointer scanning and handle management
+- Any vtable or function pointer dispatch
+
+## Related Issues
+
+- #1896 — Similar crash location (HiddenClass::addProperty) but intermittent on iOS 18, different exception subtype (KERN_INVALID_ADDRESS = null pointer, not PAC)
+- facebook/react-native#54859 — TurboModule SIGABRT on iOS 26 (different crash, exception handling issue)
+- facebook/react-native#55337 — HiddenClass::addProperty crash on iOS device (similar area, but attributed to NSException bridging)
+
+These are distinct issues. Our crash is **deterministic**, **PAC-specific** (KERN_PROTECTION_FAILURE), and affects **all** non-trivial apps on physical iOS 26 hardware.
+
+---
+
+Thank you for looking into this. We understand this may require significant changes in the VM internals. We're happy to provide any additional information, test builds, or help validate fixes on our physical iOS 26 devices.
+
+## Timeline
+
+- Referenced by issue #44356: [SDK 54/55] Hermes crashes systematically on physical iOS 26 devices — PAC pointer authentication
+
+- Referenced by issue #54859: [iOS 26] App crashes on startup with TurboModule performVoidMethodInvocation - SIGABRT
+
+**tmikov** commented on 2026-03-29T17:56:37Z:
+
+> Hi, this is likely a duplicate of https://github.com/facebook/hermes/issues/1957, which is a React Native bug.
+> 
+> Please provide a stack trace of the crash, including the stacks of all threads.
+> 
+
+- tmikov added label "need more info"
+
+- facebook comment_deleted
+
+**societecentauri-tech** commented on 2026-03-30T05:20:26Z:
+
+> ## Follow-up: Full crash reports from physical device (iPhone 13 mini, iOS 26.3.1)
+> 
+> As promised, here are the full crash reports pulled from the device (`pymobiledevice3 crash pull`). We have **9 TOA crashes** from a single session (2026-03-27). Three show an explicit `(possible pointer authentication failure)` annotation in the system-generated subtype.
+> 
+> ---
+> 
+> ### Crash #1 — `KERN_INVALID_ADDRESS` at `0x0000800000000000` (PAC null pointer)
+> 
+> **Exception:**
+> ```
+> Exception Type: EXC_BAD_ACCESS (SIGSEGV)
+> Exception Subtype: KERN_INVALID_ADDRESS at 0x0000800000000000 -> 0x0000000000000000
+> (possible pointer authentication failure)
+> Crashed thread: com.meta.react.turbomodulemanager.queue
+> ESR: 0x92000004 (Data Abort, byte read, Translation fault L0)
+> FAR: 0x0000800000000000
+> ```
+> 
+> **Stack trace:**
+> ```
+> #0 hermes::vm::JSObject::addOwnPropertyImpl(Handle, Runtime&, SymbolID, PropertyFlags, Handle) + 168
+> #1 hermes::vm::JSObject::addOwnProperty(Handle, Runtime&, SymbolID, DefinePropertyFlags, Handle, PropOpFlags) + 448
+> #2 hermes::vm::JSObject::putComputedWithReceiver_RJS(...) + 956
+> #3 facebook::hermes::HermesRuntimeImpl::setPropertyValue(Object const&, String const&, Value const&) + 176
+> #4 <deduplicated_symbol> + 116 [React]
+> #5 <deduplicated_symbol> + 92 [React]
+> #6 facebook::react::TurboModuleConvertUtils::convertNSExceptionToJSError(...) + 216
+> #7 invocation function for block in ObjCTurboModule::performVoidMethodInvocation(...) + 328
+> #8 std::function<...performVoidMethodInvocation...$_1...>::operator()() + 88
+> #9 _dispatch_call_block_and_release + 32
+> #10 _dispatch_lane_serial_drain + 740
+> ...
+> #15 _pthread_wqthread + 292
+> #16 start_wqthread + 8
+> ```
+> 
+> **ARM64 registers (Thread 488698):**
+> ```
+> x0 = 0x0000000000000001
+> x1 = 0x0000000000467A28
+> x2 = 0x000000010B9F92F8
+> x3 = 0x000000010000000E
+> x4 = 0x000000016B076298
+> x5 = 0x000000016B07629C
+> x6 = 0x000000016B07629A
+> x7 = 0x000000016B076294
+> x8 = 0x0000800000000000 ← PAC-corrupted pointer (= FAR)
+> x9 = 0x000000010B000000
+> x10 = 0x0000000000000001
+> x11 = 0x000000000000000C
+> x12 = 0x000000010B067A2C
+> x13 = 0x000000010B067A5C
+> x14 = 0x0000000000000001
+> x15 = 0x000000010B067A60
+> x16 = 0x0000000000000000
+> x17 = 0x000000001FFFFFFE
+> x18 = 0x0000000000000000
+> x19 = 0x000000010C8DB6D0
+> x20 = 0x000000016B076558
+> x21 = 0x00000001087E0000
+> x22 = 0x000000010B0679A4
+> x23 = 0xFFFB800000000A91 ← NaN-boxed HermesValue (valid)
+> x24 = 0x00000001087E0010
+> x25 = 0x000000010C8DB730
+> x26 = 0x0000000107A91DF8 hermes::vm::VTable::vtableArray
+> x27 = 0x0000000000000000
+> x28 = 0x0000000000000114
+> fp = 0x000000016B076370
+> lr = 0x0000000107A19714
+> sp = 0x000000016B076320
+> pc = 0x0000000107A19734
+> cpsr= 0x0000000060001000
+> esr = 0x92000004 (Data Abort) byte read Translation fault
+> far = 0x0000800000000000 ← attempted dereference address
+> ```
+> 
+> **`x8 == FAR`**: the CPU tried to dereference `x8`. Its value (`0x0000800000000000`) has bit 47 set — the classic mark of a failed PAC authentication on a 48-bit VA space. `x23 = 0xFFFB800000000A91` is a valid NaN-boxed `HermesValue`.
+> 
+> ---
+> 
+> ### Crash #2 — `KERN_INVALID_ADDRESS` at `0x000080000000009D` (PAC at offset 0x9D)
+> 
+> **Exception:**
+> ```
+> Exception Type: EXC_BAD_ACCESS (SIGSEGV)
+> Exception Subtype: KERN_INVALID_ADDRESS at 0x000080000000009d -> 0x000000000000009d
+> (possible pointer authentication failure)
+> Crashed thread: com.facebook.react.runtime.JavaScript
+> ESR: 0x92000004 (Data Abort, byte read, Translation fault L0)
+> FAR: 0x000080000000009D
+> ```
+> 
+> **Stack trace:**
+> ```
+> #0 hermes::vm::HiddenClass::findProperty(PseudoHandle, Runtime&, SymbolID, PropertyFlags, NamedPropertyDescriptor&) + 268
+> #1 hermes::vm::JSObject::getComputedPrimitiveDescriptor(...) + 236
+> #2 hermes::vm::JSObject::hasComputed(Handle, Runtime&, Handle) + 224
+> #3 hermes::vm::Interpreter::interpretFunction<false, false>(Runtime&, InterpreterState&) + 1084
+> #4 hermes::vm::Runtime::interpretFunctionImpl(CodeBlock*) + 52
+> #5 hermes::vm::JSFunction::_callImpl(Handle, Runtime&) + 40
+> #6 hermes::vm::BoundFunction::_boundCall(BoundFunction*, Inst const*, Runtime&) + 340
+> #7 facebook::hermes::HermesRuntimeImpl::call(Function const&, Value const&, Value const*, unsigned long) + 292
+> #8 facebook::react::Task::execute(Runtime&, bool) + 172
+> #9 facebook::react::RuntimeScheduler_Modern::executeTask(Runtime&, Task&, bool) const + 116
+> #10 facebook::react::RuntimeScheduler_Modern::runEventLoopTick(Runtime&, Task&) + 160
+> #11 facebook::react::RuntimeScheduler_Modern::runEventLoop(Runtime&) + 96
+> #12 [ReactInstance lambda] + 116
+> #13 facebook::react::tryAndReturnError(function<void()> const&) + 32
+> #14 facebook::react::RCTMessageThread::tryFunc(function<void()> const&) + 24
+> #15 invocation function for block in RCTMessageThread::runAsync + 44
+> #16 __CFRUNLOOP_IS_CALLING_OUT_TO_A_BLOCK__ + 28
+> ...
+> #20 +[RCTJSThreadManager runRunLoop] + 252
+> #21 __NSThread__start__ + 732
+> #22 _pthread_start + 136
+> #23 start_wqthread + 8
+> ```
+> 
+> ---
+> 
+> ### Pattern summary
+> 
+> | | Crash #1 | Crash #2 | Crash #3 (111218) |
+> |--|--|--|--|
+> | Signal | SIGSEGV | SIGSEGV | SIGSEGV |
+> | PAC annotation | yes | yes | yes |
+> | ESR | `0x92000004` | `0x92000004` | — |
+> | FAR | `0x0000800000000000` | `0x000080000000009D` | `0x2020202020000008` |
+> | Hermes site | `addOwnPropertyImpl` | `HiddenClass::findProperty` | — |
+> 
+> **ESR `0x92000004` decoded:**
+> - EC = 0x24 → Data Abort (EL0)
+> - DFSC = 0b000100 → Translation Fault, Level 0
+> - WnR = 0 (read)
+> 
+> Bit 47 set in FAR (`0x0000800000000000`, `0x000080000000009D`) is the canonical PAC authentication failure signature on a 48-bit VA space — the CPU flips bit 47 after a failed `autdb`/`autia`/`autib`, producing an address in unmapped space.
+> 
+> ---
+> 
+> ### Additional observation (Crash #1)
+> 
+> The crash in #1 originates inside `TurboModuleConvertUtils::convertNSExceptionToJSError` — an NSException catch path that builds a JS error object. The PAC failure hits **while setting a property on that JS error** (`setPropertyValue` → `addOwnPropertyImpl`). The corrupted pointer is likely acquired before the catch block and first dereferenced there.
+> 
+> ---
+> 
+> ### Binary build metadata
+> 
+> | Binary | UUID | Arch |
+> |--------|------|------|
+> | hermesvm | `23a36ae0-09e5-3181-b13f-d86d9ae3546c` | arm64 |
+> | React | `96e6284f-9420-31a9-a087-7e66378c32cc` | arm64 |
+> | ReactNativeDependencies | `da0d9188-6498-366d-a909-3f4027c23861` | arm64 |
+> 
+> - App: TOA v5.0.0 (build 34), TestFlight
+> - Device: iPhone14,4 (iPhone 13 mini), arm64
+> - iOS: 26.3.1 (23D771330a)
+> 
+> We are preparing a minimal reproduction repo. Happy to test candidate fixes on our physical iOS 26 device.
+
+**societecentauri-tech** commented on 2026-03-30T05:22:15Z:
+
+> ## Full thread stacks (as requested by @tmikov)
+> 
+> From crash report `TOA-2026-03-27-091712` (the clearest PAC crash, FAR = `0x0000800000000000`).
+> 
+> ---
+> 
+> ```
+> Thread 488652 queue=com.apple.main-thread
+> #0 [libsystem_kernel] mach_msg2_trap + 8
+> #1 [libsystem_kernel] mach_msg2_internal + 76
+> #2 [libsystem_kernel] mach_msg_overwrite + 428
+> #3 [libsystem_kernel] mach_msg + 24
+> #4 [CoreFoundation] __CFRunLoopServiceMachPort + 160
+> #5 [CoreFoundation] __CFRunLoopRun + 1188
+> #6 [CoreFoundation] _CFRunLoopRunSpecificWithOptions + 532
+> #7 [GraphicsServices] GSEventRunModal + 120
+> #8 [UIKitCore] -[UIApplication _run] + 792
+> #9 [UIKitCore] UIApplicationMain + 336
+> #10 [UIKitCore] (unnamed)
+> #11 [TOA] (unnamed)
+> #12 [dyld] start + 7116
+> 
+> Thread 488692 (no frames)
+> Thread 488693 (no frames)
+> Thread 488694 (no frames)
+> 
+> Thread 488698 *** CRASHED *** queue=com.meta.react.turbomodulemanager.queue
+> ESR: 0x92000004 (Data Abort, byte read, Translation fault L0)
+> FAR: 0x0000800000000000 PC: 0x0000000107A19734
+> #0 [hermesvm] hermes::vm::JSObject::addOwnPropertyImpl(Handle, Runtime&, SymbolID, PropertyFlags, Handle) + 168
+> #1 [hermesvm] hermes::vm::JSObject::addOwnProperty(Handle, Runtime&, SymbolID, DefinePropertyFlags, Handle, PropOpFlags) + 448
+> #2 [hermesvm] hermes::vm::JSObject::putComputedWithReceiver_RJS(Handle, Runtime&, Handle, Handle, Handle, PropOpFlags) + 956
+> #3 [hermesvm] facebook::hermes::HermesRuntimeImpl::setPropertyValue(jsi::Object const&, jsi::String const&, jsi::Value const&) + 176
+> #4 [React] <deduplicated_symbol> + 116
+> #5 [React] <deduplicated_symbol> + 92
+> #6 [React] facebook::react::TurboModuleConvertUtils::convertNSExceptionToJSError(jsi::Runtime&, NSException*, string const&, string const&) + 216
+> #7 [React] invocation function for block in ObjCTurboModule::performVoidMethodInvocation(jsi::Runtime&, char const*, NSInvocation*, NSMutableArray*) + 328
+> #8 [React] std::function<ObjCTurboModule::performVoidMethodInvocation...>::operator()() + 88
+> #9 [libdispatch] _dispatch_call_block_and_release + 32
+> #10 [libdispatch] _dispatch_client_callout + 16
+> #11 [libdispatch] _dispatch_lane_serial_drain + 740
+> #12 [libdispatch] _dispatch_lane_invoke + 388
+> #13 [libdispatch] _dispatch_root_queue_drain_deferred_wlh + 292
+> #14 [libdispatch] _dispatch_workloop_worker_thread + 692
+> #15 [libsystem_pthread] _pthread_wqthread + 292
+> #16 [libsystem_pthread] start_wqthread + 8
+> 
+> Thread 488699 name=com.apple.uikit.eventfetch-thread
+> #0 [libsystem_kernel] mach_msg2_trap + 8
+> #1 [libsystem_kernel] mach_msg2_internal + 76
+> #2 [libsystem_kernel] mach_msg_overwrite + 428
+> #3 [libsystem_kernel] mach_msg + 24
+> #4 [CoreFoundation] __CFRunLoopServiceMachPort + 160
+> #5 [CoreFoundation] __CFRunLoopRun + 1188
+> #6 [CoreFoundation] _CFRunLoopRunSpecificWithOptions + 532
+> #7 [Foundation] -[NSRunLoop(NSRunLoop) runMode:beforeDate:] + 212
+> #8 [Foundation] -[NSRunLoop(NSRunLoop) runUntilDate:] + 64
+> #9 [UIKitCore] -[UIEventFetcher threadMain] + 408
+> #10 [Foundation] __NSThread__start__ + 732
+> #11 [libsystem_pthread] _pthread_start + 136
+> #12 [libsystem_pthread] thread_start + 8
+> 
+> Thread 488700 (no frames)
+> Thread 488701 (no frames)
+> Thread 488702 (no frames)
+> Thread 488703 (no frames)
+> 
+> Thread 488706 name=com.facebook.react.runtime.JavaScript
+> #0 [hermesvm] hermes::vm::Interpreter::interpretFunction<false, false>(Runtime&, InterpreterState&) + 712
+> #1 [hermesvm] hermes::vm::Runtime::interpretFunctionImpl(CodeBlock*) + 52
+> #2 [hermesvm] hermes::vm::JSFunction::_callImpl(Handle, Runtime&) + 40
+> #3 [hermesvm] hermes::vm::BoundFunction::_boundCall(BoundFunction*, Inst const*, Runtime&) + 340
+> #4 [hermesvm] facebook::hermes::HermesRuntimeImpl::call(jsi::Function const&, jsi::Value const&, jsi::Value const*, unsigned long) + 292
+> #5 [React] facebook::react::Task::execute(jsi::Runtime&, bool) + 172
+> #6 [React] facebook::react::RuntimeScheduler_Modern::executeTask(jsi::Runtime&, Task&, bool) const + 116
+> #7 [React] facebook::react::RuntimeScheduler_Modern::runEventLoopTick(jsi::Runtime&, Task&) + 160
+> #8 [React] facebook::react::RuntimeScheduler_Modern::runEventLoop(jsi::Runtime&) + 96
+> #9 [React] [ReactInstance lambda] + 116
+> #10 [React] facebook::react::tryAndReturnError(function<void()> const&) + 32
+> #11 [React] facebook::react::RCTMessageThread::tryFunc(function<void()> const&) + 24
+> #12 [React] invocation function for block in RCTMessageThread::runAsync + 44
+> #13 [CoreFoundation] __CFRUNLOOP_IS_CALLING_OUT_TO_A_BLOCK__ + 28
+> #14 [CoreFoundation] __CFRunLoopDoBlocks + 396
+> #15 [CoreFoundation] __CFRunLoopRun + 2356
+> #16 [CoreFoundation] _CFRunLoopRunSpecificWithOptions + 532
+> #17 [React] +[RCTJSThreadManager runRunLoop] + 252
+> #18 [Foundation] __NSThread__start__ + 732
+> #19 [libsystem_pthread] _pthread_start + 136
+> #20 [libsystem_pthread] thread_start + 8
+> 
+> Thread 488707 name=hades
+> #0 [libsystem_kernel] __psynch_cvwait + 8
+> #1 [libsystem_pthread] _pthread_cond_wait + 984
+> #2 [libc++] std::condition_variable::wait(unique_lock &) + 32
+> #3 [hermesvm] hermes::vm::HadesGC::Executor::worker() + 104
+> #4 [hermesvm] void* std::__thread_proxy<...HadesGC::Executor lambda...>(void*) + 44
+> #5 [libsystem_pthread] _pthread_start + 136
+> #6 [libsystem_pthread] thread_start + 8
+> 
+> Thread 488712 name=hades
+> (same as Thread 488707 — second HadesGC worker, idle)
+> ```
+> 
+> ---
+> 
+> **Observation on concurrent state:**
+> 
+> At crash time, **Thread 488706** (JS thread) was actively executing — it was mid-execution, not blocked. **Thread 488698** (turbomodule queue) crashed simultaneously while handling . This suggests an NSException was thrown during a TurboModule call, the catch path tried to build a JS error object, and dereferenced a PAC-corrupted pointer (x8 = FAR = ).
+> 
+> Both HadesGC worker threads (488707, 488712) were idle (waiting on condition variable) at crash time.
+> 
+> ---
+> 
+> Noted your pointer to #1957. Happy to provide any additional info needed.
+
+- tmikov mentioned
+
+- tmikov subscribed
+
+**tmikov** commented on 2026-03-30T05:50:47Z:
+
+> Thanks for the additional info. The thread stacks confirm that this is a case of concurrent access to the JS runtime from two threads, which violates the runtime's API contract. 
+> 
+> This is not a bug in Hermes - it is a React Native bug and indeed a duplicate of https://github.com/facebook/hermes/issues/1957. The root cause is that the Turbo Module invocation is erroring. Then it is incorrectly attempting to allocate a JS object from the wrong thread without synchronization. It may be possible to partially mitigate this by making sure the Turbo Module doesn't error.
+> 
+> The React Native team is aware of this problem and working on a fix, which will likely be available in a new point release of RN.
+
+- tmikov closed
+
+**societecentauri-tech** commented on 2026-03-30T07:16:46Z:
+
+> ## Fix confirmed on physical device
+> 
+> **Device:** iPhone 13 mini, iOS 26.3.1 (beta)
+> **Stack:** Expo SDK 55, React Native 0.83.4 (patched), Hermes, New Architecture enabled
+> 
+> ### Root cause (confirmed)
+> 
+> As @tmikov identified, this is **not a Hermes bug**. It's a thread-safety violation in React Native's `ObjCTurboModule::performVoidMethodInvocation`:
+> 
+> - An `NSException` is caught on a dispatch queue thread
+> - `convertNSExceptionToJSError` accesses the JS runtime from that thread
+> - The JS thread runs concurrently → corrupted pointer → PAC authentication failure
+> 
+> ### Fix applied
+> 
+> Patch from facebook/react-native#55390 — replace `throw convertNSExceptionToJSError(...)` with `RCTLogError(...)` in `performVoidMethodInvocation` (line 473 in RN 0.83.4).
+> 
+> ```objc
+> // BEFORE:
+> throw convertNSExceptionToJSError(runtime, exception, std::string{moduleName}, methodNameStr);
+> 
+> // AFTER:
+> RCTLogError(@"Exception thrown while invoking async method %s.%s: %@",
+> moduleName, methodNameStr.c_str(), exception);
+> ```
+> 
+> ### Result
+> 
+> App launches and runs normally on device. No more PAC crash (`FAR = 0x0000800000000000`, `ESR = 0x92000004`).
+> 
+> The PR #55390 should be merged into React Native to fix this for all users on iOS 26.
+
+- tmikov mentioned
+
+- tmikov subscribed
+
+- Referenced by issue #55337: Getting Crash In Ios Device
+
+**Pycode0007** commented on 2026-04-01T07:01:29Z:
+
+> > ## Fix confirmed on physical device
+> > **Device:** iPhone 13 mini, iOS 26.3.1 (beta) **Stack:** Expo SDK 55, React Native 0.83.4 (patched), Hermes, New Architecture enabled
+> > 
+> > ### Root cause (confirmed)
+> > As @tmikov identified, this is **not a Hermes bug**. It's a thread-safety violation in React Native's `ObjCTurboModule::performVoidMethodInvocation`:
+> > 
+> > * An `NSException` is caught on a dispatch queue thread
+> > * `convertNSExceptionToJSError` accesses the JS runtime from that thread
+> > * The JS thread runs concurrently → corrupted pointer → PAC authentication failure
+> > 
+> > ### Fix applied
+> > Patch from facebook/react-native#55390 — replace `throw convertNSExceptionToJSError(...)` with `RCTLogError(...)` in `performVoidMethodInvocation` (line 473 in RN 0.83.4).
+> > 
+> > // BEFORE:
+> > throw convertNSExceptionToJSError(runtime, exception, std::string{moduleName}, methodNameStr);
+> > 
+> > // AFTER:
+> > RCTLogError(@"Exception thrown while invoking async method %s.%s: %@",
+> > moduleName, methodNameStr.c_str(), exception);
+> > ### Result
+> > App launches and runs normally on device. No more PAC crash (`FAR = 0x0000800000000000`, `ESR = 0x92000004`).
+> > 
+> > The PR #55390 should be merged into React Native to fix this for all users on iOS 26.
+> 
+> It not worked in 0.84.1.
+> Exception Type: EXC_BAD_ACCESS (SIGBUS)
+> Exception Subtype: EXC_ARM_DA_ALIGN at 0x3ff199999999999a -> 0xffffff999999999a (possible pointer authentication failure)
+> Exception Codes: 0x0000000000000101, 0x3ff199999999999a
+> VM Region Info: 0xffffff999999999a is not in any region. 
+> REGION TYPE START - END [ VSIZE] PRT/MAX SHRMOD REGION DETAIL
+> UNUSED SPACE AT START
+> ---> 
+> UNUSED SPACE AT END
+> Termination Reason: SIGNAL 10 Bus error: 10
+> Terminating Process: exc handler [652]
+> 
+> Triggered by Thread: 13
+> 
+> Thread 13 name:
+> Thread 13 Crashed:
+> 0 ??? 0xffffff999999999a 0x0 + -439804651110
+> 1 hermesvm 0x000000010a9f9658 hermes::vm::JSObject::defineOwnComputedPrimitive(hermes::vm::Handle, hermes::vm::Runtime&, hermes::vm::Handle, hermes::vm::DefinePropertyFlags, hermes... + 512 (JSObject.cpp:2280)
+> 2 hermesvm 0x000000010a9567bc hermes::vm::GCScope::flushToSmallCount(unsigned int) + 0 (HandleRootOwner.h:404)
+> 3 hermesvm 0x000000010a9567bc hermes::vm::CallResult<hermes::vm::HermesValue, (hermes::vm::detail::CallResultSpecialize)2> hermes::vm::Interpreter::interpretFunction<false, false>(hermes::vm::Runtime&, hermes::vm::InterpreterSt... + 6100 (Interpreter.cpp:2263)
+> 4 hermesvm 0x000000010a9f4574 hermes::vm::Runtime::interpretFunctionImpl(hermes::vm::CodeBlock*) + 52 (Interpreter.cpp:439)
+> 5 hermesvm 0x000000010a97711c hermes::vm::Runtime::runBytecode(std::__1::shared_ptr &&, hermes::vm::RuntimeModuleFlags, llvh::StringRef, hermes::vm::Handle, hermes::vm::Handl... + 1236 (Runtime.cpp:1173)
+> 6 hermesvm 0x000000010a81f6a4 hermes::vm::Runtime::runBytecode(std::__1::shared_ptr &&, hermes::vm::RuntimeModuleFlags, llvh::StringRef, hermes::vm::Handle) + 52 (Runtime.h:296)
+> 7 hermesvm 0x000000010a81f6a4 facebook::hermes::(anonymous namespace)::HermesRuntimeImpl::evaluatePreparedJavaScript(std::__1::shared_ptr const&) + 232 (hermes.cpp:1772)
+> 8 hermesvm 0x000000010a825a6c facebook::hermes::(anonymous namespace)::HermesRuntimeImpl::evaluateJavaScriptWithSourceMap(std::__1::shared_ptr const&, std::__1::shared_ptr  9 hermesvm 0x000000010a81f4e4 facebook::hermes::(anonymous namespace)::HermesRuntimeImpl::evaluateJavaScript(std::__1::shared_ptr const&, std::__1::basic_string<char, std::__1::char_traits, st... + 32 (hermes.cpp:1784)
+> 10 React 0x0000000109dadf9c facebook::react::ReactInstance::loadScript(std::__1::unique_ptr >, std::__1::basic_string<char, std::... + 344 (ReactInstance.cpp:268)
+> 11 React 0x0000000109dadf9c decltype(std::declval<facebook::react::ReactInstance::loadScript(std::__1::unique_ptr >, std::__1::ba... + 344 (invoke.h:149)
+> 12 React 0x0000000109dadf9c void std::__1::__invoke_void_return_wrapper<void, true>::__call[abi:ne190102]<facebook::react::ReactInstance::loadScript(std::__1::unique_ptr  
+> 
+> 
+> 
+
+**SimonLuzardo** commented on 2026-04-07T21:18:45Z:
+
+> Working fix available
+> I've implemented a PAC fix for Hermes v0.14.1 that resolves this crash on iOS 26 physical devices.
+> Fix: Modified PointerBase.h to use Apple's ptrauth intrinsics (HERMES_PAC_SIGN_DATA, HERMES_PAC_AUTH_DATA) in basedToPointerNonNull and pointerToBasedNonNull.
+> Tested: iPhone 17 Pro Max, iOS 26.4, React Native 0.83.4 + Expo SDK 54. Production app running successfully.
+> Repo: https://github.com/SimonLuzardo/hermes-ios26-pac-fix
+
+- Referenced by PR #120: fix(ios): static font embedding to fix crash on iOS 26.4
+
+**tmikov** commented on 2026-04-07T21:42:45Z:
+
+> EVERYONE: This crash is UNRELATED TO PAC.
+
+**SimonLuzardo** commented on 2026-04-07T21:46:04Z:
+
+> Thank you for the clarification! I'd love to understand the actual root cause if you're able to share. My fix resolved the crash on my iPhone 17 Pro Max iOS 26.4 with RN 0.83.4 — Stella (my production app) went from crashing immediately to running successfully. Happy to provide crash logs or test any proposed fix. What is the actual cause you've identified?
+
+- Renamed from "[iOS 26] Systematic EXC_BAD_ACCESS (KERN_PROTECTION_FAILURE) crash on physical devices — PAC pointer authentication incompatibility" to "Systematic EXC_BAD_ACCESS (KERN_PROTECTION_FAILURE) crash on physical devices — RN threading issue"
+
+**tmikov** commented on 2026-04-07T21:48:04Z:
+
+> > Thank you for the clarification! I'd love to understand the actual root cause if you're able to share. My fix resolved the crash on my iPhone 17 Pro Max iOS 26.4 with RN 0.83.4 — Stella (my production app) went from crashing immediately to running successfully. Happy to provide crash logs or test any proposed fix. What is the actual cause you've identified?
+> 
+> The root cause was already described in detail in this very issue.
+
+- khayym subscribed
+
+- Referenced by issue #1957: App crashes immediately at launch
+
+- Referenced by issue #44680: [SDK 55/56] Production builds crash on A18 Pro devices (iPhone 16) with iOS 26 — dev builds work fine
+
+- Referenced in commit 0e84620
+
+- andrewlmcgee subscribed
+
+**matinzd** commented on 2026-04-17T08:58:34Z:
+
+> @tmikov I think you are talking to a bot that joined last week. Let's lock the thread.
+
+- tmikov mentioned
+
+- tmikov subscribed
+
+- mestrelamb subscribed
+
+- rchen1987 subscribed
+
+- Referenced in commit 0d071c3
+
+- Referenced by issue #91225: [Due for payment 2026-06-12] [Due for payment 2026-06-04] [$250] [Sentry: APP-8KQ] iOS Fatal C++ Exception: St14overflow_error
+
+- RebelFightCo subscribed
+
+- Referenced in commit c131dbf
+
+- Referenced in commit 0bd0e44
+
+**ghost** commented on 2026-06-25T05:07:07Z:
+
+> Confirmed reproduction on iPhone 16 (A18) and iPhone 17 (A19) with iOS 26.5 — Expo SDK 56
+> I've been testing this crash extensively today across multiple builds. Here is my full configuration and findings:
+> Environment:
+> 
+> Expo SDK: 56.0.12
+> React Native: 0.85.3
+> Hermes: V1 (default in SDK 56)
+> iOS: 26.5 (23F77)
+> Devices tested: iPhone 16 Pro Max (A18 Pro), iPhone 16 standard (A18), iPhone 17 standard (A19)
+> Build type: EAS production build
+> 
+> Crash signature (consistent across all builds and devices):
+> Exception Type: EXC_CRASH (SIGABRT)
+> Thread: com.meta.react.turbomodulemanager.queue
+> ObjCTurboModule::performVoidMethodInvocation
+> Workarounds attempted — none worked:
+> 
+> Upgraded from SDK 54 → SDK 56
+> Removed expo-video, expo-av
+> Wrapped Sentry.init in try/catch
+> Added enableScreens(false)
+> Added buildReactNativeFromSource: true
+> Removed @react-navigation packages
+> All crash signatures remain identical
+> 
+> Key finding: The crash affects iPhone 16 standard (A18 non-Pro) and iPhone 17 standard (A19), not just A18 Pro. This is broader than originally documented.
+> This is a complete launch blocker for our app.
+
+- react-navigation mentioned
+
+**tmikov** commented on 2026-06-25T05:46:46Z:
+
+> Locking this conversation since people are apparently unable to read.
+
+- facebook locked
