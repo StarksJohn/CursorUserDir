@@ -1,0 +1,1148 @@
+FHIR Data Model for HealthPass Integration (Alpha) | Turn.io Documentation
+
+On this page
+
+# FHIR Data Model for HealthPass Integration (Alpha)
+
+This document describes the FHIR resources, fields, and data structures required for EMR integration with HealthPass. An EMR system must be able to provide and receive these FHIR resources via a standard FHIR R4 API.
+
+Alpha Release
+
+This API is still in alpha and subject to change. Features, endpoints, and data structures may be modified or removed in future releases.
+
+## Table of Contents​
+
+1. Overview
+2. Patient Resource
+3. Observation Resource
+4. Condition Resource
+5. MedicationRequest Resource
+6. Appointment Resource
+7. Practitioner Resource
+8. RelatedPerson Resource
+9. DiagnosticReport Resource
+10. Coding Systems Reference
+11. API Operations Required
+
+## Overview​
+
+HealthPass uses FHIR R4 resources to exchange patient health data. The integration requires:
+
+- Read/Search capabilities for retrieving patient records
+- Create/Update capabilities for recording new clinical data
+- Standard FHIR search parameters for filtering results
+
+### Supported Backend Types​
+
+| Backend | Authentication |
+| --- | --- |
+| Google Healthcare API | OAuth 2.0 with service account |
+| Standard FHIR Server | Bearer token or custom headers |
+| Medplum | OAuth 2.0 |
+
+## Patient Resource​
+
+The Patient resource represents individual patients in the system.
+
+### Required Fields​
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `resourceType` | string | Must be "Patient" |
+| `active` | boolean | Whether patient record is active |
+| `name` | HumanName[] | Patient name(s) |
+| `telecom` | ContactPoint[] | Contact information (phone, email) |
+
+### Optional Fields​
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | string | FHIR resource ID |
+| `identifier` | Identifier[] | External identifiers (national ID, MRN) |
+| `birthDate` | date | Date of birth (YYYY-MM-DD) |
+| `gender` | code | male | female | other | unknown |
+| `address` | Address[] | Patient addresses |
+
+### Example Patient Resource​
+
+{ 
+
+ "resourceType": "Patient", 
+
+ "id": "patient-123", 
+
+ "active": true, 
+
+ "identifier": [ 
+
+ { 
+
+ "type": { 
+
+ "coding": [ 
+
+ "system": "http://terminology.hl7.org/CodeSystem/v2-0203", 
+
+ "code": "NNZAF" 
+
+ "system": "https://www.gov.za/south-african-id-number", 
+
+ "value": "9001015009087" 
+
+ "name": [ 
+
+ "use": "official", 
+
+ "family": "Smith", 
+
+ "given": ["John"] 
+
+ "telecom": [ 
+
+ "system": "phone", 
+
+ "value": "+27821234567", 
+
+ "use": "mobile" 
+
+ "gender": "male", 
+
+ "birthDate": "1990-01-01", 
+
+ "address": [ 
+
+ "use": "home", 
+
+ "line": ["123 Main Street"], 
+
+ "city": "Cape Town", 
+
+ "state": "Western Cape", 
+
+ "postalCode": "8001", 
+
+ "country": "ZA" 
+
+### Search Parameters​
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `identifier` | token | Search by patient identifier |
+| `name` | string | Search by patient name |
+| `telecom` | token | Search by phone number (used for deduplication) |
+
+## Observation Resource​
+
+Observations capture clinical measurements, vital signs, symptoms, and assessment data.
+
+### Required Fields​
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `resourceType` | string | Must be "Observation" |
+| `status` | code | final | amended | corrected | cancelled |
+| `code` | CodeableConcept | What was observed (LOINC or SNOMED code) |
+| `subject` | Reference(Patient) | Patient reference |
+| `effectiveDateTime` | dateTime | When observation was made |
+
+### Value Fields (one required)​
+
+| Field | Type | Use Case |
+| --- | --- | --- |
+| `valueQuantity` | Quantity | Numeric measurements (vitals, labs) |
+| `valueString` | string | Text descriptions |
+| `valueBoolean` | boolean | Yes/No observations |
+| `valueCodeableConcept` | CodeableConcept | Coded values |
+| `component` | BackboneElement[] | Panel observations (e.g., blood pressure) |
+
+#### Vital Signs (LOINC)​
+
+| Template | LOINC Code | Display | Unit |
+| --- | --- | --- | --- |
+| `weight` | 29463-7 | Body weight | kg |
+| `height` | 8302-2 | Body height | cm |
+| `bmi` | 39156-5 | Body mass index | kg/m2 |
+| `blood_pressure_systolic` | 8480-6 | Systolic blood pressure | mmHg |
+| `blood_pressure_diastolic` | 8462-4 | Diastolic blood pressure | mmHg |
+| `blood_pressure_panel` | 85354-9 | Blood pressure panel | (component) |
+| `heart_rate` | 8867-4 | Heart rate | beats/min |
+| `temperature` | 8310-5 | Body temperature | Cel |
+| `respiratory_rate` | 9279-1 | Respiratory rate | /min |
+
+#### Laboratory (LOINC)​
+
+| Template | LOINC Code | Display | Unit |
+| --- | --- | --- | --- |
+| `glucose_glucometer` | 33747-0 | Glucose [Mass/volume] in Capillary blood by Glucometer | mg/dL |
+| `hba1c` | 4548-4 | Hemoglobin A1c/Hemoglobin.total in Blood | % |
+
+#### Assessment (LOINC)​
+
+| Template | LOINC Code | Display | Value Type |
+| --- | --- | --- | --- |
+| `sex_at_birth` | 76689-9 | Sex assigned at birth | CodeableConcept |
+| `gestational_dm` | 66157-9 | History of gestational diabetes | boolean |
+| `family_hx_diabetes` | 97063-2 | Family history of diabetes | boolean |
+| `high_blood_pressure_history` | 54686-6 | History of high blood pressure | boolean |
+| `race_ethnicity` | 32624-7 | Race | string |
+| `diabetes_risk_score` | 94560-0 | Diabetes risk score | Quantity (points) |
+| `physically_active` | 68516-4 | Physically active | boolean |
+| `diabetes_history` | 44877-9 | History of diabetes | boolean |
+| `diabetes_duration` | 77983-4 | Duration of diabetes | Quantity (years) |
+| `hypertension_history` | 54686-6 | History of hypertension | boolean |
+| `hypertension_duration` | 77984-2 | Duration of hypertension | Quantity (years) |
+| `current_symptoms` | 75322-8 | Symptoms | string |
+| `current_medications` | 10160-0 | History of Medication use | string |
+| `selected_medication` | 67540-8 | Selected medication | string |
+| `symptom_duration` | 88878-4 | Duration of symptoms | Quantity (days) |
+| `symptoms` | 75322-8 | Complaints | string |
+
+#### Respiratory Symptoms (SNOMED CT)​
+
+| Template | SNOMED Code | Display |
+| --- | --- | --- |
+| `cough` | 49727002 | Cough |
+| `productive_cough` | 28743005 | Productive cough |
+| `wheezing` | 56018004 | Wheezing |
+| `chills` | 43724002 | Chills |
+| `pleuritic_pain` | 2237002 | Pleuritic pain |
+| `anosmia` | 44169009 | Loss of sense of smell |
+
+#### Other Symptoms (SNOMED CT)​
+
+| Template | SNOMED Code | Display |
+| --- | --- | --- |
+| `fatigue` | 84229001 | Fatigue |
+| `myalgia` | 68962001 | Muscle pain |
+| `headache` | 25064002 | Headache |
+| `sneezing` | 76067001 | Sneezing |
+| `sinus_pain` | 5056003 | Sinus pain |
+| `otalgia` | 16001004 | Ear pain |
+| `chest_pain` | 29857009 | Chest pain |
+| `rigor` | 38880002 | Rigor |
+| `nasal_congestion` | 68235000 | Nasal congestion |
+| `fever` | 386661006 | Fever |
+| `other_symptoms` | 418799008 | Other symptom |
+
+### Reporter Method Extension​
+
+Observations include a `method` field indicating who reported the data:
+
+| Reporter | SNOMED Code | Display |
+| --- | --- | --- |
+| `self` | 1156040003 | Self reported |
+| `provider` | 1156041004 | Healthcare professional reported |
+
+### Example Observation (Vital Sign)​
+
+ "resourceType": "Observation", 
+
+ "status": "final", 
+
+ "category": [ 
+
+ "coding": [ 
+
+ "system": "http://terminology.hl7.org/CodeSystem/observation-category", 
+
+ "code": "vital-signs", 
+
+ "display": "Vital Signs" 
+
+ "system": "http://loinc.org", 
+
+ "code": "8310-5", 
+
+ "display": "Body temperature" 
+
+ "reference": "Patient/patient-123" 
+
+ "effectiveDateTime": "2024-01-15T10:30:00Z", 
+
+ "valueQuantity": { 
+
+ "value": 37.2, 
+
+ "unit": "Cel", 
+
+ "system": "http://unitsofmeasure.org", 
+
+ "code": "Cel" 
+
+ "system": "http://snomed.info/sct", 
+
+ "code": "1156040003", 
+
+ "display": "Self reported" 
+
+### Example Observation (Blood Pressure Panel)​
+
+ "resourceType": "Observation", 
+
+ "system": "http://terminology.hl7.org/CodeSystem/observation-category", 
+
+ "code": "vital-signs" 
+
+ ], 
+
+ "code": { 
+
+ "coding": [ 
+
+ { 
+
+ "system": "http://loinc.org", 
+
+ "code": "85354-9", 
+
+ "display": "Blood pressure panel" 
+
+ } 
+
+ ] 
+
+ "subject": { 
+
+ "reference": "Patient/patient-123" 
+
+ }, 
+
+ "effectiveDateTime": "2024-01-15T10:30:00Z", 
+
+ "component": [ 
+
+ { 
+
+ "code": { 
+
+ "coding": [ 
+
+ { 
+
+ "system": "http://loinc.org", 
+
+ "code": "8480-6", 
+
+ "display": "Systolic blood pressure" 
+
+ } 
+
+ "valueQuantity": { 
+
+ "value": 120, 
+
+ "unit": "mmHg", 
+
+ "system": "http://unitsofmeasure.org", 
+
+ "code": "mm[Hg]" 
+
+ } 
+
+ "code": { 
+
+ "coding": [ 
+
+ "system": "http://loinc.org", 
+
+ "code": "8462-4", 
+
+ "display": "Diastolic blood pressure" 
+
+ } 
+
+ "valueQuantity": { 
+
+ "value": 80, 
+
+ "unit": "mmHg", 
+
+ "system": "http://unitsofmeasure.org", 
+
+ "code": "mm[Hg]" 
+
+ } 
+
+ } 
+
+### Search Parameters​
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `patient` | reference | Filter by patient |
+| `code` | token | Filter by LOINC/SNOMED code (comma-separated for multiple) |
+| `_sort` | string | Sort order (use `-_lastUpdated` for most recent) |
+| `_count` | number | Maximum results to return |
+
+## Condition Resource​
+
+Conditions represent patient diagnoses and health problems.
+
+### Required Fields​
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `resourceType` | string | Must be "Condition" |
+| `clinicalStatus` | CodeableConcept | active | recurrence | relapse | inactive | remission | resolved |
+| `verificationStatus` | CodeableConcept | unconfirmed | provisional | differential | confirmed | refuted | entered-in-error |
+| `code` | CodeableConcept | Condition code (SNOMED + ICD-10) |
+| `subject` | Reference(Patient) | Patient reference |
+| `recordedDate` | dateTime | When condition was documented |
+
+### Optional Fields​
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `onsetDateTime` | dateTime | When condition started |
+| `category` | CodeableConcept | problem-list-item | encounter-diagnosis |
+
+### Condition Templates​
+
+| Template | SNOMED Code | ICD-10 Code | Display |
+| --- | --- | --- | --- |
+| `pneumonia` | 233604007 | J18.9 | Pneumonia |
+| `covid19` | 840539006 | U07.1 | COVID-19 |
+| `asthma` | 195967001 | J45.909 | Asthma |
+| `bronchitis` | 10509002 | J20.9 | Acute bronchitis |
+| `hypertension` | 38341003 | I10 | Hypertensive disorder |
+| `diabetes_type2` | 44054006 | E11.9 | Type 2 diabetes mellitus |
+| `diabetes_type1` | 46635009 | E10.9 | Type 1 diabetes mellitus |
+| `influenza` | 6142004 | J11.1 | Influenza |
+| `strep_throat` | 43878008 | J02.0 | Streptococcal pharyngitis |
+| `depression` | 35489007 | F32.9 | Major depressive disorder |
+| `anxiety` | 48694002 | F41.9 | Anxiety disorder |
+| `fever` | 386661006 | R50.9 | Fever |
+| `headache` | 25064002 | R51.9 | Headache |
+
+### Example Condition​
+
+ "resourceType": "Condition", 
+
+ "clinicalStatus": { 
+
+ "coding": [ 
+
+ "system": "http://terminology.hl7.org/CodeSystem/condition-clinical", 
+
+ "code": "active" 
+
+ "verificationStatus": { 
+
+ "coding": [ 
+
+ "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status", 
+
+ "code": "confirmed" 
+
+ "system": "http://snomed.info/sct", 
+
+ "code": "233604007", 
+
+ "display": "Pneumonia" 
+
+ "system": "http://hl7.org/fhir/sid/icd-10-cm", 
+
+ "code": "J18.9", 
+
+ "display": "Pneumonia, unspecified organism" 
+
+ "subject": { 
+
+ "reference": "Patient/patient-123" 
+
+ "recordedDate": "2024-01-15T10:30:00Z" 
+
+### Search Parameters​
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `patient` | reference | Filter by patient |
+| `clinical-status` | token | Filter by clinical status |
+| `_sort` | string | Sort order |
+| `_count` | number | Maximum results |
+
+## MedicationRequest Resource​
+
+MedicationRequests represent prescriptions and medication orders.
+
+### Required Fields​
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `resourceType` | string | Must be "MedicationRequest" |
+| `status` | code | active | on-hold | cancelled | completed | entered-in-error | stopped | draft | unknown |
+| `intent` | code | proposal | plan | order | original-order | reflex-order | filler-order | instance-order | option |
+| `medicationCodeableConcept` | CodeableConcept | Medication code (RxNorm) |
+| `subject` | Reference(Patient) | Patient reference |
+| `authoredOn` | dateTime | When prescription was written |
+
+### Optional Fields​
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `requester` | Reference(Practitioner) | Prescribing provider |
+| `dosageInstruction` | Dosage[] | How medication should be taken |
+
+#### Antibiotics​
+
+| Template | RxNorm Code | Display |
+| --- | --- | --- |
+| `amoxicillin_500mg` | 308182 | Amoxicillin 500 MG Oral Capsule |
+| `amoxicillin_250mg` | 308180 | Amoxicillin 250 MG Oral Capsule |
+| `azithromycin_250mg` | 308460 | Azithromycin 250 MG Oral Tablet |
+| `ciprofloxacin_500mg` | 309043 | Ciprofloxacin 500 MG Oral Tablet |
+
+#### Pain Medications​
+
+| Template | RxNorm Code | Display |
+| --- | --- | --- |
+| `acetaminophen_500mg` | 313782 | Acetaminophen 500 MG Oral Tablet |
+| `ibuprofen_600mg` | 310965 | Ibuprofen 600 MG Oral Tablet |
+| `tramadol_50mg` | 836395 | Tramadol Hydrochloride 50 MG Oral Tablet |
+
+#### Cardiovascular​
+
+| Template | RxNorm Code | Display |
+| --- | --- | --- |
+| `lisinopril_10mg` | 314076 | Lisinopril 10 MG Oral Tablet |
+| `metoprolol_50mg` | 866514 | Metoprolol Succinate 50 MG Extended Release Oral Tablet |
+| `atorvastatin_20mg` | 617312 | Atorvastatin 20 MG Oral Tablet |
+
+#### Diabetes​
+
+| Template | RxNorm Code | Display |
+| --- | --- | --- |
+| `metformin_500mg` | 860975 | Metformin Hydrochloride 500 MG Oral Tablet |
+| `insulin_glargine` | 274783 | Insulin Glargine 100 UNT/ML Injectable Solution |
+
+#### Respiratory​
+
+| Template | RxNorm Code | Display |
+| --- | --- | --- |
+| `albuterol_inhaler` | 329498 | Albuterol 0.083 MG/ACTUAT Metered Dose Inhaler |
+| `prednisone_20mg` | 312615 | Prednisone 20 MG Oral Tablet |
+
+#### Mental Health​
+
+| Template | RxNorm Code | Display |
+| --- | --- | --- |
+| `sertraline_50mg` | 312940 | Sertraline 50 MG Oral Tablet |
+| `lorazepam_1mg` | 197589 | Lorazepam 1 MG Oral Tablet |
+
+#### Gastrointestinal​
+
+| Template | RxNorm Code | Display |
+| --- | --- | --- |
+| `omeprazole_20mg` | 312681 | Omeprazole 20 MG Delayed Release Oral Capsule |
+| `ondansetron_4mg` | 312836 | Ondansetron 4 MG Oral Tablet |
+
+#### Allergy​
+
+| Template | RxNorm Code | Display |
+| --- | --- | --- |
+| `cetirizine_10mg` | 1014678 | Cetirizine Hydrochloride 10 MG Oral Tablet |
+| `diphenhydramine_25mg` | 1014599 | Diphenhydramine Hydrochloride 25 MG Oral Capsule |
+
+### Example MedicationRequest​
+
+ "resourceType": "MedicationRequest", 
+
+ "status": "active", 
+
+ "intent": "order", 
+
+ "medicationCodeableConcept": { 
+
+ "system": "http://www.nlm.nih.gov/research/umls/rxnorm", 
+
+ "code": "308182", 
+
+ "display": "Amoxicillin 500 MG Oral Capsule" 
+
+ "reference": "Patient/patient-123" 
+
+ "authoredOn": "2024-01-15T10:30:00Z", 
+
+ "requester": { 
+
+ "reference": "Practitioner/practitioner-456", 
+
+ "display": "Dr. Jane Smith" 
+
+ "dosageInstruction": [ 
+
+ "sequence": 1, 
+
+ "text": "Take 1 capsule (500mg) by mouth three times a day for 7 days", 
+
+ "timing": { 
+
+ "repeat": { 
+
+ "frequency": 3, 
+
+ "period": 1, 
+
+ "periodUnit": "d", 
+
+ "boundsDuration": { 
+
+ "value": 7, 
+
+ "unit": "days", 
+
+ "system": "http://unitsofmeasure.org", 
+
+ "code": "d" 
+
+ } 
+
+ } 
+
+ "doseAndRate": [ 
+
+ { 
+
+ "doseQuantity": { 
+
+ "value": 500, 
+
+ "unit": "mg", 
+
+ "system": "http://unitsofmeasure.org", 
+
+ "code": "mg" 
+
+ } 
+
+ } 
+
+ ] 
+
+ } 
+
+ ] 
+
+### Search Parameters​
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `patient` | reference | Filter by patient |
+| `status` | token | Filter by status |
+| `_sort` | string | Sort order |
+| `_count` | number | Maximum results |
+
+## Appointment Resource​
+
+Appointments represent scheduled healthcare visits.
+
+### Required Fields​
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `resourceType` | string | Must be "Appointment" |
+| `status` | code | proposed | pending | booked | arrived | fulfilled | cancelled | noshow | entered-in-error | checked-in | waitlist |
+| `participant` | BackboneElement[] | Appointment participants |
+| `start` | instant | Start datetime (ISO 8601) |
+| `end` | instant | End datetime (ISO 8601) |
+
+### Optional Fields​
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `appointmentType` | CodeableConcept | Type of appointment (e.g., CONSULT) |
+| `description` | string | Reason for appointment |
+| `serviceType` | CodeableConcept[] | Service being scheduled |
+
+### Example Appointment​
+
+{ 
+
+ "resourceType": "Appointment", 
+
+ "status": "booked", 
+
+ "appointmentType": { 
+
+ "coding": [ 
+
+ "system": "http://terminology.hl7.org/CodeSystem/v2-0276", 
+
+ "code": "CONSULT", 
+
+ "display": "Consultation" 
+
+ } 
+
+ "description": "Follow-up consultation", 
+
+ "start": "2024-01-20T09:00:00Z", 
+
+ "end": "2024-01-20T09:30:00Z", 
+
+ "participant": [ 
+
+ "actor": { 
+
+ "reference": "Patient/patient-123", 
+
+ "display": "John Smith" 
+
+ "reference": "Practitioner/practitioner-456", 
+
+ "display": "Dr. Jane Smith" 
+
+ "actor": { 
+
+ "reference": "Location/location-city-center", 
+
+ "display": "City Center Clinic" 
+
+ "status": "accepted" 
+
+### Search Parameters​
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `patient` | reference | Filter by patient |
+| `status` | token | Filter by status |
+| `date` | date | Filter by date |
+| `actor` | reference | Filter by participant |
+| `_sort` | string | Sort order (use `-start` for most recent) |
+
+## Practitioner Resource​
+
+Practitioners represent healthcare providers.
+
+### Fields Used​
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | string | Practitioner ID |
+| `name` | HumanName[] | Provider name |
+| `qualification` | BackboneElement[] | Specialty/qualifications |
+
+### Example Practitioner​
+
+ "resourceType": "Practitioner", 
+
+ "id": "practitioner-456", 
+
+ "name": [ 
+
+ "family": "Smith", 
+
+ "given": ["Jane"], 
+
+ "prefix": ["Dr."] 
+
+ "qualification": [ 
+
+ "code": { 
+
+ "coding": [ 
+
+ "system": "http://snomed.info/sct", 
+
+ "code": "394802001", 
+
+ "display": "General medicine" 
+
+### Search Parameters​
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `name:contains` | string | Search by name |
+| `specialty:text` | string | Search by specialty |
+| `_count` | number | Maximum results |
+| `_sort` | string | Sort order (default: name) |
+
+RelatedPersons represent family members or caregivers linked to patients. HealthPass uses a bidirectional linking pattern that requires two RelatedPerson resources to fully represent a parent-child relationship.
+
+### Bidirectional Linking Pattern​
+
+To enable navigation in both directions (parent → children AND child → parent), two RelatedPerson resources are created for each relationship:
+
+┌─────────────────────┐ ┌─────────────────────┐ 
+
+│ Patient (Parent) │ │ Patient (Child) │ 
+
+│ id: parent-123 │ │ id: child-456 │ 
+
+└─────────────────────┘ └─────────────────────┘ 
+
+ │ │ 
+
+ │ RelatedPerson #1 │ RelatedPerson #2 
+
+ │ (attached to parent) │ (attached to child) 
+
+ ▼ ▼ 
+
+┌─────────────────────────────┐ ┌─────────────────────────────┐ 
+
+│ RelatedPerson │ │ RelatedPerson │ 
+
+│ patient: Patient/parent-123 │ │ patient: Patient/child-456 │ 
+
+│ relationship: CHILD │ │ relationship: PRN (parent) │ 
+
+│ identifier: child-456 │ │ identifier: parent-123 │ 
+
+└─────────────────────────────┘ └─────────────────────────────┘ 
+
+### Why Two Resources?​
+
+| Use Case | Search Query | RelatedPerson Used |
+| --- | --- | --- |
+| Find all children of a parent | `patient=Patient/parent-123&relationship=CHILD` | #1 (attached to parent) |
+| Find the parent of a child | `patient=Patient/child-456&relationship=PRN` | #2 (attached to child) |
+
+The `identifier` field stores the other patient's ID, enabling the system to fetch the related Patient resource after finding the RelatedPerson.
+
+### Required Fields​
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `resourceType` | string | Must be "RelatedPerson" |
+| `patient` | Reference(Patient) | The patient this resource is "attached to" (the search anchor) |
+| `relationship` | CodeableConcept[] | Type of relationship from this patient's perspective |
+
+### Optional Fields​
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `name` | HumanName[] | Name of the related person |
+| `identifier` | Identifier[] | Critical: Stores the other patient's ID for cross-reference |
+
+### Relationship Codes​
+
+| Code | System | Display | Use |
+| --- | --- | --- | --- |
+| `CHILD` | http://terminology.hl7.org/CodeSystem/v3-RoleCode | Child | When attached to parent, points to child |
+| `PRN` | http://terminology.hl7.org/CodeSystem/v3-RoleCode | Parent | When attached to child, points to parent |
+
+### Identifier System​
+
+The identifier storing the linked patient ID uses:
+
+| Field | Value |
+| --- | --- |
+| `system` | `http://example.org/fhir/related-person-patient` |
+| `value` | The FHIR Patient ID of the linked person |
+
+### Example: Complete Parent-Child Relationship​
+
+Given two patients:
+
+- Parent: John Smith (Patient/parent-123)
+- Child: Junior Smith (Patient/child-456)
+
+#### RelatedPerson #1: Attached to Parent (enables "find my children")​
+
+ "patient": { 
+
+ "reference": "Patient/parent-123", 
+
+ "display": "John Smith" 
+
+ "relationship": [ 
+
+ "coding": [ 
+
+ "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode", 
+
+ "code": "CHILD", 
+
+ "display": "Child" 
+
+ "family": "Smith", 
+
+ "given": ["Junior"] 
+
+ "identifier": [ 
+
+ { 
+
+ "system": "http://example.org/fhir/related-person-patient", 
+
+ "value": "child-456" 
+
+ } 
+
+ ] 
+
+#### RelatedPerson #2: Attached to Child (enables "find my parent")​
+
+ "resourceType": "RelatedPerson", 
+
+ "patient": { 
+
+ "reference": "Patient/child-456", 
+
+ "display": "Junior Smith" 
+
+ }, 
+
+ "relationship": [ 
+
+ { 
+
+ "coding": [ 
+
+ { 
+
+ "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode", 
+
+ "code": "PRN", 
+
+ "display": "Parent" 
+
+ } 
+
+ "name": [ 
+
+ "family": "Smith", 
+
+ "given": ["John"] 
+
+ } 
+
+ "identifier": [ 
+
+ { 
+
+ "system": "http://example.org/fhir/related-person-patient", 
+
+ "value": "parent-123" 
+
+ } 
+
+ ] 
+
+### Search Parameters​
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `patient` | reference | Filter by the patient this RelatedPerson is attached to |
+| `relationship` | token | Filter by relationship code (CHILD, PRN, etc.) |
+| `_count` | number | Maximum results |
+
+### API Operations​
+
+| Operation | Description |
+| --- | --- |
+| `get_children(patient_id)` | Searches `patient=Patient/{id}&relationship=CHILD`, extracts child IDs from identifier |
+| `get_parent(patient_id)` | Searches `patient=Patient/{id}&relationship=PRN`, extracts parent ID from identifier |
+| `get_related_persons(patient_id)` | Returns all RelatedPerson resources attached to a patient |
+| `create_related_person(spec)` | Creates a new RelatedPerson resource |
+
+### Implementation Notes​
+
+1. Creating a relationship: When linking a parent and child, create BOTH RelatedPerson resources in a single transaction to ensure consistency.
+2. Deleting a relationship: Remove BOTH RelatedPerson resources to fully unlink.
+3. The `patient` field is the "anchor" - it determines which patient this resource appears under when searching.
+4. The `identifier` field stores the cross-reference to the OTHER patient, enabling bidirectional traversal.
+
+## DiagnosticReport Resource​
+
+DiagnosticReports represent lab results and diagnostic test reports.
+
+### Fields Used​
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `code` | CodeableConcept | Test type |
+| `subject` | Reference(Patient) | Patient reference |
+| `effectiveDateTime` | dateTime | When test was performed |
+| `result` | Reference(Observation)[] | Observation results |
+
+### Search Parameters​
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `subject` | reference | Filter by patient |
+| `_sort` | string | Sort order (use `-date` for most recent) |
+| `_count` | number | Maximum results |
+
+### Primary Coding Systems​
+
+| System | URL | Use |
+| --- | --- | --- |
+| LOINC | `http://loinc.org` | Observations (40+ codes) |
+| SNOMED CT | `http://snomed.info/sct` | Conditions, symptoms |
+| RxNorm | `http://www.nlm.nih.gov/research/umls/rxnorm` | Medications (23 codes) |
+| ICD-10-CM | `http://hl7.org/fhir/sid/icd-10-cm` | Condition diagnoses |
+
+### HL7 Terminology Systems​
+
+| System | URL |
+| --- | --- |
+| Condition Clinical Status | `http://terminology.hl7.org/CodeSystem/condition-clinical` |
+| Condition Verification Status | `http://terminology.hl7.org/CodeSystem/condition-ver-status` |
+| MedicationRequest Status | `http://hl7.org/fhir/CodeSystem/medicationrequest-status` |
+| MedicationRequest Intent | `http://hl7.org/fhir/CodeSystem/medicationrequest-intent` |
+| Observation Category | `http://terminology.hl7.org/CodeSystem/observation-category` |
+| Units of Measure | `http://unitsofmeasure.org` |
+
+### Minimum Required Operations​
+
+| Resource | Create | Read | Search | Update |
+| --- | --- | --- | --- | --- |
+| Patient | Yes | Yes | Yes | Yes |
+| Observation | Yes | Yes | Yes | No |
+| Condition | Yes | Yes | Yes | No |
+| MedicationRequest | Yes | Yes | Yes | No |
+| Appointment | Yes | Yes | Yes | Yes |
+| Practitioner | No | Yes | Yes | No |
+| RelatedPerson | Yes | Yes | Yes | No |
+| DiagnosticReport | No | Yes | Yes | No |
+
+### Bundle/Transaction Support​
+
+The system uses FHIR Bundle transactions for creating multiple resources atomically:
+
+ "resourceType": "Bundle", 
+
+ "type": "transaction", 
+
+ "entry": [ 
+
+ "resource": { ... }, 
+
+ "request": { 
+
+ "method": "POST", 
+
+ "url": "Observation" 
+
+### Conditional Create (Deduplication)​
+
+Patient resources are created with `If-None-Exist` headers to prevent duplicates:
+
+If-None-Exist: telecom=+27821234567 
+
+## Data Flow Summary​
+
+┌─────────────────┐ ┌──────────────────┐ ┌─────────────────┐ 
+
+│ WhatsApp │────▶│ HealthPass │────▶│ FHIR Server │ 
+
+│ User Input │ │ Platform │ │ (EMR API) │ 
+
+└─────────────────┘ └──────────────────┘ └─────────────────┘ 
+
+ ┌──────────────────────┐ 
+
+ │ Resources Created: │ 
+
+ │ - Patient │ 
+
+ │ - Observations │ 
+
+ │ - Conditions │ 
+
+ │ - MedicationRequests│ 
+
+ │ - Appointments │ 
+
+### Patient Registration Flow​
+
+1. User provides demographics via WhatsApp
+2. HealthPass creates Patient resource with conditional create (telecom-based deduplication)
+3. Patient ID stored in contact fields for future reference
+4. Demographic Observations created (sex at birth, ethnicity, etc.)
+
+### Clinical Encounter Flow​
+
+1. User books appointment → Appointment resource created
+2. User reports symptoms → Observation resources created (self-reported)
+3. Provider makes diagnosis → Condition resource created
+4. Provider prescribes medication → MedicationRequest resource created
+
+### Health Data Access Flow​
+
+1. User requests health records via HealthPass
+2. System queries Observations, Conditions, MedicationRequests for patient
+3. Most recent record per type is returned (deduplication)
+4. Data displayed in WhatsApp template or generates shareable PIN
+
+## Contact Information​
+
+For integration questions, please contact the HealthPass team.
+
+- Table of Contents
+- Overview
+
+- Supported Backend Types
+- Patient Resource
+
+- Required Fields
+- Optional Fields
+- Example Patient Resource
+- Search Parameters
+- Observation Resource
+
+- Required Fields
+- Value Fields (one required)
+- Observation Categories
+- Reporter Method Extension
+- Example Observation (Vital Sign)
+- Example Observation (Blood Pressure Panel)
+- Search Parameters
+- Condition Resource
+
+- Required Fields
+- Optional Fields
+- Condition Templates
+- Example Condition
+- Search Parameters
+- MedicationRequest Resource
+
+- Required Fields
+- Optional Fields
+- Medication Templates (RxNorm)
+- Example MedicationRequest
+- Search Parameters
+- Appointment Resource
+
+- Required Fields
+- Optional Fields
+- Example Appointment
+- Search Parameters
+- Practitioner Resource
+
+- Fields Used
+- Example Practitioner
+- Search Parameters
+- RelatedPerson Resource
+
+- Bidirectional Linking Pattern
+- Why Two Resources?
+- Required Fields
+- Optional Fields
+- Relationship Codes
+- Identifier System
+- Example: Complete Parent-Child Relationship
+- Search Parameters
+- API Operations
+- Implementation Notes
+- DiagnosticReport Resource
+
+- Fields Used
+- Search Parameters
+- Coding Systems Reference
+
+- Primary Coding Systems
+- HL7 Terminology Systems
+- API Operations Required
+
+- Minimum Required Operations
+- Bundle/Transaction Support
+- Conditional Create (Deduplication)
+- Data Flow Summary
+
+- Patient Registration Flow
+- Clinical Encounter Flow
+- Health Data Access Flow
+- Contact Information

@@ -1,0 +1,15 @@
+---
+pid: 10528
+cwd: "/Users/stark/Desktop/work/RN/circleapp"
+command: "# Capture Simulator window via screencapture -l\nWIN_ID=$(osascript -e 'tell application \"Simulator\" to id of window 1' 2>/dev/null || true)\necho \"app_window_id=$WIN_ID\"\n# CGWindow id from System Events is not the same. Use screencapture interactive list\n# Fallback: capture rectangle from AppleScript bounds\nosascript <<'APPLESCRIPT'\ntell application \"Simulator\" to activate\ndelay 0.2\ntell application \"System Events\"\n  tell process \"Simulator\"\n    set w to window 1\n    set p to position of w\n    set s to size of w\n    set the clipboard to ((item 1 of p as text) & \" \" & (item 2 of p as text) & \" \" & (item 1 of s as text) & \" \" & (item 2 of s as text))\n  end tell\nend tell\nAPPLESCRIPT\nBOUNDS=$(pbpaste)\necho \"bounds=$BOUNDS\"\nread X Y W H <<EOF\n$BOUNDS\nEOF\nART=\"/Users/stark/Desktop/work/RN/circleapp/.tmp-verify-tech9069\"\nscreencapture -x -R$X,$Y,$W,$H \"$ART/sim-window.png\"\necho captured\nfile \"$ART/sim-window.png\""
+title: "Capture Simulator window to map chrome insets"
+status: failed   
+started_at: 2026-09-20T10:03:07.894Z
+running_for_ms: 50286    
+---
+
+---
+exit_code: unknown
+elapsed_ms: 50286
+ended_at: 2026-09-20T10:03:58.180Z
+---

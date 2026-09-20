@@ -1,0 +1,15 @@
+---
+pid: 14612
+cwd: "/Users/stark/Desktop/work/RN/circleapp"
+command: "osascript <<'APPLESCRIPT'\ntell application \"Simulator\" to activate\ndelay 0.2\ntell application \"System Events\"\n  tell process \"Simulator\"\n    set w to window 1\n    set uiElems to entire contents of w\n    set out to \"\"\n    set i to 0\n    repeat with e in uiElems\n      set i to i + 1\n      if i > 80 then exit repeat\n      try\n        set r to role of e\n        set n to \"\"\n        try\n          set n to name of e\n        end try\n        set d to \"\"\n        try\n          set d to description of e\n        end try\n        set out to out & r & \"|\" & n & \"|\" & d & linefeed\n      end try\n    end repeat\n  end tell\nend tell\nset the clipboard to out\nreturn out\nAPPLESCRIPT"
+title: "Dump Simulator accessibility tree for tap targets"
+status: failed   
+started_at: 2026-09-20T10:06:35.885Z
+running_for_ms: 41895    
+---
+
+---
+exit_code: unknown
+elapsed_ms: 41895
+ended_at: 2026-09-20T10:07:17.780Z
+---

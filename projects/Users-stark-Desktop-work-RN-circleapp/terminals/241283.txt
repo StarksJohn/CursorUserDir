@@ -1,0 +1,9 @@
+---
+pid: 96393
+cwd: "/Users/stark/Desktop/work/RN/circleapp"
+command: "mkdir -p /Users/stark/Desktop/work/RN/circleapp/.tmp-verify-tech9070\npython3 - <<'PY'\nfrom http.server import BaseHTTPRequestHandler, ThreadingHTTPServer\nimport json, os, datetime\npath = \"/Users/stark/Desktop/work/RN/circleapp/.tmp-verify-tech9070/api-errors.jsonl\"\nos.makedirs(os.path.dirname(path), exist_ok=True)\nclass H(BaseHTTPRequestHandler):\n    def log_message(self, fmt, *args):\n        return\n    def do_POST(self):\n        n = int(self.headers.get(\"Content-Length\") or 0)\n        raw = self.rfile.read(n)\n        rec = {\n            \"receivedAt\": datetime.datetime.utcnow().isoformat()+\"Z\",\n            \"path\": self.path,\n            \"body\": None,\n            \"raw\": raw.decode(\"utf-8\", \"replace\"),\n        }\n        try:\n            rec[\"body\"] = json.loads(raw.decode(\"utf-8\"))\n        except Exception:\n            pass\n        with open(path, \"a\") as f:\n            f.write(json.dumps(rec, ensure_ascii=False)+\"\\n\")\n        self.send_response(204)\n        self.end_headers()\n    def do_GET(self):\n        self.send_response(200)\n        self.end_headers()\n        self.wfile.write(b\"ok\")\nThreadingHTTPServer((\"127.0.0.1\", 18770), H).serve_forever()\nPY"
+title: "Start local API error collector on 18770"
+status: running  
+started_at: 2026-09-20T11:13:03.615Z
+running_for_ms: 1690360  
+---
