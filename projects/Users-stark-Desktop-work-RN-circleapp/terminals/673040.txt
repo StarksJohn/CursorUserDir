@@ -1,0 +1,57 @@
+---
+pid: 3349
+cwd: "/Users/stark/Desktop/work/RN/circleapp"
+command: "xcrun devicectl list devices 2>/dev/null | rg -n \"彭燕|A2661047|available|connected\" || xcrun devicectl list devices\n# restart longer crash watcher\nWATCH=/tmp/watch-ipad-circle-crashes.sh\ncat > \"$WATCH\" <<'EOF'\n#!/bin/bash\nDEST=/tmp/ipad-crash-logs-pengyan\nHIT=/tmp/ipad-circle-crash-hit.txt\n: > \"$HIT\"\nfor i in $(seq 1 120); do\n  rm -rf \"$DEST\"\n  mkdir -p \"$DEST\"\n  if xcrun devicectl device copy from \\\n      --device \"A2661047-8A3C-574A-A5D5-D5EDA604D976\" \\\n      --domain-type systemCrashLogs \\\n      --source \"/\" \\\n      --destination \"$DEST\" \\\n      --timeout 40 >/tmp/ipad-crash-copy-watch.log 2>&1; then\n    found=$(find \"$DEST\" -type f \\( -iname '*ircle*' -o -iname '*Circle*' -o -iname '*cdv*' -o -iname '*CDV*' \\) -print)\n    if [ -z \"$found\" ]; then\n      found=$(rg -l \"com.healshealthcare.circlemedical\" \"$DEST\" 2>/dev/null | head)\n    fi\n    ts=$(date '+%H:%M:%S')\n    if [ -n \"$found\" ]; then\n      echo \"$ts HIT\"\n      echo \"$found\" | tee \"$HIT\"\n      exit 0\n    fi\n    echo \"$ts no Circle crash yet\"\n  else\n    echo \"$(date '+%H:%M:%S') copy failed\"\n    tail -3 /tmp/ipad-crash-copy-watch.log\n  fi\n  sleep 15\ndone\nexit 2\nEOF\nchmod +x \"$WATCH\"\nbash \"$WATCH\"\n"
+title: "Restart longer iPad Circle crash-log watcher"
+status: succeeded
+started_at: 2026-09-19T23:58:34.587Z
+running_for_ms: 695467   
+---
+3:彭燕的iPad   pengyandeiPad.coredevice.local   A2661047-8A3C-574A-A5D5-D5EDA604D976   available (paired)   iPad Air (3rd generation) (iPad11,3)
+07:58:38 no Circle crash yet
+07:58:56 no Circle crash yet
+07:59:13 no Circle crash yet
+07:59:30 no Circle crash yet
+07:59:48 no Circle crash yet
+08:00:06 no Circle crash yet
+08:00:24 no Circle crash yet
+08:00:41 no Circle crash yet
+08:00:58 no Circle crash yet
+08:01:16 no Circle crash yet
+08:01:34 no Circle crash yet
+08:01:56 no Circle crash yet
+08:02:13 no Circle crash yet
+08:02:31 no Circle crash yet
+08:02:49 no Circle crash yet
+08:03:06 no Circle crash yet
+08:03:24 no Circle crash yet
+08:03:41 no Circle crash yet
+08:03:59 no Circle crash yet
+08:04:17 no Circle crash yet
+08:04:35 no Circle crash yet
+08:04:52 no Circle crash yet
+08:05:10 no Circle crash yet
+08:05:27 no Circle crash yet
+08:05:45 no Circle crash yet
+08:06:02 no Circle crash yet
+08:06:20 no Circle crash yet
+08:06:39 no Circle crash yet
+08:06:56 no Circle crash yet
+08:07:13 no Circle crash yet
+08:07:30 no Circle crash yet
+08:07:49 no Circle crash yet
+08:08:08 no Circle crash yet
+08:08:26 no Circle crash yet
+08:08:43 no Circle crash yet
+08:09:01 no Circle crash yet
+08:09:18 no Circle crash yet
+08:09:35 no Circle crash yet
+08:09:52 no Circle crash yet
+08:10:09 HIT
+/tmp/ipad-crash-logs-pengyan/Circle-2026-09-20-081010.ips
+
+---
+exit_code: 0
+elapsed_ms: 695467
+ended_at: 2026-09-20T00:10:10.054Z
+---

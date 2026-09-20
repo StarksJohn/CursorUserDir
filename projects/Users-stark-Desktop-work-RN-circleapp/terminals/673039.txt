@@ -1,0 +1,55 @@
+---
+pid: 2646
+cwd: "/Users/stark/Desktop/work/RN/circleapp"
+command: "# background crash-log watcher for Circle/CDV on 彭燕's iPad\nWATCH=/tmp/watch-ipad-circle-crashes.sh\ncat > \"$WATCH\" <<'EOF'\n#!/bin/bash\nDEST=/tmp/ipad-crash-logs-pengyan\nHIT=/tmp/ipad-circle-crash-hit.txt\n: > \"$HIT\"\nfor i in $(seq 1 40); do\n  rm -rf \"$DEST\"\n  mkdir -p \"$DEST\"\n  if xcrun devicectl device copy from \\\n      --device \"A2661047-8A3C-574A-A5D5-D5EDA604D976\" \\\n      --domain-type systemCrashLogs \\\n      --source \"/\" \\\n      --destination \"$DEST\" \\\n      --timeout 40 >/tmp/ipad-crash-copy-watch.log 2>&1; then\n    found=$(find \"$DEST\" -type f \\( -iname '*ircle*' -o -iname '*Circle*' \\) -print)\n    if [ -z \"$found\" ]; then\n      found=$(rg -l \"com.healshealthcare.circlemedical\" \"$DEST\" 2>/dev/null | head)\n    fi\n    ts=$(date '+%H:%M:%S')\n    if [ -n \"$found\" ]; then\n      echo \"$ts HIT\"\n      echo \"$found\" | tee \"$HIT\"\n      exit 0\n    fi\n    echo \"$ts no Circle crash yet\"\n  else\n    echo \"$(date '+%H:%M:%S') copy failed\"\n    tail -3 /tmp/ipad-crash-copy-watch.log\n  fi\n  sleep 15\ndone\nexit 2\nEOF\nchmod +x \"$WATCH\"\nbash \"$WATCH\"\n"
+title: "Poll iPad crash logs until Circle crash appears"
+status: failed   
+started_at: 2026-09-19T23:46:33.504Z
+running_for_ms: 693346   
+---
+07:46:38 no Circle crash yet
+07:46:55 no Circle crash yet
+07:47:12 no Circle crash yet
+07:47:30 no Circle crash yet
+07:47:47 no Circle crash yet
+07:48:04 no Circle crash yet
+07:48:22 no Circle crash yet
+07:48:39 no Circle crash yet
+07:48:56 no Circle crash yet
+07:49:14 no Circle crash yet
+07:49:31 no Circle crash yet
+07:49:48 no Circle crash yet
+07:50:05 no Circle crash yet
+07:50:21 no Circle crash yet
+07:50:38 no Circle crash yet
+07:50:55 no Circle crash yet
+07:51:13 no Circle crash yet
+07:51:30 no Circle crash yet
+07:51:48 no Circle crash yet
+07:52:05 no Circle crash yet
+07:52:23 no Circle crash yet
+07:52:40 no Circle crash yet
+07:52:57 no Circle crash yet
+07:53:15 no Circle crash yet
+07:53:32 no Circle crash yet
+07:53:49 no Circle crash yet
+07:54:06 no Circle crash yet
+07:54:23 no Circle crash yet
+07:54:40 no Circle crash yet
+07:54:57 no Circle crash yet
+07:55:15 no Circle crash yet
+07:55:33 no Circle crash yet
+07:55:50 no Circle crash yet
+07:56:08 no Circle crash yet
+07:56:25 no Circle crash yet
+07:56:42 no Circle crash yet
+07:56:59 no Circle crash yet
+07:57:17 no Circle crash yet
+07:57:34 no Circle crash yet
+07:57:51 no Circle crash yet
+
+---
+exit_code: 2
+elapsed_ms: 693346
+ended_at: 2026-09-19T23:58:06.850Z
+---
