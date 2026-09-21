@@ -99,6 +99,7 @@ description: >-
 ## 当前活跃需求(不要修改这部分的子内容)
 <!-- - /code-review :  对当前项目未 commit 的文件进行 code review , 目标 `1.2.3`, 直接解决发现的问题, 直到没有问题;再帮我用英文尽可能详细的总结下当前项目里所有未 commit 文件的 git commit message , 然后帮我 commit+push  -->
 <!-- - /code-review 目标 `1.2.3`, PR ``, commit `` -->
+<!-- - 我已经把 `1.0.3` 分支合并到了当前分支,你检查下有没有问题,能否push -->
 <!-- - 你重新执行 '/Users/stark/.cursor/skills/ask-heals-app-rn/SKILL.md'里的 130 行的任务 -->
 <!-- - 我以后如果在 cursor 侧执行 `heals-app-rn`项目的相关任务, 是不是只需要把通用和可重复的任务写到`/Users/stark/.cursor/skills/ask-heals-app-rn/SKILL.md`的 `当前活跃需求`这部分里,然后在 cursor 的 新 chat 里一开始执行一次 `/ask-heals-app-rn`,然后等第一个任务执行完后,如果有新任务,则直接在 chat 里输入具体任务; 目前这是不是最完美最高效最正确的使用 cursor 工作流来执行某个项目任务的最优流程? -->
 <!-- - `xx` 页面的列表使用我自定义的 "react-native-advanced-flatlist"库的最新版本来布局,仓库源码在 `/Users/stark/Desktop/work/RN/react-native-advanced-flatlist` -->
