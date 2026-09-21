@@ -1,0 +1,21 @@
+---
+pid: 4201
+cwd: "/Users/stark/Desktop/work/RN/circleapp"
+command: "export GRADLE_USER_HOME=/Users/stark/.gradle\nexport ANDROID_SERIAL=4ae24c72\nANDROID_SERIAL=4ae24c72 GRADLE_USER_HOME=/Users/stark/.gradle npm run android:dev -- --device 4ae24c72"
+title: "Retry android:dev with real Gradle cache"
+status: succeeded
+started_at: 2026-09-21T02:08:48.524Z
+running_for_ms: 4817     
+---
+
+> circleapp@0.0.1 android:dev
+> ENVFILE=.env.development react-native  run-android --mode=devDebug --appIdSuffix=dev --device 4ae24c72
+
+info A dev server is already running for this project on port 8081.
+error No Android device or emulator connected.
+
+---
+exit_code: 0
+elapsed_ms: 4816
+ended_at: 2026-09-21T02:08:53.340Z
+---
