@@ -1,0 +1,674 @@
+Element matching one of ["comment","AAB","aab","versionCode","16 KB","Play"] found.
+## Latest page snapshot
+uid=29_0 RootWebArea "[16_KB_memory_page_sizes] app does not support the 16 KB memory page sizes | TECH-7196" url="https://app.clickup.com/t/8553538/TECH-7196?comment=90180212761971"
+  uid=29_1 button "Heals, , Heals" expandable haspopup="menu"
+  uid=29_2 button
+  uid=29_3 button "Search ⌘ K"
+  uid=29_4 button "Create task"
+  uid=29_5 button "My Work"
+  uid=29_6 button "Notepad"
+  uid=29_7 button "Dropdown menu" expandable
+    uid=29_8 button "Record a Clip"
+  uid=29_9 button "Talk to Text" expandable
+  uid=29_10 button "Create Reminder"
+  uid=29_11 button "Create Doc"
+  uid=29_12 button "Dropdown menu" expandable
+  uid=29_13 navigation "Sidebar"
+    uid=29_14 link "Home" url="https://app.clickup.com/8553538/inbox"
+      uid=29_15 StaticText "Home"
+      uid=29_16 StaticText "99+"
+    uid=29_17 link "Spaces" url="https://app.clickup.com/8553538/v/s/12726361"
+      uid=29_18 StaticText "Spaces"
+    uid=29_19 link "Planner 21" url="https://app.clickup.com/8553538/calendar"
+      uid=29_20 StaticText "Planner"
+      uid=29_21 StaticText "21"
+    uid=29_22 link "Teams" url="https://app.clickup.com/8553538/teams-pulse"
+      uid=29_23 StaticText "Teams"
+    uid=29_24 button "Dropdown menu" expandable
+    uid=29_25 button "Invite"
+  uid=29_26 main
+    uid=29_27 button "1 Priority"
+  uid=29_28 status atomic live="polite" relevant="additions text"
+  uid=29_29 button disableable disabled
+  uid=29_30 button disableable disabled
+  uid=29_31 link "Technology, , Technology" url="https://app.clickup.com/8553538/v/s/12726361/1"
+    uid=29_32 StaticText "Technology"
+  uid=29_33 StaticText "/"
+  uid=29_34 link "CircleApp" url="https://app.clickup.com/8553538/v/f/90185704600/12726361"
+    uid=29_35 StaticText "CircleApp"
+  uid=29_36 StaticText "/"
+  uid=29_37 link "1.0.2" url="https://app.clickup.com/8553538/v/li/901808626446"
+    uid=29_38 StaticText "1.0.2"
+  uid=29_39 button "Add to another List" expandable
+  uid=29_40 button "Move task" expandable
+  uid=29_41 generic "Created by Strark2024 on Oct 16 2025 at 10:39 am"
+    uid=29_42 StaticText "Created Oct 16 2025"
+  uid=29_43 button "Share"
+  uid=29_44 button "Dropdown menu" expandable
+    uid=29_45 button "Task settings"
+  uid=29_46 button "Favorite" expandable
+  uid=29_47 button "Switch layout" expandable
+  uid=29_48 button "Close window"
+  uid=29_49 button "Dropdown menu" expandable
+  uid=29_50 button "Copy Task ID TECH-7196"
+  uid=29_51 button "Attachments "
+  uid=29_52 button "Add Cover"
+  uid=29_53 heading "[16_KB_memory_page_sizes] app does not support the 16 KB memory page sizes" level="1"
+  uid=29_54 textbox "Edit task name" multiline required value="[16_KB_memory_page_sizes] app does not support the 16 KB memory page sizes"
+  uid=29_55 StaticText "Status"
+  uid=29_56 button "Change status" expandable
+    uid=29_57 button "Next status [GO LIVE]"
+    uid=29_58 button "Mark as Closed"
+  uid=29_59 StaticText "Assignees"
+  uid=29_60 StaticText "Strark2024"
+  uid=29_61 list "Assigned teams"
+  uid=29_62 button "Open assignees dropdown" expandable
+  uid=29_63 StaticText "Dates"
+  uid=29_64 button "Start Due" expandable
+    uid=29_65 button "Start"
+    uid=29_66 button "Due"
+  uid=29_67 StaticText "Change start and due dates"
+  uid=29_68 StaticText "Priority"
+  uid=29_69 button "Empty" expandable
+  uid=29_70 StaticText "Time estimate"
+  uid=29_71 button "Empty" expandable haspopup="menu"
+  uid=29_72 StaticText "Sprint points"
+  uid=29_73 button "Empty" expandable haspopup="menu"
+  uid=29_74 StaticText "Track time"
+  uid=29_75 button "Start Dropdown menu"
+    uid=29_76 button "Dropdown menu" expandable
+  uid=29_77 StaticText "Tags"
+  uid=29_78 button "Empty" expandable
+  uid=29_79 button "Collapse empty fields"
+  uid=29_80 generic value="Support 16 KB page sizes | Compatibility | Android Developers
+developer.android.com/guide/practices/page-sizes
+you can use android studio - generate apk/aab then analyze the apk and look for .so 
+0x000 - 4kb - no ok
+0x100 - 16kb - ok
+
+
+Libraries that do not support 16 KB: 
+base/lib/arm64-v8a/libHealthyMonitor.so base/lib/arm64-v8a/libbloodsuger.so base/lib/arm64-v8a/libbodytemp.so base/lib/arm64-v8a/libc++_shared.so base/lib/arm64-v8a/libfbjni.so base/lib/arm64-v8a/libhermes.so base/lib/arm64-v8a/libhermestooling.so base/lib/arm64-v8a/libimagepipeline.so base/lib/arm64-v8a/libjsi.so base/lib/arm64-v8a/liblibox.so base/lib/arm64-v8a/libnative-filters.so base/lib/arm64-v8a/libnative-imagetranscoder.so base/lib/arm64-v8a/liboxygen.so base/lib/arm64-v8a/libpdfiumandroid.so base/lib/arm64-v8a/libreactnative.so base/lib/arm64-v8a/libreanimated.so base/lib/arm64-v8a/librnscreens.so base/lib/arm64-v8a/libworklets.so base/lib/x86_64/libHealthyMonitor.so base/lib/x86_64/libNskAlgo.so base/lib/x86_64/libbloodsuger.so base/lib/x86_64/libbodytemp.so base/lib/x86_64/libc++_shared.so base/lib/x86_64/libconceal.so base/lib/x86_64/libfbjni.so base/lib/x86_64/libhermes.so base/lib/x86_64/libhermestooling.so base/lib/x86_64/libimagepipeline.so base/lib/x86_64/libjsi.so base/lib/x86_64/liblibox.so base/lib/x86_64/libnative-filters.so base/lib/x86_64/libnative-imagetranscoder.so base/lib/x86_64/libneuroskybpi.so base/lib/x86_64/liboxygen.so base/lib/x86_64/libpdfiumandroid.so base/lib/x86_64/libreactnative.so base/lib/x86_64/libreanimated.so base/lib/x86_64/librnscreens.so base/lib/x86_64/libworklets.so"
+    uid=29_81 link "Support 16 KB page sizes | Compatibility | Android Developers Support 16 KB page sizes | Compatibility | Android Developers icon developer.android.com/guide/practices/page-sizes" url="https://developer.android.com/guide/practices/page-sizes"
+      uid=29_82 image "Support 16 KB page sizes | Compatibility | Android Developers" url="https://developer.android.com/static/images/social/android-developers.png"
+      uid=29_83 StaticText "Support 16 KB page sizes | Compatibility | Android Developers"
+      uid=29_84 image "icon" url="https://www.google.com/s2/favicons?domain=developer.android.com&sz=256"
+      uid=29_85 StaticText "developer.android.com/guide/practices/page-sizes"
+    uid=29_86 generic
+      uid=29_87 StaticText "you can use android studio - generate apk/aab then analyze the apk and look for .so "
+    uid=29_88 generic
+      uid=29_89 StaticText "0x000 - 4kb - no ok"
+    uid=29_90 generic
+      uid=29_91 StaticText "0x100 - 16kb - ok"
+    uid=29_92 generic
+      uid=29_93 LineBreak "
+"
+    uid=29_94 generic
+      uid=29_95 StaticText "Libraries that do not support 16 KB: "
+    uid=29_96 generic
+      uid=29_97 StaticText "base/lib/arm64-v8a/libHealthyMonitor.so base/lib/arm64-v8a/libbloodsuger.so base/lib/arm64-v8a/libbodytemp.so base/lib/arm64-v8a/libc++_shared.so base/lib/arm64-v8a/libfbjni.so base/lib/arm64-v8a/libhermes.so base/lib/arm64-v8a/libhermestooling.so base/lib/arm64-v8a/libimagepipeline.so base/lib/arm64-v8a/libjsi.so base/lib/arm64-v8a/liblibox.so base/lib/arm64-v8a/libnative-filters.so base/lib/arm64-v8a/libnative-imagetranscoder.so base/lib/arm64-v8a/liboxygen.so base/lib/arm64-v8a/libpdfiumandroid.so base/lib/arm64-v8a/libreactnative.so base/lib/arm64-v8a/libreanimated.so base/lib/arm64-v8a/librnscreens.so base/lib/arm64-v8a/libworklets.so base/lib/x86_64/libHealthyMonitor.so base/lib/x86_64/libNskAlgo.so base/lib/x86_64/libbloodsuger.so base/lib/x86_64/libbodytemp.so base/lib/x86_64/libc++_shared.so base/lib/x86_64/libconceal.so base/lib/x86_64/libfbjni.so base/lib/x86_64/libhermes.so base/lib/x86_64/libhermestooling.so base/lib/x86_64/libimagepipeline.so base/lib/x86_64/libjsi.so base/lib/x86_64/liblibox.so base/lib/x86_64/libnative-filters.so base/lib/x86_64/libnative-imagetranscoder.so base/lib/x86_64/libneuroskybpi.so base/lib/x86_64/liboxygen.so base/lib/x86_64/libpdfiumandroid.so base/lib/x86_64/libreactnative.so base/lib/x86_64/libreanimated.so base/lib/x86_64/librnscreens.so base/lib/x86_64/libworklets.so"
+  uid=29_98 button "Dropdown menu" expandable
+  uid=29_99 button "Expand"
+  uid=29_100 button "Dropdown menu" expandable
+  uid=29_101 button "Dropdown menu" expandable
+  uid=29_102 button "Dropdown menu" expandable
+  uid=29_103 button "Dropdown menu" expandable
+  uid=29_104 button "Dropdown menu" expandable
+  uid=29_105 button "Dropdown menu" expandable
+  uid=29_106 button "Dropdown menu" expandable
+  uid=29_107 button "Dropdown menu" expandable
+  uid=29_108 button "Dropdown menu" expandable
+  uid=29_109 button "Dropdown menu" expandable
+  uid=29_110 button "Expand Fields"
+    uid=29_111 button "Expand" expandable
+    uid=29_112 button "Fields" expandable
+  uid=29_113 button expandable
+  uid=29_114 button expandable
+  uid=29_115 button expandable
+  uid=29_116 button expandable
+  uid=29_117 StaticText "Add subtask"
+  uid=29_118 button "Dropdown menu" expandable
+  uid=29_119 StaticText "Create checklist"
+  uid=29_120 button "Collapse" expandable expanded
+  uid=29_121 button "Attachments" expandable expanded
+  uid=29_122 button "Drop files here or browse"
+  uid=29_123 link "局部截取_20260519_092103" url="https://t8553538.p.clickup-attachments.com/t8553538/1fbb23d3-fca8-45af-a0d1-9c266c4d06f9/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260519_092103.png"
+  uid=29_124 button "Open preview"
+  uid=29_125 button "Open attachment options for 局部截取_20260519_092103" expandable haspopup="menu"
+  uid=29_126 link " Custom field. :png file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/1fbb23d3-fca8-45af-a0d1-9c266c4d06f9/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260519_092103.png"
+  uid=29_127 StaticText "局部截取_20260519_092103"
+  uid=29_128 StaticText ".png"
+  uid=29_129 StaticText "May 19 at 9:21 am"
+  uid=29_130 StaticText "S"
+  uid=29_131 link "app-prod-release" url="https://t8553538.p.clickup-attachments.com/t8553538/94105410-ddb6-4d70-b0b1-a27c3e80f075/app-prod-release.aab"
+  uid=29_132 button "Open attachment options for app-prod-release" expandable haspopup="menu"
+  uid=29_133 link " Custom field. :aab file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/94105410-ddb6-4d70-b0b1-a27c3e80f075/app-prod-release.aab"
+  uid=29_134 StaticText "app-prod-release"
+  uid=29_135 StaticText ".aab"
+  uid=29_136 StaticText "May 19 at 9:21 am"
+  uid=29_137 StaticText "S"
+  uid=29_138 link "局部截取_20260511_192104" url="https://t8553538.p.clickup-attachments.com/t8553538/d0f41865-fadd-4962-93eb-46f9224478c3/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260511_192104.png"
+  uid=29_139 button "Open preview"
+  uid=29_140 button "Open attachment options for 局部截取_20260511_192104" expandable haspopup="menu"
+  uid=29_141 link " Custom field. :png file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/d0f41865-fadd-4962-93eb-46f9224478c3/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260511_192104.png"
+  uid=29_142 StaticText "局部截取_20260511_192104"
+  uid=29_143 StaticText ".png"
+  uid=29_144 StaticText "May 11 at 7:21 pm"
+  uid=29_145 StaticText "S"
+  uid=29_146 link "app-prod-release" url="https://t8553538.p.clickup-attachments.com/t8553538/a62c89cf-79fd-4e47-a933-aae3dc8823ce/app-prod-release.aab"
+  uid=29_147 button "Open attachment options for app-prod-release" expandable haspopup="menu"
+  uid=29_148 link " Custom field. :aab file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/a62c89cf-79fd-4e47-a933-aae3dc8823ce/app-prod-release.aab"
+  uid=29_149 StaticText "app-prod-release"
+  uid=29_150 StaticText ".aab"
+  uid=29_151 StaticText "Apr 22 at 3:34 pm"
+  uid=29_152 StaticText "S"
+  uid=29_153 link "局部截取_20260422_152239" url="https://t8553538.p.clickup-attachments.com/t8553538/a6b6c348-4f91-4691-8934-b2e42fdd8ac0/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260422_152239.png"
+  uid=29_154 button "Open preview"
+  uid=29_155 button "Open attachment options for 局部截取_20260422_152239" expandable haspopup="menu"
+  uid=29_156 link " Custom field. :png file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/a6b6c348-4f91-4691-8934-b2e42fdd8ac0/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260422_152239.png"
+  uid=29_157 StaticText "局部截取_20260422_152239"
+  uid=29_158 StaticText ".png"
+  uid=29_159 StaticText "Apr 22 at 3:22 pm"
+  uid=29_160 StaticText "S"
+  uid=29_161 link "e71fea8028e82c756d652abee4340c3a" url="https://t8553538.p.clickup-attachments.com/t8553538/35864be4-9e23-4715-a4ba-7280308de758/e71fea8028e82c756d652abee4340c3a.mp4"
+  uid=29_162 button "Open preview"
+  uid=29_163 button "Open attachment options for e71fea8028e82c756d652abee4340c3a" expandable haspopup="menu"
+  uid=29_164 link " Custom field. :mp4 file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/35864be4-9e23-4715-a4ba-7280308de758/e71fea8028e82c756d652abee4340c3a.mp4"
+  uid=29_165 StaticText "e71fea8028e82c756d652abee4340c3a"
+  uid=29_166 StaticText ".mp4"
+  uid=29_167 StaticText "Apr 21 at 4:11 pm"
+  uid=29_168 StaticText "S"
+  uid=29_169 link "b175949bec6a8c02a3f08d629c3227d2" url="https://t8553538.p.clickup-attachments.com/t8553538/fa447708-a834-4bbb-9c0b-c468da0787d0/b175949bec6a8c02a3f08d629c3227d2.jpg"
+  uid=29_170 button "Open preview"
+  uid=29_171 button "Open attachment options for b175949bec6a8c02a3f08d629c3227d2" expandable haspopup="menu"
+  uid=29_172 link " Custom field. :jpg file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/fa447708-a834-4bbb-9c0b-c468da0787d0/b175949bec6a8c02a3f08d629c3227d2.jpg"
+  uid=29_173 StaticText "b175949bec6a8c02a3f08d629c3227d2"
+  uid=29_174 StaticText ".jpg"
+  uid=29_175 StaticText "Apr 21 at 2:21 pm"
+  uid=29_176 StaticText "S"
+  uid=29_177 link "img_152841" url="https://t8553538.p.clickup-attachments.com/t8553538/87633b85-5c06-4a29-9950-b3231a3b4059/img_152841.png"
+  uid=29_178 button "Open preview"
+  uid=29_179 button "Open attachment options for img_152841" expandable haspopup="menu"
+  uid=29_180 link " Custom field. :png file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/87633b85-5c06-4a29-9950-b3231a3b4059/img_152841.png"
+  uid=29_181 StaticText "img_152841"
+  uid=29_182 StaticText ".png"
+  uid=29_183 StaticText "Apr 20 at 3:42 pm"
+  uid=29_184 StaticText "S"
+  uid=29_185 link "局部截取_20260420_105413" url="https://t8553538.p.clickup-attachments.com/t8553538/aae1e5f5-1712-4746-985a-257edc8c46a5/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260420_105413.png"
+  uid=29_186 button "Open preview"
+  uid=29_187 button "Open attachment options for 局部截取_20260420_105413" expandable haspopup="menu"
+  uid=29_188 link " Custom field. :png file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/aae1e5f5-1712-4746-985a-257edc8c46a5/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260420_105413.png"
+  uid=29_189 StaticText "局部截取_20260420_105413"
+  uid=29_190 StaticText ".png"
+  uid=29_191 StaticText "Apr 20 at 10:54 am"
+  uid=29_192 StaticText "S"
+  uid=29_193 link "局部截取_20260420_103814" url="https://t8553538.p.clickup-attachments.com/t8553538/7c59f849-afa7-4ecc-9c40-2587632bb34d/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260420_103814.png"
+  uid=29_194 button "Open preview"
+  uid=29_195 button "Open attachment options for 局部截取_20260420_103814" expandable haspopup="menu"
+  uid=29_196 link " Custom field. :png file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/7c59f849-afa7-4ecc-9c40-2587632bb34d/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260420_103814.png"
+  uid=29_197 StaticText "局部截取_20260420_103814"
+  uid=29_198 StaticText ".png"
+  uid=29_199 StaticText "Apr 20 at 10:38 am"
+  uid=29_200 StaticText "S"
+  uid=29_201 link "局部截取_20260417_194124" url="https://t8553538.p.clickup-attachments.com/t8553538/8d79a865-264c-4049-b90b-39712252495c/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260417_194124.png"
+  uid=29_202 button "Open preview"
+  uid=29_203 button "Open attachment options for 局部截取_20260417_194124" expandable haspopup="menu"
+  uid=29_204 link " Custom field. :png file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/8d79a865-264c-4049-b90b-39712252495c/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260417_194124.png"
+  uid=29_205 StaticText "局部截取_20260417_194124"
+  uid=29_206 StaticText ".png"
+  uid=29_207 StaticText "Apr 17 at 7:41 pm"
+  uid=29_208 StaticText "S"
+  uid=29_209 link "局部截取_20260417_193711" url="https://t8553538.p.clickup-attachments.com/t8553538/b903e51c-864f-4d64-8e3e-3a3cee8fbda2/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260417_193711.png"
+  uid=29_210 button "Open preview"
+  uid=29_211 button "Open attachment options for 局部截取_20260417_193711" expandable haspopup="menu"
+  uid=29_212 link " Custom field. :png file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/b903e51c-864f-4d64-8e3e-3a3cee8fbda2/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260417_193711.png"
+  uid=29_213 StaticText "局部截取_20260417_193711"
+  uid=29_214 StaticText ".png"
+  uid=29_215 StaticText "Apr 17 at 7:37 pm"
+  uid=29_216 StaticText "S"
+  uid=29_217 link "image" url="https://t8553538.p.clickup-attachments.com/t8553538/79fbf0ab-3cd9-4800-9086-f551755f4d31/image.png"
+  uid=29_218 button "Open preview"
+  uid=29_219 button "Open attachment options for image" expandable haspopup="menu"
+  uid=29_220 link " Custom field. :png file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/79fbf0ab-3cd9-4800-9086-f551755f4d31/image.png"
+  uid=29_221 StaticText "image"
+  uid=29_222 StaticText ".png"
+  uid=29_223 StaticText "Apr 17 at 5:22 pm"
+  uid=29_224 StaticText "AL"
+  uid=29_225 link "局部截取_20260213_173636" url="https://t8553538.p.clickup-attachments.com/t8553538/54c84b8b-abab-4ac5-b8f2-65e29ce9d20d/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260213_173636.png"
+  uid=29_226 button "Open preview"
+  uid=29_227 button "Open attachment options for 局部截取_20260213_173636" expandable haspopup="menu"
+  uid=29_228 link " Custom field. :png file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/54c84b8b-abab-4ac5-b8f2-65e29ce9d20d/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260213_173636.png"
+  uid=29_229 StaticText "局部截取_20260213_173636"
+  uid=29_230 StaticText ".png"
+  uid=29_231 StaticText "Feb 13 at 5:36 pm"
+  uid=29_232 StaticText "S"
+  uid=29_233 link "局部截取_20260213_171145" url="https://t8553538.p.clickup-attachments.com/t8553538/ad7defb0-dec3-4a8f-909d-15f7c173f428/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260213_171145.png"
+  uid=29_234 button "Open preview"
+  uid=29_235 button "Open attachment options for 局部截取_20260213_171145" expandable haspopup="menu"
+  uid=29_236 link " Custom field. :png file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/ad7defb0-dec3-4a8f-909d-15f7c173f428/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260213_171145.png"
+  uid=29_237 StaticText "局部截取_20260213_171145"
+  uid=29_238 StaticText ".png"
+  uid=29_239 StaticText "Feb 13 at 5:11 pm"
+  uid=29_240 StaticText "S"
+  uid=29_241 link "局部截取_20251016_135217" url="https://t8553538.p.clickup-attachments.com/t8553538/79078b4b-408b-4675-aae4-ce5a78ed27ed/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20251016_135217.png"
+  uid=29_242 button "Open preview"
+  uid=29_243 button "Open attachment options for 局部截取_20251016_135217" expandable haspopup="menu"
+  uid=29_244 link " Custom field. :png file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/79078b4b-408b-4675-aae4-ce5a78ed27ed/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20251016_135217.png"
+  uid=29_245 StaticText "局部截取_20251016_135217"
+  uid=29_246 StaticText ".png"
+  uid=29_247 StaticText "Oct 16 2025 at 1:52 pm"
+  uid=29_248 StaticText "S"
+  uid=29_249 link "局部截取_20251016_135044" url="https://t8553538.p.clickup-attachments.com/t8553538/fd0f6440-e949-4bee-9cb6-a4ab72344f61/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20251016_135044.png"
+  uid=29_250 button "Open preview"
+  uid=29_251 button "Open attachment options for 局部截取_20251016_135044" expandable haspopup="menu"
+  uid=29_252 link " Custom field. :png file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/fd0f6440-e949-4bee-9cb6-a4ab72344f61/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20251016_135044.png"
+  uid=29_253 StaticText "局部截取_20251016_135044"
+  uid=29_254 StaticText ".png"
+  uid=29_255 StaticText "Oct 16 2025 at 1:50 pm"
+  uid=29_256 StaticText "S"
+  uid=29_257 link "局部截取_20251016_134812" url="https://t8553538.p.clickup-attachments.com/t8553538/f2e7d966-a6fd-42df-8864-0c95c527aac0/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20251016_134812.png"
+  uid=29_258 button "Open preview"
+  uid=29_259 button "Open attachment options for 局部截取_20251016_134812" expandable haspopup="menu"
+  uid=29_260 link " Custom field. :png file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/f2e7d966-a6fd-42df-8864-0c95c527aac0/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20251016_134812.png"
+  uid=29_261 StaticText "局部截取_20251016_134812"
+  uid=29_262 StaticText ".png"
+  uid=29_263 StaticText "Oct 16 2025 at 1:48 pm"
+  uid=29_264 StaticText "S"
+  uid=29_265 button "Open subtask sidebar"
+  uid=29_266 tab "Collapse" selectable
+  uid=29_267 StaticText "Collapse"
+  uid=29_268 tab "Activity" selectable selected
+  uid=29_269 StaticText "Activity"
+  uid=29_270 tab "Related items" selectable
+  uid=29_271 StaticText "Related items"
+  uid=29_272 tab "Bitbucket" selectable
+  uid=29_273 tab "Clips" selectable
+  uid=29_274 tab "Other links" selectable
+  uid=29_275 StaticText "Other links"
+  uid=29_276 tab "Add links" selectable
+  uid=29_277 StaticText "Add links"
+  uid=29_278 StaticText "Activity"
+  uid=29_279 button "Search"
+  uid=29_280 button "Change followers 6 followers will get notified" expandable
+  uid=29_281 button "Filter activity" expandable
+  uid=29_282 button "Dropdown menu" expandable
+  uid=29_283 StaticText "S"
+  uid=29_284 StaticText "Strark2024"
+  uid=29_285 StaticText "May 19 at 9:12 am"
+  uid=29_286 button "Dropdown menu" expandable
+  uid=29_287 link " Custom field. :undefined file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/1fbb23d3-fca8-45af-a0d1-9c266c4d06f9/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260519_092103.png"
+  uid=29_288 link "局部截取_20260519_092103.png" url="https://t8553538.p.clickup-attachments.com/t8553538/1fbb23d3-fca8-45af-a0d1-9c266c4d06f9/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260519_092103.png"
+    uid=29_289 StaticText "局部截取_20260519_092103.png"
+  uid=29_290 LineBreak "
+"
+  uid=29_291 link "app-prod-release" url="https://t8553538.p.clickup-attachments.com/t8553538/94105410-ddb6-4d70-b0b1-a27c3e80f075/app-prod-release.aab"
+    uid=29_292 StaticText "app-prod-release"
+  uid=29_293 StaticText ".aab"
+  uid=29_294 button "More actions" expandable haspopup="menu"
+  uid=29_295 LineBreak "
+"
+  uid=29_296 button "Dropdown menu" expandable
+  uid=29_297 button "Like this comment"
+  uid=29_298 button "Dropdown menu" expandable
+  uid=29_299 button "Reply"
+  uid=29_300 button "Dropdown menu" expandable
+  uid=29_301 button "Dropdown menu" expandable
+  uid=29_302 button "Dropdown menu" expandable
+  uid=29_303 button "Dropdown menu" expandable
+  uid=29_304 button "Dropdown menu" expandable
+  uid=29_305 StaticText "S"
+  uid=29_306 StaticText "Strark2024"
+  uid=29_307 StaticText "May 11 at 7:21 pm"
+  uid=29_308 button "Dropdown menu" expandable
+  uid=29_309 link " Custom field. :undefined file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/d0f41865-fadd-4962-93eb-46f9224478c3/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260511_192104.png"
+  uid=29_310 link "局部截取_20260511_192104.png" url="https://t8553538.p.clickup-attachments.com/t8553538/d0f41865-fadd-4962-93eb-46f9224478c3/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260511_192104.png"
+    uid=29_311 StaticText "局部截取_20260511_192104.png"
+  uid=29_312 button "Dropdown menu" expandable
+  uid=29_313 button "Like this comment"
+  uid=29_314 button "Dropdown menu" expandable
+  uid=29_315 button "Reply"
+  uid=29_316 button "Dropdown menu" expandable
+  uid=29_317 button "Dropdown menu" expandable
+  uid=29_318 button "Dropdown menu" expandable
+  uid=29_319 button "Dropdown menu" expandable
+  uid=29_320 button "Dropdown menu" expandable
+  uid=29_321 StaticText "S"
+  uid=29_322 StaticText "Strark2024"
+  uid=29_323 StaticText "May 9 at 2:20 pm"
+  uid=29_324 button "Dropdown menu" expandable
+  uid=29_325 StaticText "Have you already submitted for review  bro"
+  uid=29_326 link "@Albert Laguador" url="javascript: void;"
+    uid=29_327 StaticText "@Albert Laguador"
+  uid=29_328 button "Dropdown menu" expandable
+  uid=29_329 button "Like this comment"
+  uid=29_330 button "Dropdown menu" expandable
+  uid=29_331 button "Reply"
+  uid=29_332 button "Dropdown menu" expandable
+  uid=29_333 button "Dropdown menu" expandable
+  uid=29_334 button "Dropdown menu" expandable
+  uid=29_335 button "Dropdown menu" expandable
+  uid=29_336 button "Dropdown menu" expandable
+  uid=29_337 StaticText "S"
+  uid=29_338 StaticText "Strark2024"
+  uid=29_339 StaticText "Apr 23 at 5:17 pm"
+  uid=29_340 button "Dropdown menu" expandable
+  uid=29_341 StaticText "This update only modifies the linktop SDK, so it is only necessary to test whether the measurement functions are working properly ;"
+  uid=29_342 StaticText "If the version is not updated before May 31st, it will be removed from the google play for  16KB issue "
+  uid=29_343 link "@Albert Laguador" url="javascript: void;"
+    uid=29_344 StaticText "@Albert Laguador"
+  uid=29_345 link "@Jonathan Tang" url="javascript: void;"
+    uid=29_346 StaticText "@Jonathan Tang"
+  uid=29_347 button "Dropdown menu" expandable
+  uid=29_348 button "Like this comment"
+  uid=29_349 button "Dropdown menu" expandable
+  uid=29_350 button "Reply"
+  uid=29_351 button "Dropdown menu" expandable
+  uid=29_352 button "Dropdown menu" expandable
+  uid=29_353 button "Dropdown menu" expandable
+  uid=29_354 button "Dropdown menu" expandable
+  uid=29_355 button "Dropdown menu" expandable
+  uid=29_356 StaticText "S"
+  uid=29_357 StaticText "Strark2024"
+  uid=29_358 StaticText "Apr 22 at 3:30 pm"
+  uid=29_359 button "Dropdown menu" expandable
+  uid=29_360 link " Custom field. :undefined file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/a6b6c348-4f91-4691-8934-b2e42fdd8ac0/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260422_152239.png"
+  uid=29_361 link "局部截取_20260422_152239.png" url="https://t8553538.p.clickup-attachments.com/t8553538/a6b6c348-4f91-4691-8934-b2e42fdd8ac0/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260422_152239.png"
+    uid=29_362 StaticText "局部截取_20260422_152239.png"
+  uid=29_363 link "app-prod-release" url="https://t8553538.p.clickup-attachments.com/t8553538/a62c89cf-79fd-4e47-a933-aae3dc8823ce/app-prod-release.aab"
+    uid=29_364 StaticText "app-prod-release"
+  uid=29_365 StaticText ".aab"
+  uid=29_366 button "More actions" expandable haspopup="menu"
+  uid=29_367 StaticText "bro , pls  help to submit version 1.0.2 to Google Play for review  thx"
+  uid=29_368 link "@Albert Laguador" url="javascript: void;"
+    uid=29_369 StaticText "@Albert Laguador"
+  uid=29_370 button "Dropdown menu" expandable
+  uid=29_371 button "Like this comment"
+  uid=29_372 button "Dropdown menu" expandable
+  uid=29_373 button "Reply"
+  uid=29_374 button "Dropdown menu" expandable
+  uid=29_375 button "Dropdown menu" expandable
+  uid=29_376 button "Dropdown menu" expandable
+  uid=29_377 button "Dropdown menu" expandable
+  uid=29_378 StaticText "•"
+  uid=29_379 StaticText "levin"
+  uid=29_380 StaticText " changed status from "
+  uid=29_381 StaticText " In Progress "
+  uid=29_382 StaticText "to "
+  uid=29_383 StaticText " Completed"
+  uid=29_384 StaticText "Apr 22 at 3:21 pm"
+  uid=29_385 button "Dropdown menu" expandable
+  uid=29_386 StaticText "S"
+  uid=29_387 StaticText "Strark2024"
+  uid=29_388 StaticText "Apr 21 at 4:11 pm"
+  uid=29_389 button "Dropdown menu" expandable
+  uid=29_390 StaticText "我自测没问题"
+  uid=29_391 button "e71fea8028e82c756d652abee4340c3a.mp4"
+  uid=29_392 button "Preview"
+  uid=29_393 button "Play"
+  uid=29_394 button "New tab"
+  uid=29_395 slider "scrub bar" orientation="horizontal" value="0" valuemax="73053.8515625" valuemin="0" valuetext="0"
+  uid=29_396 button "play"
+  uid=29_397 button "mute button"
+  uid=29_398 StaticText "00:00"
+  uid=29_399 StaticText "/"
+  uid=29_400 StaticText "01:13"
+  uid=29_401 button "1×" expandable
+    uid=29_402 button "1×"
+  uid=29_403 button "fullscreen button"
+  uid=29_404 StaticText "但是 levin 好像还没测完, 请问直接提审还是等 他测完再提审 "
+  uid=29_405 link "@Jackie Zhang" url="javascript: void;"
+    uid=29_406 StaticText "@Jackie Zhang"
+  uid=29_407 link "@Deng Huan" url="javascript: void;"
+    uid=29_408 StaticText "@Deng Huan"
+  uid=29_409 button "Dropdown menu" expandable
+  uid=29_410 button "Like this comment"
+  uid=29_411 button "Dropdown menu" expandable
+  uid=29_412 button "1 reply L"
+  uid=29_413 button "Dropdown menu" expandable
+  uid=29_414 button "Dropdown menu" expandable
+  uid=29_415 button "Dropdown menu" expandable
+  uid=29_416 button "Dropdown menu" expandable
+  uid=29_417 button "Dropdown menu" expandable
+  uid=29_418 StaticText "S"
+  uid=29_419 StaticText "Strark2024"
+  uid=29_420 StaticText "Apr 21 at 2:06 pm"
+  uid=29_421 button "Dropdown menu" expandable
+  uid=29_422 StaticText "prod 环境的release 包闪退"
+  uid=29_423 link " Custom field. :undefined file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/fa447708-a834-4bbb-9c0b-c468da0787d0/b175949bec6a8c02a3f08d629c3227d2.jpg"
+  uid=29_424 link "b175949bec6a8c02a3f08d629c3227d2.jpg" url="https://t8553538.p.clickup-attachments.com/t8553538/fa447708-a834-4bbb-9c0b-c468da0787d0/b175949bec6a8c02a3f08d629c3227d2.jpg"
+    uid=29_425 StaticText "b175949bec6a8c02a3f08d629c3227d2.jpg"
+  uid=29_426 button "Dropdown menu" expandable
+  uid=29_427 button "Like this comment"
+  uid=29_428 button "Dropdown menu" expandable
+  uid=29_429 button "2 replies S JZ"
+  uid=29_430 button "Dropdown menu" expandable
+  uid=29_431 button "Dropdown menu" expandable
+  uid=29_432 button "Dropdown menu" expandable
+  uid=29_433 button "Dropdown menu" expandable
+  uid=29_434 button "Dropdown menu" expandable
+  uid=29_435 StaticText "S"
+  uid=29_436 StaticText "Strark2024"
+  uid=29_437 StaticText "Apr 20 at 4:51 pm"
+  uid=29_438 button "Dropdown menu" expandable
+  uid=29_439 StaticText "因为 更新 了 此项目的安卓端的 linktop SDK ,故请 测试下 基本的测量功能是否完整, 下载地址 是 "
+  uid=29_440 link url="https://www.pgyer.com/cdvhealth"
+  uid=29_441 link "@levin" url="javascript: void;"
+    uid=29_442 StaticText "@levin"
+  uid=29_443 StaticText "  , 等你测试完成后,我才会 让 发布 1.0.2 版本到 google play; 如果 5.31日之前不更新版本, 此app 会被 google play 商店下架,请尽快测试"
+  uid=29_444 LineBreak "
+"
+  uid=29_445 StaticText "cc: "
+  uid=29_446 link "@Jackie Zhang" url="javascript: void;"
+    uid=29_447 StaticText "@Jackie Zhang"
+  uid=29_448 button "Dropdown menu" expandable
+  uid=29_449 button "Like this comment"
+  uid=29_450 button "Dropdown menu" expandable
+  uid=29_451 button "1 reply L"
+  uid=29_452 button "Dropdown menu" expandable
+  uid=29_453 button "Dropdown menu" expandable
+  uid=29_454 button "Dropdown menu" expandable
+  uid=29_455 button "Dropdown menu" expandable
+  uid=29_456 button "Dropdown menu" expandable
+  uid=29_457 StaticText "S"
+  uid=29_458 StaticText "Strark2024"
+  uid=29_459 StaticText "Apr 20 at 3:42 pm"
+  uid=29_460 button "Dropdown menu" expandable
+  uid=29_461 link " Custom field. :undefined file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/87633b85-5c06-4a29-9950-b3231a3b4059/img_152841.png"
+  uid=29_462 link "img_152841.png" url="https://t8553538.p.clickup-attachments.com/t8553538/87633b85-5c06-4a29-9950-b3231a3b4059/img_152841.png"
+    uid=29_463 StaticText "img_152841.png"
+  uid=29_464 StaticText "内测检测通过"
+  uid=29_465 button "Dropdown menu" expandable
+  uid=29_466 button "Like this comment"
+  uid=29_467 button "Dropdown menu" expandable
+  uid=29_468 button "Reply"
+  uid=29_469 button "Dropdown menu" expandable
+  uid=29_470 button "Dropdown menu" expandable
+  uid=29_471 button "Dropdown menu" expandable
+  uid=29_472 button "Dropdown menu" expandable
+  uid=29_473 button "Dropdown menu" expandable
+  uid=29_474 StaticText "S"
+  uid=29_475 StaticText "Strark2024"
+  uid=29_476 StaticText "Apr 20 at 10:55 am"
+  uid=29_477 button "Dropdown menu" expandable
+  uid=29_478 link " Custom field. :undefined file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/aae1e5f5-1712-4746-985a-257edc8c46a5/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260420_105413.png"
+  uid=29_479 link "局部截取_20260420_105413.png" url="https://t8553538.p.clickup-attachments.com/t8553538/aae1e5f5-1712-4746-985a-257edc8c46a5/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260420_105413.png"
+    uid=29_480 StaticText "局部截取_20260420_105413.png"
+  uid=29_481 StaticText "加了一个 Linktop内部人员的微信, 要到了最新SDK , 正在测试"
+  uid=29_482 link "@Jackie Zhang" url="javascript: void;"
+    uid=29_483 StaticText "@Jackie Zhang"
+  uid=29_484 button "Dropdown menu" expandable
+  uid=29_485 button "Like this comment"
+  uid=29_486 button "Dropdown menu" expandable
+  uid=29_487 button "Reply"
+  uid=29_488 button "Dropdown menu" expandable
+  uid=29_489 button "Dropdown menu" expandable
+  uid=29_490 button "Dropdown menu" expandable
+  uid=29_491 button "Dropdown menu" expandable
+  uid=29_492 button "Dropdown menu" expandable
+  uid=29_493 StaticText "S"
+  uid=29_494 StaticText "Strark2024"
+  uid=29_495 StaticText "Apr 20 at 10:38 am"
+  uid=29_496 button "Dropdown menu" expandable
+  uid=29_497 StaticText "再次发邮件"
+  uid=29_498 link " Custom field. :undefined file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/7c59f849-afa7-4ecc-9c40-2587632bb34d/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260420_103814.png"
+  uid=29_499 link "局部截取_20260420_103814.png" url="https://t8553538.p.clickup-attachments.com/t8553538/7c59f849-afa7-4ecc-9c40-2587632bb34d/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260420_103814.png"
+    uid=29_500 StaticText "局部截取_20260420_103814.png"
+  uid=29_501 StaticText "和在 "
+  uid=29_502 link url="https://linktop.com/contact-with-us/"
+  uid=29_503 StaticText " 页面填写了表单"
+  uid=29_504 button "Dropdown menu" expandable
+  uid=29_505 button "Like this comment"
+  uid=29_506 button "Dropdown menu" expandable
+  uid=29_507 button "Reply"
+  uid=29_508 button "Dropdown menu" expandable
+  uid=29_509 button "Dropdown menu" expandable
+  uid=29_510 button "Dropdown menu" expandable
+  uid=29_511 button "Dropdown menu" expandable
+  uid=29_512 button "Dropdown menu" expandable
+  uid=29_513 StaticText "S"
+  uid=29_514 StaticText "Strark2024"
+  uid=29_515 StaticText "Feb 13 at 5:35 pm"
+  uid=29_516 button "Dropdown menu" expandable
+  uid=29_517 link " Custom field. :undefined file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/ad7defb0-dec3-4a8f-909d-15f7c173f428/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260213_171145.png"
+  uid=29_518 link "局部截取_20260213_171145.png" url="https://t8553538.p.clickup-attachments.com/t8553538/ad7defb0-dec3-4a8f-909d-15f7c173f428/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260213_171145.png"
+    uid=29_519 StaticText "局部截取_20260213_171145.png"
+  uid=29_520 StaticText "After the modifications shown in the above figure, the CircleApp project has addressed most of the issues related to '16 KB memory page sizes';"
+  uid=29_521 LineBreak "
+"
+  uid=29_522 StaticText "However, the Linktop SDK may also cause these errors"
+  uid=29_523 link " Custom field. :undefined file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/54c84b8b-abab-4ac5-b8f2-65e29ce9d20d/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260213_173636.png"
+  uid=29_524 link "局部截取_20260213_173636.png" url="https://t8553538.p.clickup-attachments.com/t8553538/54c84b8b-abab-4ac5-b8f2-65e29ce9d20d/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20260213_173636.png"
+    uid=29_525 StaticText "局部截取_20260213_173636.png"
+  uid=29_526 LineBreak "
+"
+  uid=29_527 LineBreak "
+"
+  uid=29_528 link "@Jonathan Tang" url="javascript: void;"
+    uid=29_529 StaticText "@Jonathan Tang"
+  uid=29_530 StaticText "  , pls forward the email I sent you to the linktop provider , thx"
+  uid=29_531 button "Dropdown menu" expandable
+  uid=29_532 button "Like this comment"
+  uid=29_533 button "Dropdown menu" expandable
+  uid=29_534 button "Reply"
+  uid=29_535 button "Dropdown menu" expandable
+  uid=29_536 button "Dropdown menu" expandable
+  uid=29_537 button "Dropdown menu" expandable
+  uid=29_538 button "Dropdown menu" expandable
+  uid=29_539 button "Dropdown menu" expandable
+  uid=29_540 StaticText "S"
+  uid=29_541 StaticText "Strark2024"
+  uid=29_542 StaticText "Oct 16 2025 at 1:54 pm"
+  uid=29_543 button "Dropdown menu" expandable
+  uid=29_544 StaticText "currently, the configuration "
+  uid=29_545 StaticText "extractNativeLibs="true""
+  uid=29_546 StaticText " being used is an officially recognized temporary solution by Google. it’s recommended to first submit the build to google play and check the feedback; if it gets rejected, then we’ll need to upgrade react native to 0.77+, contact the linktophealth vendor to update the linktophealth sdk, and upgrade the ndk to r27+. all these changes will require a full round of testing for the app, and obviously, we don’t have enough time for that right now. currently, this issue does not affect the review process, since csm also reported the same issue on october 13 but got approval on october 14. i think google’s stance is that this will not affect the review process before may 31, 2026, but will after that date."
+  uid=29_547 link "@Albert Laguador" url="javascript: void;"
+    uid=29_548 StaticText "@Albert Laguador"
+  uid=29_549 StaticText " "
+  uid=29_550 link " Custom field. :undefined file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/fd0f6440-e949-4bee-9cb6-a4ab72344f61/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20251016_135044.png"
+  uid=29_551 link "局部截取_20251016_135044.png" url="https://t8553538.p.clickup-attachments.com/t8553538/fd0f6440-e949-4bee-9cb6-a4ab72344f61/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20251016_135044.png"
+    uid=29_552 StaticText "局部截取_20251016_135044.png"
+  uid=29_553 link " Custom field. :undefined file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/79078b4b-408b-4675-aae4-ce5a78ed27ed/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20251016_135217.png"
+  uid=29_554 link "局部截取_20251016_135217.png" url="https://t8553538.p.clickup-attachments.com/t8553538/79078b4b-408b-4675-aae4-ce5a78ed27ed/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20251016_135217.png"
+    uid=29_555 StaticText "局部截取_20251016_135217.png"
+  uid=29_556 button "Dropdown menu" expandable
+  uid=29_557 image "1F44D" url="https://t100.p.clickup-attachments.com/emojis/100/standard_15_1_2_medium/1f44d.png"
+  uid=29_558 StaticText "1"
+  uid=29_559 button "Dropdown menu" expandable
+  uid=29_560 button "Reply"
+  uid=29_561 button "Dropdown menu" expandable
+  uid=29_562 button "Dropdown menu" expandable
+  uid=29_563 button "Dropdown menu" expandable
+  uid=29_564 button "Dropdown menu" expandable
+  uid=29_565 button "Dropdown menu" expandable
+  uid=29_566 StaticText "S"
+  uid=29_567 StaticText "Strark2024"
+  uid=29_568 StaticText "Oct 16 2025 at 1:48 pm"
+  uid=29_569 button "Dropdown menu" expandable
+  uid=29_570 link " Custom field. :undefined file. :undefined of undefined" url="https://t8553538.p.clickup-attachments.com/t8553538/f2e7d966-a6fd-42df-8864-0c95c527aac0/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20251016_134812.png"
+  uid=29_571 link "局部截取_20251016_134812.png" url="https://t8553538.p.clickup-attachments.com/t8553538/f2e7d966-a6fd-42df-8864-0c95c527aac0/%E5%B1%80%E9%83%A8%E6%88%AA%E5%8F%96_20251016_134812.png"
+    uid=29_572 StaticText "局部截取_20251016_134812.png"
+  uid=29_573 StaticText "this looks like forcing the use the 16kb however when I analyze the lib there are so files that are 4kb page size which might detect by google playstore. If you are happy with your changes I can approved this and send it for google review until then we can check if they are okay with just the gradle settings and not updating dependency libs. Have you tried unpacking the aab and greadelf -lW "$f" | awk -v name="$f" `%1=="LOAD"(print name, "ALIGN", $NF)' ?"
+  uid=29_574 button "Dropdown menu" expandable
+  uid=29_575 button "Like this comment"
+  uid=29_576 button "Dropdown menu" expandable
+  uid=29_577 button "Reply"
+  uid=29_578 button "Dropdown menu" expandable
+  uid=29_579 button "Dropdown menu" expandable
+  uid=29_580 button "Dropdown menu" expandable
+  uid=29_581 button "Dropdown menu" expandable
+  uid=29_582 button "Dropdown menu" expandable
+  uid=29_583 StaticText "S"
+  uid=29_584 StaticText "Strark2024"
+  uid=29_585 StaticText "Oct 16 2025 at 12:07 pm"
+  uid=29_586 button "Dropdown menu" expandable
+  uid=29_587 StaticText "DONE  "
+  uid=29_588 link url="https://bitbucket.org/healshealthcare/circleapp/pull-requests/151/diff"
+  uid=29_589 StaticText " "
+  uid=29_590 button "Dropdown menu" expandable
+  uid=29_591 button "Like this comment"
+  uid=29_592 button "Dropdown menu" expandable
+  uid=29_593 button "Reply"
+  uid=29_594 button "Dropdown menu" expandable
+  uid=29_595 button "Dropdown menu" expandable
+  uid=29_596 button "Dropdown menu" expandable
+  uid=29_597 button "Dropdown menu" expandable
+  uid=29_598 button "Show more" expandable
+  uid=29_599 generic value="
+"
+    uid=29_378 StaticText "Write a comment..."
+    uid=29_600 generic
+      uid=29_601 LineBreak "
+"
+  uid=29_602 button "Slash commands (/)"
+  uid=29_603 button "Comment" expandable haspopup="menu"
+  uid=29_604 button "Add a file" expandable
+  uid=29_605 button "Mention a task"
+  uid=29_606 button expandable
+  uid=29_607 button "Dropdown menu" expandable
+  uid=29_608 button "Record Video Clip" expandable
+  uid=29_609 button "New Task"
+  uid=29_610 button "New Doc"
+  uid=29_611 button "New Whiteboard"
+  uid=29_612 button "Record Voice Clip"
+  uid=29_613 button "Send" disableable disabled
+  uid=29_614 button "Schedule for later" disableable disabled
+  uid=29_615 button "Dropdown menu" expandable
+  uid=29_616 button "Dropdown menu" expandable
+  uid=29_617 button "Dropdown menu" expandable
+  uid=29_618 button "Dropdown menu" expandable
+  uid=29_619 button "Dropdown menu" expandable
+  uid=29_620 button "Dropdown menu" expandable
+  uid=29_621 button "Dropdown menu" expandable
+  uid=29_622 button "Dropdown menu" expandable
+  uid=29_623 status atomic live="polite" relevant="additions text"
+  uid=29_624 status atomic live="polite" relevant="additions text"
+  uid=29_625 button "Bulleted list"
+  uid=29_626 button "All lists" expandable haspopup="menu"
+  uid=29_627 button "Turn Into" expandable haspopup="menu"
+  uid=29_628 button "Text color" expandable haspopup="menu"
+  uid=29_629 button "Bold"
+  uid=29_630 button "Italic"
+  uid=29_631 button "Underline"
+  uid=29_632 button "Strikethrough"
+  uid=29_633 button "Code"
+  uid=29_634 button "Alignment" expandable haspopup="menu"
+  uid=29_635 button "Insert a link"
+  uid=29_636 button "Task"
+  uid=29_637 button "Create task options" expandable haspopup="menu"
+  uid=29_638 button "More settings" expandable haspopup="menu"
+  uid=29_639 button "Bulleted list"
+  uid=29_640 button "All lists" expandable haspopup="menu"
+  uid=29_641 button "Turn Into" expandable haspopup="menu"
+  uid=29_642 button "Text color" expandable haspopup="menu"
+  uid=29_643 button "Bold"
+  uid=29_644 button "Italic"
+  uid=29_645 button "Underline"
+  uid=29_646 button "Strikethrough"
+  uid=29_647 button "Code"
+  uid=29_648 button "Alignment" expandable haspopup="menu"
+  uid=29_649 button "Insert a link"
+  uid=29_650 button "Task" disableable disabled
+  uid=29_651 button "Create task options" expandable haspopup="menu"
+  uid=29_652 button "More settings" expandable haspopup="menu"
+  uid=29_653 textbox focusable focused multiline readonly value="https://app.clickup.com/t/8553538/TECH-7196?comment=90180212761971"

@@ -1,0 +1,23 @@
+---
+pid: 30048
+cwd: "/Users/stark/Desktop/work/RN/circleapp"
+command: "python3 - <<'PY'\nimport os, glob\nsdk=os.environ.get('ANDROID_HOME','/Users/stark/Library/Android/sdk')\ncands=[]\nfor pat in [\n  sdk+'/**/bundletool*.jar',\n  os.path.expanduser('~/Downloads/bundletool*.jar'),\n  '/usr/local/Cellar/**/bundletool*',\n  os.path.expanduser('~/.android/**/bundletool*'),\n]:\n  cands += glob.glob(pat, recursive=True)\nprint('bundletool_hits', cands[:20])\nprint('readelf', os.popen('command -v llvm-readelf; command -v readelf; command -v llvm-readobj').read())\nprint('zipalign')\nos.system(f'ls \"{sdk}/build-tools\" | tail -5')\nPY"
+title: "Find bundletool jar and ELF readelf tools"
+status: succeeded
+started_at: 2026-09-21T11:36:15.212Z
+running_for_ms: 13091    
+---
+31.0.0
+33.0.0
+34.0.0
+35.0.0
+36.0.0
+bundletool_hits []
+readelf 
+zipalign
+
+---
+exit_code: 0
+elapsed_ms: 13091
+ended_at: 2026-09-21T11:36:28.303Z
+---
