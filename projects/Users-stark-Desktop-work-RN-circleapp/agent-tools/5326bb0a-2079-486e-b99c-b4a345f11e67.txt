@@ -1,20 +1,9 @@
----
-pid: 4290
-cwd: "/Users/stark/Desktop/work/RN/circleapp"
-command: "ANDROID_SERIAL=4ae24c72 GRADLE_USER_HOME=/Users/stark/.gradle npm run android:dev -- --deviceId 4ae24c72"
-title: "Retry android:dev targeting PJJ110"
-status: failed   
-started_at: 2026-09-21T02:09:19.818Z
-running_for_ms: 269460   
----
 
 > circleapp@0.0.1 android:dev
-> ENVFILE=.env.development react-native  run-android --mode=devDebug --appIdSuffix=dev --deviceId 4ae24c72
+> ENVFILE=.env.development react-native  run-android --mode=devDebug --appIdSuffix=dev --deviceId 4ae24c72 --port 8081 --no-packager
 
-info A dev server is already running for this project on port 8081.
 warn The `deviceId` parameter is renamed to `device`. Please use the new `device` argument next time to avoid this warning.
 info Building the app...
-Starting a Gradle Daemon (subsequent builds will be faster)
 > Task :gradle-plugin:settings-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :gradle-plugin:shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :gradle-plugin:shared:compileKotlin UP-TO-DATE
@@ -65,7 +54,6 @@ WARNING: Using flatDir should be avoided because it doesn't support any meta-dat
 > Configure project :react-native-reanimated
 Android gradle plugin: 8.11.0
 Gradle: 8.13
-Warning: SDK processing. This version only understands SDK XML versions up to 3 but an SDK XML file of version 4 was encountered. This can happen if you use versions of Android Studio and the command-line tools that were released at different times.
 WARNING: The specified Android SDK Build Tools version (33.0.0) is ignored, as it is below the minimum supported version (35.0.0) for Android Gradle Plugin 8.11.0.
 Android SDK Build Tools 35.0.0 will be used.
 To suppress this warning, remove "buildToolsVersion '33.0.0'" from your build.gradle file, as each version of the Android Gradle Plugin now has a default version of the build tools.
@@ -211,7 +199,6 @@ To suppress this warning, remove "buildToolsVersion '33.0.0'" from your build.gr
 > Task :sentry_react-native:writeDebugAarMetadata UP-TO-DATE
 > Task :shopify_flash-list:preDebugBuild UP-TO-DATE
 > Task :shopify_flash-list:writeDebugAarMetadata UP-TO-DATE
-> Task :app:checkDevDebugAarMetadata
 > Task :app:checkDevDebugAarMetadata UP-TO-DATE
 
 > Task :app:createBundleDevDebugJsAndAssets
@@ -235,7 +222,7 @@ To suppress this warning, remove "buildToolsVersion '33.0.0'" from your build.gr
 [22m[39m[2m              Fast - Scalable - Integrated
 
 [22m
-info Bundle Debug ID: 4451aacd-38a6-406f-961d-42b413ed7c4e
+info Bundle Debug ID: 58d2075a-25d5-422a-9a1f-d9924f51e998
 LOG:Writing bundle output to: /Users/stark/Desktop/work/RN/circleapp/android/app/build/generated/assets/createBundleDevDebugJsAndAssets/index.android.bundle
 LOG:Writing sourcemap output to: /Users/stark/Desktop/work/RN/circleapp/android/app/build/intermediates/sourcemaps/react/devDebug/index.android.bundle.packager.map
 LOG:Done writing bundle output
@@ -379,7 +366,7 @@ Done copying assets
 > Task :app:mergeDevDebugResources UP-TO-DATE
 > Task :app:packageDevDebugResources UP-TO-DATE
 > Task :app:parseDevDebugLocalResources UP-TO-DATE
-> Task :app:createDevDebugCompatibleScreenManifests
+> Task :app:createDevDebugCompatibleScreenManifests UP-TO-DATE
 > Task :app:extractDeepLinksDevDebug UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:extractDeepLinksDebug UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:processDebugManifest UP-TO-DATE
@@ -467,15 +454,9 @@ Done copying assets
 > Task :sentry_react-native:processDebugManifest UP-TO-DATE
 > Task :shopify_flash-list:extractDeepLinksDebug UP-TO-DATE
 > Task :shopify_flash-list:processDebugManifest UP-TO-DATE
-
-> Task :app:processDevDebugMainManifest
-[io.agora.rtc:full-sdk:4.5.2] /Users/stark/.gradle/caches/8.13/transforms/9fda0b1962b4b20fb4b01d17a931a9c4/transformed/full-sdk-4.5.2/AndroidManifest.xml Warning:
-	Namespace 'io.agora.rtc' is used in multiple modules and/or libraries: io.agora.rtc:full-sdk:4.5.2, io.agora.rtc:iris-rtc:4.5.2-build.1, io.agora.rtc:full-rtc-basic:4.5.2, io.agora.rtc:ains:4.5.2, io.agora.rtc:ains-ll:4.5.2, io.agora.rtc:audio-beauty:4.5.2, io.agora.rtc:clear-vision:4.5.2, io.agora.rtc:full-content-inspect:4.5.2, io.agora.rtc:screen-capture:4.5.2, io.agora.rtc:full-virtual-background:4.5.2, io.agora.rtc:spatial-audio:4.5.2, io.agora.rtc:aiaec:4.5.2, io.agora.rtc:aiaec-ll:4.5.2, io.agora.rtc:full-vqa:4.5.2, io.agora.rtc:full-face-detect:4.5.2, io.agora.rtc:full-face-capture:4.5.2, io.agora.rtc:full-voice-drive:4.5.2, io.agora.rtc:full-video-codec-enc:4.5.2, io.agora.rtc:full-video-codec-dec:4.5.2, io.agora.rtc:full-video-av1-codec-enc:4.5.2, io.agora.rtc:full-video-av1-codec-dec:4.5.2, io.agora.infra:aosl:1.2.13.1. Please ensure that all modules and libraries have a unique namespace. For more information, See https://developer.android.com/studio/build/configure-app-module#set-namespace
-/Users/stark/Desktop/work/RN/circleapp/android/app/src/main/AndroidManifest.xml:34:5-38 Warning:
-	android:extractNativeLibs should not be specified in this source AndroidManifest.xml file. See https://d.android.com/guide/topics/manifest/application-element#extractNativeLibs for more information.
-The AGP Upgrade Assistant can remove the attribute from the AndroidManifest.xml file and update the build file accordingly. See https://d.android.com/studio/build/agp-upgrade-assistant for more information.
-
-> Task :app:processDevDebugManifest
+> Task :app:processDevDebugMainManifest UP-TO-DATE
+> Task :app:processDevDebugManifest UP-TO-DATE
+> Task :app:processDevDebugManifestForPackage UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:compileDebugLibraryResources UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:parseDebugLocalResources UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:generateDebugRFile UP-TO-DATE
@@ -555,7 +536,6 @@ The AGP Upgrade Assistant can remove the attribute from the AndroidManifest.xml 
 > Task :react-native-keychain:parseDebugLocalResources UP-TO-DATE
 > Task :react-native-keychain:generateDebugRFile UP-TO-DATE
 > Task :react-native-linear-gradient:compileDebugLibraryResources UP-TO-DATE
-> Task :app:processDevDebugManifestForPackage
 > Task :react-native-linear-gradient:parseDebugLocalResources UP-TO-DATE
 > Task :react-native-linear-gradient:generateDebugRFile UP-TO-DATE
 > Task :react-native-orientation-locker:compileDebugLibraryResources UP-TO-DATE
@@ -606,6 +586,7 @@ The AGP Upgrade Assistant can remove the attribute from the AndroidManifest.xml 
 > Task :shopify_flash-list:compileDebugLibraryResources UP-TO-DATE
 > Task :shopify_flash-list:parseDebugLocalResources UP-TO-DATE
 > Task :shopify_flash-list:generateDebugRFile UP-TO-DATE
+> Task :app:processDevDebugResources UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :invertase_react-native-apple-authentication:generateDebugBuildConfig UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:compileDebugKotlin UP-TO-DATE
@@ -705,7 +686,6 @@ The AGP Upgrade Assistant can remove the attribute from the AndroidManifest.xml 
 > Task :react-native-svg:javaPreCompileDebug UP-TO-DATE
 > Task :react-native-svg:compileDebugJavaWithJavac UP-TO-DATE
 > Task :react-native-svg:bundleLibCompileToJarDebug UP-TO-DATE
-> Task :app:processDevDebugResources
 > Task :react-native-gesture-handler:compileDebugKotlin UP-TO-DATE
 > Task :react-native-gesture-handler:javaPreCompileDebug UP-TO-DATE
 > Task :react-native-gesture-handler:compileDebugJavaWithJavac UP-TO-DATE
@@ -802,7 +782,9 @@ The AGP Upgrade Assistant can remove the attribute from the AndroidManifest.xml 
 > Task :shopify_flash-list:javaPreCompileDebug UP-TO-DATE
 > Task :shopify_flash-list:compileDebugJavaWithJavac UP-TO-DATE
 > Task :shopify_flash-list:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :app:compileDevDebugKotlin UP-TO-DATE
 > Task :app:javaPreCompileDevDebug UP-TO-DATE
+> Task :app:compileDevDebugJavaWithJavac UP-TO-DATE
 > Task :app:mergeDevDebugShaders UP-TO-DATE
 > Task :app:compileDevDebugShaders NO-SOURCE
 > Task :app:copyReactNativeVectorIconFonts UP-TO-DATE
@@ -1016,15 +998,18 @@ The AGP Upgrade Assistant can remove the attribute from the AndroidManifest.xml 
 > Task :react-native-pdf:bundleLibRuntimeToJarDebug UP-TO-DATE
 > Task :react-native-reanimated:bundleLibRuntimeToJarDebug UP-TO-DATE
 > Task :react-native-restart:bundleLibRuntimeToJarDebug UP-TO-DATE
-> Task :app:compressDevDebugAssets
 > Task :react-native-share:bundleLibRuntimeToJarDebug UP-TO-DATE
 > Task :react-native-svg:bundleLibRuntimeToJarDebug UP-TO-DATE
 > Task :react-native-vector-icons:bundleLibRuntimeToJarDebug UP-TO-DATE
 > Task :react-native-version-check:bundleLibRuntimeToJarDebug UP-TO-DATE
 > Task :react-native-wallet-manager:bundleLibRuntimeToJarDebug UP-TO-DATE
 > Task :react-native-config:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :app:compressDevDebugAssets
 > Task :shopify_flash-list:bundleLibRuntimeToJarDebug UP-TO-DATE
 > Task :app:desugarDevDebugFileDependencies UP-TO-DATE
+> Task :app:dexBuilderDevDebug UP-TO-DATE
+> Task :app:mergeDevDebugGlobalSynthetics UP-TO-DATE
+> Task :app:processDevDebugJavaRes UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:processDebugJavaRes UP-TO-DATE
 > Task :react-native-agora:processDebugJavaRes NO-SOURCE
 > Task :react-native-async-storage_async-storage:processDebugJavaRes NO-SOURCE
@@ -1068,20 +1053,9 @@ The AGP Upgrade Assistant can remove the attribute from the AndroidManifest.xml 
 > Task :react-native-webview:processDebugJavaRes UP-TO-DATE
 > Task :sentry_react-native:processDebugJavaRes NO-SOURCE
 > Task :shopify_flash-list:processDebugJavaRes UP-TO-DATE
-> Task :app:checkDevDebugDuplicateClasses UP-TO-DATE
-
-> Task :app:compileDevDebugKotlin
-w: file:///Users/stark/Desktop/work/RN/circleapp/android/app/src/main/java/com/circleapp/cdv/MainApplication.kt:7:8 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
-w: file:///Users/stark/Desktop/work/RN/circleapp/android/app/src/main/java/com/circleapp/cdv/MainApplication.kt:18:16 This declaration overrides a deprecated member but is not marked as deprecated itself. Add the '@Deprecated' annotation or suppress the diagnostic.
-w: file:///Users/stark/Desktop/work/RN/circleapp/android/app/src/main/java/com/circleapp/cdv/MainApplication.kt:18:33 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
-
-> Task :app:mergeExtDexDevDebug
-> Task :app:mergeExtDexDevDebug UP-TO-DATE
-> Task :app:compileDevDebugJavaWithJavac
-> Task :app:dexBuilderDevDebug
-> Task :app:mergeDevDebugGlobalSynthetics UP-TO-DATE
-> Task :app:processDevDebugJavaRes UP-TO-DATE
 > Task :app:mergeDevDebugJavaResource UP-TO-DATE
+> Task :app:checkDevDebugDuplicateClasses UP-TO-DATE
+> Task :app:mergeExtDexDevDebug UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:bundleLibRuntimeToDirDebug UP-TO-DATE
 > Task :react-native-google-signin_google-signin:bundleLibRuntimeToDirDebug UP-TO-DATE
 > Task :react-native-bootsplash:bundleLibRuntimeToDirDebug UP-TO-DATE
@@ -1125,6 +1099,7 @@ w: file:///Users/stark/Desktop/work/RN/circleapp/android/app/src/main/java/com/c
 > Task :react-native-wallet-manager:bundleLibRuntimeToDirDebug UP-TO-DATE
 > Task :react-native-config:bundleLibRuntimeToDirDebug UP-TO-DATE
 > Task :shopify_flash-list:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :app:mergeProjectDexDevDebug UP-TO-DATE
 > Task :app:mergeDevDebugJniLibFolders UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:mergeDebugJniLibFolders UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:mergeDebugNativeLibs NO-SOURCE
@@ -1220,21 +1195,22 @@ w: file:///Users/stark/Desktop/work/RN/circleapp/android/app/src/main/java/com/c
 > Task :react-native-permissions:mergeDebugJniLibFolders UP-TO-DATE
 > Task :react-native-permissions:mergeDebugNativeLibs NO-SOURCE
 > Task :react-native-permissions:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :app:mergeProjectDexDevDebug
 > Task :react-native-reanimated:configureCMakeDebug[arm64-v8a]
 > Task :react-native-reanimated:buildCMakeDebug[arm64-v8a]
 > Task :react-native-reanimated:mergeDebugJniLibFolders UP-TO-DATE
+> Task :react-native-reanimated:mergeDebugNativeLibs UP-TO-DATE
+> Task :react-native-reanimated:copyDebugJniLibsProjectOnly UP-TO-DATE
 > Task :react-native-restart:mergeDebugJniLibFolders UP-TO-DATE
 > Task :react-native-restart:mergeDebugNativeLibs NO-SOURCE
 > Task :react-native-restart:copyDebugJniLibsProjectOnly UP-TO-DATE
 > Task :react-native-safe-area-context:mergeDebugJniLibFolders UP-TO-DATE
 > Task :react-native-safe-area-context:mergeDebugNativeLibs NO-SOURCE
 > Task :react-native-safe-area-context:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-reanimated:mergeDebugNativeLibs
 > Task :react-native-screens:configureCMakeDebug[arm64-v8a]
-> Task :react-native-reanimated:copyDebugJniLibsProjectOnly
 > Task :react-native-screens:buildCMakeDebug[arm64-v8a]
 > Task :react-native-screens:mergeDebugJniLibFolders UP-TO-DATE
+> Task :react-native-screens:mergeDebugNativeLibs UP-TO-DATE
+> Task :react-native-screens:copyDebugJniLibsProjectOnly UP-TO-DATE
 > Task :react-native-share:mergeDebugJniLibFolders UP-TO-DATE
 > Task :react-native-share:mergeDebugNativeLibs NO-SOURCE
 > Task :react-native-share:copyDebugJniLibsProjectOnly UP-TO-DATE
@@ -1242,13 +1218,11 @@ w: file:///Users/stark/Desktop/work/RN/circleapp/android/app/src/main/java/com/c
 > Task :react-native-svg:mergeDebugNativeLibs NO-SOURCE
 > Task :react-native-svg:copyDebugJniLibsProjectOnly UP-TO-DATE
 > Task :react-native-vector-icons:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-screens:mergeDebugNativeLibs
 > Task :react-native-vector-icons:mergeDebugNativeLibs NO-SOURCE
 > Task :react-native-vector-icons:copyDebugJniLibsProjectOnly UP-TO-DATE
 > Task :react-native-version-check:mergeDebugJniLibFolders UP-TO-DATE
 > Task :react-native-version-check:mergeDebugNativeLibs NO-SOURCE
 > Task :react-native-version-check:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-screens:copyDebugJniLibsProjectOnly
 > Task :react-native-wallet-manager:mergeDebugJniLibFolders UP-TO-DATE
 > Task :react-native-wallet-manager:mergeDebugNativeLibs NO-SOURCE
 > Task :react-native-wallet-manager:copyDebugJniLibsProjectOnly UP-TO-DATE
@@ -1261,13 +1235,13 @@ w: file:///Users/stark/Desktop/work/RN/circleapp/android/app/src/main/java/com/c
 > Task :shopify_flash-list:mergeDebugJniLibFolders UP-TO-DATE
 > Task :shopify_flash-list:mergeDebugNativeLibs NO-SOURCE
 > Task :shopify_flash-list:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :app:mergeDevDebugNativeLibs UP-TO-DATE
+> Task :app:stripDevDebugDebugSymbols UP-TO-DATE
 > Task :app:validateSigningDevDebug UP-TO-DATE
 > Task :app:writeDevDebugAppMetadata UP-TO-DATE
 > Task :app:writeDevDebugSigningConfigVersions UP-TO-DATE
-> Task :app:mergeDevDebugNativeLibs
-> Task :app:stripDevDebugDebugSymbols
 > Task :app:packageDevDebug
-> Task :app:createDevDebugApkListingFileRedirect
+> Task :app:createDevDebugApkListingFileRedirect UP-TO-DATE
 
 > Task :app:installDevDebug
 Installing APK 'app-dev-debug.apk' on 'PJJ110 - 16' for :app:dev-debug
@@ -1281,8 +1255,8 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 4m 24s
-901 actionable tasks: 25 executed, 876 up-to-date
+BUILD SUCCESSFUL in 1m 34s
+901 actionable tasks: 9 executed, 892 up-to-date
 info Connecting to the development server...
 8081
 error Failed to install the app on the device.
@@ -1293,12 +1267,8 @@ Error: Could not find the correct install APK file.
     at runOnSpecificDevice (/Users/stark/Desktop/work/RN/circleapp/node_modules/@react-native-community/cli-platform-android/build/commands/runAndroid/index.js:227:7)
     at buildAndRun (/Users/stark/Desktop/work/RN/circleapp/node_modules/@react-native-community/cli-platform-android/build/commands/runAndroid/index.js:187:12)
     at Object.runAndroid [as func] (/Users/stark/Desktop/work/RN/circleapp/node_modules/@react-native-community/cli-platform-android/build/commands/runAndroid/index.js:116:10)
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async Command.handleAction (/Users/stark/Desktop/work/RN/circleapp/node_modules/@react-native-community/cli/build/index.js:118:9)
+    at Command.handleAction (/Users/stark/Desktop/work/RN/circleapp/node_modules/@react-native-community/cli/build/index.js:118:23)
+    at Command.listener [as _actionHandler] (/Users/stark/Desktop/work/RN/circleapp/node_modules/commander/lib/command.js:482:17)
+    at /Users/stark/Desktop/work/RN/circleapp/node_modules/commander/lib/command.js:1283:65
+    at Command._chainOrCall (/Users/stark/Desktop/work/RN/circleapp/node_modules/commander/lib/command.js:1177:12)
 info Run CLI with --verbose flag for more details.
-
----
-exit_code: 1
-elapsed_ms: 269460
-ended_at: 2026-09-21T02:13:49.278Z
----
