@@ -1,11 +1,11 @@
 {
   "name": "search_design_system",
-  "description": "Search for design system assets (components, variables, and styles) based on a text query. Returns matching assets from all design libraries. Use this when you need to find specific components, variables (e.g. colors, spacing tokens), or styles from design libraries.\nTo combine searches already required for the task, pass a `queries` array in one call instead of issuing multiple calls; never add speculative terms, synonyms, variants, or checklist items to fill a batch. Results are keyed by query text. Provide either `query` or `queries`, not both.",
+  "description": "Search for design system assets (components, variables, and styles). Returns matching assets from all design libraries. Use this when you need to find specific components, variables (e.g. colors, spacing tokens), or styles from design libraries. For new calls, pass `queries` as an array of objects, never strings. Each object must contain `entity` (`\"component\"`, `\"variable\"`, or `\"style\"`) and a string `query`. Example: `{\"fileKey\":\"<file key>\",\"queries\":[{\"entity\":\"component\",\"query\":\"button\"},{\"entity\":\"variable\",\"query\":\"surface\"}]}`. Do not pass `{\"queries\":[\"button\"]}`. Combine searches already required for the task in one call, without speculative terms, synonyms, variants, or checklist items. Results are keyed by query text. Provide either `query` or `queries`, not both.",
   "arguments": {
     "type": "object",
     "properties": {
       "query": {
-        "description": "DEPRECATED: use `queries` with one entry. A text query describing one design-system asset to find. Use a specific component, variable, or style name, or a short natural-language phrase. Multi-word names and phrases are allowed. Each query MUST express exactly one search intent. You MUST NOT combine alternatives, synonyms, or unrelated searches in one query; this tool does NOT apply OR semantics. To run several independent searches, pass them as separate entries in `queries` instead of making one call each.",
+        "description": "DEPRECATED: use `queries` with one object entry. A text query describing one design-system asset to find. Use a specific component, variable, or style name, or a short natural-language phrase. Multi-word names and phrases are allowed. Each query MUST express exactly one search intent. You MUST NOT combine alternatives, synonyms, or unrelated searches in one query; this tool does NOT apply OR semantics. To run several independent searches, pass them as separate object entries in `queries` instead of making one call each.",
         "deprecated": true,
         "type": "string"
       },
