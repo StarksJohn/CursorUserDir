@@ -104,7 +104,6 @@ description: >-
 - 不把医学建议写成确诊或处方替代，不混入其它项目假设，不创建无关文档或脚本。
 
 ## 当前活跃需求(不要修改这部分的子内容)
-
 <!-- - **Android / Google Play — 16KB 内存页大小**  
   - 场景：在 `android` 下构建 **prodRelease** AAB 并上传 Play Console 后出现 **Does not support 16 KB** / 原生库未对齐 16KB 页面等提示。  
     - 之前的具体报错是 Libraries that do not support 16 KB:
@@ -204,15 +203,7 @@ description: >-
   - **可参考先例**：`D:\work\RN\amber-medical-app-rn\16KB_PAGE_SIZE_SOLUTION_GUIDE.md` 中的解决思路（迁移到本仓库时需按当前 Gradle、NDK、依赖版本调整）。  
   - 具体涉及的 `.so` 列表以 **Play 报错或本地分析结果** 为准，不必在 skill 内重复冗长清单。
   - 把你每轮的回答都用最精简的内容更新到 `{workspace}/16KB_PAGE_SIZE_SOLUTION_GUIDE.md`（业务仓库根：**Windows** `D:\work\RN\CircleAppNew`；**macOS** `/Users/<你的用户名>/Desktop/work/RN/circleapp`，当前 Mac：`/Users/stark/Desktop/work/RN/circleapp`）,保证每次开启新的chat后,都可以借助 这个文档 恢复这个项目的最小必要上下文;不要修改 **Windows** `%USERPROFILE%\.cursor\skills\ask-CircleAppNew\SKILL.md` / **macOS** `/Users/<你的用户名>/.cursor/skills/ask-CircleAppNew/SKILL.md` 的 `当前活跃需求` 里的内容 -->
-
-# win
-<!-- - 在业务仓库根目录执行（**Windows** `D:\work\RN\CircleAppNew`；**macOS** `/Users/<你的用户名>/Desktop/work/RN/circleapp`，当前 Mac：`/Users/stark/Desktop/work/RN/circleapp`）
-  - `cd android; .\gradlew assembleRelease`
-    -  `npm run android:dev_win` 把当前项目的debug模式 -->
-  <!-- - 的app运行到了如图![img_114112.png](img_114112.png)![img_114124.png](img_114124.png)型号的真机上,真机所在的时区是 `东八区` -->
-<!-- - 我现在想 构建 这个项目的 prod 环境的 `.aab` 文件 ; 是否需要先 copy `.env.production` to `.env`,再 执行 `./gradlew bundleProdRelease `; 还是直接执行  `./gradlew bundleProdRelease `? -->
-
-# MAC
+### MAC
 - IOS:
   - 为当前 checkout 构建 `dev` 环境的 `xxx`版本的 Release 模式 的 IPA,使用前把 `xxx` 换成 `1.0.3`, 作为真实的 `version`，并真实上传到 CircleApp / CDV Health (Dev) 的 TestFlight：`https://appstoreconnect.apple.com/teams/1f49f429-f33a-4c15-b357-7025b5e32451/apps/6781207370/testflight/ios`（Apple ID `6781207370`，套装 ID `com.healshealthcare.circlemedical.dev`）。上传前仍须在当前登录态打开该页，确认 App 名称是 `CDV Health (Dev)` 且套装 ID 仍匹配；禁止沿用 Heals Dev `6740129703`、Heals Prod `6544800416`，也禁止把 `android/google-services.json` 残留 `app_store_id` `6544800416` 当作本项目 App Store ID。本任务明确授权构建和上传，但不授权自动提交 Git、push、分配测试群组、回答出口合规问题或发布到 App Store。
     0. Release IPA 闪退防护硬门禁（未全部通过不得 archive / 导出 / 上传）。RN 0.81 默认 New Architecture ON；`Info.plist` 缺少 `RCTNewArchEnabled` key 等于打开。只改 plist、不关 compile-time New Arch，或 `react-native-reanimated` / `react-native-date-picker` / `react-native-screens` 漂移，会打出启动即闪退的 Release IPA。归档前必须同时满足：
