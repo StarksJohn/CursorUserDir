@@ -1,0 +1,26 @@
+{
+  "name": "weave_get_model_run_output",
+  "description": "Gets the output and status of Weave model runs started with weave_run_model. Pass the `predictionIds` those calls returned. This is for model runs only — for a run of a Weave tool (a published Weave workflow) use weave_get_tool_run_output instead. Poll this after weave_run_model to track progress and read the output. The response also includes curl instructions for downloading the outputs — the URL+curl path is strongly preferred because it uses far fewer tokens than embedding media inline.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "predictionIds": {
+        "minItems": 1,
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "The prediction ids to fetch output for, as returned by weave_run_model."
+      }
+    },
+    "required": [
+      "predictionIds"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

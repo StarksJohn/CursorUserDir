@@ -6,9 +6,9 @@
     "type": "object",
     "properties": {
       "uri": {
-        "description": "URI to open in Glass or through the default opener (e.g. file:///path/to/file.ts#L10, vscode-terminal:/workspaceId/3, output:channel-id, https://example.com)",
         "type": "string",
-        "minLength": 1
+        "minLength": 1,
+        "description": "URI to open in Glass or through the default opener (e.g. file:///path/to/file.ts#L10, vscode-terminal:/workspaceId/3, output:channel-id, https://example.com)"
       }
     },
     "required": [

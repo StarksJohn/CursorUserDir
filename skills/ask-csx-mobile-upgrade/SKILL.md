@@ -128,19 +128,20 @@ description: >-
 
 ### 当前阶段
 
-- 最新已知发布基线来自 Codex 对照入口的 2026-06-21 快照：iOS `1.1.9 (20260621190308)` 已由 `{workspace}/ios-release-upload-testflight.sh` 完成 archive、IPA 校验和 TestFlight 上传。该外部平台状态可能已变化，相关任务开始时必须实时复核。
-- 当前未完成范围以本文件未注释的「当前活跃需求」为准：`MAC` 下的 IOS Release IPA，以及 Android Debug 真机、Release APK 和 Prod AAB。外部平台状态必须实时复核。
+- 分支 `1.1.8-stark-dev`，HEAD `948fa457`。`global.env` 已是 `poc`，本轮没有改它。New Architecture 与 Hermes 仍为开启，本轮没有改这三项。
+- TECH-9093（iPhone 14 Pro Max / iOS 18.7.8 打不开通知）的代码改动留在工作树，尚未装到真机验收。个人中心推送开关现在跟随系统通知授权，不再被 FCM token 或服务端注册失败拉回关闭；未决定权限会走系统授权，已拒绝才去设置。
+- 当前未完成范围仍以本文件未注释的「当前活跃需求」为准。图 1 Debug IPA 已在列设备处停止，没有归档、没有安装。
 
 ### 外部阻塞与证据缺口
 
-- 尚无本文件可证明的目标 iPad 安装和真实运行结果；archive、IPA 导出或 TestFlight 上传不能替代真机运行验收。
+- 2026-09-22 没有正在连接的有线真机。唯一配对设备是彭燕的 iPad（iPad Air 3rd，iOS 18.7.8，UDID `00008020-000208CC2E23002E`），`devicectl` 的 `tunnelState` 为 disconnected，上次连接 2026-09-20，`xctrace` 把它列在 Devices Offline。模拟器和这台离线 iPad 都不是安装目标。
 - TestFlight build 当前是否仍为 processing / valid 未在本轮核验；只有任务依赖该状态时才访问 App Store Connect 实时确认。
 
 ### 最小下一步
 
-1. 用户只调用入口或只说“继续”时，只做「当前活跃需求」第一条 IOS 任务，做完即停。
-2. 用户本轮点名某一条时只做该条；先核对 `global.env`、版本号、Bundle ID 或包名，再构建或上传。
-3. 完成后覆盖更新本快照，删除已完成条目，仅保留新的阻塞和最小下一步。
+1. 用数据线把一台 iPhone 或 iPad 接到这台 Mac，并在 `xcrun xctrace list devices` 的在线 Devices 里出现后，再从「当前活跃需求」第一条 IOS Debug IPA 的设备确认继续。没有有线真机就不要归档。
+2. 真机启动后看个人中心「推送通知设置」：系统已允许通知时开关应为开；未决定时点开关应弹出系统授权；已拒绝时才进入系统设置。
+3. 用户只调用入口或只说“继续”时，只做第一条 IOS 任务，做完即停。
 
 ## 输出与边界
 
@@ -155,30 +156,44 @@ description: >-
 - MAC
   - 这些条目都是可执行发布任务。用户本轮点名哪一条就只做哪一条；只调用入口或只说“继续”时，只做第一条 IOS 任务，做完即停。
   - IOS:
+    - 为当前 checkout 构建 `xxx` 环境的 Debug IPA，并安装、启动到已经用数据线接在当前 Mac 上的那一台真机。使用前把 `xxx` 换成 `poc` 或 `prod`；用户口头的 dev 对应 `poc`，本轮没写环境时用 `poc`。`version` 沿用 YouTrackMobile target 当前的 `MARKETING_VERSION`（仓库里现在是 `1.1.8`），只有用户本轮另外给出版本才改。本任务授权构建这个 Debug IPA、装到这台已连接真机并启动。不授权提交 Git、push、上传 TestFlight、邀请测试员、回答出口合规或发布到 App Store。禁止使用 CircleApp / CDV / Heals 的 Apple ID（`6781207370`、`6748490218`、`6740129703`、`6544800416`）或 Bundle ID `com.healshealthcare.circlemedical`。模拟器、仅无线连接的设备和没有插线的设备都不是目标。
+      1. 构建前核对 New Architecture 与 Hermes 仍与仓库一致：`android/gradle.properties` 为 `newArchEnabled=true`，`ios/YouTrackMobile/Info.plist` 的 `RCTNewArchEnabled` 为 true，`ios/Podfile` 的 `:hermes_enabled => true`。本仓库当前是开启状态。不得套用 CircleApp 的关闭门禁，未经用户本轮明确要求不得改这三项。
+      2. 确认项目根、分支、HEAD 和工作树。保留已有未提交改动，不执行 clean/reset。读取 `ios/YouTrackMobile.xcworkspace`、scheme `YouTrackMobile`、`ios/YouTrackMobile.xcodeproj` 里 YouTrackMobile target 的 Debug configuration、`Info.plist`、`Podfile`、`android/gradle.properties`、`global.ts` 和 `ios/AppDelegate.swift`。
+      3. 把 `global.ts` 的 `global.env` 设成已经替换好的环境。本仓库只有 `poc` 和 `prod`，没有 Dev scheme，也没有第二套 Bundle ID。目标是 scheme `YouTrackMobile` + configuration `Debug`，产物 `YouTrackMobile.app`，Bundle ID `asia.cs.mobile`，显示名 `CS Mobile`，Team `HS8K5BGDV7`，Debug 的 `CODE_SIGN_IDENTITY` 为 `Apple Development`，`CODE_SIGN_STYLE=Automatic`。不得使用 scheme `YouTrackMobile[Release]`，不得使用 configuration `Release`，不得使用测试 target 的 `org.reactjs.native.example.*`。
+      4. `YouTrackMobile.xcscheme` 和 `YouTrackMobile[Release].xcscheme` 的 ArchiveAction 都写着 `Release`。归档命令必须自己带上 `-configuration Debug`，不能靠 scheme 的默认归档配置。不要为了这次安装去改 scheme 文件，也不要改 `MARKETING_VERSION` 或 `CURRENT_PROJECT_VERSION`，更不要为了真机去查 App Store Connect 已经用过的 build。
+      5. 用 `xcrun devicectl list devices` 列设备，必要时再用 `xcrun xctrace list devices` 对照。只接受状态可用、连接类型是 wired / USB 的 iPhone 或 iPad。一台有线真机都没有就停止。多于一台有线真机时停下列出 UDID、名称和系统版本，等用户指定，不得猜。模拟器、unavailable、nearby、network 设备都排除。记下这一台的 UDID。
+      6. 用 `xcodebuild -workspace ios/YouTrackMobile.xcworkspace -scheme YouTrackMobile -configuration Debug -destination 'generic/platform=iOS' -showBuildSettings` 核对 `CONFIGURATION=Debug`、`PRODUCT_BUNDLE_IDENTIFIER=asia.cs.mobile`、`MARKETING_VERSION`、`DEVELOPMENT_TEAM=HS8K5BGDV7`，以及 `CODE_SIGN_IDENTITY` 含 Apple Development。有一项对不上就停止，不要连带改 Release 或测试 target。
+      7. 执行 `xcode-select -p`、`xcodebuild -version`、`xcrun --sdk iphoneos --show-sdk-version`。默认 Xcode 优先 `/Applications/Xcode.app/Contents/Developer`。已经有别的 `xcodebuild` 占着同一 DerivedData 或 Archive 时只留一个任务，本次用单独的 DerivedData 和 Archive 路径。
+      8. 在项目根归档。推荐骨架：`xcodebuild -workspace ios/YouTrackMobile.xcworkspace -scheme YouTrackMobile -configuration Debug -destination 'generic/platform=iOS' -derivedDataPath <unique-derived-data> -archivePath <unique-archive>.xcarchive CODE_SIGN_STYLE=Automatic DEVELOPMENT_TEAM=HS8K5BGDV7 CODE_SIGN_IDENTITY='Apple Development' -allowProvisioningUpdates archive`。不要用 `npm run ios`，那不是这条任务要的 Debug IPA。不要改成 `-destination 'id=<UDID>'` 直接 build 来躲开 IPA；只有导出 IPA 失败并写明原因后，才允许降级安装刚编出来的 `.app`，而且最终报告要写明没有 IPA。
+      9. Archive 成功后先证明这次归档是 Debug：看构建日志里的 `CONFIGURATION=Debug`，再核 `.xcarchive` 里的 `YouTrackMobile.app`。核对 `CFBundleIdentifier=asia.cs.mobile`、`CFBundleDisplayName=CS Mobile`、`CFBundleShortVersionString`、`RCTNewArchEnabled=true`、Team，以及 `codesign --verify --deep --strict`。`AppDelegate.swift` 在 `DEBUG` 下通过 `RCTBundleURLProvider` 加载 `index`，不把包内的 `main.jsbundle` 当作这次启动的 JS。身份有一项不符，就不得导出，也不得安装。
+      10. 写一份临时 exportOptions.plist：`method=development`、`signingStyle=automatic`、`teamID=HS8K5BGDV7`、`compileBitcode=false`、`stripSwiftSymbols=false`。不得使用 `method=app-store-connect`、`ad-hoc` 或 `enterprise`。如果 Xcode 拒绝用 `development` 导出这份 Debug archive，再改用 `method=debugging` 导一次，并在结果里写明实际 method。导出后核对 IPA 的 Bundle ID、version、`Apple Development` 签名和 SHA-256。不得拿旧 IPA 或 Release IPA 去装。
+      11. 在项目根另开 Metro：`npm start`。已经有一个 cwd 和端口都对得上、监听 8081 的 Metro 就复用，不要再起第二个。Debug IPA 不内置 Release 用的 `main.jsbundle`，真机起来后要向 Mac 拉 `index`。数据线只负责安装，不会自动把 8081 转到手机。手机和 Mac 要在同一个局域网；不在同一网络时，把开发菜单里的 bundler 设为 `ipconfig getifaddr en0` 得到的地址再加端口 `8081`。空的 `ios/.metro-host.local` 不是已经配好的打包机地址。
+      12. 安装并启动：`xcrun devicectl device install app --device <UDID> <ipa>`，然后 `xcrun devicectl device process launch --device <UDID> asia.cs.mobile`。安装失败时先看开发描述文件是否包含这台 UDID，不要改 Bundle ID，也不要换 Team。启动后用 `xcrun devicectl device process list --device <UDID>` 确认 `asia.cs.mobile` 在跑，并用 `xcrun devicectl device screenshot --device <UDID> <png路径>` 留下当前画面；本机的 devicectl 没有 screenshot 子命令时，改用 Xcode 的 Devices 窗口截图，并在结果里说明。红屏 “Could not connect to development server” 表示手机还连不上 Metro，先把打包机地址修通再停。只把 IPA 装上去，不能写成应用已经跑起来。
+      13. 最终报告写出：设备名称、UDID、iOS 版本、有线连接、`global.env`、scheme `YouTrackMobile`、configuration `Debug`、Bundle ID、显示名、version、Xcode/SDK、New Arch / Hermes 仍为开启、Archive 与 IPA 的路径、大小、SHA-256、实际 export method、Metro 是否在 8081、安装和启动回执、截图路径。不提交、不 push、不上传 TestFlight。`global.env` 的改动留在工作树里，并在结果里写明。
     - 为当前 checkout 构建 `poc`（对应用户口头的 dev）环境的 `xxx` 版本 Release IPA。使用前把 `xxx` 换成 `1.1.8`，作为真实的 `version`，并真实上传到套装 ID 为 `asia.cs.mobile`、显示名为 `CS Mobile` 的 TestFlight。上传前必须在当前登录态打开 App Store Connect，按套装 ID 定位本应用。禁止使用 CircleApp / CDV / Heals 的 Apple ID（`6781207370`、`6748490218`、`6740129703`、`6544800416`）或 Bundle ID `com.healshealthcare.circlemedical`。本任务授权构建和上传，不授权提交 Git、push、邀请测试员、回答出口合规或发布到 App Store。
-      0. 归档前核对 New Architecture 与 Hermes 仍与仓库一致：`android/gradle.properties` 为 `newArchEnabled=true`，`ios/YouTrackMobile/Info.plist` 的 `RCTNewArchEnabled` 为 true，`ios/Podfile` 的 `:hermes_enabled => true`。本仓库当前是开启状态。不得套用 CircleApp 的关闭门禁，未经用户本轮明确要求不得改这三项。
-      1. 确认项目根、分支、HEAD 和工作树。保留已有未提交改动，不执行 clean/reset。读取 `ios/YouTrackMobile.xcworkspace`、scheme `YouTrackMobile[Release]`、`ios/YouTrackMobile.xcodeproj` 的 YouTrackMobile target、`Info.plist`、`Podfile`、`android/gradle.properties` 和 `package.json`。
-      2. 归档前把 `global.ts` 的 `global.env` 设为 `poc`。本仓库没有 Dev scheme，也没有第二套 Bundle ID。目标是 scheme `YouTrackMobile[Release]` + configuration `Release`，产物 `YouTrackMobile.app`，Bundle ID `asia.cs.mobile`，显示名 `CS Mobile`，Team `HS8K5BGDV7`。不得归档 scheme `YouTrackMobile` 的 Debug，也不得使用测试 target 的 `org.reactjs.native.example.*`。
-      3. `version` 优先用用户本轮指定值；否则用已替换的 `1.1.8`。只改 YouTrackMobile target 的 Release configuration 的 `MARKETING_VERSION`。`CURRENT_PROJECT_VERSION` 必须大于 App Store Connect 上该 App 已占用的 build，且为纯十进制正整数。页面读不到、套装 ID 不是 `asia.cs.mobile` 或应用名不是 `CS Mobile` 时，停止在上传前。
-      4. 用 `xcodebuild -workspace ios/YouTrackMobile.xcworkspace -scheme 'YouTrackMobile[Release]' -configuration Release -showBuildSettings` 核对 version、build、Bundle ID、Team。不要连带改 Debug 或测试 target。
-      5. 归档前执行 `xcode-select -p`、`xcodebuild -version`、`xcrun --sdk iphoneos --show-sdk-version`。默认 Xcode 优先 `/Applications/Xcode.app/Contents/Developer`。已有其它 `xcodebuild` 占用同一 Archive 时只保留一个任务，并为本次 version/build 使用独立 DerivedData 和 Archive 路径。
-      6. 从项目根归档。推荐骨架：`xcodebuild -workspace ios/YouTrackMobile.xcworkspace -scheme 'YouTrackMobile[Release]' -configuration Release -destination 'generic/platform=iOS' -derivedDataPath <unique-derived-data> -archivePath <unique-archive>.xcarchive CODE_SIGN_STYLE=Automatic DEVELOPMENT_TEAM=HS8K5BGDV7 -allowProvisioningUpdates archive`。不要用 `npm run ios`。
-      7. Archive 成功后核验 `CFBundleIdentifier=asia.cs.mobile`、`CFBundleShortVersionString`、`CFBundleVersion`、`RCTNewArchEnabled=true`、Team 和 `codesign --verify --deep --strict`。任一不符不得导出或上传。
-      8. 用 `method=app-store-connect`、automatic signing、Team `HS8K5BGDV7`、`manageAppVersionAndBuildNumber=false` 导出 IPA。再核 Bundle ID、version/build、签名和 SHA-256。不得拿旧 IPA 上传。
-      9. 仅在校验通过后上传到已核对的 `asia.cs.mobile` App。成功必须同时有上传工具的 `Upload succeeded`，以及 App Store Connect 构建列表出现本次 version/build。出口合规提示只报告，不代答。Apple 已接收时不得用同一 build 重传。
-      10. 最终报告 App、version/build、Xcode/SDK、`global.env=poc`、New Arch / Hermes 仍为开启、Archive 与 IPA 路径、大小、SHA-256、上传回执和未覆盖范围。不提交、不 push。`global.env` 的改动留在工作树并在结果里写明。
+      1. 归档前核对 New Architecture 与 Hermes 仍与仓库一致：`android/gradle.properties` 为 `newArchEnabled=true`，`ios/YouTrackMobile/Info.plist` 的 `RCTNewArchEnabled` 为 true，`ios/Podfile` 的 `:hermes_enabled => true`。本仓库当前是开启状态。不得套用 CircleApp 的关闭门禁，未经用户本轮明确要求不得改这三项。
+      2. 确认项目根、分支、HEAD 和工作树。保留已有未提交改动，不执行 clean/reset。读取 `ios/YouTrackMobile.xcworkspace`、scheme `YouTrackMobile[Release]`、`ios/YouTrackMobile.xcodeproj` 的 YouTrackMobile target、`Info.plist`、`Podfile`、`android/gradle.properties` 和 `package.json`。
+      3. 归档前把 `global.ts` 的 `global.env` 设为 `poc`。本仓库没有 Dev scheme，也没有第二套 Bundle ID。目标是 scheme `YouTrackMobile[Release]` + configuration `Release`，产物 `YouTrackMobile.app`，Bundle ID `asia.cs.mobile`，显示名 `CS Mobile`，Team `HS8K5BGDV7`。不得归档 scheme `YouTrackMobile` 的 Debug，也不得使用测试 target 的 `org.reactjs.native.example.*`。
+      4. `version` 优先用用户本轮指定值；否则用已替换的 `1.1.8`。只改 YouTrackMobile target 的 Release configuration 的 `MARKETING_VERSION`。`CURRENT_PROJECT_VERSION` 必须大于 App Store Connect 上该 App 已占用的 build，且为纯十进制正整数。页面读不到、套装 ID 不是 `asia.cs.mobile` 或应用名不是 `CS Mobile` 时，停止在上传前。
+      5. 用 `xcodebuild -workspace ios/YouTrackMobile.xcworkspace -scheme 'YouTrackMobile[Release]' -configuration Release -showBuildSettings` 核对 version、build、Bundle ID、Team。不要连带改 Debug 或测试 target。
+      6. 归档前执行 `xcode-select -p`、`xcodebuild -version`、`xcrun --sdk iphoneos --show-sdk-version`。默认 Xcode 优先 `/Applications/Xcode.app/Contents/Developer`。已有其它 `xcodebuild` 占用同一 Archive 时只保留一个任务，并为本次 version/build 使用独立 DerivedData 和 Archive 路径。
+      7. 从项目根归档。推荐骨架：`xcodebuild -workspace ios/YouTrackMobile.xcworkspace -scheme 'YouTrackMobile[Release]' -configuration Release -destination 'generic/platform=iOS' -derivedDataPath <unique-derived-data> -archivePath <unique-archive>.xcarchive CODE_SIGN_STYLE=Automatic DEVELOPMENT_TEAM=HS8K5BGDV7 -allowProvisioningUpdates archive`。不要用 `npm run ios`。
+      8. Archive 成功后核验 `CFBundleIdentifier=asia.cs.mobile`、`CFBundleShortVersionString`、`CFBundleVersion`、`RCTNewArchEnabled=true`、Team 和 `codesign --verify --deep --strict`。任一不符不得导出或上传。
+      9. 用 `method=app-store-connect`、automatic signing、Team `HS8K5BGDV7`、`manageAppVersionAndBuildNumber=false` 导出 IPA。再核 Bundle ID、version/build、签名和 SHA-256。不得拿旧 IPA 上传。
+      10. 仅在校验通过后上传到已核对的 `asia.cs.mobile` App。成功必须同时有上传工具的 `Upload succeeded`，以及 App Store Connect 构建列表出现本次 version/build。出口合规提示只报告，不代答。Apple 已接收时不得用同一 build 重传。
+      11. 最终报告 App、version/build、Xcode/SDK、`global.env=poc`、New Arch / Hermes 仍为开启、Archive 与 IPA 路径、大小、SHA-256、上传回执和未覆盖范围。不提交、不 push。`global.env` 的改动留在工作树并在结果里写明。
     - 为当前 checkout 构建 `prod` 环境的 `xxx` 版本 Release IPA。使用前把 `xxx` 换成 `1.1.8`，作为真实的 `version`，并真实上传到同一个套装 ID `asia.cs.mobile`、显示名 `CS Mobile` 的 TestFlight。本仓库 prod 与 poc 共用 Bundle ID，差别只在 `global.env`。禁止上传到 CircleApp / CDV / Heals，也不要把 CircleApp 截图里的测试员 `cham2015@126.com` / 彭燕 加进本应用。本任务授权构建和上传，不授权提交 Git、push、邀请测试员、回答出口合规或发布到 App Store。
-      0. 归档前的 New Architecture / Hermes 核对与 poc 任务相同，必须仍为开启。不得为了“对齐 CircleApp”改成 false。
-      1. 确认项目根、分支、HEAD 和工作树，保留未提交改动。读取与 poc 任务相同的工程文件。
-      2. 归档前把 `global.ts` 的 `global.env` 设为 `prod`。scheme、configuration、Bundle ID、显示名、Team 与 poc 任务相同。
-      3. `version` 规则与 poc 相同，默认 `1.1.8`。build 必须未被该 App 占用。套装 ID 或应用名不匹配时停止在上传前。
-      4. 只更新 Release configuration 的 `MARKETING_VERSION` 和 `CURRENT_PROJECT_VERSION`，再用 `-showBuildSettings` 复核。
-      5. Xcode/SDK 与并发归档约束与 poc 任务相同。
-      6. 使用与 poc 相同的 `xcodebuild archive` 骨架，但本次 `global.env` 必须已经是 `prod`。
-      7. Archive 与 IPA 的 Bundle ID 必须是 `asia.cs.mobile`，不得是 Android 包名 `com.csx.mobile.app`，也不得是 CircleApp Bundle ID。`RCTNewArchEnabled` 必须仍为 true。
-      8. 导出、签名和 SHA-256 校验与 poc 任务相同。校验失败不得上传。
-      9. 上传成功标准与 poc 相同，目标仍是已核对的 `CS Mobile` / `asia.cs.mobile`。不邀请新测试员，不代答出口合规。
-      10. 最终报告必须写明 `global.env=prod`、version/build、产物路径和上传回执。不提交、不 push。
+      1. 归档前的 New Architecture / Hermes 核对与 poc 任务相同，必须仍为开启。不得为了“对齐 CircleApp”改成 false。
+      2. 确认项目根、分支、HEAD 和工作树，保留未提交改动。读取与 poc 任务相同的工程文件。
+      3. 归档前把 `global.ts` 的 `global.env` 设为 `prod`。scheme、configuration、Bundle ID、显示名、Team 与 poc 任务相同。
+      4. `version` 规则与 poc 相同，默认 `1.1.8`。build 必须未被该 App 占用。套装 ID 或应用名不匹配时停止在上传前。
+      5. 只更新 Release configuration 的 `MARKETING_VERSION` 和 `CURRENT_PROJECT_VERSION`，再用 `-showBuildSettings` 复核。
+      6. Xcode/SDK 与并发归档约束与 poc 任务相同。
+      7. 使用与 poc 相同的 `xcodebuild archive` 骨架，但本次 `global.env` 必须已经是 `prod`。
+      8. Archive 与 IPA 的 Bundle ID 必须是 `asia.cs.mobile`，不得是 Android 包名 `com.csx.mobile.app`，也不得是 CircleApp Bundle ID。`RCTNewArchEnabled` 必须仍为 true。
+      9. 导出、签名和 SHA-256 校验与 poc 任务相同。校验失败不得上传。
+      10. 上传成功标准与 poc 相同，目标仍是已核对的 `CS Mobile` / `asia.cs.mobile`。不邀请新测试员，不代答出口合规。
+      11. 最终报告必须写明 `global.env=prod`、version/build、产物路径和上传回执。不提交、不 push。
   - android:
     - 执行 `npm run android`，把当前项目 `1.1.8` 版本、`global.env=poc` 的 debug APK 装到已授权真机上。本仓库没有 `npm run android:dev`。用 `adb devices -l` 锁定设备，时区是东八区。遇到 LogBox 红条报错直接修，黄条警告不作为停止条件。用 adb 截取当前画面，确认真机上的应用能打开且环境正确后再停；否则不要自动结束任务。
     - 为当前 checkout 构建 `poc` 环境的 `xxx` 版本 Release APK。使用前把 `xxx` 换成 `1.1.8`，作为真实的 `versionName`，或在本轮消息里明确写出 version。本任务授权构建，并把签过名的 Release APK 上传到蒲公英应用 `https://www.pgyer.com/manager/dashboard/app/8f9c603763ea7f12e3c53fffb83692d3`，使该应用显示本次包为最新。不授权自动安装到真机、提交 Git、push、上传 Google Play，或上传到 CircleApp 的 `cdvhealth` / `cdvhealthdev` 及其 agKey。

@@ -8,9 +8,9 @@
         "type": "object",
         "properties": {
           "rootPath": {
-            "description": "Absolute path to the directory that should become the agent root workspace (e.g. \"/Users/name/projects/my-app\")",
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "Absolute path to the directory that should become the agent root workspace (e.g. \"/Users/name/projects/my-app\")"
           }
         },
         "required": [
@@ -22,13 +22,13 @@
         "type": "object",
         "properties": {
           "rootPaths": {
-            "description": "Array of absolute paths used to create/switch to a multi-root workspace.",
             "minItems": 1,
             "type": "array",
             "items": {
               "type": "string",
               "minLength": 1
-            }
+            },
+            "description": "Array of absolute paths used to create/switch to a multi-root workspace."
           }
         },
         "required": [
