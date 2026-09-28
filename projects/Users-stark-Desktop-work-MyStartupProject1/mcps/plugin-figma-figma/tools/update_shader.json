@@ -1,0 +1,88 @@
+{
+  "name": "update_shader",
+  "description": "You MUST load the figma-shaders skill before calling this tool. If it is not installed, read skill://figma/figma-shaders/SKILL.md with resources/read or get_figma_skill. Use this when the user asks to update, revise, or republish an existing Figma shader, shader effect, shader fill, custom effect, custom fill, or procedural shader. Updates an existing shader effect or fill in the authenticated user's account library. Provide its id, matching kind, existing authored files to replace, optional name, description, animation, and mouse metadata, and a required Git commit message describing the change. The update is built, versioned, and deployed; the response includes the new version. Use create_shader first when no shader exists.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The id of the existing resource to update."
+      },
+      "files": {
+        "default": [],
+        "description": "Existing main.ts to replace. New files cannot be created.",
+        "maxItems": 5,
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "const": "main.ts",
+              "description": "The existing shader entrypoint path."
+            },
+            "content": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Complete replacement content for main.ts."
+            }
+          },
+          "required": [
+            "path",
+            "content"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "metadata": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "New display name for the shader.",
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "description": "New one-line description for the shader.",
+            "type": "string",
+            "minLength": 1
+          },
+          "isAnimated": {
+            "description": "Whether the shader renders over time.",
+            "type": "boolean"
+          },
+          "usesMouse": {
+            "description": "Whether the shader reads the mouse position.",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "commitMessage": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Required Git commit message describing this update."
+      },
+      "kind": {
+        "type": "string",
+        "enum": [
+          "effect",
+          "fill"
+        ],
+        "description": "The existing shader kind. It must match the resource identified by id."
+      }
+    },
+    "required": [
+      "id",
+      "commitMessage",
+      "kind"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

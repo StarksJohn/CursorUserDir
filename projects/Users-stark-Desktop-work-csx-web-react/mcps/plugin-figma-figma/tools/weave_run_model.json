@@ -1,0 +1,36 @@
+{
+  "name": "weave_run_model",
+  "description": "Runs a Weave AI model directly — no Weave tool needed — and returns a prediction id; poll it with weave_get_model_run_output. Call weave_find_model first for the model `id` and its `contract`. Running spends the user's Weave credits, so it is gated: a call without `acknowledgedCost` only quotes and spends nothing, returning `inputs_required` or `cost_confirmation_required` with instructions to follow. Always show the user the cost and get an explicit Approve/Cancel (a structured prompt, not free text) before echoing `acknowledgedCost` to run — every run, including reruns. Ask the user for any input you don't have; never invent one.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The model's `id` from weave_find_model."
+      },
+      "input": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string"
+        },
+        "additionalProperties": {},
+        "description": "The values to run with, keyed by the names in weave_find_model's `contract` — its `inputs` and `params` together, as one flat object. Send an array only for a field that declares `maxItems`; a field without one takes a single value."
+      },
+      "acknowledgedCost": {
+        "description": "The `cost` this tool quoted in its `cost_confirmation_required` response, echoed back after the user approves, to confirm the spend and run. Omit it on the first call.",
+        "type": "number"
+      }
+    },
+    "required": [
+      "id",
+      "input"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

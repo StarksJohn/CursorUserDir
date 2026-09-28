@@ -1,0 +1,32 @@
+{
+  "name": "get_shader",
+  "description": "Reads a shader effect or shader fill from the account library by id (from list_shaders), returning its name, description, owner, type, version, and a manifest of its source files as { filename, bytes, uri }. Owner is the authenticated user's email for their shaders, or figma for first-party shaders. Read each file's contents from its uri as an MCP resource. Only set includeSource to true to add source to each file when the MCP client cannot read MCP resources. Pass an optional version (commit SHA) to read a specific build; defaults to the latest.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The id of the resource to read, taken from the matching list tool."
+      },
+      "version": {
+        "description": "Optional 40-character commit SHA. Defaults to the latest built version.",
+        "type": "string"
+      },
+      "includeSource": {
+        "default": false,
+        "description": "Include each file's source directly in the tool result, up to 100 files and 1,000,000 cumulative bytes. The result reports which limit caused truncation. Leave this false unless the MCP client cannot read MCP resources.",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

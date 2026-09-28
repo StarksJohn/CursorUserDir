@@ -1,0 +1,19 @@
+{
+  "name": "list_shaders",
+  "description": "Lists the shader effects and shader fills in the authenticated user's account library. Returns each shader's id, name, description, owner, and type (effect or fill), plus a nextCursor when more pages exist. Owner is the authenticated user's email for their shaders, or figma for first-party shaders. Use the id with get_shader to read either shader type's source.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "cursor": {
+        "description": "Pagination cursor returned as nextCursor by a previous call. Omit to fetch the first page.",
+        "type": "string"
+      }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}
