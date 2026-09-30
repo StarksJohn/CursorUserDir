@@ -1,16 +1,10 @@
 {
   "name": "search_design_system",
-  "description": "Search for design system assets (components, variables, and styles) based on a text query. Returns matching assets from all design libraries. Use this when you need to find specific components, variables (e.g. colors, spacing tokens), or styles from design libraries.\nTo combine searches already required for the task, pass a `queries` array in one call instead of issuing multiple calls; never add speculative terms, synonyms, variants, or checklist items to fill a batch. Results are keyed by query text. Provide either `query` or `queries`, not both.",
+  "description": "Search for design system assets (components, variables, and styles). Returns matching assets from all design libraries. Use this when you need to find specific components, variables (e.g. colors, spacing tokens), or styles from design libraries. Pass `queries` as an array of objects, never strings. Each object must contain `entity` (`\"component\"`, `\"variable\"`, or `\"style\"`) and a string `query`. Example: `{\"fileKey\":\"<file key>\",\"queries\":[{\"entity\":\"component\",\"query\":\"button\"},{\"entity\":\"variable\",\"query\":\"surface\"}]}`. Do not pass `{\"queries\":[\"button\"]}`. Combine searches already required for the task in one call, without speculative terms, synonyms, variants, or checklist items. Results are returned in a `results` array in the same order as `queries`; each item repeats its `entity` and `query`.",
   "arguments": {
     "type": "object",
     "properties": {
-      "query": {
-        "description": "DEPRECATED: use `queries` with one entry. A text query describing one design-system asset to find. Use a specific component, variable, or style name, or a short natural-language phrase. Multi-word names and phrases are allowed. Each query MUST express exactly one search intent. You MUST NOT combine alternatives, synonyms, or unrelated searches in one query; this tool does NOT apply OR semantics. To run several independent searches, pass them as separate entries in `queries` instead of making one call each.",
-        "deprecated": true,
-        "type": "string"
-      },
       "queries": {
-        "description": "Array of search objects. Each entry must specify `entity` as exactly \"component\", \"variable\", or \"style\" (singular), and `query` as a string. Example: [{\"entity\":\"component\",\"query\":\"button\"}]. Deprecated top-level `includeComponents`, `includeVariables`, and `includeStyles` do not replace the required `entity` in each entry. Run multiple design-system searches in one call instead of issuing separate calls per term. Each entry must be an asset already identified as needed for the current task, exactly as `query` would be. Do not add speculative terms, generic checklists, synonyms, or naming variants to fill a batch. Use one batched call instead of parallel tool calls. Inspect results before deciding on a follow-up, and do not treat an empty result as a reason to try alternate terms. Provide EITHER query OR queries, not both. Results are returned in the same order as the entries.",
         "type": "array",
         "items": {
           "type": "object",
@@ -26,7 +20,7 @@
             },
             "query": {
               "type": "string",
-              "description": "Text query describing one design-system asset of the specified entity type to find."
+              "description": "Text query describing one design-system asset of the specified entity type to find. Use a specific asset name or a short natural-language phrase. Multi-word names and phrases are allowed. Each query MUST express exactly one search intent. You MUST NOT combine alternatives, synonyms, or unrelated searches in one query; this tool does NOT apply OR semantics."
             }
           },
           "required": [
@@ -34,7 +28,8 @@
             "query"
           ],
           "additionalProperties": false
-        }
+        },
+        "description": "Array of search objects. Each entry must specify `entity` as exactly \"component\", \"variable\", or \"style\" (singular), and `query` as a string. Example: [{\"entity\":\"component\",\"query\":\"button\"}]. Run multiple design-system searches in one call instead of issuing separate calls per term. Each entry must be an asset already identified as needed for the current task. Do not add speculative terms, generic checklists, synonyms, or naming variants to fill a batch. Use one batched call instead of parallel tool calls. Inspect results before deciding on a follow-up, and do not treat an empty result as a reason to try alternate terms. Results are returned in the same order as the entries."
       },
       "fileKey": {
         "type": "string",
@@ -42,24 +37,6 @@
       },
       "disableCodeConnect": {
         "description": "Whether to disable Code Connect for search results.",
-        "type": "boolean"
-      },
-      "includeComponents": {
-        "default": true,
-        "description": "DEPRECATED: use `queries` entries with `entity: \"component\"` instead. Controls whether legacy top-level `query` calls include components. Defaults to true. Ignored when using `queries`.",
-        "deprecated": true,
-        "type": "boolean"
-      },
-      "includeVariables": {
-        "default": true,
-        "description": "DEPRECATED: use `queries` entries with `entity: \"variable\"` instead. Controls whether legacy top-level `query` calls include variables. Defaults to true. Ignored when using `queries`.",
-        "deprecated": true,
-        "type": "boolean"
-      },
-      "includeStyles": {
-        "default": true,
-        "description": "DEPRECATED: use `queries` entries with `entity: \"style\"` instead. Controls whether legacy top-level `query` calls include styles. Defaults to true. Ignored when using `queries`.",
-        "deprecated": true,
         "type": "boolean"
       },
       "includeLibraryKeys": {
@@ -71,6 +48,7 @@
       }
     },
     "required": [
+      "queries",
       "fileKey"
     ],
     "$schema": "https://json-schema.org/draft/2020-12/schema",

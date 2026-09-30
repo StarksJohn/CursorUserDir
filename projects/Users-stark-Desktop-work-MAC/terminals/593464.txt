@@ -1,0 +1,15 @@
+---
+pid: 3750
+cwd: "/Users/stark/Desktop/work/MAC"
+command: "env -u HTTP_PROXY -u HTTPS_PROXY -u http_proxy -u https_proxy -u ALL_PROXY -u all_proxy \\\n  nscurl --ats-diagnostics --verbose https://mac.uu.163.com > /tmp/nscurl-uu.txt 2>&1\necho EXIT:$?\nwc -l /tmp/nscurl-uu.txt\nrg -n 'HTTP/|Proxy|proxy|PASS|FAIL|error|Error' /tmp/nscurl-uu.txt | head -n 40\necho '=== clash log after ==='\nLOG=$(ls -t \"/Users/stark/Library/Application Support/io.github.clash-verge-rev.clash-verge-rev/logs/sidecar/\"*.log | head -n 1)\necho \"$LOG\"\nrg -n 'uu\\.163|netease' \"$LOG\" | tail -n 10 || true\nrm -f /tmp/nscurl-uu.txt\n"
+title: "Retest UU host through system proxy"
+status: failed   
+started_at: 2026-09-30T17:31:56.435Z
+running_for_ms: 36328    
+---
+
+---
+exit_code: unknown
+elapsed_ms: 36328
+ended_at: 2026-09-30T17:32:32.763Z
+---
