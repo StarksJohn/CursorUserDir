@@ -230,11 +230,12 @@ description: >-
     - `e2e/` 与 `playwright.config.ts`，对照 `package.json` 的 `qa:launch`。
     - 学完标准：能指出登录、计划入口、analytics、观测、Stripe/Creem webhook 各自有哪份测试，以及哪些测试故意不打真实外部服务。
 - 正在学习的内容:
-  - 第 1 章。`pnpm run prod:dev` 启动到服务器 Ready 的文件链已经讲完。下次逐段读 `scripts/prod-dev.ts` 怎么注入 env；`next.config.ts` 的配置项还没逐项讲。`scripts/verify-env.ts` 不在这条启动链路里。
+  - 第 1 章后半。`pnpm run prod:dev` 的启动顺序和会碰的文件已经讲完。下次读 `scripts/verify-env.ts` 的检查规则，再读 `next.config.ts` 里各项配置的作用，并对照 README「环境 / 常用命令」。
 - 已经学习的内容:
   - 2026-09-23：只核对了目录、启动脚本和 README 工程入口，用来写出上面的大纲。
   - 2026-09-23：讲完 `package.json` 的顶层字段、`engines`、全部 `scripts`、`dependencies` 与 `devDependencies`。`zustand` 只出现在依赖清单里，当前 `src` 没有引用。
-  - 2026-09-23：讲完 `pnpm run prod:dev` 启动到 Ready 的项目文件链：`package.json` → `scripts/prod-dev.ts` → 读取 `.env.production.local` → 启动 `next dev` → 加载 `next.config.ts` → 执行 `instrumentation.ts` → 在 Node 运行时加载 `sentry.server.config.ts`。Next 还会读取 `.env.local` 和 `.env`，已经注入的同名变量保持优先。`scripts/verify-env.ts`、`sentry.client.config.ts`、`sentry.edge.config.ts` 和 `src/app/` 页面不在 Ready 之前执行。 
+  - 2026-09-23：`pnpm run prod:dev` 只直接执行 `scripts/prod-dev.ts`，再由它启动 `next dev`。`scripts/verify-env.ts` 不在这条链路里。`next.config.ts` 由 Next.js 启动时加载，不是 `prod-dev.ts` 点名执行的脚本。
+  - 2026-09-29：讲完 `pnpm run prod:dev` 的启动流程。进程起来时会执行 `scripts/prod-dev.ts`，读取 `.env.production.local`，再启动 `next dev`；Next 接着加载 `next.config.ts` 和 `instrumentation.ts`，nodejs 运行时再加载 `sentry.server.config.ts`。`scripts/verify-env.ts`、页面、API 和 `src/lib/prisma.ts` 都不在这次启动执行里。`prisma.ts` 要等某个页面或 API 第一次引用它才运行。 
 
 ## 最新待继续问题(不要修改这部分的子内容)
 <!-- - 借鉴`/Users/stark/.codex/skills/csx-web-react/SKILL.md`,优化当前skill,让每次执行完当前项目相关的任务后,先判断是否需要在当前skill里或者相关文档里更新项目的最新状态和下一步需要做的任务列表,以及沉淀项目的事实,如果需要,再这么做;用于新chat里恢复上下文 -->

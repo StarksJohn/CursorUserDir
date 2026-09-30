@@ -32,7 +32,9 @@
       },
       "fileKey": {
         "description": "Optional. The key of an existing FigJam file to add the diagram to. Extract from a Figma URL like figma.com/board/{fileKey}/... When provided, the diagram is placed directly in this file instead of creating a new one. The user must have edit access to the file.",
-        "type": "string"
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[0-9a-zA-Z]{22,128}$"
       }
     },
     "required": [
