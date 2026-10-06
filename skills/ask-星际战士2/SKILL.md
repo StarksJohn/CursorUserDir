@@ -30,6 +30,12 @@ description: >-
 - 2026-10-02 `19:26:56` 网关日志的 `stopping` 是 Mac 正常重启（`kern.boottime` 19:27:14，`ShutdownCause: 1: Normal warm reset`，无 panic 报告），launchd 关机时发 SIGTERM，脚本按设计清理后退出；不是 Clash Verge 杀的，也不是网关崩溃。重启期间 PS5 断网，游戏会掉线。
 - 同日 `19:28` Clash Verge 报 `process verge-mihomo remains after IPC failure; refusing a second core`、没有节点，原因是网关内核当时也叫 `verge-mihomo`；已改名 `ps5-mihomo`，之后两个内核并存无报错。Clash Verge 二进制里没有按名字批量 kill 的逻辑。
 
+- 2026-10-06 组队时游戏延迟超过 200ms：（1）发现网关数据包风暴，`ps5-mihomo` 空载 CPU 约 150%，`utun233` 每秒约 40 万包进、20 万包出；root 抓包显示全是 PS5 的 mDNS 组播（`172.22.2.4:5353 > 224.0.0.251:5353`）在网关里循环。原因是 pf 规则 `to ! 172.22.0.0/16` 也把组播和广播送进了 TUN。已在 `pf.conf` 首行放行 `224.0.0.0/4` 和 `255.255.255.255`（不 route-to），并在 `ps5-gateway.sh` 加了风暴看门狗（10 秒内增量超 150 万包且连续两次就重启 mihomo）。PS5 离线，修复效果未实测。（2）物理路径：经 HK 出口到欧洲约 200ms、美国约 270ms（估算），到亚洲约 30–80ms。队友或房主在欧美时延迟本来就会超过 200ms。详见 Mac 基线文档「组队延迟超过 200ms 排查」。
+
+- 2026-10-06 `18:35` 风暴复发并导致错误代码 142：看门狗检测到进包数异常后重启 mihomo，PS5 到 `prismray.io` 的 TCP 连接被一起断开，那一局结束后弹出「连接丢失（错误代码：142）」。风暴前 4 秒 PS5 发出一条 UDP 到队友私网地址 `192.168.137.1:48895`（命中 `192.168.0.0/16 DIRECT`），说明只排除组播不够。已在 `pf.conf` 增加 `block drop` 丢弃 PS5 发往 `10/8`、`192.168/16`、`169.254/16`、`100.64/10` 的 UDP（推断的触发路径，未证实）；看门狗首次异常时会把抓包和连接列表存到 `/usr/local/ps5-clash-gateway/storm-*.txt` 和 `.connections.json`（保留 5 份）。再次遇到 142 或风暴，先读这些文件和 `gateway.log` 里的 `high packet rate`、`packet storm`。同日更正：不要仅凭 whois 国家和 ping 断定对局服务器位置，要核对游戏内显示的延迟。
+
+- 2026-10-06 `18:49` 修复后的验证：到 `19:23` 共 34 分钟，联机一局稳定约 50ms，无风暴日志、无 `storm-*` 证据文件，`ps5-mihomo` CPU 为 0.0%。重启后不开 Clash Verge 网关照样加速（provider 是 `File` 类型，日志里没有 `7897` 或 `clash-verge`；未实测过完全不开 Clash Verge 玩一局）。唯一联系是订阅文件：它只在 Clash Verge 运行时更新，建议每天开一次；套餐 `2026-10-11` 到期。延迟水平由对局服务器和房主位置决定，约 50ms 说明对手在香港或华南一带（推断）；无法保证任何地区队友都低于 70ms。详见 Mac 基线文档「PS5 组队延迟高与错误代码 142 排查」。
+
 ## 当前方案
 
 | 项 | 值 |
@@ -39,7 +45,7 @@ description: >-
 | 节点来源 | `/Users/stark/Library/Application Support/io.github.clash-verge-rev.clash-verge-rev/profiles/RuG18m6w29Or.yaml`（Clash Verge 当前订阅「辐射网络」），每小时重读 |
 | 选节点 | `PS5` = fallback[`HK`, `JP`, `TW`, `US`]，各组为 url-test（每 5 分钟测 `gstatic generate_204`，容差 80ms）；优先香港最快可用节点。provider 必须开 health-check（`enable: true`、`interval: 300`、`lazy: false`），否则不会测速、只停在第一个节点。换节点时已建立的连接留在原节点 |
 | 内核 | `/usr/local/ps5-clash-gateway/ps5-mihomo`，即 Mihomo `v1.19.31` 副本；日志级别 `warning`。进程名不能是 `verge-mihomo`，否则 Clash Verge 会把它当成自己的残留内核并拒绝启动 |
-| 转发 | `en0` 别名 `172.22.1.4/16`；pf 锚点 `com.apple/ps5-clash` 只把源地址 `172.22.2.4` 的包 `route-to utun233`；IP 转发开启 |
+| 转发 | `en0` 别名 `172.22.1.4/16`；pf 锚点 `com.apple/ps5-clash` 只把源地址 `172.22.2.4` 的单播包 `route-to utun233`（发往 `224.0.0.0/4`、`255.255.255.255` 的组播广播包先 `pass`，不进 TUN）；IP 转发开启 |
 | DNS | PS5 的 DNS 请求被网关劫持，经所选节点走 `1.1.1.1` / `8.8.8.8` DoH |
 | 本机端口 | 控制接口 `127.0.0.1:9098`（密钥在 `secret`）、测试用 mixed `127.0.0.1:7898`、DNS `127.0.0.1:1054` |
 
@@ -69,6 +75,7 @@ curl -s -H "Authorization: Bearer $SECRET" http://127.0.0.1:9098/connections | p
 
 2. **PS5 连不上网**：确认 UU 未在加速、`172.22.1.4` 在 `en0` 上、`mihomo.log` 里是否有 `dial ... timed out`。节点整体不通时手动测速刷新：`curl -s -H "Authorization: Bearer $SECRET" "http://127.0.0.1:9098/group/HK/delay?timeout=3000&url=https%3A%2F%2Fwww.gstatic.com%2Fgenerate_204"`。
 3. **游戏中途掉线（如错误代码 140）**：先查三件事，都正常就按瞬断处理，重启游戏即可。一是订阅文件的 mtime 有没有变（`stat -f '%Sm' <订阅文件>`）；二是 `/providers/proxies/sub` 里各节点 `history` 有没有失败或切换；三是 `/connections` 里 PS5 的连接从哪个时间点开始重建。频繁复现时，经用户同意把 `config.yaml` 的 `log-level` 改为 `info`，记录每条连接，定位后再改回 `warning`。
+3a. **游戏延迟高（如组队超过 200ms）**：PS5 在线时先看三项。一是 `ps -o pcpu= -p $(pgrep -f 'ps5-mihomo -d')` 是否空载仍有高 CPU；二是 `netstat -I utun233 -b` 隔几秒看输入包数增长（正常远低于每秒 5 万；每秒数十万是风暴，重启服务可解除，抓包需要 root：`tcpdump -i utun233 -n -c 40`）；三是 `/connections` 里 `sourceIP=172.22.2.4` 的目标地址和链路。节点测速值（200–900ms）不是路径往返延迟，不要拿它判断游戏延迟，需要路径估算时用 `curl -x http://127.0.0.1:7898 -w '%{time_appconnect}' https://s3.<区域>.amazonaws.com/`，往返约为结果的一半。
 4. **临时固定某个节点**（重启服务后恢复自动）：`curl -X PUT -H "Authorization: Bearer $SECRET" -H 'Content-Type: application/json' -d '{"name":"香港C7"}' http://127.0.0.1:9098/proxies/HK`。
 5. **需要 root 的操作**用 `osascript -e 'do shell script "..." with administrator privileges'`，让用户在密码框里输入：
    - 重启：`launchctl kickstart -k system/com.stark.ps5-clash-gateway`

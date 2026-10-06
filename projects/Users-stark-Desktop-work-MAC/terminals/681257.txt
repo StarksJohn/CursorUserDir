@@ -1,0 +1,33 @@
+---
+pid: 5774
+cwd: "/Users/stark/Desktop/work/MAC"
+command: "sleep 20\ntail -n 8 /usr/local/ps5-clash-gateway/gateway.log\necho '=== utun233 counters ==='\nfor i in 1 2 3; do netstat -I utun233 -b | sed -n 2p | awk '{print \"in_pkts\",$4,\"out_pkts\",$7}'; sleep 3; done\npgrep -f 'ps5-mihomo -d' | head -n1 | xargs -I{} ps -o pid=,pcpu=,etime= -p {}\necho '=== 4782 / 7897 ==='; lsof -nP -iTCP:4782 -sTCP:LISTEN | awk 'NR>1{print $1,$2}'; lsof -nP -iTCP:7897 -sTCP:LISTEN | awk 'NR>1{print $1,$2}'\necho '=== pf anchor rules (via mihomo-visible state) ==='; ifconfig utun233 | rg inet"
+title: "Verify storm is gone after restart"
+status: succeeded
+started_at: 2026-10-06T10:05:21.320Z
+running_for_ms: 30439    
+---
+2026-10-06 17:37:14 node refresh done
+2026-10-06 18:05:04 stopping
+2026-10-06 18:05:04 started mihomo=5712 pf_token=6989435746884014217
+2026-10-06 18:05:04 alias 172.22.1.4 added
+2026-10-06 18:05:04 network up
+2026-10-06 18:05:08 node refresh done
+2026-10-06 18:05:18 pf anchor loaded
+2026-10-06 18:05:41 node refresh done
+=== utun233 counters ===
+in_pkts 0 out_pkts 0
+in_pkts 0 out_pkts 0
+in_pkts 0 out_pkts 0
+ 5712   0.0 00:47
+=== 4782 / 7897 ===
+Python 937
+verge-mih 2351
+=== pf anchor rules (via mihomo-visible state) ===
+	inet 198.18.0.1 --> 198.18.0.1 netmask 0xfffffffc
+
+---
+exit_code: 0
+elapsed_ms: 30439
+ended_at: 2026-10-06T10:05:51.759Z
+---

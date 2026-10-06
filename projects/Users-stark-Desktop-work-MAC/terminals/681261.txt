@@ -1,0 +1,43 @@
+---
+pid: 9415
+cwd: "/Users/stark/Desktop/work/MAC"
+command: "for ip in 185.14.47.246 89.39.161.227; do\n  echo \"=== $ip whois ===\"; whois $ip 2>/dev/null | rg -i '^(netname|country|org-name|descr|OrgName|Country|city|address):' | head -n 8\ndone\necho '=== direct ping from Mac (not via node) ==='\nfor ip in 185.14.47.246 89.39.161.227; do ping -c 4 -t 6 $ip | tail -n 2; done\necho '=== via PS5 gateway exit (HK), TCP connect timing ==='\nfor ip in 185.14.47.246 89.39.161.227; do for p in 443 80; do\n  curl -s -m 6 -x http://127.0.0.1:7898 -o /dev/null -w \"$ip:$p code=%{http_code} connect_via_proxy=%{time_appconnect} pretransfer=%{time_pretransfer} total=%{time_total}\\n\" http://$ip:$p/ ; done; done"
+title: "Locate game session server and measure RTT"
+status: failed   
+started_at: 2026-10-06T10:24:44.615Z
+running_for_ms: 46572    
+---
+=== 185.14.47.246 whois ===
+netname:        LU-GCORELABS-20121224
+country:        DE
+org-name:       G-Core Labs S.A.
+country:        LU
+address:        2-4, rue Edmond Reuter
+address:        L-5326
+address:        Contern
+address:        LUXEMBOURG
+=== 89.39.161.227 whois ===
+descr:          G-Core Labs Customer assignment
+netname:        LU-GCORELABS-20051129
+country:        BR
+org-name:       G-Core Labs S.A.
+country:        LU
+address:        2-4, rue Edmond Reuter
+address:        L-5326
+address:        Contern
+=== direct ping from Mac (not via node) ===
+4 packets transmitted, 4 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 163.020/166.079/173.599/4.355 ms
+--- 89.39.161.227 ping statistics ---
+4 packets transmitted, 0 packets received, 100.0% packet loss
+=== via PS5 gateway exit (HK), TCP connect timing ===
+185.14.47.246:443 code=000 connect_via_proxy=0.000000 pretransfer=0.000394 total=6.004472
+185.14.47.246:80 code=000 connect_via_proxy=0.000000 pretransfer=0.000351 total=6.006619
+89.39.161.227:443 code=000 connect_via_proxy=0.000000 pretransfer=0.000380 total=6.005165
+89.39.161.227:80 code=000 connect_via_proxy=0.000000 pretransfer=0.000435 total=6.005034
+
+---
+exit_code: 28
+elapsed_ms: 46571
+ended_at: 2026-10-06T10:25:31.186Z
+---
