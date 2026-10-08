@@ -128,9 +128,9 @@ description: >-
 
 ### 当前阶段
 
-- 分支 `1.1.8-stark-dev`，HEAD `24ac336b`。`global.env` 仍是 `poc`，本轮没有改它。New Architecture 与 Hermes 仍为开启，本轮没有改这三项。
-- 2026-10-08 已把 `1.1.8` / `poc` 的 debug 包装到授权真机 OPPO Reno11 Pro 5G（型号 `PJJ110`，序列号 `4ae24c72`，Android 16，时区 `Asia/Shanghai`）。安装包 `versionName=1.1.8`、`versionCode=1791442225`，前台是 `com.csx.mobile.app/.MainActivity`。运行日志里的 `global.env` 为 `poc`。允许通知后进入欢迎页，没有 LogBox 红屏。
-- 出包前按秒级时间戳把 `android/app/build.gradle` 的 `versionCode` 从 `24009` 改成 `1791442225`，这个改动留在工作树。`src/tools/common.ts` 的原有未提交改动未动。
+- 分支 `1.1.8-stark-dev`，HEAD `be71e428`，已推到 `origin/1.1.8-stark-dev`。`global.env` 仍是 `poc`。New Architecture 与 Hermes 仍为开启。
+- 2026-10-08 已把 `1.1.8` / `poc` 的 debug 包装到授权真机 OPPO Reno11 Pro 5G（型号 `PJJ110`，序列号 `4ae24c72`，Android 16，时区 `Asia/Shanghai`）。安装包 `versionName=1.1.8`、`versionCode=1791442225`。运行日志里的 `global.env` 为 `poc`。
+- `versionCode` 从 `24009` 改为 `1791442225`，以及生物识别关闭文案改为「帳戶與安全」，都已包含在 `be71e428`。工作树干净。
 - 当前未完成范围仍以本文件未注释的「当前活跃需求」为准。本轮只做了未注释的 Android debug 安装，没有做已注释的发布任务。
 
 ### 外部阻塞与证据缺口
