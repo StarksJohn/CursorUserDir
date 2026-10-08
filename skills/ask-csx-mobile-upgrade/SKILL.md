@@ -154,9 +154,9 @@ description: >-
 
 ## 当前活跃需求(不要修改这部分的子内容)
 - MAC
-  - 这些条目都是可执行发布任务。用户本轮点名哪一条就只做哪一条；只调用入口或只说“继续”时，只做第一条 IOS 任务，做完即停。
+  <!-- - 这些条目都是可执行发布任务。用户本轮点名哪一条就只做哪一条；只调用入口或只说“继续”时，只做第一条 IOS 任务，做完即停。 -->
   - IOS:
-    - 为当前 checkout 构建 `xxx` 环境的 Debug IPA，并安装、启动到已经用数据线接在当前 Mac 上的那一台真机。使用前把 `xxx` 换成 `poc` 或 `prod`；用户口头的 dev 对应 `poc`，本轮没写环境时用 `poc`。`version` 沿用 YouTrackMobile target 当前的 `MARKETING_VERSION`（仓库里现在是 `1.1.8`），只有用户本轮另外给出版本才改。本任务授权构建这个 Debug IPA、装到这台已连接真机并启动。不授权提交 Git、push、上传 TestFlight、邀请测试员、回答出口合规或发布到 App Store。禁止使用 CircleApp / CDV / Heals 的 Apple ID（`6781207370`、`6748490218`、`6740129703`、`6544800416`）或 Bundle ID `com.healshealthcare.circlemedical`。模拟器、仅无线连接的设备和没有插线的设备都不是目标。
+    <!-- - 为当前 checkout 构建 `xxx` 环境的 Debug IPA，并安装、启动到已经用数据线接在当前 Mac 上的那一台真机。使用前把 `xxx` 换成 `poc` 或 `prod`；用户口头的 dev 对应 `poc`，本轮没写环境时用 `poc`。`version` 沿用 YouTrackMobile target 当前的 `MARKETING_VERSION`（仓库里现在是 `1.1.8`），只有用户本轮另外给出版本才改。本任务授权构建这个 Debug IPA、装到这台已连接真机并启动。不授权提交 Git、push、上传 TestFlight、邀请测试员、回答出口合规或发布到 App Store。禁止使用 CircleApp / CDV / Heals 的 Apple ID（`6781207370`、`6748490218`、`6740129703`、`6544800416`）或 Bundle ID `com.healshealthcare.circlemedical`。模拟器、仅无线连接的设备和没有插线的设备都不是目标。
       1. 构建前核对 New Architecture 与 Hermes 仍与仓库一致：`android/gradle.properties` 为 `newArchEnabled=true`，`ios/YouTrackMobile/Info.plist` 的 `RCTNewArchEnabled` 为 true，`ios/Podfile` 的 `:hermes_enabled => true`。本仓库当前是开启状态。不得套用 CircleApp 的关闭门禁，未经用户本轮明确要求不得改这三项。
       2. 确认项目根、分支、HEAD 和工作树。保留已有未提交改动，不执行 clean/reset。读取 `ios/YouTrackMobile.xcworkspace`、scheme `YouTrackMobile`、`ios/YouTrackMobile.xcodeproj` 里 YouTrackMobile target 的 Debug configuration、`Info.plist`、`Podfile`、`android/gradle.properties`、`global.ts` 和 `ios/AppDelegate.swift`。
       3. 把 `global.ts` 的 `global.env` 设成已经替换好的环境。本仓库只有 `poc` 和 `prod`，没有 Dev scheme，也没有第二套 Bundle ID。目标是 scheme `YouTrackMobile` + configuration `Debug`，产物 `YouTrackMobile.app`，Bundle ID `asia.cs.mobile`，显示名 `CS Mobile`，Team `HS8K5BGDV7`，Debug 的 `CODE_SIGN_IDENTITY` 为 `Apple Development`，`CODE_SIGN_STYLE=Automatic`。不得使用 scheme `YouTrackMobile[Release]`，不得使用 configuration `Release`，不得使用测试 target 的 `org.reactjs.native.example.*`。
@@ -169,8 +169,9 @@ description: >-
       10. 写一份临时 exportOptions.plist：`method=development`、`signingStyle=automatic`、`teamID=HS8K5BGDV7`、`compileBitcode=false`、`stripSwiftSymbols=false`。不得使用 `method=app-store-connect`、`ad-hoc` 或 `enterprise`。如果 Xcode 拒绝用 `development` 导出这份 Debug archive，再改用 `method=debugging` 导一次，并在结果里写明实际 method。导出后核对 IPA 的 Bundle ID、version、`Apple Development` 签名和 SHA-256。不得拿旧 IPA 或 Release IPA 去装。
       11. 在项目根另开 Metro：`npm start`。已经有一个 cwd 和端口都对得上、监听 8081 的 Metro 就复用，不要再起第二个。Debug IPA 不内置 Release 用的 `main.jsbundle`，真机起来后要向 Mac 拉 `index`。数据线只负责安装，不会自动把 8081 转到手机。手机和 Mac 要在同一个局域网；不在同一网络时，把开发菜单里的 bundler 设为 `ipconfig getifaddr en0` 得到的地址再加端口 `8081`。空的 `ios/.metro-host.local` 不是已经配好的打包机地址。
       12. 安装并启动：`xcrun devicectl device install app --device <UDID> <ipa>`，然后 `xcrun devicectl device process launch --device <UDID> asia.cs.mobile`。安装失败时先看开发描述文件是否包含这台 UDID，不要改 Bundle ID，也不要换 Team。启动后用 `xcrun devicectl device process list --device <UDID>` 确认 `asia.cs.mobile` 在跑，并用 `xcrun devicectl device screenshot --device <UDID> <png路径>` 留下当前画面；本机的 devicectl 没有 screenshot 子命令时，改用 Xcode 的 Devices 窗口截图，并在结果里说明。红屏 “Could not connect to development server” 表示手机还连不上 Metro，先把打包机地址修通再停。只把 IPA 装上去，不能写成应用已经跑起来。
-      13. 最终报告写出：设备名称、UDID、iOS 版本、有线连接、`global.env`、scheme `YouTrackMobile`、configuration `Debug`、Bundle ID、显示名、version、Xcode/SDK、New Arch / Hermes 仍为开启、Archive 与 IPA 的路径、大小、SHA-256、实际 export method、Metro 是否在 8081、安装和启动回执、截图路径。不提交、不 push、不上传 TestFlight。`global.env` 的改动留在工作树里，并在结果里写明。
-    - 为当前 checkout 构建 `poc`（对应用户口头的 dev）环境的 `xxx` 版本 Release IPA。使用前把 `xxx` 换成 `1.1.8`，作为真实的 `version`，并真实上传到套装 ID 为 `asia.cs.mobile`、显示名为 `CS Mobile` 的 TestFlight。上传前必须在当前登录态打开 App Store Connect，按套装 ID 定位本应用。禁止使用 CircleApp / CDV / Heals 的 Apple ID（`6781207370`、`6748490218`、`6740129703`、`6544800416`）或 Bundle ID `com.healshealthcare.circlemedical`。本任务授权构建和上传，不授权提交 Git、push、邀请测试员、回答出口合规或发布到 App Store。
+      13. 最终报告写出：设备名称、UDID、iOS 版本、有线连接、`global.env`、scheme `YouTrackMobile`、configuration `Debug`、Bundle ID、显示名、version、Xcode/SDK、New Arch / Hermes 仍为开启、Archive 与 IPA 的路径、大小、SHA-256、实际 export method、Metro 是否在 8081、安装和启动回执、截图路径。不提交、不 push、不上传 TestFlight。`global.env` 的改动留在工作树里，并在结果里写明。 -->
+   
+    <!-- - 为当前 checkout 构建 `poc`（对应用户口头的 dev）环境的 `xxx` 版本 Release IPA。使用前把 `xxx` 换成 `1.1.8`，作为真实的 `version`，并真实上传到套装 ID 为 `asia.cs.mobile`、显示名为 `CS Mobile` 的 TestFlight。上传前必须在当前登录态打开 App Store Connect，按套装 ID 定位本应用。禁止使用 CircleApp / CDV / Heals 的 Apple ID（`6781207370`、`6748490218`、`6740129703`、`6544800416`）或 Bundle ID `com.healshealthcare.circlemedical`。本任务授权构建和上传，不授权提交 Git、push、邀请测试员、回答出口合规或发布到 App Store。
       1. 归档前核对 New Architecture 与 Hermes 仍与仓库一致：`android/gradle.properties` 为 `newArchEnabled=true`，`ios/YouTrackMobile/Info.plist` 的 `RCTNewArchEnabled` 为 true，`ios/Podfile` 的 `:hermes_enabled => true`。本仓库当前是开启状态。不得套用 CircleApp 的关闭门禁，未经用户本轮明确要求不得改这三项。
       2. 确认项目根、分支、HEAD 和工作树。保留已有未提交改动，不执行 clean/reset。读取 `ios/YouTrackMobile.xcworkspace`、scheme `YouTrackMobile[Release]`、`ios/YouTrackMobile.xcodeproj` 的 YouTrackMobile target、`Info.plist`、`Podfile`、`android/gradle.properties` 和 `package.json`。
       3. 归档前把 `global.ts` 的 `global.env` 设为 `poc`。本仓库没有 Dev scheme，也没有第二套 Bundle ID。目标是 scheme `YouTrackMobile[Release]` + configuration `Release`，产物 `YouTrackMobile.app`，Bundle ID `asia.cs.mobile`，显示名 `CS Mobile`，Team `HS8K5BGDV7`。不得归档 scheme `YouTrackMobile` 的 Debug，也不得使用测试 target 的 `org.reactjs.native.example.*`。
@@ -181,8 +182,9 @@ description: >-
       8. Archive 成功后核验 `CFBundleIdentifier=asia.cs.mobile`、`CFBundleShortVersionString`、`CFBundleVersion`、`RCTNewArchEnabled=true`、Team 和 `codesign --verify --deep --strict`。任一不符不得导出或上传。
       9. 用 `method=app-store-connect`、automatic signing、Team `HS8K5BGDV7`、`manageAppVersionAndBuildNumber=false` 导出 IPA。再核 Bundle ID、version/build、签名和 SHA-256。不得拿旧 IPA 上传。
       10. 仅在校验通过后上传到已核对的 `asia.cs.mobile` App。成功必须同时有上传工具的 `Upload succeeded`，以及 App Store Connect 构建列表出现本次 version/build。出口合规提示只报告，不代答。Apple 已接收时不得用同一 build 重传。
-      11. 最终报告 App、version/build、Xcode/SDK、`global.env=poc`、New Arch / Hermes 仍为开启、Archive 与 IPA 路径、大小、SHA-256、上传回执和未覆盖范围。不提交、不 push。`global.env` 的改动留在工作树并在结果里写明。
-    - 为当前 checkout 构建 `prod` 环境的 `xxx` 版本 Release IPA。使用前把 `xxx` 换成 `1.1.8`，作为真实的 `version`，并真实上传到同一个套装 ID `asia.cs.mobile`、显示名 `CS Mobile` 的 TestFlight。本仓库 prod 与 poc 共用 Bundle ID，差别只在 `global.env`。禁止上传到 CircleApp / CDV / Heals，也不要把 CircleApp 截图里的测试员 `cham2015@126.com` / 彭燕 加进本应用。本任务授权构建和上传，不授权提交 Git、push、邀请测试员、回答出口合规或发布到 App Store。
+      11. 最终报告 App、version/build、Xcode/SDK、`global.env=poc`、New Arch / Hermes 仍为开启、Archive 与 IPA 路径、大小、SHA-256、上传回执和未覆盖范围。不提交、不 push。`global.env` 的改动留在工作树并在结果里写明。 -->
+    
+    <!-- - 为当前 checkout 构建 `prod` 环境的 `xxx` 版本 Release IPA。使用前把 `xxx` 换成 `1.1.8`，作为真实的 `version`，并真实上传到同一个套装 ID `asia.cs.mobile`、显示名 `CS Mobile` 的 TestFlight。本仓库 prod 与 poc 共用 Bundle ID，差别只在 `global.env`。禁止上传到 CircleApp / CDV / Heals，也不要把 CircleApp 截图里的测试员 `cham2015@126.com` / 彭燕 加进本应用。本任务授权构建和上传，不授权提交 Git、push、邀请测试员、回答出口合规或发布到 App Store。
       1. 归档前的 New Architecture / Hermes 核对与 poc 任务相同，必须仍为开启。不得为了“对齐 CircleApp”改成 false。
       2. 确认项目根、分支、HEAD 和工作树，保留未提交改动。读取与 poc 任务相同的工程文件。
       3. 归档前把 `global.ts` 的 `global.env` 设为 `prod`。scheme、configuration、Bundle ID、显示名、Team 与 poc 任务相同。
@@ -193,10 +195,12 @@ description: >-
       8. Archive 与 IPA 的 Bundle ID 必须是 `asia.cs.mobile`，不得是 Android 包名 `com.csx.mobile.app`，也不得是 CircleApp Bundle ID。`RCTNewArchEnabled` 必须仍为 true。
       9. 导出、签名和 SHA-256 校验与 poc 任务相同。校验失败不得上传。
       10. 上传成功标准与 poc 相同，目标仍是已核对的 `CS Mobile` / `asia.cs.mobile`。不邀请新测试员，不代答出口合规。
-      11. 最终报告必须写明 `global.env=prod`、version/build、产物路径和上传回执。不提交、不 push。
+      11. 最终报告必须写明 `global.env=prod`、version/build、产物路径和上传回执。不提交、不 push。 -->
+  
   - android:
-    - 执行 `npm run android`，把当前项目 `1.1.8` 版本、`global.env=poc` 的 debug APK 装到已授权真机上。本仓库没有 `npm run android:dev`。用 `adb devices -l` 锁定设备，时区是东八区。遇到 LogBox 红条报错直接修，黄条警告不作为停止条件。用 adb 截取当前画面，确认真机上的应用能打开且环境正确后再停；否则不要自动结束任务。
-    - 为当前 checkout 构建 `poc` 环境的 `xxx` 版本 Release APK。使用前把 `xxx` 换成 `1.1.8`，作为真实的 `versionName`，或在本轮消息里明确写出 version。本任务授权构建，并把签过名的 Release APK 上传到蒲公英应用 `https://www.pgyer.com/manager/dashboard/app/8f9c603763ea7f12e3c53fffb83692d3`，使该应用显示本次包为最新。不授权自动安装到真机、提交 Git、push、上传 Google Play，或上传到 CircleApp 的 `cdvhealth` / `cdvhealthdev` 及其 agKey。
+    - 执行 `npm run android`，把当前项目 `1.1.8` 版本、`global.env=poc` 的 debug APK 装到已授权的如图![img_144658.png](img_144658.png)![img_144703.png](img_144703.png)真机上。本仓库没有 `npm run android:dev`。用 `adb devices -l` 锁定设备，时区是东八区。遇到 LogBox 红条报错直接修，黄条警告不作为停止条件。用 adb 截取当前画面，确认真机上的应用能打开且环境正确后再停；否则不要自动结束任务。
+    
+    <!-- - 为当前 checkout 构建 `poc` 环境的 `xxx` 版本 Release APK。使用前把 `xxx` 换成 `1.1.8`，作为真实的 `versionName`，或在本轮消息里明确写出 version。本任务授权构建，并把签过名的 Release APK 上传到蒲公英应用 `https://www.pgyer.com/manager/dashboard/app/8f9c603763ea7f12e3c53fffb83692d3`，使该应用显示本次包为最新。不授权自动安装到真机、提交 Git、push、上传 Google Play，或上传到 CircleApp 的 `cdvhealth` / `cdvhealthdev` 及其 agKey。
       1. 确认项目根、分支、HEAD 和工作树，保留未提交改动。读取 `package.json`、`android/app/build.gradle` 的 `applicationId` / `versionName` / `versionCode` / signingConfigs，以及 `global.ts`。
       2. 没有 productFlavor。目标是 `assembleRelease`，包名必须是 `com.csx.mobile.app`。构建前把 `global.env` 设为 `poc`。不得执行 `bundleRelease`，不得使用 `com.circleapp.cdv` 或 iOS Bundle ID。
       3. `versionName` 默认 `1.1.8`。不要用 `package.json` 的 `1.0.0`，也不要依赖 `YT_MOBILE_VERSION`，它目前没有写回 `versionName`。`versionCode` 改为大于文件中当前值、且小于 `2100000000` 的正整数；用户未指定时用当前值 + 1。不要照搬 CircleApp 的秒级时间戳，除非用户本轮要求。
@@ -206,15 +210,17 @@ description: >-
       7. 产物预期在 `android/app/build/outputs/apk/release/app-arm64-v8a-release.apk`（ABI split 只含 `arm64-v8a`）。核验包名 `com.csx.mobile.app`、`versionName`、`versionCode`、`apksigner verify --verbose --print-certs`（至少含 v2）、绝对路径、字节数和 SHA-256。不符不得上传。
       8. 上传前在已登录页面确认该蒲公英应用的包名是 `com.csx.mobile.app`。Chrome 上传不能直接读 `android/app/build/` 时，把已校验 APK 复制到系统临时目录，再核一次包名和版本后上传，结束后删除副本。刷新后台，最新一条的应用名、包名、Version 必须对得上本次 APK。最新包不是本次 APK 才算失败。处理中时等待，不重复上传同一文件。
       9. 默认不安装到设备，最终回复写明“未安装到设备”。只有用户本轮另外要求安装时，才 `adb install -r` 并启动 `com.csx.mobile.app/.MainActivity`。
-      10. 报告包名、改前/改后 versionName / versionCode、`global.env=poc`、APK 路径 / 大小 / SHA-256、签名和蒲公英核对结果。不提交、不 push。
-    - 为当前 checkout 构建 `prod` 环境的 `xxx` 版本 Release APK。使用前把 `xxx` 换成 `1.1.8`，作为真实的 `versionName`。包名仍是 `com.csx.mobile.app`，没有 `.dev` 后缀。本任务授权构建并上传到同一个蒲公英应用 `https://www.pgyer.com/manager/dashboard/app/8f9c603763ea7f12e3c53fffb83692d3`。不授权安装、提交 Git、push、上传 Google Play 或 CircleApp 蒲公英。
+      10. 报告包名、改前/改后 versionName / versionCode、`global.env=poc`、APK 路径 / 大小 / SHA-256、签名和蒲公英核对结果。不提交、不 push。 -->
+    
+    <!-- - 为当前 checkout 构建 `prod` 环境的 `xxx` 版本 Release APK。使用前把 `xxx` 换成 `1.1.8`，作为真实的 `versionName`。包名仍是 `com.csx.mobile.app`，没有 `.dev` 后缀。本任务授权构建并上传到同一个蒲公英应用 `https://www.pgyer.com/manager/dashboard/app/8f9c603763ea7f12e3c53fffb83692d3`。不授权安装、提交 Git、push、上传 Google Play 或 CircleApp 蒲公英。
       1. 步骤与 poc Release APK 相同，但构建前 `global.env` 必须是 `prod`。
       2. `versionName` 默认 `1.1.8`，`versionCode` 仍按当前值 + 1，除非用户指定。
       3. 只改 `versionName` / `versionCode` 和 `global.env`。不要改包名或签名。
       4. 命令仍是 `cd android && ./gradlew assembleRelease`。产物路径、包名校验、签名校验与 poc 任务相同。
       5. 上传目标仍是上述蒲公英应用。更新说明里写明本次是 `prod`。禁止传到 `cdvhealth` / `cdvhealthdev`。
-      6. 默认不安装。最终报告写明 `global.env=prod`、version、产物和蒲公英最新包是否就是本次 APK。
-    - 为当前 checkout 构建 `prod` 环境的 `xxx` 版本 Release AAB。使用前把 `xxx` 换成 `1.1.8`，作为真实的 `versionName`。本任务只授权构建签过名的 AAB。不要先复制 env 文件；直接执行 `bundleRelease`。不授权安装、提交 Git、push、上传蒲公英或 Google Play，也不把本包当成已提审。
+      6. 默认不安装。最终报告写明 `global.env=prod`、version、产物和蒲公英最新包是否就是本次 APK。 -->
+    
+    <!-- - 为当前 checkout 构建 `prod` 环境的 `xxx` 版本 Release AAB。使用前把 `xxx` 换成 `1.1.8`，作为真实的 `versionName`。本任务只授权构建签过名的 AAB。不要先复制 env 文件；直接执行 `bundleRelease`。不授权安装、提交 Git、push、上传蒲公英或 Google Play，也不把本包当成已提审。
       1. 确认项目根和工作树。读取 `android/app/build.gradle`、`android/gradle.properties` 的 `android.bundle.pageAlignment` 与 `newArchEnabled`，以及 `16_KB_memory_page_sizes/16KB_PAGE_SIZE_SOLUTION_GUIDE.md`。
       2. 目标是 `bundleRelease`，包名 `com.csx.mobile.app`。`global.env` 设为 `prod`。不得执行 `assembleRelease` 或任何带 flavor 的任务。
       3. `versionName` 默认 `1.1.8`。`versionCode` 大于当前值；用户未指定时 + 1。不为了取值去查 Play，除非用户本轮要求对照。
@@ -224,7 +230,7 @@ description: >-
       7. 产物预期在 `android/app/build/outputs/bundle/release/app-release.aab`。核验包名、`versionName`、`versionCode`、签名、路径、字节数和 SHA-256。优先用 `bundletool dump manifest`；没有 bundletool 时用等价命令，不得只看文件名。
       8. 按 `16_KB_memory_page_sizes/16KB_PAGE_SIZE_SOLUTION_GUIDE.md` 做本地 16KB 检查，至少覆盖 `lib/arm64-v8a/*.so`。未对齐则不得把该 AAB 当成可提审产物。本任务不上传 Play，也不上传蒲公英。
       9. 不安装 AAB。最终回复写明“未安装到设备”和“未上传”。
-      10. 报告包名、version、`bundleRelease`、AAB 路径 / 大小 / SHA-256、签名、16KB 结果和 `global.env=prod`。不提交、不 push、不提审。
+      10. 报告包名、version、`bundleRelease`、AAB 路径 / 大小 / SHA-256、签名、16KB 结果和 `global.env=prod`。不提交、不 push、不提审。 -->
 
 <!-- - figma-to-rn-toolkit 相关:
   - 请根据 `https://www.figma.com/design/Wa0Oa4oeMTy5H2Tk32ooqb/CSM?node-id=17126-28544&m=dev` 这个 Figma URL, 在 Windows `D:\work\RN\csx-mobile-upgrade\src\pages\Diagnosis\DiagnosisPage.tsx` / Mac `/Users/<你的用户名>/Desktop/work/RN/csx-mobile/src/pages/Diagnosis/DiagnosisPage.tsx` 页面 的 2018行 ,根据页面的代码风格和项目结构,设计实现 `React Native` 组件代码
