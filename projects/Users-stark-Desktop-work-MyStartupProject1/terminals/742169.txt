@@ -1,0 +1,41 @@
+---
+pid: 91503
+cwd: "/Users/stark/Desktop/work/MyStartupProject1"
+command: "pnpm run prod:dev"
+title: "Start local prod Next.js dev server"
+status: running  
+started_at: 2026-10-08T08:51:11.959Z
+running_for_ms: 6681352  
+---
+
+> fracture-recovery-companion@0.1.0 prod:dev /Users/stark/Desktop/work/MyStartupProject1
+> tsx scripts/prod-dev.ts
+
+prod:dev: injected 27 variables from .env.production.local
+prod:dev: APP_ENV=prod; NODE_ENV=development so the dev server can hot reload
+prod:dev: DATABASE_URL and DIRECT_URL are pinned to the prod Supabase project
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/stark/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /Users/stark/Desktop/work/MyStartupProject1/pnpm-lock.yaml
+
+▲ Next.js 16.1.1 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.4:3000
+- Environments: .env.local, .env
+- Experiments (use with caution):
+  · optimizePackageImports
+
+✓ Starting...
+✓ Ready in 5.8s
+ GET / 200 in 2.7s (compile: 1413ms, render: 1309ms)
+ GET / 200 in 207ms (compile: 12ms, render: 194ms)
+ GET /favicon.ico 200 in 326ms (compile: 309ms, render: 17ms)
+ GET /api/auth/session 200 in 1228ms (compile: 1208ms, render: 20ms)
+ GET / 200 in 123ms (compile: 11ms, render: 112ms)
+ GET /api/auth/session 200 in 24ms (compile: 12ms, render: 13ms)
+ GET /onboarding 200 in 483ms (compile: 414ms, render: 69ms)
+ GET /sign-in?callbackUrl=%2Fonboarding 200 in 1285ms (compile: 1169ms, render: 115ms)
+ GET /sign-in?callbackUrl=%2Fonboarding 200 in 68ms (compile: 7ms, render: 61ms)

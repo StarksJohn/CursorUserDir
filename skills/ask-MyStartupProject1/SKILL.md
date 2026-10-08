@@ -230,14 +230,16 @@ description: >-
     - `e2e/` 与 `playwright.config.ts`，对照 `package.json` 的 `qa:launch`。
     - 学完标准：能指出登录、计划入口、analytics、观测、Stripe/Creem webhook 各自有哪份测试，以及哪些测试故意不打真实外部服务。
 - 正在学习的内容:
-  - 第 1 章后半。`pnpm run prod:dev` 的启动顺序和会碰的文件已经讲完。下次读 `scripts/verify-env.ts` 的检查规则，再读 `next.config.ts` 里各项配置的作用，并对照 README「环境 / 常用命令」。
+  - 第 2 章。下次从 `src/app/layout.tsx` 和三个路由组 `(marketing)`、`(auth)`、`(app)` 的 `layout.tsx` 读起，再看 `src/components/providers/`、`src/lib/site.ts`、`src/lib/features.ts`、`src/lib/prisma.ts`、`instrumentation.ts` 与 `sentry.*.config.ts`。学完要能指出公开页、登录页、登录后页面各从哪个 layout 进来，以及当前 release 里 AI chat 开关在哪里关掉。
 - 已经学习的内容:
   - 2026-09-23：只核对了目录、启动脚本和 README 工程入口，用来写出上面的大纲。
   - 2026-09-23：讲完 `package.json` 的顶层字段、`engines`、全部 `scripts`、`dependencies` 与 `devDependencies`。`zustand` 只出现在依赖清单里，当前 `src` 没有引用。
   - 2026-09-23：`pnpm run prod:dev` 只直接执行 `scripts/prod-dev.ts`，再由它启动 `next dev`。`scripts/verify-env.ts` 不在这条链路里。`next.config.ts` 由 Next.js 启动时加载，不是 `prod-dev.ts` 点名执行的脚本。
-  - 2026-09-29：讲完 `pnpm run prod:dev` 的启动流程。进程起来时会执行 `scripts/prod-dev.ts`，读取 `.env.production.local`，再启动 `next dev`；Next 接着加载 `next.config.ts` 和 `instrumentation.ts`，nodejs 运行时再加载 `sentry.server.config.ts`。`scripts/verify-env.ts`、页面、API 和 `src/lib/prisma.ts` 都不在这次启动执行里。`prisma.ts` 要等某个页面或 API 第一次引用它才运行。 
+  - 2026-09-29：讲完 `pnpm run prod:dev` 的启动流程。进程起来时会执行 `scripts/prod-dev.ts`，读取 `.env.production.local`，再启动 `next dev`；Next 接着加载 `next.config.ts` 和 `instrumentation.ts`，nodejs 运行时再加载 `sentry.server.config.ts`。`scripts/verify-env.ts`、页面、API 和 `src/lib/prisma.ts` 都不在这次启动执行里。`prisma.ts` 要等某个页面或 API 第一次引用它才运行。
+  - 2026-10-08：讲完第 1 章后半。`scripts/verify-env.ts` 不在 `prod:dev` 启动链路里；它按有没有 `--production` 选择 `.env.production.local` 或 `.env.local`。必填项缺失、是占位符，或在 production readiness 下格式不对，会失败退出。Creem、Stripe、AI、Sentry 这些可选项缺了只跳过。`next.config.ts` 管严格模式、图片格式、安全响应头，以及把 `www` 永久跳到裸域；只有配置了 Sentry DSN 才包一层 Sentry。`NEXT_PUBLIC_*` 在 `next build` 时写进浏览器包，改完要重新 `prod:build`。`prod:dev` 是开发服务器，改这类变量要重启这条命令后才会进浏览器。本轮已执行 `pnpm run prod:dev`，`http://localhost:3000` 返回 200；`APP_ENV=prod`，`NODE_ENV=development`。页面上的登录、保存、开通会写 prod 数据库。 
 
 ## 最新待继续问题(不要修改这部分的子内容)
+- 你执行 `pnpm run prod:dev`
 <!-- - 借鉴`/Users/stark/.codex/skills/csx-web-react/SKILL.md`,优化当前skill,让每次执行完当前项目相关的任务后,先判断是否需要在当前skill里或者相关文档里更新项目的最新状态和下一步需要做的任务列表,以及沉淀项目的事实,如果需要,再这么做;用于新chat里恢复上下文 -->
 <!-- - 精简优化`/Users/stark/Desktop/work/MyStartupProject1/项目主档案.md`和`/Users/stark/Desktop/work/MyStartupProject1/README.md`,项目主档案只沉淀项目里已经做过的所有需求的事实,而`README.md`只保留和具体需求无关的通用的项目配置和架构与部署事实 -->
 <!-- - 在prod环境里清除`stark19852020@gmail.com`这个账户,我需要重新测试这个账户 -->
