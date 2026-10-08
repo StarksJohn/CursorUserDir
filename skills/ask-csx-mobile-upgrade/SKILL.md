@@ -128,20 +128,20 @@ description: >-
 
 ### 当前阶段
 
-- 分支 `1.1.8-stark-dev`，HEAD `948fa457`。`global.env` 已是 `poc`，本轮没有改它。New Architecture 与 Hermes 仍为开启，本轮没有改这三项。
-- TECH-9093（iPhone 14 Pro Max / iOS 18.7.8 打不开通知）的代码改动留在工作树，尚未装到真机验收。个人中心推送开关现在跟随系统通知授权，不再被 FCM token 或服务端注册失败拉回关闭；未决定权限会走系统授权，已拒绝才去设置。
-- 当前未完成范围仍以本文件未注释的「当前活跃需求」为准。图 1 Debug IPA 已在列设备处停止，没有归档、没有安装。
+- 分支 `1.1.8-stark-dev`，HEAD `24ac336b`。`global.env` 仍是 `poc`，本轮没有改它。New Architecture 与 Hermes 仍为开启，本轮没有改这三项。
+- 2026-10-08 已把 `1.1.8` / `poc` 的 debug 包装到授权真机 OPPO Reno11 Pro 5G（型号 `PJJ110`，序列号 `4ae24c72`，Android 16，时区 `Asia/Shanghai`）。安装包 `versionName=1.1.8`、`versionCode=1791442225`，前台是 `com.csx.mobile.app/.MainActivity`。运行日志里的 `global.env` 为 `poc`。允许通知后进入欢迎页，没有 LogBox 红屏。
+- 出包前按秒级时间戳把 `android/app/build.gradle` 的 `versionCode` 从 `24009` 改成 `1791442225`，这个改动留在工作树。`src/tools/common.ts` 的原有未提交改动未动。
+- 当前未完成范围仍以本文件未注释的「当前活跃需求」为准。本轮只做了未注释的 Android debug 安装，没有做已注释的发布任务。
 
 ### 外部阻塞与证据缺口
 
-- 2026-09-22 没有正在连接的有线真机。唯一配对设备是彭燕的 iPad（iPad Air 3rd，iOS 18.7.8，UDID `00008020-000208CC2E23002E`），`devicectl` 的 `tunnelState` 为 disconnected，上次连接 2026-09-20，`xctrace` 把它列在 Devices Offline。模拟器和这台离线 iPad 都不是安装目标。
+- 本轮没有接有线 iPhone / iPad，没有做 iOS 归档或安装。
 - TestFlight build 当前是否仍为 processing / valid 未在本轮核验；只有任务依赖该状态时才访问 App Store Connect 实时确认。
 
 ### 最小下一步
 
-1. 用数据线把一台 iPhone 或 iPad 接到这台 Mac，并在 `xcrun xctrace list devices` 的在线 Devices 里出现后，再从「当前活跃需求」第一条 IOS Debug IPA 的设备确认继续。没有有线真机就不要归档。
-2. 真机启动后看个人中心「推送通知设置」：系统已允许通知时开关应为开；未决定时点开关应弹出系统授权；已拒绝时才进入系统设置。
-3. 用户只调用入口或只说“继续”时，只做第一条 IOS 任务，做完即停。
+1. 用户只调用入口或只说“继续”时，只做「当前活跃需求」里第一条未注释任务，做完即停。Android debug 安装这一条已经在 `4ae24c72` 上完成。
+2. 已注释的 iOS / Release 任务保持不动；只有用户取消注释或点名后才做。
 
 ## 输出与边界
 
