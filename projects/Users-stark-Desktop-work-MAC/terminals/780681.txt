@@ -1,0 +1,39 @@
+---
+pid: 32585
+cwd: "/Users/stark/Desktop/work/MAC"
+command: "for ip in 185.244.208.224 26.207.17.225; do\n  echo \"=== $ip ===\"; whois $ip 2>/dev/null | rg -i '^(netname|country|org-name|OrgName|descr|NetName):' | head -n 5\n  ping -c 4 -t 5 $ip 2>&1 | tail -n 2\ndone\necho '=== traceroute-ish to 185.244.208.224 (TTL probe, 8 hops max) ==='\ntraceroute -n -m 12 -w 1 -q 1 185.244.208.224 2>&1 | tail -n 14"
+title: "Locate the game peers and measure direct RTT"
+status: succeeded
+started_at: 2026-10-07T16:13:26.225Z
+running_for_ms: 94866    
+---
+=== 185.244.208.224 ===
+netname:        GCL-CUSTOMER-HK
+country:        HK
+descr:          G-Core Labs Customer assignment
+descr:          GCL-185-244-208-0-24
+4 packets transmitted, 3 packets received, 25.0% packet loss
+round-trip min/avg/max/stddev = 189.034/189.118/189.285/0.118 ms
+=== 26.207.17.225 ===
+--- 26.207.17.225 ping statistics ---
+4 packets transmitted, 0 packets received, 100.0% packet loss
+=== traceroute-ish to 185.244.208.224 (TTL probe, 8 hops max) ===
+traceroute to 185.244.208.224 (185.244.208.224), 12 hops max, 40 byte packets
+ 1  192.168.1.1  2.334 ms
+ 2  100.96.0.1  6.673 ms
+ 3  117.135.48.125  6.439 ms
+ 4  221.183.144.81  7.445 ms
+ 5  221.183.89.13  8.700 ms
+ 6  *
+ 7  *
+ 8  223.120.3.185  37.807 ms
+ 9  223.118.6.114  38.696 ms
+10  *
+11  *
+12  185.14.47.1  190.549 ms
+
+---
+exit_code: 0
+elapsed_ms: 94866
+ended_at: 2026-10-07T16:15:01.091Z
+---

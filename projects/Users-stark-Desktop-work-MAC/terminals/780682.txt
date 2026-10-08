@@ -1,0 +1,33 @@
+---
+pid: 32726
+cwd: "/Users/stark/Desktop/work/MAC"
+command: "cat > /tmp/ps5-scan.py <<'EOF'\nimport json, re, statistics, sys, time, urllib.parse, urllib.request\nsecret = open(\"/usr/local/ps5-clash-gateway/secret\").read().strip()\nA = \"http://127.0.0.1:9098\"\ndef api(path, timeout=8):\n    r = urllib.request.Request(A + path, headers={\"Authorization\": \"Bearer \" + secret})\n    return json.load(urllib.request.urlopen(r, timeout=timeout))\nnames = [p[\"name\"] for p in api(\"/providers/proxies/sub\")[\"proxies\"] if re.match(r\"^(香港|台湾|日本)\", p[\"name\"])]\nurl = urllib.parse.quote(\"https://www.gstatic.com/generate_204\", safe=\"\")\nN = int(sys.argv[1]) if len(sys.argv) > 1 else 4\nrows = []\nfor n in names:\n    ds = []\n    for _ in range(N):\n        try:\n            d = api(\"/providers/proxies/sub/%s/healthcheck?timeout=2500&url=%s\" % (urllib.parse.quote(n), url), timeout=6).get(\"delay\", 0)\n        except Exception:\n            d = 0\n        ds.append(d if d else 2500)\n        time.sleep(0.15)\n    rows.append((n, statistics.median(ds), max(ds), ds))\nrows.sort(key=lambda r: (r[1] + (r[2] - r[1]) * 0.5))\nfor n, med, mx, ds in rows[:18]:\n    print(\"%-8s med %4d max %4d %s\" % (n, med, mx, ds))\nEOF\npython3 /tmp/ps5-scan.py 4"
+title: "Scan all HK/TW/JP nodes for median and jitter"
+status: succeeded
+started_at: 2026-10-07T16:14:41.197Z
+running_for_ms: 181993   
+---
+日本A2     med  296 max  324 [287, 257, 306, 324]
+香港C6     med  156 max  563 [563, 127, 185, 126]
+日本A5     med  236 max  484 [484, 228, 227, 245]
+香港B4     med  336 max  391 [281, 391, 282, 391]
+日本B1     med  337 max  451 [451, 338, 334, 336]
+香港D5     med  321 max  482 [482, 482, 160, 148]
+香港A6     med  393 max  413 [321, 378, 408, 413]
+香港C5     med  174 max  643 [132, 130, 643, 216]
+香港C8     med  224 max  612 [612, 127, 129, 319]
+香港A5     med  398 max  467 [375, 412, 384, 467]
+香港A3     med  396 max  479 [479, 369, 380, 413]
+香港D6     med  336 max  545 [515, 158, 103, 545]
+日本C6     med  323 max  583 [429, 214, 218, 583]
+香港D4     med  215 max  735 [735, 137, 200, 230]
+日本A3     med  333 max  626 [626, 279, 388, 249]
+日本D2     med  270 max  713 [713, 267, 273, 193]
+香港D1     med  408 max  599 [599, 393, 207, 423]
+日本C1     med  279 max  748 [748, 227, 282, 276]
+
+---
+exit_code: 0
+elapsed_ms: 181993
+ended_at: 2026-10-07T16:17:43.190Z
+---
