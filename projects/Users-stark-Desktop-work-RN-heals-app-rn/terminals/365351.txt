@@ -1,0 +1,30 @@
+---
+pid: 10929
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "mkdir -p /tmp/heals-dev-check\nadb -s 4ae24c72 logcat -c\nvisit() {\n  name=\"$1\"; x=\"$2\"; y=\"$3\"\n  adb -s 4ae24c72 shell input tap \"$x\" \"$y\"\n  sleep 3\n  adb -s 4ae24c72 exec-out screencap -p > \"/tmp/heals-dev-check/${name}.png\"\n  adb -s 4ae24c72 shell uiautomator dump /sdcard/heals-dev-ui.xml >/dev/null\n  adb -s 4ae24c72 pull /sdcard/heals-dev-ui.xml \"/tmp/heals-dev-check/${name}.xml\" >/dev/null\n  python3 - \"$name\" <<'PY'\nimport re,sys\nname=sys.argv[1]\ntext=open(f'/tmp/heals-dev-check/{name}.xml',encoding='utf-8',errors='replace').read()\ntexts=re.findall(r'text=\"([^\"]+)\"', text)\njoined=' | '.join(t.replace('&#10;',' ') for t in texts)\nprint(f'== {name} ==')\nprint(joined[:800])\nlow=joined.lower()\nfor key in ('console error','error','exception','undefined','cannot','failed','redbox','logbox'):\n    if key in low:\n        print(f'  HIT {key}')\nPY\n}\nvisit consult 323 2300\nvisit concierge 540 2300\nvisit appts 756 2300\nvisit profile 972 2300\nvisit home 108 2300\necho '---LOG---'\nadb -s 4ae24c72 logcat -d -t 800 ReactNativeJS:E AndroidRuntime:E '*:S'"
+title: "Walk main tabs and collect errors"
+status: succeeded
+started_at: 2026-10-09T11:10:29.851Z
+running_for_ms: 39997    
+---
+== consult ==
+Dr Consult Now | EN | 我O | All (23) | Upcoming (11) | Completed (12) | Dr. Dai Fu Chan | Upcoming | Home | Consult | Concierge | Appts | Profile
+== concierge ==
+Home | Consult | Concierge | Appts | Profile
+Traceback (most recent call last):
+  File "<stdin>", line 3, in <module>
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/heals-dev-check/appts.xml'
+adb: device '4ae24c72' not found
+* daemon not running; starting now at tcp:5037
+* daemon started successfully
+== profile ==
+Appointments | EN | 我O | Book Appointment | Hong Kong | All Services | AVAILABLE DOCTORS | 10 doctors | Dr. A.H. Balaji | General Practitioner | 12/F, ASIA LOGISTICS HUB-SF CENTRE, 36 TSING YI HONG WAN ROAD, TSING YI, NEW TERRITORIES | 0 | Dr. Chan Tsz Ping | General Practitioner | 27/F, WING ON HSE, 71, DES VOEUX RD C, CENTRAL, HONG KONG | 0 | Dr. Chi Hang CHEUNG | General Practitioner | 12/F, ASIA LOGISTICS HUB-SF CENTRE, 36 TSING YI HONG WAN ROAD, TSING YI, NEW TERRITORIES | 0 | Dr. Chun Lok Siu | General Practitioner | Tat Chee Avenue | 0 | Dr. Chun Sing CHUNG | General Practitioner | 0 | Home | Consult | Concierge | Appts | Profile | ! | Open debugger to view warnings.
+== home ==
+Appointments | EN | 我O | Book Appointment | Hong Kong | All Services | AVAILABLE DOCTORS | 10 doctors | Dr. A.H. Balaji | General Practitioner | 12/F, ASIA LOGISTICS HUB-SF CENTRE, 36 TSING YI HONG WAN ROAD, TSING YI, NEW TERRITORIES | 0 | Dr. Chan Tsz Ping | General Practitioner | 27/F, WING ON HSE, 71, DES VOEUX RD C, CENTRAL, HONG KONG | 0 | Dr. Chi Hang CHEUNG | General Practitioner | 12/F, ASIA LOGISTICS HUB-SF CENTRE, 36 TSING YI HONG WAN ROAD, TSING YI, NEW TERRITORIES | 0 | Dr. Chun Lok Siu | General Practitioner | Tat Chee Avenue | 0 | Dr. Chun Sing CHUNG | General Practitioner | 0 | Home | Consult | Concierge | Appts | Profile | ! | Open debugger to view warnings.
+---LOG---
+
+---
+exit_code: 0
+elapsed_ms: 39997
+ended_at: 2026-10-09T11:11:09.848Z
+---
