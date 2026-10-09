@@ -25,6 +25,20 @@ export declare const canvasPaletteDark: CanvasPalette;
 export declare const canvasPaletteLight: CanvasPalette;
 export declare const canvasPaletteGrokDark: CanvasPalette;
 export declare const canvasPaletteGrokLight: CanvasPalette;
+/**
+ * Parse a CSS hex color (`#rgb`, `#rgba`, `#rrggbb`, `#rrggbbaa`) into 0–255
+ * RGB components. Returns `undefined` for anything we can't confidently parse
+ * (named colors, `rgb()`, etc.) so callers can fall back to the base palette.
+ *
+ * Hand-rolled rather than reusing a shared color util because this package is
+ * deliberately dependency-light (it is bundled into every canvas), and the host
+ * only ever sends hex (VS Code's `Color.Format.CSS.formatHex`).
+ */
+export declare function parseHexColor(value: string): {
+    r: number;
+    g: number;
+    b: number;
+} | undefined;
 /** Visual brand for canvas token resolve. Unknown values become `"cursor"`. */
 export type CanvasHostThemeBrand = "cursor" | "grok";
 export interface CanvasHostThemeOverrides {

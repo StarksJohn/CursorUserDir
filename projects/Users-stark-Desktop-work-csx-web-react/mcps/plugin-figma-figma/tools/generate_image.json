@@ -1,0 +1,54 @@
+{
+  "name": "generate_image",
+  "description": "Generate a raster image from a text prompt using state-of-the-art image models. Width and height guide the aspect ratio; the model chooses a supported output size, so the image pixel dimensions may differ from the requested values. The tool returns a URL serving the raw image bytes of a PNG or JPEG image. IMPORTANT: The URL expires after 7 days. The user MUST download the image before the URL expires to keep a copy. **This is a paid feature — each call consumes Figma AI credits against the user's plan (different models have different per-call costs).**",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "prompt": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Text description of the image to generate."
+      },
+      "model": {
+        "default": "gemini-3.1-flash-lite-image",
+        "description": "Image model to use. One of: gemini-3.1-flash-lite-image, gpt-image-2.5-sunburst, gemini-3.1-flash-image. Defaults to gemini-3.1-flash-lite-image.",
+        "type": "string",
+        "enum": [
+          "gemini-3.1-flash-lite-image",
+          "gpt-image-2.5-sunburst",
+          "gemini-3.1-flash-image"
+        ]
+      },
+      "width": {
+        "default": 1024,
+        "description": "Requested width in pixels. Together with height, selects the closest supported aspect ratio; actual image width may differ. Default: 1024; max: 2048.",
+        "type": "integer",
+        "exclusiveMinimum": 0,
+        "maximum": 2048
+      },
+      "height": {
+        "default": 1024,
+        "description": "Requested height in pixels. Together with width, selects the closest supported aspect ratio; actual image height may differ. Default: 1024; max: 2048.",
+        "type": "integer",
+        "exclusiveMinimum": 0,
+        "maximum": 2048
+      },
+      "planKey": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^(team|organization)::\\d+$",
+        "description": "The team or organization key (e.g. \"team::1234567890\" or \"organization::1234567890\"). Use the `key` field verbatim from one of the user's plans. If the user has more than one plan, ask which one to use before calling."
+      }
+    },
+    "required": [
+      "prompt",
+      "planKey"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}
