@@ -1,0 +1,92 @@
+---
+pid: 66744
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "python3 << 'PY'\nimport subprocess, re, json, time\nserial = \"4ae24c72\"\npkg = \"com.healshealthcare.healspass.dev\"\nactivity = f\"{pkg}/com.healshealthcare.healspass.MainActivity\"\nsubprocess.run([\"adb\", \"-s\", serial, \"logcat\", \"-c\"], check=False)\nsubprocess.run([\"adb\", \"-s\", serial, \"shell\", \"am\", \"force-stop\", pkg], check=False)\nstart = subprocess.run([\"adb\", \"-s\", serial, \"shell\", \"am\", \"start\", \"-n\", activity], capture_output=True, text=True)\ntime.sleep(28)\nlog = subprocess.run([\"adb\", \"-s\", serial, \"logcat\", \"-d\"], capture_output=True, text=True, timeout=30)\ntext = log.stdout\nurls = []\nseen = set()\nfor u in re.findall(r\"https?://[^\\s'\\\"\\\\,}]+\", text):\n    if \"geolocation\" not in u and \"heals\" not in u:\n        continue\n    u = u.rstrip(\").,;\")\n    m = re.match(r\"https?://([^/\\s]+)(/[^?\\s]*)\", u)\n    if not m:\n        continue\n    key = m.group(1) + m.group(2)\n    if key in seen:\n        continue\n    seen.add(key)\n    urls.append({\"host\": m.group(1), \"path\": m.group(2)})\nstatuses = re.findall(r'\"status\"\\s*:\\s*\"([A-Z_]+)\"', text)\nlong_names = []\nif \"/geolocation\" in text:\n    for m in re.finditer(r'\"long_name\"\\s*:\\s*\"([^\"]+)\"', text):\n        if m.group(1) not in long_names:\n            long_names.append(m.group(1))\nfatal = \"FATAL EXCEPTION\" in text and pkg in text\nredbox = \"ReactNativeJS\" in text and (\"TypeError\" in text or \"ReferenceError\" in text)\nsubprocess.run([\"adb\", \"-s\", serial, \"shell\", \"uiautomator\", \"dump\", \"/sdcard/uidump.xml\"], capture_output=True, text=True, timeout=25)\nraw = subprocess.run([\"adb\", \"-s\", serial, \"exec-out\", \"cat\", \"/sdcard/uidump.xml\"], capture_output=True, timeout=20)\nui = raw.stdout.decode(\"utf-8\", \"replace\")\nsubprocess.run([\"adb\", \"-s\", serial, \"shell\", \"rm\", \"-f\", \"/sdcard/uidump.xml\"], capture_output=True)\nlabels = []\nseen_l = set()\nfor t in re.findall(r'text=\"([^\"]{1,80})\"', ui):\n    if t.strip() and t not in seen_l:\n        seen_l.add(t)\n        labels.append(t)\nfocus = subprocess.run([\"adb\", \"-s\", serial, \"shell\", \"dumpsys\", \"activity\", \"activities\"], capture_output=True, text=True, timeout=20)\nfocus_line = \"\"\nfor line in focus.stdout.splitlines():\n    if \"mCurrentFocus\" in line or \"topResumedActivity\" in line:\n        focus_line = line.strip()\n        break\nprint(json.dumps({\n    \"start\": (start.stdout or \"\").strip(),\n    \"focus\": focus_line,\n    \"heals_urls\": urls[:20],\n    \"geolocation_requested\": any(u[\"path\"].endswith(\"/geolocation\") or u[\"path\"].endswith(\"/api/geolocation\") for u in urls),\n    \"google_statuses\": statuses[:6],\n    \"long_names\": long_names[:6],\n    \"request_denied\": \"REQUEST_DENIED\" in text,\n    \"fatal\": fatal,\n    \"js_type_error\": redbox,\n    \"screen_texts\": labels[:20],\n}, ensure_ascii=False, indent=2))\nPY"
+title: "Cold-start dev app and confirm geolocation request"
+status: succeeded
+started_at: 2026-10-12T08:20:28.944Z
+running_for_ms: 34090    
+---
+{
+  "start": "Starting: Intent { cmp=com.healshealthcare.healspass.dev/com.healshealthcare.healspass.MainActivity }",
+  "focus": "topResumedActivity=ActivityRecord{99384183 u0 com.healshealthcare.healspass.dev/com.healshealthcare.healspass.MainActivity t6465}",
+  "heals_urls": [
+    {
+      "host": "heals-patient-gateway-dev.heals.asia",
+      "path": "/api/v1/health-passport/minimum-app-version"
+    },
+    {
+      "host": "health-passport-dev.heals.asia",
+      "path": "/api/geolocation"
+    },
+    {
+      "host": "heals-patient-gateway-dev.heals.asia",
+      "path": "/api/v1/health-passport/user/7eb873d9-d4c9-491e-bfc6-0ef4b993da31"
+    },
+    {
+      "host": "heals-patient-gateway-dev.heals.asia",
+      "path": "/api"
+    },
+    {
+      "host": "heals-patient-gateway-dev.heals.asia",
+      "path": "/api/v1/health-passport/heals-pass-product/inquiry"
+    },
+    {
+      "host": "heals-patient-gateway-dev.heals.asia",
+      "path": "/api/v1/ticket/upcoming"
+    },
+    {
+      "host": "heals-patient-gateway-dev.heals.asia",
+      "path": "/api/v1/health-passport/heals-pass-product/sponsorship"
+    },
+    {
+      "host": "heals-core-static.heals.asia",
+      "path": "/heals-pass-sponsorship/53e9fa78-ae28-4e1b-beb5-91a89ba80565.png"
+    },
+    {
+      "host": "heals-core-static.heals.asia",
+      "path": "/heals-pass-sponsorship/in-week-logo.png"
+    },
+    {
+      "host": "heals-core-static.heals.asia",
+      "path": "/heals-pass-sponsorship/axa-ico.svg"
+    },
+    {
+      "host": "heals-core-static.heals.asia",
+      "path": "/heals-pass-sponsorship/hsbc-ico.svg"
+    }
+  ],
+  "geolocation_requested": true,
+  "google_statuses": [],
+  "long_names": [],
+  "request_denied": false,
+  "fatal": false,
+  "js_type_error": false,
+  "screen_texts": [
+    "我OK了",
+    "Premium Plan 365",
+    "HKD $365.00",
+    "Unlimited teleconsults (with local GP doctors)",
+    "Buy",
+    "More",
+    "See a Doctor",
+    "Appointments",
+    "Bills",
+    "Visit a Clinic",
+    "Doctors in Your Language. &#10;Prescriptions Worldwide.",
+    "Upcoming Schedule",
+    "You have no appointments",
+    "View All Heals Product",
+    "Home",
+    "Appts",
+    "Consult",
+    "Concierge",
+    "Profile"
+  ]
+}
+
+---
+exit_code: 0
+elapsed_ms: 34089
+ended_at: 2026-10-12T08:21:03.033Z
+---

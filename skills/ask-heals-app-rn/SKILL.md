@@ -113,6 +113,7 @@ description: >-
 <!-- - Reload 没有加载到最新 bundle，仍显示旧 JS -->
 <!-- - pls conduct a code review of this PR 'https://bitbucket.org/healshealthcare/heals-app-rn/pull-requests/539/diff' as soon as possible ,and addressing the 'Requested changes' I provided in your PR 'https://bitbucket.org/healshealthcare/heals-app-rn/pull-requests/538' as soon as possible. -->
 <!-- - /code-self-test 查看当前分支的所有代码, 只需找出一个 BUG 或 一个可优化的点 -->
+<!-- - adb 又断了, 无法debug调试浏览器 -->
 - 暂时让 '/Users/stark/Desktop/work/RN/heals-app-rn/src/screens/appointments-screen/appointments-screen.tsx'页面显示出来,但不需要让真机直接停在预约页
   
 - TECH-8757
