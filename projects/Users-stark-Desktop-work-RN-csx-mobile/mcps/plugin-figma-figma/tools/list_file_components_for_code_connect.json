@@ -1,9 +1,15 @@
 {
   "name": "list_file_components_for_code_connect",
-  "description": "List every component and component set PUBLISHED to a Figma file's library, with the cross-component dependency graph needed to plan Code Connect in bulk. Only published components are returned (unpublished/local-only components are omitted). Returns one entry per component with its properties (exhaustive variant options, defaults, instance-swap preferred values), page and asset/library membership, child instance tags, instance count, and direct dependencies (each flagged internal vs. external library). Unlike get_context_for_code_connect — which returns the deep descendant tree for one known component — this returns the flat whole-file graph for dependency-ordered, batched template generation. Takes only a file key (no node id). Use the fileKey parameter to specify the file key. If a URL is provided, extract the file key from the URL, for example, if given the URL https://figma.com/design/:fileKey/:fileName, the extracted fileKey would be `:fileKey`. If the URL is of the format https://figma.com/design/:fileKey/branch/:branchKey/:fileName then use the branchKey as the fileKey.",
+  "description": "List every component and component set PUBLISHED to a Figma file's library, with the cross-component dependency graph needed to plan Code Connect in bulk. Only published components are returned (unpublished/local-only components are omitted). Returns one entry per component with its properties (exhaustive variant options, defaults, SLOT descriptions), page and asset/library membership, instance count, and direct dependencies (each flagged internal vs. external). Child instances and text layers include selector paths, property references, visibility, and owning component-set variants. Instance records include resolved master identity and property definitions; text records include sample content from the placed layer. Equivalent records across variants are combined with one sample nodeId. Instance-swap children are included but are not dependency edges. Unlike get_context_for_code_connect — which returns the deep descendant tree for one known component — this returns the flat whole-file graph for dependency-ordered, batched template generation. Takes only a file key (no node id). Use the fileKey parameter to specify the file key. If a URL is provided, extract the file key from the URL, for example, if given the URL https://figma.com/design/:fileKey/:fileName, the extracted fileKey would be `:fileKey`. If the URL is of the format https://figma.com/design/:fileKey/branch/:branchKey/:fileName then use the branchKey as the fileKey.",
   "arguments": {
     "type": "object",
     "properties": {
+      "sessionId": {
+        "description": "After create_session succeeds, pass its exact returned UUID here on every file-tool call for this task, even when fileKey differs.",
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+      },
       "fileKey": {
         "type": "string",
         "minLength": 1,
