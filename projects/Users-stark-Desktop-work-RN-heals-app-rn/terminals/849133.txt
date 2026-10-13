@@ -5,7 +5,7 @@ command: "npm start -- --port 8081"
 title: "Start Metro bundler on port 8081"
 status: running  
 started_at: 2026-10-13T07:14:43.347Z
-running_for_ms: 2485166  
+running_for_ms: 4992996  
 ---
 
 > Heals@0.0.1 start
@@ -54,3 +54,45 @@ info Bundle Debug ID: e35d0461-37f9-47d4-809c-dcc8a7b280ef
 [36m[7m[1m INFO [22m[27m[39m Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
 [36m[7m[1m INFO [22m[27m[39m [1m[7m💡 JavaScript logs have moved![22m They can now be viewed in React Native DevTools. Tip: Type [1mj[22m in the terminal to open (requires Google Chrome or Microsoft Edge).[27m
 [36m[7m[1m INFO [22m[27m[39m Connection closed to device='PJJ110 - 16 - API 36' for app='com.healshealthcare.healspass.dev' with code='1006' and reason=''.
+warn No apps connected. Sending "reload" to all React Native apps failed. Make sure your app is running in the simulator or on a phone connected via USB.
+[33m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+info Bundle Debug ID: bac2ed94-9ddb-4dd2-9bf2-81da79f2fd75
+[32m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m 
+[36m[7m[1m INFO [22m[27m[39m Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+[36m[7m[1m INFO [22m[27m[39m Launching DevTools...
+[36m[7m[1m INFO [22m[27m[39m Connection established to DevTools for app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+[33m[7m[1m MAP [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+[32m[7m[1m MAP [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m 
+[33m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/appointments-screen/[22m[0m[1mappointments-screen.tsx[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+[32m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/appointments-screen/[22m[0m[1mappointments-screen.tsx[22m 
+[32m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/appointments-screen/[22m[0m[1mappointments-screen.tsx[22m 
+[32m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/appointments-screen/[22m[0m[1mappointments-screen.tsx[22m 
+[33m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/appointments-screen/[22m[0m[1mappointments-screen.tsx[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+[32m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/appointments-screen/[22m[0m[1mappointments-screen.tsx[22m 
+[33m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/appointments-screen/[22m[0m[1mappointments-screen.tsx[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+[32m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/appointments-screen/[22m[0m[1mappointments-screen.tsx[22m 
+[33m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/consult-screen/[22m[0m[1mconsult-doctor-list-reset.ts[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+[32m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/consult-screen/[22m[0m[1mconsult-doctor-list-reset.ts[22m 
+[32m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/appointments-screen/[22m[0m[1mappointments-screen.tsx[22m 
+[31m[7m[1m ERROR [22m[27m[39m SyntaxError: /Users/stark/Desktop/work/RN/heals-app-rn/src/screens/appointments-screen/appointments-screen.tsx: Expected corresponding JSX closing tag for <View>. (554:4)
+
+  552 |         </View>
+  553 |       )}
+> 554 |     </ThemeContext.Consumer>
+      |     ^
+  555 |   );
+  556 | };
+  557 |
+[33m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/appointments-screen/[22m[0m[1mappointments-screen.tsx[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+[32m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/appointments-screen/[22m[0m[1mappointments-screen.tsx[22m 
+[33m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/appointments-screen/[22m[0m[1mappointments-screen.tsx[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+[32m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/appointments-screen/[22m[0m[1mappointments-screen.tsx[22m 
+[32m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/consult-screen/[22m[0m[1mconsult-screen.tsx[22m 
+[32m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/consult-screen/[22m[0m[1mconsult-doctor-list.tsx[22m 
+[32m[7m[1m MAP [22m[27m[39m[0m[2m src/assets/svg/[22m[0m[1mmap-pin.tsx[22m 
+[32m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/consult-screen/[22m[0m[1mconsult-screen.tsx[22m 
+[32m[7m[1m MAP [22m[27m[39m[0m[2m node_modules/react-native-advanced-flatlist/lib/[22m[0m[1mindex.js[22m 
+[32m[7m[1m MAP [22m[27m[39m[0m[2m node_modules/react-native-advanced-flatlist/lib/[22m[0m[1mAdvancedFlatList.js[22m 
+[32m[7m[1m MAP [22m[27m[39m[0m[2m node_modules/react-native-advanced-flatlist/lib/[22m[0m[1mlist-state.js[22m 
+[32m[7m[1m MAP [22m[27m[39m[0m[2m node_modules/react-native-advanced-flatlist/lib/[22m[0m[1mstyles.js[22m 
+[32m[7m[1m MAP [22m[27m[39m[0m[2m src/screens/appointments-screen/[22m[0m[1mappointments-screen.tsx[22m 
