@@ -114,7 +114,7 @@ description: >-
 <!-- - pls conduct a code review of this PR 'https://bitbucket.org/healshealthcare/heals-app-rn/pull-requests/539/diff' as soon as possible ,and addressing the 'Requested changes' I provided in your PR 'https://bitbucket.org/healshealthcare/heals-app-rn/pull-requests/538' as soon as possible. -->
 <!-- - /code-self-test 查看当前分支的所有代码, 只需找出一个 BUG 或 一个可优化的点 -->
 <!-- - adb 又断了, 无法debug调试浏览器 -->
-- 暂时让 '/Users/stark/Desktop/work/RN/heals-app-rn/src/screens/appointments-screen/appointments-screen.tsx'页面显示出来,但不需要让真机直接停在预约页
+<!-- - 暂时让 '/Users/stark/Desktop/work/RN/heals-app-rn/src/screens/appointments-screen/appointments-screen.tsx'页面显示出来,但不需要让真机直接停在预约页 -->
   
 - TECH-8757
   <!-- - 你读取 `https://ais-pre-hce4mtkty7p4aewqsgaizl-663605729382.us-west2.run.app/`页面的UI节点数据,借鉴 `https://aistudio.google.com/apps/c068b31c-3b5b-42e7-b660-02eea479db8a?showAssistant=true&showCode=true`页面里`code`区域的项目源码;帮我实现`heals-app-rn`项目的其它需求; -->

@@ -1,0 +1,73 @@
+---
+pid: 20708
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "export PATH=\"/usr/bin:/bin:/usr/sbin:/sbin:/Users/stark/Library/Android/sdk/platform-tools:/Users/stark/.nvm/versions/node/v20.20.2/bin:$PATH\"\necho \"PATH_OK\"\nwhich curl adb\necho \"=== REVERSE ===\"\nadb -s 4ae24c72 reverse --list\necho \"=== METRO TAIL CHECK ===\"\n/usr/bin/curl -sS -D- http://127.0.0.1:8081/json/list | /usr/bin/head -c 500\necho\necho \"=== OPEN DEBUGGER OPTIONS ===\"\n/usr/bin/curl -sS -o /dev/null -w \"open-debugger %{http_code}\\n\" -X POST \"http://127.0.0.1:8081/open-debugger\"\n/usr/bin/curl -sS -D- \"http://127.0.0.1:8081/json/list\" | /usr/bin/head -n 30\n"
+title: "Reopen debugger targets with restored PATH"
+status: succeeded
+started_at: 2026-10-14T09:48:13.961Z
+running_for_ms: 51257    
+---
+PATH_OK
+/usr/bin/curl
+/Users/stark/Library/Android/sdk/platform-tools/adb
+=== REVERSE ===
+UsbFfs tcp:8081 tcp:8081
+UsbFfs tcp:8082 tcp:8081
+
+=== METRO TAIL CHECK ===
+HTTP/1.1 200 OK
+X-Content-Type-Options: nosniff
+Surrogate-Control: no-store
+Cache-Control: no-cache
+Pragma: no-cache
+Expires: 0
+Content-Type: application/json; charset=UTF-8
+Content-Length: 865
+Connection: close
+Vary: Accept-Encoding
+Date: Wed, 14 Oct 2026 09:48:14 GMT
+
+[
+  {
+    "id": "43a8770c1717da93ef8835f946aba0a0d069b2f7-1",
+    "title": "com.healshealthcare.healspass.dev (PJJ110)",
+    "description": "React Native Bridgeless [C++ connection]",
+    "appId": "com.healshealthcare
+=== OPEN DEBUGGER OPTIONS ===
+HTTP/1.1 200 OK
+X-Content-Type-Options: nosniff
+Surrogate-Control: no-store
+Cache-Control: no-cache
+Pragma: no-cache
+Expires: 0
+Content-Type: application/json; charset=UTF-8
+Content-Length: 865
+Connection: close
+Vary: Accept-Encoding
+Date: Wed, 14 Oct 2026 09:49:05 GMT
+
+[
+  {
+    "id": "43a8770c1717da93ef8835f946aba0a0d069b2f7-1",
+    "title": "com.healshealthcare.healspass.dev (PJJ110)",
+    "description": "React Native Bridgeless [C++ connection]",
+    "appId": "com.healshealthcare.healspass.dev",
+    "type": "node",
+    "devtoolsFrontendUrl": "/debugger-frontend/rn_fusebox.html?ws=127.0.0.1%3A8081%2Finspector%2Fdebug%3Fdevice%3D43a8770c1717da93ef8835f946aba0a0d069b2f7%26page%3D1&sources.hide_add_folder=true",
+    "webSocketDebuggerUrl": "ws://127.0.0.1:8081/inspector/debug?device=43a8770c1717da93ef8835f946aba0a0d069b2f7&page=1",
+    "deviceName": "PJJ110 - 16 - API 36",
+    "reactNative": {
+      "logicalDeviceId": "43a8770c1717da93ef8835f946aba0a0d069b2f7",
+      "capabilities": {
+        "prefersFuseboxFrontend": true,
+        "nativeSourceCodeFetching": false,
+        "nativePageReloads": true
+      }
+    }
+zsh:1: command not found: dump_zsh_state
+
+---
+exit_code: 0
+elapsed_ms: 51257
+ended_at: 2026-10-14T09:49:05.218Z
+---
