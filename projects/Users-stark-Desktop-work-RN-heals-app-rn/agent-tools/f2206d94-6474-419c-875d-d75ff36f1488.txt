@@ -1,0 +1,1277 @@
+diff --git a/src/screens/appointments-screen/appointments-screen.styles.ts b/src/screens/appointments-screen/appointments-screen.styles.ts
+index 57c69a84..45fcd562 100644
+--- a/src/screens/appointments-screen/appointments-screen.styles.ts
++++ b/src/screens/appointments-screen/appointments-screen.styles.ts
+@@ -392,34 +392,6 @@ export default EStyleSheet.create({
+     fontWeight: '500',
+     lineHeight: '21rem',
+   },
+-  openingHoursButton: {
+-    width: '100%',
+-    height: '44rem',
+-    marginTop: '12rem',
+-    paddingVertical: '12rem',
+-    paddingHorizontal: '16rem',
+-    flexDirection: 'row',
+-    alignItems: 'center',
+-    justifyContent: 'space-between',
+-    borderRadius: '8rem',
+-    backgroundColor: '#E8F5F1',
+-  },
+-  openingHoursContent: {
+-    flex: 1,
+-    minWidth: 0,
+-    marginRight: '8rem',
+-    flexDirection: 'row',
+-    alignItems: 'center',
+-  },
+-  openingHoursText: {
+-    flex: 1,
+-    flexShrink: 1,
+-    marginLeft: '8rem',
+-    color: APP_THEME_COLOR,
+-    fontSize: '14rem',
+-    fontWeight: '500',
+-    lineHeight: '20rem',
+-  },
+   planPickerOverlay: {
+     flex: 1,
+     alignItems: 'center',
+diff --git a/src/screens/appointments-screen/appointments-screen.tsx b/src/screens/appointments-screen/appointments-screen.tsx
+index f967792c..60500f89 100644
+--- a/src/screens/appointments-screen/appointments-screen.tsx
++++ b/src/screens/appointments-screen/appointments-screen.tsx
+@@ -1,13 +1,5 @@
+-import React, {
+-  useCallback,
+-  useEffect,
+-  useMemo,
+-  useRef,
+-  useState,
+-} from 'react';
++import React, { useCallback, useMemo, useRef, useState } from 'react';
+ import { BlurView } from '@react-native-community/blur';
+-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+-import { faStethoscope, faUserGroup } from '@fortawesome/free-solid-svg-icons';
+ import { useFocusEffect } from '@react-navigation/native';
+ import {
+   ActivityIndicator,
+@@ -22,49 +14,25 @@ import {
+   useWindowDimensions,
+   View,
+ } from 'react-native';
+-import {
+-  AdvancedFlatList,
+-  type FetchDataParams,
+-  type ListData,
+-  type RenderItemParams,
+-} from 'react-native-advanced-flatlist';
+ 
+-import type { Policys, QueueItem, Sponsorship } from '@api/api-types';
+-import {
+-  filterBySpecialty,
+-  getProviderOptions,
+-  getProviderOptions2,
+-} from '@api/api';
+-import assets from '@assets';
+-import {
+-  SVGArrowRightGreenComponent,
+-  SVGChevronDownDarkIcon,
+-  SVGPlusWhiteComponent,
+-  SVGRowWaitingComponent,
+-  SVGSmallClockCircleComponent,
+-} from '../../assets/svg';
+-import SVGMapPinIcon from '../../assets/svg/map-pin';
++import type { Policys, Sponsorship } from '@api/api-types';
++import { SVGPlusWhiteComponent } from '../../assets/svg';
+ import SVGPlanPickerCloseIcon from '../../assets/svg/plan-picker-close';
+ import AppPageHeader from '@components/app-page-header/app-page-header';
+ import AppText from '@components/app-text/app-text';
+-import DoctorAvatar from '@components/doctor-avatar/doctor-avatar';
+ import constants from '@constants';
+ import NavigationActions from '@navigation/global-navigation';
+ import routeNames from '@navigation/route-names';
++import { requestConsultDoctorListReset } from '@screens/consult-screen/consult-doctor-list-reset';
+ import {
+   fetchSelectableBenefitPlans,
+   findBenefitPlanById,
+   isBenefitPlanExpired,
+ } from '@services/benefit-plan-service';
+ import { useAppState } from '@store/AppContext';
+-import { APP_THEME_COLOR } from '@style/theme/theme-common';
+ import { ThemeContext } from '@style/theme/theme-context';
+ import type { Theme } from '../../types/Theme';
+-import { EURegion } from '../doctor-list-screen/doctor-list-screen.props';
+-import styles, {
+-  getFilterPickerHeight,
+-  getPlanPickerLayout,
+-} from './appointments-screen.styles';
++import styles, { getPlanPickerLayout } from './appointments-screen.styles';
+ 
+ const PLAN_PICKER_BASE_WIDTH = 393;
+ const PLAN_PICKER_ROW_HEIGHT = 54;
+@@ -74,151 +42,18 @@ const PLAN_PICKER_BLUR_AMOUNT = 4;
+ const PLAN_PICKER_ACTIVE_COLOR = '#00A884';
+ const PLAN_PICKER_DISABLED_COLOR = '#99A1AF';
+ const PLAN_PICKER_OVERLAY_COLOR = 'rgba(0, 0, 0, 0.6)';
+-const COUNTRY_PICKER_GAP = 8;
+-const COUNTRY_PICKER_HORIZONTAL_PADDING = 16;
+-const COUNTRY_PICKER_FALLBACK_TOP = 200;
+-const ALL_SERVICES_OPTION = 'all_services';
+-const DOCTOR_LIST_INITIAL_PAGE = 1;
+-const DOCTOR_LIST_PAGE_SIZE = 10;
+-const DOCTOR_LIST_FALLBACK_REGION = 'Hong Kong';
+-const EU_COUNTRIES = new Set(EURegion);
+-
+-interface FilterBySpecialtyParams {
+-  limit: number;
+-  page: number;
+-  payorId: string;
+-  planId: string;
+-  region: string;
+-  specialty: string;
+-}
+ 
+ interface PlanPresentation {
+   iconSrc?: string | null;
+   name: string;
+ }
+ 
+-interface CountryPickerPosition {
+-  left: number;
+-  top: number;
+-  width: number;
+-}
+-
+ const translateLabel = (name: string): string => {
+   const translatedName = constants.i18n.t(name);
+ 
+   return translatedName.includes('missing') ? name : translatedName;
+ };
+ 
+-const getDoctorItems = (response: unknown): QueueItem[] | null => {
+-  if (
+-    !response ||
+-    typeof response !== 'object' ||
+-    !('success' in response) ||
+-    response.success !== true ||
+-    !('data' in response) ||
+-    !Array.isArray(response.data)
+-  ) {
+-    return null;
+-  }
+-
+-  return response.data.filter((item: unknown): item is QueueItem =>
+-    Boolean(
+-      item &&
+-      typeof item === 'object' &&
+-      'id' in item &&
+-      'doctor' in item &&
+-      'clinic' in item
+-    )
+-  );
+-};
+-
+-const isDoctorOnline = (item: QueueItem): boolean => item.isOnline === true;
+-
+-const getOnlineDoctorCount = (items: QueueItem[]): number =>
+-  items.filter(isDoctorOnline).length;
+-
+-const getDoctorLocation = (item: QueueItem): string => {
+-  const address = item.clinic?.address?.trim();
+-
+-  if (address) {
+-    return address;
+-  }
+-
+-  return [
+-    item.clinic?.district,
+-    item.clinic?.area,
+-    item.clinic?.region,
+-    item.clinic?.country,
+-  ]
+-    .filter(
+-      (
+-        part: string | undefined,
+-        index: number,
+-        parts: (string | undefined)[]
+-      ) =>
+-        Boolean(part?.trim()) &&
+-        parts.findIndex(
+-          (candidate: string | undefined): boolean =>
+-            candidate?.trim().toLowerCase() === part?.trim().toLowerCase()
+-        ) === index
+-    )
+-    .join(', ');
+-};
+-
+-const getDoctorQueueCount = (queuePosition: number): number =>
+-  queuePosition > 0 ? queuePosition - 1 : 0;
+-
+-export const selectDefaultAppointmentCountry = (
+-  regions: readonly string[],
+-  cachedCountry: string | null | undefined,
+-): string | undefined => {
+-  const cached = cachedCountry?.trim() ?? '';
+-
+-  if (cached.length > 0 && regions.includes(cached)) {
+-    return cached;
+-  }
+-
+-  return regions[0];
+-};
+-
+-const getProviderCountries = (response: unknown): string[] => {
+-  if (!response || typeof response !== 'object' || !('data' in response)) {
+-    return [];
+-  }
+-
+-  const data = response.data;
+-
+-  if (!data || typeof data !== 'object' || !('region' in data)) {
+-    return [];
+-  }
+-
+-  return Array.isArray(data.region)
+-    ? data.region.filter(
+-      (region: unknown): region is string =>
+-        typeof region === 'string' && region.trim().length > 0
+-    )
+-    : [];
+-};
+-
+-const getProviderSpecialties = (response: unknown): string[] => {
+-  if (!response || typeof response !== 'object' || !('data' in response)) {
+-    return [];
+-  }
+-
+-  const data = response.data;
+-
+-  if (!data || typeof data !== 'object' || !('specialty' in data)) {
+-    return [];
+-  }
+-
+-  return Array.isArray(data.specialty)
+-    ? data.specialty.filter(
+-      (specialty: unknown): specialty is string =>
+-        typeof specialty === 'string' && specialty.trim().length > 0
+-    )
+-    : [];
+-};
+-
+ const getPlanPresentation = (
+   policy: Policys,
+   sponsorshipList: Sponsorship[]
+@@ -242,9 +77,7 @@ const AppointmentsScreen = (): React.ReactElement => {
+   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+   const remScale = windowWidth / PLAN_PICKER_BASE_WIDTH;
+   const {
+-    language,
+     plan,
+-    position,
+     selectedPolicies,
+     setPlan,
+     setSelectedPolicies,
+@@ -255,36 +88,9 @@ const AppointmentsScreen = (): React.ReactElement => {
+   const [isLoadingPlans, setIsLoadingPlans] = useState<boolean>(false);
+   const [plans, setPlans] = useState<Policys[]>([]);
+   const [selectedPolicyId, setSelectedPolicyId] = useState<string>();
+-  const [countries, setCountries] = useState<string[]>([]);
+-  const [selectedCountry, setSelectedCountry] = useState<string>();
+-  const [isLoadingCountries, setIsLoadingCountries] = useState<boolean>(true);
+-  const [isCountryPickerVisible, setIsCountryPickerVisible] =
+-    useState<boolean>(false);
+-  const [services, setServices] = useState<string[]>([]);
+-  const [selectedService, setSelectedService] =
+-    useState<string>(ALL_SERVICES_OPTION);
+-  const [isLoadingServices, setIsLoadingServices] = useState<boolean>(false);
+-  const [isServicePickerVisible, setIsServicePickerVisible] =
+-    useState<boolean>(false);
+-  const [loadedDoctors, setLoadedDoctors] = useState<QueueItem[]>([]);
+-  const doctorCount = getOnlineDoctorCount(loadedDoctors);
+-  const [countryOptionsQueryKey, setCountryOptionsQueryKey] =
+-    useState<string>();
+-  const [filterPickerPosition, setFilterPickerPosition] =
+-    useState<CountryPickerPosition>({
+-      left: COUNTRY_PICKER_HORIZONTAL_PADDING * remScale,
+-      top: COUNTRY_PICKER_FALLBACK_TOP * remScale,
+-      width: windowWidth - COUNTRY_PICKER_HORIZONTAL_PADDING * remScale * 2,
+-    });
+   const [confirmedPolicy, setConfirmedPolicy] = useState<Policys>();
+-  const cachedCountryRef = useRef<string | undefined>(position?.country);
+-  const countryManuallySelectedRef = useRef<boolean>(false);
+-  cachedCountryRef.current = position?.country;
+   const planRequestId = useRef<number>(0);
+   const planValidationRequestId = useRef<number>(0);
+-  const countryRequestId = useRef<number>(0);
+-  const serviceRequestId = useRef<number>(0);
+-  const filterRowRef = useRef<View>(null);
+   const planPickerLayout = useMemo(
+     () => getPlanPickerLayout(windowHeight, remScale),
+     [remScale, windowHeight]
+@@ -297,37 +103,9 @@ const AppointmentsScreen = (): React.ReactElement => {
+ 
+     return Math.min(contentHeight, planPickerLayout.listMaxHeight);
+   }, [isLoadingPlans, planPickerLayout.listMaxHeight, plans.length, remScale]);
+-  const countryPickerHeight = useMemo(
+-    (): number =>
+-      getFilterPickerHeight(countries.length, isLoadingCountries, remScale),
+-    [countries.length, isLoadingCountries, remScale]
+-  );
+-  const servicePickerHeight = useMemo(
+-    (): number =>
+-      getFilterPickerHeight(services.length, isLoadingServices, remScale),
+-    [isLoadingServices, remScale, services.length]
+-  );
+   const confirmedPlanPresentation = confirmedPolicy
+     ? getPlanPresentation(confirmedPolicy, sponsorshipList ?? [])
+     : undefined;
+-  const countryFilterLabel = selectedCountry
+-    ? translateLabel(selectedCountry)
+-    : constants.i18n.t('no_data');
+-  const serviceFilterLabel = translateLabel(selectedService);
+-  const providerOptionPayorId = confirmedPolicy?.plan.payorId;
+-  const providerOptionPlanId = confirmedPolicy?.plan.id;
+-  const hasProviderOptionPlanFilter = Boolean(
+-    providerOptionPayorId && providerOptionPlanId
+-  );
+-  const providerOptionsQueryKey = `${language ?? 'en'}:${providerOptionPayorId ?? ''
+-    }:${providerOptionPlanId ?? ''}`;
+-  const doctorQueryKey = `${providerOptionsQueryKey}:${selectedCountry ?? ''}:${selectedService === ALL_SERVICES_OPTION ? '' : selectedService
+-    }`;
+-  const doctorQueryKeyRef = useRef<string>(doctorQueryKey);
+-  const isDoctorQueryReady =
+-    countryOptionsQueryKey === providerOptionsQueryKey &&
+-    Boolean(selectedCountry);
+-  doctorQueryKeyRef.current = doctorQueryKey;
+ 
+   const clearSelectedPlan = useCallback((): void => {
+     setConfirmedPolicy(undefined);
+@@ -403,208 +181,6 @@ const AppointmentsScreen = (): React.ReactElement => {
+     }, [clearSelectedPlan, plan, selectedPolicies])
+   );
+ 
+-  const requestProviderOptions = useCallback(async (): Promise<unknown> => {
+-    return providerOptionPayorId && providerOptionPlanId
+-      ? getProviderOptions2(providerOptionPayorId, providerOptionPlanId)
+-      : getProviderOptions();
+-  }, [providerOptionPayorId, providerOptionPlanId]);
+-
+-  const loadCountries = useCallback(async (): Promise<void> => {
+-    const requestId = countryRequestId.current + 1;
+-    const requestQueryKey = providerOptionsQueryKey;
+-    countryRequestId.current = requestId;
+-    setIsLoadingCountries(true);
+-
+-    try {
+-      const response = await requestProviderOptions();
+-
+-      if (countryRequestId.current === requestId) {
+-        const nextCountries = getProviderCountries(response);
+-        setCountries(nextCountries);
+-        setCountryOptionsQueryKey(requestQueryKey);
+-        setSelectedCountry(
+-          (currentCountry: string | undefined): string | undefined => {
+-            if (
+-              countryManuallySelectedRef.current &&
+-              currentCountry &&
+-              nextCountries.includes(currentCountry)
+-            ) {
+-              return currentCountry;
+-            }
+-
+-            return selectDefaultAppointmentCountry(
+-              nextCountries,
+-              cachedCountryRef.current,
+-            );
+-          },
+-        );
+-      }
+-    } catch (_error) {
+-      if (countryRequestId.current === requestId) {
+-        setCountries([]);
+-        setCountryOptionsQueryKey(requestQueryKey);
+-        setSelectedCountry(undefined);
+-      }
+-    } finally {
+-      if (countryRequestId.current === requestId) {
+-        setIsLoadingCountries(false);
+-      }
+-    }
+-  }, [providerOptionsQueryKey, requestProviderOptions]);
+-
+-  const loadServices = useCallback(async (): Promise<void> => {
+-    const requestId = serviceRequestId.current + 1;
+-    serviceRequestId.current = requestId;
+-    setIsLoadingServices(true);
+-    setServices([]);
+-
+-    try {
+-      const response = await requestProviderOptions();
+-
+-      if (serviceRequestId.current === requestId) {
+-        const providerServices = getProviderSpecialties(response);
+-        const nextServices = hasProviderOptionPlanFilter
+-          ? providerServices
+-          : [
+-            ALL_SERVICES_OPTION,
+-            ...providerServices.filter(
+-              (specialty: string): boolean =>
+-                specialty !== ALL_SERVICES_OPTION
+-            ),
+-          ];
+-
+-        setServices(nextServices);
+-        setSelectedService((currentService: string): string =>
+-          nextServices.includes(currentService)
+-            ? currentService
+-            : ALL_SERVICES_OPTION
+-        );
+-      }
+-    } catch (_error) {
+-      if (serviceRequestId.current === requestId) {
+-        setServices(hasProviderOptionPlanFilter ? [] : [ALL_SERVICES_OPTION]);
+-        setSelectedService(ALL_SERVICES_OPTION);
+-      }
+-    } finally {
+-      if (serviceRequestId.current === requestId) {
+-        setIsLoadingServices(false);
+-      }
+-    }
+-  }, [hasProviderOptionPlanFilter, requestProviderOptions]);
+-
+-  useEffect((): void => {
+-    countryRequestId.current += 1;
+-    serviceRequestId.current += 1;
+-    countryManuallySelectedRef.current = false;
+-    setCountryOptionsQueryKey(undefined);
+-    setCountries([]);
+-    setSelectedCountry(undefined);
+-    setServices([]);
+-    setSelectedService(ALL_SERVICES_OPTION);
+-    setIsCountryPickerVisible(false);
+-    setIsServicePickerVisible(false);
+-    setIsLoadingServices(false);
+-  }, [providerOptionsQueryKey]);
+-
+-  useEffect((): void => {
+-    setLoadedDoctors([]);
+-  }, [doctorQueryKey]);
+-
+-  useEffect((): void => {
+-    if (countryManuallySelectedRef.current || countries.length === 0) {
+-      return;
+-    }
+-
+-    const nextCountry = selectDefaultAppointmentCountry(
+-      countries,
+-      position?.country,
+-    );
+-
+-    if (!nextCountry) {
+-      return;
+-    }
+-
+-    setSelectedCountry((currentCountry: string | undefined): string | undefined =>
+-      currentCountry === nextCountry ? currentCountry : nextCountry,
+-    );
+-  }, [countries, position?.country]);
+-
+-  useEffect(() => {
+-    loadCountries();
+-
+-    return (): void => {
+-      countryRequestId.current += 1;
+-      serviceRequestId.current += 1;
+-    };
+-  }, [loadCountries]);
+-
+-  const measureFilterPickerPosition = useCallback((): void => {
+-    const horizontalPadding = COUNTRY_PICKER_HORIZONTAL_PADDING * remScale;
+-    const setMeasuredPosition = (
+-      left: number,
+-      top: number,
+-      width: number
+-    ): void => {
+-      setFilterPickerPosition({ left, top, width });
+-    };
+-
+-    if (!filterRowRef.current) {
+-      setMeasuredPosition(
+-        horizontalPadding,
+-        COUNTRY_PICKER_FALLBACK_TOP * remScale,
+-        windowWidth - horizontalPadding * 2
+-      );
+-      return;
+-    }
+-
+-    filterRowRef.current.measureInWindow(
+-      (x: number, y: number, width: number, height: number): void => {
+-        setMeasuredPosition(
+-          x,
+-          y + height + COUNTRY_PICKER_GAP * remScale,
+-          width
+-        );
+-      }
+-    );
+-  }, [remScale, windowWidth]);
+-
+-  const handleCloseCountryPicker = useCallback((): void => {
+-    setIsCountryPickerVisible(false);
+-  }, []);
+-
+-  const handleOpenCountryPicker = useCallback((): void => {
+-    setIsServicePickerVisible(false);
+-    setIsCountryPickerVisible(true);
+-    loadCountries();
+-    measureFilterPickerPosition();
+-  }, [loadCountries, measureFilterPickerPosition]);
+-
+-  const handleSelectCountry = useCallback((country: string): void => {
+-    countryManuallySelectedRef.current = true;
+-    setSelectedCountry(country);
+-    setIsCountryPickerVisible(false);
+-  }, []);
+-
+-  const handleCloseServicePicker = useCallback((): void => {
+-    serviceRequestId.current += 1;
+-    setIsServicePickerVisible(false);
+-    setIsLoadingServices(false);
+-  }, []);
+-
+-  const handleOpenServicePicker = useCallback((): void => {
+-    setIsCountryPickerVisible(false);
+-    setIsServicePickerVisible(true);
+-    measureFilterPickerPosition();
+-    loadServices();
+-  }, [loadServices, measureFilterPickerPosition]);
+-
+-  const handleSelectService = useCallback((service: string): void => {
+-    serviceRequestId.current += 1;
+-    setSelectedService(service);
+-    setIsServicePickerVisible(false);
+-    setIsLoadingServices(false);
+-  }, []);
+-
+   const handleClosePlanPicker = useCallback((): void => {
+     planRequestId.current += 1;
+     setIsPlanPickerVisible(false);
+@@ -668,253 +244,11 @@ const AppointmentsScreen = (): React.ReactElement => {
+   );
+ 
+   const handleViewFullDoctorList = useCallback((): void => {
+-    const firstCountry = countries[0];
+-
+-    setIsCountryPickerVisible(false);
+-    setIsServicePickerVisible(false);
+-    setSelectedService(ALL_SERVICES_OPTION);
+-
+-    if (firstCountry) {
+-      setSelectedCountry(firstCountry);
+-    }
+-
+     clearSelectedPlan();
+     handleClosePlanPicker();
+-  }, [clearSelectedPlan, countries, handleClosePlanPicker]);
+-
+-  const handleOpeningHoursPress = useCallback((): void => {
+-    NavigationActions.navigate(routeNames.openingHoursScreen);
+-  }, []);
+-
+-  const fetchDoctors = useCallback(
+-    async ({
+-      pageIndex,
+-      pageSize,
+-      prevItems,
+-    }: FetchDataParams<QueueItem>): Promise<ListData<QueueItem> | null> => {
+-      if (
+-        pageIndex === DOCTOR_LIST_INITIAL_PAGE &&
+-        doctorQueryKeyRef.current === doctorQueryKey
+-      ) {
+-        setLoadedDoctors([]);
+-      }
+-      console.log('fetchDoctors', {
+-        selectedCountry,
+-        pageIndex,
+-        pageSize,
+-        prevItems,
+-      });
+-
+-      if (!selectedCountry) {
+-        return {
+-          items: [],
+-          pageIndex,
+-          needLoadMore: false,
+-        };
+-      }
+-
+-      const specialty =
+-        selectedService === ALL_SERVICES_OPTION ? '' : selectedService;
+-      const createParams = (region: string): FilterBySpecialtyParams => ({
+-        payorId: providerOptionPayorId ?? '',
+-        planId: providerOptionPlanId ?? '',
+-        specialty,
+-        region,
+-        page: pageIndex,
+-        limit: pageSize,
+-      });
+-
+-      let response: unknown = await filterBySpecialty(
+-        createParams(selectedCountry)
+-      );
+-      let items = getDoctorItems(response);
+-
+-      if (items === null) {
+-        if (
+-          pageIndex === DOCTOR_LIST_INITIAL_PAGE &&
+-          doctorQueryKeyRef.current === doctorQueryKey
+-        ) {
+-          setLoadedDoctors([]);
+-        }
+-        return null;
+-      }
+-
+-      if (
+-        items.length === 0 &&
+-        EU_COUNTRIES.has(selectedCountry.trim().toLowerCase())
+-      ) {
+-        response = await filterBySpecialty(
+-          createParams(DOCTOR_LIST_FALLBACK_REGION)
+-        );
+-        items = getDoctorItems(response);
+-
+-        if (items === null) {
+-          if (
+-            pageIndex === DOCTOR_LIST_INITIAL_PAGE &&
+-            doctorQueryKeyRef.current === doctorQueryKey
+-          ) {
+-            setLoadedDoctors([]);
+-          }
+-          return null;
+-        }
+-      }
+-
+-      if (doctorQueryKeyRef.current === doctorQueryKey) {
+-        setLoadedDoctors(
+-          pageIndex === DOCTOR_LIST_INITIAL_PAGE
+-            ? items
+-            : [...prevItems, ...items]
+-        );
+-      }
+-
+-      return {
+-        items,
+-        pageIndex,
+-        needLoadMore: items.length === pageSize,
+-      };
+-    },
+-    [
+-      doctorQueryKey,
+-      providerOptionPayorId,
+-      providerOptionPlanId,
+-      selectedCountry,
+-      selectedService,
+-    ]
+-  );
+-
+-  const handleDoctorPress = useCallback(
+-    (item: QueueItem): void => {
+-      if (!confirmedPolicy) {
+-        handleOpenPlanPicker().then();
+-        return;
+-      }
+-
+-      NavigationActions.navigate(routeNames.doctorDetailScreen, {
+-        provider: item,
+-        skipQuestionnaire: true,
+-      });
+-    },
+-    [confirmedPolicy, handleOpenPlanPicker]
+-  );
+-
+-  const renderDoctor = useCallback(
+-    ({ item }: RenderItemParams<QueueItem>): React.ReactElement => {
+-      const specialties =
+-        item.doctor.specialties.map(translateLabel).join(', ') ||
+-        translateLabel(item.doctor.type);
+-      const location = getDoctorLocation(item);
+-
+-      return (
+-        <TouchableOpacity
+-          activeOpacity={0.8}
+-          accessible
+-          accessibilityLabel={item.doctor.name}
+-          accessibilityRole="button"
+-          onPress={(): void => handleDoctorPress(item)}
+-          style={styles.doctorCard}
+-          testID={`appointments-doctor-${item.id}`}
+-        >
+-          <View style={styles.doctorCardPrimaryContent}>
+-            <View style={styles.doctorAvatarColumn}>
+-              <View style={styles.doctorIconContainer}>
+-                <DoctorAvatar
+-                  fallback={
+-                    <FontAwesomeIcon
+-                      color="#287A65"
+-                      icon={faStethoscope}
+-                      size={20 * remScale}
+-                      testID={`appointments-doctor-fallback-avatar-${item.id}`}
+-                    />
+-                  }
+-                  id={item.doctor.id}
+-                  style={styles.doctorAvatar}
+-                />
+-              </View>
+-              <Image
+-                source={
+-                  isDoctorOnline(item) ? assets.online() : assets.Offline()
+-                }
+-                style={styles.doctorOnlineStatus}
+-                testID={`appointments-doctor-online-status-${item.id}`}
+-              />
+-            </View>
+-            <View
+-              style={styles.doctorDetails}
+-              testID={`appointments-doctor-details-${item.id}`}
+-            >
+-              <AppText
+-                ellipsizeMode="tail"
+-                numberOfLines={1}
+-                style={styles.doctorName}
+-              >
+-                {item.doctor.name}
+-              </AppText>
+-              <AppText
+-                ellipsizeMode="tail"
+-                numberOfLines={1}
+-                style={styles.doctorSpecialty}
+-              >
+-                {specialties}
+-              </AppText>
+-              <View
+-                style={styles.doctorLocationRow}
+-                testID={`appointments-doctor-location-${item.id}`}
+-              >
+-                {location ? (
+-                  <>
+-                    <View style={styles.doctorLocationIcon}>
+-                      <SVGMapPinIcon
+-                        color="#99A1AF"
+-                        height={12 * remScale}
+-                        testID={`appointments-doctor-location-icon-${item.id}`}
+-                        width={12 * remScale}
+-                      />
+-                    </View>
+-                    <AppText
+-                      ellipsizeMode="tail"
+-                      numberOfLines={1}
+-                      style={styles.doctorLocation}
+-                    >
+-                      {location}
+-                    </AppText>
+-                  </>
+-                ) : null}
+-              </View>
+-            </View>
+-            {isDoctorOnline(item) ? (
+-              <View
+-                accessible
+-                accessibilityLabel={String(
+-                  getDoctorQueueCount(item.queuePosition)
+-                )}
+-                style={styles.doctorQueue}
+-                testID={`appointments-doctor-queue-${item.id}`}
+-              >
+-                <View style={styles.doctorQueueIcon}>
+-                  <SVGRowWaitingComponent height={28} width={28} />
+-                </View>
+-                <AppText style={styles.doctorQueueCount}>
+-                  {getDoctorQueueCount(item.queuePosition)}
+-                </AppText>
+-              </View>
+-            ) : null}
+-          </View>
+-        </TouchableOpacity>
+-      );
+-    },
+-    [handleDoctorPress, remScale]
+-  );
+-
+-  const renderDoctorEmpty = useCallback(
+-    (): React.ReactElement => (
+-      <View style={styles.doctorListEmpty}>
+-        <AppText style={styles.doctorListEmptyText}>
+-          {constants.i18n.t('appointments_no_doctors')}
+-        </AppText>
+-      </View>
+-    ),
+-    []
+-  );
++    requestConsultDoctorListReset();
++    NavigationActions.navigate(routeNames.consult);
++  }, [clearSelectedPlan, handleClosePlanPicker]);
+ 
+   const renderPlan = useCallback(
+     ({ item }: ListRenderItemInfo<Policys>): React.ReactElement => {
+@@ -962,44 +296,6 @@ const AppointmentsScreen = (): React.ReactElement => {
+     [handleConfirmPlan, selectedPolicyId, sponsorshipList]
+   );
+ 
+-  const renderCountry = useCallback(
+-    ({ index, item }: ListRenderItemInfo<string>): React.ReactElement => (
+-      <TouchableOpacity
+-        activeOpacity={0.8}
+-        accessibilityLabel={translateLabel(item)}
+-        accessibilityRole="button"
+-        accessibilityState={{ selected: selectedCountry === item }}
+-        onPress={(): void => handleSelectCountry(item)}
+-        style={styles.countryPickerItem}
+-        testID={`appointments-country-row-${index}`}
+-      >
+-        <AppText style={styles.countryPickerItemText}>
+-          {translateLabel(item)}
+-        </AppText>
+-      </TouchableOpacity>
+-    ),
+-    [handleSelectCountry, selectedCountry]
+-  );
+-
+-  const renderService = useCallback(
+-    ({ index, item }: ListRenderItemInfo<string>): React.ReactElement => (
+-      <TouchableOpacity
+-        activeOpacity={0.8}
+-        accessibilityLabel={translateLabel(item)}
+-        accessibilityRole="button"
+-        accessibilityState={{ selected: selectedService === item }}
+-        onPress={(): void => handleSelectService(item)}
+-        style={styles.countryPickerItem}
+-        testID={`appointments-service-row-${index}`}
+-      >
+-        <AppText style={styles.countryPickerItemText}>
+-          {translateLabel(item)}
+-        </AppText>
+-      </TouchableOpacity>
+-    ),
+-    [handleSelectService, selectedService]
+-  );
+-
+   return (
+     <ThemeContext.Consumer>
+       {(theme: Theme) => (
+@@ -1046,34 +342,6 @@ const AppointmentsScreen = (): React.ReactElement => {
+                     </AppText>
+                   </TouchableOpacity>
+                 </View>
+-                <TouchableOpacity
+-                  activeOpacity={0.8}
+-                  accessibilityLabel={constants.i18n.t('openingHoursService')}
+-                  accessibilityRole="button"
+-                  onPress={handleOpeningHoursPress}
+-                  style={styles.openingHoursButton}
+-                  testID="appointments-opening-hours-button"
+-                >
+-                  <View style={styles.openingHoursContent}>
+-                    <SVGSmallClockCircleComponent
+-                      color={APP_THEME_COLOR}
+-                      height={16}
+-                      width={16}
+-                    />
+-                    <AppText
+-                      ellipsizeMode="tail"
+-                      numberOfLines={1}
+-                      style={styles.openingHoursText}
+-                    >
+-                      {constants.i18n.t('openingHoursService')}
+-                    </AppText>
+-                  </View>
+-                  <SVGArrowRightGreenComponent
+-                    color={APP_THEME_COLOR}
+-                    height={16}
+-                    width={16}
+-                  />
+-                </TouchableOpacity>
+               </View>
+             ) : (
+               <TouchableOpacity
+@@ -1090,215 +358,7 @@ const AppointmentsScreen = (): React.ReactElement => {
+                 </AppText>
+               </TouchableOpacity>
+             )}
+-            <View
+-              ref={filterRowRef}
+-              style={styles.filterRow}
+-              testID="appointments-filter-row"
+-            >
+-              <TouchableOpacity
+-                accessible
+-                accessibilityLabel={countryFilterLabel}
+-                accessibilityRole="button"
+-                accessibilityState={{ expanded: isCountryPickerVisible }}
+-                activeOpacity={0.8}
+-                onPress={handleOpenCountryPicker}
+-                style={styles.filterControl}
+-                testID="appointments-country-filter"
+-              >
+-                <AppText
+-                  ellipsizeMode="tail"
+-                  numberOfLines={1}
+-                  style={styles.filterText}
+-                >
+-                  {countryFilterLabel}
+-                </AppText>
+-                <View
+-                  style={styles.filterIconContainer}
+-                  testID="appointments-country-filter-icon-container"
+-                >
+-                  <View style={styles.filterIcon}>
+-                    <SVGChevronDownDarkIcon height={8} width={14} />
+-                  </View>
+-                </View>
+-              </TouchableOpacity>
+-              <TouchableOpacity
+-                accessible
+-                accessibilityLabel={serviceFilterLabel}
+-                accessibilityRole="button"
+-                accessibilityState={{ expanded: isServicePickerVisible }}
+-                activeOpacity={0.8}
+-                onPress={handleOpenServicePicker}
+-                style={styles.filterControl}
+-                testID="appointments-service-filter"
+-              >
+-                <AppText
+-                  ellipsizeMode="tail"
+-                  numberOfLines={1}
+-                  style={styles.filterText}
+-                >
+-                  {serviceFilterLabel}
+-                </AppText>
+-                <View
+-                  style={styles.filterIconContainer}
+-                  testID="appointments-service-filter-icon-container"
+-                >
+-                  <View style={styles.filterIcon}>
+-                    <SVGChevronDownDarkIcon height={8} width={14} />
+-                  </View>
+-                </View>
+-              </TouchableOpacity>
+-            </View>
+-            <View
+-              style={styles.doctorListSection}
+-              testID="appointments-doctor-list-section"
+-            >
+-              <View style={styles.doctorListHeader}>
+-                <View style={styles.doctorListHeaderTitle}>
+-                  <FontAwesomeIcon
+-                    color="#99A1AF"
+-                    icon={faUserGroup}
+-                    size={12 * remScale}
+-                  />
+-                  <AppText style={styles.doctorListHeaderText}>
+-                    {constants.i18n.t('appointments_available_doctors')}
+-                  </AppText>
+-                </View>
+-                <AppText style={styles.doctorListCount}>
+-                  {constants.i18n.t('appointments_doctor_count', {
+-                    count: doctorCount,
+-                  })}
+-                </AppText>
+-              </View>
+-              {isDoctorQueryReady ? (
+-                <AdvancedFlatList<QueueItem>
+-                  key={doctorQueryKey}
+-                  autoRefresh
+-                  contentContainerStyle={styles.doctorListContent}
+-                  extraData={doctorQueryKey}
+-                  fetchData={fetchDoctors}
+-                  initPageIndex={DOCTOR_LIST_INITIAL_PAGE}
+-                  keyExtractor={(item: QueueItem): string => item.id}
+-                  ListEmptyComponent={renderDoctorEmpty}
+-                  onEndReachedThreshold={0.5}
+-                  pageSize={DOCTOR_LIST_PAGE_SIZE}
+-                  renderItem={renderDoctor}
+-                  showsVerticalScrollIndicator={false}
+-                  style={styles.doctorList}
+-                  tag={doctorQueryKey}
+-                  testID="appointments-doctor-list"
+-                />
+-              ) : isLoadingCountries ? (
+-                <View style={styles.doctorListLoading}>
+-                  <ActivityIndicator
+-                    color={APP_THEME_COLOR}
+-                    testID="appointments-doctor-list-loading"
+-                  />
+-                </View>
+-              ) : (
+-                renderDoctorEmpty()
+-              )}
+-            </View>
+           </View>
+-          <Modal
+-            animationType="fade"
+-            hardwareAccelerated
+-            onRequestClose={handleCloseCountryPicker}
+-            transparent
+-            testID="appointments-country-picker-modal"
+-            visible={isCountryPickerVisible}
+-          >
+-            <View style={styles.countryPickerOverlay}>
+-              <Pressable
+-                accessible={false}
+-                onPress={handleCloseCountryPicker}
+-                style={styles.countryPickerBackdrop}
+-                testID="appointments-country-picker-overlay"
+-              />
+-              <View
+-                accessibilityViewIsModal
+-                style={[
+-                  styles.countryPickerDialog,
+-                  filterPickerPosition,
+-                  { height: countryPickerHeight },
+-                ]}
+-                testID="appointments-country-picker-dialog"
+-              >
+-                <FlatList
+-                  data={countries}
+-                  initialNumToRender={10}
+-                  keyExtractor={(item: string, index: number): string =>
+-                    `${item}-${index}`
+-                  }
+-                  ListEmptyComponent={
+-                    isLoadingCountries ? (
+-                      <View style={styles.countryPickerLoading}>
+-                        <ActivityIndicator
+-                          color={APP_THEME_COLOR}
+-                          testID="appointments-country-picker-loading"
+-                        />
+-                      </View>
+-                    ) : null
+-                  }
+-                  nestedScrollEnabled
+-                  renderItem={renderCountry}
+-                  scrollEnabled
+-                  showsVerticalScrollIndicator={false}
+-                  style={styles.countryPickerList}
+-                  testID="appointments-country-list"
+-                />
+-              </View>
+-            </View>
+-          </Modal>
+-          <Modal
+-            animationType="fade"
+-            hardwareAccelerated
+-            onRequestClose={handleCloseServicePicker}
+-            transparent
+-            testID="appointments-service-picker-modal"
+-            visible={isServicePickerVisible}
+-          >
+-            <View style={styles.countryPickerOverlay}>
+-              <Pressable
+-                accessible={false}
+-                onPress={handleCloseServicePicker}
+-                style={styles.countryPickerBackdrop}
+-                testID="appointments-service-picker-overlay"
+-              />
+-              <View
+-                accessibilityViewIsModal
+-                style={[
+-                  styles.countryPickerDialog,
+-                  filterPickerPosition,
+-                  { height: servicePickerHeight },
+-                ]}
+-                testID="appointments-service-picker-dialog"
+-              >
+-                <FlatList
+-                  data={services}
+-                  initialNumToRender={10}
+-                  keyExtractor={(item: string, index: number): string =>
+-                    `${item}-${index}`
+-                  }
+-                  ListEmptyComponent={
+-                    isLoadingServices ? (
+-                      <View style={styles.countryPickerLoading}>
+-                        <ActivityIndicator
+-                          color={APP_THEME_COLOR}
+-                          testID="appointments-service-picker-loading"
+-                        />
+-                      </View>
+-                    ) : null
+-                  }
+-                  nestedScrollEnabled
+-                  renderItem={renderService}
+-                  scrollEnabled
+-                  showsVerticalScrollIndicator={false}
+-                  style={styles.countryPickerList}
+-                  testID="appointments-service-list"
+-                />
+-              </View>
+-            </View>
+-          </Modal>
+           <Modal
+             animationType="fade"
+             hardwareAccelerated
+diff --git a/src/screens/consult-screen/consult-screen.styles.ts b/src/screens/consult-screen/consult-screen.styles.ts
+index 97da9cf1..90838491 100644
+--- a/src/screens/consult-screen/consult-screen.styles.ts
++++ b/src/screens/consult-screen/consult-screen.styles.ts
+@@ -1,7 +1,10 @@
+ import type { TextStyle, ViewStyle } from 'react-native';
+ import EStyleSheet from 'react-native-extended-stylesheet';
+ 
+-import { APP_PAGE_BACKGROUND_COLOR } from '@style/theme/theme-common';
++import {
++  APP_PAGE_BACKGROUND_COLOR,
++  APP_THEME_COLOR,
++} from '@style/theme/theme-common';
+ import type { Theme } from '../../types/Theme';
+ 
+ interface ConsultScreenThemeStyles {
+@@ -57,6 +60,41 @@ export default EStyleSheet.create({
+     alignItems: 'stretch',
+     backgroundColor: APP_PAGE_BACKGROUND_COLOR,
+   },
++  openingHoursBar: {
++    width: '100%',
++    paddingHorizontal: '16rem',
++  },
++  openingHoursButton: {
++    width: '100%',
++    height: '44rem',
++    marginTop: '12rem',
++    paddingVertical: '12rem',
++    paddingHorizontal: '16rem',
++    flexDirection: 'row',
++    alignItems: 'center',
++    justifyContent: 'space-between',
++    borderRadius: '8rem',
++    backgroundColor: '#E8F5F1',
++  },
++  openingHoursContent: {
++    flex: 1,
++    minWidth: 0,
++    marginRight: '8rem',
++    flexDirection: 'row',
++    alignItems: 'center',
++  },
++  openingHoursText: {
++    flex: 1,
++    flexShrink: 1,
++    marginLeft: '8rem',
++    color: APP_THEME_COLOR,
++    fontSize: '14rem',
++    fontWeight: '500',
++    lineHeight: '20rem',
++  },
++  doctorListInset: {
++    paddingTop: '12rem',
++  },
+   list: {
+     width: '100%',
+   },
+diff --git a/src/screens/consult-screen/consult-screen.tsx b/src/screens/consult-screen/consult-screen.tsx
+index b3b5eddf..c0979d3b 100644
+--- a/src/screens/consult-screen/consult-screen.tsx
++++ b/src/screens/consult-screen/consult-screen.tsx
+@@ -23,12 +23,18 @@ import {
+   getTicketDoctorTypeLabel,
+ } from '@helper/ticket-display-helper';
+ import {
++  SVGArrowRightGreenComponent,
+   SVGConsultCalendarIcon,
+   SVGConsultClockIcon,
++  SVGSmallClockCircleComponent,
+   SVGTabConsultIcon,
+ } from '../../assets/svg';
++import NavigationActions from '@navigation/global-navigation';
++import routeNames from '@navigation/route-names';
++import { APP_THEME_COLOR } from '@style/theme/theme-common';
+ import { ThemeContext } from '@style/theme/theme-context';
+ import type { Theme } from '../../types/Theme';
++import ConsultDoctorList from './consult-doctor-list';
+ import styles, {
+   getConsultScreenThemeStyles,
+ } from './consult-screen.styles';
+@@ -172,6 +178,9 @@ const ConsultScreenContent = ({
+     () => getConsultScreenThemeStyles(theme),
+     [theme]
+   );
++  const handleOpeningHoursPress = useCallback((): void => {
++    NavigationActions.navigate(routeNames.openingHoursScreen);
++  }, []);
+   selectedFilterRef.current = selectedFilter;
+ 
+   const handleOpenAppointment = useCallback((ticket: Ticket): void => {
+@@ -453,23 +462,57 @@ const ConsultScreenContent = ({
+       testID="consult-screen"
+     >
+       <AppPageHeader titleKey="consult_page_title" />
+-      <AdvancedFlatList<Ticket>
+-        ref={listRef}
+-        autoRefresh
+-        contentContainerStyle={styles.listContent}
+-        extraData={`${selectedFilter}:${filterCounts[selectedFilter]}`}
+-        fetchData={fetchAppointments}
+-        initPageIndex={1}
+-        keyExtractor={(item: Ticket): string => item.id}
+-        ListEmptyComponent={emptyComponent}
+-        ListHeaderComponent={listHeader}
+-        pageSize={CONSULT_PAGE_SIZE}
+-        renderItem={renderAppointment}
+-        showsVerticalScrollIndicator
+-        style={styles.list}
+-        tag={CONSULT_LIST_TAG}
+-        testID="consult-appointment-list"
+-      />
++      <View style={styles.openingHoursBar}>
++        <TouchableOpacity
++          activeOpacity={0.8}
++          accessibilityLabel={constants.i18n.t('openingHoursService')}
++          accessibilityRole="button"
++          onPress={handleOpeningHoursPress}
++          style={styles.openingHoursButton}
++          testID="consult-opening-hours-button"
++        >
++          <View style={styles.openingHoursContent}>
++            <SVGSmallClockCircleComponent
++              color={APP_THEME_COLOR}
++              height={16}
++              width={16}
++            />
++            <AppText
++              ellipsizeMode="tail"
++              numberOfLines={1}
++              style={styles.openingHoursText}
++            >
++              {constants.i18n.t('openingHoursService')}
++            </AppText>
++          </View>
++          <SVGArrowRightGreenComponent
++            color={APP_THEME_COLOR}
++            height={16}
++            width={16}
++          />
++        </TouchableOpacity>
++      </View>
++      <ConsultDoctorList />
++      {/*
++        Appointment filters and cards are temporarily hidden.
++        <AdvancedFlatList<Ticket>
++          ref={listRef}
++          autoRefresh
++          contentContainerStyle={styles.listContent}
++          extraData={`${selectedFilter}:${filterCounts[selectedFilter]}`}
++          fetchData={fetchAppointments}
++          initPageIndex={1}
++          keyExtractor={(item: Ticket): string => item.id}
++          ListEmptyComponent={emptyComponent}
++          ListHeaderComponent={listHeader}
++          pageSize={CONSULT_PAGE_SIZE}
++          renderItem={renderAppointment}
++          showsVerticalScrollIndicator
++          style={styles.list}
++          tag={CONSULT_LIST_TAG}
++          testID="consult-appointment-list"
++        />
++      */}
+     </View>
+   );
+ };

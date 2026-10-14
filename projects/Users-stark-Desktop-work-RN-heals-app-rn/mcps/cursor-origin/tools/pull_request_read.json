@@ -1,6 +1,6 @@
 {
   "name": "pull_request_read",
-  "description": "Read one Origin-hosted pull request through a single view: summary, files, commits, reviews, comments, or threads. Summary includes labels, requested reviewers, and stack membership (stack id and parent pull request) when the pull request is stacked. The threads view requires threadIds and pages comments in those threads. Comments and threads carry url, a cursor.com link to that thread or comment on the pull request page.",
+  "description": "Read one Origin-hosted pull request through a single view: summary, files, commits, reviews, comments, or threads. view defaults to summary. Summary includes labels, requested reviewers, and stack membership (stack id and parent pull request) when the pull request is stacked. The threads view requires threadIds and pages comments in those threads. Comments and threads carry url, a cursor.com link to that thread or comment on the pull request page.",
   "arguments": {
     "type": "object",
     "properties": {
@@ -16,7 +16,9 @@
         "type": "number"
       },
       "view": {
-        "type": "string"
+        "type": "string",
+        "default": "summary",
+        "description": "summary (default), files, commits, reviews, comments, or threads"
       },
       "pageSize": {
         "type": "number"
@@ -41,8 +43,7 @@
     "required": [
       "owner",
       "name",
-      "number",
-      "view"
+      "number"
     ],
     "additionalProperties": false,
     "$schema": "http://json-schema.org/draft-07/schema#"

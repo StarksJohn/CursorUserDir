@@ -1,0 +1,20 @@
+---
+pid: 62490
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "node << 'JS'\nconst ts = require('typescript');\nconst path = require('path');\nconst root = '/Users/stark/Desktop/work/RN/heals-app-rn';\nconst read = ts.readConfigFile(path.join(root, 'tsconfig.json'), ts.sys.readFile);\nconst parsed = ts.parseJsonConfigFileContent(read.config, ts.sys, root);\nconst extra = [path.join(root, 'App.tsx')];\nconst rootNames = Array.from(new Set([...parsed.fileNames, ...extra]));\nconst program = ts.createProgram({ rootNames, options: parsed.options });\nconst changed = [\n  'App.tsx','src/api/api-client.ts','src/assets/svg/index.ts','src/assets/svg/onboard-icon-1.tsx','src/assets/svg/onboard-icon-2.tsx','src/assets/svg/onboard-icon-3.tsx','src/helper/async-storage-utils.ts','src/hooks/auth-hook-context.tsx','src/navigation/auth-stack.tsx','src/navigation/route-names.ts','src/navigation/types.ts','src/screens/login/login-otp-screen/login-otp-screen.styles.ts','src/screens/login/login-screen/login-screen.styles.ts','src/screens/onboarding-screen/onboarding-screen.styles.ts','src/screens/onboarding-screen/onboarding-screen.tsx'\n];\nfunction fmt(d) {\n  const f = d.file ? path.relative(root, d.file.fileName) : '';\n  const pos = d.file && d.start != null ? d.file.getLineAndCharacterOfPosition(d.start) : null;\n  return `${f}:${pos ? pos.line + 1 : '?'} TS${d.code}`;\n}\nconst diags = ts.getPreEmitDiagnostics(program).filter(d => d.file && changed.includes(path.relative(root, d.file.fileName)));\nlet dep = 0;\nconst sugOnNew = [];\nfor (const sf of program.getSourceFiles()) {\n  const rel = path.relative(root, sf.fileName);\n  if (!changed.includes(rel)) continue;\n  for (const d of program.getSuggestionDiagnostics(sf)) {\n    if (d.code === 6385 || d.code === 6387) dep++;\n    if (rel.includes('onboarding') || rel.endsWith('auth-stack.tsx') || rel.endsWith('async-storage-utils.ts')) sugOnNew.push(fmt(d) + ' ' + ts.flattenDiagnosticMessageText(d.messageText,' ').slice(0,120));\n  }\n}\nconst newish = diags.filter(d => {\n  const rel = path.relative(root, d.file.fileName);\n  return rel.includes('onboarding') || rel.endsWith('async-storage-utils.ts') || (rel.endsWith('auth-stack.tsx') && d.start && d.file.getLineAndCharacterOfPosition(d.start).line + 1 >= 218);\n});\nconsole.log('changed semantic', diags.length);\nconsole.log('new-region semantic', newish.map(fmt).join('\\n') || 'none');\nconsole.log('deprecation', dep);\nconsole.log('suggestions on new code', sugOnNew.join('\\n') || 'none');\nJS"
+title: "Typecheck PR files after return-type fix"
+status: succeeded
+started_at: 2026-10-14T07:48:54.558Z
+running_for_ms: 9330     
+---
+changed semantic 22
+new-region semantic none
+deprecation 0
+suggestions on new code src/screens/onboarding-screen/onboarding-screen.tsx:118 TS6133 'theme' is declared but its value is never read.
+src/navigation/auth-stack.tsx:262 TS6133 'theme' is declared but its value is never read.
+
+---
+exit_code: 0
+elapsed_ms: 9329
+ended_at: 2026-10-14T07:49:03.887Z
+---

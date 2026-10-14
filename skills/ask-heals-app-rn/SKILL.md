@@ -62,7 +62,7 @@ description: >-
 
 - React Native、React、TypeScript、React Navigation、依赖版本、scripts 和 locale 清单的精确值以当前仓库为准。
 - API 复用 `src/api` 既有 client、endpoint 和 DTO/type；导航改动同步 screen 注册、参数类型、深链和回退行为。
-- 新增用户可见文案时同步项目当前约定的全部 locale；不从历史 Skill 猜测语言清单。
+- 新增用户可见文案必须写入 `en`、`zh-Hans`、`zh-Hant`。`vi`、`ph`、`th-TH`、`id`、`ms` 缺同一键时按 `src/i18n/i18n.ts` 的 `enableFallback: true` 与 `defaultLocale: 'en'` 显示英文。Code review 不得仅因这五种语言缺键报 Critical；`en` 本身缺键，或简体/繁体缺了本次应展示的键，仍然是 Critical。语言挂载以当前 `src/i18n/i18n.ts` 和共享 `AGENTS.md` 为准。
 - 跨平台逻辑优先使用公共字段；第三方 API 标记 `iOS ONLY`、`ANDROID ONLY`、deprecated 或 experimental 时，先核对类型定义或官方文档，并显式处理另一平台。
 - 医疗健康文案避免确诊式、保证疗效式或替代医生建议式表达。
 - 非必要不新增依赖；不写入或输出 token、Cookie、密码、私钥、证书、keystore 密码、生产密钥和测试账号明文。
