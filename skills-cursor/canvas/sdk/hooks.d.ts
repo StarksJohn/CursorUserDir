@@ -1,4 +1,4 @@
-import type { CanvasHostThemeBrand, CanvasPalette, CanvasTokens, ChartPalette } from "./canvas-tokens.js";
+import { type CanvasHostThemeBrand, type CanvasPalette, type CanvasTokens, type ChartPalette } from "./canvas-tokens.js";
 import { type CanvasAction } from "./internal/canvas-action-dispatch.js";
 import { type CanvasRadius, type CanvasTypography } from "./theme.js";
 /**

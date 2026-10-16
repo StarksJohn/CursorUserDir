@@ -1,0 +1,88 @@
+{
+  "name": "send_code_to_figma",
+  "description": "Import a local project into Figma Code. Requires edit access to a standalone Code or Design file. Does not create native Design shapes.\n\nBefore choosing or creating a destination file, load figma-code-workflows.\n\nTarget: standalone Code uses its empty main layer, including a starter. Design creates a new layer on pageId (default: first page). For populated Make, create a blank file. Same-target repair requires returned repairFrom: keep fileKey, seedId and makeNodeId; upload the corrected complete project. Changed or successful imports cannot be replaced. Legacy layers are unsupported.\n\nStart with the destination, omitting upload, to request instructions. Follow the returned source-configuration and archive guidance; local dependency installation, dev servers, HTTP checks and builds are not required. Static HTML/CSS/JS needs no setup scripts. Create the archive at nextStep.localArchivePath, then run nextStep.uploadCommand. Only after upload succeeds, call send_code_to_figma with nextStep.thenCall.arguments unchanged within one hour. upload.archivePath is a Figma storage path, never a local path. Keep makeNodeId/createLayer and any pageId/repairFrom unchanged. Do not resume failed uploads or retry ambiguous failures.\n\nReturns importReceipt, fileUrl, fileKey and nodeId. needs_setup preserves valid source with setupError; follow returned recovery instructions. Unsafe archives/access failures still fail. For import_pending, follow the continuation.\n\nImported does not verify installation, preview or publishing. Open the file to start preview.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "sessionId": {
+        "description": "After create_session succeeds, pass its exact returned UUID here on every file-tool call for this task, even when fileKey differs.",
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+      },
+      "fileKey": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[0-9a-zA-Z]{22,128}$",
+        "description": "The file key from a Figma Code /make/<fileKey> or Design /design/<fileKey> URL."
+      },
+      "pageId": {
+        "description": "The destination page for a new code layer in a Design file. Defaults to the first page. Omit for a standalone file.",
+        "type": "string",
+        "pattern": "^\\d+[:-]\\d+$"
+      },
+      "repairFrom": {
+        "description": "Use only to repair an unchanged needs_setup import in the same file and code layer.",
+        "type": "object",
+        "properties": {
+          "seedId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Copy the seedId from the needs_setup import receipt."
+          },
+          "makeNodeId": {
+            "description": "Copy the makeNodeId from the same needs_setup result.",
+            "type": "string",
+            "pattern": "^\\d+[:-]\\d+$"
+          }
+        },
+        "required": [
+          "seedId",
+          "makeNodeId"
+        ],
+        "additionalProperties": false
+      },
+      "upload": {
+        "description": "Uploaded-archive reference. Omit to request upload instructions. Only after a successful upload, copy nextStep.thenCall.arguments.upload unchanged to continue the import. Keep the returned repairFrom when repairing.",
+        "type": "object",
+        "properties": {
+          "fileKey": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[0-9a-zA-Z]{22,128}$",
+            "description": "Copy the file key from nextStep.thenCall.arguments.upload."
+          },
+          "makeNodeId": {
+            "description": "Copy the target layer ID from nextStep.thenCall.arguments.upload. Design uses createLayer: true for a new layer and makeNodeId for repair; never change the returned mode.",
+            "type": "string",
+            "pattern": "^\\d+[:-]\\d+$"
+          },
+          "createLayer": {
+            "description": "Copy true only when nextStep.thenCall.arguments.upload requests a new Design code layer. Mutually exclusive with makeNodeId.",
+            "type": "boolean",
+            "const": true
+          },
+          "archivePath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Figma storage path for an uploaded .tgz, .tar.gz or .zip archive. Copy archivePath from nextStep.thenCall.arguments.upload unchanged; this is not a local filesystem path."
+          }
+        },
+        "required": [
+          "fileKey",
+          "archivePath"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "fileKey"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

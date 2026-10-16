@@ -4,6 +4,12 @@
   "arguments": {
     "type": "object",
     "properties": {
+      "sessionId": {
+        "description": "After create_session succeeds, pass its exact returned UUID here on every file-tool call for this task, even when fileKey differs.",
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+      },
       "nodeId": {
         "description": "The ID of the node in the Figma document, eg. \"123:456\" or \"123-456\". This should be a valid node ID in the Figma document. Do not pass an empty string for node_id.",
         "type": "string",

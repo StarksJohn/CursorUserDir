@@ -4,7 +4,7 @@
  *
  * Distilled from the portal-website Highcharts analytics charting layer.
  */
-import type { CSSProperties, JSX } from "react";
+import { type CSSProperties, type JSX } from "react";
 /**
  * Semantic tone for a chart series or slice. Mirrors the tone vocabulary
  * used by `Stat`, `Callout`, and `Table` `rowTone` so colors match across

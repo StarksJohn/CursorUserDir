@@ -1,0 +1,1165 @@
+ __tests__/appointments-screen.test.tsx             |  53 +---
+ __tests__/consult-screen.test.tsx                  |  87 +-----
+ src/api/api.ts                                     |   4 +-
+ src/i18n/locale/Indonesia.ts                       |   3 +
+ src/i18n/locale/Melayu.ts                          |   3 +
+ src/i18n/locale/en.ts                              |   2 +
+ src/i18n/locale/ph.ts                              |   3 +
+ src/i18n/locale/th.ts                              |   3 +
+ src/i18n/locale/vn.ts                              |   3 +
+ src/i18n/locale/zh.ts                              |   2 +
+ src/i18n/locale/zh_tw.ts                           |   2 +
+ src/navigation/types.ts                            |  10 +-
+ src/screens/consult-screen/consult-doctor-list.tsx | 123 +++-----
+ src/screens/consult-screen/consult-screen.tsx      |  11 +-
+ .../doctor-detail-screen.styles.ts                 |  65 ++++-
+ .../doctor-detail-screen/doctor-detail-screen.tsx  | 322 ++++++++++++++++++---
+ 16 files changed, 429 insertions(+), 267 deletions(-)
+===== DIFF =====
+diff --git a/__tests__/appointments-screen.test.tsx b/__tests__/appointments-screen.test.tsx
+index a1c7c355..1bac2991 100644
+--- a/__tests__/appointments-screen.test.tsx
++++ b/__tests__/appointments-screen.test.tsx
+@@ -1222,45 +1222,12 @@ describe('AppointmentsScreen', () => {
+       );
+     });
+ 
+-    act(() => {
++    await reactAct(async () => {
+       cardRenderer!.root
+         .findByProps({ testID: 'appointments-doctor-provider-1' })
+         .props.onPress();
+     });
+ 
+-    expect(mockToastHideAll).toHaveBeenCalledTimes(1);
+-    expect(mockToastShow).toHaveBeenCalledWith(
+-      expect.objectContaining({
+-        props: expect.objectContaining({
+-          children: 'Please select a date',
+-        }),
+-      }),
+-      expect.objectContaining({
+-        type: 'danger',
+-        placement: 'top',
+-        duration: 3000,
+-      }),
+-    );
+-    expect(mockNavigate).not.toHaveBeenCalledWith(
+-      'DoctorDetailScreen',
+-      expect.anything()
+-    );
+-    expect(screen.queryByTestId('appointments-plan-picker-modal')).toBeNull();
+-
+-    fireEvent.press(screen.getAllByTestId(/consult-schedule-day-/)[0]);
+-
+-    const selectedDayCard = screen
+-      .getByTestId('appointments-doctor-list')
+-      .props.renderItem({
+-        item: mockDoctors[0],
+-        index: 0,
+-        selected: false,
+-      });
+-
+-    await reactAct(async () => {
+-      selectedDayCard.props.onPress();
+-    });
+-
+     await waitFor(() => {
+       expect(mockFetchSelectableBenefitPlans).toHaveBeenCalledTimes(2);
+       expect(
+@@ -1295,8 +1262,6 @@ describe('AppointmentsScreen', () => {
+       ).toBeTruthy();
+     });
+ 
+-    fireEvent.press(screen.getAllByTestId(/consult-schedule-day-/)[0]);
+-
+     let cardRenderer: TestRenderer.ReactTestRenderer;
+ 
+     act(() => {
+@@ -1603,12 +1568,26 @@ describe('AppointmentsScreen', () => {
+       });
+     });
+ 
++    fireEvent.press(screen.getByTestId('appointments-service-filter'));
++
++    await waitFor(() => {
++      expect(screen.getByTestId('appointments-service-row-1')).toBeTruthy();
++    });
++
++    fireEvent.press(screen.getByTestId('appointments-service-row-1'));
+     fireEvent.press(card);
+ 
+     expect(mockNavigate).toHaveBeenCalledWith('DoctorDetailScreen', {
+-      provider: expect.objectContaining({ id: 'provider-2' }),
++      recommendedGpQuery: {
++        planId: 'c6e0d333-7174-4668-ab46-6f5a487ad7b4',
++        specialty: 'General Practice',
++        region: 'China',
++        page: 1,
++        limit: 10,
++      },
+       skipQuestionnaire: true,
+     });
++    expect(mockNavigate.mock.calls.at(-1)?.[1]).not.toHaveProperty('provider');
+   });
+ 
+   test('sizes both filter pickers from one row up to the shared maximum', () => {
+diff --git a/__tests__/consult-screen.test.tsx b/__tests__/consult-screen.test.tsx
+index 6ad9306b..797bfdc8 100644
+--- a/__tests__/consult-screen.test.tsx
++++ b/__tests__/consult-screen.test.tsx
+@@ -4,7 +4,6 @@ import { act, fireEvent, render, within } from '@testing-library/react-native';
+ 
+ import type { Ticket } from '../src/api/api-types';
+ import ConsultScreen from '../src/screens/consult-screen/consult-screen';
+-import { buildConsultScheduleDays } from '../src/screens/consult-screen/consult-schedule-days';
+ import { ThemeContext } from '../src/style/theme/theme-context';
+ import {
+   APP_PAGE_BACKGROUND_COLOR,
+@@ -337,89 +336,9 @@ describe('ConsultScreen', () => {
+     expect(screen.queryByTestId('consult-filter-upcoming')).toBeNull();
+     expect(screen.queryByTestId('consult-filter-completed')).toBeNull();
+     expect(screen.queryByTestId('consult-hero-placeholder')).toBeNull();
+-
+-    const scheduleDays = buildConsultScheduleDays(new Date());
+-    const weekdayLabels = [
+-      '周日',
+-      '周一',
+-      '周二',
+-      '周三',
+-      '周四',
+-      '周五',
+-      '周六',
+-    ];
+-    const scheduleStrip = screen.getByTestId('consult-schedule-strip');
+-    const allChip = screen.getByTestId('consult-schedule-all');
+-    const todayChip = screen.getByTestId(
+-      `consult-schedule-day-${scheduleDays[0].dateKey}`
+-    );
+-    const nextDayChip = screen.getByTestId(
+-      `consult-schedule-day-${scheduleDays[1].dateKey}`
+-    );
+-
+-    expect(scheduleStrip.props.horizontal).toBe(true);
+-    expect(scheduleStrip.props.showsHorizontalScrollIndicator).toBe(false);
+-    expect(screen.getAllByTestId(/consult-schedule-day-/)).toHaveLength(7);
+-    expect(allChip.props.accessibilityState).toEqual({ selected: true });
+-    expect(StyleSheet.flatten(allChip.props.style)).toMatchObject({
+-      backgroundColor: '#22C55E',
+-      borderRadius: '12rem',
+-      height: '64rem',
+-    });
+-    expect(within(allChip).getByText('全部')).toBeTruthy();
+-    expect(within(todayChip).getByText('今天')).toBeTruthy();
+-    expect(
+-      within(todayChip).getByText(String(scheduleDays[0].dayOfMonth))
+-    ).toBeTruthy();
+-    expect(
+-      within(nextDayChip).getByText(
+-        weekdayLabels[scheduleDays[1].weekdayIndex]
+-      )
+-    ).toBeTruthy();
+-    expect(
+-      within(nextDayChip).getByText(String(scheduleDays[1].dayOfMonth))
+-    ).toBeTruthy();
+-    expect(
+-      within(doctorListSection).queryByTestId('consult-schedule-strip')
+-    ).toBeNull();
+-
+-    const testIds: string[] = [];
+-    const collectTestIds = (node: unknown): void => {
+-      if (!node || typeof node !== 'object') {
+-        return;
+-      }
+-
+-      if (Array.isArray(node)) {
+-        node.forEach(collectTestIds);
+-        return;
+-      }
+-
+-      const record = node as {
+-        children?: unknown;
+-        props?: { testID?: unknown };
+-      };
+-
+-      if (typeof record.props?.testID === 'string') {
+-        testIds.push(record.props.testID);
+-      }
+-
+-      collectTestIds(record.children);
+-    };
+-
+-    collectTestIds(screen.toJSON());
+-    expect(testIds.indexOf('consult-schedule-strip')).toBeGreaterThan(-1);
+-    expect(testIds.indexOf('consult-schedule-strip')).toBeLessThan(
+-      testIds.indexOf('consult-opening-hours-button')
+-    );
+-
+-    fireEvent.press(nextDayChip);
+-    expect(
+-      screen.getByTestId('consult-schedule-all').props.accessibilityState
+-    ).toEqual({ selected: false });
+-    expect(
+-      screen.getByTestId(`consult-schedule-day-${scheduleDays[1].dateKey}`)
+-        .props.accessibilityState
+-    ).toEqual({ selected: true });
++    expect(screen.queryByTestId('consult-schedule-strip')).toBeNull();
++    expect(screen.queryByTestId('consult-schedule-all')).toBeNull();
++    expect(screen.queryAllByTestId(/consult-schedule-day-/)).toHaveLength(0);
+   });
+ 
+   /*
+diff --git a/src/api/api.ts b/src/api/api.ts
+index 387e891d..f0d80247 100644
+--- a/src/api/api.ts
++++ b/src/api/api.ts
+@@ -1095,6 +1095,8 @@ export const filterBySpecialty = async (params: any) => {
+       params?.payorId === undefined || params?.payorId === null
+         ? ''
+         : `payorId=${params.payorId}&`;
++    const recommendedGpQuery =
++      params?.getRecommendedGp === true ? '&getRecommendedGp=true' : '';
+     const response = await getRequest<any>(
+       `${urls.API_FILTER_BY_SPECIALTY}${payorQuery}planId=${
+         params?.planId
+@@ -1102,7 +1104,7 @@ export const filterBySpecialty = async (params: any) => {
+         params.specialty,
+       )}&region=${encodeURIComponent(params.region)}&page=${
+         params.page
+-      }&limit=${params.limit}`,
++      }&limit=${params.limit}${recommendedGpQuery}`,
+     );
+     console.log('api filterBySpecialty=', {
+       params,
+diff --git a/src/i18n/locale/Indonesia.ts b/src/i18n/locale/Indonesia.ts
+index 01d07eee..a05fdd15 100644
+--- a/src/i18n/locale/Indonesia.ts
++++ b/src/i18n/locale/Indonesia.ts
+@@ -476,6 +476,7 @@ export default {
+   "doctor_consultation": "Konsultasi dokter",
+   "doctor_consultation_not_available_now": "Tidak ada dokter yang tersedia saat ini",
+   "doctor_details": "Detail dokter",
++  "see_a_doctor": "Temui Dokter",
+   "doctor_list_title": "Daftar Dokter",
+   "doctor_qualification": "Kualifikasi Profesional",
+   "doctor_selected": "Dokter sudah memesan",
+@@ -1362,6 +1363,8 @@ export default {
+   "view_documents": "Lihat Dokumen",
+   "view_full_doctor_list": "Lihat daftar dokter lengkap",
+   "no_heals_pass": "Tidak ada Heals Pass",
++  "consult_no_pass_cost": "Setiap konsultasi dikenakan biaya HK$200.",
++  "consult_pay_and_start": "Bayar HK$200 & Mulai Konsultasi",
+   "go_to_purchase_now": "Beli sekarang",
+   "consult_page_title": "Konsultasi Dokter Sekarang",
+   "consult_filter_all": "Semua ({{count}})",
+diff --git a/src/i18n/locale/Melayu.ts b/src/i18n/locale/Melayu.ts
+index 9e1dc4e6..2b5b997b 100644
+--- a/src/i18n/locale/Melayu.ts
++++ b/src/i18n/locale/Melayu.ts
+@@ -475,6 +475,7 @@ export default {
+   "doctor_consultation": "Konsultasi Doktor",
+   "doctor_consultation_not_available_now": "Tiada doktor tersedia buat masa ini",
+   "doctor_details": "Maklumat doktor",
++  "see_a_doctor": "Berjumpa Doktor",
+   "doctor_list_title": "Senarai Doktor",
+   "doctor_qualification": "Kelayakan Profesional",
+   "doctor_selected": "Doktor dipilih",
+@@ -1347,6 +1348,8 @@ export default {
+   "view_documents": "Lihat Dokumen",
+   "view_full_doctor_list": "Lihat senarai penuh doktor",
+   "no_heals_pass": "Tiada Heals Pass",
++  "consult_no_pass_cost": "Setiap konsultasi berharga HK$200.",
++  "consult_pay_and_start": "Bayar HK$200 & Mulakan Konsultasi",
+   "go_to_purchase_now": "Beli sekarang",
+   "consult_page_title": "Konsultasi Doktor Sekarang",
+   "consult_filter_all": "Semua ({{count}})",
+diff --git a/src/i18n/locale/en.ts b/src/i18n/locale/en.ts
+index 930514ba..8d04cf83 100644
+--- a/src/i18n/locale/en.ts
++++ b/src/i18n/locale/en.ts
+@@ -1631,6 +1631,8 @@ export default {
+   view_documents: 'View Documents',
+   view_full_doctor_list: 'View full doctor list',
+   no_heals_pass: 'No Heals Pass',
++  consult_no_pass_cost: 'Each consultation costs HK$200.',
++  consult_pay_and_start: 'Pay HK$200 & Start Consult',
+   go_to_purchase_now: 'Go to purchase now',
+   consult_page_title: 'Dr Consult Now',
+   consult_filter_all: 'All ({{count}})',
+diff --git a/src/i18n/locale/ph.ts b/src/i18n/locale/ph.ts
+index aa5070d4..2fbf5192 100644
+--- a/src/i18n/locale/ph.ts
++++ b/src/i18n/locale/ph.ts
+@@ -459,6 +459,7 @@ export default {
+   "doctor_consultation": "Konsultasyon sa Doktor",
+   "doctor_consultation_not_available_now": "Walang available na mga doktor sa ngayon",
+   "doctor_details": "Mga Detalye ng Doktor",
++  "see_a_doctor": "Magpatingin sa Doktor",
+   "doctor_list_title": "Listahan ng Doktor",
+   "doctor_qualification": "Propesyonal na Kwalipikasyon",
+   "doctor_selected": "Nakaiskedyul na Doktor",
+@@ -1235,6 +1236,8 @@ export default {
+   "view_documents": "Tingnan ang mga Dokumento",
+   "view_full_doctor_list": "Tingnan ang buong listahan ng doktor",
+   "no_heals_pass": "Walang Heals Pass",
++  "consult_no_pass_cost": "Ang bawat konsultasyon ay nagkakahalaga ng HK$200.",
++  "consult_pay_and_start": "Magbayad ng HK$200 at magsimulang kumonsulta",
+   "go_to_purchase_now": "Bumili ngayon",
+   "consult_page_title": "Kumonsulta sa Doktor Ngayon",
+   "consult_filter_all": "Lahat ({{count}})",
+diff --git a/src/i18n/locale/th.ts b/src/i18n/locale/th.ts
+index 15aed18d..c2226836 100644
+--- a/src/i18n/locale/th.ts
++++ b/src/i18n/locale/th.ts
+@@ -83,6 +83,8 @@ export default {
+   visit_clinic: "คลินิก",
+   view_full_doctor_list: 'ดูรายชื่อแพทย์ทั้งหมด',
+   no_heals_pass: 'ไม่มี Heals Pass',
++  consult_no_pass_cost: 'ค่าปรึกษาแต่ละครั้ง HK$200',
++  consult_pay_and_start: 'ชำระ HK$200 และเริ่มปรึกษา',
+   go_to_purchase_now: 'ไปซื้อเลย',
+   consult_page_title: 'ปรึกษาแพทย์ทันที',
+   consult_filter_all: 'ทั้งหมด ({{count}})',
+@@ -442,6 +444,7 @@ export default {
+   my_plans: "แพลนของฉัน",
+   my_profile: 'โปรไฟล์',
+   doctor_details: "ประวัติแพทย์",
++  see_a_doctor: "พบแพทย์",
+   Immediately_issue_a_bill: 'สร้างบิลตอนนี้',
+   Submit_billing_to_ClinicSolution: 'ส่งการเรียกเก็บเงินไปที่ Clinic Solution',
+   Bill_settlement: 'ชำระบิล',
+diff --git a/src/i18n/locale/vn.ts b/src/i18n/locale/vn.ts
+index 6f92c80c..170a4c06 100644
+--- a/src/i18n/locale/vn.ts
++++ b/src/i18n/locale/vn.ts
+@@ -484,6 +484,7 @@ export default {
+   "doctor_consultation": "Tư vấn bác sĩ",
+   "doctor_consultation_not_available_now": "Hiện không có bác sĩ trống lịch",
+   "doctor_details": "Chi tiết bác sĩ",
++  "see_a_doctor": "Gặp bác sĩ",
+   "doctor_list_title": "Danh sách bác sĩ",
+   "doctor_qualification": "Trình độ chuyên môn",
+   "doctor_selected": "Bác sĩ đã chọn",
+@@ -1377,6 +1378,8 @@ export default {
+   "view_documents": "Xem tài liệu",
+   "view_full_doctor_list": "Xem danh sách bác sĩ",
+   "no_heals_pass": "Không có Heals Pass",
++  "consult_no_pass_cost": "Mỗi lần tư vấn có phí HK$200.",
++  "consult_pay_and_start": "Thanh toán HK$200 và bắt đầu tư vấn",
+   "go_to_purchase_now": "Đi mua ngay",
+   "consult_page_title": "Tư vấn bác sĩ ngay",
+   "consult_filter_all": "Tất cả ({{count}})",
+diff --git a/src/i18n/locale/zh.ts b/src/i18n/locale/zh.ts
+index 40a826ed..68568531 100644
+--- a/src/i18n/locale/zh.ts
++++ b/src/i18n/locale/zh.ts
+@@ -1515,6 +1515,8 @@ export default {
+   view_documents: '查阅文件',
+   view_full_doctor_list: '查看完整医生列表',
+   no_heals_pass: '暂无 Heals Pass',
++  consult_no_pass_cost: '每次问诊费用为 HK$200。',
++  consult_pay_and_start: '支付 HK$200 并开始问诊',
+   go_to_purchase_now: '立即前往购买',
+   consult_page_title: '立即问医生',
+   consult_filter_all: '全部（{{count}}）',
+diff --git a/src/i18n/locale/zh_tw.ts b/src/i18n/locale/zh_tw.ts
+index a838ce33..2ebb621e 100644
+--- a/src/i18n/locale/zh_tw.ts
++++ b/src/i18n/locale/zh_tw.ts
+@@ -1516,6 +1516,8 @@ export default {
+   view_documents: '查閱文件',
+   view_full_doctor_list: '查看完整的醫生名單',
+   no_heals_pass: '尚無 Heals Pass',
++  consult_no_pass_cost: '每次問診費用為 HK$200。',
++  consult_pay_and_start: '支付 HK$200 並開始問診',
+   go_to_purchase_now: '立即前往購買',
+   consult_page_title: '立即問醫生',
+   consult_filter_all: '全部（{{count}}）',
+diff --git a/src/navigation/types.ts b/src/navigation/types.ts
+index be5dbe0a..9cf4dcd7 100644
+--- a/src/navigation/types.ts
++++ b/src/navigation/types.ts
+@@ -15,7 +15,15 @@ export type RootStackParamList = {
+       }
+     | undefined;
+   [$routeNames.doctorDetailScreen]: {
+-    provider: QueueItem;
++    provider?: QueueItem;
++    recommendedGpQuery?: {
++      limit: number;
++      page: number;
++      payorId?: string;
++      planId: string;
++      region: string;
++      specialty: string;
++    };
+     skipQuestionnaire?: boolean;
+   };
+   [$routeNames.questionnaireScreen]: undefined;
+diff --git a/src/screens/consult-screen/consult-doctor-list.tsx b/src/screens/consult-screen/consult-doctor-list.tsx
+index c24f8abd..d95970c4 100644
+--- a/src/screens/consult-screen/consult-doctor-list.tsx
++++ b/src/screens/consult-screen/consult-doctor-list.tsx
+@@ -9,7 +9,6 @@ import { BlurView } from '@react-native-community/blur';
+ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+ import { faStethoscope } from '@fortawesome/free-solid-svg-icons';
+ import { useFocusEffect } from '@react-navigation/native';
+-import { Toast } from 'react-native-toast-notifications';
+ import {
+   ActivityIndicator,
+   FlatList,
+@@ -37,7 +36,6 @@ import {
+   getProviderOptions2,
+ } from '@api/api';
+ import assets from '@assets';
+-import { isGeneralPracticeCoverageLabel } from '@helper/ticket-display-helper';
+ import {
+   SVGChevronDownDarkIcon,
+   SVGRowWaitingComponent,
+@@ -66,9 +64,6 @@ import {
+   consumeConsultDoctorListReset,
+   subscribeConsultDoctorListReset,
+ } from './consult-doctor-list-reset';
+-import {
+-  CONSULT_SCHEDULE_ALL_KEY,
+-} from './consult-schedule-days';
+ import consultStyles from './consult-screen.styles';
+ 
+ const PLAN_PICKER_BASE_WIDTH = 393;
+@@ -139,42 +134,6 @@ const getDoctorItems = (response: unknown): QueueItem[] | null => {
+ 
+ const isDoctorOnline = (item: QueueItem): boolean => item.isOnline === true;
+ 
+-const isGeneralPracticeDoctor = (item: QueueItem): boolean => {
+-  const doctor = item.doctor;
+-
+-  if (!doctor) {
+-    return false;
+-  }
+-
+-  const specialties = Array.isArray(doctor.specialties)
+-    ? doctor.specialties
+-    : [];
+-  const labels = [doctor.type, ...specialties].filter(
+-    (label: unknown): label is string =>
+-      typeof label === 'string' && label.trim().length > 0,
+-  );
+-
+-  return labels.some((label: string): boolean => {
+-    if (isGeneralPracticeCoverageLabel(label)) {
+-      return true;
+-    }
+-
+-    const translated = translateLabel(label);
+-
+-    return (
+-      translated !== label && isGeneralPracticeCoverageLabel(translated)
+-    );
+-  });
+-};
+-
+-const selectNextGeneralPracticeDoctor = (
+-  items: readonly QueueItem[],
+-): QueueItem | undefined =>
+-  items.find(
+-    (item: QueueItem): boolean =>
+-      isDoctorOnline(item) && isGeneralPracticeDoctor(item),
+-  );
+-
+ const getDoctorLocation = (item: QueueItem): string => {
+   const address = item.clinic?.address?.trim();
+ 
+@@ -293,41 +252,7 @@ const renderPlanSeparator = (): React.ReactElement => (
+   <View style={styles.planPickerSeparator} />
+ );
+ 
+-const showSelectDateToast = (): void => {
+-  Toast.hideAll();
+-  Toast.show(
+-    <AppText
+-      style={{
+-        textAlign: 'center',
+-        fontSize: 14,
+-        color: '#FFFFFF',
+-        fontWeight: '400',
+-        lineHeight: 24,
+-      }}
+-    >
+-      {constants.i18n.t('consult_select_date')}
+-    </AppText>,
+-    {
+-      type: 'danger',
+-      placement: 'top',
+-      dangerColor: '#A90F1A',
+-      duration: 3000,
+-      animationDuration: 0,
+-      style: {
+-        borderRadius: 8,
+-        marginTop: 60,
+-      },
+-    },
+-  );
+-};
+-
+-interface ConsultDoctorListProps {
+-  selectedScheduleKey: string;
+-}
+-
+-const ConsultDoctorList = ({
+-  selectedScheduleKey,
+-}: ConsultDoctorListProps): React.ReactElement => {
++const ConsultDoctorList = (): React.ReactElement => {
+   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+   const remScale = windowWidth / PLAN_PICKER_BASE_WIDTH;
+   const {
+@@ -939,11 +864,6 @@ const ConsultDoctorList = ({
+ 
+   const handleDoctorPress = useCallback(
+     (item: QueueItem): void => {
+-      if (selectedScheduleKey === CONSULT_SCHEDULE_ALL_KEY) {
+-        showSelectDateToast();
+-        return;
+-      }
+-
+       if (!confirmedPolicy) {
+         handleOpenPlanPicker().then();
+         return;
+@@ -954,21 +874,50 @@ const ConsultDoctorList = ({
+         skipQuestionnaire: true,
+       });
+     },
+-    [confirmedPolicy, handleOpenPlanPicker, selectedScheduleKey]
++    [confirmedPolicy, handleOpenPlanPicker]
+   );
+ 
+   const handleJoinRoom = useCallback((): void => {
+-    const nextDoctor = selectNextGeneralPracticeDoctor(loadedDoctors);
+-
+-    if (!nextDoctor) {
++    if (!selectedCountry) {
+       return;
+     }
+ 
++    const specialty =
++      selectedService === ALL_SERVICES_OPTION ? '' : selectedService;
++    const useDefaultPlan =
++      !hasProviderOptionPlanFilter &&
++      hasPurchasedPlan === false &&
++      Boolean(defaultPlanId);
++    const recommendedGpQuery = useDefaultPlan
++      ? {
++          planId: defaultPlanId ?? '',
++          specialty,
++          region: selectedCountry,
++          page: DOCTOR_LIST_INITIAL_PAGE,
++          limit: DOCTOR_LIST_PAGE_SIZE,
++        }
++      : {
++          payorId: providerOptionPayorId ?? '',
++          planId: providerOptionPlanId ?? '',
++          specialty,
++          region: selectedCountry,
++          page: DOCTOR_LIST_INITIAL_PAGE,
++          limit: DOCTOR_LIST_PAGE_SIZE,
++        };
++
+     NavigationActions.navigate(routeNames.doctorDetailScreen, {
+-      provider: nextDoctor,
++      recommendedGpQuery,
+       skipQuestionnaire: true,
+     });
+-  }, [loadedDoctors]);
++  }, [
++    defaultPlanId,
++    hasProviderOptionPlanFilter,
++    hasPurchasedPlan,
++    providerOptionPayorId,
++    providerOptionPlanId,
++    selectedCountry,
++    selectedService,
++  ]);
+ 
+   const renderDoctor = useCallback(
+     ({ item }: RenderItemParams<QueueItem>): React.ReactElement => {
+diff --git a/src/screens/consult-screen/consult-screen.tsx b/src/screens/consult-screen/consult-screen.tsx
+index 6a477b1f..c0979d3b 100644
+--- a/src/screens/consult-screen/consult-screen.tsx
++++ b/src/screens/consult-screen/consult-screen.tsx
+@@ -35,8 +35,6 @@ import { APP_THEME_COLOR } from '@style/theme/theme-common';
+ import { ThemeContext } from '@style/theme/theme-context';
+ import type { Theme } from '../../types/Theme';
+ import ConsultDoctorList from './consult-doctor-list';
+-import { CONSULT_SCHEDULE_ALL_KEY } from './consult-schedule-days';
+-import ConsultScheduleStrip from './consult-schedule-strip';
+ import styles, {
+   getConsultScreenThemeStyles,
+ } from './consult-screen.styles';
+@@ -176,9 +174,6 @@ const ConsultScreenContent = ({
+     useState<ConsultFilterCounts>(INITIAL_FILTER_COUNTS);
+   const listRef = useRef<AdvancedFlatListRef<Ticket> | null>(null);
+   const selectedFilterRef = useRef<ConsultFilter>(selectedFilter);
+-  const [selectedScheduleKey, setSelectedScheduleKey] = useState<string>(
+-    CONSULT_SCHEDULE_ALL_KEY,
+-  );
+   const themeStyles = useMemo(
+     () => getConsultScreenThemeStyles(theme),
+     [theme]
+@@ -467,10 +462,6 @@ const ConsultScreenContent = ({
+       testID="consult-screen"
+     >
+       <AppPageHeader titleKey="consult_page_title" />
+-      <ConsultScheduleStrip
+-        onSelectedKeyChange={setSelectedScheduleKey}
+-        selectedKey={selectedScheduleKey}
+-      />
+       <View style={styles.openingHoursBar}>
+         <TouchableOpacity
+           activeOpacity={0.8}
+@@ -501,7 +492,7 @@ const ConsultScreenContent = ({
+           />
+         </TouchableOpacity>
+       </View>
+-      <ConsultDoctorList selectedScheduleKey={selectedScheduleKey} />
++      <ConsultDoctorList />
+       {/*
+         Appointment filters and cards are temporarily hidden.
+         <AdvancedFlatList<Ticket>
+diff --git a/src/screens/doctor-detail-screen/doctor-detail-screen.styles.ts b/src/screens/doctor-detail-screen/doctor-detail-screen.styles.ts
+index 2570d363..32e2dc94 100644
+--- a/src/screens/doctor-detail-screen/doctor-detail-screen.styles.ts
++++ b/src/screens/doctor-detail-screen/doctor-detail-screen.styles.ts
+@@ -516,9 +516,10 @@ export const styles = ScaledSheet.create({
+     alignItems: 'center',
+   },
+   containerInnerNote: {
++    alignItems: 'center',
++    justifyContent: 'center',
+     paddingLeft: '8@s',
+     paddingRight: '8@s',
+-    paddingBottom: '32@s',
+   },
+   commonContainer: {
+     flexDirection: 'row',
+@@ -680,5 +681,65 @@ export const styles = ScaledSheet.create({
+     paddingBottom: '16@s', 
+     borderBottomWidth: 1, 
+     borderColor: '#ECF5F5'
+-  }
++  },
++  noPassOverlay: {
++    alignItems: 'center',
++    backgroundColor: 'rgba(0, 0, 0, 0.55)',
++    flex: 1,
++    justifyContent: 'center',
++    paddingHorizontal: '24@s',
++  },
++  noPassCard: {
++    backgroundColor: '#FFF6D8',
++    borderRadius: '16@s',
++    padding: '16@s',
++    width: '100%',
++  },
++  noPassHeader: {
++    alignItems: 'flex-start',
++    flexDirection: 'row',
++  },
++  noPassIcon: {
++    alignItems: 'center',
++    backgroundColor: '#FFE7A3',
++    borderRadius: '14@s',
++    height: '28@s',
++    justifyContent: 'center',
++    marginRight: '10@s',
++    width: '28@s',
++  },
++  noPassIconText: {
++    color: '#E39B12',
++    fontSize: '16@s',
++    fontWeight: '700',
++    lineHeight: '20@s',
++  },
++  noPassCopy: {
++    flex: 1,
++  },
++  noPassTitle: {
++    color: '#C65A12',
++    fontSize: '16@s',
++    fontWeight: '700',
++  },
++  noPassSubtitle: {
++    color: '#E08A3C',
++    fontSize: '13@s',
++    fontWeight: '400',
++    marginTop: '2@s',
++  },
++  noPassPayButton: {
++    alignItems: 'center',
++    backgroundColor: '#FF7A1A',
++    borderRadius: '12@s',
++    justifyContent: 'center',
++    marginTop: '14@s',
++    minHeight: '44@s',
++    paddingHorizontal: '12@s',
++  },
++  noPassPayButtonText: {
++    color: '#FFFFFF',
++    fontSize: '15@s',
++    fontWeight: '700',
++  },
+ });
+diff --git a/src/screens/doctor-detail-screen/doctor-detail-screen.tsx b/src/screens/doctor-detail-screen/doctor-detail-screen.tsx
+index a16bbc11..71fd5406 100644
+--- a/src/screens/doctor-detail-screen/doctor-detail-screen.tsx
++++ b/src/screens/doctor-detail-screen/doctor-detail-screen.tsx
+@@ -6,7 +6,10 @@ import React, {
+   useCallback, useMemo
+ } from "react";
+ import {
++  ActivityIndicator,
+   Image,
++  Modal,
++  Pressable,
+   View,
+   TouchableOpacity,
+   ScrollView,
+@@ -23,7 +26,7 @@ import { ThemeContext } from "@style/theme/theme-context.tsx";
+ import type { Theme } from "@types/Theme.ts";
+ import PageRightBt from "@components/page-right-bt/page-right-bt.tsx";
+ import NavigationBar from "@components/navigation-bar/navigation-bar.tsx";
+-import { MemberAddresses, Ticket_post } from "@api/api-types.ts";
++import { MemberAddresses, QueueItem, Ticket_post } from "@api/api-types.ts";
+ import scrollViewStyle from "@style/common-styles/scrollView.style.ts";
+ import {styles} from "./doctor-detail-screen.styles.ts";
+ import DoctorAvatar from "@components/doctor-avatar/doctor-avatar.tsx";
+@@ -74,8 +77,35 @@ import {
+ } from '@utils/selected-address.ts';
+ import { useLoading } from '../../components/loading-modal/loading-context.tsx';
+ import {getDoctorBookingDestination} from './doctor-booking-flow.ts';
++import {
++  selectRecommendedGpProvider,
++  shouldReturnToConsultAfterEmptyDoctorToast,
++} from './recommended-gp.ts';
++import {fetchSelectableBenefitPlans} from '@services/benefit-plan-service';
+ import {APP_THEME_COLOR} from '@style/theme/theme-common';
+ 
++const resolveVisitSelection = (
++  item: QueueItem | undefined,
++): { VisitMode: number; visit_type: number } => {
++  const providerTypes = item?.type ?? [];
++
++  return {
++    VisitMode: providerTypes.includes("tc")
++      ? 0
++      : providerTypes.includes("pv")
++        ? 1
++        : -1,
++    visit_type:
++      providerTypes.includes("tc-queuing") ||
++      providerTypes.includes("pv-queuing")
++        ? 0
++        : providerTypes.includes("tc-booking") ||
++            providerTypes.includes("pv-booking")
++          ? 1
++          : -1,
++  };
++};
++
+ const pharmacy_of_Korean_doctor_list: Selected_pharmacy_of_Korean_doctor[] = [
+   {
+     street: "407, Wangsimni-ro",
+@@ -99,8 +129,15 @@ const pharmacy_of_Korean_doctor_list: Selected_pharmacy_of_Korean_doctor[] = [
+ 
+ 
+ const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = (props: DoctorDetailScreenProps) => {
+-  const {route} = props;
+-  const {provider, skipQuestionnaire} = route.params;
++  const {navigation, route} = props;
++  const {provider: routeProvider, recommendedGpQuery, skipQuestionnaire} = route.params;
++  const [loadedProvider, setLoadedProvider] = useState<QueueItem | undefined>(
++    recommendedGpQuery ? undefined : routeProvider,
++  );
++  const provider = loadedProvider;
++  const initialVisitSelection = resolveVisitSelection(
++    recommendedGpQuery ? undefined : routeProvider,
++  );
+   const {
+     user, 
+     plan, 
+@@ -111,6 +148,7 @@ const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = (props: DoctorDeta
+     loginData,
+     set_User,
+     setCommonModalKey,
++    showErrorModal,
+     setShowErrorModal,
+     setErrorModalText,
+     selectedDependant,
+@@ -124,19 +162,8 @@ const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = (props: DoctorDeta
+     phoneNumber: "",
+     svgData_pin: null,
+     svgData_info_pink: null,
+-    VisitMode: provider.type.includes("tc")
+-      ? 0
+-      : provider.type.includes("pv")
+-        ? 1
+-        : -1,
+-      visit_type:
+-        provider.type.includes("tc-queuing") ||
+-        provider.type.includes("pv-queuing")
+-          ? 0
+-          : provider.type.includes("tc-booking") ||
+-            provider.type.includes("pv-booking")
+-          ? 1
+-          : -1,
++    VisitMode: initialVisitSelection.VisitMode,
++    visit_type: initialVisitSelection.visit_type,
+     selectedBookingDateTime: null,
+     ConsultationTimeToday: moment(),
+     ConsultationTimeTomorrow: moment().add(1, "days"),
+@@ -155,6 +182,8 @@ const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = (props: DoctorDeta
+   });
+   const [selectedAddressIdx, setSelectedAddressIdx] = useState<number>(0);
+   const [isRequestedGetAddress, setIsRequestedGetAddress] = useState<boolean>(false);
++  const [isNoPassModalVisible, setIsNoPassModalVisible] = useState<boolean>(false);
++  const returnToConsultAfterEmptyDoctorToastRef = useRef(false);
+   const selectedDependantRef = useRef(selectedDependant);
+   selectedDependantRef.current = selectedDependant;
+ 
+@@ -194,36 +223,143 @@ const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = (props: DoctorDeta
+   }, [state.addresses, user?.selectedAddress]);
+ 
+   useEffect(() => {
++    if (!recommendedGpQuery) {
++      return;
++    }
++
++    let cancelled = false;
++
++    const loadRecommendedDoctor = async (): Promise<void> => {
++      setLoading(true);
++
++      try {
++        const response: unknown = await $api.filterBySpecialty({
++          ...recommendedGpQuery,
++          getRecommendedGp: true,
++        });
++
++        if (cancelled) {
++          return;
++        }
++
++        const nextProvider = selectRecommendedGpProvider(response);
++
++        if (!nextProvider) {
++          returnToConsultAfterEmptyDoctorToastRef.current = true;
++          setCommonModalKey("showErrorModal");
++          setErrorModalText($i18n.t("appointments_no_doctors"));
++          setShowErrorModal(true);
++          return;
++        }
++
++        returnToConsultAfterEmptyDoctorToastRef.current = false;
++        setLoadedProvider(nextProvider);
++        setState((prevState) => {
++          return {
++            ...prevState,
++            ...resolveVisitSelection(nextProvider),
++          };
++        });
++      } catch (error) {
++        console.log(
++          "Exception encountered @ DoctorDetailScreen.loadRecommendedDoctor",
++          error,
++        );
++
++        if (!cancelled) {
++          setCommonModalKey("showErrorModal");
++          setErrorModalText($i18n.t("appointments_no_doctors"));
++          setShowErrorModal(true);
++        }
++      } finally {
++        if (!cancelled) {
++          setLoading(false);
++        }
++      }
++    };
++
++    loadRecommendedDoctor().then();
++
++    return () => {
++      cancelled = true;
++      returnToConsultAfterEmptyDoctorToastRef.current = false;
++      setLoading(false);
++    };
++  }, [
++    recommendedGpQuery,
++    setCommonModalKey,
++    setErrorModalText,
++    setLoading,
++    setShowErrorModal,
++  ]);
++
++  useEffect(() => {
++    if (
++      !shouldReturnToConsultAfterEmptyDoctorToast(
++        returnToConsultAfterEmptyDoctorToastRef.current,
++        showErrorModal,
++      )
++    ) {
++      return;
++    }
++
++    returnToConsultAfterEmptyDoctorToastRef.current = false;
++
++    if (navigation.canGoBack()) {
++      navigation.goBack();
++    }
++  }, [navigation, showErrorModal]);
++
++  useEffect(() => {
++    const providerId = provider?.id;
++
++    if (!providerId) {
++      return;
++    }
++
++    let cancelled = false;
++
+     (async () => {
+       try {
+         const res: Provider_timeslot | undefined = await $api.provider_timeslot(
+-          provider.id
++          providerId
+         );
+-        if (res) {
+-          setState((prevState) => {
+-            return {
+-              ...prevState,
+-              selectedProvider: res,
+-              phoneNumber: res?.location?.contacts.find(
+-                (currentValue, index, arr) => {
+-                  return (
+-                    currentValue.key === "phone.office.0" ||
+-                    currentValue.key === "phone.mobile.0"
+-                  );
+-                }
+-              )?.value,
+-              isKorea:
+-                // $fake ? true :
+-                getValueFromKeyValue(
+-                  res?.location?.addresses && res?.location?.addresses?.length > 0 ? res?.location?.addresses[0]?.fields : [],
+-                  "country"
+-                ) === "Korea, Republic of South Korea",
+-            };
+-          });
++
++        if (!res || cancelled) {
++          return;
+         }
++
++        setState((prevState) => {
++          return {
++            ...prevState,
++            selectedProvider: res,
++            phoneNumber: res?.location?.contacts.find(
++              (currentValue) => {
++                return (
++                  currentValue.key === "phone.office.0" ||
++                  currentValue.key === "phone.mobile.0"
++                );
++              }
++            )?.value,
++            isKorea:
++              getValueFromKeyValue(
++                res?.location?.addresses && res?.location?.addresses?.length > 0 ? res?.location?.addresses[0]?.fields : [],
++                "country"
++              ) === "Korea, Republic of South Korea",
++          };
++        });
+       } catch (e) {
+         console.log(`Exception encountered `, e);
+       }
++    })();
++
++    return () => {
++      cancelled = true;
++    };
++  }, [provider?.id]);
++
++  useEffect(() => {
++    (async () => {
+       try {
+         const getAddressesResponse = await $api.get_address();
+         if (getAddressesResponse?.length > 0) {
+@@ -379,6 +515,27 @@ const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = (props: DoctorDeta
+   };
+ 
+   const handleContinueBooking = async (): Promise<void> => {
++    if (recommendedGpQuery) {
++      setLoading(true);
++
++      try {
++        const purchasedPlans = await fetchSelectableBenefitPlans();
++
++        if (purchasedPlans.length === 0) {
++          setLoading(false);
++          setIsNoPassModalVisible(true);
++          return;
++        }
++      } catch (error) {
++        console.log(
++          "Exception encountered @ DoctorDetailScreen.checkPurchasedPlan",
++          error,
++        );
++        setLoading(false);
++        return;
++      }
++    }
++
+     setLoading(true);
+     // setLoadingText($i18n.t("loading"));
+     console.log('handleContinueBooking=>>>>', { state });
+@@ -417,6 +574,11 @@ const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = (props: DoctorDeta
+ 
+     const selectedUser = await getUserSelected();
+     console.log('handleContinueBooking=>>>>', { selectedUser, state, provider, DeliveryRequest });
++
++    if (!provider) {
++      setLoading(false);
++      return;
++    }
+     /**
+      * https://app.clickup.com/t/8553538/TECH-7876 selectedUser?.id must be a string
+      */
+@@ -532,6 +694,58 @@ const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = (props: DoctorDeta
+       // && state.addresses.length > 0;
+   }, [state, provider, isRequestedGetAddress]);
+ 
++  const handlePressPatientInfo = useCallback((): void => {
++    $NavigationActions.navigate($routeNames.myDependantsScreen, {
++      fromAppointmentFlow: true,
++    });
++  }, []);
++
++  const renderNoPassModal = (): React.ReactElement => (
++    <Modal
++      animationType="fade"
++      onRequestClose={(): void => setIsNoPassModalVisible(false)}
++      transparent
++      visible={isNoPassModalVisible}
++    >
++      <Pressable
++        accessibilityRole="button"
++        onPress={(): void => setIsNoPassModalVisible(false)}
++        style={styles.noPassOverlay}
++        testID="consult-no-pass-overlay"
++      >
++        <Pressable
++          onPress={(): void => undefined}
++          style={styles.noPassCard}
++          testID="consult-no-pass-modal"
++        >
++          <View style={styles.noPassHeader}>
++            <View style={styles.noPassIcon}>
++              <AppText style={styles.noPassIconText}>!</AppText>
++            </View>
++            <View style={styles.noPassCopy}>
++              <AppText style={styles.noPassTitle}>
++                {$i18n.t("no_heals_pass")}
++              </AppText>
++              <AppText style={styles.noPassSubtitle}>
++                {$i18n.t("consult_no_pass_cost")}
++              </AppText>
++            </View>
++          </View>
++          <TouchableOpacity
++            accessibilityRole="button"
++            activeOpacity={0.8}
++            style={styles.noPassPayButton}
++            testID="consult-no-pass-pay-button"
++          >
++            <AppText style={styles.noPassPayButtonText}>
++              {$i18n.t("consult_pay_and_start")}
++            </AppText>
++          </TouchableOpacity>
++        </Pressable>
++      </Pressable>
++    </Modal>
++  );
++
+   const renderConfirm = () => {
+     return (
+       <View style={styles.continueContainer}>
+@@ -586,6 +800,27 @@ const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = (props: DoctorDeta
+     )
+   }
+ 
++  if (!provider) {
++    return (
++      <ThemeContext.Consumer>
++        {(theme: Theme) => (
++          <>
++            <NavigationBar
++              title={$i18n.t("doctor_details")}
++              rightBt={(
++                <PageRightBt
++                  tag={$routeNames.doctorDetailScreen}/>
++              )}
++            />
++            <View style={[theme.uiTheme?.commonStyles.pageContainer, styles.container]}>
++              {loading ? <ActivityIndicator color={APP_THEME_COLOR} /> : null}
++            </View>
++          </>
++        )}
++      </ThemeContext.Consumer>
++    );
++  }
++
+   const renderDoctorAddressInfo = () => {
+     return (
+       <View style={styles.clinicContainer}>
+@@ -664,12 +899,6 @@ const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = (props: DoctorDeta
+     }
+   }
+ 
+-  const handlePressPatientInfo = useCallback((): void => {
+-    $NavigationActions.navigate($routeNames.myDependantsScreen, {
+-      fromAppointmentFlow: true,
+-    });
+-  }, []);
+-
+   const renderPatientInfo = (): React.ReactElement => {
+     const patientName = selectedDependant?.name ?? '';
+     const patientContact = selectedDependant?.contact ?? '';
+@@ -808,7 +1037,7 @@ const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = (props: DoctorDeta
+         return (
+           <>
+             <NavigationBar
+-              title={$i18n.t("doctor_details")}
++              title={$i18n.t(recommendedGpQuery ? "see_a_doctor" : "doctor_details")}
+               rightBt={(
+                 <PageRightBt 
+                 tag={$routeNames.doctorDetailScreen}/>
+@@ -827,6 +1056,7 @@ const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = (props: DoctorDeta
+                 horizontal={false}
+                 showsVerticalScrollIndicator={false}
+               >
++                {recommendedGpQuery ? null : (
+                 <View
+                   style={[{
+                     justifyContent: 'center',
+@@ -869,6 +1099,7 @@ const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = (props: DoctorDeta
+                     {renderDoctorAddressInfo()}
+                   </>
+                 </View>
++                )}
+                 <View style={styles.info}>
+                   <View style={styles.peopleQueueContainer}>
+                     <View style={styles.peopleQueueContainer}>
+@@ -1129,6 +1360,7 @@ const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = (props: DoctorDeta
+                 </View>
+               </ScrollView>
+             </View>
++            {renderNoPassModal()}
+             {renderConfirm()}
+           </>
+         );
