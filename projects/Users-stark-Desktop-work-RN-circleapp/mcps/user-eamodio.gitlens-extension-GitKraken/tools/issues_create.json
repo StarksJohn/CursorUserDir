@@ -20,7 +20,7 @@
         "type": "string"
       },
       "body": {
-        "description": "The body/description of the issue (markdown supported where the provider allows)",
+        "description": "The body/description of the issue (markdown; converted to Jira's format for Jira. Azure DevOps expects HTML)",
         "type": "string"
       },
       "issue_type": {

@@ -1,0 +1,9 @@
+---
+pid: 38254
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "while ! rg -q '^EXIT:' /tmp/heals-ios-release.log; do sleep 20; done; echo DONE; rg -n 'error:' /tmp/heals-ios-release.log | rg -v 'Werror=' | head -n 20; tail -n 8 /tmp/heals-ios-release.log"
+title: "Wait until the iOS release build exits"
+status: running  
+started_at: 2026-10-19T11:19:59.038Z
+running_for_ms: 410030   
+---

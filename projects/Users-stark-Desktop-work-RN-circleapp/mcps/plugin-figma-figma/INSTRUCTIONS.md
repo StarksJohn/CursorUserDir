@@ -2,6 +2,9 @@ The official Figma MCP server. Use this server whenever the user wants to create
 
 This server bridges code and design in both directions, and supports designing from scratch using existing design systems and codebases.
 
+FILE SESSION:
+Once the target fileKey is known, call create_session with that key and a concise task description before search_design_system, get_libraries, use_figma, or any other file tool. This applies to read-only tasks too. If a new file is needed, call create_new_file first, then create_session with the returned file key. Reuse the returned UUID as the sessionId argument on eligible file tools for subsequent work on that task, including calls to other files.
+
 CAPABILITIES:
 - Read designs FROM Figma into code (get_design_context, get_screenshot, get_metadata, get_figjam)
 - Write designs INTO Figma from code, intent, or existing components (use_figma, generate_figma_design, create_new_file, upload_assets)
@@ -35,19 +38,19 @@ Extract fileKey and nodeId from Figma URLs:
 - figma.com/slides/:fileKey/:fileName?node-id=:nodeId → Figma Slides file
 
 DESIGN-TO-CODE WORKFLOW (Figma → code):
-MANDATORY: load the /figma-design-to-code skill BEFORE calling get_design_context — it carries the full workflow (adapting the reference, reusing existing project components and tokens, and honoring the response's hints by priority). Call get_design_context with the nodeId and fileKey — it is your primary tool; its output is a REFERENCE to adapt to the target project, not final code.
+MANDATORY: load the /figma-design-to-code skill BEFORE calling get_design_context — it carries the full workflow (adapting the reference, reusing existing project components and tokens, and honoring the response's hints by priority). After create_session, call get_design_context with the nodeId and fileKey — it is your primary tool; its output is a REFERENCE to adapt to the target project, not final code.
 
 CODE-TO-DESIGN WORKFLOW (code → Figma):
 1. Load the /figma-generate-design skill if available.
-2. ALWAYS call search_design_system first to find existing components, variables, and styles to reuse — never generate components from scratch if a design system match exists.
+2. Once the target fileKey is known, call create_session before any file tool; call create_new_file first if a new file is needed. Then ALWAYS call search_design_system as the first design-system lookup to find existing components, variables, and styles to reuse — never generate components from scratch if a design system match exists.
 3. For web app pages, use both tools in parallel: generate_figma_design to capture a pixel-perfect screenshot, and use_figma to build the screen from imported design system components. Refine use_figma output against the screenshot, then delete the screenshot reference.
 4. For non-web targets (iOS, Android, generic UI), use use_figma with search_design_system.
 5. For updating or syncing a Figma page that has already been captured, use use_figma — even if the source code has changed.
 
 FROM-SCRATCH DESIGN WORKFLOW (no source design or code):
 1. Load the /figma-generate-design skill if available.
-2. Call search_design_system and get_libraries to find existing components, tokens, and styles. Build from these primitives.
-3. Use create_new_file if no target file exists, then use_figma to assemble the design from design system components.
+2. If no target file exists, call create_new_file. Once the target fileKey is known, call create_session before calling search_design_system or get_libraries. Then call search_design_system and get_libraries to find existing components, tokens, and styles. Build from these primitives.
+3. Use use_figma to assemble the design from design system components.
 
 DESIGN SYSTEM / LIBRARY WORKFLOW:
 - To build or extend a design system in Figma from a codebase, load the /figma-generate-library skill.

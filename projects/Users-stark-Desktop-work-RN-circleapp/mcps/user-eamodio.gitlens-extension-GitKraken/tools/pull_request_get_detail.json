@@ -19,7 +19,7 @@
         "type": "string"
       },
       "pull_request_files": {
-        "description": "Set to true if you want to retrieve the files changed in the pull request. Not supported by Azure DevOps.",
+        "description": "Set to true if you want to retrieve the files changed in the pull request. Not supported by Azure DevOps. On GitHub and GitLab the list is paged past the provider's first page. `changedFiles` is the provider-reported total where the provider supplies one; it is absent otherwise, and Bitbucket never supplies it. `filesTruncated` is true when the returned list is known to be short and absent otherwise; Bitbucket Cloud never sets it because that provider gives no completeness signal. `diffOmitted` on a file means its patch, blob sha and urls were elided to bound the response size. `additions`, `deletions` and `changes` are populated on GitHub only. The `files` key is null, not absent, when this parameter is not set.",
         "type": "boolean"
       },
       "pull_request_id": {

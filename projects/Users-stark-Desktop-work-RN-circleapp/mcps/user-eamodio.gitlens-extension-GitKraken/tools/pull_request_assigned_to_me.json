@@ -9,7 +9,7 @@
         "type": "string"
       },
       "fields": {
-        "description": "Optional comma-separated list of top-level fields to keep on each result. Recommended for list/overview calls: omitting it returns every field, which on large lists can overflow the context window. Omit only when you need the full objects. If every requested name is unknown, the request is rejected; field names are case-sensitive. Available fields: timestampCreatedAt, updatedAt, mergedAt, closedAt, title, description, url, state, owner, repoName, repoHost, provider, id, nodeId, repositoryId, projectId, organization, files, clone, number, merged, draft, approved, authoredByMe, headBranch, baseBranch, headRepo, author, assignees, reviews, reviewDecision, mergeableState, buildStatuses, baseRef, headRef, additions, deletions, currentViewer.",
+        "description": "Optional comma-separated list of top-level fields to keep on each result. Recommended for list/overview calls: omitting it returns every field, which on large lists can overflow the context window. Omit only when you need the full objects. If every requested name is unknown, the request is rejected; field names are case-sensitive. Available fields: timestampCreatedAt, updatedAt, mergedAt, closedAt, title, description, url, state, owner, repoName, repoHost, provider, id, nodeId, repositoryId, projectId, organization, files, clone, number, merged, draft, approved, authoredByMe, headBranch, baseBranch, headRepo, author, assignees, reviews, reviewDecision, mergeableState, buildStatuses, baseRef, headRef, additions, deletions, changedFiles, filesTruncated, currentViewer.",
         "type": "string"
       },
       "is_closed": {
