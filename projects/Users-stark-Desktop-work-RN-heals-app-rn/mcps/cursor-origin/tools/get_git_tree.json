@@ -13,20 +13,19 @@
         "description": "Origin repository name within that namespace"
       },
       "sha": {
-        "type": "string",
         "default": "HEAD",
-        "description": "Tree SHA, commit SHA, branch, tag, or HEAD. Omit for HEAD."
+        "description": "Tree SHA, commit SHA, branch, tag, or HEAD. Omit for HEAD.",
+        "type": "string"
       },
       "recursive": {
-        "type": "boolean",
-        "description": "True walks the whole tree; omit for immediate children only"
+        "description": "True walks the whole tree; omit for immediate children only",
+        "type": "boolean"
       }
     },
     "required": [
       "owner",
       "name"
     ],
-    "additionalProperties": false,
     "$schema": "http://json-schema.org/draft-07/schema#"
   }
 }

@@ -16,9 +16,9 @@
         "type": "string"
       },
       "view": {
-        "type": "string",
         "default": "metadata",
-        "description": "metadata (default), files, or a bounded patch"
+        "description": "metadata (default), files, or a bounded patch",
+        "type": "string"
       },
       "pageSize": {
         "type": "number"
@@ -38,7 +38,6 @@
       "name",
       "sha"
     ],
-    "additionalProperties": false,
     "$schema": "http://json-schema.org/draft-07/schema#"
   }
 }

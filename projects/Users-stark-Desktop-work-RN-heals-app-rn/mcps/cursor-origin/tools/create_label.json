@@ -17,12 +17,12 @@
         "description": "Label name to create, 1-50 characters"
       },
       "color": {
-        "type": "string",
-        "description": "Six hex digits, optional leading #; defaults to ededed"
+        "description": "Six hex digits, optional leading #; defaults to ededed",
+        "type": "string"
       },
       "description": {
-        "type": "string",
-        "description": "Label description, at most 255 characters"
+        "description": "Label description, at most 255 characters",
+        "type": "string"
       }
     },
     "required": [
@@ -30,7 +30,6 @@
       "name",
       "label"
     ],
-    "additionalProperties": false,
     "$schema": "http://json-schema.org/draft-07/schema#"
   }
 }

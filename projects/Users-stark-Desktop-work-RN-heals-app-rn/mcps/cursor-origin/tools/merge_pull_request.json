@@ -19,12 +19,12 @@
         "type": "string"
       },
       "mergeMethod": {
+        "description": "merge or squash. Omit for the repository default.",
         "type": "string",
         "enum": [
           "merge",
           "squash"
-        ],
-        "description": "merge or squash. Omit for the repository default."
+        ]
       }
     },
     "required": [
@@ -33,7 +33,6 @@
       "number",
       "expectedHeadSha"
     ],
-    "additionalProperties": false,
     "$schema": "http://json-schema.org/draft-07/schema#"
   }
 }

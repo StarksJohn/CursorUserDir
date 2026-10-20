@@ -1,0 +1,15 @@
+---
+pid: 3580
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "python3 - << 'PY'\nimport json, subprocess, urllib.request, urllib.error, base64\n\ndef pw(label):\n    p = subprocess.run([\"security\", \"find-generic-password\", \"-l\", label, \"-w\"], capture_output=True, text=True)\n    if p.returncode != 0:\n        print(\"fail\", label, p.returncode, p.stderr.strip()[:200])\n        return None\n    return p.stdout.strip()\n\nurl = \"https://api.bitbucket.org/2.0/repositories/healshealthcare/heals-app-rn/pullrequests/564\"\n\ndef try_req(headers, tag):\n    req = urllib.request.Request(url, headers=headers)\n    try:\n        with urllib.request.urlopen(req, timeout=30) as resp:\n            body = json.loads(resp.read().decode())\n            print(\"OK\", tag, resp.status)\n            return body\n    except urllib.error.HTTPError as e:\n        print(\"HTTP\", tag, e.code, e.read()[:180].decode(errors=\"replace\"))\n        return None\n\nfor label, user in [\n    (\"bitbucket.org Access Key for StarksZhang\", \"StarksZhang\"),\n    (\"bitbucket.org Access Key for SuperJohns\", \"SuperJohns\"),\n]:\n    secret = pw(label)\n    if not secret:\n        continue\n    print(\"got secret\", label, \"len\", len(secret), \"prefix\", secret[:4])\n    basic = base64.b64encode(f\"{user}:{secret}\".encode()).decode()\n    body = try_req({\"Authorization\": f\"Basic {basic}\", \"Accept\": \"application/json\"}, f\"basic:{user}\")\n    if body:\n        break\n    body = try_req({\"Authorization\": f\"Bearer {secret}\", \"Accept\": \"application/json\"}, f\"bearer:{user}\")\n    if body:\n        break\nelse:\n    body = None\n\nif body:\n    src = body.get(\"source\", {})\n    dst = body.get(\"destination\", {})\n    print(json.dumps({\n        \"id\": body.get(\"id\"),\n        \"title\": body.get(\"title\"),\n        \"state\": body.get(\"state\"),\n        \"source_branch\": (src.get(\"branch\") or {}).get(\"name\"),\n        \"source_commit\": (src.get(\"commit\") or {}).get(\"hash\"),\n        \"dest_branch\": (dst.get(\"branch\") or {}).get(\"name\"),\n        \"dest_commit\": (dst.get(\"commit\") or {}).get(\"hash\"),\n        \"updated\": body.get(\"updated_on\"),\n    }, ensure_ascii=False, indent=2))\nPY"
+title: "Authenticate and fetch PR 564 metadata"
+status: failed   
+started_at: 2026-10-20T04:48:56.289Z
+running_for_ms: 46469    
+---
+
+---
+exit_code: unknown
+elapsed_ms: 46469
+ended_at: 2026-10-20T04:49:42.758Z
+---

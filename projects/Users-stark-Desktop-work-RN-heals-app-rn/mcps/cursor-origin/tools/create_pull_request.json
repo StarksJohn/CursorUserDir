@@ -20,8 +20,8 @@
         "description": "Already-pushed source branch"
       },
       "base": {
-        "type": "string",
-        "description": "Target branch the pull request merges into. Required without parentPullNumber; with it, omit this or name the parent's head branch."
+        "description": "Target branch the pull request merges into. Required without parentPullNumber; with it, omit this or name the parent's head branch.",
+        "type": "string"
       },
       "body": {
         "type": "string"
@@ -30,8 +30,8 @@
         "type": "boolean"
       },
       "parentPullNumber": {
-        "type": "number",
-        "description": "Pull request to stack on, by number. Its head branch becomes the base, and head must have been built on that branch."
+        "description": "Pull request to stack on, by number. Its head branch becomes the base, and head must have been built on that branch.",
+        "type": "number"
       }
     },
     "required": [
@@ -40,7 +40,6 @@
       "title",
       "head"
     ],
-    "additionalProperties": false,
     "$schema": "http://json-schema.org/draft-07/schema#"
   }
 }

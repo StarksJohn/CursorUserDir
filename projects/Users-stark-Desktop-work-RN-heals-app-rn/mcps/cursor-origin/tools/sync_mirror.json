@@ -17,8 +17,8 @@
         "description": "Full ref to fetch, such as refs/heads/main"
       },
       "sha": {
-        "type": "string",
-        "description": "Full commit id to wait for; omit to wait on the ref tip"
+        "description": "Full commit id to wait for; omit to wait on the ref tip",
+        "type": "string"
       }
     },
     "required": [
@@ -26,7 +26,6 @@
       "name",
       "ref"
     ],
-    "additionalProperties": false,
     "$schema": "http://json-schema.org/draft-07/schema#"
   }
 }

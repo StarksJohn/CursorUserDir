@@ -16,9 +16,9 @@
         "type": "number"
       },
       "view": {
-        "type": "string",
         "default": "summary",
-        "description": "summary (default), files, commits, reviews, comments, or threads"
+        "description": "summary (default), files, commits, reviews, comments, or threads",
+        "type": "string"
       },
       "pageSize": {
         "type": "number"
@@ -33,11 +33,11 @@
         "type": "number"
       },
       "threadIds": {
+        "description": "Thread ids for the threads view",
         "type": "array",
         "items": {
           "type": "string"
-        },
-        "description": "Thread ids for the threads view"
+        }
       }
     },
     "required": [
@@ -45,7 +45,6 @@
       "name",
       "number"
     ],
-    "additionalProperties": false,
     "$schema": "http://json-schema.org/draft-07/schema#"
   }
 }

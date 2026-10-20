@@ -1,9 +1,15 @@
 {
   "name": "generate_image",
-  "description": "Generate a raster image from a text prompt and place it directly in an editable Design, FigJam, or Slides file. If no editable file exists, call create_new_file first. Width and height guide the aspect ratio; the model chooses a supported output size, so the image pixel dimensions may differ from the requested values. Omit nodeId to create a new image-filled frame, or provide nodeId to replace an existing image fill without resizing it. Returns fileKey, nodeId, model, width, and height. Use download_assets to download the placed image. **This is a paid feature — each call consumes Figma AI credits against the destination file's plan (different models have different per-call costs).**",
+  "description": "Generate a raster image from a text prompt and place it directly in an editable Design, FigJam, or Slides file. If no editable file exists, call create_new_file first. Width and height guide the aspect ratio; the model chooses a supported output size, so the image pixel dimensions may differ from the requested values. Omit nodeId to create a new image-filled frame, or provide nodeId to replace an existing image fill without resizing it. Returns fileKey, nodeId, model, image metadata (including width, height, and image.url for downloading the full-resolution image), and curl instructions, plus an inline thumbnail preview. **This is a paid feature — each call consumes Figma AI credits against the destination file's plan (different models have different per-call costs).**",
   "arguments": {
     "type": "object",
     "properties": {
+      "sessionId": {
+        "description": "After create_session succeeds, pass its exact returned UUID here on every file-tool call for this task, even when fileKey differs.",
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+      },
       "prompt": {
         "type": "string",
         "minLength": 1,

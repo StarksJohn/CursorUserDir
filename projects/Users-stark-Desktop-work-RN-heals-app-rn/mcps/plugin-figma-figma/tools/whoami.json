@@ -1,6 +1,6 @@
 {
   "name": "whoami",
-  "description": "Returns the authenticated user's handle, email, all the plans the user belongs to (and the ID for each plan) and their seats on those plans. code_layers_enabled indicates whether the user has access to Code Layers in Design on any plan; each plan also includes code_layers_enabled for files owned by that plan. Each plan includes user_can_access_figma_ai, a boolean indicating whether the user has Figma AI permission and the plan admin has enabled AI features. You MUST use this tool if you are experiencing file access/permission issues or are being rate limited by the Figma MCP to help debug the issue.",
+  "description": "Returns the authenticated user's handle, email, all the plans the user belongs to (and the ID for each plan) and their seats on those plans. code_layers_enabled indicates whether the user has access to Code Layers in Design on any plan; each plan also includes code_layers_enabled for files owned by that plan. You MUST use this tool if you are experiencing file access/permission issues or are being rate limited by the Figma MCP to help debug the issue.",
   "arguments": {
     "type": "object",
     "properties": {}
