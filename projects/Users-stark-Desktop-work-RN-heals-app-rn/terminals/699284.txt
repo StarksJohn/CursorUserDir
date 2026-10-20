@@ -1,0 +1,82 @@
+---
+pid: 11184
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "python3 /tmp/heals-flow-watch.py"
+title: "Watch only API calls and screen changes"
+status: failed   
+started_at: 2026-10-20T07:13:45.772Z
+running_for_ms: 632866   
+---
+FLOW READY watching ReactNativeJS and screen text
+FLOW UI 问医生
+确认
+等候人数
+0
+预约类型
+线上排队
+线上预约
+预计就诊时间
+2026年10月20日
+15:20
+请在预约成功后填写患者信息，以免影响您的视频咨询进度。
+患者信息
+我OK了
++86-15921952796
+送递地址
+FLOW SHOT /tmp/heals-ui/screen-151349.png
+FLOW API 10-20 15:15:01.173 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/member/policies',
+FLOW API 10-20 15:15:03.150 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/provider/options',
+FLOW API 10-20 15:15:03.196 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: '/v1/health-passport/heals-pass-product/list',
+FLOW UI !
+暂无 Heals Pass
+每次问诊费用为 HKD 298.00。
+支付 HKD 298.00 并开始问诊
+FLOW SHOT /tmp/heals-ui/screen-151504.png
+FLOW API 10-20 15:22:07.436 I/ReactNativeJS(20637): 'api-client.ts postRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request',
+FLOW API 10-20 15:22:07.829 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW UI 交易处理
+FLOW SHOT /tmp/heals-ui/screen-152210.png
+FLOW API 10-20 15:22:12.991 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW UI 交易处理
+付款
+應付金額
+HKD
+298
+付款摘要
+Heals Pass Purchase
+總額
+付款使用
+支援付款方式:
+立即付款
+Close
+FLOW SHOT /tmp/heals-ui/screen-152215.png
+FLOW API 10-20 15:22:18.207 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:22:23.389 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:22:28.563 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:22:33.784 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:22:38.977 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:22:44.158 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:22:49.363 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:22:54.551 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:22:59.707 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:23:04.901 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:23:10.085 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:23:15.263 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:23:20.457 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:23:25.596 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:23:30.788 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:23:35.983 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:23:41.107 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:23:46.304 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:23:51.439 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:23:56.622 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:24:01.806 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:24:07.008 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:24:12.203 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+FLOW API 10-20 15:24:17.380 I/ReactNativeJS(20637): 'api-client.ts getRequest=', { url: 'https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/b51ac917-d5b1-4da3-97d9-1140738be8a5',
+
+---
+exit_code: 143
+elapsed_ms: 632866
+ended_at: 2026-10-20T07:24:18.638Z
+---

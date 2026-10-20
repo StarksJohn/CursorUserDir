@@ -113,9 +113,9 @@ description: >-
 <!-- - Reload 没有加载到最新 bundle，仍显示旧 JS -->
 <!-- - pls conduct a code review of this PR 'https://bitbucket.org/healshealthcare/heals-app-rn/pull-requests/539/diff' as soon as possible ,and addressing the 'Requested changes' I provided in your PR 'https://bitbucket.org/healshealthcare/heals-app-rn/pull-requests/538' as soon as possible. -->
 <!-- - /code-self-test 查看当前分支的所有代码, 只需找出一个 BUG 或 一个可优化的点 -->
-<!-- - adb 又断了, 无法debug调试浏览器 -->
+<!-- - adb 又断了, 无法debug调试浏览器 , 重新做了 adb reverse tcp:8081 tcp:8081，重启 dev 包，并在 Chrome 里打开 Heals (Dev) (PJJ110) - React Native DevTools。Metro 需要确认 DevTools 是否连上这台设备。-->
 <!-- - 暂时让 '/Users/stark/Desktop/work/RN/heals-app-rn/src/screens/appointments-screen/appointments-screen.tsx'页面显示出来,但不需要让真机直接停在预约页 -->
-<!-- - 我现在准备重新走一遍 点击图1 ![img_143635.png](img_143635.png) 红框后的流程 , 你开始 监听  API 和其它 日志 ,同时根据 API 返回的数据判断 真机页面显示的 UI数据 是否正确, 如果遇到问题直接解决  -->
+<!-- - 我现在准备重新走一遍 点击图1 红框后的流程 , 你准备实时监听 与实时操作后页面发生的变化相关的 API日志 以及其它 日志 ,同时根据 API 返回的数据和其它逻辑判断 真机页面实时显示的 UI数据 是否正确, 也就是我在页面上操作的每一步,你都要监听相关的 API 和 代码逻辑 是否正确, 如果遇到问题直接解决 ; 你准备好了告诉我,我再开始操作 -->
   
 - TECH-8757
   <!-- - 你读取 `https://ais-pre-hce4mtkty7p4aewqsgaizl-663605729382.us-west2.run.app/`页面的UI节点数据,借鉴 `https://aistudio.google.com/apps/c068b31c-3b5b-42e7-b660-02eea479db8a?showAssistant=true&showCode=true`页面里`code`区域的项目源码;帮我实现`heals-app-rn`项目的其它需求; -->
