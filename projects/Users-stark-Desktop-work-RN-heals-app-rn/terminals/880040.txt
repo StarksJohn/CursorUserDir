@@ -1,0 +1,72 @@
+---
+pid: 9189
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn/android"
+command: "cd /Users/stark/Desktop/work/RN/heals-app-rn && JAVA_TOOL_OPTIONS=\"-Dhttp.proxyHost=127.0.0.1 -Dhttp.proxyPort=7897 -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=7897 -Dhttp.nonProxyHosts=localhost|127.0.0.1\" npm run android:dev"
+title: "Retry android:dev with Gradle JVM proxy"
+status: failed   
+started_at: 2026-10-21T02:32:36.875Z
+running_for_ms: 38124    
+---
+
+> Heals@0.0.1 android:dev
+> ENVFILE=.env.development react-native run-android --mode=devDebug --appIdSuffix=dev
+
+info A dev server is already running for this project on port 8081.
+info Installing the app...
+Starting a Gradle Daemon, 1 stopped Daemon could not be reused, use --status for details
+> Task :gradle-plugin:settings-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:shared:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:shared:compileJava NO-SOURCE
+> Task :gradle-plugin:shared:processResources NO-SOURCE
+> Task :gradle-plugin:shared:classes UP-TO-DATE
+> Task :gradle-plugin:shared:jar UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:compileJava NO-SOURCE
+> Task :gradle-plugin:settings-plugin:pluginDescriptors UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:processResources UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:classes UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:jar UP-TO-DATE
+6 actionable tasks: 6 up-to-date
+
+info 💡 Tip: Make sure that you have set up your development environment correctly, by running npx react-native doctor. To read more about doctor command visit: https://github.com/react-native-community/cli/blob/main/packages/cli-doctor/README.md#doctor 
+
+Picked up JAVA_TOOL_OPTIONS: -Dhttp.proxyHost=127.0.0.1 -Dhttp.proxyPort=7897 -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=7897 -Dhttp.nonProxyHosts=localhost|127.0.0.1
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Could not resolve all artifacts for configuration 'classpath'.
+> Could not download guava-31.0.1-jre.jar (com.google.guava:guava:31.0.1-jre)
+   > Could not get resource 'https://plugins.gradle.org/m2/com/google/guava/guava/31.0.1-jre/guava-31.0.1-jre.jar'.
+      > Could not HEAD 'https://repo.maven.apache.org/maven2/com/google/guava/guava/31.0.1-jre/guava-31.0.1-jre.jar'.
+         > Remote host terminated the handshake
+> Could not download checker-qual-3.12.0.jar (org.checkerframework:checker-qual:3.12.0)
+   > Could not get resource 'https://plugins.gradle.org/m2/org/checkerframework/checker-qual/3.12.0/checker-qual-3.12.0.jar'.
+      > Could not HEAD 'https://plugins.gradle.org/m2/org/checkerframework/checker-qual/3.12.0/checker-qual-3.12.0.jar'.
+         > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation.
+            > Remote host terminated the handshake
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 33s
+error Failed to install the app. Command failed with exit code 1: ./gradlew app:installDevDebug -PreactNativeDevServerPort=8081
+Picked up JAVA_TOOL_OPTIONS: -Dhttp.proxyHost=127.0.0.1 -Dhttp.proxyPort=7897 -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=7897 -Dhttp.nonProxyHosts=localhost|127.0.0.1 FAILURE: Build failed with an exception. * What went wrong:
+Could not resolve all artifacts for configuration 'classpath'.
+> Could not download guava-31.0.1-jre.jar (com.google.guava:guava:31.0.1-jre) > Could not get resource 'https://plugins.gradle.org/m2/com/google/guava/guava/31.0.1-jre/guava-31.0.1-jre.jar'. > Could not HEAD 'https://repo.maven.apache.org/maven2/com/google/guava/guava/31.0.1-jre/guava-31.0.1-jre.jar'. > Remote host terminated the handshake
+> Could not download checker-qual-3.12.0.jar (org.checkerframework:checker-qual:3.12.0) > Could not get resource 'https://plugins.gradle.org/m2/org/checkerframework/checker-qual/3.12.0/checker-qual-3.12.0.jar'. > Could not HEAD 'https://plugins.gradle.org/m2/org/checkerframework/checker-qual/3.12.0/checker-qual-3.12.0.jar'. > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation. > Remote host terminated the handshake * Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org. BUILD FAILED in 33s.
+info Run CLI with --verbose flag for more details.
+
+---
+exit_code: 1
+elapsed_ms: 38124
+ended_at: 2026-10-21T02:33:14.999Z
+---

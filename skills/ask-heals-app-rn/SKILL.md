@@ -100,9 +100,8 @@ description: >-
 <!-- - 借鉴`/Users/stark/.codex/skills/csx-web-react/SKILL.md`,优化当前skill,让每次执行完当前项目相关的任务后,先判断是否需要在当前skill里或者相关文档里更新项目的最新状态和下一步需要做的任务列表,以及沉淀项目的事实,如果需要,再这么做;用于新chat里恢复上下文 -->
 <!-- - /code-review :  对当前项目未 commit 的文件进行 code review , 目标 `1.2.3`, 直接解决发现的问题, 直到没有问题;再帮我用英文尽可能详细的总结下当前项目里所有未 commit 文件的 git commit message , 然后帮我 commit+push  -->
 <!-- - /code-review 目标 `1.2.3`, PR ``, commit `` -->
-<!-- - 我已经把 `1.0.3` 分支合并到了当前分支,你检查下有没有问题,能否push -->
-<!-- - 你重新执行 '/Users/stark/.cursor/skills/ask-heals-app-rn/SKILL.md'里的 130 行的任务 -->
-<!-- - 我以后如果在 cursor 侧执行 `heals-app-rn`项目的相关任务, 是不是只需要把通用和可重复的任务写到`/Users/stark/.cursor/skills/ask-heals-app-rn/SKILL.md`的 `当前活跃需求`这部分里,然后在 cursor 的 新 chat 里一开始执行一次 `/ask-heals-app-rn`,然后等第一个任务执行完后,如果有新任务,则直接在 chat 里输入具体任务; 目前这是不是最完美最高效最正确的使用 cursor 工作流来执行某个项目任务的最优流程? -->
+<!-- - 我已经把 `1.2.3` 分支合并到了当前分支,你检查下有没有问题,能否push -->
+<!-- - 我以后如果在 cursor 侧执行 当前项目的相关任务, 是不是只需要把通用和可重复的任务写到 当前 skill 的 `当前活跃需求`这部分里,然后在 cursor 的 新 chat 里一开始执行一次 `/ask-heals-app-rn`,然后等第一个任务执行完后,如果有新任务,则直接在 chat 里输入具体任务; 目前这是不是最完美最高效最正确的使用 cursor 工作流来执行某个项目任务的最优AI工作流? -->
 <!-- - `xx` 页面的列表使用我自定义的 "react-native-advanced-flatlist"库的最新版本来布局,仓库源码在 `/Users/stark/Desktop/work/RN/react-native-advanced-flatlist` -->
 <!-- - 我已经打开了 `/Users/stark/Desktop/work/RN/heals-app-rn/src/constants/index.ts` 的 `$fake: true` -->
 <!-- - 继续之前的任务,完成后,再 执行以下任务:  -->
@@ -167,7 +166,7 @@ description: >-
 - android:
   -  你执行`npm run android:dev`,把当前项目的`1.2.3`版本的 `dev`环境的debug模式的apk运行到如图![img_143139.png](img_143139.png) ![img_143147.png](img_143147.png)型号的真机上,直到你用 adb 截取真机当前画面(比如遇到LogBox红条报错(不用管黄条警告),直接解决),检查完毕真机上运行的 APP 没问题为止,否则不要自动停止任务; 真机所在的时区是 `东八区`
 
-  <!-- -  你执行`npm run android:prod`,把当前项目的`1.2.1`版本的 `prod`环境的debug模式的apk运行到如图![img_143139.png](img_143139.png) ![img_143147.png](img_143147.png)型号的真机上,直到你用 adb 截取真机当前画面(比如遇到LogBox红条报错(不用管黄条警告),直接解决),检查完毕真机上运行的 APP 没问题为止,否则不要自动停止任务; 真机所在的时区是 `东八区` -->
+  <!-- -  你执行`npm run android:prod`,把当前项目的`1.2.3`版本的 `prod`环境的debug模式的apk运行到如图![img_143139.png](img_143139.png) ![img_143147.png](img_143147.png)型号的真机上,直到你用 adb 截取真机当前画面(比如遇到LogBox红条报错(不用管黄条警告),直接解决),检查完毕真机上运行的 APP 没问题为止,否则不要自动停止任务; 真机所在的时区是 `东八区` -->
   
   <!-- - 为当前 checkout 构建 `dev` 环境的 `xxx` 版本 Release 模式 APK。使用前把 `xxx` 换成 `1.2.3`, 作为真实的 `versionName`，或在本轮消息里明确写出 version。本任务明确授权构建，但不授权自动安装到真机、提交 Git、push、上传 Google Play / 蒲公英 / 任何商店或发布。
     1. 先确认项目根、当前分支、HEAD 和工作树；保留已有未提交改动，不执行 clean/reset，不覆盖无关文件。读取 `package.json` 脚本、`android/app/build.gradle` 的 flavor / `applicationId` / `applicationIdSuffix` / `versionName` / `versionCode` / signingConfigs、`android/gradle.properties` 的 `newArchEnabled` / `hermesEnabled`，以及 `.env.development` 是否存在，以源码和真实构建结果为准。

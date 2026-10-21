@@ -1,0 +1,101 @@
+---
+pid: 8818
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "cd /Users/stark/Desktop/work/RN/heals-app-rn && npm run android:dev"
+title: "Retry android:dev install on PJJ110"
+status: failed   
+started_at: 2026-10-21T02:31:33.574Z
+running_for_ms: 10505    
+---
+
+> Heals@0.0.1 android:dev
+> ENVFILE=.env.development react-native run-android --mode=devDebug --appIdSuffix=dev
+
+info A dev server is already running for this project on port 8081.
+info Installing the app...
+> Task :gradle-plugin:settings-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:shared:compileKotlin FAILED
+1 actionable task: 1 executed
+
+info 💡 Tip: Make sure that you have set up your development environment correctly, by running npx react-native doctor. To read more about doctor command visit: https://github.com/react-native-community/cli/blob/main/packages/cli-doctor/README.md#doctor 
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':gradle-plugin:shared:compileKotlin'.
+> Could not isolate parameters org.jetbrains.kotlin.gradle.internal.transforms.BuildToolsApiClasspathEntrySnapshotTransform$Parameters_Decorated@31fc8a43 of artifact transform BuildToolsApiClasspathEntrySnapshotTransform
+   > Could not isolate value org.jetbrains.kotlin.gradle.internal.transforms.BuildToolsApiClasspathEntrySnapshotTransform$Parameters_Decorated@31fc8a43 of type BuildToolsApiClasspathEntrySnapshotTransform.Parameters
+      > Could not resolve all files for configuration ':gradle-plugin:shared:kotlinBuildToolsApiClasspath'.
+         > Could not download kotlin-compiler-embeddable-2.1.20.jar (org.jetbrains.kotlin:kotlin-compiler-embeddable:2.1.20)
+            > Could not get resource 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.1.20/kotlin-compiler-embeddable-2.1.20.jar'.
+               > Could not GET 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.1.20/kotlin-compiler-embeddable-2.1.20.jar'.
+                  > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation.
+                     > Remote host terminated the handshake
+         > Could not download kotlin-scripting-compiler-embeddable-2.1.20.jar (org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:2.1.20)
+            > Could not get resource 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/2.1.20/kotlin-scripting-compiler-embeddable-2.1.20.jar'.
+               > Could not GET 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/2.1.20/kotlin-scripting-compiler-embeddable-2.1.20.jar'.
+                  > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation.
+                     > Remote host terminated the handshake
+         > Could not download kotlin-scripting-compiler-impl-embeddable-2.1.20.jar (org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.1.20)
+            > Could not get resource 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.1.20/kotlin-scripting-compiler-impl-embeddable-2.1.20.jar'.
+               > Could not GET 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.1.20/kotlin-scripting-compiler-impl-embeddable-2.1.20.jar'.
+                  > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation.
+                     > Remote host terminated the handshake
+         > Could not download kotlin-scripting-jvm-2.1.20.jar (org.jetbrains.kotlin:kotlin-scripting-jvm:2.1.20)
+            > Could not get resource 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/2.1.20/kotlin-scripting-jvm-2.1.20.jar'.
+               > Could not GET 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/2.1.20/kotlin-scripting-jvm-2.1.20.jar'.
+                  > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation.
+                     > Remote host terminated the handshake
+         > Could not download kotlin-scripting-common-2.1.20.jar (org.jetbrains.kotlin:kotlin-scripting-common:2.1.20)
+            > Could not get resource 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/2.1.20/kotlin-scripting-common-2.1.20.jar'.
+               > Could not GET 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/2.1.20/kotlin-scripting-common-2.1.20.jar'.
+                  > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation.
+                     > Remote host terminated the handshake
+         > Could not download kotlin-script-runtime-2.1.20.jar (org.jetbrains.kotlin:kotlin-script-runtime:2.1.20)
+            > Could not get resource 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/2.1.20/kotlin-script-runtime-2.1.20.jar'.
+               > Could not GET 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/2.1.20/kotlin-script-runtime-2.1.20.jar'.
+                  > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation.
+                     > Remote host terminated the handshake
+         > Could not download kotlin-reflect-1.6.10.jar (org.jetbrains.kotlin:kotlin-reflect:1.6.10)
+            > Could not get resource 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.6.10/kotlin-reflect-1.6.10.jar'.
+               > Could not GET 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.6.10/kotlin-reflect-1.6.10.jar'.
+                  > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation.
+                     > Remote host terminated the handshake
+         > Could not download kotlin-daemon-embeddable-2.1.20.jar (org.jetbrains.kotlin:kotlin-daemon-embeddable:2.1.20)
+            > Could not get resource 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.1.20/kotlin-daemon-embeddable-2.1.20.jar'.
+               > Could not GET 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.1.20/kotlin-daemon-embeddable-2.1.20.jar'.
+                  > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation.
+                     > Remote host terminated the handshake
+         > Could not download trove4j-1.0.20200330.jar (org.jetbrains.intellij.deps:trove4j:1.0.20200330)
+            > Could not get resource 'https://repo.maven.apache.org/maven2/org/jetbrains/intellij/deps/trove4j/1.0.20200330/trove4j-1.0.20200330.jar'.
+               > Could not GET 'https://repo.maven.apache.org/maven2/org/jetbrains/intellij/deps/trove4j/1.0.20200330/trove4j-1.0.20200330.jar'.
+                  > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation.
+                     > Remote host terminated the handshake
+
+* Try:
+> Run the 'artifactTransforms' report task to view details about registered transforms.
+> Review the documentation on Artifact Transforms at https://docs.gradle.org/8.14.3/userguide/artifact_transforms.html.
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 6s
+error Failed to install the app. Command failed with exit code 1: ./gradlew app:installDevDebug -PreactNativeDevServerPort=8081 FAILURE: Build failed with an exception. * What went wrong:
+Execution failed for task ':gradle-plugin:shared:compileKotlin'.
+> Could not isolate parameters org.jetbrains.kotlin.gradle.internal.transforms.BuildToolsApiClasspathEntrySnapshotTransform$Parameters_Decorated@31fc8a43 of artifact transform BuildToolsApiClasspathEntrySnapshotTransform > Could not isolate value org.jetbrains.kotlin.gradle.internal.transforms.BuildToolsApiClasspathEntrySnapshotTransform$Parameters_Decorated@31fc8a43 of type BuildToolsApiClasspathEntrySnapshotTransform.Parameters > Could not resolve all files for configuration ':gradle-plugin:shared:kotlinBuildToolsApiClasspath'. > Could not download kotlin-compiler-embeddable-2.1.20.jar (org.jetbrains.kotlin:kotlin-compiler-embeddable:2.1.20) > Could not get resource 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.1.20/kotlin-compiler-embeddable-2.1.20.jar'. > Could not GET 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.1.20/kotlin-compiler-embeddable-2.1.20.jar'. > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation. > Remote host terminated the handshake > Could not download kotlin-scripting-compiler-embeddable-2.1.20.jar (org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:2.1.20) > Could not get resource 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/2.1.20/kotlin-scripting-compiler-embeddable-2.1.20.jar'. > Could not GET 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/2.1.20/kotlin-scripting-compiler-embeddable-2.1.20.jar'. > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation. > Remote host terminated the handshake > Could not download kotlin-scripting-compiler-impl-embeddable-2.1.20.jar (org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:2.1.20) > Could not get resource 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.1.20/kotlin-scripting-compiler-impl-embeddable-2.1.20.jar'. > Could not GET 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.1.20/kotlin-scripting-compiler-impl-embeddable-2.1.20.jar'. > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation. > Remote host terminated the handshake > Could not download kotlin-scripting-jvm-2.1.20.jar (org.jetbrains.kotlin:kotlin-scripting-jvm:2.1.20) > Could not get resource 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/2.1.20/kotlin-scripting-jvm-2.1.20.jar'. > Could not GET 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/2.1.20/kotlin-scripting-jvm-2.1.20.jar'. > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation. > Remote host terminated the handshake > Could not download kotlin-scripting-common-2.1.20.jar (org.jetbrains.kotlin:kotlin-scripting-common:2.1.20) > Could not get resource 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/2.1.20/kotlin-scripting-common-2.1.20.jar'. > Could not GET 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/2.1.20/kotlin-scripting-common-2.1.20.jar'. > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation. > Remote host terminated the handshake > Could not download kotlin-script-runtime-2.1.20.jar (org.jetbrains.kotlin:kotlin-script-runtime:2.1.20) > Could not get resource 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/2.1.20/kotlin-script-runtime-2.1.20.jar'. > Could not GET 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/2.1.20/kotlin-script-runtime-2.1.20.jar'. > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation. > Remote host terminated the handshake > Could not download kotlin-reflect-1.6.10.jar (org.jetbrains.kotlin:kotlin-reflect:1.6.10) > Could not get resource 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.6.10/kotlin-reflect-1.6.10.jar'. > Could not GET 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.6.10/kotlin-reflect-1.6.10.jar'. > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation. > Remote host terminated the handshake > Could not download kotlin-daemon-embeddable-2.1.20.jar (org.jetbrains.kotlin:kotlin-daemon-embeddable:2.1.20) > Could not get resource 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.1.20/kotlin-daemon-embeddable-2.1.20.jar'. > Could not GET 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.1.20/kotlin-daemon-embeddable-2.1.20.jar'. > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation. > Remote host terminated the handshake > Could not download trove4j-1.0.20200330.jar (org.jetbrains.intellij.deps:trove4j:1.0.20200330) > Could not get resource 'https://repo.maven.apache.org/maven2/org/jetbrains/intellij/deps/trove4j/1.0.20200330/trove4j-1.0.20200330.jar'. > Could not GET 'https://repo.maven.apache.org/maven2/org/jetbrains/intellij/deps/trove4j/1.0.20200330/trove4j-1.0.20200330.jar'. > The server may not support the client's requested TLS protocol versions: (TLSv1.2, TLSv1.3). You may need to configure the client to allow other protocols to be used. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/build_environment.html#sec:gradle_system_properties in the Gradle documentation. > Remote host terminated the handshake * Try:
+> Run the 'artifactTransforms' report task to view details about registered transforms.
+> Review the documentation on Artifact Transforms at https://docs.gradle.org/8.14.3/userguide/artifact_transforms.html.
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org. BUILD FAILED in 6s.
+info Run CLI with --verbose flag for more details.
+
+---
+exit_code: 1
+elapsed_ms: 10505
+ended_at: 2026-10-21T02:31:44.079Z
+---
