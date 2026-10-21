@@ -1,6 +1,6 @@
 {
   "name": "checks_read",
-  "description": "Read checks for one target in an Origin-hosted repository: a pull request, commit, suite, or run. Rollup covers materialized check runs on the current page only and is omitted when nextPageToken is present. Does not fetch external provider logs.",
+  "description": "Read checks for one target in an Origin-hosted repository: a pull request, commit, suite, or run. A top-level ref, sha, or pull number is accepted in place of target. Rollup covers materialized check runs on the current page only and is omitted when nextPageToken is present. Does not fetch external provider logs.",
   "arguments": {
     "type": "object",
     "properties": {
@@ -33,8 +33,7 @@
         },
         "required": [
           "type"
-        ],
-        "additionalProperties": false
+        ]
       },
       "pageSize": {
         "type": "number"
@@ -48,7 +47,6 @@
       "name",
       "target"
     ],
-    "additionalProperties": false,
     "$schema": "http://json-schema.org/draft-07/schema#"
   }
 }

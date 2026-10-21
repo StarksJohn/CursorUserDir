@@ -15,14 +15,13 @@
         "type": "string"
       },
       "filter": {
-        "type": "string",
-        "description": "Case-insensitive repository name substring"
+        "description": "Case-insensitive repository name substring",
+        "type": "string"
       }
     },
     "required": [
       "owner"
     ],
-    "additionalProperties": false,
     "$schema": "http://json-schema.org/draft-07/schema#"
   }
 }

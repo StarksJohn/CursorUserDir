@@ -1,9 +1,15 @@
 {
   "name": "generate_image",
-  "description": "Generate a raster image from a text prompt using state-of-the-art image models. Width and height guide the aspect ratio; the model chooses a supported output size, so the image pixel dimensions may differ from the requested values. The tool returns a URL serving the raw image bytes of a PNG or JPEG image. IMPORTANT: The URL expires after 7 days. The user MUST download the image before the URL expires to keep a copy. **This is a paid feature — each call consumes Figma AI credits against the user's plan (different models have different per-call costs).**",
+  "description": "Generate a raster image from a text prompt and place it directly in an editable Design, FigJam, or Slides file. If no editable file exists, call create_new_file first. Width and height guide the aspect ratio; the model chooses a supported output size, so the image pixel dimensions may differ from the requested values. Omit nodeId to create a new image-filled frame, or provide nodeId to replace an existing image fill without resizing it. Returns fileKey, nodeId, model, image metadata (including width, height, and image.url for downloading the full-resolution image), and curl instructions, plus an inline thumbnail preview. **This is a paid feature — each call consumes Figma AI credits against the destination file's plan (different models have different per-call costs).**",
   "arguments": {
     "type": "object",
     "properties": {
+      "sessionId": {
+        "description": "After create_session succeeds, pass its exact returned UUID here on every file-tool call for this task, even when fileKey differs.",
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+      },
       "prompt": {
         "type": "string",
         "minLength": 1,
@@ -33,16 +39,21 @@
         "exclusiveMinimum": 0,
         "maximum": 2048
       },
-      "planKey": {
+      "fileKey": {
         "type": "string",
         "minLength": 1,
-        "pattern": "^(team|organization)::\\d+$",
-        "description": "The team or organization key (e.g. \"team::1234567890\" or \"organization::1234567890\"). Use the `key` field verbatim from one of the user's plans. If the user has more than one plan, ask which one to use before calling."
+        "pattern": "^[0-9a-zA-Z]{22,128}$",
+        "description": "The key of the Figma file to use. If the URL is provided, extract the file key from the URL. The given URL must be in the format https://figma.com/design/:fileKey/:fileName?node-id=:int1-:int2. The extracted fileKey would be `:fileKey`."
+      },
+      "nodeId": {
+        "description": "Existing node whose image fill should be replaced without resizing it. Omit to create a new frame.",
+        "type": "string",
+        "pattern": "^\\d+[:-]\\d+$"
       }
     },
     "required": [
       "prompt",
-      "planKey"
+      "fileKey"
     ],
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "additionalProperties": false

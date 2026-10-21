@@ -19,15 +19,14 @@
         "type": "string"
       },
       "prefix": {
-        "type": "string",
-        "description": "Case-sensitive branch name prefix. Applied per page after pagination; keep following nextPageToken even when a page has no matches."
+        "description": "Case-sensitive branch name prefix. Applied per page after pagination; keep following nextPageToken even when a page has no matches.",
+        "type": "string"
       }
     },
     "required": [
       "owner",
       "name"
     ],
-    "additionalProperties": false,
     "$schema": "http://json-schema.org/draft-07/schema#"
   }
 }

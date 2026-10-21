@@ -17,50 +17,50 @@
         "description": "Regular expression matched case-sensitively by default. Set literal for exact text, or caseInsensitive to ignore case (regex mode prefixes (?i)). wholeWord applies only with literal; for regex use \\b."
       },
       "ref": {
-        "type": "string",
-        "description": "Branch, tag, or commit to search"
+        "description": "Branch, tag, or commit to search",
+        "type": "string"
       },
       "literal": {
-        "type": "boolean",
-        "description": "Match query as exact text"
+        "description": "Match query as exact text",
+        "type": "boolean"
       },
       "caseInsensitive": {
-        "type": "boolean",
-        "description": "Ignore case when matching; regex mode prefixes the query with (?i) for GrepContents, and that prefix counts toward the query UTF-8 cap"
+        "description": "Ignore case when matching; regex mode prefixes the query with (?i) for GrepContents, and that prefix counts toward the query UTF-8 cap",
+        "type": "boolean"
       },
       "wholeWord": {
-        "type": "boolean",
-        "description": "Match whole words only; only applied when literal is true. For regex, use \\b instead."
+        "description": "Match whole words only; only applied when literal is true. For regex, use \\b instead.",
+        "type": "boolean"
       },
       "contextBefore": {
-        "type": "number",
-        "description": "Context lines before each match, at most 10"
+        "description": "Context lines before each match, at most 10",
+        "type": "number"
       },
       "contextAfter": {
-        "type": "number",
-        "description": "Context lines after each match, at most 10"
+        "description": "Context lines after each match, at most 10",
+        "type": "number"
       },
       "filterPath": {
-        "type": "string",
-        "description": "File or directory to search, relative to the repo root"
+        "description": "File or directory to search, relative to the repo root",
+        "type": "string"
       },
       "includes": {
+        "description": "Globs naming the only paths to search",
         "type": "array",
         "items": {
           "type": "string"
-        },
-        "description": "Globs naming the only paths to search"
+        }
       },
       "excludes": {
+        "description": "Globs naming paths to leave out; an exclude beats an include",
         "type": "array",
         "items": {
           "type": "string"
-        },
-        "description": "Globs naming paths to leave out; an exclude beats an include"
+        }
       },
       "maxResults": {
-        "type": "number",
-        "description": "Matching occurrences to return, at most 1000. Zero uses the default of 1000"
+        "description": "Matching occurrences to return, at most 1000. Zero uses the default of 1000",
+        "type": "number"
       }
     },
     "required": [
@@ -68,7 +68,6 @@
       "name",
       "query"
     ],
-    "additionalProperties": false,
     "$schema": "http://json-schema.org/draft-07/schema#"
   }
 }
