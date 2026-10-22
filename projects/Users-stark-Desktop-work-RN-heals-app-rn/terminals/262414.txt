@@ -1,0 +1,20 @@
+---
+pid: 40269
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "adb -s 4ae24c72 shell 'curl -sS --max-time 8 \"https://dns.google/resolve?name=api-staging.yedpay.com&type=A\"; echo; curl -sS --max-time 8 -H \"accept: application/dns-json\" \"https://1.1.1.1/dns-query?name=api-staging.yedpay.com&type=A\"; echo; curl -sS --max-time 8 \"https://dns.alidns.com/resolve?name=api-staging.yedpay.com&type=A\"; echo'"
+title: "Resolve Yedpay A records from the phone"
+status: succeeded
+started_at: 2026-10-22T17:07:46.698Z
+running_for_ms: 17248    
+---
+curl: (28) Connection timed out after 8001 milliseconds
+
+curl: (28) Connection timed out after 8002 milliseconds
+
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":{"name":"api-staging.yedpay.com.","type":1},"Answer":[{"name":"api-staging.yedpay.com.","TTL":60,"type":5,"data":"hk-aws-dev-alb1-2038410405.ap-east-1.elb.amazonaws.com."},{"name":"hk-aws-dev-alb1-2038410405.ap-east-1.elb.amazonaws.com.","TTL":60,"type":1,"data":"95.40.130.39"},{"name":"hk-aws-dev-alb1-2038410405.ap-east-1.elb.amazonaws.com.","TTL":60,"type":1,"data":"18.167.232.30"}]}
+
+---
+exit_code: 0
+elapsed_ms: 17248
+ended_at: 2026-10-22T17:08:03.946Z
+---

@@ -1,0 +1,19 @@
+---
+pid: 42482
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "adb -s 4ae24c72 shell 'for ip in 95.40.130.39 18.167.232.30; do echo \"== $ip\"; curl --resolve api-staging.yedpay.com:443:$ip -o /dev/null -sS -w \"connect:%{time_connect} ttfb:%{time_starttransfer} total:%{time_total} size:%{size_download} speed:%{speed_download}\\n\" --max-time 20 \"https://api-staging.yedpay.com/build/assets/online-payment-Crb4VXco.css\" || echo \"FAIL $ip\"; done'"
+title: "Compare CSS download speed of both Yedpay IPs"
+status: succeeded
+started_at: 2026-10-22T17:09:31.356Z
+running_for_ms: 3224     
+---
+== 95.40.130.39
+connect:0.083296 ttfb:0.342434 total:1.513370 size:375694 speed:248249
+== 18.167.232.30
+connect:0.069095 ttfb:0.286087 total:0.510277 size:375694 speed:736255
+
+---
+exit_code: 0
+elapsed_ms: 3223
+ended_at: 2026-10-22T17:09:34.579Z
+---

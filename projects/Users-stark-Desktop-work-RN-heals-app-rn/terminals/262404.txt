@@ -3,9 +3,9 @@ pid: 42014
 cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
 command: "if ps -p 20163 >/dev/null 2>&1; then\n  pkill -P 20163 >/dev/null 2>&1 || true\n  kill 20163 >/dev/null 2>&1 || true\nfi\npython3 - <<'PY'\nimport datetime, subprocess, sys\nstart = datetime.datetime.now()\nproc = subprocess.Popen(\n    ['adb', '-s', '4ae24c72', 'logcat', '-s', 'ReactNativeJS:V', 'AndroidRuntime:E', '-v', 'time'],\n    stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1,\n)\nout = open('/tmp/heals-home-flow/follow.log', 'a', encoding='utf-8')\nout.write(f'\\n--- quiet follow {start.isoformat()} ---\\n')\nout.flush()\nprint(f'QUIET_FOLLOW {start.isoformat()}', flush=True)\nkeys = ('[api]', '[api-plan]', 'navigate name=', 'HomeScreen', 'Exception', 'api-client', 'FATAL')\nfor line in proc.stdout:\n    if len(line) < 18:\n        continue\n    try:\n        stamp = datetime.datetime.strptime(line[:18], '%m-%d %H:%M:%S.%f').replace(year=start.year)\n    except ValueError:\n        continue\n    if stamp < start or not any(k in line for k in keys):\n        continue\n    out.write(line)\n    out.flush()\n    if 'request/finish' in line and ' 400 ' in line:\n        continue\n    if '[api-plan]' in line:\n        continue\n    sys.stdout.write('EVENT ' + line)\n    sys.stdout.flush()\nPY"
 title: "Keep logging but only alert on non-poll events"
-status: running  
+status: succeeded
 started_at: 2026-10-22T13:29:53.318Z
-running_for_ms: 3550503  
+running_for_ms: 3921089  
 ---
 QUIET_FOLLOW 2026-10-22T21:29:54.264474
 EVENT 10-22 21:32:51.348 I/ReactNativeJS(12159): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/minimum-app-version {"success":true,"keys":["success","data"]}
@@ -115,3 +115,9 @@ EVENT 10-22 22:24:45.625 I/ReactNativeJS(16656): 'global-navigation.ts navigate 
 EVENT 10-22 22:24:49.399 I/ReactNativeJS(16656): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/list count=73
 EVENT 10-22 22:24:54.560 I/ReactNativeJS(16656): [api] POST 201 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request {"success":true,"keys":["success","data"]}
 EVENT 10-22 22:24:54.562 I/ReactNativeJS(16656): 'global-navigation.ts navigate name=', 'ProductWaitingRoomScreen', ' params=', { id: '0d606023-e3a3-43e9-83ff-14d53e26b160',
+
+---
+exit_code: 0
+elapsed_ms: 3921052
+ended_at: 2026-10-22T14:35:14.370Z
+---
