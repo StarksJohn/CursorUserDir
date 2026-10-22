@@ -3,9 +3,9 @@ pid: 7227
 cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
 command: "npm start"
 title: "Start Metro bundler in background"
-status: running  
+status: aborted  
 started_at: 2026-10-22T11:57:04.153Z
-running_for_ms: 6360977  
+running_for_ms: 8138752  
 ---
 
 > Heals@0.0.1 start
@@ -181,3 +181,18 @@ info Bundle Debug ID: fd2f9056-443b-482e-aab4-6e29dcb0bc4e
 [33m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
 info Bundle Debug ID: 924de43f-8d8a-46f2-ac9e-03a8717c75c6
 [32m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m 
+Error: ENOENT: no such file or directory, stat '/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/debugger-frontend/dist/third-party/front_end/third_party/codemirror.next/codemirror.next.js.map'
+Error: ENOENT: no such file or directory, stat '/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/debugger-frontend/dist/third-party/front_end/third_party/codemirror.next/chunk/codemirror.js.map'
+[36m[7m[1m INFO [22m[27m[39m Connection established to DevTools for app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+[36m[7m[1m INFO [22m[27m[39m Connection closed to DevTools for app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36' with code='1001' and reason=''.
+[36m[7m[1m INFO [22m[27m[39m Connection closed to device='PJJ110 - 16 - API 36' for app='com.healshealthcare.healspass.dev' with code='1006' and reason=''.
+[33m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+info Bundle Debug ID: 924de43f-8d8a-46f2-ac9e-03a8717c75c6
+[32m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m 
+[36m[7m[1m INFO [22m[27m[39m Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+
+---
+exit_code: unknown
+elapsed_ms: 8138752
+ended_at: 2026-10-22T14:12:42.905Z
+---

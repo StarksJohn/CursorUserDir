@@ -1,0 +1,40 @@
+---
+pid: 76645
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn/ios"
+command: "cd /Users/stark/Desktop/work/RN/heals-app-rn && adb -s 4ae24c72 reverse tcp:8081 tcp:8081 && GRADLE_USER_HOME=\"$HOME/.gradle\" JAVA_TOOL_OPTIONS=\"-Djava.net.preferIPv4Stack=true -Dhttp.proxyHost=127.0.0.1 -Dhttp.proxyPort=7897 -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=7897 -Dhttp.nonProxyHosts=localhost|127.0.0.1\" ANDROID_SERIAL=4ae24c72 npm run android:dev -- --active-arch-only 2>&1 | tail -25"
+title: "Build and install Android dev debug with verified DNS"
+status: succeeded
+started_at: 2026-10-22T13:55:47.852Z
+running_for_ms: 130438   
+---
+> Task :app:mergeDevDebugNativeLibs UP-TO-DATE
+> Task :app:stripDevDebugDebugSymbols UP-TO-DATE
+> Task :app:validateSigningDevDebug UP-TO-DATE
+> Task :app:writeDevDebugAppMetadata UP-TO-DATE
+> Task :app:writeDevDebugSigningConfigVersions UP-TO-DATE
+> Task :app:packageDevDebug
+> Task :app:createDevDebugApkListingFileRedirect UP-TO-DATE
+
+> Task :app:installDevDebug
+Installing APK 'app-dev-debug.apk' on 'PJJ110 - 16' for :app:dev-debug
+Installed on 1 device.
+
+[Incubating] Problems report is available at: file:///Users/stark/Desktop/work/RN/heals-app-rn/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 3s
+898 actionable tasks: 24 executed, 874 up-to-date
+info Connecting to the development server...
+info Starting the app on "4ae24c72"...
+Starting: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.healshealthcare.healspass.dev/com.healshealthcare.healspass.MainActivity }
+
+---
+exit_code: 0
+elapsed_ms: 130438
+ended_at: 2026-10-22T13:57:58.290Z
+---
