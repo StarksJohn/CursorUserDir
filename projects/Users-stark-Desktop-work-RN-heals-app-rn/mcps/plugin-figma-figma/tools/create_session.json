@@ -1,0 +1,31 @@
+{
+  "name": "create_session",
+  "description": "Create a session to record the user's current work involving a Figma file. Call once before the first read or edit, including review-only work, as soon as the file key is known. Pass that key and a short description of the requested work. Reuse the returned UUID as sessionId on eligible file tools for this same task, including calls to other files. If creating a file, call `create_new_file` first, then use its returned key. Reuse the session for follow-ups that modify, check, or finish the work already requested. Start a new session when the user introduces separate work with its own completion criteria; another message, tool call, or file change alone does not count.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "fileKey": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[0-9a-zA-Z]{22,128}$",
+        "description": "The Figma file where the agent is currently working. This does not restrict which files later tool calls may access."
+      },
+      "description": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2000,
+        "description": "A concise description of the task the agent is working on."
+      }
+    },
+    "required": [
+      "fileKey",
+      "description"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}
