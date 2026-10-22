@@ -1,0 +1,23 @@
+---
+pid: 19925
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "S=4ae24c72\nfor i in 1 2 3 4 5 6 7 8; do\n  adb -s $S shell input swipe 900 480 180 480 250\n  sleep 1\n  adb -s $S shell uiautomator dump /sdcard/uidump-plan.xml >/dev/null\n  adb -s $S shell cat /sdcard/uidump-plan.xml > /tmp/heals-plan.xml\n  python3 - <<'PY'\nimport re\nxml=open('/tmp/heals-plan.xml',encoding='utf-8').read()\ntexts=[m.group(1) for m in re.finditer(r'text=\"([^\"]+)\"', xml)]\ninteresting=[t for t in texts if t not in ('!','User2796') and 'forwardRef' not in t and 'Open debugger' not in t]\nprint(' | '.join(interesting[:8]))\nopen('/tmp/heals-plan-hit.txt','w').write('\\n'.join(texts))\nPY\n  if rg -q \"菲印|General medication|基本药物\" /tmp/heals-plan-hit.txt; then\n    echo \"FOUND at swipe $i\"\n    break\n  fi\ndone"
+title: "Swipe plan carousel until HomeDoc card appears"
+status: succeeded
+started_at: 2026-10-22T13:13:22.795Z
+running_for_ms: 35390    
+---
+普通科线上诊症 | HKD $280.00 | 单次线上视频问诊 | 购买 | 更多 | 问医生 | 预约 | 账单
+定制健康直通服务 | HKD $398.00 | 1次远程咨询（与当地全科医生） | 购买 | 更多 | 问医生 | 预约 | 账单
+尊尚计划 | HKD $365.00 | 无限次远程咨询（与当地全科医生） | 购买 | 更多 | 问医生 | 预约 | 账单
+尊尚银卡计划 | HKD $698.00 | 无限次远程咨询（与当地全科医生） | 购买 | 更多 | 问医生 | 预约 | 账单
+尊尚白金卡计划 | HKD $980.00 | 无限次远程咨询（与当地全科医生） | 购买 | 更多 | 问医生 | 预约 | 账单
+中国计划 | HKD $68.00 | 足不出户连线香港医生，视频问诊并提供处方 | 购买 | 更多 | 问医生 | 预约 | 账单
+全球计划-亚洲区1 | HKD $68.00 | 无限次远程咨询（印度尼西亚或菲律宾全科医生） | 购买 | 更多 | 问医生 | 预约 | 账单
+全球计划-亚洲区2 | HKD $88.00 | 无限次远程咨询（亚洲选定国家的全科医生） | 购买 | 更多 | 问医生 | 预约 | 账单
+
+---
+exit_code: 0
+elapsed_ms: 35390
+ended_at: 2026-10-22T13:13:58.185Z
+---

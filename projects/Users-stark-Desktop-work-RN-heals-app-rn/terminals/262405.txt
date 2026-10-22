@@ -1,0 +1,10 @@
+---
+pid: 55673
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "python3 - <<'PY'\nimport datetime, subprocess, sys\nstart = datetime.datetime.now()\nproc = subprocess.Popen(\n    ['adb', '-s', '4ae24c72', 'logcat', '-s', 'WebViewPublicDnsProxy:V', 'chromium:E', 'cr_*:E', '-v', 'time'],\n    stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1,\n)\nprint(f'PAY_FOLLOW {start.isoformat()}', flush=True)\nfor line in proc.stdout:\n    if len(line) < 18:\n        continue\n    try:\n        stamp = datetime.datetime.strptime(line[:18], '%m-%d %H:%M:%S.%f').replace(year=start.year)\n    except ValueError:\n        continue\n    if stamp < start:\n        continue\n    if 'fonts.g' in line:\n        continue\n    sys.stdout.write('PAY ' + line)\n    sys.stdout.flush()\nPY"
+title: "Follow payment proxy connections and WebView errors"
+status: running  
+started_at: 2026-10-22T13:39:53.311Z
+running_for_ms: 190061   
+---
+PAY_FOLLOW 2026-10-22T21:39:54.650475
