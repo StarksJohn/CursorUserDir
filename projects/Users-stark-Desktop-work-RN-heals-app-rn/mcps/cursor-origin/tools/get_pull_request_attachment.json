@@ -1,0 +1,31 @@
+{
+  "name": "get_pull_request_attachment",
+  "description": "Fetch one image or file attached to an Origin-hosted pull request. url is an attachment URL exactly as pull_request_read returns it in the description, a review, or a comment: a cursor.com user-attachments URL, or a legacy upload-bucket URL. Only those upload shapes are accepted, and the URL must appear in that pull request's text; no other URL is ever fetched. An image of at most 3 MiB is returned as an image content block beside the JSON summary (delivery inline, with contentType and byteLength). A larger image, a recording, or another file is answered with delivery url: fetchUrl serves the bytes without further credentials, until expiresAt when the URL is signed, and reason says why (video, too_large, or not_an_image). kind is image, video, or file.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "owner": {
+        "type": "string",
+        "description": "Origin namespace (owner) slug, taken from list_namespaces or an earlier Origin result. A GitHub owner or org name is not an Origin namespace unless list_namespaces returns it."
+      },
+      "name": {
+        "type": "string",
+        "description": "Origin repository name within that namespace"
+      },
+      "number": {
+        "type": "number"
+      },
+      "url": {
+        "type": "string",
+        "description": "Attachment URL exactly as pull_request_read returns it in the description, a review, or a comment of this pull request"
+      }
+    },
+    "required": [
+      "owner",
+      "name",
+      "number",
+      "url"
+    ],
+    "$schema": "http://json-schema.org/draft-07/schema#"
+  }
+}
