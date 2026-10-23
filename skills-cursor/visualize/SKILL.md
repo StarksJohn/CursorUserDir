@@ -4,7 +4,9 @@ description: >-
   Use /visualize for creating compact charts, diagrams, or other visuals inline
   as part of the conversation itself. It chooses among Markdown tables, Mermaid,
   inline HTML, and other supported in-transcript forms. Use Canvas for durable
-  artifacts outside the transcript that users may revisit, refine, or share.
+  artifacts outside the transcript that users may revisit, refine, or share. You
+  MUST read this skill whenever you create, edit, update, or show the user an
+  in-conversation visualization, including one another agent made.
 metadata:
   surfaces:
     - ide
