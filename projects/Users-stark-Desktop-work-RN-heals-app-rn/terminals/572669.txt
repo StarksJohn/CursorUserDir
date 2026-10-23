@@ -1,0 +1,23 @@
+---
+pid: 49826
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "python3 - <<'PY'\nimport re, subprocess, time\ndef dump():\n    subprocess.check_call(['adb','-s','4ae24c72','shell','uiautomator','dump','/sdcard/heals-ui.xml'], stdout=subprocess.DEVNULL)\n    xml=subprocess.check_output(['adb','-s','4ae24c72','shell','cat','/sdcard/heals-ui.xml'], text=True, errors='ignore')\n    subprocess.check_call(['adb','-s','4ae24c72','shell','rm','-f','/sdcard/heals-ui.xml'], stdout=subprocess.DEVNULL)\n    texts=re.findall(r'text=\"([^\"]*)\"', xml)\n    return [t for t in texts if t.strip()]\nfor i in range(8):\n    texts=dump()\n    print(i, ' | '.join(texts[:6]))\n    if any('HomeMed' in t or 'missing' in t or '菲印' in t for t in texts):\n        print('FOUND')\n        break\n    subprocess.check_call(['adb','-s','4ae24c72','shell','input','swipe','800','520','200','520','250'])\n    time.sleep(0.8)\nPY"
+title: "Swipe plan carousel until HomeMed Basic appears"
+status: succeeded
+started_at: 2026-10-23T07:58:30.867Z
+running_for_ms: 35356    
+---
+0 User2796 | GP Teleconsult | HKD $280.00 | Single Teleconsult | More | Buy
+1 User2796 | Health Plan | HKD $398.00 | 1 time teleconsults (with local GP doctors) | Buy | More
+2 User2796 | Premium Plan 365 | HKD $365.00 | Unlimited teleconsults (with local GP doctors) | Buy | More
+3 User2796 | Premium Plan Silver | HKD $698.00 | Unlimited teleconsults (with local GP doctors) | Buy | More
+4 User2796 | Premium Plan Platinum | HKD $980.00 | Unlimited teleconsults (with local GP doctors) | Buy | More
+5 User2796 | China Plan | HKD $68.00 | Unlimited teleconsults (with HK-based doctors) | Buy | More
+6 User2796 | Global Plan - Asia 1 | HKD $68.00 | Unlimited teleconsults (with either Indonesian or Filipino GP doctors) | Buy | More
+7 User2796 | Global Plan - Asia 2 | HKD $88.00 | Unlimited teleconsults (with GP doctors in chosen country in Asia) | Buy | More
+
+---
+exit_code: 0
+elapsed_ms: 35356
+ended_at: 2026-10-23T07:59:06.223Z
+---
