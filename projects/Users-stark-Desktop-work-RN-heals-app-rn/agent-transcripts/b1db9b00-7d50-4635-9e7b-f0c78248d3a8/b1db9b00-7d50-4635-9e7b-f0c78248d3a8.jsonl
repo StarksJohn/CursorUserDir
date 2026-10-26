@@ -555,3 +555,5 @@
 {"role":"assistant","message":{"content":[{"type":"tool_use","name":"Read","input":{"path":"/Users/stark/.cursor/projects/Users-stark-Desktop-work-RN-heals-app-rn/terminals/15100.txt"}}]}}
 {"role":"assistant","message":{"content":[{"type":"text","text":"第二次截图已经拿到，当时的 `ReactNativeJS` 和 `AndroidRuntime` 错误日志是空的。同时间有两条接口返回 400，都是 `GET /api/v1/health-passport/heals-pass-product/request/finish/...`，记在普通信息日志里。"}]}}
 {"type":"turn_ended","status":"success"}
+{"role":"user","message":{"content":[{"type":"text","text":"<timestamp>Monday, Oct 26, 2026, 7:20 PM (UTC+8)</timestamp>\n<user_query>\n/code-review :  对当前项目未 commit 的文件进行 code review , 目标 `1.2.2`, 直接解决发现的问题, 直到没有问题;再帮我用英文尽可能详细的总结下当前项目里所有未 commit 文件的 git commit message , 然后帮我 commit+push\n</user_query>"}]}}
+{"role":"assistant","message":{"content":[{"type":"text","text":"按 code review 流程先读审查规则，再对照目标分支 `1.2.2` 看未提交改动。"},{"type":"tool_use","name":"Read","input":{"path":"/Users/stark/.cursor/skills/code-review/SKILL.md"}}]}}
