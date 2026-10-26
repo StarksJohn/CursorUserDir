@@ -1,12 +1,22 @@
----
-pid: 3938
-cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
-command: "GRADLE_USER_HOME=\"$HOME/.gradle\" npm run android:dev -- --active-arch-only"
-title: "Build and install dev debug APK"
-status: succeeded
-started_at: 2026-10-23T05:59:36.070Z
-running_for_ms: 160366   
----
+GRADLE_USER_HOME_NOW=/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/49fcc750a0174a9faa38c99ea6854068/gradle
+HOME_GRADLE_WRITABLE
+---WRAPPER---
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.14.3-bin.zip
+---DISTS---
+CACHEDIR.TAG
+gradle-5.4.1-all
+gradle-5.6.4-all
+gradle-6.6.1-all
+gradle-6.8.3-bin
+gradle-7.5.1-all
+gradle-8.12-bin
+gradle-8.14.3-bin
+gradle-8.8-all
+gradle-9.3.1-bin
+---WAIT_METRO---
+metro ready
+packager-status:running
+8081
 
 > Heals@0.0.1 android:dev
 > ENVFILE=.env.development react-native run-android --mode=devDebug --appIdSuffix=dev --active-arch-only
@@ -275,9 +285,9 @@ To suppress this warning, remove "buildToolsVersion '33.0.0'" from your build.gr
 
 [22m
 transform[stderr]: [BABEL] Note: The code generator has deoptimised the styling of /Users/stark/Desktop/work/RN/heals-app-rn/src/assets/images/NewUserIcon_5.svg as it exceeds the max of 500KB.
-transform[stderr]: (node:4447) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+transform[stderr]: (node:9605) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 transform[stderr]: (Use `node --trace-warnings ...` to show where the warning was created)
-info Bundle Debug ID: 107a8678-c0b8-4984-96d3-10f502a8b63c
+info Bundle Debug ID: 14586dfd-18c1-41c0-9b7b-c2c060c37ece
 LOG:Writing bundle output to: /Users/stark/Desktop/work/RN/heals-app-rn/android/app/build/generated/assets/createBundleDevDebugJsAndAssets/index.android.bundle
 LOG:Writing sourcemap output to: /Users/stark/Desktop/work/RN/heals-app-rn/android/app/build/intermediates/sourcemaps/react/devDebug/index.android.bundle.packager.map
 LOG:Done writing bundle output
@@ -525,6 +535,7 @@ Done copying assets
 > Task :react-native-community_geolocation:compileDebugLibraryResources UP-TO-DATE
 > Task :react-native-community_geolocation:parseDebugLocalResources UP-TO-DATE
 > Task :react-native-community_geolocation:generateDebugRFile UP-TO-DATE
+> Task :app:processDevDebugManifestForPackage
 > Task :react-native-community_masked-view:compileDebugLibraryResources UP-TO-DATE
 > Task :react-native-community_masked-view:parseDebugLocalResources UP-TO-DATE
 > Task :react-native-community_masked-view:generateDebugRFile UP-TO-DATE
@@ -651,7 +662,6 @@ Done copying assets
 > Task :react-native-community_checkbox:generateDebugBuildConfig UP-TO-DATE
 > Task :react-native-community_checkbox:javaPreCompileDebug UP-TO-DATE
 > Task :react-native-community_checkbox:compileDebugJavaWithJavac UP-TO-DATE
-> Task :app:processDevDebugManifestForPackage
 > Task :react-native-community_checkbox:bundleLibCompileToJarDebug UP-TO-DATE
 > Task :react-native-community_geolocation:generateDebugBuildConfig UP-TO-DATE
 > Task :react-native-community_geolocation:javaPreCompileDebug UP-TO-DATE
@@ -1034,9 +1044,9 @@ Done copying assets
 > Task :react-native-webview:processDebugJavaRes UP-TO-DATE
 > Task :react-native-worklets:processDebugJavaRes NO-SOURCE
 > Task :sentry_react-native:processDebugJavaRes NO-SOURCE
+> Task :app:processDevDebugResources
 > Task :app:compressDevDebugAssets
 > Task :app:checkDevDebugDuplicateClasses UP-TO-DATE
-> Task :app:processDevDebugResources
 > Task :app:mergeExtDexDevDebug UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:bundleLibRuntimeToDirDebug UP-TO-DATE
 > Task :react-native-documents_picker:bundleLibRuntimeToDirDebug UP-TO-DATE
@@ -1084,24 +1094,23 @@ Done copying assets
 > Task :react-native-worklets:externalNativeBuildDebug
 > Task :react-native-worklets:generateJsonModelDebug
 > Task :react-native-worklets:prefabDebugConfigurePackage
+> Task :react-native-reanimated:configureCMakeDebug[arm64-v8a]
+> Task :react-native-reanimated:generateJsonModelDebug
+> Task :react-native-reanimated:prefabDebugConfigurePackage UP-TO-DATE
+> Task :app:configureCMakeDebug[arm64-v8a]
+> Task :react-native-worklets:prefabDebugPackage UP-TO-DATE
 
 > Task :app:compileDevDebugKotlin
 w: file:///Users/stark/Desktop/work/RN/heals-app-rn/android/app/src/main/java/com/heals/MainApplication.kt:8:8 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
 w: file:///Users/stark/Desktop/work/RN/heals-app-rn/android/app/src/main/java/com/heals/MainApplication.kt:15:16 This declaration overrides a deprecated member but is not marked as deprecated itself. Add the '@Deprecated' annotation or suppress the diagnostic.
 w: file:///Users/stark/Desktop/work/RN/heals-app-rn/android/app/src/main/java/com/heals/MainApplication.kt:15:33 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
 
-> Task :react-native-reanimated:configureCMakeDebug[arm64-v8a]
+> Task :react-native-reanimated:buildCMakeDebug[arm64-v8a][reanimated]
 > Task :app:compileDevDebugJavaWithJavac
 > Task :app:dexBuilderDevDebug
 > Task :app:mergeDevDebugGlobalSynthetics UP-TO-DATE
 > Task :app:processDevDebugJavaRes UP-TO-DATE
 > Task :app:mergeDevDebugJavaResource UP-TO-DATE
-> Task :react-native-reanimated:generateJsonModelDebug
-> Task :react-native-reanimated:prefabDebugConfigurePackage UP-TO-DATE
-> Task :app:configureCMakeDebug[arm64-v8a]
-> Task :react-native-worklets:prefabDebugPackage UP-TO-DATE
-> Task :app:mergeProjectDexDevDebug
-> Task :react-native-reanimated:buildCMakeDebug[arm64-v8a][reanimated]
 > Task :react-native-worklets:mergeDebugJniLibFolders UP-TO-DATE
 > Task :react-native-worklets:mergeDebugNativeLibs UP-TO-DATE
 > Task :react-native-worklets:copyDebugJniLibsProjectOnly UP-TO-DATE
@@ -1169,6 +1178,7 @@ w: file:///Users/stark/Desktop/work/RN/heals-app-rn/android/app/src/main/java/co
 > Task :react-native-fs:mergeDebugJniLibFolders UP-TO-DATE
 > Task :react-native-fs:mergeDebugNativeLibs NO-SOURCE
 > Task :react-native-fs:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :app:mergeProjectDexDevDebug
 > Task :react-native-gesture-handler:configureCMakeDebug[arm64-v8a]
 > Task :react-native-gesture-handler:buildCMakeDebug[arm64-v8a]
 > Task :react-native-gesture-handler:mergeDebugJniLibFolders UP-TO-DATE
@@ -1247,15 +1257,8 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 2m 35s
+BUILD SUCCESSFUL in 2m 29s
 898 actionable tasks: 32 executed, 866 up-to-date
 info Connecting to the development server...
-8081
 info Starting the app on "4ae24c72"...
 Starting: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.healshealthcare.healspass.dev/com.healshealthcare.healspass.MainActivity }
-
----
-exit_code: 0
-elapsed_ms: 160365
-ended_at: 2026-10-23T06:02:16.435Z
----

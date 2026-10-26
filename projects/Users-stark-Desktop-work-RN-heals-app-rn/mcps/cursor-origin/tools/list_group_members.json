@@ -1,0 +1,33 @@
+{
+  "name": "list_group_members",
+  "description": "List the direct user members of one Origin review or ownership group visible to the caller for a repository. Pass the group's grp_… id or qualified @organization/group login. Members page by stable public user_… login, with the display name the portal can show or the login as fallback.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "owner": {
+        "type": "string",
+        "description": "Origin namespace (owner) slug, taken from list_namespaces or an earlier Origin result. A GitHub owner or org name is not an Origin namespace unless list_namespaces returns it."
+      },
+      "name": {
+        "type": "string",
+        "description": "Origin repository name within that namespace"
+      },
+      "group": {
+        "type": "string",
+        "description": "Visible review group as a grp_… id or qualified @organization/group login"
+      },
+      "pageSize": {
+        "type": "number"
+      },
+      "pageToken": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "owner",
+      "name",
+      "group"
+    ],
+    "$schema": "http://json-schema.org/draft-07/schema#"
+  }
+}
