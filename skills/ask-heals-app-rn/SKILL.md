@@ -112,7 +112,7 @@ description: >-
 <!-- - Reload 没有加载到最新 bundle，仍显示旧 JS -->
 <!-- - pls conduct a code review of this PR 'https://bitbucket.org/healshealthcare/heals-app-rn/pull-requests/539/diff' as soon as possible ,and addressing the 'Requested changes' I provided in your PR 'https://bitbucket.org/healshealthcare/heals-app-rn/pull-requests/538' as soon as possible. -->
 <!-- - /code-self-test 查看当前分支的所有代码, 只需找出一个 BUG 或 一个可优化的点 -->
-<!-- - adb 又断了, 无法debug调试浏览器 , 重新做 adb reverse tcp:8081 tcp:8081，重启 dev 包，并在 Chrome 里打开 Heals (Dev) (PJJ110) - React Native DevTools。Metro 需要确认 DevTools 是否连上这台设备。-->
+<!-- - adb 和 Metro 又断了, 无法debug调试浏览器 , 重新做 adb reverse tcp:8081 tcp:8081，重启 dev 包，并在 Chrome 里打开 Heals (Dev) (PJJ110) - React Native DevTools。Metro 需要确认 DevTools 是否连上这台设备。-->
 <!-- - 暂时让 '/Users/stark/Desktop/work/RN/heals-app-rn/src/screens/appointments-screen/appointments-screen.tsx'页面显示出来,但不需要让真机直接停在预约页 -->
 <!-- - 我现在准备重新走一遍 当前app的操作流程 , 你准备根据代码逻辑和adb截图(IOS时你自己判断怎么截图真机显示的页面)实时监听 我的实际操作 ,同时根据 API 返回的数据日志和其它逻辑日志来判断 我操作后的逻辑是否正确,以及真机页面实时显示的 UI数据 是否正确, 也就是我在页面上操作的每一步,你都要监听相关的 API 日志 和 执行的代码逻辑 等是否都正确, 并且根据操作前 页面的状态 来判断 操作后的代码执行逻辑是否正确以及页面的状态是否正确; 不要遗漏最新的 API 日志; 如果遇到问题直接解决 ; 你准备好了告诉我,我再开始操作 -->
   

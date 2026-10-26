@@ -3,9 +3,9 @@ pid: 23013
 cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
 command: "adb -s 4ae24c72 logcat -v threadtime 'ReactNativeJS:V' '*:S' | tee -a /tmp/heals-live/rn.log"
 title: "Stream React Native logs to file"
-status: running  
+status: succeeded
 started_at: 2026-10-26T02:49:33.444Z
-running_for_ms: 50008    
+running_for_ms: 310653   
 ---
 --------- beginning of main
 10-26 10:41:15.969 29492 30671 I ReactNativeJS: 'initiate I18n=', [Function: I18n]
@@ -7990,3 +7990,21 @@ running_for_ms: 50008
 10-26 10:47:51.213 29492 30671 I ReactNativeJS: [api-plan] 70 {"id":"b5b7193d-38de-4aae-90d5-cef166544250","name":"IPH Thailand","displayName":"IPH Thailand","price":"666.00","purchasable":false,"type":"travel","sellPoints":["Unlimited teleconsultation with local doctors","Excludes medication and delivery fees"]}
 10-26 10:47:51.213 29492 30671 I ReactNativeJS: [api-plan] 71 {"id":"a1cd56ab-54ea-40cc-b671-1355c3cf89f3","name":"NewTown Medical Card","displayName":"NewTown Medical Card","price":"0.00","purchasable":false,"type":"premium","sellPoints":["NewTown Medical Card"]}
 10-26 10:47:51.214 29492 30671 I ReactNativeJS: [api-plan] 72 {"id":"c6e0d333-7174-4668-ab46-6f5a487ad7b4","name":"Single Teleconsult","displayName":"Single Teleconsult","price":"298.00","purchasable":true,"type":"premium","sellPoints":["Single Teleconsult","Exclude medication and delivery"]}
+10-26 10:51:03.144 29492 30671 I ReactNativeJS: Exception encounteredd @ getToken Error: [messaging/unknown] java.io.IOException: java.util.concurrent.ExecutionException: java.io.IOException: SERVICE_NOT_AVAILABLE
+10-26 10:54:00.968 29492  8286 I ReactNativeJS: 'initiate I18n=', [Function: I18n]
+10-26 10:54:01.389 29492  8286 W ReactNativeJS: This method is deprecated (as well as all React Native Firebase namespaced API) and will be removed in the next major release as part of move to match Firebase Web modular SDK API. Please see migration guide for more details: https://rnfirebase.io/migrating-to-v22 Please use `getApp()` instead.
+10-26 10:54:01.400 29492  8286 W ReactNativeJS: This method is deprecated (as well as all React Native Firebase namespaced API) and will be removed in the next major release as part of move to match Firebase Web modular SDK API. Please see migration guide for more details: https://rnfirebase.io/migrating-to-v22. Method called was `setBackgroundMessageHandler`. Please use `setBackgroundMessageHandler()` instead.
+10-26 10:54:01.406 29492  8286 I ReactNativeJS: Running "Heals" with {"rootTag":1,"initialProps":{},"fabric":true}
+10-26 10:54:03.116 29492  8286 I ReactNativeJS: 'theme-provider.tsx changeStatusBarTextColor statusBarTextColor=', 'dark-content'
+10-26 10:54:03.117 29492  8286 I ReactNativeJS: 'theme-provider.tsx changeStatusBarBackgroundColor statusBarBackgroundColor=', 'rgba(255, 255, 255, 1)'
+10-26 10:54:03.121 29492  8286 I ReactNativeJS: 'isUserExisting: ', true
+10-26 10:54:03.251 29492  8286 I ReactNativeJS: 'theme.ts buildStyles mode=', 'light'
+10-26 10:54:04.192 29492  8286 I ReactNativeJS: [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/230f64e0-eb5f-4e15-80cb-7d2730c17b63 {"success":true,"id":"230f64e0-eb5f-4e15-80cb-7d2730c17b63","name":"User5456","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"}]}
+
+[stdout truncated by cursor: the command wrote more than 1048576 characters to stdout; only the first 1048576 were captured and the rest was dropped from this file]
+
+---
+exit_code: 0
+elapsed_ms: 310653
+ended_at: 2026-10-26T02:54:44.097Z
+---

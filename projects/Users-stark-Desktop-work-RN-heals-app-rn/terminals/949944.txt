@@ -1,0 +1,45 @@
+---
+pid: 40967
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "adb devices -l && echo \"---SET---\" && adb -s 4ae24c72 reverse tcp:8081 tcp:8081 && echo \"---LIST---\" && adb -s 4ae24c72 reverse --list && adb -s 4ae24c72 shell am force-stop com.healshealthcare.healspass.dev && sleep 1 && adb -s 4ae24c72 shell monkey -p com.healshealthcare.healspass.dev -c android.intent.category.LAUNCHER 1 >/tmp/heals-monkey.txt && echo \"---WAIT---\" && for i in $(seq 1 45); do LIST=$(curl -sf -m 2 localhost:8081/json/list || true); REV=$(adb -s 4ae24c72 reverse --list || true); if printf '%s' \"$LIST\" | grep -q 'com.healshealthcare.healspass.dev'; then echo \"ready attempt=$i\"; echo \"$REV\"; printf '%s\\n' \"$LIST\"; adb -s 4ae24c72 shell pidof com.healshealthcare.healspass.dev; exit 0; fi; sleep 1; done; echo \"not_ready\"; echo \"REV=$REV\"; adb devices -l; exit 1"
+title: "Reapply reverse and wait until dev app registers"
+status: failed   
+started_at: 2026-10-26T03:01:57.024Z
+running_for_ms: 61776    
+---
+List of devices attached
+4ae24c72               device 20-4.2 product:PJJ110 model:PJJ110 device:OP59EFL1 transport_id:1
+
+---SET---
+8081
+---LIST---
+UsbFfs tcp:8081 tcp:8081
+
+args: [-p, com.healshealthcare.healspass.dev, -c, android.intent.category.LAUNCHER, 1]
+ arg: "-p"
+ arg: "com.healshealthcare.healspass.dev"
+ arg: "-c"
+ arg: "android.intent.category.LAUNCHER"
+ arg: "1"
+data="com.healshealthcare.healspass.dev"
+data="android.intent.category.LAUNCHER"
+---WAIT---
+error: protocol fault (couldn't read status): Connection reset by peer
+* daemon not running; starting now at tcp:5037
+* daemon started successfully
+error: protocol fault (couldn't read status): Connection reset by peer
+* daemon not running; starting now at tcp:5037
+* daemon started successfully
+error: device '4ae24c72' not found
+error: device '4ae24c72' not found
+error: device '4ae24c72' not found
+not_ready
+REV=
+List of devices attached
+
+
+---
+exit_code: 1
+elapsed_ms: 61776
+ended_at: 2026-10-26T03:02:58.800Z
+---

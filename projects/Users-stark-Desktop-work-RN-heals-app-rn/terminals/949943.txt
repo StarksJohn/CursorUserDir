@@ -5,7 +5,7 @@ command: "npm start"
 title: "Start Metro packager in background"
 status: running  
 started_at: 2026-10-26T02:37:51.599Z
-running_for_ms: 755126   
+running_for_ms: 3450474  
 ---
 
 > Heals@0.0.1 start
@@ -55,3 +55,130 @@ info Bundle Debug ID: bc5f84cd-8fc7-48d0-8298-6893af918dad
 [36m[7m[1m INFO [22m[27m[39m Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
 [36m[7m[1m INFO [22m[27m[39m [1m[7m💡 JavaScript logs have moved![22m They can now be viewed in React Native DevTools. Tip: Type [1mj[22m in the terminal to open (requires Google Chrome or Microsoft Edge).[27m
 [36m[7m[1m INFO [22m[27m[39m Connection closed to device='PJJ110 - 16 - API 36' for app='com.healshealthcare.healspass.dev' with code='1006' and reason=''.
+warn No apps connected. Sending "reload" to all React Native apps failed. Make sure your app is running in the simulator or on a phone connected via USB.
+[36m[7m[1m INFO [22m[27m[39m Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+[33m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+info Bundle Debug ID: 94325293-0d54-4e2c-92d6-9801230950c3
+[32m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m 
+[36m[7m[1m INFO [22m[27m[39m Connection closed to device='PJJ110 - 16 - API 36' for app='com.healshealthcare.healspass.dev' with code='1006' and reason=''.
+[33m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+info Bundle Debug ID: 94325293-0d54-4e2c-92d6-9801230950c3
+[32m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m 
+[36m[7m[1m INFO [22m[27m[39m Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+[36m[7m[1m INFO [22m[27m[39m Launching DevTools...
+[36m[7m[1m INFO [22m[27m[39m Connection established to DevTools for app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+[33m[7m[1m MAP [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+[32m[7m[1m MAP [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m 
+[36m[7m[1m INFO [22m[27m[39m Connection closed to device='PJJ110 - 16 - API 36' for app='com.healshealthcare.healspass.dev' with code='1006' and reason=''.
+[36m[7m[1m INFO [22m[27m[39m Connection closed to DevTools for app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36' with code='1000' and reason='[CONNECTION_LOST] Connection lost to corresponding device'.
+Error: ENOENT: no such file or directory, stat '/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/debugger-frontend/dist/third-party/front_end/third_party/codemirror.next/codemirror.next.js.map'
+Error: ENOENT: no such file or directory, stat '/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/debugger-frontend/dist/third-party/front_end/third_party/codemirror.next/chunk/codemirror.js.map'
+Error: ENOENT: no such file or directory, stat '/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/debugger-frontend/dist/third-party/front_end/third_party/codemirror.next/codemirror.next.js.map'
+Error: ENOENT: no such file or directory, stat '/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/debugger-frontend/dist/third-party/front_end/third_party/codemirror.next/chunk/codemirror.js.map'
+[31m[7m[1m ERROR [22m[27m[39m Connection failed to be established with DevTools for app='unknown' on device='unknown' and device id='43a8770c1717da93ef8835f946aba0a0d069b2f7' with error: Error: [UNREGISTERED_DEVICE] Debugger connection attempted for a device that was not registered
+    at WebSocketServer.<anonymous> (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/dev-middleware/dist/inspector-proxy/InspectorProxy.js:393:17)
+    at WebSocketServer.emit (node:events:524:28)
+    at /Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/index.flow.js:286:44
+    at WebSocketServer.completeUpgrade (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/ws/lib/websocket-server.js:326:5)
+    at WebSocketServer.handleUpgrade (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/ws/lib/websocket-server.js:249:10)
+    at Server.<anonymous> (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/index.flow.js:281:40)
+    at Server.emit (node:events:524:28)
+    at onParserExecuteCommon (node:_http_server:936:14)
+    at onParserExecute (node:_http_server:839:3)
+[31m[7m[1m ERROR [22m[27m[39m Connection failed to be established with DevTools for app='unknown' on device='unknown' and device id='43a8770c1717da93ef8835f946aba0a0d069b2f7' with error: Error: [UNREGISTERED_DEVICE] Debugger connection attempted for a device that was not registered
+    at WebSocketServer.<anonymous> (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/dev-middleware/dist/inspector-proxy/InspectorProxy.js:393:17)
+    at WebSocketServer.emit (node:events:524:28)
+    at /Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/index.flow.js:286:44
+    at WebSocketServer.completeUpgrade (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/ws/lib/websocket-server.js:326:5)
+    at WebSocketServer.handleUpgrade (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/ws/lib/websocket-server.js:249:10)
+    at Server.<anonymous> (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/index.flow.js:281:40)
+    at Server.emit (node:events:524:28)
+    at onParserExecuteCommon (node:_http_server:936:14)
+    at onParserExecute (node:_http_server:839:3)
+Error: ENOENT: no such file or directory, stat '/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/debugger-frontend/dist/third-party/front_end/third_party/codemirror.next/codemirror.next.js.map'
+Error: ENOENT: no such file or directory, stat '/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/debugger-frontend/dist/third-party/front_end/third_party/codemirror.next/chunk/codemirror.js.map'
+[36m[7m[1m INFO [22m[27m[39m Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+[36m[7m[1m INFO [22m[27m[39m Connection closed to device='PJJ110 - 16 - API 36' for app='com.healshealthcare.healspass.dev' with code='1006' and reason=''.
+[33m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+info Bundle Debug ID: 94325293-0d54-4e2c-92d6-9801230950c3
+[32m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m 
+[36m[7m[1m INFO [22m[27m[39m Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+[33m[7m[1m WARN [22m[27m[39m Waiting for a DevTools connection to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+    Try again when the main bundle for the app is built and connection is established.
+    If no connection occurs, try to:
+    - Restart the app. For Android, force stopping the app first might be required.
+    - Ensure a stable connection to the device.
+    - Ensure that the app is built in a mode that supports debugging.
+    - Take the app out of running in the background.
+[36m[7m[1m INFO [22m[27m[39m Connection closed to device='PJJ110 - 16 - API 36' for app='com.healshealthcare.healspass.dev' with code='1006' and reason=''.
+Error: ENOENT: no such file or directory, stat '/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/debugger-frontend/dist/third-party/front_end/third_party/codemirror.next/codemirror.next.js.map'
+Error: ENOENT: no such file or directory, stat '/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/debugger-frontend/dist/third-party/front_end/third_party/codemirror.next/chunk/codemirror.js.map'
+[31m[7m[1m ERROR [22m[27m[39m Connection failed to be established with DevTools for app='unknown' on device='unknown' and device id='43a8770c1717da93ef8835f946aba0a0d069b2f7' with error: Error: [UNREGISTERED_DEVICE] Debugger connection attempted for a device that was not registered
+    at WebSocketServer.<anonymous> (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/dev-middleware/dist/inspector-proxy/InspectorProxy.js:393:17)
+    at WebSocketServer.emit (node:events:524:28)
+    at /Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/index.flow.js:286:44
+    at WebSocketServer.completeUpgrade (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/ws/lib/websocket-server.js:326:5)
+    at WebSocketServer.handleUpgrade (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/ws/lib/websocket-server.js:249:10)
+    at Server.<anonymous> (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/index.flow.js:281:40)
+    at Server.emit (node:events:524:28)
+    at onParserExecuteCommon (node:_http_server:936:14)
+    at onParserExecute (node:_http_server:839:3)
+Error: ENOENT: no such file or directory, stat '/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/debugger-frontend/dist/third-party/front_end/third_party/codemirror.next/codemirror.next.js.map'
+Error: ENOENT: no such file or directory, stat '/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/debugger-frontend/dist/third-party/front_end/third_party/codemirror.next/chunk/codemirror.js.map'
+[31m[7m[1m ERROR [22m[27m[39m Connection failed to be established with DevTools for app='unknown' on device='unknown' and device id='43a8770c1717da93ef8835f946aba0a0d069b2f7' with error: Error: [UNREGISTERED_DEVICE] Debugger connection attempted for a device that was not registered
+    at WebSocketServer.<anonymous> (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/dev-middleware/dist/inspector-proxy/InspectorProxy.js:393:17)
+    at WebSocketServer.emit (node:events:524:28)
+    at /Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/index.flow.js:286:44
+    at WebSocketServer.completeUpgrade (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/ws/lib/websocket-server.js:326:5)
+    at WebSocketServer.handleUpgrade (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/ws/lib/websocket-server.js:249:10)
+    at Server.<anonymous> (/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/metro/src/index.flow.js:281:40)
+    at Server.emit (node:events:524:28)
+    at onParserExecuteCommon (node:_http_server:936:14)
+    at onParserExecute (node:_http_server:839:3)
+[36m[7m[1m INFO [22m[27m[39m Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+[36m[7m[1m INFO [22m[27m[39m Connection closed to device='PJJ110 - 16 - API 36' for app='com.healshealthcare.healspass.dev' with code='1006' and reason=''.
+[36m[7m[1m INFO [22m[27m[39m Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+[36m[7m[1m INFO [22m[27m[39m Connection closed to device='PJJ110 - 16 - API 36' for app='com.healshealthcare.healspass.dev' with code='1006' and reason=''.
+[33m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+info Bundle Debug ID: 94325293-0d54-4e2c-92d6-9801230950c3
+[32m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m 
+[36m[7m[1m INFO [22m[27m[39m Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+[33m[7m[1m WARN [22m[27m[39m Waiting for a DevTools connection to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+    Try again when the main bundle for the app is built and connection is established.
+    If no connection occurs, try to:
+    - Restart the app. For Android, force stopping the app first might be required.
+    - Ensure a stable connection to the device.
+    - Ensure that the app is built in a mode that supports debugging.
+    - Take the app out of running in the background.
+[33m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+info Bundle Debug ID: 94325293-0d54-4e2c-92d6-9801230950c3
+[32m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m 
+Error: ENOENT: no such file or directory, stat '/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/debugger-frontend/dist/third-party/front_end/third_party/codemirror.next/codemirror.next.js.map'
+Error: ENOENT: no such file or directory, stat '/Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native/debugger-frontend/dist/third-party/front_end/third_party/codemirror.next/chunk/codemirror.js.map'
+[36m[7m[1m INFO [22m[27m[39m Connection established to DevTools for app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+[33m[7m[1m MAP [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+[32m[7m[1m MAP [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m 
+[33m[7m[1m MAP [22m[27m[39m[0m[2m src/i18n/locale/[22m[0m[1mzh.ts[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+[32m[7m[1m MAP [22m[27m[39m[0m[2m src/i18n/locale/[22m[0m[1mzh.ts[22m 
+info Bundle Debug ID: 29b7cc7f-ae0b-4ed4-864b-625bbaec74a4
+[32m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m 
+[33m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
+[32m[7m[1m MAP [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m 
+info Bundle Debug ID: 29b7cc7f-ae0b-4ed4-864b-625bbaec74a4
+[32m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m 
+[32m[7m[1m MAP [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m 
+[36m[7m[1m INFO [22m[27m[39m Connection closed to device='PJJ110 - 16 - API 36' for app='com.healshealthcare.healspass.dev' with code='1006' and reason=''.
+[36m[7m[1m INFO [22m[27m[39m Connection closed to DevTools for app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36' with code='1000' and reason='[CONNECTION_LOST] Connection lost to corresponding device'.
+[36m[7m[1m INFO [22m[27m[39m Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+[36m[7m[1m INFO [22m[27m[39m Connection closed to device='PJJ110 - 16 - API 36' for app='com.healshealthcare.healspass.dev' with code='1006' and reason=''.
+[36m[7m[1m INFO [22m[27m[39m Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+[36m[7m[1m INFO [22m[27m[39m Connection closed to device='PJJ110 - 16 - API 36' for app='com.healshealthcare.healspass.dev' with code='1006' and reason=''.
+[36m[7m[1m INFO [22m[27m[39m Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+[36m[7m[1m INFO [22m[27m[39m Connection closed to device='PJJ110 - 16 - API 36' for app='com.healshealthcare.healspass.dev' with code='1006' and reason=''.
+[36m[7m[1m INFO [22m[27m[39m Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+[36m[7m[1m INFO [22m[27m[39m Connection closed to device='PJJ110 - 16 - API 36' for app='com.healshealthcare.healspass.dev' with code='1006' and reason=''.
+[36m[7m[1m INFO [22m[27m[39m Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+[36m[7m[1m INFO [22m[27m[39m Connection closed to device='PJJ110 - 16 - API 36' for app='com.healshealthcare.healspass.dev' with code='1006' and reason=''.
+[36m[7m[1m INFO [22m[27m[39m Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.
+[36m[7m[1m INFO [22m[27m[39m Connection closed to device='PJJ110 - 16 - API 36' for app='com.healshealthcare.healspass.dev' with code='1006' and reason=''.
+[36m[7m[1m INFO [22m[27m[39m Connection established to app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.

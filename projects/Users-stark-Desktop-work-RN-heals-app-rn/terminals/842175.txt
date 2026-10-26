@@ -1,0 +1,799 @@
+---
+pid: 76574
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "adb -s 4ae24c72 logcat -T 1 -v threadtime ReactNativeJS:V '*:S' | python3 -u -c 'import sys\npath=\"/tmp/heals-live/live.log\"\nout=open(path,\"a\",buffering=1)\nfor line in sys.stdin:\n    sys.stdout.write(line)\n    sys.stdout.flush()\n    out.write(line)\n'"
+title: "Resume live log capture for the new account"
+status: succeeded
+started_at: 2026-10-26T03:28:05.293Z
+running_for_ms: 31138    
+---
+--------- beginning of main
+10-26 11:28:31.164 16623 19206 I ReactNativeJS: [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/61d11541-6279-4728-acc3-79bc2c751049 {"success":true,"id":"61d11541-6279-4728-acc3-79bc2c751049","name":"User5459","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"},{"planId":"515f7973-9a61-4131-ad1d-de64c285311b","expirationDate":"2027-08-03T06:20:25.319Z"},{"planId":"5958ff09-268d-4264-8937-2995cd4a3d2f","expirationDate":"2027-08-04T06:34:17.357Z"},{"planId":"5958ff09-268d-4264-8937-2995cd4a3d2f","expirationDate":"2027-08-17T03:06:56.381Z"},{"planId":"bdc7a9ff-9edc-4a28-a6a8-248b11c1a1ce","expirationDate":"2027-09-01T03:42:47.865Z"},{"planId":"681d3b1a-d59a-4a84-aa2b-dafa64d3b7b6","expirationDate":"2027-09-03T07:35:48.709Z"}]}
+10-26 11:28:31.303 16623 19206 I ReactNativeJS: 'profile-screen.tsx theme=', { mode: 'light',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:   uiTheme: 
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:    { dark: false,
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:      mode: 'light',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:      name: 'light',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:      barStyle: 'dark-content',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:      androidSummaryFontWeight: '400',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:      colors: 
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:       { '$background': '#FFFFFF',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$boxBackground': '#F7F9FA',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$dimBackground': 'rgba(0,0,0,0.4)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$error': '#A90F1A',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$text': 'rgba(0, 0, 0, 1)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$textSecondary': '#737577',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$textButton': '#FFF',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$link': '#008EFF',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$linkLight': 'rgba(0, 142, 255, 0.3)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$disabled': '#e9e9e9',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$icon': 'rgb(153, 153, 153)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$iconAccent': '#b8d1e5',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$mask': '#00000057',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$navigation': '#737577',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$separator': '#dfe5eb',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$greyBackground': 'rgba(184, 209, 229, 0.15)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$grayPageBackground': 'rgba(242, 242, 246, 1)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$greyColor': 'rgba(59, 107, 137, 0.35)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$lightGreyColor': '#8D9796',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$redBackground': 'rgba(219, 88, 96, 0.15)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$redColor': 'rgba(255, 59, 48, 1)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$yellowBackground': 'rgba(237, 162, 0, 0.15)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$yellowColor': '#B25C00',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$greenBackground': 'rgba(89, 168, 105, 0.15)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$greenColor': '#59a869',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$blueBackground': 'rgba(0, 142, 255, 0.15)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$blueColor': 'rgba(0, 122, 255, 1)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$black': 'rgba(0, 0, 0, 1)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$grayColor': 'rgba(118, 118, 128, 0.08)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$grayText1': 'rgba(60, 60, 67, 0.3)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$white': 'white',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$lightBlue': 'rgba(0, 122, 255, 0.1)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$tabBarActiveTintColor': 'rgba(78, 172, 162, 1)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$tabBarInActiveTintColor': 'rgba(160, 172, 171, 1)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$appTxt': 'rgba(141, 151, 150, 1)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$lightGreen': '#00AC864D',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$appThemeGreen': '#00AC86',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$lightGrey': '#E1EBEC',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$dangerDarkRed': '#D1224D',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$darkMedGrey': '#4B6363',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$fontSize_22_color': 'rgba(0, 0, 0, 1)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$fontSize_15_color': 'rgba(60, 60, 67, 0.3)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$grayText': 'rgba(60, 60, 67, 0.6)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$inputBackground': '#FFFFFF',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$inputBorder': '#E5E5EA',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$placeholderTextColor': 'rgba(60, 60, 67, 0.18)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$TextInputTextColor': 'rgba(0, 0, 0, 1)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$modalBackground': '#FFFFFF',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$dividerBackground': 'rgba(120, 120, 128, 0.2)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$AlertModalBackground': 'rgba(179, 179, 179, 0.82)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$lightGray': 'rgba(235, 235, 245, 0.3)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$bottomBarBackground': 'rgba(255, 255, 255, 0.7)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$grayBackground': 'rgba(242, 242, 246, 1)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$disabledBtn': 'rgba(118, 118, 128, 0.12)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$blue': 'rgba(0, 122, 255, 0.1)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$blueTxtColor': 'rgba(0, 122, 255, 1)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$disabledBtnText': 'rgba(60, 60, 67, 0.18)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$infoItemBg': '#FFFFFF',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$topBoder': '#F2F2F7',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$subbg': '#FFFFFF',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$appColor': 'rgba(0, 172, 134, 1)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$statusBarTextColor': 'dark-content',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$fadedWhiteBlue': '#F3FAFA',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$fadedGrey': '#E1EBEC',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:         '$darkGreyGreen': '#4B6363' },
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:      commonStyles: 
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:       { pageContainer: 
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:          { flex: [Getter/Setter],
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:            paddingHorizontal: [Getter/Setter],
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:            alignItems: [Getter/Setter],
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:            backgroundColor: [Getter/Setter] } } },
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:   setMode: [Function],
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:   statusBarTextColor: 'dark-content',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:   changeStatusBarTextColor: [Function],
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:   statusBarBackgroundColor: 'rgba(255, 255, 255, 1)',
+10-26 11:28:31.303 16623 19206 I ReactNativeJS:   changeStatusBarBackgroundColor: [Function] }
+10-26 11:28:31.351 16623 19206 I ReactNativeJS: 'global-navigation.ts navigate name=', 'DoctorListScreen', ' params=', { titleHeader: '线上视频问诊' }
+10-26 11:28:31.368 16623 19206 I ReactNativeJS: 'planBottomSheet=', { 'refState.current.member_policies': undefined, height: NaN }
+10-26 11:28:31.375 16623 19206 I ReactNativeJS: 'common-modal-bt.tsx props.tag=', 'DoctorListScreen'
+10-26 11:28:31.427 16623 19206 I ReactNativeJS: 'theme-provider.tsx changeStatusBarTextColor statusBarTextColor=', 'light-content'
+10-26 11:28:31.428 16623 19206 I ReactNativeJS: 'theme-provider.tsx changeStatusBarBackgroundColor statusBarBackgroundColor=', 'rgba(0, 172, 134, 1)'
+10-26 11:28:31.429 16623 19206 I ReactNativeJS: HomeScreen is unfocused!
+10-26 11:28:31.548 16623 19206 I ReactNativeJS: 'profile-screen.tsx theme=', { mode: 'light',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:   uiTheme: 
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:    { dark: false,
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:      mode: 'light',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:      name: 'light',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:      barStyle: 'dark-content',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:      androidSummaryFontWeight: '400',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:      colors: 
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:       { '$background': '#FFFFFF',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$boxBackground': '#F7F9FA',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$dimBackground': 'rgba(0,0,0,0.4)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$error': '#A90F1A',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$text': 'rgba(0, 0, 0, 1)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$textSecondary': '#737577',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$textButton': '#FFF',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$link': '#008EFF',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$linkLight': 'rgba(0, 142, 255, 0.3)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$disabled': '#e9e9e9',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$icon': 'rgb(153, 153, 153)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$iconAccent': '#b8d1e5',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$mask': '#00000057',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$navigation': '#737577',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$separator': '#dfe5eb',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$greyBackground': 'rgba(184, 209, 229, 0.15)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$grayPageBackground': 'rgba(242, 242, 246, 1)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$greyColor': 'rgba(59, 107, 137, 0.35)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$lightGreyColor': '#8D9796',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$redBackground': 'rgba(219, 88, 96, 0.15)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$redColor': 'rgba(255, 59, 48, 1)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$yellowBackground': 'rgba(237, 162, 0, 0.15)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$yellowColor': '#B25C00',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$greenBackground': 'rgba(89, 168, 105, 0.15)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$greenColor': '#59a869',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$blueBackground': 'rgba(0, 142, 255, 0.15)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$blueColor': 'rgba(0, 122, 255, 1)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$black': 'rgba(0, 0, 0, 1)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$grayColor': 'rgba(118, 118, 128, 0.08)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$grayText1': 'rgba(60, 60, 67, 0.3)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$white': 'white',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$lightBlue': 'rgba(0, 122, 255, 0.1)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$tabBarActiveTintColor': 'rgba(78, 172, 162, 1)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$tabBarInActiveTintColor': 'rgba(160, 172, 171, 1)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$appTxt': 'rgba(141, 151, 150, 1)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$lightGreen': '#00AC864D',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$appThemeGreen': '#00AC86',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$lightGrey': '#E1EBEC',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$dangerDarkRed': '#D1224D',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$darkMedGrey': '#4B6363',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$fontSize_22_color': 'rgba(0, 0, 0, 1)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$fontSize_15_color': 'rgba(60, 60, 67, 0.3)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$grayText': 'rgba(60, 60, 67, 0.6)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$inputBackground': '#FFFFFF',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$inputBorder': '#E5E5EA',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$placeholderTextColor': 'rgba(60, 60, 67, 0.18)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$TextInputTextColor': 'rgba(0, 0, 0, 1)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$modalBackground': '#FFFFFF',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$dividerBackground': 'rgba(120, 120, 128, 0.2)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$AlertModalBackground': 'rgba(179, 179, 179, 0.82)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$lightGray': 'rgba(235, 235, 245, 0.3)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$bottomBarBackground': 'rgba(255, 255, 255, 0.7)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$grayBackground': 'rgba(242, 242, 246, 1)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$disabledBtn': 'rgba(118, 118, 128, 0.12)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$blue': 'rgba(0, 122, 255, 0.1)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$blueTxtColor': 'rgba(0, 122, 255, 1)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$disabledBtnText': 'rgba(60, 60, 67, 0.18)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$infoItemBg': '#FFFFFF',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$topBoder': '#F2F2F7',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$subbg': '#FFFFFF',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$appColor': 'rgba(0, 172, 134, 1)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$statusBarTextColor': 'dark-content',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$fadedWhiteBlue': '#F3FAFA',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$fadedGrey': '#E1EBEC',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:         '$darkGreyGreen': '#4B6363' },
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:      commonStyles: 
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:       { pageContainer: 
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:          { flex: [Getter/Setter],
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:            paddingHorizontal: [Getter/Setter],
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:            alignItems: [Getter/Setter],
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:            backgroundColor: [Getter/Setter] } } },
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:   setMode: [Function],
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:   statusBarTextColor: 'light-content',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:   changeStatusBarTextColor: [Function],
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:   statusBarBackgroundColor: 'rgba(0, 172, 134, 1)',
+10-26 11:28:31.548 16623 19206 I ReactNativeJS:   changeStatusBarBackgroundColor: [Function] }
+10-26 11:28:31.576 16623 19206 I ReactNativeJS: 'planBottomSheet=', { 'refState.current.member_policies': undefined, height: NaN }
+10-26 11:28:31.580 16623 19206 I ReactNativeJS: 'common-modal-bt.tsx props.tag=', 'DoctorListScreen'
+10-26 11:28:31.712 16623 19206 I ReactNativeJS: [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/list count=73
+10-26 11:28:31.713 16623 19206 I ReactNativeJS: [api-plan] 0 {"id":"206b0da4-f1f7-4637-9a30-bd517d6cde9e","name":"AIG","displayName":"AIG","price":"0.00","purchasable":false,"type":"white-label","sellPoints":[]}
+10-26 11:28:31.713 16623 19206 I ReactNativeJS: [api-plan] 1 {"id":"43906cc1-87e8-4c96-94b0-5e3127a9e1ba","name":"SFHK Platinum","displayName":"SFHK Platinum","price":"203.00","purchasable":false,"type":"white-label","sellPoints":["1 time teleconsult","Includes: one 3-day basic med supply + one free delivery (fees apply for additional meds)"]}
+10-26 11:28:31.713 16623 19206 I ReactNativeJS: [api-plan] 2 {"id":"bdc7a9ff-9edc-4a28-a6a8-248b11c1a1ce","name":"AIG Domestic Helper Super Care Plan","displayName":"AIG Domestic Helper Super Care Plan","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["2 time teleconsult","Including 3 days basic meds + delivery"]}
+10-26 11:28:31.713 16623 19206 I ReactNativeJS: [api-plan] 3 {"id":"f8ce616d-7675-4ac2-aa99-885831295ef3","name":"Basic Plan","displayName":"Basic Plan","price":"0.00","purchasable":false,"type":"basic","sellPoints":["View available doctors","Upgrade to recommended plans"]}
+10-26 11:28:31.713 16623 19206 I ReactNativeJS: [api-plan] 4 {"id":"78cceecb-a462-4462-85df-179e736e4b7f","name":"HKT WL Management Plan (1 month)","displayName":"WM Program (1 month)","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["Weekly Mounjaro or Wegovy injection pens"]}
+10-26 11:28:31.713 16623 19206 I ReactNativeJS: [api-plan] 5 {"id":"7628330d-c205-444c-af92-5b40ea604480","name":"HKT Health Pass 365 Bronze","displayName":"Health Pass 365 Bronze","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["Unlimited teleconsults (with local GP doctors)","First teleconsult includes 3-days basic medication and delivery"]}
+10-26 11:28:31.713 16623 19206 I ReactNativeJS: [api-plan] 6 {"id":"fff89f54-e637-4fc0-aada-048da6f84432","name":"HKT Health Pass 365 Silver","displayName":"Health Pass 365 Silver","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["Unlimited teleconsults (with local GP doctors)","First 3 teleconsults include 3-days basic medication and delivery"]}
+10-26 11:28:31.713 16623 19206 I ReactNativeJS: [api-plan] 7 {"id":"aea81047-17ca-4621-a307-843c72fd0966","name":"HKT WL Management Plan (3 months)","displayName":"WM Program (3 months)","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["Weekly Mounjaro or Wegovy injection pens"]}
+10-26 11:28:31.714 16623 19206 I ReactNativeJS: [api-plan] 8 {"id":"1dc2c7e4-244f-4c3a-8251-44371fa376ac","name":"HKT Unlimited Single Travel Plan","displayName":"Unlimited Single Travel Plan","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["Unlimited teleconsults"]}
+10-26 11:28:31.714 16623 19206 I ReactNativeJS: [api-plan] 9 {"id":"4894a223-2e20-4c1f-9719-3183672e5957","name":"AXA PRIVILEGE_TEST1","displayName":"AXA PRIVILEGE TEST","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["dr_go_benefit_unlimited_gp","dr_go_benefit_medication_delivery"]}
+10-26 11:28:31.714 16623 19206 I ReactNativeJS: [api-plan] 10 {"id":"244b34ce-4dae-428d-9981-2f929a7bf3bc","name":"HealthEasy Premium 365","displayName":"Premium 365","price":"365.00","purchasable":false,"type":"white-label","sellPoints":["Unlimited teleconsults (with local GP doctors)","First teleconsult includes 3-days basic medication and delivery"]}
+10-26 11:28:31.714 16623 19206 I ReactNativeJS: [api-plan] 11 {"id":"2bc1330f-6aae-4dc0-b0ec-856b6839ea76","name":"HKT Overseas Health Pass Annual","displayName":"Standalone Travel - Annual","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["dr_go_benefit_unlimited_gp","dr_go_benefit_medication_delivery"]}
+10-26 11:28:31.714 16623 19206 I ReactNativeJS: [api-plan] 12 {"id":"515f7973-9a61-4131-ad1d-de64c285311b","name":"GP Teleconsult","displayName":"GP Teleconsult","price":"280.00","purchasable":true,"type":"premium","sellPoints":["Teleconsults x1","Excludes medication and delivery"]}
+10-26 11:28:31.714 16623 19206 I ReactNativeJS: [api-plan] 13 {"id":"60454e15-5c55-49c6-a723-e2dd2da556c9","name":"Health Plan","displayName":"Health Plan","price":"398.00","purchasable":false,"type":"premium","sellPoints":["1 time teleconsults (with local GP doctors)","Include 3 days basic medication and delivery"]}
+10-26 11:28:31.714 16623 19206 I ReactNativeJS: [api-plan] 14 {"id":"681d3b1a-d59a-4a84-aa2b-dafa64d3b7b6","name":"Premium Plan 365","displayName":"Premium Plan 365","price":"365.00","purchasable":true,"type":"premium","sellPoints":["Unlimited teleconsults (with local GP doctors)","First teleconsult includes 3-days basic medication and delivery"]}
+10-26 11:28:31.714 16623 19206 I ReactNativeJS: [api-plan] 15 {"id":"8b5e832b-f637-4072-9740-f79dac4a40ea","name":"Health Easy Premium Plan Gold","displayName":"Premium Plan Gold","price":"550.00","purchasable":false,"type":"white-label","sellPoints":["Unlimited teleconsults (with local GP doctors)","First 3 teleconsults include 3-days basic medication and delivery"]}
+10-26 11:28:31.714 16623 19206 I ReactNativeJS: [api-plan] 16 {"id":"d1448e9f-45fa-476f-a3ee-3466b93ec0f2","name":"HKT Overseas Health Pass Single","displayName":"Standalone Travel - Single","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["dr_go_benefit_unlimited_gp","dr_go_benefit_medication_delivery"]}
+10-26 11:28:31.714 16623 19206 I ReactNativeJS: [api-plan] 17 {"id":"91b46b88-022c-44b5-aaba-3335129cb7ed","name":"Premium Plan Silver","displayName":"Premium Plan Silver","price":"698.00","purchasable":true,"type":"premium","sellPoints":["Unlimited teleconsults (with local GP doctors)","First 3 teleconsults include 3-days basic medication and delivery"]}
+10-26 11:28:31.715 16623 19206 I ReactNativeJS: [api-plan] 18 {"id":"e06f299a-3206-4b00-81a3-6bd7e07a45e3","name":"Gordon Test Plan","displayName":"Gordon Test Plan","price":"11.00","purchasable":false,"type":"premium","sellPoints":["GP Consultation x3","GP Medication x1"]}
+10-26 11:28:31.715 16623 19206 I ReactNativeJS: [api-plan] 19 {"id":"1b240e92-7f6b-46e2-acc2-3566267df374","name":"Health Easy Premium Plan Platinum","displayName":"Premium Plan Platinum","price":"668.00","purchasable":false,"type":"white-label","sellPoints":["Unlimited teleconsults (with local GP doctors)","First 6 teleconsults include 3-days basic medication and delivery"]}
+10-26 11:28:31.715 16623 19206 I ReactNativeJS: [api-plan] 20 {"id":"9279147c-fc68-4609-ab56-78c4ccfbc6b7","name":"Premium Plan Platinum","displayName":"Premium Plan Platinum","price":"980.00","purchasable":true,"type":"premium","sellPoints":["Unlimited teleconsults (with local GP doctors)","First 6 teleconsults include 3-days basic medication and delivery"]}
+10-26 11:28:31.715 16623 19206 I ReactNativeJS: [api-plan] 21 {"id":"27b66250-b502-4dc0-885f-17f82284706d","name":"Premium Plan Platinum (AI)","displayName":"Premium Plan Platinum (AI)","price":"668.00","purchasable":false,"type":"premium","sellPoints":["Unlimited teleconsults (with local GP doctors)","First 6 teleconsults include 3-days basic medication and delivery"]}
+10-26 11:28:31.715 16623 19206 I ReactNativeJS: [api-plan] 22 {"id":"17c41847-0a1b-48d7-ab26-f3232ac65e75","name":"AXA Banca","displayName":"Travel Plan - Annual","price":"0.00","purchasable":false,"type":"white-label","sellPoints":[]}
+10-26 11:28:31.715 16623 19206 I ReactNativeJS: [api-plan] 23 {"id":"8327105e-dffd-405d-b277-363fd93583a2","name":"AXA Direct","displayName":"Travel Plan - Annual","price":"0.00","purchasable":false,"type":"white-label","sellPoints":[]}
+10-26 11:28:31.715 16623 19206 I ReactNativeJS: [api-plan] 24 {"id":"054f7b58-c28c-487d-9b49-96f96978c08b","name":"AXA HKE","displayName":"Travel Plan - Single","price":"0.00","purchasable":false,"type":"white-label","sellPoints":[]}
+10-26 11:28:31.715 16623 19206 I ReactNativeJS: [api-plan] 25 {"id":"4b22db5e-142f-4167-9170-d8ee252cd3b2","name":"Bowtie TCM","displayName":"Bowtie TCM","price":"0.00","purchasable":false,"type":"white-label","sellPoints":[]}
+10-26 11:28:31.715 16623 19206 I ReactNativeJS: [api-plan] 26 {"id":"77b08f92-13fd-4363-9f77-8a2b617a0f1b","name":"China Plan","displayName":"China Plan","price":"68.00","purchasable":true,"type":"others","sellPoints":["Unlimited teleconsults (with HK-based doctors)","HK drugs delivered to China"]}
+10-26 11:28:31.716 16623 19206 I ReactNativeJS: [api-plan] 27 {"id":"c1a9dbae-5b5c-4378-9b92-7e96ecc0b85c","name":"Circle","displayName":"Circle","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["GP TC unlimited"]}
+10-26 11:28:31.716 16623 19206 I ReactNativeJS: [api-plan] 28 {"id":"ad9a8db2-ee94-435c-990c-922a2772ab68","name":"CDV Marino Promo Plan","displayName":"CDV Marino Promo Plan","price":"888.00","purchasable":false,"type":"white-label","sellPoints":["Unlimited teleconsults (with global GP doctors)","Excludes medication and delivery fees"]}
+10-26 11:28:31.716 16623 19206 I ReactNativeJS: [api-plan] 29 {"id":"3c1eee37-c4eb-4cfc-95fb-8902e9a5f6cd","name":"ClickCare Plan","displayName":"ClickCare Plan","price":"11.00","purchasable":false,"type":"white-label","sellPoints":["Unlimited GP Video Consultation","24/7 Assistance"]}
+10-26 11:28:31.716 16623 19206 I ReactNativeJS: [api-plan] 30 {"id":"cd23122e-5e0b-4fa6-8048-61141d604504","name":"DSI","displayName":"Travel Plan - Annual","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["Medication from Hong Kong"]}
+10-26 11:28:31.716 16623 19206 I ReactNativeJS: [api-plan] 31 {"id":"aad84c87-1854-4f3f-9b9e-a78fbc42e2b6","name":"Hong Kong Inbound Students Insurance Plan","displayName":"Hong Kong Inbound Students Insurance Plan","price":"0.00","purchasable":false,"type":"travel","sellPoints":[]}
+10-26 11:28:31.716 16623 19206 I ReactNativeJS: [api-plan] 32 {"id":"870d4b8e-c33e-4769-994e-1e6786a364b1","name":"Heals Travel","displayName":"Heals Travel","price":"0.00","purchasable":false,"type":"travel","sellPoints":[]}
+10-26 11:28:31.716 16623 19206 I ReactNativeJS: [api-plan] 33 {"id":"5958ff09-268d-4264-8937-2995cd4a3d2f","name":"Global Plan - Asia 1","displayName":"Global Plan - Asia 1","price":"68.00","purchasable":true,"type":"global","sellPoints":["Unlimited teleconsults (with either Indonesian or Filipino GP doctors)","Excludes medication and delivery fees"]}
+10-26 11:28:31.716 16623 19206 I ReactNativeJS: [api-plan] 34 {"id":"52bd2be2-782d-4d6e-9781-0a7a200fbf3d","name":"HKT Cash Plan","displayName":"HKT Cash Plan","price":"398.00","purchasable":false,"type":"white-label","sellPoints":["1 time teleconsult"]}
+10-26 11:28:31.716 16623 19206 I ReactNativeJS: [api-plan] 35 {"id":"122df5ea-b913-4f59-9fb0-bb7c424c0448","name":"HKT Health Pass 365 Basic","displayName":"HKT Health Pass 365 Basic","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["Unlimited teleconsults (with local GP doctors)","Standard fee for 3-days basic meds + delivery: HK$180"]}
+10-26 11:28:31.716 16623 19206 I ReactNativeJS: [api-plan] 36 {"id":"799b37c7-d4a5-4585-b74e-c4efb4cc7f16","name":"HKT Health Pass 365","displayName":"Health Pass 365","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["Unlimited teleconsults (with home-based GP doctors), up to 14 days per destination (each trip)","Excludes medication and delivery fees"]}
+10-26 11:28:31.716 16623 19206 I ReactNativeJS: [api-plan] 37 {"id":"478a6f42-eaf6-48c7-b02c-8bd3bdcd9574","name":"HKT Health Pass 365 Diamond","displayName":"Health Pass 365 Diamond","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["Unlimited teleconsults (with home-based GP doctors), up to 14 days per destination (each trip)","Excludes medication and delivery fees"]}
+10-26 11:28:31.717 16623 19206 I ReactNativeJS: [api-plan] 38 {"id":"6b5b69c4-ee96-4d45-aee0-c17c3e76e65b","name":"HKT Health Pass 365 Gold","displayName":"Health Pass 365 Gold","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["Unlimited teleconsults (with home-based GP doctors), up to 14 days per destination (each trip)","Excludes medication and delivery fees"]}
+10-26 11:28:31.717 16623 19206 I ReactNativeJS: [api-plan] 39 {"id":"f782cad2-8b6b-45d2-82d4-0c3b78347731","name":"HKT Health Pass 365 Lite","displayName":"Health Pass 365 Lite","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["Unlimited teleconsults (with home-based GP doctors), up to 14 days per destination (each trip)","Excludes medication and delivery fees"]}
+10-26 11:28:31.717 16623 19206 I ReactNativeJS: [api-plan] 40 {"id":"7afaa095-c4c6-44a8-af05-1fb274af00d7","name":"HKT Health Pass 365 Platinum","displayName":"Health Pass 365 Platinum","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["Unlimited teleconsults (with home-based GP doctors), up to 14 days per destination (each trip)","Excludes medication and delivery fees"]}
+10-26 11:28:31.717 16623 19206 I ReactNativeJS: [api-plan] 41 {"id":"1899e9ac-4a88-4ecc-99d0-c92348eaa1b2","name":"Indonesia Week Special Plan V2","displayName":"Indonesia Week Special Plan V2","price":"9999.00","purchasable":false,"type":"global","sellPoints":["Unlimited teleconsults (with either Indonesian or Filipino GP doctors)","Excludes medication and delivery fees"]}
+10-26 11:28:31.717 16623 19206 I ReactNativeJS: [api-plan] 42 {"id":"a26c2b4e-2017-4d58-bc2e-1d67e3dbd4a3","name":"Ping An Travel Plan","displayName":"Travel Plan - Annual","price":"0.00","purchasable":false,"type":"travel","sellPoints":["Unlimited teleconsults (with home-based GP doctors), up to 14 days per destination (each trip)","Excludes medication and delivery fees"]}
+10-26 11:28:31.717 16623 19206 I ReactNativeJS: [api-plan] 43 {"id":"bdfd85e9-039e-4866-9b70-ef88cc2e4202","name":"Global Plan - Asia 2","displayName":"Global Plan - Asia 2","price":"88.00","purchasable":true,"type":"global","sellPoints":["Unlimited teleconsults (with GP doctors in chosen country in Asia)","Excludes medication and delivery fees"]}
+10-26 11:28:31.717 16623 19206 I ReactNativeJS: [api-plan] 44 {"id":"6277bf45-1f7e-44c3-829c-f0427de28b34","name":"Global Travel plan","displayName":"Global Travel plan","price":"88.00","purchasable":false,"type":"global","sellPoints":["3 teleconsults (HK GP doctors + local GP doctors), excludes medication and delivery fees","Unlimited global assistance, excludes shipping costs and third-party service fees"]}
+10-26 11:28:31.717 16623 19206 I ReactNativeJS: [api-plan] 45 {"id":"fcd6470a-f1a0-4ca6-b8ed-6b79c781d5ab","name":"Overseas Drug Delivery","displayName":"Overseas Drug Delivery","price":"88.00","purchasable":false,"type":"global","sellPoints":["Teleconsults x3","Excludes medication and delivery fees"]}
+10-26 11:28:31.717 16623 19206 I ReactNativeJS: [api-plan] 46 {"id":"205a7e59-c9c5-47d8-be44-3c6e63229358","name":"Hong Kong plan","displayName":"Hong Kong plan","price":"88.00","purchasable":false,"type":"global","sellPoints":["Unlimited teleconsults (with HK-based doctors)","HK drugs delivered to China"]}
+10-26 11:28:31.718 16623 19206 I ReactNativeJS: [api-plan] 47 {"id":"b384d544-a287-4acd-8c7d-5b4130934360","name":"Premium Global plan","displayName":"Premium Global plan","price":"888.00","purchasable":false,"type":"global","sellPoints":["Unlimited teleconsults (HK GP doctors + local GP doctors), excludes medication and delivery fees","Unlimited global assistance, excludes shipping costs and third-party service fees"]}
+10-26 11:28:31.718 16623 19206 I ReactNativeJS: [api-plan] 48 {"id":"24657d56-01e7-4a3b-8e11-7293540f674f","name":"Premium Hong Kong plan","displayName":"Premium Hong Kong plan","price":"888.00","purchasable":false,"type":"global","sellPoints":["Unlimited teleconsults (with HK-based doctors)","HK drugs delivered to China"]}
+10-26 11:28:31.718 16623 19206 I ReactNativeJS: [api-plan] 49 {"id":"7da10600-de8b-48e9-88d1-6bb195ea40c4","name":"Global Plan - EMEA","displayName":"Global Plan - EMEA","price":"108.00","purchasable":true,"type":"global","sellPoints":["Unlimited teleconsults (with GP doctors in chosen country in EMEA)","Excludes medication and delivery fees"]}
+10-26 11:28:31.718 16623 19206 I ReactNativeJS: [api-plan] 50 {"id":"9efa2098-9c5a-4c64-86ab-f745a6ccf8d1","name":"HKT Travel Plan - Single","displayName":"Travel Plan - Single","price":"18.00","purchasable":false,"type":"travel","sellPoints":["Unlimited teleconsults (with home-based GP doctors), up to 14 days for 1 destination","Excludes medication and delivery fees"]}
+10-26 11:28:31.718 16623 19206 I ReactNativeJS: [api-plan] 51 {"id":"6e931304-a037-4aee-bf7c-1d495422f7fc","name":"Helper Trial","displayName":"Helper Trial","price":"200.00","purchasable":true,"type":"others","sellPoints":["1× Teleconsultation with an Indonesian or Filipino doctor","1× Second opinion Teleconsultation with a Hong Kong doctor"]}
+10-26 11:28:31.718 16623 19206 I ReactNativeJS: [api-plan] 52 {"id":"9a834522-dcb5-4146-91d8-903a43b49113","name":"HomeDoc Care Pass","displayName":"HomeDoc Care Pass","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["3× Teleconsultation with an Indonesian or Filipino doctor","3× Second opinion Teleconsultation with a Hong Kong doctor"]}
+10-26 11:28:31.718 16623 19206 I ReactNativeJS: [api-plan] 53 {"id":"27780236-9456-4e18-bb09-a061d2574861","name":"Travel Plan - Single","displayName":"Travel Plan - Single","price":"18.00","purchasable":true,"type":"travel","sellPoints":["Unlimited teleconsults (with home-based GP doctors), up to 14 days for 1 destination","Excludes medication and delivery fees"]}
+10-26 11:28:31.718 16623 19206 I ReactNativeJS: [api-plan] 54 {"id":"c623f9ff-db53-4b69-9234-b7eb2b146058","name":"China Life Insurance (Oversea) Plan","displayName":"China Life Insurance (Oversea) Plan","price":"888.00","purchasable":false,"type":"white-label","sellPoints":["Unlimited teleconsults (with HK-based doctors)","HK drugs delivered to China"]}
+10-26 11:28:31.718 16623 19206 I ReactNativeJS: [api-plan] 55 {"id":"9d554972-c59f-43d7-b952-f95902ab3a8d","name":"China Plan","displayName":"China Plan","price":"68.00","purchasable":false,"type":"china","sellPoints":["Unlimited teleconsults (with HK-based doctors)","HK drugs delivered to China"]}
+10-26 11:28:31.719 16623 19206 I ReactNativeJS: [api-plan] 56 {"id":"913bf359-7115-4820-b6eb-212ed7e50893","name":"Heals Test Benefit BY Levin","displayName":"Heals Test Benefit BY Levin","price":"68.00","purchasable":false,"type":"travel","sellPoints":["Unlimited teleconsults (with home-based GP doctors), up to 14 days per destination (each trip)","Excludes medication and delivery fees"]}
+10-26 11:28:31.719 16623 19206 I ReactNativeJS: [api-plan] 57 {"id":"77b64433-b0a9-4ec9-ae93-1e3416b24356","name":"Travel Plan - Annual","displayName":"Travel Plan - Annual","price":"68.00","purchasable":true,"type":"travel","sellPoints":["Unlimited teleconsults (with home-based GP doctors), up to 14 days per destination (each trip)","Excludes medication and delivery fees"]}
+10-26 11:28:31.719 16623 19206 I ReactNativeJS: [api-plan] 58 {"id":"7416c0e4-5f3c-40ea-afa9-34d37b85f14f","name":"Heals x Food Panda Pass Trial","displayName":"Heals x Food Panda Pass Trial (powered by Heals)","price":"328.00","purchasable":false,"type":"white-label","sellPoints":["1 time teleconsult","Including 3 days basic meds + delivery"]}
+10-26 11:28:31.719 16623 19206 I ReactNativeJS: [api-plan] 59 {"id":"f105689a-5bdf-4370-9d33-a368a2f04ec7","name":"Heals x Food Panda Pass PremiumSilver","displayName":"Heals x Food Panda Pass PremiumSilver(powered by Heals)","price":"498.00","purchasable":false,"type":"white-label","sellPoints":["3 times teleconsult","Including 3x3 days basic meds + delivery"]}
+10-26 11:28:31.719 16623 19206 I ReactNativeJS: [api-plan] 60 {"id":"8b5aba86-49a7-478b-9623-910bef884215","name":"Heals x Food Panda Pass Unlimited","displayName":"Heals x Food Panda Pass Unlimited (powered by Heals)","price":"1268.00","purchasable":false,"type":"white-label","sellPoints":["GP TC unlimited","Including 12x3 days basic meds + delivery"]}
+10-26 11:28:31.719 16623 19206 I ReactNativeJS: [api-plan] 61 {"id":"bfeec88c-17b0-430e-b818-658e576f5a91","name":"Heals x Food Panda Travel Pass Single Trip","displayName":"Heals x Food Panda Travel Pass Single Trip(powered by Heals)","price":"18.00","purchasable":false,"type":"white-label","sellPoints":["1 time teleconsult(Home-town doctor + destination doctor)","extra charge for medication & delivery"]}
+10-26 11:28:31.719 16623 19206 I ReactNativeJS: [api-plan] 62 {"id":"16f77793-6206-44e6-9ab8-f7d03bb6adca","name":"Amber China Pass","displayName":"Amber China Pass (powered by Heals)","price":"0.00","purchasable":false,"type":"white-label","sellPoints":["Hong Kong GP TeleConsult (unlimited, annual)","Online prescription & delivery available (meds & delivery fee additional)"]}
+10-26 11:28:31.719 16623 19206 I ReactNativeJS: [api-plan] 63 {"id":"531b9a4a-f9b6-439f-a180-7e4528b572c2","name":"Amber Pass Trial","displayName":"Amber Pass Trial (powered by Heals)","price":"100.00","purchasable":false,"type":"white-label","sellPoints":["Hong Kong GP TeleConsult（one-time）","Online prescription & delivery available (basic meds & delivery fee: additional $110)"]}
+10-26 11:28:31.719 16623 19206 I ReactNativeJS: [api-plan] 64 {"id":"9ea41a69-55b5-4f05-9333-e9d070da18da","name":"Amber Single Premium","displayName":"Amber Single Premium (powered by Heals)","price":"388.00","purchasable":false,"type":"white-label","sellPoints":["Hong Kong GP TeleConsult（one-time）","Includes: one 3-day basic med supply + one free delivery (fees apply for additional meds)"]}
+10-26 11:28:31.720 16623 19206 I ReactNativeJS: [api-plan] 65 {"id":"294d1c59-c034-4205-b29e-47d4f42cb29b","name":"Amber Hotel Pass","displayName":"Amber Hotel Pass (powered by Heals)","price":"10.00","purchasable":false,"type":"white-label","sellPoints":["One-Time HK GP Teleconsult","Online prescription and meds delivery"]}
+10-26 11:28:31.720 16623 19206 I ReactNativeJS: [api-plan] 66 {"id":"62a12425-d18c-45e8-95e7-b421ab3b4966","name":"Amber Pass Premium Silver Annual Discounted for HKFTU ","displayName":"Amber Pass Premium Silver Annual Discounted for HKFTU (powered by Heals)","price":"600.00","purchasable":false,"type":"white-label","sellPoints":["GP TC unlimited","Including 3x3 days basic meds + delivery"]}
+10-26 11:28:31.720 16623 19206 I ReactNativeJS: [api-plan] 67 {"id":"d88fde67-f5c8-4528-8aa5-aeb7d0c26140","name":"Amber Pass Premium Silver Annual ","displayName":"Amber Pass Premium Silver Annual (powered by Heals)","price":"800.00","purchasable":false,"type":"white-label","sellPoints":["Hong Kong GP TeleConsult（unlimited, annual)","Includes: three 3-day basic med supplies + three free deliveries (fees apply for additional meds, ＄110 fee per occurerence for basic meds & delivery after inclusions are used, with an additional $30 surcharge for deliveries after 18:30)"]}
+10-26 11:28:31.720 16623 19206 I ReactNativeJS: [api-plan] 68 {"id":"1c834057-f47d-4e08-b01d-400f5df4683d","name":"Health Easy Basic Plan","displayName":"Basic Plan","price":"80.00","purchasable":false,"type":"white-label","sellPoints":["Unlimited GP consultation in HK","Medication and delivery excluded"]}
+10-26 11:28:31.721 16623 19206 I ReactNativeJS: [api-plan] 69 {"id":"14cb3a92-2021-45c8-a523-d645cbe860a0","name":"Health Easy Test Plan","displayName":"HealthEasy Test Plan","price":"68.00","purchasable":false,"type":"white-label","sellPoints":["Unlimited teleconsults (with HK-based doctors)","HK drugs delivered to China"]}
+10-26 11:28:31.721 16623 19206 I ReactNativeJS: [api-plan] 70 {"id":"b5b7193d-38de-4aae-90d5-cef166544250","name":"IPH Thailand","displayName":"IPH Thailand","price":"666.00","purchasable":false,"type":"travel","sellPoints":["Unlimited teleconsultation with local doctors","Excludes medication and delivery fees"]}
+10-26 11:28:31.721 16623 19206 I ReactNativeJS: [api-plan] 71 {"id":"a1cd56ab-54ea-40cc-b671-1355c3cf89f3","name":"NewTown Medical Card","displayName":"NewTown Medical Card","price":"0.00","purchasable":false,"type":"premium","sellPoints":["NewTown Medical Card"]}
+10-26 11:28:31.721 16623 19206 I ReactNativeJS: [api-plan] 72 {"id":"c6e0d333-7174-4668-ab46-6f5a487ad7b4","name":"Single Teleconsult","displayName":"Single Teleconsult","price":"298.00","purchasable":true,"type":"premium","sellPoints":["Single Teleconsult","Exclude medication and delivery"]}
+10-26 11:28:32.337 16623 19206 I ReactNativeJS: [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/ticket/upcoming {"success":true,"count":0,"items":[]}
+10-26 11:28:32.338 16623 19206 I ReactNativeJS: 'api get_ticket_upcoming response=', { data: { success: true, data: [] } }
+10-26 11:28:32.338 16623 19206 I ReactNativeJS: 'HomeScreen get_ticket_upcoming response=', []
+10-26 11:28:32.430 16623 19206 I ReactNativeJS: [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/sponsorship {"success":true,"count":6}
+10-26 11:28:32.601 16623 19206 I ReactNativeJS: 'profile-screen.tsx theme=', { mode: 'light',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:   uiTheme: 
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:    { dark: false,
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:      mode: 'light',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:      name: 'light',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:      barStyle: 'dark-content',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:      androidSummaryFontWeight: '400',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:      colors: 
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:       { '$background': '#FFFFFF',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$boxBackground': '#F7F9FA',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$dimBackground': 'rgba(0,0,0,0.4)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$error': '#A90F1A',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$text': 'rgba(0, 0, 0, 1)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$textSecondary': '#737577',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$textButton': '#FFF',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$link': '#008EFF',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$linkLight': 'rgba(0, 142, 255, 0.3)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$disabled': '#e9e9e9',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$icon': 'rgb(153, 153, 153)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$iconAccent': '#b8d1e5',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$mask': '#00000057',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$navigation': '#737577',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$separator': '#dfe5eb',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$greyBackground': 'rgba(184, 209, 229, 0.15)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$grayPageBackground': 'rgba(242, 242, 246, 1)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$greyColor': 'rgba(59, 107, 137, 0.35)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$lightGreyColor': '#8D9796',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$redBackground': 'rgba(219, 88, 96, 0.15)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$redColor': 'rgba(255, 59, 48, 1)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$yellowBackground': 'rgba(237, 162, 0, 0.15)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$yellowColor': '#B25C00',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$greenBackground': 'rgba(89, 168, 105, 0.15)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$greenColor': '#59a869',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$blueBackground': 'rgba(0, 142, 255, 0.15)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$blueColor': 'rgba(0, 122, 255, 1)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$black': 'rgba(0, 0, 0, 1)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$grayColor': 'rgba(118, 118, 128, 0.08)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$grayText1': 'rgba(60, 60, 67, 0.3)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$white': 'white',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$lightBlue': 'rgba(0, 122, 255, 0.1)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$tabBarActiveTintColor': 'rgba(78, 172, 162, 1)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$tabBarInActiveTintColor': 'rgba(160, 172, 171, 1)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$appTxt': 'rgba(141, 151, 150, 1)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$lightGreen': '#00AC864D',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$appThemeGreen': '#00AC86',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$lightGrey': '#E1EBEC',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$dangerDarkRed': '#D1224D',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$darkMedGrey': '#4B6363',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$fontSize_22_color': 'rgba(0, 0, 0, 1)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$fontSize_15_color': 'rgba(60, 60, 67, 0.3)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$grayText': 'rgba(60, 60, 67, 0.6)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$inputBackground': '#FFFFFF',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$inputBorder': '#E5E5EA',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$placeholderTextColor': 'rgba(60, 60, 67, 0.18)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$TextInputTextColor': 'rgba(0, 0, 0, 1)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$modalBackground': '#FFFFFF',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$dividerBackground': 'rgba(120, 120, 128, 0.2)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$AlertModalBackground': 'rgba(179, 179, 179, 0.82)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$lightGray': 'rgba(235, 235, 245, 0.3)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$bottomBarBackground': 'rgba(255, 255, 255, 0.7)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$grayBackground': 'rgba(242, 242, 246, 1)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$disabledBtn': 'rgba(118, 118, 128, 0.12)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$blue': 'rgba(0, 122, 255, 0.1)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$blueTxtColor': 'rgba(0, 122, 255, 1)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$disabledBtnText': 'rgba(60, 60, 67, 0.18)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$infoItemBg': '#FFFFFF',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$topBoder': '#F2F2F7',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$subbg': '#FFFFFF',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$appColor': 'rgba(0, 172, 134, 1)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$statusBarTextColor': 'dark-content',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$fadedWhiteBlue': '#F3FAFA',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$fadedGrey': '#E1EBEC',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:         '$darkGreyGreen': '#4B6363' },
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:      commonStyles: 
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:       { pageContainer: 
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:          { flex: [Getter/Setter],
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:            paddingHorizontal: [Getter/Setter],
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:            alignItems: [Getter/Setter],
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:            backgroundColor: [Getter/Setter] } } },
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:   setMode: [Function],
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:   statusBarTextColor: 'light-content',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:   changeStatusBarTextColor: [Function],
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:   statusBarBackgroundColor: 'rgba(0, 172, 134, 1)',
+10-26 11:28:32.601 16623 19206 I ReactNativeJS:   changeStatusBarBackgroundColor: [Function] }
+10-26 11:28:32.650 16623 19206 I ReactNativeJS: 'planBottomSheet=', { 'refState.current.member_policies': undefined, height: NaN }
+10-26 11:28:32.654 16623 19206 I ReactNativeJS: 'common-modal-bt.tsx props.tag=', 'DoctorListScreen'
+10-26 11:28:32.745 16623 19206 I ReactNativeJS: [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/61d11541-6279-4728-acc3-79bc2c751049 {"success":true,"id":"61d11541-6279-4728-acc3-79bc2c751049","name":"User5459","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"},{"planId":"515f7973-9a61-4131-ad1d-de64c285311b","expirationDate":"2027-08-03T06:20:25.319Z"},{"planId":"5958ff09-268d-4264-8937-2995cd4a3d2f","expirationDate":"2027-08-04T06:34:17.357Z"},{"planId":"5958ff09-268d-4264-8937-2995cd4a3d2f","expirationDate":"2027-08-17T03:06:56.381Z"},{"planId":"bdc7a9ff-9edc-4a28-a6a8-248b11c1a1ce","expirationDate":"2027-09-01T03:42:47.865Z"},{"planId":"681d3b1a-d59a-4a84-aa2b-dafa64d3b7b6","expirationDate":"2027-09-03T07:35:48.709Z"}]}
+10-26 11:28:32.768 16623 19206 I ReactNativeJS: 'planBottomSheet=', { 'refState.current.member_policies': undefined, height: NaN }
+10-26 11:28:32.984 16623 19206 I ReactNativeJS: [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/provider?payorId=&planId=&specialty=&region=Hong%20Kong&page=1&limit=10 {"success":true,"count":10}
+10-26 11:28:32.988 16623 19206 I ReactNativeJS: 'api filterBySpecialty=', { params: 
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:    { payorId: '',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:      planId: '',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:      specialty: '',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:      region: 'Hong Kong',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:      page: 1,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:      limit: 10 },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:   response: 
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:    { data: 
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:       { success: true,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:         data: 
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:          [ { id: '991221a2-bdaa-40cd-aeaa-2cd3e3bd1910',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              isOnline: true,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              queuePosition: 1,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              queueExpectedTime: '2026-10-26T03:35:35.2656171Z',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              type: 
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:               [ 'queuing',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 'pv',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 'pv-queuing',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 'booking',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 'pv-booking',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 'tc',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 'tc-queuing',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 'tc-booking' ],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              clinic: 
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:               { id: '289fb6bb-2ef8-4905-8ced-2843ddfa3719',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 name: 'Heals 家庭診所 (TP)',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 country: 'Hong Kong',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 region: 'Hong Kong',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 area: 'Kowloon',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 district: 'Sham Shui Po District',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 address: '中环',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 coordinates: { lat: 22.18960080474896, lng: 113.54224582760408 },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 contact: '+852-99100034' },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              doctor: 
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:               { id: '3f6dc158-1565-44d1-862e-10fba9225ddb',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 name: '陈戴傅',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 type: 'GP',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 specialties: [ '普通科' ],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 specialtyIds: [ '5cd40771-2204-4d15-b953-266b8f527364' ],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 gender: 'Male',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 languages: [ '英语', '普通话', '粤语' ] },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              hasValidContract: false,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              sortWeight: -110000000,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              distance: null,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              availableServices: [ 'eQueuingPV', 'eBookingPV', 'eQueuingTele', 'eBookingTele' ] },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:            { id: 'd0557ac6-7d00-4b8f-9514-7fadaf734796',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              isOnline: true,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              queuePosition: 1,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              queueExpectedTime: '2026-10-26T03:40:35.2656171Z',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              type: 
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:               [ 'queuing',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 'pv',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 'pv-queuing',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 'booking',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 'pv-booking',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 'tc',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 'tc-queuing' ],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              clinic: 
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:               { id: '4e085ad4-992a-436e-b436-4903bda9321e',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 name: 'Heals Clinic',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 country: 'Hong Kong',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 region: 'Hong Kong',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 area: 'Hong Kong Island',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 district: 'Central and Western District',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 address: '新界 青衣 青衣航运路36号 亚洲物流中心-顺丰大厦 12楼',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 coordinates: { lat: 22.335404, lng: 114.110542 },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 contact: '+852-35003341' },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              doctor: 
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:               { id: '245f4f9e-02f9-49e5-9c58-dc232b6ad900',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 name: 'A.H.Balaji',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 type: 'GP',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 specialties: [ '普通科' ],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 specialtyIds: [ '5cd40771-2204-4d15-b953-266b8f527364' ],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 gender: 'Male',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 languages: [] },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              hasValidContract: false,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              sortWeight: -10000000,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              distance: null,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              availableServices: [ 'eQueuingPV', 'eBookingPV', 'eQueuingTele' ] },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:            { id: '31fb5125-0d4f-4bcb-a67a-0ba4b9174024',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              isOnline: true,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              queuePosition: 1,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              queueExpectedTime: '2024-08-26T06:21:25.2424512Z',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              type: [ 'booking', 'tc', 'tc-booking', 'queuing', 'tc-queuing' ],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              clinic: 
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:               { id: '25521ace-c073-4bda-8caf-d28fc57887ec',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 name: 'Ada Test',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 country: 'Hong Kong',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 region: 'Hong Kong',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 area: 'Hong Kong Island',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 district: 'Wan Chai District',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 address: 'SHENZHEN FUTIAN',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 coordinates: { lat: 1, lng: -4 },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 contact: '+852-12594994' },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              doctor: 
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:               { id: '5abe559d-605b-4456-9347-b701585fb2e2',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 name: 'Ada Test',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 type: 'GP',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 specialties: [ '普通科' ],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 specialtyIds: [ '5cd40771-2204-4d15-b953-266b8f527364' ],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 gender: 'Female',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 languages: [ '英语', '普通话' ] },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              hasValidContract: false,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              sortWeight: -10000000,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              distance: null,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              availableServices: [ 'eBookingTele', 'eQueuingTele' ] },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:            { id: '1ee81c99-7932-47c4-bf44-b6ea38b7476f',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              isOnline: true,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              queuePosition: 1,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              queueExpectedTime: '2026-10-26T03:35:35.2656171Z',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              type: [ 'booking', 'pv', 'pv-booking', 'queuing', 'tc', 'tc-queuing' ],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              clinic: 
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:               { id: '289fb6bb-2ef8-4905-8ced-2843ddfa3719',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 name: 'Heals 家庭診所 (TP)',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 country: 'Hong Kong',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 region: 'Hong Kong',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 area: 'Kowloon',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 district: 'Sham Shui Po District',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 address: '中环',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 coordinates: { lat: 22.18960080474896, lng: 113.54224582760408 },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 contact: '+852-99100034' },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              doctor: 
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:               { id: 'a31ccf83-9d7b-4c0b-a0bf-6383d31071e5',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 name: 'Grace Lee ENDO 2',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 type: 'SP',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 specialties: [ '肠胃肝脏科' ],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 specialtyIds: [ '2c9f6a28-a7d9-4196-b660-ff077991dd20' ],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 gender: 'Male',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 languages: [] },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              hasValidContract: false,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              sortWeight: -10000000,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              distance: null,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              availableServices: [ 'eBookingPV', 'eQueuingTele' ] },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:            { id: '1fcd90b6-840c-4e8f-b599-49ae2130b3ba',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              isOnline: true,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              queuePosition: 1,
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              queueExpectedTime: '2026-10-26T03:35:35.2656171Z',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              type: [ 'booking', 'tc', 'tc-booking', 'queuing', 'tc-queuing' ],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              clinic: 
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:               { id: '63b10f03-7f89-4cca-af98-8aa6a08740f8',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 name: 'HSBC Test Clinic Dev',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 country: 'Hong Kong',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 region: 'Hong Kong',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 area: 'New Territories',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 district: 'Tai Po District',
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 address: [TOO BIG formatValueCalls 201 exceeded limit of 200],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 coordinates: [TOO BIG formatValueCalls 202 exceeded limit of 200],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:                 contact: [TOO BIG formatValueCalls 203 exceeded limit of 200] },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              doctor: [TOO BIG formatValueCalls 204 exceeded limit of 200],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              hasValidContract: [TOO BIG formatValueCalls 205 exceeded limit of 200],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              sortWeight: [TOO BIG formatValueCalls 206 exceeded limit of 200],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              distance: [TOO BIG formatValueCalls 207 exceeded limit of 200],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:              availableServices: [TOO BIG formatValueCalls 208 exceeded limit of 200] },
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:            [TOO BIG formatValueCalls 209 exceeded limit of 200],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:            [TOO BIG formatValueCalls 210 exceeded limit of 200],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:            [TOO BIG formatValueCalls 211 exceeded limit of 200],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:            [TOO BIG formatValueCalls 212 exceeded limit of 200],
+10-26 11:28:32.988 16623 19206 I ReactNativeJS:            [TOO BIG formatValueCalls 213 exceeded limit of 200] ] } } }
+10-26 11:28:32.994 16623 19206 I ReactNativeJS: 'fetchInitDoctors filterBySpecialty=', { params: 
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:    { payorId: '',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:      planId: '',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:      specialty: '',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:      region: 'Hong Kong',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:      page: 1,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:      limit: 10 },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:   response: 
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:    { success: true,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:      data: 
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:       [ { id: '991221a2-bdaa-40cd-aeaa-2cd3e3bd1910',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           isOnline: true,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           queuePosition: 1,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           queueExpectedTime: '2026-10-26T03:35:35.2656171Z',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           type: 
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:            [ 'queuing',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              'pv',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              'pv-queuing',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              'booking',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              'pv-booking',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              'tc',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              'tc-queuing',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              'tc-booking' ],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           clinic: 
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:            { id: '289fb6bb-2ef8-4905-8ced-2843ddfa3719',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              name: 'Heals 家庭診所 (TP)',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              country: 'Hong Kong',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              region: 'Hong Kong',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              area: 'Kowloon',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              district: 'Sham Shui Po District',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              address: '中环',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              coordinates: { lat: 22.18960080474896, lng: 113.54224582760408 },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              contact: '+852-99100034' },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           doctor: 
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:            { id: '3f6dc158-1565-44d1-862e-10fba9225ddb',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              name: '陈戴傅',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              type: 'GP',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              specialties: [ '普通科' ],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              specialtyIds: [ '5cd40771-2204-4d15-b953-266b8f527364' ],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              gender: 'Male',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              languages: [ '英语', '普通话', '粤语' ] },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           hasValidContract: false,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           sortWeight: -110000000,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           distance: null,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           availableServices: [ 'eQueuingPV', 'eBookingPV', 'eQueuingTele', 'eBookingTele' ] },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:         { id: 'd0557ac6-7d00-4b8f-9514-7fadaf734796',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           isOnline: true,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           queuePosition: 1,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           queueExpectedTime: '2026-10-26T03:40:35.2656171Z',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           type: 
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:            [ 'queuing',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              'pv',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              'pv-queuing',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              'booking',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              'pv-booking',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              'tc',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              'tc-queuing' ],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           clinic: 
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:            { id: '4e085ad4-992a-436e-b436-4903bda9321e',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              name: 'Heals Clinic',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              country: 'Hong Kong',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              region: 'Hong Kong',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              area: 'Hong Kong Island',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              district: 'Central and Western District',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              address: '新界 青衣 青衣航运路36号 亚洲物流中心-顺丰大厦 12楼',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              coordinates: { lat: 22.335404, lng: 114.110542 },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              contact: '+852-35003341' },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           doctor: 
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:            { id: '245f4f9e-02f9-49e5-9c58-dc232b6ad900',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              name: 'A.H.Balaji',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              type: 'GP',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              specialties: [ '普通科' ],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              specialtyIds: [ '5cd40771-2204-4d15-b953-266b8f527364' ],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              gender: 'Male',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              languages: [] },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           hasValidContract: false,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           sortWeight: -10000000,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           distance: null,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           availableServices: [ 'eQueuingPV', 'eBookingPV', 'eQueuingTele' ] },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:         { id: '31fb5125-0d4f-4bcb-a67a-0ba4b9174024',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           isOnline: true,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           queuePosition: 1,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           queueExpectedTime: '2024-08-26T06:21:25.2424512Z',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           type: [ 'booking', 'tc', 'tc-booking', 'queuing', 'tc-queuing' ],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           clinic: 
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:            { id: '25521ace-c073-4bda-8caf-d28fc57887ec',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              name: 'Ada Test',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              country: 'Hong Kong',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              region: 'Hong Kong',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              area: 'Hong Kong Island',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              district: 'Wan Chai District',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              address: 'SHENZHEN FUTIAN',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              coordinates: { lat: 1, lng: -4 },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              contact: '+852-12594994' },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           doctor: 
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:            { id: '5abe559d-605b-4456-9347-b701585fb2e2',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              name: 'Ada Test',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              type: 'GP',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              specialties: [ '普通科' ],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              specialtyIds: [ '5cd40771-2204-4d15-b953-266b8f527364' ],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              gender: 'Female',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              languages: [ '英语', '普通话' ] },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           hasValidContract: false,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           sortWeight: -10000000,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           distance: null,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           availableServices: [ 'eBookingTele', 'eQueuingTele' ] },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:         { id: '1ee81c99-7932-47c4-bf44-b6ea38b7476f',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           isOnline: true,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           queuePosition: 1,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           queueExpectedTime: '2026-10-26T03:35:35.2656171Z',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           type: [ 'booking', 'pv', 'pv-booking', 'queuing', 'tc', 'tc-queuing' ],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           clinic: 
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:            { id: '289fb6bb-2ef8-4905-8ced-2843ddfa3719',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              name: 'Heals 家庭診所 (TP)',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              country: 'Hong Kong',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              region: 'Hong Kong',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              area: 'Kowloon',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              district: 'Sham Shui Po District',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              address: '中环',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              coordinates: { lat: 22.18960080474896, lng: 113.54224582760408 },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              contact: '+852-99100034' },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           doctor: 
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:            { id: 'a31ccf83-9d7b-4c0b-a0bf-6383d31071e5',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              name: 'Grace Lee ENDO 2',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              type: 'SP',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              specialties: [ '肠胃肝脏科' ],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              specialtyIds: [ '2c9f6a28-a7d9-4196-b660-ff077991dd20' ],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              gender: 'Male',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              languages: [] },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           hasValidContract: false,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           sortWeight: -10000000,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           distance: null,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           availableServices: [ 'eBookingPV', 'eQueuingTele' ] },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:         { id: '1fcd90b6-840c-4e8f-b599-49ae2130b3ba',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           isOnline: true,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           queuePosition: 1,
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           queueExpectedTime: '2026-10-26T03:35:35.2656171Z',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           type: [ 'booking', 'tc', 'tc-booking', 'queuing', 'tc-queuing' ],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           clinic: 
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:            { id: '63b10f03-7f89-4cca-af98-8aa6a08740f8',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              name: 'HSBC Test Clinic Dev',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              country: 'Hong Kong',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              region: 'Hong Kong',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              area: 'New Territories',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              district: 'Tai Po District',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              address: '大埔廣福道 103 號 30 樓',
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              coordinates: [TOO BIG formatValueCalls 201 exceeded limit of 200],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:              contact: [TOO BIG formatValueCalls 202 exceeded limit of 200] },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           doctor: [TOO BIG formatValueCalls 203 exceeded limit of 200],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           hasValidContract: [TOO BIG formatValueCalls 204 exceeded limit of 200],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           sortWeight: [TOO BIG formatValueCalls 205 exceeded limit of 200],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           distance: [TOO BIG formatValueCalls 206 exceeded limit of 200],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:           availableServices: [TOO BIG formatValueCalls 207 exceeded limit of 200] },
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:         [TOO BIG formatValueCalls 208 exceeded limit of 200],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:         [TOO BIG formatValueCalls 209 exceeded limit of 200],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:         [TOO BIG formatValueCalls 210 exceeded limit of 200],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:         [TOO BIG formatValueCalls 211 exceeded limit of 200],
+10-26 11:28:32.994 16623 19206 I ReactNativeJS:         [TOO BIG formatValueCalls 212 exceeded limit of 200] ] } }
+10-26 11:28:32.998 16623 19206 I ReactNativeJS: 'planBottomSheet=', { 'refState.current.member_policies': undefined, height: NaN }
+10-26 11:28:33.021 16623 19206 W ReactNativeJS: source.uri should not be an empty string
+10-26 11:28:33.040 16623 19206 W ReactNativeJS: source.uri should not be an empty string
+10-26 11:28:33.079 16623 19206 W ReactNativeJS: source.uri should not be an empty string
+10-26 11:28:33.109 16623 19206 W ReactNativeJS: source.uri should not be an empty string
+10-26 11:28:33.126 16623 19206 W ReactNativeJS: source.uri should not be an empty string
+10-26 11:28:33.141 16623 19206 W ReactNativeJS: source.uri should not be an empty string
+10-26 11:28:33.154 16623 19206 W ReactNativeJS: source.uri should not be an empty string
+10-26 11:28:33.174 16623 19206 W ReactNativeJS: source.uri should not be an empty string
+10-26 11:28:33.188 16623 19206 W ReactNativeJS: source.uri should not be an empty string
+10-26 11:28:33.202 16623 19206 W ReactNativeJS: source.uri should not be an empty string
+10-26 11:28:33.299 16623 19206 I ReactNativeJS: [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/61d11541-6279-4728-acc3-79bc2c751049 {"success":true,"id":"61d11541-6279-4728-acc3-79bc2c751049","name":"User5459","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"},{"planId":"515f7973-9a61-4131-ad1d-de64c285311b","expirationDate":"2027-08-03T06:20:25.319Z"},{"planId":"5958ff09-268d-4264-8937-2995cd4a3d2f","expirationDate":"2027-08-04T06:34:17.357Z"},{"planId":"5958ff09-268d-4264-8937-2995cd4a3d2f","expirationDate":"2027-08-17T03:06:56.381Z"},{"planId":"bdc7a9ff-9edc-4a28-a6a8-248b11c1a1ce","expirationDate":"2027-09-01T03:42:47.865Z"},{"planId":"681d3b1a-d59a-4a84-aa2b-dafa64d3b7b6","expirationDate":"2027-09-03T07:35:48.709Z"}]}
+10-26 11:28:33.616 16623 19206 I ReactNativeJS: [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/member/policies {"success":true,"keys":["success","data"]}
+10-26 11:28:33.722 16623 19206 I ReactNativeJS: [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/provider/options {"success":true,"keys":["success","data"]}
+10-26 11:28:33.810 16623 19206 I ReactNativeJS: 'planBottomSheet=', { 'refState.current.member_policies': undefined, height: NaN }
+10-26 11:28:34.116 16623 19206 I ReactNativeJS: 'planBottomSheet=', { 'refState.current.member_policies': 
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:    [ { id: 'c8fa64ac-c5e9-4187-9d59-fe7cdd5b1a84',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        plan: 
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:         { id: '5958ff09-268d-4264-8937-2995cd4a3d2f',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:           name: 'Global Plan - Asia 1',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:           isProduct: true,
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:           providerCountries: [ 'philippines', 'indonesia' ],
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:           payorId: 'e0c0f524-38a0-487d-b2c7-6a457852f44c' },
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        policyNumber: 'HP-00001082',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        issueDate: '2026-08-04T06:34:17.357Z',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        effectiveDate: '2026-08-03T06:34:17.357Z',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        expirationDate: '2027-08-04T06:34:17.357Z',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        memberShipId: 'HP-85299635459-01',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        isActive: true },
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:      { id: 'ed188d0f-c639-4211-8909-87ad2e036c27',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        plan: 
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:         { id: '5958ff09-268d-4264-8937-2995cd4a3d2f',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:           name: 'Global Plan - Asia 1',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:           isProduct: true,
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:           providerCountries: [ 'philippines', 'indonesia' ],
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:           payorId: 'e0c0f524-38a0-487d-b2c7-6a457852f44c' },
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        policyNumber: 'HP-00001091',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        issueDate: '2026-08-17T03:06:56.381Z',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        effectiveDate: '2026-08-16T03:06:56.381Z',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        expirationDate: '2027-08-17T03:06:56.381Z',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        memberShipId: 'HP-85299635459-01',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        isActive: true },
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:      { id: 'b1ce1b79-00d0-4424-ab7f-ae1ac4670956',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        plan: 
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:         { id: 'bdc7a9ff-9edc-4a28-a6a8-248b11c1a1ce',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:           name: 'AIG Domestic Helper Super Care Plan',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:           isProduct: true,
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:           providerCountries: [ 'hong kong' ],
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:           payorId: '68b6b77e-7b0d-473c-b06f-faab319355d4' },
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        policyNumber: 'HP-00001100',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        issueDate: '2026-09-01T03:42:47.868Z',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        effectiveDate: '2026-08-31T03:42:47.865Z',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        expirationDate: '2027-09-01T03:42:47.865Z',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        memberShipId: 'HP-85299635459-01',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        isActive: true },
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:      { id: 'e939fddf-f791-4c92-bc44-af5910e08a40',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        plan: 
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:         { id: '681d3b1a-d59a-4a84-aa2b-dafa64d3b7b6',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:           name: 'Premium Plan 365',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:           isProduct: true,
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:           providerCountries: [ 'hong kong' ],
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:           payorId: '6808ec08-a272-4667-a548-2ac3a193f6c2' },
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        policyNumber: 'HP-00001104',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        issueDate: '2026-09-03T07:35:48.709Z',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        effectiveDate: '2026-09-02T07:35:48.708Z',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        expirationDate: '2027-09-03T07:35:48.709Z',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        memberShipId: 'HP-85299635459-01',
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:        isActive: true } ],
+10-26 11:28:34.116 16623 19206 I ReactNativeJS:   height: 192 }
+10-26 11:28:34.638 16623 19206 I ReactNativeJS: 'renderPlanRow=', { 'refState.current.member_policies': 
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:    [ { id: 'c8fa64ac-c5e9-4187-9d59-fe7cdd5b1a84',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        plan: 
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:         { id: '5958ff09-268d-4264-8937-2995cd4a3d2f',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:           name: 'Global Plan - Asia 1',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:           isProduct: true,
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:           providerCountries: [ 'philippines', 'indonesia' ],
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:           payorId: 'e0c0f524-38a0-487d-b2c7-6a457852f44c' },
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        policyNumber: 'HP-00001082',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        issueDate: '2026-08-04T06:34:17.357Z',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        effectiveDate: '2026-08-03T06:34:17.357Z',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        expirationDate: '2027-08-04T06:34:17.357Z',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        memberShipId: 'HP-85299635459-01',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        isActive: true },
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:      { id: 'ed188d0f-c639-4211-8909-87ad2e036c27',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        plan: 
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:         { id: '5958ff09-268d-4264-8937-2995cd4a3d2f',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:           name: 'Global Plan - Asia 1',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:           isProduct: true,
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:           providerCountries: [ 'philippines', 'indonesia' ],
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:           payorId: 'e0c0f524-38a0-487d-b2c7-6a457852f44c' },
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        policyNumber: 'HP-00001091',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        issueDate: '2026-08-17T03:06:56.381Z',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        effectiveDate: '2026-08-16T03:06:56.381Z',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        expirationDate: '2027-08-17T03:06:56.381Z',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        memberShipId: 'HP-85299635459-01',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        isActive: true },
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:      { id: 'b1ce1b79-00d0-4424-ab7f-ae1ac4670956',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        plan: 
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:         { id: 'bdc7a9ff-9edc-4a28-a6a8-248b11c1a1ce',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:           name: 'AIG Domestic Helper Super Care Plan',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:           isProduct: true,
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:           providerCountries: [ 'hong kong' ],
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:           payorId: '68b6b77e-7b0d-473c-b06f-faab319355d4' },
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        policyNumber: 'HP-00001100',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        issueDate: '2026-09-01T03:42:47.868Z',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        effectiveDate: '2026-08-31T03:42:47.865Z',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        expirationDate: '2027-09-01T03:42:47.865Z',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        memberShipId: 'HP-85299635459-01',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        isActive: true },
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:      { id: 'e939fddf-f791-4c92-bc44-af5910e08a40',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        plan: 
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:         { id: '681d3b1a-d59a-4a84-aa2b-dafa64d3b7b6',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:           name: 'Premium Plan 365',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:           isProduct: true,
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:           providerCountries: [ 'hong kong' ],
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:           payorId: '6808ec08-a272-4667-a548-2ac3a193f6c2' },
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        policyNumber: 'HP-00001104',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        issueDate: '2026-09-03T07:35:48.709Z',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        effectiveDate: '2026-09-02T07:35:48.708Z',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        expirationDate: '2027-09-03T07:35:48.709Z',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        memberShipId: 'HP-85299635459-01',
+10-26 11:28:34.638 16623 19206 I ReactNativeJS:        isActive: true } ] }
+
+---
+exit_code: 0
+elapsed_ms: 31137
+ended_at: 2026-10-26T03:28:36.430Z
+---
