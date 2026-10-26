@@ -1,0 +1,35 @@
+---
+pid: 29084
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "adb -s 4ae24c72 logcat -T \"$(date '+%m-%d %H:%M:%S.000')\" -v threadtime ReactNativeJS:V '*:S' | python3 -u -c 'import sys\npath=\"/tmp/heals-live/rn.log\"\nout=open(path,\"a\",buffering=1)\nfor line in sys.stdin:\n    sys.stdout.write(line)\n    sys.stdout.flush()\n    out.write(line)\n'"
+title: "Follow new React Native API logs"
+status: running  
+started_at: 2026-10-26T11:09:50.195Z
+running_for_ms: 220044   
+---
+--------- beginning of main
+10-26 19:09:53.895 29246 29598 I ReactNativeJS: [api] GET 400 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/fc77bd21-32ef-4d6f-955f-b1ab69f3fff2 {"success":false,"keys":["success","error"]}
+10-26 19:09:59.091 29246 29598 I ReactNativeJS: [api] GET 400 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/fc77bd21-32ef-4d6f-955f-b1ab69f3fff2 {"success":false,"keys":["success","error"]}
+10-26 19:10:04.284 29246 29598 I ReactNativeJS: [api] GET 400 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/fc77bd21-32ef-4d6f-955f-b1ab69f3fff2 {"success":false,"keys":["success","error"]}
+10-26 19:10:09.409 29246 29598 I ReactNativeJS: [api] GET 400 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/fc77bd21-32ef-4d6f-955f-b1ab69f3fff2 {"success":false,"keys":["success","error"]}
+10-26 19:10:14.593 29246 29598 I ReactNativeJS: [api] GET 400 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/fc77bd21-32ef-4d6f-955f-b1ab69f3fff2 {"success":false,"keys":["success","error"]}
+10-26 19:10:19.742 29246 29598 I ReactNativeJS: [api] GET 400 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/fc77bd21-32ef-4d6f-955f-b1ab69f3fff2 {"success":false,"keys":["success","error"]}
+10-26 19:10:24.932 29246 29598 I ReactNativeJS: [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/fc77bd21-32ef-4d6f-955f-b1ab69f3fff2 {"success":true,"keys":["success","data"]}
+10-26 19:10:24.937 29246 29598 I ReactNativeJS: 'finishHPPurchase res', { activationCodes: [ 'DojzKRCHhwU3crc1' ],
+10-26 19:10:24.937 29246 29598 I ReactNativeJS:   id: 'fc77bd21-32ef-4d6f-955f-b1ab69f3fff2',
+10-26 19:10:24.937 29246 29598 I ReactNativeJS:   productId: '77b08f92-13fd-4363-9f77-8a2b617a0f1b',
+10-26 19:10:24.937 29246 29598 I ReactNativeJS:   userId: 'eaa99a86-2852-4db9-9cfb-d2c6a6f6da96',
+10-26 19:10:24.937 29246 29598 I ReactNativeJS:   numberOfPasses: '1',
+10-26 19:10:24.937 29246 29598 I ReactNativeJS:   transactionId: 'db110187-9f12-414c-bd4f-4cda3a201fa0',
+10-26 19:10:24.937 29246 29598 I ReactNativeJS:   currencyCode: 'HKD',
+10-26 19:10:24.937 29246 29598 I ReactNativeJS:   totalPrice: '68.00',
+10-26 19:10:24.937 29246 29598 I ReactNativeJS:   isSettled: true,
+10-26 19:10:24.937 29246 29598 I ReactNativeJS:   createdAt: '2026-10-26T11:05:56.466Z',
+10-26 19:10:24.937 29246 29598 I ReactNativeJS:   updatedAt: '2026-10-26T11:10:21.811Z',
+10-26 19:10:24.937 29246 29598 I ReactNativeJS:   deletedAt: null }
+10-26 19:10:24.938 29246 29598 I ReactNativeJS: 'finishHPPurchase id', 'fc77bd21-32ef-4d6f-955f-b1ab69f3fff2'
+10-26 19:13:09.971 29246 29598 I ReactNativeJS: 'common-modal-bt.tsx props.tag=', 'HealsPlanScreen'
+10-26 19:13:10.108 29246 29598 I ReactNativeJS: 'theme-provider.tsx changeStatusBarTextColor statusBarTextColor=', 'light-content'
+10-26 19:13:10.108 29246 29598 I ReactNativeJS: 'theme-provider.tsx changeStatusBarBackgroundColor statusBarBackgroundColor=', 'rgba(0, 172, 134, 1)'
+10-26 19:13:10.694 29246 29598 I ReactNativeJS: [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request {"success":true,"count":7}
+10-26 19:13:10.705 29246 29598 E ReactNativeJS: 'Each child in a list should have a unique "key" prop.%s%s See https://react.dev/link/warning-keys for more information.', '\n\nCheck the render method of `CellRenderer`.', ''

@@ -1,0 +1,23 @@
+{
+  "name": "weave_find_model",
+  "description": "Finds a Weave AI model by name so it can be run directly with weave_run_model — no Weave tool needed. Use this when the user names a model (\"run nano banana 2 on this image\", \"make a video with veo 3\"). A model is not a Weave tool: for a published Weave workflow use weave_list_tools and weave_run_tool instead. Returns the model with an approximate cost and the contract to run it with — its inputs and tunable params, each with a type, whether it is required, and any allowed values — or a short list of candidates to choose between when the name matches more than one model.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "minLength": 3,
+        "description": "The model name as the user said it (\"nano banana 2\", \"veo 3\")."
+      }
+    },
+    "required": [
+      "query"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}
