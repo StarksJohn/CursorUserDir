@@ -1,0 +1,44 @@
+{
+  "name": "app_update_user_preferences",
+  "description": " Update GitKraken CLI user preferences for MCP apps. App-only; agents must not call this tool.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "git_commit_composer_app_collapsed": {
+        "description": "When true, future Git Commit Composer overview app loads start in the collapsed state.",
+        "type": "boolean"
+      },
+      "git_graph_app_collapsed": {
+        "description": "When true, future Git Graph overview app loads start in the collapsed state.",
+        "type": "boolean"
+      },
+      "git_status_app_collapsed": {
+        "description": "When true, future Git Status overview app loads start in the collapsed state.",
+        "type": "boolean"
+      },
+      "launchpad_issue_filters": {
+        "description": "Serialized issue filter selections for Launchpad.",
+        "type": "string"
+      },
+      "launchpad_pr_filters": {
+        "description": "Serialized pull request filter selections for Launchpad.",
+        "type": "string"
+      },
+      "launchpad_stale_threshold_days": {
+        "description": "Number of days of inactivity after which a Launchpad pull request is treated as stale and de-prioritized.",
+        "minimum": 0,
+        "type": "integer"
+      },
+      "launchpad_view": {
+        "description": "Selected Launchpad view: pull-requests, issues, or all.",
+        "enum": [
+          "pull-requests",
+          "issues",
+          "all"
+        ],
+        "type": "string"
+      }
+    },
+    "required": []
+  }
+}
