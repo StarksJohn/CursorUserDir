@@ -1,0 +1,15 @@
+---
+pid: 12068
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn/android"
+command: "python3 - << 'PY'\nimport struct, zipfile\ndata=zipfile.ZipFile(\"app/build/outputs/bundle/prodRelease/app-prod-release.aab\").read(\"base/manifest/AndroidManifest.xml\")\nsp_start=8\nsp_type, sp_header, sp_size=struct.unpack_from(\"<HHI\", data, sp_start)\nstring_count, style_count, flags, strings_start, styles_start=struct.unpack_from(\"<IIIII\", data, sp_start+8)\nutf8=bool(flags & (1<<8))\noffsets=list(struct.unpack_from(\"<\"+\"I\"*string_count, data, sp_start+28))\nbase=sp_start+strings_start\nstrings=[]\nfor off in offsets:\n    p=base+off\n    if utf8:\n        n=data[p]\n        p+=2 if n & 0x80 else 1\n        bl=data[p]\n        if bl & 0x80:\n            bl=((bl & 0x7f)<<8)|data[p+1]\n            p+=2\n        else:\n            p+=1\n        strings.append(data[p:p+bl].decode(\"utf-8\",\"replace\"))\n    else:\n        n=struct.unpack_from(\"<H\", data, p)[0]\n        p+=2\n        if n & 0x8000:\n            n=((n & 0x7fff)<<16)|struct.unpack_from(\"<H\", data, p)[0]\n            p+=2\n        raw=data[p:p+n*2]\n        strings.append(raw.decode(\"utf-16le\",\"replace\"))\nprint(\"utf8\", utf8, \"strings\", string_count)\npos=sp_start+sp_size\nTYPE_START=0x0102\nfound=[]\nwhile pos+8<=len(data):\n    ctype, cheader, csize=struct.unpack_from(\"<HHI\", data, pos)\n    if csize<8 or pos+csize>len(data):\n        break\n    if ctype==TYPE_START and cheader>=36:\n        attr_start=struct.unpack_from(\"<H\", data, pos+24)[0]\n        attr_size=struct.unpack_from(\"<H\", data, pos+26)[0]\n        attr_count=struct.unpack_from(\"<H\", data, pos+28)[0]\n        for i in range(attr_count):\n            a=pos+attr_start+i*attr_size\n            ns, name, raw=struct.unpack_from(\"<III\", data, a)\n            vsize, res0, vtype, vdata=struct.unpack_from(\"<HBBI\", data, a+12)\n            sname=strings[name] if name<len(strings) else str(name)\n            if sname in (\"versionCode\",\"versionName\",\"package\",\"name\"):\n                if vtype==0x03 and vdata<len(strings):\n                    shown=strings[vdata]\n                elif vtype in (0x10,0x11,0x12):\n                    shown=str(vdata)\n                else:\n                    shown=f\"type{vtype}:{vdata}\"\n                found.append((sname, shown))\n    pos+=csize\nprint(\"ATTRS\")\nfor item in found:\n    print(item[0], item[1])\nPY\n# no .dev application id\npython3 - << 'PY'\nimport zipfile\ndata=zipfile.ZipFile(\"app/build/outputs/bundle/prodRelease/app-prod-release.aab\").read(\"base/manifest/AndroidManifest.xml\")\nprint(\"has_dev_suffix\", b\"healspass.dev\" in data)\nPY\nstat -f \"%z\" app/build/outputs/bundle/prodRelease/app-prod-release.aab"
+title: "Decode AAB manifest version and package"
+status: failed   
+started_at: 2026-10-28T07:52:19.150Z
+running_for_ms: 59177    
+---
+
+---
+exit_code: unknown
+elapsed_ms: 59176
+ended_at: 2026-10-28T07:53:18.326Z
+---
