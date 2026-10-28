@@ -245,7 +245,7 @@ description: >-
 
 ## 最新待继续问题(不要修改这部分的子内容)
 - 你执行 `pnpm run prod:dev`
-<!-- - 给 `scripts/prod-dev.ts` 文件里每行都加上中文注释, 方便我学习这个项目 -->
+<!-- - 给 `` 文件里每行都加上中文注释, 方便我学习这个项目; 文件顶部也加上中文注释,内容包含这个文件在项目里是做什么的,用途是什么, 实际承担的职责是什么, 文件内容的加载顺序和执行顺序是什么 等; -->
 <!-- - 借鉴`/Users/stark/.codex/skills/csx-web-react/SKILL.md`,优化当前skill,让每次执行完当前项目相关的任务后,先判断是否需要在当前skill里或者相关文档里更新项目的最新状态和下一步需要做的任务列表,以及沉淀项目的事实,如果需要,再这么做;用于新chat里恢复上下文 -->
 <!-- - 精简优化`/Users/stark/Desktop/work/MyStartupProject1/项目主档案.md`和`/Users/stark/Desktop/work/MyStartupProject1/README.md`,项目主档案只沉淀项目里已经做过的所有需求的事实,而`README.md`只保留和具体需求无关的通用的项目配置和架构与部署事实 -->
 <!-- - 在prod环境里清除`stark19852020@gmail.com`这个账户,我需要重新测试这个账户 -->
