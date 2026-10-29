@@ -73,6 +73,37 @@
           "archivePath"
         ],
         "additionalProperties": false
+      },
+      "github": {
+        "description": "Import a GitHub repository the user can already read. Single call: no upload is involved, so omit upload. Cannot be combined with upload or repairFrom.",
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GitHub account or organization that owns the repository, such as figma."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Repository name on its own, without the owner prefix."
+          },
+          "ref": {
+            "description": "Branch, tag or commit SHA to import. Defaults to the repository default branch.",
+            "type": "string",
+            "minLength": 1
+          },
+          "createLayer": {
+            "description": "Required when importing into a Design file, which always creates a new code layer. Omit for a standalone Figma Code file.",
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "owner",
+          "name"
+        ],
+        "additionalProperties": false
       }
     },
     "required": [

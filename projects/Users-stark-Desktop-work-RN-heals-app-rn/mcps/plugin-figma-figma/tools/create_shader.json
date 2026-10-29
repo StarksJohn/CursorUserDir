@@ -1,0 +1,45 @@
+{
+  "name": "create_shader",
+  "description": "You MUST load the figma-shaders skill before calling this tool. If it is not installed, read skill://figma/figma-shaders/SKILL.md with resources/read or get_figma_skill. Use this for requests to build, create, upload, or publish a “Figma shader,” “shader effect,” “shader fill,” “custom effect,” “custom fill,” or “procedural shader.” Creates a new shader effect or fill in the authenticated user's account library and returns its id. Set kind to effect for a shader that transforms the layer beneath it, or fill for a shader that generates its own pixels. The resource starts as a working scaffold, so follow this call with the update tool to replace the scaffold's source with the shader the user asked for. planKey names the plan that will own the shader; take it from the plans list returned by whoami.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Display name for the new resource."
+      },
+      "description": {
+        "type": "string",
+        "minLength": 1,
+        "description": "One-line description of what the resource does."
+      },
+      "planKey": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^(team|organization)::\\d+$",
+        "description": "The team or organization key (e.g. \"team::1234567890\" or \"organization::1234567890\"). Use the `key` field verbatim from one of the user's plans. If the user has more than one plan, ask which one to use before calling."
+      },
+      "kind": {
+        "type": "string",
+        "enum": [
+          "effect",
+          "fill"
+        ],
+        "description": "The shader kind: effect transforms the layer beneath it; fill generates its own pixels."
+      }
+    },
+    "required": [
+      "name",
+      "description",
+      "planKey",
+      "kind"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

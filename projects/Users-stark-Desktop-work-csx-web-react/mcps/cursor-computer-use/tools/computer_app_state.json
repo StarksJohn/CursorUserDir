@@ -1,0 +1,47 @@
+{
+  "name": "computer_app_state",
+  "description": "Read the app's accessibility tree as text (no image): one element per line, \"[id] ROLE name=… value=… settable actions=…\", indented by depth; settable means computer_set_value can replace the value. The last line is the snapshot_id that element actions must quote. Call this when you need the tree (first observe, or a screenshot that omitted snapshot_id). Skip it when a screenshot reused a live snapshot_id. Call again when an action reports the snapshot stale. A line ending in \"(+N descendants omitted)\" was cut to fit: pass that element_id with the current snapshot_id to expand it, and the new ids join the same snapshot.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "target": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "type": "string",
+            "const": "app"
+          },
+          "pid": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "pid from computer_apps or computer_resolve_app."
+          },
+          "target_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "target_id from computer_apps or computer_resolve_app."
+          }
+        },
+        "required": [
+          "scope",
+          "pid",
+          "target_id"
+        ],
+        "description": "The app to act on."
+      },
+      "element_id": {
+        "type": "integer",
+        "minimum": 1,
+        "description": "An element id in brackets from computer_app_state."
+      },
+      "snapshot_id": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The snapshot_id from computer_app_state, or from a screenshot that reused a live handle. It stays valid across actions until you read a new tree, the window or app changes, or an edit opens a sheet or replaces the tree. Do not call computer_app_state after a screenshot that reused snapshot_id; read computer_app_state when a screenshot omitted the tree or an action reports the snapshot stale."
+      }
+    },
+    "required": [
+      "target"
+    ]
+  }
+}

@@ -20,9 +20,10 @@
           "design",
           "figjam",
           "slides",
+          "figspec",
           "figmake"
         ],
-        "description": "The type of Figma file to create. \"design\" creates a Figma design file. \"figjam\" creates a FigJam whiteboard file. \"slides\" creates a Figma Slides presentation file. \"figmake\" creates an empty Figma Make file and returns its make_node_id; follow it with send_code_to_figma to import a project or send_prompt to generate an app, when those tools are available."
+        "description": "The type of Figma file to create. \"design\" creates a Figma design file. \"figjam\" creates a FigJam whiteboard file. \"slides\" creates a Figma Slides presentation file. \"figspec\" creates a standalone Figma spec. \"figmake\" creates an empty Figma Make file and returns its make_node_id; follow it with send_code_to_figma to import a project or send_prompt to generate an app, when those tools are available."
       },
       "projectId": {
         "type": "string",

@@ -46,7 +46,7 @@
         "description": "The key of the Figma file to use. If the URL is provided, extract the file key from the URL. The given URL must be in the format https://figma.com/design/:fileKey/:fileName?node-id=:int1-:int2. The extracted fileKey would be `:fileKey`."
       },
       "nodeId": {
-        "description": "Existing node whose image fill should be replaced without resizing it. Omit to create a new frame.",
+        "description": "Existing node (eg: \"123:456\" or \"123-456\") whose image fill should be replaced without resizing it; nested instance IDs (\"I123:456;789:012\") are unsupported. Omit to create a new frame.",
         "type": "string",
         "pattern": "^\\d+[:-]\\d+$"
       }

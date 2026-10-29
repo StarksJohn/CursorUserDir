@@ -1,0 +1,91 @@
+{
+  "name": "subscribe_origin_pr",
+  "description": "Subscribe this conversation to future Origin pull request events. It always wakes when the PR merges or closes, or the merge queue evicts it. `events` picks which other kinds it delivers: merge conflicts (`conflicts`) and comments, reviews and other people's activity, Bugbot and Agentic Security Review included (`comments`). Every kind is on by default except conflicts. Not delivered: PR lifecycle events that echo this agent's OWN actions — creator-actored events on this agent's own working branch (its own pushes/synchronize; Origin agents act as their owner) — and metadata-only edits (title/body/base changes). A PR-scoped subscription (scope: pr) closes itself once the PR is merged or closed. After subscribing, state what you are waiting for and end your turn; the event arrives as a follow-up notification in this conversation.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "options": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "const": "pr"
+              },
+              "prUrl": {
+                "type": "string",
+                "description": "An Origin pull request URL (https://cursor.com/codebase/<owner>/<repo>/pull/<n>)."
+              }
+            },
+            "required": [
+              "scope",
+              "prUrl"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "const": "pr"
+              },
+              "repo": {
+                "type": "string"
+              },
+              "pullNumber": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "scope",
+              "repo",
+              "pullNumber"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "const": "repo"
+              },
+              "repo": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "scope",
+              "repo"
+            ]
+          }
+        ]
+      },
+      "expiresInSeconds": {
+        "type": "number"
+      },
+      "keepWatchingAfterClose": {
+        "type": "boolean",
+        "description": "Only for scope: pr. By default a PR subscription closes itself when the PR is merged or closed. Set true only when the user explicitly asked to keep watching this PR after it is merged or closed (e.g. for post-merge review comments). Ignored on other scopes."
+      },
+      "events": {
+        "type": "object",
+        "description": "Which events this subscription delivers. Omitted keys take their defaults, so pass only what you change.",
+        "properties": {
+          "conflicts": {
+            "type": "boolean",
+            "description": "The PR started or stopped conflicting with its base, plus one snapshot of a conflict that already exists. Default false. Set true only when the user asked you to babysit this PR, fix its merge conflicts, or keep it mergeable. To check whether the PR is mergeable right now, read it instead."
+          },
+          "comments": {
+            "enum": [
+              "all",
+              "humans",
+              "off"
+            ],
+            "description": "Comments, reviews (including Bugbot and Agentic Security Review), and other people's activity on the PR: reopening it, marking it draft or ready, requesting review, pushing to it. Default all. humans: skip apps and service accounts, such as Bugbot and Agentic Security Review."
+          }
+        }
+      }
+    },
+    "required": [
+      "options"
+    ]
+  }
+}

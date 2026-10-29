@@ -1,0 +1,65 @@
+{
+  "name": "generate_image",
+  "description": "Generate a raster image from a text prompt and place it directly in an editable Design, FigJam, or Slides file. If no editable file exists, call create_new_file first. Width and height guide the aspect ratio; the model chooses a supported output size, so the image pixel dimensions may differ from the requested values. Omit nodeId to create a new image-filled frame, or provide nodeId to replace an existing image fill without resizing it. Returns fileKey, nodeId, model, image metadata (including width, height, and image.url for downloading the full-resolution image), and curl instructions, plus an inline thumbnail preview. **This is a paid feature — each call consumes Figma AI credits against the destination file's plan (different models have different per-call costs).**",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "sessionId": {
+        "description": "After create_session succeeds, pass its exact returned UUID here on every file-tool call for this task, even when fileKey differs.",
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+      },
+      "prompt": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Text description of the image to generate."
+      },
+      "model": {
+        "default": "gemini-3.1-flash-lite-image",
+        "description": "Image model to use. One of: gemini-3.1-flash-lite-image, gpt-image-2.5-sunburst, gemini-3.1-flash-image. Defaults to gemini-3.1-flash-lite-image.",
+        "type": "string",
+        "enum": [
+          "gemini-3.1-flash-lite-image",
+          "gpt-image-2.5-sunburst",
+          "gemini-3.1-flash-image"
+        ]
+      },
+      "width": {
+        "default": 1024,
+        "description": "Requested width in pixels. Together with height, selects the closest supported aspect ratio; actual image width may differ. Default: 1024; max: 2048.",
+        "type": "integer",
+        "exclusiveMinimum": 0,
+        "maximum": 2048
+      },
+      "height": {
+        "default": 1024,
+        "description": "Requested height in pixels. Together with width, selects the closest supported aspect ratio; actual image height may differ. Default: 1024; max: 2048.",
+        "type": "integer",
+        "exclusiveMinimum": 0,
+        "maximum": 2048
+      },
+      "fileKey": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[0-9a-zA-Z]{22,128}$",
+        "description": "The key of the Figma file to use. If the URL is provided, extract the file key from the URL. The given URL must be in the format https://figma.com/design/:fileKey/:fileName?node-id=:int1-:int2. The extracted fileKey would be `:fileKey`."
+      },
+      "nodeId": {
+        "description": "Existing node (eg: \"123:456\" or \"123-456\") whose image fill should be replaced without resizing it; nested instance IDs (\"I123:456;789:012\") are unsupported. Omit to create a new frame.",
+        "type": "string",
+        "pattern": "^\\d+[:-]\\d+$"
+      }
+    },
+    "required": [
+      "prompt",
+      "fileKey"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

@@ -241,7 +241,8 @@ description: >-
   - 2026-09-23：讲完 `package.json` 的顶层字段、`engines`、全部 `scripts`、`dependencies` 与 `devDependencies`。`zustand` 只出现在依赖清单里，当前 `src` 没有引用。
   - 2026-09-23：`pnpm run prod:dev` 只直接执行 `scripts/prod-dev.ts`，再由它启动 `next dev`。`scripts/verify-env.ts` 不在这条链路里。`next.config.ts` 由 Next.js 启动时加载，不是 `prod-dev.ts` 点名执行的脚本。
   - 2026-09-29：讲完 `pnpm run prod:dev` 的启动流程。进程起来时会执行 `scripts/prod-dev.ts`，读取 `.env.production.local`，再启动 `next dev`；Next 接着加载 `next.config.ts` 和 `instrumentation.ts`，nodejs 运行时再加载 `sentry.server.config.ts`。`scripts/verify-env.ts`、页面、API 和 `src/lib/prisma.ts` 都不在这次启动执行里。`prisma.ts` 要等某个页面或 API 第一次引用它才运行。
-  - 2026-10-08：讲了第 1 章后半，当时不应把这一章标成已学完。`scripts/verify-env.ts` 不在 `prod:dev` 启动链路里；它按有没有 `--production` 选择 `.env.production.local` 或 `.env.local`。必填项缺失、是占位符，或在 production readiness 下格式不对，会失败退出。Creem、Stripe、AI、Sentry 这些可选项缺了只跳过。`next.config.ts` 管严格模式、图片格式、安全响应头，以及把 `www` 永久跳到裸域；只有配置了 Sentry DSN 才包一层 Sentry。`NEXT_PUBLIC_*` 在 `next build` 时写进浏览器包，改完要重新 `prod:build`。`prod:dev` 是开发服务器，改这类变量要重启这条命令后才会进浏览器。本轮已执行 `pnpm run prod:dev`，`http://localhost:3000` 返回 200；`APP_ENV=prod`，`NODE_ENV=development`。页面上的登录、保存、开通会写 prod 数据库。 
+  - 2026-10-08：讲了第 1 章后半，当时不应把这一章标成已学完。`scripts/verify-env.ts` 不在 `prod:dev` 启动链路里；它按有没有 `--production` 选择 `.env.production.local` 或 `.env.local`。必填项缺失、是占位符，或在 production readiness 下格式不对，会失败退出。Creem、Stripe、AI、Sentry 这些可选项缺了只跳过。`next.config.ts` 管严格模式、图片格式、安全响应头，以及把 `www` 永久跳到裸域；只有配置了 Sentry DSN 才包一层 Sentry。`NEXT_PUBLIC_*` 在 `next build` 时写进浏览器包，改完要重新 `prod:build`。`prod:dev` 是开发服务器，改这类变量要重启这条命令后才会进浏览器。本轮已执行 `pnpm run prod:dev`，`http://localhost:3000` 返回 200；`APP_ENV=prod`，`NODE_ENV=development`。页面上的登录、保存、开通会写 prod 数据库。
+  - 2026-10-29：把 `pnpm run prod:dev` 的启动顺序，以及启动时会加载或读取的文件，写进 `README.md` 的「`pnpm run prod:dev`: 本地启动 prod 环境的服务」。第 1 章仍未学完。 
 
 ## 最新待继续问题(不要修改这部分的子内容)
 - 你执行 `pnpm run prod:dev`

@@ -1,0 +1,74 @@
+{
+  "name": "update_generative_plugin",
+  "description": "You MUST load the figma-generative-plugins skill before calling this tool. If it is not installed, read skill://figma/figma-generative-plugins/SKILL.md with resources/read or get_figma_skill. Use this when the user asks to update, revise, or republish an existing Figma plugin, generative plugin, or custom tool in their account library. Updates an existing generative plugin in the authenticated user's account library. Provide the plugin id, existing authored files to replace, optional name and description metadata, and a required Git commit message describing the change. The update is built, versioned, and deployed; record the new version when the response includes it. Use create_generative_plugin first when no plugin exists.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The id of the existing resource to update."
+      },
+      "files": {
+        "default": [],
+        "description": "Existing entrypoint or UI files to replace. New files cannot be created and unspecified files are preserved.",
+        "maxItems": 5,
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "enum": [
+                "code.ts",
+                "ui.html"
+              ],
+              "description": "Path of an existing file relative to the authored resource directory, such as code.ts or ui.html."
+            },
+            "content": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Complete replacement content for the file."
+            }
+          },
+          "required": [
+            "path",
+            "content"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "metadata": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "New display name for the resource.",
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "description": "New one-line description for the resource.",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      },
+      "commitMessage": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Required Git commit message describing this update."
+      }
+    },
+    "required": [
+      "id",
+      "commitMessage"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}
