@@ -98,7 +98,7 @@ description: >-
 
 ## 当前活跃需求(不要修改这部分的子内容)
 <!-- - 借鉴`/Users/stark/.codex/skills/csx-web-react/SKILL.md`,优化当前skill,让每次执行完当前项目相关的任务后,先判断是否需要在当前skill里或者相关文档里更新项目的最新状态和下一步需要做的任务列表,以及沉淀项目的事实,如果需要,再这么做;用于新chat里恢复上下文 -->
-<!-- - /code-review :  对当前项目未 commit 的文件进行 code review , 目标 `1.2.3`, 直接解决发现的问题, 直到没有问题;再帮我用英文尽可能详细的总结下当前项目里所有未 commit 文件的 git commit message , 然后帮我 commit+push  -->
+<!-- - /code-review :  对当前项目未 commit 的文件进行 code review , 目标 `1.2.3`, 直接解决发现的问题, 直到没有问题;再帮我用英文(尽可能详细的)总结下当前项目里所有未 commit 文件的 git commit message,至少包含做了什么 , 然后帮我 commit+push  -->
 <!-- - /code-review 目标 `1.2.3`, PR ``, commit `` -->
 <!-- - 我已经把 `1.2.3` 分支合并到了当前分支,你检查下有没有问题,能否push -->
 <!-- - 我以后如果在 cursor 侧执行 当前项目的相关任务, 是不是只需要把通用和可重复的任务写到 当前 skill 的 `当前活跃需求`这部分里,然后在 cursor 的 新 chat 里一开始执行一次 `/ask-heals-app-rn`,然后等第一个任务执行完后,如果有新任务,则直接在 chat 里输入具体任务; 目前这是不是最完美最高效最正确的使用 cursor 工作流来执行某个项目任务的最优AI工作流? -->
