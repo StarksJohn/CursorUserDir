@@ -109,7 +109,7 @@ description: >-
 <!-- - 对 ``页面 使用 '/Users/stark/Desktop/work/RN/heals-app-rn/src/style/theme/theme-common.ts'里定义的 新主题色 'APP_THEME_COLOR'进行 UI改版, 其中页面的背景色改成 `APP_PAGE_BACKGROUND_COLOR`, 如果页面里使用了 FlatList 组件,则其的背景色改成 `APP_PAGE_BACKGROUND_COLOR`,如果页面里有使用了'#00AC86'或其它绿色的UI元素,比如某个`TouchableOpacity` 的背景色或者某个`Text`的字体颜色等都改成'APP_THEME_COLOR'; -->
 <!-- - 按 `https://ais-pre-hce4mtkty7p4aewqsgaizl-663605729382.us-west2.run.app/` 网页当前 DOM/可访问性节点和计算样式为事实源，读取`图x`红框里的尺寸、间距、圆角、阴影、图标容器、字号/颜色和点击区域等UI元素节点数据并把'图 x'红框处的UI布局到 ' '页面对应的位置,还要记得把这些节点值映射到项目现有的样式系统,不要只凭截图目测; 暂时只需要实现 UI 布局,不需要实现交互逻辑; -->
 <!-- - Reload 没有加载到最新 bundle，仍显示旧 JS -->
-<!-- - pls fix the 4 errors in your PR as soon as possible, in line with the development standards.  don't delay the project schedule, cause it has already been delayed by two days. -->
+<!-- - pls fix the 4 errors in your PR as soon as possible, in line with the development standards , ensure code quality .  don't delay the project schedule, cause it has already been delayed by two days. -->
 <!-- - /code-self-test 查看当前分支的所有代码, 只需找出一个 BUG 或 一个可优化的点 -->
 <!-- - adb 和 Metro 又断了, 无法debug调试浏览器 , 重新做 adb reverse tcp:8081 tcp:8081，重启 dev 包，并在 Chrome 里打开 Heals (Dev) (PJJ110) - React Native DevTools。Metro 需要确认 DevTools 是否连上这台设备。-->
 <!-- - 暂时让 '/Users/stark/Desktop/work/RN/heals-app-rn/src/screens/appointments-screen/appointments-screen.tsx'页面显示出来,但不需要让真机直接停在预约页 -->

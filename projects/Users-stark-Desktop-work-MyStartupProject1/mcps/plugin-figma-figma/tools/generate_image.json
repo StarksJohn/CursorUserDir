@@ -16,11 +16,12 @@
         "description": "Text description of the image to generate."
       },
       "model": {
-        "default": "gemini-3.1-flash-lite-image",
-        "description": "Image model to use. One of: gemini-3.1-flash-lite-image, gpt-image-2.5-sunburst, gemini-3.1-flash-image. Defaults to gemini-3.1-flash-lite-image.",
+        "default": "gpt-image-2.5-flare",
+        "description": "Image model to use. One of: gemini-3.1-flash-lite-image, gpt-image-2.5-flare, gpt-image-2.5-sunburst, gemini-3.1-flash-image. Defaults to gpt-image-2.5-flare.",
         "type": "string",
         "enum": [
           "gemini-3.1-flash-lite-image",
+          "gpt-image-2.5-flare",
           "gpt-image-2.5-sunburst",
           "gemini-3.1-flash-image"
         ]

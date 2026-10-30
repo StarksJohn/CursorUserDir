@@ -242,11 +242,14 @@ description: >-
   - 2026-09-23：`pnpm run prod:dev` 只直接执行 `scripts/prod-dev.ts`，再由它启动 `next dev`。`scripts/verify-env.ts` 不在这条链路里。`next.config.ts` 由 Next.js 启动时加载，不是 `prod-dev.ts` 点名执行的脚本。
   - 2026-09-29：讲完 `pnpm run prod:dev` 的启动流程。进程起来时会执行 `scripts/prod-dev.ts`，读取 `.env.production.local`，再启动 `next dev`；Next 接着加载 `next.config.ts` 和 `instrumentation.ts`，nodejs 运行时再加载 `sentry.server.config.ts`。`scripts/verify-env.ts`、页面、API 和 `src/lib/prisma.ts` 都不在这次启动执行里。`prisma.ts` 要等某个页面或 API 第一次引用它才运行。
   - 2026-10-08：讲了第 1 章后半，当时不应把这一章标成已学完。`scripts/verify-env.ts` 不在 `prod:dev` 启动链路里；它按有没有 `--production` 选择 `.env.production.local` 或 `.env.local`。必填项缺失、是占位符，或在 production readiness 下格式不对，会失败退出。Creem、Stripe、AI、Sentry 这些可选项缺了只跳过。`next.config.ts` 管严格模式、图片格式、安全响应头，以及把 `www` 永久跳到裸域；只有配置了 Sentry DSN 才包一层 Sentry。`NEXT_PUBLIC_*` 在 `next build` 时写进浏览器包，改完要重新 `prod:build`。`prod:dev` 是开发服务器，改这类变量要重启这条命令后才会进浏览器。本轮已执行 `pnpm run prod:dev`，`http://localhost:3000` 返回 200；`APP_ENV=prod`，`NODE_ENV=development`。页面上的登录、保存、开通会写 prod 数据库。
-  - 2026-10-29：把 `pnpm run prod:dev` 的启动顺序，以及启动时会加载或读取的文件，写进 `README.md` 的「`pnpm run prod:dev`: 本地启动 prod 环境的服务」。第 1 章仍未学完。 
+  - 2026-10-29：把 `pnpm run prod:dev` 的启动顺序，以及启动时会加载或读取的文件，写进 `README.md` 的「`pnpm run prod:dev`: 本地启动 prod 环境的服务」。第 1 章仍未学完。
+  - 2026-10-30：按第 0 步的顶层目录，把 `src/app`、`src/components`、`src/lib`、`prisma`、`e2e`、`scripts`、`content` 在项目里做什么、用途和实际职责写进 `README.md` 的「关键源码目录」。第 0 步不单独记为已学完的一章。第 1 章仍未学完。
+  - 2026-10-30：讲清 `prisma/schema.prisma` 只声明表、字段和关系。用户、会话、计划这些实际记录在 PostgreSQL 里，dev 和 prod 各一套库。`prisma/` 目录里没有数据文件。第 1 章仍未学完。
+  - 2026-10-30：给 `prisma/schema.prisma` 逐行加上中文注释。这个文件不在 `prod:dev` 启动时执行；`prisma generate` 生成客户端，`prisma db push` 用 `DIRECT_URL` 同步表结构，请求时第一次 import `@/lib/prisma` 才用生成好的客户端连 `DATABASE_URL`。`prisma validate` 已通过。第 1 章仍未学完。 
 
 ## 最新待继续问题(不要修改这部分的子内容)
 - 你执行 `pnpm run prod:dev`
-<!-- - 给 `` 文件里每行都加上中文注释, 方便我学习这个项目; 文件顶部也加上中文注释,内容包含这个文件在项目里是做什么的,用途是什么, 实际承担的职责是什么, 文件内容的加载顺序和执行顺序是什么 等; -->
+<!-- - 给 `/Users/stark/Desktop/work/MyStartupProject1/prisma/schema.prisma` 文件里每行都加上中文注释, 方便我学习这个项目; 文件顶部也加上中文注释,内容包含这个文件在项目里是做什么的,用途是什么, 实际承担的职责是什么, 文件内容的加载顺序和执行顺序是什么 等; -->
 <!-- - 借鉴`/Users/stark/.codex/skills/csx-web-react/SKILL.md`,优化当前skill,让每次执行完当前项目相关的任务后,先判断是否需要在当前skill里或者相关文档里更新项目的最新状态和下一步需要做的任务列表,以及沉淀项目的事实,如果需要,再这么做;用于新chat里恢复上下文 -->
 <!-- - 精简优化`/Users/stark/Desktop/work/MyStartupProject1/项目主档案.md`和`/Users/stark/Desktop/work/MyStartupProject1/README.md`,项目主档案只沉淀项目里已经做过的所有需求的事实,而`README.md`只保留和具体需求无关的通用的项目配置和架构与部署事实 -->
 <!-- - 在prod环境里清除`stark19852020@gmail.com`这个账户,我需要重新测试这个账户 -->

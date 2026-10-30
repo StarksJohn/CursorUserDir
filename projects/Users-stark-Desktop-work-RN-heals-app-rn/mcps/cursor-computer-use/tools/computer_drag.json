@@ -1,0 +1,108 @@
+{
+  "name": "computer_drag",
+  "description": "Press the mouse button at one coordinate, drag to another, and release. Coordinates are pixels in the fixed 1280×800 screenshot canvas, origin (0, 0) at the top-left. Locate both points in a fresh screenshot first. Returns a screenshot taken after the drag. With an app target the result is text only; observe again before the next action.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "target": {
+        "description": "Default: {\"scope\":\"app\",\"pid\":…,\"target_id\":…} from computer_apps or computer_resolve_app. That drives one macOS app without taking screen control or moving the real cursor (a cursor overlay is still shown), and needs no computer_start_control. Omit (or {\"scope\":\"screen\"}) only to escalate to full-display remote control.",
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "type": "string",
+                "const": "screen"
+              }
+            },
+            "required": [
+              "scope"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "type": "string",
+                "const": "app"
+              },
+              "pid": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "pid from computer_apps or computer_resolve_app."
+              },
+              "target_id": {
+                "type": "string",
+                "minLength": 1,
+                "description": "target_id from computer_apps or computer_resolve_app."
+              }
+            },
+            "required": [
+              "scope",
+              "pid",
+              "target_id"
+            ]
+          }
+        ]
+      },
+      "from": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1279
+          },
+          "y": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 799
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ],
+        "description": "Drag start point in latest-screenshot pixels."
+      },
+      "to": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1279
+          },
+          "y": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 799
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ],
+        "description": "Drag end point in latest-screenshot pixels."
+      },
+      "button": {
+        "type": "string",
+        "enum": [
+          "left",
+          "right",
+          "middle"
+        ],
+        "description": "Mouse button to hold. Defaults to left."
+      },
+      "coordinate_token": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Required with an app target: the coordinate_token from the latest computer_screenshot of this app. It stays valid until the next screenshot or until the window moves or resizes; screenshot again when an action reports it stale."
+      }
+    },
+    "required": [
+      "from",
+      "to"
+    ]
+  }
+}
