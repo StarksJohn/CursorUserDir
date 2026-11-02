@@ -1,0 +1,21 @@
+---
+pid: 13083
+cwd: "/Users/stark/.cursor/projects/Users-stark-Desktop-work-RN-heals-app-rn/terminals"
+command: "adb -s 4ae24c72 shell input tap 540 1050 && sleep 2.2 && adb -s 4ae24c72 exec-out screencap -p > /tmp/heals-detail.png && adb -s 4ae24c72 shell uiautomator dump /sdcard/uidump.xml >/dev/null && adb -s 4ae24c72 pull /sdcard/uidump.xml /tmp/heals-uidump.xml >/dev/null && python3 - <<'PY'\nimport re\nxml=open('/tmp/heals-uidump.xml',encoding='utf-8',errors='ignore').read()\nfor m in re.finditer(r'<node[^>]*>', xml):\n    tag=m.group(0)\n    text=re.search(r'text=\"([^\"]*)\"', tag)\n    bounds=re.search(r'bounds=\"\\[(\\d+),(\\d+)\\]\\[(\\d+),(\\d+)\\]\"', tag)\n    t=text.group(1) if text else ''\n    if not t or not bounds:\n        continue\n    y1=int(bounds.group(2))\n    if y1 < 900:\n        print(f\"{t[:90]} | [{bounds.group(1)},{bounds.group(2)}][{bounds.group(3)},{bounds.group(4)}]\")\nPY"
+title: "Open Dai Fu Lee appointment detail"
+status: succeeded
+started_at: 2026-11-02T09:37:47.227Z
+running_for_ms: 5909     
+---
+My appointment(s) | [109,150][971,211]
+Dr. Dai Fu Lee | [224,316][565,390]
+General Practitioner | [224,390][1008,445]
+Join video consultation | [303,470][777,613]
+Improve Information | [335,660][745,782]
+Please complete the patient's info after the reservation is successful to avoid affecting  | [164,828][1008,998]
+
+---
+exit_code: 0
+elapsed_ms: 5908
+ended_at: 2026-11-02T09:37:53.135Z
+---
