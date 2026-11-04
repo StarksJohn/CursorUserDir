@@ -1,0 +1,326 @@
+ONLY_REVERT 167
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1054,22): error TS2322: Type '{ title: string; id: number; }' is not assignable to type 'ModalList'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1054,61): error TS2322: Type '{ title: string; id: number; }' is not assignable to type 'ModalList'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1072,26): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1073,28): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1083,25): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1234,17): error TS7034: Variable 'benefit_items_default_currency_code' implicitly has type 'any' in some locations where its type cannot be determined.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1235,24): error TS7017: Element implicitly has an 'any' type because type 'typeof globalThis' has no index signature.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1301,42): error TS7005: Variable 'benefit_items_default_currency_code' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1302,24): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1302,30): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1302,37): error TS7006: Parameter 'array' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1493,25): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1494,32): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1495,24): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1496,21): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1497,25): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1498,31): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1499,23): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1548,34): error TS2339: Property 'clearSelectedItem' does not exist on type '{}'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1552,26): error TS2339: Property 'clearSelectedItem' does not exist on type '{}'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1556,28): error TS2339: Property 'clearSelectedItem' does not exist on type '{}'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1560,35): error TS2339: Property 'clearSelectedItem' does not exist on type '{}'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1736,11): error TS2322: Type '{ items: { title: string; id: string; category: string; group: any; code: any; term: string; selected: boolean; }[]; pageIndex?: number | undefined; totalCount?: number | undefined; totalPage?: number | undefined; needLoadMore?: boolean | undefined; }' is not assignable to type 'Data'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1818,11): error TS2322: Type '{ items: { title: string; id: string; category: string; group: any; code: any; term: string; selected: boolean; }[]; pageIndex?: number | undefined; totalCount?: number | undefined; totalPage?: number | undefined; needLoadMore?: boolean | undefined; }' is not assignable to type 'Data'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1921,66): error TS18048: 'a.code' is possibly 'undefined'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1921,66): error TS2362: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1921,75): error TS18048: 'b.code' is possibly 'undefined'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1921,75): error TS2363: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2053,38): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'number | undefined'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2054,21): error TS2769: No overload matches this call.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2313,17): error TS7031: Binding element 'prescriptionId' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2313,33): error TS7031: Binding element 'day' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2313,38): error TS7031: Binding element 'dosage' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2313,46): error TS7031: Binding element 'drugName' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2313,56): error TS7031: Binding element 'frequency' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2313,67): error TS7031: Binding element 'quantity' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2313,78): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2313,85): error TS7006: Parameter 'array' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2380,38): error TS2345: Argument of type '(prevState: StateProps) => { volume: { integerValue: number; }; cached_expenseItems: any[]; WhichPrescriptionList: number; appointmentId: string | undefined; type: number; GetLatestMedicalRecord: any; ... 78 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2431,44): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2432,29): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2470,19): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2708,10): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2708,16): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2708,23): error TS7006: Parameter 'array' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2835,57): error TS2345: Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2863,59): error TS2345: Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2915,178): error TS18047: 'global.curDoctorData' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2934,40): error TS18047: 'state.get_consultation_setting' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2952,63): error TS2339: Property 'label' does not exist on type 'never'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2968,40): error TS18047: 'state.get_consultation_setting' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2987,65): error TS2339: Property 'label' does not exist on type 'never'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3052,38): error TS18047: 'state.get_consultation_setting' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3071,61): error TS2339: Property 'label' does not exist on type 'never'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3087,38): error TS18047: 'state.get_consultation_setting' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3106,63): error TS2339: Property 'label' does not exist on type 'never'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3220,22): error TS2322: Type '{ children: Element; visible: true; onClose: () => void; modalOverlayStyle: any; }' is not assignable to type 'IntrinsicAttributes & props & RefAttributes<any>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3596,17): error TS7034: Variable 'diagnosisArray' implicitly has type 'any[]' in some locations where its type cannot be determined.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3605,17): error TS7034: Variable 'procedureArray' implicitly has type 'any[]' in some locations where its type cannot be determined.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3624,40): error TS7005: Variable 'diagnosisArray' implicitly has an 'any[]' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3625,48): error TS7005: Variable 'procedureArray' implicitly has an 'any[]' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3651,66): error TS7006: Parameter 'currentValue' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3651,80): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3651,87): error TS7006: Parameter 'arr' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3654,17): error TS18046: 'ref_SingleSelect.current' is of type 'unknown'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4329,17): error TS7034: Variable 'diagnosisArray' implicitly has type 'any[]' in some locations where its type cannot be determined.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4338,17): error TS7034: Variable 'procedureArray' implicitly has type 'any[]' in some locations where its type cannot be determined.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4357,40): error TS7005: Variable 'diagnosisArray' implicitly has an 'any[]' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4358,48): error TS7005: Variable 'procedureArray' implicitly has an 'any[]' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4384,66): error TS7006: Parameter 'currentValue' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4384,80): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4384,87): error TS7006: Parameter 'arr' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4387,17): error TS18046: 'ref_SingleSelect.current' is of type 'unknown'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4525,51): error TS2339: Property 'changeSelectedValue' does not exist on type '{}'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4533,34): error TS2345: Argument of type '(prevState: StateProps) => { showDrugListModal: false; medicineSelect: SelectedItem & DrugbookMasterSearchListItem; ... 82 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4573,36): error TS2345: Argument of type '(prevState: StateProps) => { volume: { integerValue: any; }; bar: { integerValue: any; }; cached_expenseItems: any[]; WhichPrescriptionList: number; appointmentId: string | undefined; ... 79 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4808,34): error TS2345: Argument of type '(prevState: StateProps) => { quantity: string; cached_expenseItems: any[]; WhichPrescriptionList: number; appointmentId: string | undefined; type: number; GetLatestMedicalRecord: any; ... 78 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4834,32): error TS2345: Argument of type '(prevState: StateProps) => { quantity: string; cached_expenseItems: any[]; WhichPrescriptionList: number; appointmentId: string | undefined; type: number; GetLatestMedicalRecord: any; ... 78 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5248,143): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5248,19): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5248,72): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5251,22): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5266,27): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5267,29): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5269,27): error TS18047: 'state.usage' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5270,29): error TS18047: 'state.usage' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5272,30): error TS18047: 'state.frequency' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5273,32): error TS18047: 'state.frequency' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5275,25): error TS18047: 'state.days' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5276,27): error TS18047: 'state.days' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5289,30): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5292,31): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5293,34): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5308,39): error TS2345: Argument of type '{ get_drugbook_masters_by_names: DrugbookMastersByNames | null; drugId: string; drugName: string; isMixture: boolean; dosage: string; dosageId: string; temp_usage: Dosage | null; ... 23 more ...; selected: boolean; }' is not assignable to parameter of type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5335,40): error TS2339: Property 'scrollToEnd' does not exist on type '{}'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5338,19): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5356,24): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5359,22): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5373,21): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5378,29): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5409,10): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5409,16): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5409,23): error TS7006: Parameter 'array' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5440,10): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5440,16): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5440,23): error TS7006: Parameter 'array' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5471,37): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5481,42): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5522,41): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5539,45): error TS2339: Property 'prescriptionId' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5655,39): error TS7006: Parameter 'item1' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5671,27): error TS18046: 'ref_SingleSelect.current' is of type 'unknown'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5679,36): error TS2345: Argument of type '(prevState: StateProps) => { showDrugListModal: false; medicineSelect: PrescriptionListItem; get_drugbook_masters_by_names: any; potion: number; ... 80 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5688,87): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5709,42): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5714,95): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5743,91): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5747,49): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5757,52): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5767,42): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5772,95): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5808,91): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5812,49): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5832,161): error TS2339: Property 'salePrice' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5840,19): error TS7031: Binding element 'drugName' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5840,29): error TS7031: Binding element 'dosage' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5840,37): error TS7031: Binding element 'frequency' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5840,48): error TS7031: Binding element 'day' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5840,53): error TS7031: Binding element 'quantity' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5840,63): error TS7031: Binding element 'activeIngredients' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5840,83): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5840,90): error TS7006: Parameter 'array' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5922,22): error TS2322: Type '{ children: Element; visible: true; onClose: () => void; modalOverlayStyle: any; }' is not assignable to type 'IntrinsicAttributes & props & RefAttributes<any>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5981,22): error TS2322: Type '{ children: Element; visible: true; onClose: () => void; modalOverlayStyle: any; }' is not assignable to type 'IntrinsicAttributes & props & RefAttributes<any>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5982,25): error TS2769: No overload matches this call.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5983,20): error TS2345: Argument of type '(prevState: StateProps) => { showBill_settlementModal: false; Consultation_fees: string | number; Consultation_feesForShow: string | number; Medical_expenses: string | number; ... 80 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6007,56): error TS7006: Parameter 'searchQuery' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6007,69): error TS7006: Parameter 'editing' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6024,51): error TS2345: Argument of type '(prevState: StateProps) => { Consultation_feesForShow: string | number; cached_expenseItems: any[]; WhichPrescriptionList: number; appointmentId: string | undefined; ... 80 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6055,56): error TS7006: Parameter 'searchQuery' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6055,69): error TS7006: Parameter 'editing' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6072,51): error TS2345: Argument of type '(prevState: StateProps) => { Medical_expensesForShow: string | number; cached_expenseItems: any[]; WhichPrescriptionList: number; appointmentId: string | undefined; ... 80 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6103,56): error TS7006: Parameter 'searchQuery' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6103,69): error TS7006: Parameter 'editing' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6120,51): error TS2345: Argument of type '(prevState: StateProps) => { Express_delivery_feeForShow: string | number; cached_expenseItems: any[]; WhichPrescriptionList: number; appointmentId: string | undefined; ... 80 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6154,60): error TS7006: Parameter 'searchQuery' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6154,73): error TS7006: Parameter 'editing' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6156,130): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'number | undefined'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6161,133): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'number | undefined'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6170,75): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'number | undefined'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6171,75): error TS2769: No overload matches this call.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6182,73): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'number | undefined'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6183,63): error TS2769: No overload matches this call.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6218,19): error TS7034: Variable '_cached_expenseItems' implicitly has type 'any[]' in some locations where its type cannot be determined.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6224,75): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'number | undefined'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6231,56): error TS7005: Variable '_cached_expenseItems' implicitly has an 'any[]' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6275,26): error TS2345: Argument of type '(prevState: StateProps) => { showBill_settlementModal: false; Consultation_fees: string | number; Consultation_feesForShow: string | number; Medical_expenses: string | number; ... 80 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6307,29): error TS2769: No overload matches this call.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6308,24): error TS2345: Argument of type '(prevState: StateProps) => { showBill_settlementModal: false; Consultation_fees: string | number; Consultation_feesForShow: string | number; Medical_expenses: string | number; ... 80 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6335,22): error TS2322: Type '{ children: Element; visible: true; onClose: () => void; modalOverlayStyle: any; }' is not assignable to type 'IntrinsicAttributes & props & RefAttributes<any>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6367,31): error TS2345: Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6876,39): error TS2345: Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6882,35): error TS2345: Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6906,19): error TS2769: No overload matches this call.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(985,7): error TS2322: Type '(props: pageProps, parentRef: any) => Element' is not assignable to type 'FC<pageProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(985,72): error TS7006: Parameter 'parentRef' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(989,10): error TS2339: Property 'pageData' does not exist on type '{}'.
+--- ONLY_HEAD 157
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1103,7): error TS2322: Type '(props: pageProps, parentRef: any) => Element' is not assignable to type 'FC<pageProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1103,72): error TS7006: Parameter 'parentRef' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1107,10): error TS2339: Property 'pageData' does not exist on type '{}'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1172,22): error TS2322: Type '{ title: string; id: number; }' is not assignable to type 'ModalList'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1172,61): error TS2322: Type '{ title: string; id: number; }' is not assignable to type 'ModalList'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1191,26): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1192,28): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1202,25): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1353,17): error TS7034: Variable 'benefit_items_default_currency_code' implicitly has type 'any' in some locations where its type cannot be determined.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1354,24): error TS7017: Element implicitly has an 'any' type because type 'typeof globalThis' has no index signature.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1420,42): error TS7005: Variable 'benefit_items_default_currency_code' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1421,24): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1421,30): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1421,37): error TS7006: Parameter 'array' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1612,25): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1613,23): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1614,32): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1615,24): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1616,21): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1617,25): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1618,31): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1619,23): error TS2554: Expected 1 arguments, but got 0.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1679,34): error TS2339: Property 'clearSelectedItem' does not exist on type '{}'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1683,26): error TS2339: Property 'clearSelectedItem' does not exist on type '{}'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1687,28): error TS2339: Property 'clearSelectedItem' does not exist on type '{}'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1691,26): error TS2339: Property 'clearSelectedItem' does not exist on type '{}'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1695,35): error TS2339: Property 'clearSelectedItem' does not exist on type '{}'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(1888,11): error TS2322: Type '{ items: { title: string; id: string; category: string; group: any; code: any; term: string; selected: boolean; }[]; pageIndex?: number | undefined; totalCount?: number | undefined; totalPage?: number | undefined; needLoadMore?: boolean | undefined; }' is not assignable to type 'Data'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2051,11): error TS2322: Type '{ items: { title: string; id: string; category: string; group: any; code: any; term: string; selected: boolean; }[]; pageIndex?: number | undefined; totalCount?: number | undefined; totalPage?: number | undefined; needLoadMore?: boolean | undefined; }' is not assignable to type 'Data'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2154,66): error TS18048: 'a.code' is possibly 'undefined'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2154,66): error TS2362: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2154,75): error TS18048: 'b.code' is possibly 'undefined'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2154,75): error TS2363: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2286,38): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'number | undefined'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2287,21): error TS2769: No overload matches this call.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2549,17): error TS7031: Binding element 'prescriptionId' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2549,33): error TS7031: Binding element 'day' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2549,38): error TS7031: Binding element 'dosage' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2549,46): error TS7031: Binding element 'drugName' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2549,56): error TS7031: Binding element 'frequency' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2549,67): error TS7031: Binding element 'quantity' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2549,78): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2549,85): error TS7006: Parameter 'array' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2616,38): error TS2345: Argument of type '(prevState: StateProps) => { volume: { integerValue: number; }; cached_expenseItems: any[]; WhichPrescriptionList: number; appointmentId: string | undefined; type: number; GetLatestMedicalRecord: LatestMedicalRecord | null; ... 79 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2667,44): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2668,29): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2706,19): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2944,10): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2944,16): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(2944,23): error TS7006: Parameter 'array' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3071,57): error TS2345: Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3099,59): error TS2345: Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3151,178): error TS18047: 'global.curDoctorData' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3171,40): error TS18047: 'state.get_consultation_setting' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3205,40): error TS18047: 'state.get_consultation_setting' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3290,38): error TS18047: 'state.get_consultation_setting' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3325,38): error TS18047: 'state.get_consultation_setting' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3466,22): error TS2322: Type '{ children: Element; visible: true; onClose: () => void; modalOverlayStyle: any; }' is not assignable to type 'IntrinsicAttributes & props & RefAttributes<any>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3906,66): error TS7006: Parameter 'currentValue' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3906,80): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3906,87): error TS7006: Parameter 'arr' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(3909,17): error TS18046: 'ref_SingleSelect.current' is of type 'unknown'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4770,66): error TS7006: Parameter 'currentValue' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4770,80): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4770,87): error TS7006: Parameter 'arr' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4773,17): error TS18046: 'ref_SingleSelect.current' is of type 'unknown'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4911,51): error TS2339: Property 'changeSelectedValue' does not exist on type '{}'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4919,34): error TS2345: Argument of type '(prevState: StateProps) => { showDrugListModal: false; medicineSelect: SelectedItem & DrugbookMasterSearchListItem; ... 83 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(4959,36): error TS2345: Argument of type '(prevState: StateProps) => { volume: { integerValue: any; }; bar: { integerValue: any; }; cached_expenseItems: any[]; WhichPrescriptionList: number; appointmentId: string | undefined; ... 80 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5194,34): error TS2345: Argument of type '(prevState: StateProps) => { quantity: string; cached_expenseItems: any[]; WhichPrescriptionList: number; appointmentId: string | undefined; type: number; GetLatestMedicalRecord: LatestMedicalRecord | null; ... 79 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5220,32): error TS2345: Argument of type '(prevState: StateProps) => { quantity: string; cached_expenseItems: any[]; WhichPrescriptionList: number; appointmentId: string | undefined; type: number; GetLatestMedicalRecord: LatestMedicalRecord | null; ... 79 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5634,143): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5634,19): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5634,72): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5637,22): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5652,27): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5653,29): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5655,27): error TS18047: 'state.usage' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5656,29): error TS18047: 'state.usage' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5658,30): error TS18047: 'state.frequency' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5659,32): error TS18047: 'state.frequency' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5661,25): error TS18047: 'state.days' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5662,27): error TS18047: 'state.days' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5675,30): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5678,31): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5679,34): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5694,39): error TS2345: Argument of type '{ get_drugbook_masters_by_names: DrugbookMastersByNames | null; drugId: string; drugName: string; isMixture: boolean; dosage: string; dosageId: string; temp_usage: Dosage | null; ... 23 more ...; selected: boolean; }' is not assignable to parameter of type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5721,40): error TS2339: Property 'scrollToEnd' does not exist on type '{}'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5724,19): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5742,24): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5745,22): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5759,21): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5764,29): error TS18047: 'state.get_drugbook_masters_by_names' is possibly 'null'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5795,10): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5795,16): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5795,23): error TS7006: Parameter 'array' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5826,10): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5826,16): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5826,23): error TS7006: Parameter 'array' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5857,37): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5867,42): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5908,41): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(5925,45): error TS2339: Property 'prescriptionId' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6041,39): error TS7006: Parameter 'item1' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6057,27): error TS18046: 'ref_SingleSelect.current' is of type 'unknown'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6065,36): error TS2345: Argument of type '(prevState: StateProps) => { showDrugListModal: false; medicineSelect: PrescriptionListItem; get_drugbook_masters_by_names: any; potion: number; ... 81 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6074,87): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6095,42): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6100,95): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6129,91): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6133,49): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6143,52): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6153,42): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6158,95): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6194,91): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6198,49): error TS2339: Property 'selected' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6218,161): error TS2339: Property 'salePrice' does not exist on type 'PrescriptionListItem'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6226,19): error TS7031: Binding element 'drugName' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6226,29): error TS7031: Binding element 'dosage' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6226,37): error TS7031: Binding element 'frequency' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6226,48): error TS7031: Binding element 'day' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6226,53): error TS7031: Binding element 'quantity' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6226,63): error TS7031: Binding element 'activeIngredients' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6226,83): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6226,90): error TS7006: Parameter 'array' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6308,22): error TS2322: Type '{ children: Element; visible: true; onClose: () => void; modalOverlayStyle: any; }' is not assignable to type 'IntrinsicAttributes & props & RefAttributes<any>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6367,22): error TS2322: Type '{ children: Element; visible: true; onClose: () => void; modalOverlayStyle: any; }' is not assignable to type 'IntrinsicAttributes & props & RefAttributes<any>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6368,25): error TS2769: No overload matches this call.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6369,20): error TS2345: Argument of type '(prevState: StateProps) => { showBill_settlementModal: false; Consultation_fees: string | number; Consultation_feesForShow: string | number; Medical_expenses: string | number; ... 81 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6393,56): error TS7006: Parameter 'searchQuery' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6393,69): error TS7006: Parameter 'editing' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6410,51): error TS2345: Argument of type '(prevState: StateProps) => { Consultation_feesForShow: string | number; cached_expenseItems: any[]; WhichPrescriptionList: number; appointmentId: string | undefined; ... 81 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6441,56): error TS7006: Parameter 'searchQuery' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6441,69): error TS7006: Parameter 'editing' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6458,51): error TS2345: Argument of type '(prevState: StateProps) => { Medical_expensesForShow: string | number; cached_expenseItems: any[]; WhichPrescriptionList: number; appointmentId: string | undefined; ... 81 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6489,56): error TS7006: Parameter 'searchQuery' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6489,69): error TS7006: Parameter 'editing' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6506,51): error TS2345: Argument of type '(prevState: StateProps) => { Express_delivery_feeForShow: string | number; cached_expenseItems: any[]; WhichPrescriptionList: number; appointmentId: string | undefined; ... 81 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6540,60): error TS7006: Parameter 'searchQuery' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6540,73): error TS7006: Parameter 'editing' implicitly has an 'any' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6542,130): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'number | undefined'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6547,133): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'number | undefined'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6556,75): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'number | undefined'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6557,75): error TS2769: No overload matches this call.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6568,73): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'number | undefined'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6569,63): error TS2769: No overload matches this call.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6604,19): error TS7034: Variable '_cached_expenseItems' implicitly has type 'any[]' in some locations where its type cannot be determined.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6610,75): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'number | undefined'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6617,56): error TS7005: Variable '_cached_expenseItems' implicitly has an 'any[]' type.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6661,26): error TS2345: Argument of type '(prevState: StateProps) => { showBill_settlementModal: false; Consultation_fees: string | number; Consultation_feesForShow: string | number; Medical_expenses: string | number; ... 81 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6693,29): error TS2769: No overload matches this call.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6694,24): error TS2345: Argument of type '(prevState: StateProps) => { showBill_settlementModal: false; Consultation_fees: string | number; Consultation_feesForShow: string | number; Medical_expenses: string | number; ... 81 more ...; consultationId: string | undefined; }' is not assignable to parameter of type 'SetStateAction<StateProps>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6721,22): error TS2322: Type '{ children: Element; visible: true; onClose: () => void; modalOverlayStyle: any; }' is not assignable to type 'IntrinsicAttributes & props & RefAttributes<any>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(6753,31): error TS2345: Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList, "AddAppointment">'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(7262,39): error TS2345: Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(7268,35): error TS2345: Argument of type 'StackNavigationProp<ParamListBase> | undefined' is not assignable to parameter of type 'StackNavigationProp<csxStackParamList>'.
+src/pages/CreateConsultationPage/CreateConsultationPage.tsx(7292,19): error TS2769: No overload matches this call.

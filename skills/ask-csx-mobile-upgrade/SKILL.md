@@ -128,10 +128,10 @@ description: >-
 
 ### 当前阶段
 
-- 分支 `1.1.9-stark-dev`，HEAD `24ac336b`。`global.env` 仍是 `poc`，本轮没有改它。New Architecture 与 Hermes 仍为开启，本轮没有改这三项。
-- 2026-10-08 已把 `1.1.9` / `poc` 的 debug 包装到授权真机 OPPO Reno11 Pro 5G（型号 `PJJ110`，序列号 `4ae24c72`，Android 16，时区 `Asia/Shanghai`）。安装包 `versionName=1.1.9`、`versionCode=1791442225`，前台是 `com.csx.mobile.app/.MainActivity`。运行日志里的 `global.env` 为 `poc`。允许通知后进入欢迎页，没有 LogBox 红屏。
-- 出包前按秒级时间戳把 `android/app/build.gradle` 的 `versionCode` 从 `24009` 改成 `1791442225`，这个改动留在工作树。`src/tools/common.ts` 的原有未提交改动未动。
-- 当前未完成范围仍以本文件未注释的「当前活跃需求」为准。本轮只做了未注释的 Android debug 安装，没有做已注释的发布任务。
+- 分支 `1.1.9-stark`，HEAD `30abefb3`。`global.env` 仍是 `poc`，本轮没有改它。New Architecture 与 Hermes 仍为开启，本轮没有改这三项。
+- 2026-11-04 授权真机上没有已安装的 `com.csx.mobile.app`，因此重跑了 debug Gradle（`npm run android -- --active-arch-only`，ABI `arm64-v8a`）。直连下载 Agora 依赖时 JVM TLS 握手被重置；确认 `127.0.0.1:7897` 在监听后，只用这一次命令的 IPv4 代理重试并安装成功。设备是 OPPO Reno11 Pro 5G（型号 `PJJ110`，序列号 `4ae24c72`，Android 16，时区 `Asia/Shanghai`）。已装包 `versionName=1.1.9`、`versionCode=24010`，`pkgFlags` 含 `DEBUGGABLE`，前台是 `com.csx.mobile.app/.MainActivity`。登录页已打开，没有 LogBox 红条；`ReactNativeJS:E` 与 `AndroidRuntime:E` 为空。运行脚本来自 Metro，当前 `global.ts` 的 `global.env` 为 `poc`。
+- `android/app/build.gradle` 的 `versionName` 已是 `1.1.9`，本轮没有改 `versionName` / `versionCode`。判断重编时，`android`、`package.json`、`yarn.lock`、`patches` 相对 HEAD 没有未提交改动。
+- 当前未完成范围仍以本文件未注释的「当前活跃需求」为准。本轮只做了未注释的 Android debug 安装。
 
 ### 外部阻塞与证据缺口
 
@@ -140,7 +140,7 @@ description: >-
 
 ### 最小下一步
 
-1. 用户只调用入口或只说“继续”时，只做「当前活跃需求」里第一条未注释任务，做完即停。Android debug 安装这一条已经在 `4ae24c72` 上完成。
+1. 用户只调用入口或只说“继续”时，只做「当前活跃需求」里第一条未注释任务，做完即停。这条 Android debug 安装已在 `4ae24c72` 上完成；若仍是本次 `1.1.9` / `24010` 的 debug 包且原生输入没有更新，下次走快路径。
 2. 已注释的 iOS / Release 任务保持不动；只有用户取消注释或点名后才做。
 
 ## 输出与边界
