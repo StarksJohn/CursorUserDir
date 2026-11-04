@@ -129,7 +129,7 @@ description: >-
 ### 当前阶段
 
 - 分支 `1.1.9-stark`，HEAD `4705196f`。`global.env` 仍是 `poc`，本轮没有改它。New Architecture 与 Hermes 仍为开启，本轮没有改这三项。
-- 2026-11-04 完成 poc `assembleRelease` 并上传蒲公英 `8f9c603763ea7f12e3c53fffb83692d3`。`versionName` 保持 `1.1.9`，`versionCode` 从 `24010` 改为秒级时间戳 `1793791520`，改动留在工作树。产物是 `app-arm64-v8a-release.apk`，包名 `com.csx.mobile.app`，v2 签名通过。后台最新一条是 CS Mobile Android / `com.csx.mobile.app` / v1.1.9，蒲公英 Build `386`，126.6 MB，2026-11-04 19:36。发布页显示的 Android Build 是 `1793791520`。未安装到设备，未提交，未上传 Google Play。
+- 2026-11-04 完成 poc `assembleRelease` 并上传蒲公英 `8f9c603763ea7f12e3c53fffb83692d3`。`versionName` 保持 `1.1.9`，`versionCode` 从 `24010` 改为秒级时间戳 `1793791520`，改动留在工作树。产物是 `app-arm64-v8a-release.apk`，包名 `com.csx.mobile.app`，v2 签名通过。后台最新一条是 CS Mobile Android / `com.csx.mobile.app` / v1.1.9，蒲公英 Build `386`，126.6 MB，2026-11-04 19:36。发布页显示的 Android Build 是 `1793791520`。随后已 `adb install -r` 到 `4ae24c72` 并启动，前台是欢迎页，`pkgFlags` 不含 `DEBUGGABLE`。未提交，未上传 Google Play。
 - 随后的 prod `assembleRelease` / `bundleRelease` 会读到同一组 `versionName` / `versionCode`。本轮没有执行这两项。
 - 当前未完成范围仍以本文件未注释的「当前活跃需求」为准。本轮只做了点名的 poc Release APK。
 
@@ -140,7 +140,7 @@ description: >-
 
 ### 最小下一步
 
-1. 用户只调用入口或只说“继续”时，只做「当前活跃需求」里第一条未注释任务，做完即停。点名的 poc Release APK 已上传蒲公英，未安装到设备。
+1. 用户只调用入口或只说“继续”时，只做「当前活跃需求」里第一条未注释任务，做完即停。点名的 poc Release APK 已上传蒲公英，并已安装启动到 `4ae24c72`。
 2. 已注释的 iOS / Release 任务保持不动；只有用户取消注释或点名后才做。
 
 ## 输出与边界
