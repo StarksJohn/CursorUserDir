@@ -116,12 +116,12 @@ export type TableRowTone = "success" | "danger" | "warning" | "info" | "neutral"
  */
 export type TableProps = {
     /** Column titles, left to right. Column count is fixed by this array. */
-    headers: ReactNode[];
+    headers?: ReactNode[];
     /**
      * Body rows. Each row is an array of cells in the same order as `headers`.
      * Shorter rows are padded with empty cells; extra cells are ignored.
      */
-    rows: ReactNode[][];
+    rows?: ReactNode[][];
     /** Optional alignment per column index (headers/rows). Defaults to left. */
     columnAlign?: Array<TableColumnAlign | undefined>;
     /**

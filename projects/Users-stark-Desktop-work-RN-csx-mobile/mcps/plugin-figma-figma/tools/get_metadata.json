@@ -12,9 +12,23 @@
       },
       "nodeId": {
         "description": "The ID of the node in the Figma document, eg. \"123:456\" or \"123-456\". This should be a valid node ID in the Figma document. Do not pass an empty string for node_id.",
-        "type": "string",
-        "minLength": 1,
-        "pattern": "^(?:\\d+[:-]\\d+|[IT]\\d+[:-]\\d+(?:;\\d+[:-]\\d+)*)$"
+        "anyOf": [
+          {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^\\d+[:-]\\d+$"
+          },
+          {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^I\\d+[:-]\\d+(?:;\\d+[:-]\\d+)*$"
+          },
+          {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^T\\d+[:-]\\d+(?:;\\d+[:-]\\d+){2}$"
+          }
+        ]
       },
       "fileKey": {
         "type": "string",

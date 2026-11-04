@@ -69,9 +69,9 @@ type ValueAxisProps = {
 };
 export type BarChartProps = ValueAxisProps & {
     /** Category labels along the independent axis. */
-    categories: string[];
+    categories?: string[];
     /** One or more data series. Values align by index with `categories`. */
-    series: ChartSeries[];
+    series?: ChartSeries[];
     height?: number;
     /** Stack series on top of each other instead of grouping side-by-side. */
     stacked?: boolean;
@@ -93,8 +93,8 @@ export type BarChartProps = ValueAxisProps & {
     style?: CSSProperties;
 };
 export type LineChartProps = ValueAxisProps & {
-    categories: string[];
-    series: ChartSeries[];
+    categories?: string[];
+    series?: ChartSeries[];
     height?: number;
     /** Fill the area under each line with a soft tint. */
     fill?: boolean;
@@ -109,7 +109,7 @@ export type LineChartProps = ValueAxisProps & {
     style?: CSSProperties;
 };
 export type PieChartProps = {
-    data: Array<ChartDataPoint & {
+    data?: Array<ChartDataPoint & {
         tone?: ChartTone;
     }>;
     /** Diameter in px. Defaults to 200. */

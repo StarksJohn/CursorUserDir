@@ -61,7 +61,7 @@ export type DiffLineData = {
     lineNumber?: number;
 };
 export type DiffViewProps = {
-    lines: DiffLineData[];
+    lines?: DiffLineData[];
     /**
      * File path used to infer the syntax-highlighting language from the
      * extension (e.g. `"src/utils.ts"` → `typescript`). The most ergonomic

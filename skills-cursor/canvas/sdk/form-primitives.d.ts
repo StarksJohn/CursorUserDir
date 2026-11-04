@@ -124,7 +124,7 @@ export type SelectProps = {
     /** Called with the new selected value. */
     onChange?: (value: string) => void;
     /** List of options. Each must have a unique `value`. */
-    options: SelectOption[];
+    options?: SelectOption[];
     /** Placeholder shown when no value is selected. */
     placeholder?: string;
     disabled?: boolean;

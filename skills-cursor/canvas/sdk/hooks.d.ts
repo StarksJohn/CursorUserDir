@@ -20,23 +20,8 @@ export interface CanvasHostTheme extends CanvasTokens {
         readonly sequence: readonly string[];
     };
 }
-/**
- * Raw theme payload read from the host `theme` channel. Every field is typed
- * `unknown` on purpose: the value crosses an untrusted JSON/SSE boundary
- * (`window.__cursorCanvas.state`), so it is validated per-field at read time
- * rather than trusted from the wire. Mirrors `CanvasHostThemeState` from
- * `@anysphere/constants` (the producer side); kept local so this bundled SDK
- * stays dependency-free.
- */
-interface RawHostThemeState {
-    readonly kind?: unknown;
-    readonly brand?: unknown;
-    readonly primary?: unknown;
-    readonly editorBackground?: unknown;
-    readonly editorForeground?: unknown;
-}
 /** Exported for unit tests only; not part of the SDK surface (see index.ts). */
-export declare function resolveTheme(raw: RawHostThemeState | undefined): CanvasHostTheme;
+export declare function resolveTheme(raw: unknown): CanvasHostTheme;
 /**
  * Returns the current host theme. When no host state is available (first
  * paint, or a dead state bridge) it falls back to the page's

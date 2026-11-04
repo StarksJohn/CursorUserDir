@@ -200,21 +200,21 @@ description: >-
   - android:
     - 执行 `npm run android`，把当前项目 `1.1.8` 版本、`global.env=poc` 的 debug APK 装到已授权的如图![img_144658.png](img_144658.png)![img_144703.png](img_144703.png)真机上。本仓库没有 `npm run android:dev`。用 `adb devices -l` 锁定设备，时区是东八区。遇到 LogBox 红条报错直接修，黄条警告不作为停止条件。用 adb 截取当前画面，确认真机上的应用能打开且环境正确后再停；否则不要自动结束任务。
     
-    <!-- - 为当前 checkout 构建 `poc` 环境的 `xxx` 版本 Release APK。使用前把 `xxx` 换成 `1.1.8`，作为真实的 `versionName`，或在本轮消息里明确写出 version。本任务授权构建，并把签过名的 Release APK 上传到蒲公英应用 `https://www.pgyer.com/manager/dashboard/app/8f9c603763ea7f12e3c53fffb83692d3`，使该应用显示本次包为最新。不授权自动安装到真机、提交 Git、push、上传 Google Play，或上传到 CircleApp 的 `cdvhealth` / `cdvhealthdev` 及其 agKey。
-      1. 确认项目根、分支、HEAD 和工作树，保留未提交改动。读取 `package.json`、`android/app/build.gradle` 的 `applicationId` / `versionName` / `versionCode` / signingConfigs，以及 `global.ts`。
-      2. 没有 productFlavor。目标是 `assembleRelease`，包名必须是 `com.csx.mobile.app`。构建前把 `global.env` 设为 `poc`。不得执行 `bundleRelease`，不得使用 `com.circleapp.cdv` 或 iOS Bundle ID。
-      3. `versionName` 默认 `1.1.8`。不要用 `package.json` 的 `1.0.0`，也不要依赖 `YT_MOBILE_VERSION`，它目前没有写回 `versionName`。`versionCode` 改为大于文件中当前值、且小于 `2100000000` 的正整数；用户未指定时用当前值 + 1。不要照搬 CircleApp 的秒级时间戳，除非用户本轮要求。
-      4. 只改本次需要的 `versionName` / `versionCode`。不要改 `applicationId`、签名或 iOS。不要把 `gradle.properties` 里的签名密码或蒲公英 key 写入回复、Skill 或 README。
-      5. 确认 JDK、`ANDROID_HOME` 和 `android/gradlew` 可用。同一 `android/` 目录只保留一个 Gradle。
-      6. 推荐命令：`cd android && ./gradlew assembleRelease`。不要 `gradlew clean`，除非本次构建因缓存损坏失败且已说明原因。不要用 `npm run android`（那是 debug 真机安装）。
-      7. 产物预期在 `android/app/build/outputs/apk/release/app-arm64-v8a-release.apk`（ABI split 只含 `arm64-v8a`）。核验包名 `com.csx.mobile.app`、`versionName`、`versionCode`、`apksigner verify --verbose --print-certs`（至少含 v2）、绝对路径、字节数和 SHA-256。不符不得上传。
-      8. 上传前在已登录页面确认该蒲公英应用的包名是 `com.csx.mobile.app`。Chrome 上传不能直接读 `android/app/build/` 时，把已校验 APK 复制到系统临时目录，再核一次包名和版本后上传，结束后删除副本。刷新后台，最新一条的应用名、包名、Version 必须对得上本次 APK。最新包不是本次 APK 才算失败。处理中时等待，不重复上传同一文件。
-      9. 默认不安装到设备，最终回复写明“未安装到设备”。只有用户本轮另外要求安装时，才 `adb install -r` 并启动 `com.csx.mobile.app/.MainActivity`。
-      10. 报告包名、改前/改后 versionName / versionCode、`global.env=poc`、APK 路径 / 大小 / SHA-256、签名和蒲公英核对结果。不提交、不 push。 -->
+    <!-- - 为当前 checkout 构建 `poc` 环境的 `xxx` 版本 Release 模式 APK。使用前把 `xxx` 换成 `1.1.8`，作为真实的 `versionName`，或在本轮消息里明确写出 version。本任务明确授权构建，并把签过名的 Release APK 上传到蒲公英应用 `https://www.pgyer.com/manager/dashboard/app/8f9c603763ea7f12e3c53fffb83692d3`，使该应用显示本次包为最新。不授权自动安装到真机、提交 Git、push、上传 Google Play，或上传到 CircleApp 的 `cdvhealth` / `cdvhealthdev` 及其 agKey。
+      1. 先确认项目根、当前分支、HEAD 和工作树；保留已有未提交改动，不执行 clean/reset，不覆盖无关文件。读取 `package.json` 脚本、`android/app/build.gradle` 的 `applicationId` / `versionName` / `versionCode` / signingConfigs / `splits.abi`、`android/gradle.properties` 的 `newArchEnabled` / `hermesEnabled`，以及 `global.ts` 的 `global.env`。本仓库没有 productFlavor，也没有 `applicationIdSuffix`。以源码和真实构建结果为准。
+      2. 目标 `versionName` 优先使用用户本轮明确指定的 version；否则使用本条标题里已替换的 `xxx`；若标题仍是占位符 `xxx` 且本轮未指定，读取当前 `defaultConfig.versionName` 并保持不变。不要用 `package.json` 的 `1.0.0`。`android/app/build.gradle` 虽然读取 `YT_MOBILE_VERSION`，但当前没有写回 `versionName`，不得把 `1.0.0` 或该环境变量当成对外版本。目标是无 flavor 的 `release` buildType（`assembleRelease`），最终包名必须为 `com.csx.mobile.app`。构建前把 `global.ts` 的 `global.env` 设为 `poc`（用户口头的 dev）。不得执行 `bundleRelease`、任何带 flavor 的任务或 `debug` 构建，不得使用 CircleApp / Heals 包名 `com.circleapp.cdv` / `com.healshealthcare.healspass`，也不得把 iOS Bundle ID `asia.cs.mobile` 当作本 APK 包名。
+      3. 目标 `versionCode` 在构建前改成当前秒级 Unix 时间戳（`date +%s`），禁止毫秒，且必须为正整数并小于 `2100000000`。同一秒重复出包时用该时间戳 + 1，并保证大于文件中的当前 `versionCode`。用户本轮明确指定了其它 `versionCode` 时用指定值。不再使用 `versionCode + 1`，也不使用“`versionName` 不变就保持 `versionCode`”。
+      4. 只更新本次 poc Release 需要的 `versionName` / `versionCode`，以及 `global.ts` 的 `global.env`。这两处版本号写在唯一的 `defaultConfig`。只改这两处版本字段，并在结果中说明随后的 prod `assembleRelease` / `bundleRelease` 会读到同一组值，但本任务不得执行这两项，也不得改 iOS、`applicationId`、`newArchEnabled`、`hermesEnabled` 或 signing。不要把 keystore 路径以外的签名秘密（密码、alias、密钥内容）或蒲公英 key 写入回复、Skill 或 README。
+      5. 构建前确认本机 JDK、Android SDK / `ANDROID_HOME`、Gradle wrapper 可用；macOS 使用 `./gradlew`，Windows 使用 `gradlew.bat`。确认 `newArchEnabled=true` 与 `hermesEnabled=true` 仍在。检查是否已有其它 Gradle 正在使用同一 `android/` 目录或 `build` 输出；只保留一个本次构建。
+      6. 环境只来自 `global.ts` 的 `global.env=poc`。不要改写或覆盖根目录 `.env`，不要把其它项目的 env 文件 copy 进来，不要追加 `ENVFILE` 或 `SENTRY_DISABLE_AUTO_UPLOAD`，也不要设置 `YT_MOBILE_VERSION`。推荐命令骨架：`cd android && ./gradlew assembleRelease`。不要用 `npm run android`（那是 debug 真机安装），也不要用 `npm run android-release`（它会把 `package.json` 的 `1.0.0` 传入 `YT_MOBILE_VERSION`）。不要 `gradlew clean`，除非本次构建因缓存损坏失败且已说明原因。
+      7. 构建成功后独立核验本次 Gradle 产出的 `android/app/build/outputs/apk/release/app-arm64-v8a-release.apk`（`splits.abi` 只含 `arm64-v8a`，`universalApk false`）。包名必须为 `com.csx.mobile.app`，`versionName` 与 `versionCode` 必须等于本次写入值，签名用 `apksigner verify --verbose --print-certs` 或等价命令且至少含 APK Signature Scheme v2，并记录文件绝对路径、字节数和 SHA-256。包名相同不能区分 poc / prod；必须同时确认构建开始前 `global.env` 已是 `poc`，且该 APK 新于本次构建开始。任一值不符，或只找到 debug、universal 或旧 APK 时，不得把旧 APK 当作本次产物，也不得上传。
+      8. 仅在第 7 步通过后上传。上传前在已登录页面确认该蒲公英应用的包名是 `com.csx.mobile.app`。Chrome 不能直接读 `android/app/build/` 时，把已校验 APK 复制到系统临时目录，再核一次包名和版本后上传，结束后删除副本。刷新后台，最新一条的应用名、包名、Version 必须对得上本次 APK。最新包不是本次 APK 才算失败。处理中时等待，不重复上传同一文件。禁止传到 `cdvhealth` / `cdvhealthdev` 及其 agKey。
+      9. 本任务默认不自动安装到任何 Android 设备。最终回复必须明确写“未安装到设备”。只有用户在本轮消息里另外明确要求安装时，才用 `adb devices -l` 确认已授权真机后执行 `adb install -r <apk>`，启动 `com.csx.mobile.app/.MainActivity`，并报告设备序列号、安装和启动结果。
+      10. 最终报告目标包名、改前/改后 versionName / versionCode（标明默认未变还是实际采用）、Gradle 任务 `assembleRelease`、`global.env=poc`、APK 路径 / 大小 / SHA-256、签名校验、versionCode 取秒级 Unix 时间戳、蒲公英核对结果，以及未覆盖范围（默认未安装、未上传 Google Play、未提交）。除非用户明确要求，不安装、不提交、不 push。`global.env` 与版本号改动留在工作树。完成产物和验证后，仅把新增或变化的通用工程 / 环境 / 发布事实更新到项目 `README.md`，不写单次状态流水或秘密。 -->
     
     <!-- - 为当前 checkout 构建 `prod` 环境的 `xxx` 版本 Release APK。使用前把 `xxx` 换成 `1.1.8`，作为真实的 `versionName`。包名仍是 `com.csx.mobile.app`，没有 `.dev` 后缀。本任务授权构建并上传到同一个蒲公英应用 `https://www.pgyer.com/manager/dashboard/app/8f9c603763ea7f12e3c53fffb83692d3`。不授权安装、提交 Git、push、上传 Google Play 或 CircleApp 蒲公英。
       1. 步骤与 poc Release APK 相同，但构建前 `global.env` 必须是 `prod`。
-      2. `versionName` 默认 `1.1.8`，`versionCode` 仍按当前值 + 1，除非用户指定。
+      2. `versionName` 与 `versionCode` 规则与 poc Release APK 相同：`versionName` 默认 `1.1.8`，`versionCode` 取当前秒级 Unix 时间戳，不再使用当前值 + 1；用户本轮明确指定了其它 `versionCode` 时用指定值。
       3. 只改 `versionName` / `versionCode` 和 `global.env`。不要改包名或签名。
       4. 命令仍是 `cd android && ./gradlew assembleRelease`。产物路径、包名校验、签名校验与 poc 任务相同。
       5. 上传目标仍是上述蒲公英应用。更新说明里写明本次是 `prod`。禁止传到 `cdvhealth` / `cdvhealthdev`。

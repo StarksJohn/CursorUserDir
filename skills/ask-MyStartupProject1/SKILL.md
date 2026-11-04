@@ -245,11 +245,17 @@ description: >-
   - 2026-10-29：把 `pnpm run prod:dev` 的启动顺序，以及启动时会加载或读取的文件，写进 `README.md` 的「`pnpm run prod:dev`: 本地启动 prod 环境的服务」。第 1 章仍未学完。
   - 2026-10-30：按第 0 步的顶层目录，把 `src/app`、`src/components`、`src/lib`、`prisma`、`e2e`、`scripts`、`content` 在项目里做什么、用途和实际职责写进 `README.md` 的「关键源码目录」。第 0 步不单独记为已学完的一章。第 1 章仍未学完。
   - 2026-10-30：讲清 `prisma/schema.prisma` 只声明表、字段和关系。用户、会话、计划这些实际记录在 PostgreSQL 里，dev 和 prod 各一套库。`prisma/` 目录里没有数据文件。第 1 章仍未学完。
-  - 2026-10-30：给 `prisma/schema.prisma` 逐行加上中文注释。这个文件不在 `prod:dev` 启动时执行；`prisma generate` 生成客户端，`prisma db push` 用 `DIRECT_URL` 同步表结构，请求时第一次 import `@/lib/prisma` 才用生成好的客户端连 `DATABASE_URL`。`prisma validate` 已通过。第 1 章仍未学完。 
+  - 2026-10-30：给 `prisma/schema.prisma` 逐行加上中文注释。这个文件不在 `prod:dev` 启动时执行；`prisma generate` 生成客户端，`prisma db push` 用 `DIRECT_URL` 同步表结构，请求时第一次 import `@/lib/prisma` 才用生成好的客户端连 `DATABASE_URL`。`prisma validate` 已通过。第 1 章仍未学完。
+  - 2026-11-03：讲清 prod 业务数据在 Supabase PostgreSQL 的多张表里，不在仓库里的表文件中。`schema.prisma` 的每个 `model` 对应一张表，`@@map` 是真实表名。第 1 章仍未学完。
+  - 2026-11-03：在 `README.md` 的「数据库」写明 Postgres 是 Supabase 托管的数据库软件，负责保存登录、档案、计划和合计统计。dev 与 prod 各一套库。第 1 章仍未学完。
+  - 2026-11-03：把 PostgreSQL 和 Supabase 分开写进 `README.md`。PostgreSQL 保存表和记录；Supabase 托管这两套库并提供 `DATABASE_URL` 与 `DIRECT_URL`。项目不用 Supabase 登录客户端。第 1 章仍未学完。
+  - 2026-11-03：在 `README.md` 写明 Prisma 是 Node 侧按 `schema.prisma` 生成的数据库客户端。`generate` 不改库，`db push` 用 `DIRECT_URL` 同步表结构，查询从 `src/lib/prisma.ts` 发出。第 1 章仍未学完。
+  - 2026-11-03：讲清项目数据库是 Supabase 上的 PostgreSQL，由 Prisma 6 访问，并启用 pgvector。dev 与 prod 是两套隔离库。仓库没有写死 Postgres 主版本号。第 1 章仍未学完。 
 
 ## 最新待继续问题(不要修改这部分的子内容)
 - 你执行 `pnpm run prod:dev`
 <!-- - 给 `/Users/stark/Desktop/work/MyStartupProject1/prisma/schema.prisma` 文件里每行都加上中文注释, 方便我学习这个项目; 文件顶部也加上中文注释,内容包含这个文件在项目里是做什么的,用途是什么, 实际承担的职责是什么, 文件内容的加载顺序和执行顺序是什么 等; -->
+- 我的技术栈是`IOS,Android,react native, React, VUE`,没有后端开发经验, 在 `/Users/stark/Desktop/work/MyStartupProject1/README.md` 里说明下项目使用的 ` `  是什么东西, 在项目里是做什么的,用途是什么, 实际承担的职责是什么等 ;
 <!-- - 借鉴`/Users/stark/.codex/skills/csx-web-react/SKILL.md`,优化当前skill,让每次执行完当前项目相关的任务后,先判断是否需要在当前skill里或者相关文档里更新项目的最新状态和下一步需要做的任务列表,以及沉淀项目的事实,如果需要,再这么做;用于新chat里恢复上下文 -->
 <!-- - 精简优化`/Users/stark/Desktop/work/MyStartupProject1/项目主档案.md`和`/Users/stark/Desktop/work/MyStartupProject1/README.md`,项目主档案只沉淀项目里已经做过的所有需求的事实,而`README.md`只保留和具体需求无关的通用的项目配置和架构与部署事实 -->
 <!-- - 在prod环境里清除`stark19852020@gmail.com`这个账户,我需要重新测试这个账户 -->

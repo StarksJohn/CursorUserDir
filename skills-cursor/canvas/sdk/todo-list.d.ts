@@ -6,7 +6,7 @@ export interface TodoItem {
     readonly status: TodoStatus;
 }
 export type TodoListProps = {
-    todos: readonly TodoItem[];
+    todos?: readonly TodoItem[];
     dimmedTodoIds?: ReadonlySet<string>;
     /** Called when a todo row is clicked (entire row is a button). */
     onTodoClick?: (todo: TodoItem) => void;
@@ -26,7 +26,7 @@ export type TodoListProps = {
  */
 export declare function TodoList({ todos, dimmedTodoIds, onTodoClick, style, }: TodoListProps): JSX.Element | null;
 export type TodoListCardProps = {
-    todos: readonly TodoItem[];
+    todos?: readonly TodoItem[];
     dimmedTodoIds?: ReadonlySet<string>;
     defaultExpanded?: boolean;
     onTodoClick?: (todo: TodoItem) => void;

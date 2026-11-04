@@ -1,0 +1,74 @@
+{
+  "name": "computer_type",
+  "description": "Type into a macOS app. Prefer computer_set_value or computer_type with element_id. Without element_id, inserts into the click-selected field via AX, or the focused field. A missed click target is refused. If nothing is focused, click a field first. Does not raise or move the real cursor. Screen-scope typing is refused. The result is text only.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "target": {
+        "description": "Default: {\"scope\":\"app\",\"pid\":…,\"target_id\":…} from computer_apps or computer_resolve_app. That drives one macOS app without taking screen control or moving the real cursor (a cursor overlay is still shown), and needs no computer_start_control. Omit (or {\"scope\":\"screen\"}) only to escalate to full-display remote control.",
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "type": "string",
+                "const": "screen"
+              }
+            },
+            "required": [
+              "scope"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "type": "string",
+                "const": "app"
+              },
+              "pid": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "pid from computer_apps or computer_resolve_app."
+              },
+              "target_id": {
+                "type": "string",
+                "minLength": 1,
+                "description": "target_id from computer_apps or computer_resolve_app."
+              }
+            },
+            "required": [
+              "scope",
+              "pid",
+              "target_id"
+            ]
+          }
+        ]
+      },
+      "text": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4000,
+        "description": "Text to type."
+      },
+      "element_id": {
+        "type": "integer",
+        "minimum": 1,
+        "description": "An element id in brackets from computer_app_state."
+      },
+      "snapshot_id": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The snapshot_id from computer_app_state, or from a screenshot that reused a live handle. It stays valid across actions until you read a new tree, the window or app changes, or an edit opens a sheet or replaces the tree. Do not call computer_app_state after a screenshot that reused snapshot_id; read computer_app_state when a screenshot omitted the tree or an action reports the snapshot stale."
+      },
+      "coordinate_token": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Required with an app target: the coordinate_token from the latest computer_screenshot of this app. It stays valid until the next screenshot or until the window moves or resizes; screenshot again when an action reports it stale."
+      }
+    },
+    "required": [
+      "text"
+    ]
+  }
+}

@@ -9,11 +9,11 @@
  */
 export type DAGLayoutOptions = {
     /** Nodes to lay out. Only `id` is required. */
-    nodes: Array<{
+    nodes?: Array<{
         id: string;
     }>;
     /** Directed edges. */
-    edges: Array<{
+    edges?: Array<{
         from: string;
         to: string;
     }>;
