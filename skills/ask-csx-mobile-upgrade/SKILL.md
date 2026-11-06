@@ -128,10 +128,10 @@ description: >-
 
 ### 当前阶段
 
-- 分支 `1.1.9-stark`，HEAD `4705196f`。`global.env` 仍是 `poc`，本轮没有改它。New Architecture 与 Hermes 仍为开启，本轮没有改这三项。
-- 2026-11-04 完成 poc `assembleRelease` 并上传蒲公英 `8f9c603763ea7f12e3c53fffb83692d3`。`versionName` 保持 `1.1.9`，`versionCode` 从 `24010` 改为秒级时间戳 `1793791520`，改动留在工作树。产物是 `app-arm64-v8a-release.apk`，包名 `com.csx.mobile.app`，v2 签名通过。后台最新一条是 CS Mobile Android / `com.csx.mobile.app` / v1.1.9，蒲公英 Build `386`，126.6 MB，2026-11-04 19:36。发布页显示的 Android Build 是 `1793791520`。随后已 `adb install -r` 到 `4ae24c72` 并启动，前台是欢迎页，`pkgFlags` 不含 `DEBUGGABLE`。未提交，未上传 Google Play。
-- 随后的 prod `assembleRelease` / `bundleRelease` 会读到同一组 `versionName` / `versionCode`。本轮没有执行这两项。
-- 当前未完成范围仍以本文件未注释的「当前活跃需求」为准。本轮只做了点名的 poc Release APK。
+- 分支 `1.1.9-stark`，HEAD `05e4ce9d`，已推到 `origin/1.1.9-stark`。工作树干净。`global.env` 仍是 `poc`，没有改它，也没有改 `versionName` / `versionCode`（`1.1.9` / `1793791520`）。`newArchEnabled=true`、`hermesEnabled=true`，本轮没有改。
+- 2026-11-05 14:52 在 `4ae24c72`（OPPO Reno11 Pro 5G，`model:PJJ110`，Android 16，时区 `Asia/Shanghai`）用 `npm run android` 装上 debug 包并启动。这次走了完整 Gradle，沙箱 `GRADLE_USER_HOME`，约 16 分钟，没有走快路径，也没有加 `--active-arch-only`。已装包 `pkgFlags` 含 `DEBUGGABLE`，`lastUpdateTime` 为 2026-11-05 14:52:37。Metro 在 8081。
+- 首屏是已登录的 CSM 工作台，请求打到 `https://api-cs-mobile-dev.heals.asia`。诊症记录渲染时有一条 `ReactNativeJS:E`：列表最后一项在 render 里直接 `setState`。已把 `loading_consultationQueryList` 的更新挪到该条的 `onLayout`。重新打开后诊症记录可见，该日志出现在 `onLayout`，`ReactNativeJS:E` / `AndroidRuntime:E` 为空，画面没有 LogBox 红条。该改动与新增诊症页 Android 底部白条修复已包含在 `05e4ce9d` 并推送。未上传蒲公英或 TestFlight。
+- 2026-11-04 蒲公英最新包本轮没有复核。本轮没有执行 prod `assembleRelease` / `bundleRelease`。
 
 ### 外部阻塞与证据缺口
 
@@ -140,7 +140,7 @@ description: >-
 
 ### 最小下一步
 
-1. 用户只调用入口或只说“继续”时，只做「当前活跃需求」里第一条未注释任务，做完即停。点名的 poc Release APK 已上传蒲公英，并已安装启动到 `4ae24c72`。
+1. 用户只调用入口或只说“继续”时，只做「当前活跃需求」里第一条未注释任务，做完即停。这台 `4ae24c72` 上已是 `1.1.9` / `1793791520` 的 debuggable 包，诊症页可以打开且没有 LogBox 红条。原生没有新改动时走快路径，不要再完整跑 Gradle。
 2. 已注释的 iOS / Release 任务保持不动；只有用户取消注释或点名后才做。
 
 ## 输出与边界

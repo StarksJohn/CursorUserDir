@@ -1,0 +1,1914 @@
+diff --git a/__tests__/appointments-screen.test.tsx b/__tests__/appointments-screen.test.tsx
+index f4a6b8c7..151f7c9a 100644
+--- a/__tests__/appointments-screen.test.tsx
++++ b/__tests__/appointments-screen.test.tsx
+@@ -251,6 +251,16 @@ jest.mock('../src/components/app-page-header/app-page-header', () => {
+   };
+ });
+ 
++jest.mock(
++  '../src/assets/images/consult/medication-category-arrow.svg',
++  () => 'MockMedicationCategoryArrow',
++);
++
++jest.mock(
++  '../src/assets/images/consult/medication-category-vials.svg',
++  () => 'MockMedicationCategoryVials',
++);
++
+ jest.mock('../src/components/app-text/app-text', () => {
+   const ReactModule = require('react');
+   const { Text } = require('react-native');
+diff --git a/__tests__/benefit-plan-service.test.ts b/__tests__/benefit-plan-service.test.ts
+index bd6cecfd..11e8189c 100644
+--- a/__tests__/benefit-plan-service.test.ts
++++ b/__tests__/benefit-plan-service.test.ts
+@@ -3,6 +3,10 @@ import {
+   fetchSelectableBenefitPlans,
+   findBenefitPlanById,
+   isBenefitPlanExpired,
++  mergeConsultOperatedPlanTargets,
++  readActivatedConsultPlanTarget,
++  resolveConsultOperatedPolicy,
++  selectNewlyActivatedConsultPolicy,
+   selectPurchasedConsultPolicy,
+ } from '../src/services/benefit-plan-service';
+ 
+@@ -90,6 +94,102 @@ describe('benefit plan service', () => {
+     expect(selectPurchasedConsultPolicy([olderPolicy], 'missing-plan')).toBeUndefined();
+   });
+ 
++  test('resolves the operated policy before falling back to its plan', () => {
++    const olderPolicy = {
++      ...createPolicy('older-policy', 'consult-plan'),
++      effectiveDate: '2026-10-01T00:00:00.000Z',
++      memberShipId: 'HP-OLD',
++    };
++    const newerPolicy = {
++      ...createPolicy('newer-policy', 'consult-plan'),
++      effectiveDate: '2026-10-20T00:00:00.000Z',
++      memberShipId: 'HP-NEW',
++    };
++    const policies = [olderPolicy, newerPolicy];
++
++    expect(
++      resolveConsultOperatedPolicy(policies, { policyId: 'older-policy' }),
++    ).toBe(olderPolicy);
++    expect(
++      resolveConsultOperatedPolicy(policies, {
++        insurancePolicyId: 'newer-policy',
++      }),
++    ).toBe(newerPolicy);
++    expect(
++      resolveConsultOperatedPolicy(policies, { membershipId: 'HP-OLD' }),
++    ).toBe(olderPolicy);
++    expect(
++      resolveConsultOperatedPolicy(policies, { planId: 'consult-plan' }),
++    ).toBe(newerPolicy);
++    expect(
++      resolveConsultOperatedPolicy(policies, { policyId: 'missing-policy' }),
++    ).toBeUndefined();
++  });
++
++  test('selects the policy created by activation instead of an older plan', () => {
++    const existingPolicy = createPolicy('existing-policy', 'existing-plan');
++    const activatedPolicy = {
++      ...createPolicy('activated-policy', 'activated-plan'),
++      effectiveDate: '2026-11-01T00:00:00.000Z',
++    };
++    const olderActivatedPolicy = {
++      ...createPolicy('older-activated-policy', 'activated-plan'),
++      effectiveDate: '2026-10-01T00:00:00.000Z',
++    };
++
++    expect(
++      selectNewlyActivatedConsultPolicy(
++        [existingPolicy],
++        [existingPolicy, activatedPolicy],
++      ),
++    ).toBe(activatedPolicy);
++    expect(
++      selectNewlyActivatedConsultPolicy(
++        [existingPolicy],
++        [existingPolicy, olderActivatedPolicy, activatedPolicy],
++        { planId: 'activated-plan' },
++      ),
++    ).toBe(activatedPolicy);
++    expect(
++      selectNewlyActivatedConsultPolicy(
++        [],
++        [existingPolicy, activatedPolicy],
++      ),
++    ).toBeUndefined();
++    expect(
++      selectNewlyActivatedConsultPolicy(undefined, [activatedPolicy], {
++        policyId: 'activated-policy',
++      }),
++    ).toBe(activatedPolicy);
++  });
++
++  test('reads the activated plan from the activation response', () => {
++    expect(
++      readActivatedConsultPlanTarget({
++        data: {
++          plan: { id: 'plan-from-response' },
++          policyId: 'policy-from-response',
++        },
++        success: true,
++      }),
++    ).toEqual({
++      planId: 'plan-from-response',
++      policyId: 'policy-from-response',
++    });
++    expect(
++      mergeConsultOperatedPlanTargets(
++        { policyId: 'policy-from-response' },
++        { membershipId: 'HP-1', planId: 'plan-from-card' },
++      ),
++    ).toEqual({
++      membershipId: 'HP-1',
++      planId: 'plan-from-card',
++      policyId: 'policy-from-response',
++    });
++    expect(readActivatedConsultPlanTarget({ success: true })).toBeUndefined();
++    expect(mergeConsultOperatedPlanTargets({ policyId: '  ' })).toBeUndefined();
++  });
++
+   test('treats a policy as expired once its expiration time is reached', () => {
+     const policy = {
+       ...createPolicy('policy-1', 'plan-1'),
+diff --git a/__tests__/consult-helper-trial-alert.test.tsx b/__tests__/consult-helper-trial-alert.test.tsx
+index 227b7ebd..61508b6f 100644
+--- a/__tests__/consult-helper-trial-alert.test.tsx
++++ b/__tests__/consult-helper-trial-alert.test.tsx
+@@ -123,6 +123,10 @@ jest.mock('../src/constants/index.ts', () => ({
+           confirm: 'Confirm',
+           helper_trial_region_alert_message: 'Select your preferred region.',
+           helper_trial_region_alert_title: 'Reminder',
++          china_plan_alert_confirm: 'Yes, I have local prescription',
++          china_plan_alert_title: 'Reminder',
++          prescription_button: 'Yes, I have local prescription.',
++          prescription_gentle_reminder: 'Gentle Reminder',
+         };
+ 
+         return translations[key] ?? key;
+@@ -131,6 +135,16 @@ jest.mock('../src/constants/index.ts', () => ({
+   },
+ }));
+ 
++jest.mock(
++  '../src/assets/images/consult/medication-category-arrow.svg',
++  () => 'MockMedicationCategoryArrow',
++);
++
++jest.mock(
++  '../src/assets/images/consult/medication-category-vials.svg',
++  () => 'MockMedicationCategoryVials',
++);
++
+ jest.mock('../src/assets/svg/index.ts', () => ({
+   SVGBadgeDotIcon: 'MockBadgeDotIcon',
+   SVGCaretDownFillIcon: 'MockCaretDownFillIcon',
+@@ -292,4 +306,30 @@ describe('Consult Helper Trial reminder', () => {
+     expect(screen.getByText('Reminder')).toBeTruthy();
+     expect(screen.getByText('Select your preferred region.')).toBeTruthy();
+   });
++
++  test('shows the prescription reminder after Pick your Plan selects China Plan', async () => {
++    const chinaPolicy = {
++      ...helperPolicy,
++      id: 'policy-china',
++      plan: {
++        ...helperPolicy.plan,
++        id: 'plan-china',
++        name: 'China Plan',
++      },
++    } as Policys;
++    mockFetchSelectableBenefitPlans.mockResolvedValue([chinaPolicy]);
++    const screen = render(<ConsultDoctorList />);
++
++    fireEvent.press(await screen.findByTestId('appointments-doctor-provider-1'));
++    fireEvent.press(await screen.findByTestId('appointments-plan-row-policy-china'));
++
++    expect(mockSetPlan).toHaveBeenCalledWith(chinaPolicy.plan);
++    await waitFor(() => {
++      expect(
++        screen.getByTestId('china-plan-prescription-alert').props.visible,
++      ).toBe(true);
++    });
++    expect(screen.getByText('Reminder')).toBeTruthy();
++    expect(screen.getByText('Yes, I have local prescription')).toBeTruthy();
++  });
+ });
+diff --git a/__tests__/consult-plan-chips.test.tsx b/__tests__/consult-plan-chips.test.tsx
+index aa765b0b..6ed8730c 100644
+--- a/__tests__/consult-plan-chips.test.tsx
++++ b/__tests__/consult-plan-chips.test.tsx
+@@ -58,6 +58,30 @@ jest.mock('../src/constants/index.ts', () => ({
+           return 'Confirm';
+         }
+ 
++        if (key === 'china_plan_alert_title') {
++          return 'Reminder';
++        }
++
++        if (key === 'china_plan_alert_confirm') {
++          return 'Yes, I have local prescription';
++        }
++
++        if (key === 'china_plan_alert_view_category') {
++          return 'View medication category';
++        }
++
++        if (key === 'prescription_gentle_reminder') {
++          return 'Gentle Reminder';
++        }
++
++        if (key === 'prescription_reminder_1') {
++          return 'Prescription must be uploaded in order to access this service.';
++        }
++
++        if (key === 'prescription_button') {
++          return 'Yes, I have local prescription.';
++        }
++
+         return options?.defaultValue ?? key;
+       },
+     },
+@@ -278,6 +302,54 @@ describe('ConsultPlanChips', () => {
+     );
+   });
+ 
++  test('reminds the member when the China Plan chip is selected', async () => {
++    const chinaPolicy = {
++      ...purchasedPolicy,
++      id: 'policy-china',
++      plan: {
++        ...purchasedPolicy.plan,
++        id: 'plan-china',
++        name: 'China Plan',
++      },
++    } as Policys;
++    mockedFetchPlans.mockResolvedValue([purchasedPolicy, chinaPolicy]);
++    const screen = render(<ConsultPlanChips />);
++
++    fireEvent.press(await screen.findByTestId('consult-plan-chip-policy-china'));
++
++    expect(mockSetPlan).toHaveBeenCalledWith(chinaPolicy.plan);
++    expect(screen.getByTestId('china-plan-prescription-alert').props.visible).toBe(
++      true,
++    );
++    expect(screen.getByText('Reminder')).toBeTruthy();
++    expect(screen.getByText('Yes, I have local prescription')).toBeTruthy();
++  });
++
++  test('reminds the member when prod renders China Plan under another catalog name', async () => {
++    const renamedChinaPolicy = {
++      ...purchasedPolicy,
++      id: 'policy-renamed-china',
++      plan: {
++        ...purchasedPolicy.plan,
++        id: 'plan-renamed-china',
++        name: 'Sponsored Plan',
++      },
++    } as Policys;
++    chipSelection.sponsorshipList = [
++      { policyId: renamedChinaPolicy.id, fauxPlanName: 'Heals China Plan' },
++    ];
++    mockedFetchPlans.mockResolvedValue([renamedChinaPolicy]);
++    const screen = render(<ConsultPlanChips />);
++
++    fireEvent.press(
++      await screen.findByTestId('consult-plan-chip-policy-renamed-china'),
++    );
++
++    expect(screen.getByTestId('china-plan-prescription-alert').props.visible).toBe(
++      true,
++    );
++  });
++
+   test('does not remind the member for another plan chip', async () => {
+     const screen = render(<ConsultPlanChips />);
+ 
+diff --git a/__tests__/consult-screen.test.tsx b/__tests__/consult-screen.test.tsx
+index 542d3419..d12be0e7 100644
+--- a/__tests__/consult-screen.test.tsx
++++ b/__tests__/consult-screen.test.tsx
+@@ -10,6 +10,26 @@ import type { Theme } from '../src/types/Theme';
+ 
+ const mockTicketList = jest.fn();
+ const mockNavigate = jest.fn();
++const mockConsultAppState: {
++  language: string;
++  plan: { id: string; name: string } | null;
++  position: null;
++  selectedPolicies?: {
++    id: string;
++    plan: { id: string; name: string };
++  };
++  setPlan: jest.Mock;
++  setSelectedPolicies: jest.Mock;
++  sponsorship_list: Array<{ fauxPlanName: string; policyId: string }>;
++} = {
++  language: 'en',
++  plan: null,
++  position: null,
++  selectedPolicies: undefined,
++  setPlan: jest.fn(),
++  setSelectedPolicies: jest.fn(),
++  sponsorship_list: [],
++};
+ 
+ interface ConsultTestGlobals {
+   $api: {
+@@ -42,6 +62,7 @@ const translations: Record<string, string> = {
+   consult_status_completed: 'Completed',
+   consult_status_upcoming: 'Upcoming',
+   consult_visit_in_person: 'In-Person',
++  consult_view_medication_category: 'View Medication Category',
+   consult_visit_video: 'Video',
+   'dsi.memberCoverage.gp': '全科医生',
+   dermatology: 'Dermatology',
+@@ -186,6 +207,7 @@ jest.mock('../src/navigation/route-names.ts', () => ({
+   default: {
+     consult: 'ConsultScreen',
+     doctorDetailScreen: 'DoctorDetailScreen',
++    medicationListScreen: 'MedicationListScreen',
+     openingHoursScreen: 'OpeningHoursScreen',
+   },
+ }));
+@@ -202,16 +224,18 @@ jest.mock('../src/api/api.ts', () => ({
+   getProviderOptions2: jest.fn(async () => ({ data: { region: [], specialty: [] } })),
+ }));
+ 
++jest.mock(
++  '../src/assets/images/consult/medication-category-arrow.svg',
++  () => 'MockMedicationCategoryArrow',
++);
++
++jest.mock(
++  '../src/assets/images/consult/medication-category-vials.svg',
++  () => 'MockMedicationCategoryVials',
++);
++
+ jest.mock('../src/store/AppContext.tsx', () => ({
+-  useAppState: () => ({
+-    language: 'en',
+-    plan: null,
+-    position: null,
+-    selectedPolicies: undefined,
+-    setPlan: jest.fn(),
+-    setSelectedPolicies: jest.fn(),
+-    sponsorship_list: [],
+-  }),
++  useAppState: () => mockConsultAppState,
+ }));
+ 
+ jest.mock('../src/constants/index.ts', () => ({
+@@ -272,6 +296,9 @@ describe('ConsultScreen', () => {
+   beforeEach(() => {
+     jest.clearAllMocks();
+     mockTicketList.mockResolvedValue([]);
++    mockConsultAppState.plan = null;
++    mockConsultAppState.selectedPolicies = undefined;
++    mockConsultAppState.sponsorship_list = [];
+   });
+ 
+   test('shows only the shared page header', () => {
+@@ -333,6 +360,11 @@ describe('ConsultScreen', () => {
+     expect(mockNavigate).toHaveBeenCalledWith('OpeningHoursScreen');
+     expect(screen.getByTestId('appointments-filter-row')).toBeTruthy();
+     expect(screen.getByTestId('appointments-doctor-list-section')).toBeTruthy();
++    expect(
++      within(doctorListSection).queryByTestId(
++        'consult-medication-category-entry',
++      ),
++    ).toBeNull();
+     expect(screen.queryByTestId('consult-appointment-list')).toBeNull();
+     expect(screen.queryByTestId('consult-filter-all')).toBeNull();
+     expect(screen.queryByTestId('consult-filter-upcoming')).toBeNull();
+@@ -343,6 +375,125 @@ describe('ConsultScreen', () => {
+     expect(screen.queryAllByTestId(/consult-schedule-day-/)).toHaveLength(0);
+   });
+ 
++  test('hides the medication category entry when all plans are selected', () => {
++    const screen = render(
++      <ThemeContext.Provider value={mockTheme}>
++        <ConsultScreen />
++      </ThemeContext.Provider>
++    );
++
++    expect(screen.queryByTestId('consult-medication-category-entry')).toBeNull();
++  });
++
++  test('shows the medication category entry in the doctor list header for China Plan', () => {
++    mockConsultAppState.plan = {
++      id: '77b08f92-13fd-4363-9f77-8a2b617a0f1b',
++      name: 'China Plan',
++    };
++    mockConsultAppState.selectedPolicies = {
++      id: 'policy-china',
++      plan: mockConsultAppState.plan,
++    };
++
++    const screen = render(
++      <ThemeContext.Provider value={mockTheme}>
++        <ConsultScreen />
++      </ThemeContext.Provider>
++    );
++    const doctorListSection = screen.getByTestId(
++      'appointments-doctor-list-section'
++    );
++    const entry = screen.getByTestId('consult-medication-category-entry');
++
++    expect(
++      within(doctorListSection).queryByTestId(
++        'consult-medication-category-entry'
++      )
++    ).toBeNull();
++
++    expect(entry.props.accessibilityLabel).toBe('View Medication Category');
++    expect(entry.props.accessibilityRole).toBe('button');
++    fireEvent.press(entry);
++    expect(mockNavigate).toHaveBeenCalledWith('MedicationListScreen', {
++      planId: '77b08f92-13fd-4363-9f77-8a2b617a0f1b',
++      policyId: 'policy-china',
++    });
++    expect(StyleSheet.flatten(entry.props.style)).toMatchObject({
++      alignItems: 'center',
++      backgroundColor: '#F3FAFA',
++      borderColor: '#E1EBEC',
++      borderRadius: '16rem',
++      borderWidth: 1,
++      flexDirection: 'row',
++      justifyContent: 'space-between',
++      padding: '12rem',
++    });
++    expect(screen.getByText('View Medication Category').props.style).toMatchObject({
++      color: '#396561',
++      fontSize: '14rem',
++      fontWeight: '400',
++      lineHeight: '19.6rem',
++    });
++    expect(
++      StyleSheet.flatten(
++        within(screen.getByTestId('appointments-content')).getByTestId(
++          'consult-medication-category-vials'
++        ).props.style
++      )
++    ).toMatchObject({
++      height: 24,
++      width: 24,
++    });
++    expect(
++      StyleSheet.flatten(
++        within(screen.getByTestId('appointments-content')).getByTestId(
++          'consult-medication-category-vials-graphic'
++        ).props.style
++      )
++    ).toMatchObject({
++      left: '20.66%',
++      position: 'absolute',
++      top: '8.07%',
++    });
++    expect(
++      screen.UNSAFE_getByType('MockMedicationCategoryVials').props
++    ).toEqual({});
++    expect(
++      StyleSheet.flatten(
++        within(screen.getByTestId('appointments-content')).getByTestId(
++          'consult-medication-category-arrow'
++        ).props.style
++      )
++    ).toMatchObject({
++      height: 16,
++      width: 16,
++    });
++    expect(
++      screen.UNSAFE_getByType('MockMedicationCategoryArrow').props
++    ).toEqual({});
++  });
++
++  test('hides the medication category entry for another selected plan', () => {
++    mockConsultAppState.plan = {
++      id: 'plan-other',
++      name: 'Single Teleconsult',
++    };
++    mockConsultAppState.selectedPolicies = {
++      id: 'policy-other',
++      plan: mockConsultAppState.plan,
++    };
++
++    const screen = render(
++      <ThemeContext.Provider value={mockTheme}>
++        <ConsultScreen />
++      </ThemeContext.Provider>
++    );
++
++    expect(
++      screen.queryByTestId('consult-medication-category-entry')
++    ).toBeNull();
++  });
++
+   /*
+   test('uses the shared header, theme, advanced list, and AIS list header layout', () => {
+     const screen = render(
+diff --git a/__tests__/consult-secondary-screen.test.tsx b/__tests__/consult-secondary-screen.test.tsx
+index 4267d5e2..1cbe88cc 100644
+--- a/__tests__/consult-secondary-screen.test.tsx
++++ b/__tests__/consult-secondary-screen.test.tsx
+@@ -1,7 +1,9 @@
+ import React from 'react';
+-import { render } from '@testing-library/react-native';
++import { act, render, waitFor } from '@testing-library/react-native';
+ 
++import type { Policys } from '../src/api/api-types';
+ import ConsultSecondaryScreen from '../src/screens/consult-screen/consult-secondary-screen';
++import { fetchSelectableBenefitPlans } from '../src/services/benefit-plan-service';
+ import { ThemeContext } from '../src/style/theme/theme-context';
+ import type { Theme } from '../src/types/Theme';
+ 
+@@ -32,8 +34,35 @@ jest.mock('../src/screens/consult-screen/consult-browser', () => {
+   };
+ });
+ 
++jest.mock('react-native-config', () => ({
++  __esModule: true,
++  default: {
++    NEXT_PUBLIC_365_BASIC_PLAN_ID: 'basic-plan',
++  },
++}));
++
++jest.mock('../src/api/api', () => ({
++  member_policies: jest.fn(),
++}));
++
++jest.mock('../src/services/benefit-plan-service', () => {
++  const actual = jest.requireActual('../src/services/benefit-plan-service');
++
++  return {
++    ...actual,
++    fetchSelectableBenefitPlans: jest.fn(),
++  };
++});
++
++const mockSetPlan = jest.fn();
++const mockSetSelectedPolicies = jest.fn();
++
+ jest.mock('../src/store/AppContext.tsx', () => ({
+-  useAppState: () => ({ language: 'zh-Hans' }),
++  useAppState: () => ({
++    language: 'zh-Hans',
++    setPlan: mockSetPlan,
++    setSelectedPolicies: mockSetSelectedPolicies,
++  }),
+ }));
+ 
+ jest.mock('../src/constants/index.ts', () => ({
+@@ -41,8 +70,21 @@ jest.mock('../src/constants/index.ts', () => ({
+   default: {
+     i18n: {
+       locale: 'en',
+-      t: (key: string, options?: { locale?: string }): string =>
+-        key === 'consult' && options?.locale === 'zh-Hans' ? '问医生' : key,
++      t: (key: string, options?: { locale?: string }): string => {
++        if (key === 'consult' && options?.locale === 'zh-Hans') {
++          return '问医生';
++        }
++
++        if (key === 'china_plan_alert_title') {
++          return 'Reminder';
++        }
++
++        if (key === 'prescription_gentle_reminder') {
++          return 'Gentle Reminder';
++        }
++
++        return key;
++      },
+     },
+   },
+ }));
+@@ -56,14 +98,64 @@ const mockTheme = {
+   },
+ } as Theme;
+ 
+-const renderScreen = (): ReturnType<typeof render> =>
++const mockedFetchPlans = jest.mocked(fetchSelectableBenefitPlans);
++
++const operatedPolicy = {
++  id: 'policy-operated',
++  plan: {
++    id: 'plan-operated',
++    name: 'Helper Trial',
++    isProduct: true,
++    providerCountries: ['Hong Kong'],
++    payorId: 'payor-operated',
++  },
++  policyNumber: 'P-operated',
++  issueDate: '2026-11-01',
++  effectiveDate: '2026-11-01',
++  expirationDate: '2027-11-01',
++  memberShipId: 'HP-OPERATED',
++} as Policys;
++
++const globalPolicy = {
++  ...operatedPolicy,
++  id: 'policy-global',
++  plan: {
++    ...operatedPolicy.plan,
++    id: 'plan-global',
++    name: 'Single Teleconsult',
++  },
++  memberShipId: 'HP-GLOBAL',
++} as Policys;
++
++const renderScreen = (
++  operatedPlan?: {
++    membershipId?: string;
++    planId?: string;
++    policyId?: string;
++  },
++): ReturnType<typeof render> =>
+   render(
+     <ThemeContext.Provider value={mockTheme}>
+-      <ConsultSecondaryScreen />
++      <ConsultSecondaryScreen
++        route={
++          operatedPlan
++            ? {
++                params: {
++                  operatedPlan,
++                },
++              }
++            : undefined
++        }
++      />
+     </ThemeContext.Provider>
+   );
+ 
+ describe('ConsultSecondaryScreen', () => {
++  beforeEach(() => {
++    jest.clearAllMocks();
++    mockedFetchPlans.mockResolvedValue([globalPolicy, operatedPolicy]);
++  });
++
+   test('shows the consult tab title in the navigation bar', () => {
+     const screen = renderScreen();
+ 
+@@ -76,5 +168,68 @@ describe('ConsultSecondaryScreen', () => {
+     const screen = renderScreen();
+ 
+     expect(screen.UNSAFE_getByType('MockConsultBrowser')).toBeTruthy();
++    expect(mockedFetchPlans).not.toHaveBeenCalled();
++    expect(mockSetPlan).not.toHaveBeenCalled();
++  });
++
++  test('selects the operated plan instead of the previously selected plan', async () => {
++    let resolveFetch: (policies: Policys[]) => void = () => undefined;
++    mockedFetchPlans.mockReturnValue(
++      new Promise((resolve) => {
++        resolveFetch = resolve;
++      }),
++    );
++    const screen = renderScreen({ policyId: 'policy-operated' });
++
++    expect(screen.getByTestId('consult-operated-plan-loading')).toBeTruthy();
++    expect(screen.UNSAFE_queryByType('MockConsultBrowser')).toBeNull();
++
++    await act(async () => {
++      resolveFetch([globalPolicy, operatedPolicy]);
++    });
++
++    await waitFor(() => {
++      expect(mockSetPlan).toHaveBeenCalledWith(operatedPolicy.plan);
++    });
++    expect(mockSetSelectedPolicies).toHaveBeenCalledWith(operatedPolicy);
++    expect(mockSetPlan).not.toHaveBeenCalledWith(globalPolicy.plan);
++    expect(screen.UNSAFE_getByType('MockConsultBrowser')).toBeTruthy();
++  });
++
++  test('keeps the current plan when the operated plan cannot be resolved', async () => {
++    mockedFetchPlans.mockResolvedValue([globalPolicy]);
++    const screen = renderScreen({ policyId: 'missing-policy' });
++
++    await waitFor(
++      () => {
++        expect(screen.UNSAFE_getByType('MockConsultBrowser')).toBeTruthy();
++      },
++      { timeout: 2000 },
++    );
++    expect(mockedFetchPlans).toHaveBeenCalledTimes(3);
++    expect(mockSetPlan).not.toHaveBeenCalled();
++    expect(mockSetSelectedPolicies).not.toHaveBeenCalled();
++  });
++
++  test('shows the prescription reminder when the operated plan is China Plan', async () => {
++    const chinaPolicy = {
++      ...operatedPolicy,
++      id: 'policy-china',
++      plan: {
++        ...operatedPolicy.plan,
++        id: 'plan-china-prod',
++        name: 'Heals China Plan',
++      },
++    } as Policys;
++    mockedFetchPlans.mockResolvedValue([globalPolicy, chinaPolicy]);
++    const screen = renderScreen({ planId: 'plan-china-prod' });
++
++    await waitFor(() => {
++      expect(
++        screen.getByTestId('china-plan-prescription-alert').props.visible,
++      ).toBe(true);
++    });
++    expect(mockSetPlan).toHaveBeenCalledWith(chinaPolicy.plan);
++    expect(screen.getByText('Reminder')).toBeTruthy();
+   });
+ });
+diff --git a/jest.config.js b/jest.config.js
+index be443a4f..fa721629 100644
+--- a/jest.config.js
++++ b/jest.config.js
+@@ -3,5 +3,7 @@ module.exports = {
+   moduleNameMapper: {
+     '^react-native-device-info$':
+       '<rootDir>/node_modules/react-native-device-info/jest/react-native-device-info-mock.js',
++    '^react-native-linear-gradient$':
++      '<rootDir>/__mocks__/react-native-linear-gradient.js',
+   },
+ };
+diff --git a/src/components/activation-modal/activation-modal.props.ts b/src/components/activation-modal/activation-modal.props.ts
+index 88a6642f..3276adf6 100644
+--- a/src/components/activation-modal/activation-modal.props.ts
++++ b/src/components/activation-modal/activation-modal.props.ts
+@@ -1,6 +1,9 @@
++import type { ConsultOperatedPlanTarget } from '@services/benefit-plan-service';
++
+ export interface ActivationModalProps {
+   visible: boolean | false;
+   activationCode: string | "";
+   onActivationModalHide: (e: boolean, shouldRefresh: boolean) => void;
+   onActivationSuccess?: () => void;
++  operatedPlan?: ConsultOperatedPlanTarget;
+ }
+\ No newline at end of file
+diff --git a/src/components/activation-modal/activation-modal.tsx b/src/components/activation-modal/activation-modal.tsx
+index 253049e0..b5d37648 100644
+--- a/src/components/activation-modal/activation-modal.tsx
++++ b/src/components/activation-modal/activation-modal.tsx
+@@ -7,6 +7,21 @@ import TextInputComponent from '@components/text-input-component/text-input-comp
+ import ActivationCode from '../../assets/images/activation_code.svg';
+ import CheckCircle from '../../assets/images/check-circle.svg';
+ import GradientBt from '@components/gradient-bt/gradient-bt';
++import type {Policys} from '@api/api-types';
++import {
++  fetchSelectableBenefitPlans,
++  mergeConsultOperatedPlanTargets,
++  readActivatedConsultPlanTarget,
++  selectNewlyActivatedConsultPolicy,
++} from '@services/benefit-plan-service';
++
++const ACTIVATED_PLAN_ATTEMPTS = 3;
++const ACTIVATED_PLAN_RETRY_DELAY_MS = 300;
++
++const waitForActivatedPlan = (delayMs: number): Promise<void> =>
++  new Promise((resolve): void => {
++    setTimeout(resolve, delayMs);
++  });
+ 
+ const ActivationModal: React.FC<ActivationModalProps> = (
+   props: ActivationModalProps,
+@@ -31,13 +46,51 @@ const ActivationModal: React.FC<ActivationModalProps> = (
+ 
+   const handleActivateCode = async () => {
+     setIsActivating(true);
++    let previousPolicies: Policys[] | undefined;
++    try {
++      previousPolicies = await fetchSelectableBenefitPlans();
++    } catch (error) {
++      console.log('ActivationModal previous policies error=', error);
++      previousPolicies = undefined;
++    }
+     const res = await $api.activate(activationCode);
+     setIsActivating(false);
+     if (res.success) {
+       await $api.sponsorship_list();
++      const operatedPlanTarget = mergeConsultOperatedPlanTargets(
++        readActivatedConsultPlanTarget(res),
++        props.operatedPlan,
++      );
++      let activatedPolicy: Policys | undefined;
++      try {
++        for (let attempt = 0; attempt < ACTIVATED_PLAN_ATTEMPTS; attempt += 1) {
++          const nextPolicies = await fetchSelectableBenefitPlans();
++          activatedPolicy = selectNewlyActivatedConsultPolicy(
++            previousPolicies,
++            nextPolicies,
++            operatedPlanTarget,
++          );
++          if (activatedPolicy || attempt === ACTIVATED_PLAN_ATTEMPTS - 1) {
++            break;
++          }
++          await waitForActivatedPlan(ACTIVATED_PLAN_RETRY_DELAY_MS);
++        }
++      } catch (error) {
++        console.log('ActivationModal operated plan error=', error);
++      }
+       setIsActivated(true);
+       setTimeout(() => {
+-        $NavigationActions.navigate($routeNames.consultSecondary);
++        $NavigationActions.navigate(
++          $routeNames.consultSecondary,
++          activatedPolicy
++            ? {
++                operatedPlan: {
++                  planId: activatedPolicy.plan.id,
++                  policyId: activatedPolicy.id,
++                },
++              }
++            : undefined,
++        );
+       }, 300);
+     } else {
+       setErrorMessage(res.error.message);
+diff --git a/src/i18n/locale/Indonesia.ts b/src/i18n/locale/Indonesia.ts
+index 41ae2281..4cff4fb3 100644
+--- a/src/i18n/locale/Indonesia.ts
++++ b/src/i18n/locale/Indonesia.ts
+@@ -1064,9 +1064,9 @@ export default {
+   "pregnancy": "Kehamilan",
+   "prescription": "Resep",
+   "prescription_gentle_reminder": "Gentle Reminder",
+-  "prescription_reminder_1": "Prescription must be uploaded in order to occess this service.",
+-  "prescription_reminder_2": "Please kindly prepore your local prescription before making appoiniment.",
+-  "prescription_button": "Yes, l have local prescription.",
++  "prescription_reminder_1": "Prescription must be uploaded in order to access this service.",
++  "prescription_reminder_2": "Please kindly prepare your local prescription before making appointment.",
++  "prescription_button": "Yes, I have local prescription.",
+   "primary_address": "Alamat Utama",
+   "please_enter_old_password": "Please enter old password",
+   "privacy": "<privacyLink>Kebijakan Privasi</privacyLink>",
+diff --git a/src/i18n/locale/Melayu.ts b/src/i18n/locale/Melayu.ts
+index 9bab53e2..23f22dbf 100644
+--- a/src/i18n/locale/Melayu.ts
++++ b/src/i18n/locale/Melayu.ts
+@@ -1051,9 +1051,9 @@ export default {
+   "pregnancy": "Kehamilan",
+   "prescription": "Preskripsi",
+   "prescription_gentle_reminder": "Gentle Reminder",
+-  "prescription_reminder_1": "Prescription must be uploaded in order to occess this service.",
+-  "prescription_reminder_2": "Please kindly prepore your local prescription before making appoiniment.",
+-  "prescription_button": "Yes, l have local prescription.",
++  "prescription_reminder_1": "Prescription must be uploaded in order to access this service.",
++  "prescription_reminder_2": "Please kindly prepare your local prescription before making appointment.",
++  "prescription_button": "Yes, I have local prescription.",
+   "please_enter_old_password": "Please enter old password",
+   "primary_address": "Alamat Utama",
+   "privacy": "<privacyLink>Dasar Privasi</privacyLink>",
+diff --git a/src/i18n/locale/en.ts b/src/i18n/locale/en.ts
+index 6403fc83..e61e499b 100644
+--- a/src/i18n/locale/en.ts
++++ b/src/i18n/locale/en.ts
+@@ -1301,10 +1301,14 @@ export default {
+   pregnancy: 'Pregnancy ',
+   prescription_gentle_reminder: 'Gentle Reminder',
+   prescription_reminder_1:
+-    'Prescription must be uploaded in order to occess this service.',
++    'Prescription must be uploaded in order to access this service.',
+   prescription_reminder_2:
+-    'Please kindly prepore your local prescription before making appoiniment.',
+-  prescription_button: 'Yes, l have local prescription.',
++    'Please kindly prepare your local prescription before making appointment.',
++  prescription_button: 'Yes, I have local prescription.',
++  china_plan_alert_title: 'Reminder',
++  china_plan_alert_confirm: 'Yes, I have local prescription',
++  china_plan_alert_view_category: 'View medication category',
++  consult_view_medication_category: 'View Medication Category',
+   prescription: 'Prescription',
+   please_enter_old_password: 'Please enter old password',
+   primary_address: 'Primary Address',
+diff --git a/src/i18n/locale/ph.ts b/src/i18n/locale/ph.ts
+index a6c28c5f..96b4361e 100644
+--- a/src/i18n/locale/ph.ts
++++ b/src/i18n/locale/ph.ts
+@@ -952,9 +952,9 @@ export default {
+   "pregnancy": "Pagbubuntis",
+   "prescription": "Reseta",
+   "prescription_gentle_reminder": "Gentle Reminder",
+-  "prescription_reminder_1": "Prescription must be uploaded in order to occess this service.",
+-  "prescription_reminder_2": "Please kindly prepore your local prescription before making appoiniment.",
+-  "prescription_button": "Yes, l have local prescription.",
++  "prescription_reminder_1": "Prescription must be uploaded in order to access this service.",
++  "prescription_reminder_2": "Please kindly prepare your local prescription before making appointment.",
++  "prescription_button": "Yes, I have local prescription.",
+   "please_enter_old_password": "Please enter old password",
+   "primary_address": "Pangunahing Address",
+   "privacy": "<privacyLink>Patakaran sa Privacy</privacyLink>",
+diff --git a/src/i18n/locale/th.ts b/src/i18n/locale/th.ts
+index c4cd766a..f665bf6b 100644
+--- a/src/i18n/locale/th.ts
++++ b/src/i18n/locale/th.ts
+@@ -268,9 +268,9 @@ export default {
+   Symptoms_of_discomfort: 'อาการสำคัญ',
+   Prescription_records: 'บันทึกใบสั่งยา',
+   prescription_gentle_reminder: "Gentle Reminder",
+-  prescription_reminder_1: "Prescription must be uploaded in order to occess this service.",
+-  prescription_reminder_2: "Please kindly prepore your local prescription before making appoiniment.",
+-  prescription_button: "Yes, l have local prescription.",
++  prescription_reminder_1: "Prescription must be uploaded in order to access this service.",
++  prescription_reminder_2: "Please kindly prepare your local prescription before making appointment.",
++  prescription_button: "Yes, I have local prescription.",
+   please_enter_old_password: "กรุณากรอกรหัสผ่านเก่า",
+   Health_information_of_patient: 'บันทึกสุขภาพของผู้ป่วย',
+   Medication_taken_in_past: 'ประวัติการใช้ยา',
+diff --git a/src/i18n/locale/zh.ts b/src/i18n/locale/zh.ts
+index 5ccf7a9f..6adac6a8 100644
+--- a/src/i18n/locale/zh.ts
++++ b/src/i18n/locale/zh.ts
+@@ -1204,6 +1204,10 @@ export default {
+   prescription_reminder_1: '须上传处方才能使用此服务。',
+   prescription_reminder_2: '请在预约前准备好当地处方。',
+   prescription_button: '确认，已有当地处方。',
++  china_plan_alert_title: '提示',
++  china_plan_alert_confirm: '确认，已有当地处方',
++  china_plan_alert_view_category: '查看药品类别',
++  consult_view_medication_category: '查看药品类别',
+   please_enter_old_password: 'Please enter old password',
+   old_password: '旧密码',
+   primary_address: '常用地址',
+diff --git a/src/i18n/locale/zh_tw.ts b/src/i18n/locale/zh_tw.ts
+index 393a3129..862f44a0 100644
+--- a/src/i18n/locale/zh_tw.ts
++++ b/src/i18n/locale/zh_tw.ts
+@@ -1206,6 +1206,10 @@ export default {
+   prescription_reminder_1: '須上傳處方才能使用此服務。',
+   prescription_reminder_2: '請在預約前準備好當地處方。',
+   prescription_button: '確認，已有當地處方。',
++  china_plan_alert_title: '提示',
++  china_plan_alert_confirm: '確認，已有當地處方',
++  china_plan_alert_view_category: '查看藥物類別',
++  consult_view_medication_category: '查看藥物類別',
+   please_enter_old_password: 'Please enter old password',
+   old_password: '舊密碼',
+   primary_address: '常用地址',
+diff --git a/src/navigation/types.ts b/src/navigation/types.ts
+index 7fea6c28..5eb0c47b 100644
+--- a/src/navigation/types.ts
++++ b/src/navigation/types.ts
+@@ -2,10 +2,13 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+ import { RouteProp } from '@react-navigation/native';
+ import { Dependants, QueueItem } from "@api/api-types.ts";
+ import Pdf, { Source } from 'react-native-pdf';
++import type { ConsultOperatedPlanTarget } from '@services/benefit-plan-service';
+ 
+ export type RootStackParamList = {
+   [$routeNames.consult]: undefined;
+-  [$routeNames.consultSecondary]: undefined;
++  [$routeNames.consultSecondary]: {
++    operatedPlan?: ConsultOperatedPlanTarget;
++  } | undefined;
+   [$routeNames.addDependantsScreen]: undefined;
+   [$routeNames.editDependantsScreen]: {
+     item: Dependants;
+@@ -76,6 +79,12 @@ export type RootStackParamList = {
+   [$routeNames.medicalRecordsDetailScreen]: {
+     ticketId?: string;
+   };
++  [$routeNames.medicationListScreen]: {
++    categoryList?: readonly string[];
++    planId?: string;
++    policyId?: string;
++    selectedCategory?: string;
++  };
+ };
+ 
+ export type ScreenProps<RouteName extends keyof RootStackParamList> = {
+diff --git a/src/screens/consult-screen/consult-doctor-list.tsx b/src/screens/consult-screen/consult-doctor-list.tsx
+index 57220be4..0a0ca94a 100644
+--- a/src/screens/consult-screen/consult-doctor-list.tsx
++++ b/src/screens/consult-screen/consult-doctor-list.tsx
+@@ -53,7 +53,9 @@ import {
+ import SVGPlanPickerCloseIcon from '../../assets/svg/plan-picker-close';
+ import AppText from '@components/app-text/app-text';
+ import DoctorAvatar from '@components/doctor-avatar/doctor-avatar';
++import { useChinaPlanPrescriptionAlert } from '@components/china-plan-prescription-alert/china-plan-prescription-alert';
+ import { useHelperTrialRegionAlert } from '@components/helper-trial-region-alert/helper-trial-region-alert';
++import { shouldShowConsultMedicationCategoryEntry } from '@helper/china-plan';
+ import constants from '@constants';
+ import NavigationActions from '@navigation/global-navigation';
+ import routeNames from '@navigation/route-names';
+@@ -77,6 +79,7 @@ import {
+   consumeConsultDoctorListReset,
+   subscribeConsultDoctorListReset,
+ } from './consult-doctor-list-reset';
++import ConsultMedicationCategoryEntry from './consult-medication-category-entry';
+ import consultStyles from './consult-screen.styles';
+ import {
+   buildConsultDoctorQueryKey,
+@@ -298,6 +301,10 @@ const ConsultDoctorList = ({
+   } = useAppState();
+   const { alert: helperTrialAlert, notifyPlanSelected } =
+     useHelperTrialRegionAlert(sponsorshipList);
++  const {
++    alert: chinaPlanAlert,
++    notifyPlanSelected: notifyChinaPlanSelected,
++  } = useChinaPlanPrescriptionAlert(sponsorshipList);
+   const [isPlanPickerVisible, setIsPlanPickerVisible] =
+     useState<boolean>(false);
+   const [isLoadingPlans, setIsLoadingPlans] = useState<boolean>(false);
+@@ -602,10 +609,12 @@ const ConsultDoctorList = ({
+     }));
+     setPlan(autoMatchedPolicy.plan);
+     setSelectedPolicies(autoMatchedPolicy);
++    notifyChinaPlanSelected(autoMatchedPolicy, 0);
+   }, [
+     autoMatchedPolicy,
+     isCountryOptionsReady,
+     isPlanAutoMatchPending,
++    notifyChinaPlanSelected,
+     plan?.id,
+     planAutoMatchPolicies,
+     setPlan,
+@@ -1136,8 +1145,14 @@ const ConsultDoctorList = ({
+       setPlans([]);
+       setSelectedPolicyId(undefined);
+       notifyPlanSelected(selectedPolicy);
++      notifyChinaPlanSelected(selectedPolicy);
+     },
+-    [notifyPlanSelected, setPlan, setSelectedPolicies]
++    [
++      notifyChinaPlanSelected,
++      notifyPlanSelected,
++      setPlan,
++      setSelectedPolicies,
++    ]
+   );
+ 
+   const handleViewFullDoctorList = useCallback((): void => {
+@@ -1537,6 +1552,28 @@ const ConsultDoctorList = ({
+     [handleSelectService, selectedService]
+   );
+ 
++  const handleViewMedicationCategory = (): void => {
++    const planId = typeof plan?.id === 'string' ? plan.id.trim() : '';
++
++    if (!planId) {
++      return;
++    }
++
++    const policyId =
++      selectedPolicies?.plan.id === plan?.id ? selectedPolicies.id : undefined;
++
++    NavigationActions.navigate(routeNames.medicationListScreen, {
++      planId,
++      ...(policyId ? { policyId } : {}),
++    });
++  };
++
++  const showMedicationCategoryEntry = shouldShowConsultMedicationCategoryEntry(
++    plan,
++    selectedPolicies,
++    sponsorshipList,
++  );
++
+   return (
+     <View
+       style={[styles.content, consultStyles.doctorListInset]}
+@@ -1588,6 +1625,11 @@ const ConsultDoctorList = ({
+               </TouchableOpacity>
+             ) : null}
+             {noticeBar}
++            {showMedicationCategoryEntry ? (
++              <ConsultMedicationCategoryEntry
++                onPress={handleViewMedicationCategory}
++              />
++            ) : null}
+             <View
+               style={consultStyles.filterCaptionRow}
+               testID="appointments-filter-captions"
+@@ -1952,6 +1994,7 @@ const ConsultDoctorList = ({
+             </Pressable>
+           </Modal>
+           {helperTrialAlert}
++          {chinaPlanAlert}
+     </View>
+   );
+ };
+diff --git a/src/screens/consult-screen/consult-plan-chips.tsx b/src/screens/consult-screen/consult-plan-chips.tsx
+index fb04cebd..ade11c66 100644
+--- a/src/screens/consult-screen/consult-plan-chips.tsx
++++ b/src/screens/consult-screen/consult-plan-chips.tsx
+@@ -4,6 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
+ 
+ import type { Policys } from '@api/api-types';
+ import AppText from '@components/app-text/app-text';
++import { useChinaPlanPrescriptionAlert } from '@components/china-plan-prescription-alert/china-plan-prescription-alert';
+ import { useHelperTrialRegionAlert } from '@components/helper-trial-region-alert/helper-trial-region-alert';
+ import constants from '@constants';
+ import { fetchSelectableBenefitPlans } from '@services/benefit-plan-service';
+@@ -33,6 +34,10 @@ const ConsultPlanChips = (): React.ReactElement | null => {
+   const [policies, setPolicies] = useState<Policys[]>([]);
+   const { alert: helperTrialAlert, notifyPlanSelected } =
+     useHelperTrialRegionAlert(sponsorshipList);
++  const {
++    alert: chinaPlanAlert,
++    notifyPlanSelected: notifyChinaPlanSelected,
++  } = useChinaPlanPrescriptionAlert(sponsorshipList);
+   const selectedPlanId = plan?.id;
+   const selectedPolicyId = selectedPolicies?.id;
+ 
+@@ -67,6 +72,7 @@ const ConsultPlanChips = (): React.ReactElement | null => {
+       policy.plan.id === selectedPlanId && policy.id === selectedPolicies?.id;
+ 
+     notifyPlanSelected(policy, 0);
++    notifyChinaPlanSelected(policy, 0);
+ 
+     if (alreadySelected) {
+       return;
+@@ -75,6 +81,7 @@ const ConsultPlanChips = (): React.ReactElement | null => {
+     setPlan(policy.plan);
+     setSelectedPolicies(policy);
+   }, [
++    notifyChinaPlanSelected,
+     notifyPlanSelected,
+     selectedPlanId,
+     selectedPolicies?.id,
+@@ -161,6 +168,7 @@ const ConsultPlanChips = (): React.ReactElement | null => {
+     </ScrollView>
+     </View>
+     {helperTrialAlert}
++    {chinaPlanAlert}
+     </>
+   );
+ };
+diff --git a/src/screens/consult-screen/consult-screen.styles.ts b/src/screens/consult-screen/consult-screen.styles.ts
+index 9cc853a2..fce31160 100644
+--- a/src/screens/consult-screen/consult-screen.styles.ts
++++ b/src/screens/consult-screen/consult-screen.styles.ts
+@@ -61,6 +61,11 @@ export default EStyleSheet.create({
+     flex: 1,
+     width: '100%',
+   },
++  operatedPlanLoading: {
++    flex: 1,
++    alignItems: 'center',
++    justifyContent: 'center',
++  },
+   browser: {
+     flex: 1,
+     width: '100%',
+@@ -484,4 +489,45 @@ export default EStyleSheet.create({
+     fontWeight: '400',
+     lineHeight: '14.4rem',
+   },
++  medicationCategoryEntry: {
++    width: '100%',
++    marginBottom: '8rem',
++    padding: '12rem',
++    flexDirection: 'row',
++    alignItems: 'center',
++    justifyContent: 'space-between',
++    borderWidth: 1,
++    borderColor: '#E1EBEC',
++    borderRadius: '16rem',
++    backgroundColor: '#F3FAFA',
++  },
++  medicationCategoryEntryContent: {
++    flexShrink: 1,
++    minWidth: 0,
++    flexDirection: 'row',
++    alignItems: 'center',
++    gap: '8rem',
++  },
++  medicationCategoryVials: {
++    width: 24,
++    height: 24,
++  },
++  medicationCategoryVialsGraphic: {
++    position: 'absolute',
++    left: '20.66%',
++    top: '8.07%',
++  },
++  medicationCategoryEntryText: {
++    flexShrink: 1,
++    color: '#396561',
++    fontSize: '14rem',
++    fontWeight: '400',
++    lineHeight: '19.6rem',
++  },
++  medicationCategoryArrow: {
++    flexShrink: 0,
++    width: 16,
++    height: 16,
++    marginLeft: '8rem',
++  },
+ });
+diff --git a/src/screens/consult-screen/consult-secondary-screen.tsx b/src/screens/consult-screen/consult-secondary-screen.tsx
+index 73091726..40fa36d2 100644
+--- a/src/screens/consult-screen/consult-secondary-screen.tsx
++++ b/src/screens/consult-screen/consult-secondary-screen.tsx
+@@ -1,8 +1,15 @@
+-import React from 'react';
+-import { View } from 'react-native';
++import React, { useEffect, useState } from 'react';
++import { ActivityIndicator, View } from 'react-native';
+ 
++import type { Policys } from '@api/api-types';
++import { useChinaPlanPrescriptionAlert } from '@components/china-plan-prescription-alert/china-plan-prescription-alert';
+ import NavigationBar from '@components/navigation-bar/navigation-bar';
+ import constants from '@constants';
++import {
++  fetchSelectableBenefitPlans,
++  resolveConsultOperatedPolicy,
++  type ConsultOperatedPlanTarget,
++} from '@services/benefit-plan-service';
+ import { useAppState } from '@store/AppContext';
+ import { ThemeContext } from '@style/theme/theme-context';
+ import type { Theme } from '../../types/Theme';
+@@ -10,11 +17,133 @@ import type { Theme } from '../../types/Theme';
+ import ConsultBrowser from './consult-browser';
+ import styles, { getConsultScreenThemeStyles } from './consult-screen.styles';
+ 
+-const ConsultSecondaryScreen = (): React.ReactElement => {
+-  const { language } = useAppState();
++const OPERATED_PLAN_ATTEMPTS = 3;
++const OPERATED_PLAN_RETRY_DELAY_MS = 300;
++
++interface ConsultSecondaryScreenProps {
++  route?: {
++    params?: {
++      operatedPlan?: ConsultOperatedPlanTarget;
++    };
++  };
++}
++
++const hasOperatedPlanTarget = (
++  target: ConsultOperatedPlanTarget | undefined,
++): target is ConsultOperatedPlanTarget =>
++  [
++    target?.policyId,
++    target?.insurancePolicyId,
++    target?.planId,
++    target?.membershipId,
++  ].some(
++    (value: string | undefined): boolean =>
++      typeof value === 'string' && value.trim().length > 0,
++  );
++
++const ConsultSecondaryScreen = ({
++  route,
++}: ConsultSecondaryScreenProps = {}): React.ReactElement => {
++  const {
++    language,
++    setPlan,
++    setSelectedPolicies,
++    sponsorship_list: sponsorshipList,
++  } = useAppState();
++  const {
++    alert: chinaPlanAlert,
++    notifyPlanSelected: notifyChinaPlanSelected,
++  } = useChinaPlanPrescriptionAlert(sponsorshipList);
++  const operatedPlan = route?.params?.operatedPlan;
++  const shouldSelectOperatedPlan = hasOperatedPlanTarget(operatedPlan);
++  const [isOperatedPlanReady, setIsOperatedPlanReady] = useState(
++    !shouldSelectOperatedPlan,
++  );
+   const title = constants.i18n.t('consult', {
+     locale: language ?? constants.i18n.locale,
+   });
++  const operatedPolicyId = operatedPlan?.policyId;
++  const operatedInsurancePolicyId = operatedPlan?.insurancePolicyId;
++  const operatedPlanId = operatedPlan?.planId;
++  const operatedMembershipId = operatedPlan?.membershipId;
++
++  useEffect((): (() => void) | undefined => {
++    if (!shouldSelectOperatedPlan) {
++      return undefined;
++    }
++
++    let active = true;
++    let retryTimer: ReturnType<typeof setTimeout> | undefined;
++    const target: ConsultOperatedPlanTarget = {
++      insurancePolicyId: operatedInsurancePolicyId,
++      membershipId: operatedMembershipId,
++      planId: operatedPlanId,
++      policyId: operatedPolicyId,
++    };
++    const waitForRetry = (): Promise<void> =>
++      new Promise((resolve): void => {
++        retryTimer = setTimeout(resolve, OPERATED_PLAN_RETRY_DELAY_MS);
++      });
++
++    const applyOperatedPlan = async (): Promise<void> => {
++      setIsOperatedPlanReady(false);
++
++      try {
++        for (let attempt = 0; attempt < OPERATED_PLAN_ATTEMPTS; attempt += 1) {
++          if (!active) {
++            return;
++          }
++
++          let policies: Policys[] = [];
++
++          try {
++            policies = await fetchSelectableBenefitPlans();
++          } catch (_error) {
++            policies = [];
++          }
++
++          if (!active) {
++            return;
++          }
++
++          const matchedPolicy = resolveConsultOperatedPolicy(policies, target);
++
++          if (matchedPolicy) {
++            setPlan(matchedPolicy.plan);
++            setSelectedPolicies(matchedPolicy);
++            notifyChinaPlanSelected(matchedPolicy, 0);
++            break;
++          }
++
++          if (attempt < OPERATED_PLAN_ATTEMPTS - 1) {
++            await waitForRetry();
++          }
++        }
++      } finally {
++        if (active) {
++          setIsOperatedPlanReady(true);
++        }
++      }
++    };
++
++    applyOperatedPlan().then();
++
++    return (): void => {
++      active = false;
++      if (retryTimer) {
++        clearTimeout(retryTimer);
++      }
++    };
++  }, [
++    operatedInsurancePolicyId,
++    operatedMembershipId,
++    operatedPlanId,
++    notifyChinaPlanSelected,
++    operatedPolicyId,
++    setPlan,
++    setSelectedPolicies,
++    shouldSelectOperatedPlan,
++  ]);
+ 
+   return (
+     <ThemeContext.Consumer>
+@@ -28,8 +157,18 @@ const ConsultSecondaryScreen = (): React.ReactElement => {
+               getConsultScreenThemeStyles(theme).page,
+             ]}
+           >
+-            <ConsultBrowser />
++            {isOperatedPlanReady ? (
++              <ConsultBrowser />
++            ) : (
++              <View
++                style={styles.operatedPlanLoading}
++                testID="consult-operated-plan-loading"
++              >
++                <ActivityIndicator color="#00AC86" />
++              </View>
++            )}
+           </View>
++          {chinaPlanAlert}
+         </View>
+       )}
+     </ThemeContext.Consumer>
+diff --git a/src/screens/medication-list-screen/medication-detailed-screen/medication-detailed-screen.tsx b/src/screens/medication-list-screen/medication-detailed-screen/medication-detailed-screen.tsx
+index e79bc278..529f66f2 100644
+--- a/src/screens/medication-list-screen/medication-detailed-screen/medication-detailed-screen.tsx
++++ b/src/screens/medication-list-screen/medication-detailed-screen/medication-detailed-screen.tsx
+@@ -9,9 +9,15 @@ import {SVGMinusGreyComponent, SVGPlusWhiteComponent, SVGCartGreenComponent} fro
+ import GradientBt from '@components/gradient-bt/gradient-bt';
+ import styles from './medication-detailed-screen.styles';
+ import {DrugList, LineItem} from '@api/api-types';
++import {mergeConsultOperatedPlanTargets} from '@services/benefit-plan-service';
++
++const readRouteId = (value: unknown): string =>
++  typeof value === 'string' ? value.trim() : '';
+ 
+ const MedicationDetailedScreen: React.FC = (props: any) => {
+   const {drugName, subTitle, price, currencyCode, activeIngredients, pictures} = props.route?.params;
++  const consultPlanId = readRouteId(props.route?.params?.consultPlanId);
++  const consultPolicyId = readRouteId(props.route?.params?.consultPolicyId);
+   const [cartCounter, setCartCounter] = useState<number>(0);
+   const [drugLineItems, setDrugLineItems] = useState<[LineItem]>();
+   const [entityId, setEntityId] = useState<string>("");
+@@ -140,6 +146,18 @@ const MedicationDetailedScreen: React.FC = (props: any) => {
+     )
+   }
+ 
++  const handleConsultDoctor = (): void => {
++    const operatedPlan = mergeConsultOperatedPlanTargets({
++      planId: consultPlanId,
++      policyId: consultPolicyId,
++    });
++
++    $NavigationActions.navigate(
++      $routeNames.consultSecondary,
++      operatedPlan ? { operatedPlan } : undefined,
++    );
++  };
++
+   const renderCartAndButton = () => {
+     return (
+       <View style={styles.cartContainer} >
+@@ -172,7 +190,7 @@ const MedicationDetailedScreen: React.FC = (props: any) => {
+           }
+           <GradientBt 
+             gradientStyle={styles.consultDoctor}
+-            onPress={() => $NavigationActions.navigate($routeNames.doctorListScreen)}
++            onPress={handleConsultDoctor}
+           >
+             <AppText size='small' style={{color: '#FFFFFF', fontWeight: '700'}}> 
+               {$i18n.t('consultDoctor')}
+diff --git a/src/screens/medication-list-screen/medication-list-screen.tsx b/src/screens/medication-list-screen/medication-list-screen.tsx
+index cace16e8..7896caa5 100644
+--- a/src/screens/medication-list-screen/medication-list-screen.tsx
++++ b/src/screens/medication-list-screen/medication-list-screen.tsx
+@@ -19,10 +19,30 @@ import ContactUS from '../../assets/images/contact-us.svg';
+ import CloseFadeGrey from '../../assets/images/close-fade-grey.svg';
+ import Call from '../../assets/images/call.svg';
+ import Whatsapp from '../../assets/images/whatsapp.svg';
+-import { useFocusEffect, useIsFocused } from '@react-navigation/native';
++import { useIsFocused } from '@react-navigation/native';
++import { isMedicationCategorySelected } from './medication-category-selection';
++
++const getRouteParamList = (value: unknown): string[] | undefined =>
++  Array.isArray(value)
++    ? value.filter((item: unknown): item is string => typeof item === 'string')
++    : undefined;
+ 
+ const MedicationListScreen: React.FC = (props: any) => {
+-  const [selectedCategory, setSelectedCategory] = useState<string>(props.route.params.selectedCategory);
++  const routeParams = props.route?.params ?? {};
++  const planId =
++    typeof routeParams.planId === 'string' ? routeParams.planId.trim() : '';
++  const policyId =
++    typeof routeParams.policyId === 'string' ? routeParams.policyId.trim() : '';
++  const initialCategory =
++    typeof routeParams.selectedCategory === 'string'
++      ? routeParams.selectedCategory
++      : '';
++  const initialCategoryList = getRouteParamList(routeParams.categoryList);
++  const [selectedCategory, setSelectedCategory] =
++    useState<string>(initialCategory);
++  const [categoryList, setCategoryList] = useState<string[]>(
++    initialCategoryList ?? [],
++  );
+   const [medicineLists, setMedicineLists] = useState<[DrugList]>();
+   const [isLoading, setLoading] = useState<boolean>(false);
+   const [isLoadingDrugList, setIsLoadingDrugList] = useState<boolean>(false);
+@@ -43,13 +63,30 @@ const MedicationListScreen: React.FC = (props: any) => {
+     const entityId = memberData?.entity?.id;
+     setEntityId(entityId);
+ 
+-    const response = await $api.getDrugsByTags(props.route.params.planId, selectedCategory);
+-    setLoading(false);
++    if (planId) {
++      if (!initialCategoryList) {
++        const tagsResponse = await $api.getDrugTags(planId);
+ 
+-    if (response.success) {
+-      setMedicineLists(response.data);
++        if (tagsResponse?.success && Array.isArray(tagsResponse.data)) {
++          setCategoryList(
++            tagsResponse.data.filter(
++              (item: unknown): item is string => typeof item === 'string',
++            ),
++          );
++        }
++      }
++
++      const response = selectedCategory
++        ? await $api.getDrugsByTags(planId, selectedCategory)
++        : await $api.getMedsItem(planId);
++
++      if (response?.success) {
++        setMedicineLists(response.data);
++      }
+     }
+ 
++    setLoading(false);
++
+     const responseCartItems = await $api.getCartItem(entityId);
+     if (responseCartItems.success) {
+       setDrugLineItems(responseCartItems.data.cart_info.lineItems);
+@@ -212,7 +249,7 @@ const MedicationListScreen: React.FC = (props: any) => {
+   const handleSelectCategory = async (category: string) => {
+     setSelectedCategory(category);
+     setIsLoadingDrugList(true);
+-    const response = await $api.getDrugsByTags(props.route.params.planId, category);
++    const response = await $api.getDrugsByTags(planId, category);
+     if (response.success) {
+       setMedicineLists(response.data);
+     }
+@@ -223,15 +260,24 @@ const MedicationListScreen: React.FC = (props: any) => {
+     return (
+       <View style={{flex: 1}}>
+         <View style={styles.categoryDrugFilterListContainer}>
+-          {props.route.params.categoryList.map((item: any) => {
++          {categoryList.map((item: string) => {
++            const categorySelected = isMedicationCategorySelected(
++              item,
++              selectedCategory,
++            );
++
+             return (
+               <TouchableOpacity
++                accessibilityRole="button"
++                accessibilityState={{ selected: categorySelected }}
++                key={item}
+                 onPress={() => handleSelectCategory(item)}
+                 style={[{
+-                  backgroundColor: item.includes(selectedCategory) ? '#00AC86' : '#FFF',
++                  backgroundColor: categorySelected ? '#00AC86' : '#FFF',
+                 }, styles.categoryFilter]}
++                testID={`medication-category-${item}`}
+               >
+-                <AppText size={'xsmall'} style={{textTransform: 'capitalize', color: !item.includes(selectedCategory) ? '#00AC86' : '#FFF', padding: 10}}> 
++                <AppText size={'xsmall'} style={{textTransform: 'capitalize', color: categorySelected ? '#FFF' : '#00AC86', padding: 10}}> 
+                   {$i18n.t(item).includes('missing') ? item : $i18n.t(item)}
+                 </AppText>
+               </TouchableOpacity>
+@@ -264,7 +310,11 @@ const MedicationListScreen: React.FC = (props: any) => {
+   }
+ 
+   const handleNavigateToDetailedScren = (item: any) => {
+-    $NavigationActions.navigate($routeNames.medicationDetailedScreen, item);
++    $NavigationActions.navigate($routeNames.medicationDetailedScreen, {
++      ...item,
++      consultPlanId: planId,
++      consultPolicyId: policyId,
++    });
+   }
+ 
+   const handleAddToCart = async (item: any) => {
+diff --git a/src/screens/my-plans-screen/my-plans-screen.tsx b/src/screens/my-plans-screen/my-plans-screen.tsx
+index d7d68b44..28e18772 100644
+--- a/src/screens/my-plans-screen/my-plans-screen.tsx
++++ b/src/screens/my-plans-screen/my-plans-screen.tsx
+@@ -526,10 +526,20 @@ const MyPlansScreen: React.FC<StateProps> = (props: StateProps) => {
+   );
+ 
+   const handleNavigateToMedicationList = (category: string) => {
++    const currentPlan =
++      state.heals_pass_product_list[state.index_heals_pass_product_list];
++    const planId =
++      currentPlan && 'planId' in currentPlan ? currentPlan.planId : undefined;
++    const policyId =
++      currentPlan && 'insuredItem' in currentPlan && currentPlan.insuredItem
++        ? currentPlan.id
++        : undefined;
++
+     $NavigationActions.navigate($routeNames.medicationListScreen, {
+       selectedCategory: category,
+       categoryList: medicationCategory,
+-      planId: state.heals_pass_product_list[state.index_heals_pass_product_list]?.planId
++      planId,
++      policyId,
+     });
+   }
+ 
+diff --git a/src/screens/pass/pass-screen.tsx b/src/screens/pass/pass-screen.tsx
+index 94783524..ba9451e2 100644
+--- a/src/screens/pass/pass-screen.tsx
++++ b/src/screens/pass/pass-screen.tsx
+@@ -35,6 +35,10 @@ import LogoSvg from '../../assets/images/logo.svg';
+ import {renderWalletPass} from '@components/walletSvg/walletSvg';
+ import {isGoogleWalletInstalled, getGoogleWalletStoreUrl} from '@utils/wallet-helper';
+ import {filterDisplayablePassPolicies} from './displayable-pass-policy';
++import {
++  mergeConsultOperatedPlanTargets,
++  type ConsultOperatedPlanTarget,
++} from '@services/benefit-plan-service';
+ import {SVGCapsuleIcon} from '../../assets/svg/index';
+ import NavigationBar from "@components/navigation-bar/navigation-bar.tsx";
+ import PageRightBt from "@components/page-right-bt/page-right-bt.tsx";
+@@ -54,8 +58,27 @@ const PassScreen = () => {
+   } = useAppState();
+   const { setShowCommonModal, showCommonModal, commonModalKey, sponsorship_list } = useAppState();
+   const toast = useToast();
+-  const openConsult = useCallback((): void => {
+-    $NavigationActions.navigate($routeNames.consultSecondary);
++  const openConsult = useCallback((policy: {
++    id?: string;
++    planId?: string;
++    plan?: { id?: string };
++    insuredItem?: {
++      insurancePolicyId?: string;
++      membershipId?: string;
++    } | null;
++  }): void => {
++    const operatedPlan: ConsultOperatedPlanTarget | undefined =
++      mergeConsultOperatedPlanTargets({
++        insurancePolicyId: policy.insuredItem?.insurancePolicyId,
++        membershipId: policy.insuredItem?.membershipId,
++        planId: policy.planId ?? policy.plan?.id,
++        policyId: policy.id,
++      });
++
++    $NavigationActions.navigate(
++      $routeNames.consultSecondary,
++      operatedPlan ? { operatedPlan } : undefined,
++    );
+   }, []);
+   const policyRequestRef = useRef(0);
+   const loadMemberPolicies = useCallback(async (memberId?: string) => {
+@@ -553,7 +576,7 @@ const PassScreen = () => {
+           </View>
+           <View style={styles.toClinic}>
+             <TouchableOpacity style={styles.toClinicItem}
+-              onPress={openConsult}>
++              onPress={() => openConsult(item)}>
+               <Image source={$assets.pass_location()} style={styles.locationIcon} />
+               <AppText style={{ color: '#0F1617' }}>
+                 {constants.i18n.t('visit_clinic')}
+@@ -561,7 +584,7 @@ const PassScreen = () => {
+             </TouchableOpacity>
+             <TouchableOpacity
+               style={styles.toClinicItem}
+-              onPress={openConsult}>
++              onPress={() => openConsult(item)}>
+               <Image source={$assets.pass_camera()} style={styles.locationIcon} />
+               <AppText style={{ color: '#0F1617' }}>
+                 {constants.i18n.t('video_consultation')}
+diff --git a/src/screens/profile/profile-healsplan-screen/profile-healsplan-screen.tsx b/src/screens/profile/profile-healsplan-screen/profile-healsplan-screen.tsx
+index 5c28628c..e4cb16ef 100644
+--- a/src/screens/profile/profile-healsplan-screen/profile-healsplan-screen.tsx
++++ b/src/screens/profile/profile-healsplan-screen/profile-healsplan-screen.tsx
+@@ -22,6 +22,7 @@ import CommonListEmptyComponentComp from "@components/common-list-empty/common-l
+ import ActivationModal from "@components/activation-modal/activation-modal";
+ import { APP_THEME_COLOR } from "@style/theme/theme-common";
+ import {withoutSingleTeleconsultPlans} from "@helper/single-teleconsult-plan";
++import type {ConsultOperatedPlanTarget} from "@services/benefit-plan-service";
+ 
+ const THEME_BUTTON_COLORS = [APP_THEME_COLOR, APP_THEME_COLOR];
+ 
+@@ -36,6 +37,9 @@ const HealsPlanScreen = ({ navigation }) => {
+   const [data, setData] = useState<HpListRequestResponse[]>([]);
+   const [showActivateModal, setShowActivateModal] = useState<boolean>(false);
+   const [activationCodes, setActivationCodes] = useState<string>("");
++  const [operatedPlan, setOperatedPlan] = useState<
++    ConsultOperatedPlanTarget | undefined
++  >();
+ 
+   useEffect(() => {
+     getData();
+@@ -108,7 +112,12 @@ const HealsPlanScreen = ({ navigation }) => {
+                   colors={THEME_BUTTON_COLORS}
+                   gradientStyle={[styles.bottomBt]}
+                   onPress={() => {
+-                    setActivationCodes(item.activationRecords[index].activationCode || "");
++                    const activationRecord = item.activationRecords[index];
++                    setActivationCodes(activationRecord?.activationCode || "");
++                    setOperatedPlan({
++                      planId: item.productId || item.product?.id,
++                      policyId: activationRecord?.policyId,
++                    });
+                     setShowActivateModal(true);
+                   }}
+                 >
+@@ -308,9 +317,13 @@ const HealsPlanScreen = ({ navigation }) => {
+         visible={showActivateModal}
+         onActivationModalHide={(e: boolean, shouldRefresh: boolean) => {
+           setShowActivateModal(e);
++          if (!e) {
++            setOperatedPlan(undefined);
++          }
+           if (shouldRefresh) getData();
+         }}
+         activationCode={activationCodes}
++        operatedPlan={operatedPlan}
+       />
+     );
+   };
+diff --git a/src/services/benefit-plan-service.ts b/src/services/benefit-plan-service.ts
+index b8b687d9..b15704f5 100644
+--- a/src/services/benefit-plan-service.ts
++++ b/src/services/benefit-plan-service.ts
+@@ -43,7 +43,7 @@ const policyEffectiveTime = (policy: Policys): number => {
+ };
+ 
+ export const selectPurchasedConsultPolicy = (
+-  policies: Policys[],
++  policies: readonly Policys[],
+   planId: string,
+ ): Policys | undefined =>
+   policies
+@@ -55,3 +55,193 @@ export const selectPurchasedConsultPolicy = (
+ 
+       return latest;
+     }, undefined);
++
++export interface ConsultOperatedPlanTarget {
++  insurancePolicyId?: string;
++  membershipId?: string;
++  planId?: string;
++  policyId?: string;
++}
++
++const readObject = (value: unknown): Record<string, unknown> | undefined => {
++  if (!value || typeof value !== 'object' || Array.isArray(value)) {
++    return undefined;
++  }
++
++  return value as Record<string, unknown>;
++};
++
++const readTrimmedString = (value: unknown): string | undefined =>
++  typeof value === 'string' && value.trim().length > 0
++    ? value.trim()
++    : undefined;
++
++const firstPlanId = (
++  ...values: Array<string | undefined>
++): string | undefined => {
++  for (const value of values) {
++    const trimmed = value?.trim();
++
++    if (trimmed) {
++      return trimmed;
++    }
++  }
++
++  return undefined;
++};
++
++const selectLatestPolicy = (
++  policies: readonly Policys[],
++): Policys | undefined =>
++  policies.reduce<Policys | undefined>(
++    (latest: Policys | undefined, policy: Policys) => {
++      if (!latest || policyEffectiveTime(policy) >= policyEffectiveTime(latest)) {
++        return policy;
++      }
++
++      return latest;
++    },
++    undefined,
++  );
++
++export const mergeConsultOperatedPlanTargets = (
++  preferred?: ConsultOperatedPlanTarget,
++  fallback?: ConsultOperatedPlanTarget,
++): ConsultOperatedPlanTarget | undefined => {
++  const policyId = firstPlanId(preferred?.policyId, fallback?.policyId);
++  const insurancePolicyId = firstPlanId(
++    preferred?.insurancePolicyId,
++    fallback?.insurancePolicyId,
++  );
++  const planId = firstPlanId(preferred?.planId, fallback?.planId);
++  const membershipId = firstPlanId(
++    preferred?.membershipId,
++    fallback?.membershipId,
++  );
++
++  if (!policyId && !insurancePolicyId && !planId && !membershipId) {
++    return undefined;
++  }
++
++  return {
++    insurancePolicyId,
++    membershipId,
++    planId,
++    policyId,
++  };
++};
++
++export const readActivatedConsultPlanTarget = (
++  response: unknown,
++): ConsultOperatedPlanTarget | undefined => {
++  const responseRecord = readObject(response);
++  const dataRecord = readObject(responseRecord?.data);
++  const candidates = [
++    responseRecord,
++    dataRecord,
++    readObject(dataRecord?.policy),
++    readObject(responseRecord?.policy),
++  ];
++
++  for (const candidate of candidates) {
++    if (!candidate) {
++      continue;
++    }
++
++    const policyId = readTrimmedString(candidate.policyId);
++    const planId =
++      readTrimmedString(candidate.planId) ??
++      readTrimmedString(readObject(candidate.plan)?.id);
++
++    if (policyId || planId) {
++      return mergeConsultOperatedPlanTargets({ planId, policyId });
++    }
++  }
++
++  return undefined;
++};
++
++export const resolveConsultOperatedPolicy = (
++  policies: readonly Policys[],
++  target: ConsultOperatedPlanTarget,
++): Policys | undefined => {
++  const policyId = target.policyId?.trim();
++
++  if (policyId) {
++    const matchedPolicy = policies.find(
++      (policy: Policys): boolean => policy.id === policyId,
++    );
++
++    if (matchedPolicy) {
++      return matchedPolicy;
++    }
++  }
++
++  const insurancePolicyId = target.insurancePolicyId?.trim();
++
++  if (insurancePolicyId) {
++    const matchedPolicy = policies.find(
++      (policy: Policys): boolean => policy.id === insurancePolicyId,
++    );
++
++    if (matchedPolicy) {
++      return matchedPolicy;
++    }
++  }
++
++  const membershipId = target.membershipId?.trim();
++
++  if (membershipId) {
++    const matchedPolicy = policies.find(
++      (policy: Policys): boolean => policy.memberShipId === membershipId,
++    );
++
++    if (matchedPolicy) {
++      return matchedPolicy;
++    }
++  }
++
++  const planId = target.planId?.trim();
++
++  if (!planId) {
++    return undefined;
++  }
++
++  return selectPurchasedConsultPolicy(policies, planId);
++};
++
++export const selectNewlyActivatedConsultPolicy = (
++  previousPolicies: readonly Policys[] | undefined,
++  nextPolicies: readonly Policys[],
++  hint?: ConsultOperatedPlanTarget,
++): Policys | undefined => {
++  if (previousPolicies) {
++    const previousPolicyIds = new Set(
++      previousPolicies.map((policy: Policys): string => policy.id),
++    );
++    const createdPolicies = nextPolicies.filter(
++      (policy: Policys): boolean => !previousPolicyIds.has(policy.id),
++    );
++    const hintedCreatedPolicy = hint
++      ? resolveConsultOperatedPolicy(createdPolicies, hint)
++      : undefined;
++
++    if (hintedCreatedPolicy) {
++      return hintedCreatedPolicy;
++    }
++
++    // An empty snapshot plus several current policies is not evidence that
++    // every policy was just activated.
++    if (!(previousPolicies.length === 0 && createdPolicies.length > 1)) {
++      const latestCreatedPolicy = selectLatestPolicy(createdPolicies);
++
++      if (latestCreatedPolicy) {
++        return latestCreatedPolicy;
++      }
++    }
++  }
++
++  return hint
++    ? resolveConsultOperatedPolicy(nextPolicies, hint)
++    : undefined;
++};
+===== STAGED =====
+===== UNTRACKED STAT =====
+__mocks__/react-native-linear-gradient.js
+__tests__/activation-modal-operated-plan.test.tsx
+__tests__/china-plan-prescription-alert.test.tsx
+__tests__/medication-category-selection.test.ts
+__tests__/medication-detailed-consult-plan.test.tsx
+__tests__/medication-list-default-selection.test.tsx
+src/assets/images/consult/medication-category-arrow.svg
+src/assets/images/consult/medication-category-vials.svg
+src/components/china-plan-prescription-alert/china-plan-prescription-alert.styles.ts
+src/components/china-plan-prescription-alert/china-plan-prescription-alert.tsx
+src/helper/china-plan.ts
+src/screens/consult-screen/consult-medication-category-entry.tsx
+src/screens/medication-list-screen/medication-category-selection.ts
