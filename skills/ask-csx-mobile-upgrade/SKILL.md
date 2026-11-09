@@ -128,19 +128,20 @@ description: >-
 
 ### 当前阶段
 
-- 分支 `1.1.9-stark`，HEAD `05e4ce9d`，已推到 `origin/1.1.9-stark`。工作树干净。`global.env` 仍是 `poc`，没有改它，也没有改 `versionName` / `versionCode`（`1.1.9` / `1793791520`）。`newArchEnabled=true`、`hermesEnabled=true`，本轮没有改。
-- 2026-11-05 14:52 在 `4ae24c72`（OPPO Reno11 Pro 5G，`model:PJJ110`，Android 16，时区 `Asia/Shanghai`）用 `npm run android` 装上 debug 包并启动。这次走了完整 Gradle，沙箱 `GRADLE_USER_HOME`，约 16 分钟，没有走快路径，也没有加 `--active-arch-only`。已装包 `pkgFlags` 含 `DEBUGGABLE`，`lastUpdateTime` 为 2026-11-05 14:52:37。Metro 在 8081。
-- 首屏是已登录的 CSM 工作台，请求打到 `https://api-cs-mobile-dev.heals.asia`。诊症记录渲染时有一条 `ReactNativeJS:E`：列表最后一项在 render 里直接 `setState`。已把 `loading_consultationQueryList` 的更新挪到该条的 `onLayout`。重新打开后诊症记录可见，该日志出现在 `onLayout`，`ReactNativeJS:E` / `AndroidRuntime:E` 为空，画面没有 LogBox 红条。该改动与新增诊症页 Android 底部白条修复已包含在 `05e4ce9d` 并推送。未上传蒲公英或 TestFlight。
-- 2026-11-04 蒲公英最新包本轮没有复核。本轮没有执行 prod `assembleRelease` / `bundleRelease`。
+- 分支 `1.1.9-stark`，HEAD `ee5c21cc`，已推到 `origin/1.1.9-stark`。工作树干净。`global.env` 仍是 `poc`，没有改它，也没有改 `versionName` / `versionCode`（`1.1.9` / `1793791520`）。`newArchEnabled=true`、`hermesEnabled=true`，本轮没有改。
+- `ee5c21cc` 包含转介信深色主题确认框和健康资料新增日期回显。本轮没有改这两处页面的其它逻辑。
+- 2026-11-09 14:45 在 `4ae24c72`（OPPO Reno11 Pro 5G，`model:PJJ110`，时区 `Asia/Shanghai`）走快路径重新打开 debug 包，没有重跑 Gradle。已装包仍是 `1.1.9` / `1793791520`，`pkgFlags` 含 `DEBUGGABLE`，`lastUpdateTime` 仍为 2026-11-09 11:07:44。`android/`、`package.json`、`yarn.lock`、`patches`、`app.json` 都不新于该时间，`node_modules/.yarn-integrity` 修改时间是 2026-05-13。Metro 在 8081，已连上这台设备。
+- 前台是 `com.csx.mobile.app/.MainActivity`，进程存在。画面是已登录的 CSM 工作台，请求打到 `https://api-cs-mobile-dev.heals.asia`，没有 LogBox 红条。`ReactNativeJS:E` / `AndroidRuntime:E` 为空。未上传蒲公英或 TestFlight。
+- 蒲公英最新包本轮没有复核。本轮没有执行 prod `assembleRelease` / `bundleRelease`。
 
 ### 外部阻塞与证据缺口
 
-- 本轮没有接有线 iPhone / iPad，没有做 iOS 归档或安装。
+- 2026-11-09 没有正在连接的有线 iPhone / iPad。彭燕的 iPad（iPad Air 3rd，iOS 18.7.8，UDID `00008020-000208CC2E23002E`）在 `devicectl` 为 unavailable，`xctrace` 列为 Devices Offline。没有做 iOS 归档或安装。
 - TestFlight build 当前是否仍为 processing / valid 未在本轮核验；只有任务依赖该状态时才访问 App Store Connect 实时确认。
 
 ### 最小下一步
 
-1. 用户只调用入口或只说“继续”时，只做「当前活跃需求」里第一条未注释任务，做完即停。这台 `4ae24c72` 上已是 `1.1.9` / `1793791520` 的 debuggable 包，诊症页可以打开且没有 LogBox 红条。原生没有新改动时走快路径，不要再完整跑 Gradle。
+1. 用户只调用入口或只说“继续”时，只做「当前活跃需求」里第一条未注释任务，做完即停。这台 `4ae24c72` 上已是 `1.1.9` / `1793791520` 的 debuggable 包，`lastUpdateTime` 为 2026-11-09 11:07:44。2026-11-09 14:45 快路径打开后，工作台可以显示且没有 LogBox 红条。原生文件不新于该时间时走快路径，不要再完整跑 Gradle。
 2. 已注释的 iOS / Release 任务保持不动；只有用户取消注释或点名后才做。
 
 ## 输出与边界
