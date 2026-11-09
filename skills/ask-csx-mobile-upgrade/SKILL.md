@@ -128,11 +128,11 @@ description: >-
 
 ### 当前阶段
 
-- 分支 `1.1.9-stark`，HEAD `ee5c21cc`，已推到 `origin/1.1.9-stark`。工作树干净。`global.env` 仍是 `poc`，没有改它，也没有改 `versionName` / `versionCode`（`1.1.9` / `1793791520`）。`newArchEnabled=true`、`hermesEnabled=true`，本轮没有改。
-- `ee5c21cc` 包含转介信深色主题确认框和健康资料新增日期回显。本轮没有改这两处页面的其它逻辑。
+- 分支 `1.1.9-stark`，HEAD `fdcb856c`，与 `origin/1.1.9-stark` 对齐。工作树只有未提交的 `android/app/build.gradle`：`versionCode` 从 `1793791520` 改为秒级时间戳 `1794219054`，`versionName` 保持 `1.1.9`。`global.env` 仍是 `poc`，本轮没有改它。`newArchEnabled=true`、`hermesEnabled=true`，没有改。不要 reset 这处版本号。
+- 2026-11-09 18:10 执行 `assembleRelease`，约 4 分 4 秒，`BUILD SUCCESSFUL`。产物 `android/app/build/outputs/apk/release/app-arm64-v8a-release.apk`，包名 `com.csx.mobile.app`，`1.1.9` / `1794219054`，仅 `arm64-v8a`，v2 签名通过，132763899 字节，SHA-256 `23d909a1dc8529da4ad1b9d6768d7f578404cd8d8744c1c7621634eae79f6983`。未安装到设备。
 - 2026-11-09 14:45 在 `4ae24c72`（OPPO Reno11 Pro 5G，`model:PJJ110`，时区 `Asia/Shanghai`）走快路径重新打开 debug 包，没有重跑 Gradle。已装包仍是 `1.1.9` / `1793791520`，`pkgFlags` 含 `DEBUGGABLE`，`lastUpdateTime` 仍为 2026-11-09 11:07:44。`android/`、`package.json`、`yarn.lock`、`patches`、`app.json` 都不新于该时间，`node_modules/.yarn-integrity` 修改时间是 2026-05-13。Metro 在 8081，已连上这台设备。
-- 前台是 `com.csx.mobile.app/.MainActivity`，进程存在。画面是已登录的 CSM 工作台，请求打到 `https://api-cs-mobile-dev.heals.asia`，没有 LogBox 红条。`ReactNativeJS:E` / `AndroidRuntime:E` 为空。未上传蒲公英或 TestFlight。
-- 蒲公英最新包本轮没有复核。本轮没有执行 prod `assembleRelease` / `bundleRelease`。
+- 前台是 `com.csx.mobile.app/.MainActivity`，进程存在。画面是已登录的 CSM 工作台，请求打到 `https://api-cs-mobile-dev.heals.asia`，没有 LogBox 红条。`ReactNativeJS:E` / `AndroidRuntime:E` 为空。这次 debug 启动本身没有上传。
+- 蒲公英 CS Mobile Android（包名 `com.csx.mobile.app`）最新一条是 2026-11-09 18:18 的 `v1.1.9`，蒲公英 Build `387`，126.6 MB，更新说明 `poc`。发布确认页显示 Android Build `1794219054`。上一包 Build `386` 已变成历史版本。未上传 Google Play，未提交，未 push。没有执行 prod `assembleRelease` / `bundleRelease`；这两项之后会读到同一组 `1.1.9` / `1794219054`。
 
 ### 外部阻塞与证据缺口
 

@@ -253,6 +253,7 @@ description: >-
   - 2026-11-09：讲清 Vercel 跑的是整份 Next.js 网站，包含浏览器页面和 `src/app/api` 这类服务端代码。Supabase 只托管 PostgreSQL，不运行这个 Next.js 进程。第 1 章仍未学完。
   - 2026-11-09：在 `README.md` 的「部署」写明 Vercel 是线上网站的托管平台。它提供页面并执行接口；记录留在 Supabase。`main` 分支触发 Production 发布，`vercel.json` 负责每日统计清理。第 1 章仍未学完。
   - 2026-11-09：讲清 Prisma 生成的客户端不在 `src/`，而在 `node_modules/.pnpm/.../node_modules/.prisma/client/`。业务代码通过 `@prisma/client` 使用它。第 1 章仍未学完。
+  - 2026-11-09：更正生成目录。pnpm 不会在项目根创建 `node_modules/.prisma/client`；当前实际路径在 `@prisma+client@6.19.3_prisma@6.19.3_typescript@5.9.3` 下面，并且 `.prisma` 是隐藏目录。第 1 章仍未学完。
   - 2026-11-03：讲清项目数据库是 Supabase 上的 PostgreSQL，由 Prisma 6 访问，并启用 pgvector。dev 与 prod 是两套隔离库。仓库没有写死 Postgres 主版本号。第 1 章仍未学完。 
 
 ## 最新待继续问题(不要修改这部分的子内容)
