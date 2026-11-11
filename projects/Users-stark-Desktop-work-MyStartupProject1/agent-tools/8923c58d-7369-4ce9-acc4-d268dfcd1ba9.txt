@@ -1,0 +1,3045 @@
+Prisma Schema API (Prisma ORM v7) | Prisma Documentation
+
+# Schema API
+
+Reference for Prisma Schema Language (PSL)
+
+## `datasource` Copy Anchor Link
+
+Defines a data source in the Prisma schema.
+
+### Fields Copy Anchor Link
+
+A `datasource` block accepts the following fields:
+
+| Name | Required | Type | Description |
+| --- | --- | --- | --- |
+| `provider` | Yes | String (`postgresql`, `mysql`, `sqlite`, `sqlserver`, `mongodb`, `cockroachdb`) | Specifies the database connector to use. |
+| `relationMode` | No | String (`foreignKeys`, `prisma`) | Sets whether referential integrity is enforced by foreign keys or by Prisma. |
+| `schemas` | No | Array of strings | List of database schemas to include (multi-schema support, PostgreSQL and SQL Server). |
+| `extensions` | No | Array of extension names | PostgreSQL extensions to enable. |
+
+Connection URLs (`url`, `directUrl`, `shadowDatabaseUrl`) are configured in `prisma.config.ts`, not in the schema file.
+
+The following providers are available:
+
+- `sqlite`
+- `postgresql`
+- `mysql`
+- `sqlserver`
+- `mongodb`
+- `cockroachdb`
+
+### Remarks Copy Anchor Link
+
+- You can only have one`datasource` block in a schema.
+- `datasource db` is convention - however, you can give your data source any name - for example, `datasource mysql` or `datasource data`.
+
+### Examples Copy Anchor Link
+
+#### PostgreSQL datasource Copy Anchor Link
+
+Copy Text
+
+```
+datasource db {
+  provider = "postgresql"
+}
+```
+
+Configure the connection URL in `prisma.config.ts`:
+
+Copy Text
+
+```
+import { defineConfig, env } from "prisma/config";
+
+export default defineConfig({
+  datasource: {
+    url: env("DATABASE_URL"),
+  },
+});
+```
+
+Learn more about PostgreSQL connection strings in the PostgreSQL documentation.
+
+#### Specify a PostgreSQL data source via an environment variable Copy Anchor Link
+
+In this example, the target database is available with the following credentials:
+
+- User: `johndoe`
+- Password: `mypassword`
+- Host: `localhost`
+- Port: `5432`
+- Database name: `mydb`
+- Schema name: `public`
+
+Copy Text
+
+```
+datasource db {
+  provider = "postgresql"
+}
+```
+
+When running a Prisma CLI command that needs the database connection URL (e.g. `prisma generate`), you need to make sure that the `DATABASE_URL` environment variable is set.
+
+One way to do so is by creating a `.env` file with the following contents. Note that the file must be in the same directory as your `schema.prisma` file to automatically picked up the Prisma CLI.
+
+Copy Text
+
+```
+DATABASE_URL=postgresql://johndoe:mypassword@localhost:5432/mydb?schema=public
+```
+
+#### MySQL datasource Copy Anchor Link
+
+Copy Text
+
+```
+datasource db {
+  provider = "mysql"
+}
+```
+
+Learn more about MySQL connection URLs.
+
+#### MongoDB datasource Copy Anchor Link
+
+Copy Text
+
+```
+datasource db {
+  provider = "mongodb"
+}
+```
+
+Learn more about MongoDB connection URLs.
+
+#### SQLite datasource Copy Anchor Link
+
+Copy Text
+
+```
+datasource db {
+  provider = "sqlite"
+}
+```
+
+Learn more about SQLite connection URLs.
+
+#### CockroachDB datasource Copy Anchor Link
+
+Copy Text
+
+```
+datasource db {
+  provider = "cockroachdb"
+}
+```
+
+CockroachDB uses the same connection URL format as PostgreSQL. Learn more about PostgreSQL connection URLs.
+
+#### Multi-schema datasource (PostgreSQL) Copy Anchor Link
+
+Copy Text
+
+```
+datasource db {
+  provider = "postgresql"
+  schemas  = ["public", "analytics"]
+}
+```
+
+## `generator` Copy Anchor Link
+
+Defines a generator in the Prisma schema.
+
+### Fields for `prisma-client-js` provider Copy Anchor Link
+
+This is the default generator for Prisma ORM 6.x and earlier versions. Learn more about generators.
+
+A `generator` block accepts the following fields:
+
+| Name | Required | Type | Description |
+| --- | --- | --- | --- |
+| `provider` | Yes | `prisma-client-js` | Describes which generator to use. This can point to a file that implements a generator or specify a built-in generator directly. |
+| `output` | No | String (file path) | Determines the location for the generated client, learn more about fields for `prisma-client` provider. Default: `node_modules/.prisma/client` |
+| `previewFeatures` | No | List of Enums | Use intellisense to see list of currently available Preview features (`Ctrl+Space` in Visual Studio Code) Default: none |
+| `engineType` | No | Enum (`library` or `binary`) | Defines the query engine type to download and use. Default: `library` |
+| `binaryTargets` | No | List of Enums (see below) | Specify the OS on which the Prisma Client will run to ensure compatibility of the query engine. Default: `native` |
+| `moduleFormat` | No | Enum (`cjs` or `esm`) | Defines the module format of the generated Prisma Client. This field is available only with `prisma-client` generator. |
+
+We recommend defining a custom output path, adding the path to `.gitignore`, and then making sure to run `prisma generate` via a custom build script or postinstall hook.
+
+### Fields for `prisma-client` provider Copy Anchor Link
+
+The ESM-first client generator. It generates plain TypeScript code into a directory you specify, so the generated code lives alongside your application code. Learn more about the new `prisma-client` generator.
+
+The `prisma-client` generator is the default generator in Prisma ORM 7.
+
+A `generator` block accepts the following fields:
+
+| Name | Required | Type | Description |
+| --- | --- | --- | --- |
+| `provider` | Yes | `prisma-client` | Describes which generator to use. This can point to a file that implements a generator or specify a built-in generator directly. |
+| `output` | Yes | String (file path) | Determines the location for the generated client, learn more about fields for `prisma-client` provider. |
+| `previewFeatures` | No | List of Enums | Use intellisense to see list of currently available Preview features (`Ctrl+Space` in Visual Studio Code) Default: none |
+| `runtime` | No | Enum (`nodejs`, `deno`, `bun`, `workerd` (alias `cloudflare`), `vercel-edge` (alias `edge-light`), `react-native`) | Target runtime environment. Default: `nodejs` |
+| `moduleFormat` | No | Enum (`esm` or `cjs`) | Determines whether the generated code supports ESM (uses `import`) or CommonJS (uses `require(...)`) modules. We always recommend `esm` unless you have a good reason to use `cjs`. Default: Inferred from environment. |
+| `generatedFileExtension` | No | Enum (`ts` or `mts` or `cts`) | File extension for generated TypeScript files. Default: `ts` |
+| `importFileExtension` | No | Enum (`ts`,`mts`,`cts`,`js`,`mjs`,`cjs`, empty (for bare imports)) | File extension used in import statements Default: Inferred from environment. |
+| `compilerBuild` | No | String (`fast`, `small`) | Defines what build of the query compiler to use for the generated client. `fast`, the default, gives you fast query compilation, but with an increase in size. `small` gives you the smallest size, but with a slightly slower execution. |
+
+#### `binaryTargets` options Copy Anchor Link
+
+The following tables list all supported operating systems with the name of platform to specify in `binaryTargets`.
+
+Unless specified otherwise, the default supported CPU architecture is x86_64.
+
+##### macOS Copy Anchor Link
+
+| Build OS | Prisma engine build name |
+| --- | --- |
+| macOS Intel x86_64 | `darwin` |
+| macOS ARM64 | `darwin-arm64` |
+
+##### Windows Copy Anchor Link
+
+| Build OS | Prisma engine build name |
+| --- | --- |
+| Windows | `windows` |
+
+##### Linux (Alpine on x86_64 architectures) Copy Anchor Link
+
+| Build OS | Prisma engine build name | OpenSSL |
+| --- | --- | --- |
+| Alpine (3.17 and newer) | `linux-musl-openssl-3.0.x` | 3.0.x |
+| Alpine (3.16 and older) | `linux-musl` | 1.1.x |
+
+##### Linux (Alpine on ARM64 architectures) Copy Anchor Link
+
+| Build OS | Prisma engine build name | OpenSSL |
+| --- | --- | --- |
+| Alpine (3.17 and newer) | `linux-musl-arm64-openssl-3.0.x` | 3.0.x |
+| Alpine (3.16 and older) | `linux-musl-arm64-openssl-1.1.x` | 1.1.x |
+
+##### Linux (Debian), x86_64 Copy Anchor Link
+
+| Build OS | Prisma engine build name | OpenSSL |
+| --- | --- | --- |
+| Debian 8 (Jessie) | `debian-openssl-1.0.x` | 1.0.x |
+| Debian 9 (Stretch) | `debian-openssl-1.1.x` | 1.1.x |
+| Debian 10 (Buster) | `debian-openssl-1.1.x` | 1.1.x |
+| Debian 11 (Bullseye) | `debian-openssl-1.1.x` | 1.1.x |
+| Debian 12 (Bookworm) | `debian-openssl-3.0.x` | 3.0.x |
+
+##### Linux (Ubuntu), x86_64 Copy Anchor Link
+
+| Build OS | Prisma engine build name | OpenSSL |
+| --- | --- | --- |
+| Ubuntu 14.04 (trusty) | `debian-openssl-1.0.x` | 1.0.x |
+| Ubuntu 16.04 (xenial) | `debian-openssl-1.0.x` | 1.0.x |
+| Ubuntu 18.04 (bionic) | `debian-openssl-1.1.x` | 1.1.x |
+| Ubuntu 19.04 (disco) | `debian-openssl-1.1.x` | 1.1.x |
+| Ubuntu 20.04 (focal) | `debian-openssl-1.1.x` | 1.1.x |
+| Ubuntu 21.04 (hirsute) | `debian-openssl-1.1.x` | 1.1.x |
+| Ubuntu 22.04 (jammy) | `debian-openssl-3.0.x` | 3.0.x |
+| Ubuntu 23.04 (lunar) | `debian-openssl-3.0.x` | 3.0.x |
+
+##### Linux (CentOS), x86_64 Copy Anchor Link
+
+| Build OS | Prisma engine build name | OpenSSL |
+| --- | --- | --- |
+| CentOS 7 | `rhel-openssl-1.0.x` | 1.0.x |
+| CentOS 8 | `rhel-openssl-1.1.x` | 1.1.x |
+
+##### Linux (Fedora), x86_64 Copy Anchor Link
+
+| Build OS | Prisma engine build name | OpenSSL |
+| --- | --- | --- |
+| Fedora 28 | `rhel-openssl-1.1.x` | 1.1.x |
+| Fedora 29 | `rhel-openssl-1.1.x` | 1.1.x |
+| Fedora 30 | `rhel-openssl-1.1.x` | 1.1.x |
+| Fedora 36 | `rhel-openssl-3.0.x` | 3.0.x |
+| Fedora 37 | `rhel-openssl-3.0.x` | 3.0.x |
+| Fedora 38 | `rhel-openssl-3.0.x` | 3.0.x |
+
+##### Linux (Linux Mint), x86_64 Copy Anchor Link
+
+| Build OS | Prisma engine build name | OpenSSL |
+| --- | --- | --- |
+| Linux Mint 18 | `debian-openssl-1.0.x` | 1.0.x |
+| Linux Mint 19 | `debian-openssl-1.1.x` | 1.1.x |
+| Linux Mint 20 | `debian-openssl-1.1.x` | 1.1.x |
+| Linux Mint 21 | `debian-openssl-3.0.x` | 3.0.x |
+
+##### Linux (Arch Linux), x86_64 Copy Anchor Link
+
+| Build OS | Prisma engine build name | OpenSSL |
+| --- | --- | --- |
+| Arch Linux 2019.09.01 | `debian-openssl-1.1.x` | 1.1.x |
+| Arch Linux 2023.04.23 | `debian-openssl-3.0.x` | 3.0.x |
+
+##### Linux ARM64 (all major distros but Alpine) Copy Anchor Link
+
+| Build OS | Prisma engine build name | OpenSSL |
+| --- | --- | --- |
+| Linux ARM64 glibc-based distro | `linux-arm64-openssl-1.0.x` | 1.0.x |
+| Linux ARM64 glibc-based distro | `linux-arm64-openssl-1.1.x` | 1.1.x |
+| Linux ARM64 glibc-based distro | `linux-arm64-openssl-3.0.x` | 3.0.x |
+
+### Examples Copy Anchor Link
+
+#### Specify the `prisma-client-js` generator with the default `output`, `previewFeatures`, `engineType` and `binaryTargets` Copy Anchor Link
+
+Copy Text
+
+```
+generator client {
+  provider = "prisma-client-js"
+}
+```
+
+Note that the above `generator` definition is equivalent to the following because it uses the default values for `output`, `engineType` and `binaryTargets` (and implicitly `previewFeatures`):
+
+Copy Text
+
+```
+generator client {
+  provider      = "prisma-client-js"
+  output        = "node_modules/.prisma/client"
+  engineType    = "library"
+  binaryTargets = ["native"]
+}
+```
+
+#### Specify a custom `output` location for Prisma Client Copy Anchor Link
+
+This example shows how to define a custom `output` location of the generated asset to override the default one.
+
+Copy Text
+
+```
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+```
+
+#### Specify custom `binaryTargets` to ensure compatibility with the OS Copy Anchor Link
+
+This example shows how to configure Prisma Client to run on `Ubuntu 19.04 (disco)` based on the table above.
+
+Copy Text
+
+```
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["debian-openssl-1.1.x"]
+}
+```
+
+#### Specify a `provider` pointing to some custom generator implementation Copy Anchor Link
+
+This example shows how to use a custom generator that's located in a directory called `my-generator`.
+
+Copy Text
+
+```
+generator client {
+  provider = "./my-generator"
+}
+```
+
+## `model` Copy Anchor Link
+
+Defines a Prisma model .
+
+### Remarks Copy Anchor Link
+
+- Every record of a model must be uniquely identifiable. You must define at least one of the following attributes per model: 
+
+- `@unique`
+- `@@unique`
+- `@id`
+- `@@id`
+
+#### Naming conventions Copy Anchor Link
+
+- Model names must adhere to the following regular expression: `[A-Za-z][A-Za-z0-9_]*`
+- Model names must start with a letter and are typically spelled in PascalCase
+- Model names should use the singular form (for example, `User` instead of `user`, `users` or `Users`)
+- Prisma ORM has a number of reserved words that are being used by Prisma ORM internally and therefore cannot be used as a model name. You can find the reserved words in the Prisma Client generator source and in the Prisma engines source.
+
+> Note: You can use the `@@map` attribute to map a model (for example, `User`) to a table with a different name that does not match model naming conventions (for example, `users`).
+
+#### Order of fields Copy Anchor Link
+
+- Introspection lists model fields in the same order as the corresponding columns in the database. Relation fields are listed after scalar fields.
+
+### Examples Copy Anchor Link
+
+#### A model named `User` with two scalar fields Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  email String  @unique // `email` can not be optional because it's the only unique field on the model
+  name  String?
+}
+```
+
+## `model` fields Copy Anchor Link
+
+Fields are properties of models.
+
+### Remarks Copy Anchor Link
+
+#### Naming conventions Copy Anchor Link
+
+- Must start with a letter
+- Typically spelled in camelCase
+- Must adhere to the following regular expression: `[A-Za-z][A-Za-z0-9_]*`
+
+> Note: You can use the `@map` attribute to map a field name to a column with a different name that does not match field naming conventions: e.g. `myField @map("my_field")`.
+
+## `model` field scalar types Copy Anchor Link
+
+The data source connector determines what native database type each of Prisma ORM scalar type maps to. Similarly, the generator determines what type in the target programming language each of these types map to.
+
+Prisma models also have model field types that define relations between models.
+
+### `String` Copy Anchor Link
+
+Variable length text.
+
+#### Default type mappings Copy Anchor Link
+
+| Connector | Default mapping |
+| --- | --- |
+| PostgreSQL | `text` |
+| SQL Server | `nvarchar(1000)` |
+| MySQL | `varchar(191)` |
+| MongoDB | `String` |
+| SQLite | `TEXT` |
+| CockroachDB | `STRING` |
+
+#### PostgreSQL Copy Anchor Link
+
+| Native database type | Native database type attribute | Notes |
+| --- | --- | --- |
+| `text` | `@db.Text` | |
+| `char(x)` | `@db.Char(x)` | |
+| `varchar(x)` | `@db.VarChar(x)` | |
+| `bit(x)` | `@db.Bit(x)` | |
+| `varbit` | `@db.VarBit` | |
+| `uuid` | `@db.Uuid` | |
+| `xml` | `@db.Xml` | |
+| `inet` | `@db.Inet` | |
+| `citext` | `@db.Citext` | Only available if Citext extension is enabled. |
+
+#### MySQL Copy Anchor Link
+
+| Native database type | Native database type attribute |
+| --- | --- |
+| `VARCHAR(x)` | `@db.VarChar(x)` |
+| `TEXT` | `@db.Text` |
+| `CHAR(x)` | `@db.Char(x)` |
+| `TINYTEXT` | `@db.TinyText` |
+| `MEDIUMTEXT` | `@db.MediumText` |
+| `LONGTEXT` | `@db.LongText` |
+
+You can use Prisma Migrate to map `@db.Bit(1)` to `String`:
+
+Copy Text
+
+```
+model Model {
+  /* ... */
+  myField String @db.Bit(1)
+}
+```
+
+#### MongoDB Copy Anchor Link
+
+| Native database type attribute | Notes |
+| --- | --- |
+| `@db.String` | |
+| `@db.ObjectId` | Required if the underlying BSON type is `OBJECT_ID` (ID fields, relation scalars) |
+
+#### Microsoft SQL Server Copy Anchor Link
+
+| Native database type | Native database type attribute |
+| --- | --- |
+| `char(x)` | `@db.Char(x)` |
+| `nchar(x)` | `@db.NChar(x)` |
+| `varchar(x)` | `@db.VarChar(x)` |
+| `nvarchar(x)` | `@db.NVarChar(x)` |
+| `text` | `@db.Text` |
+| `ntext` | `@db.NText` |
+| `xml` | `@db.Xml` |
+| `uniqueidentifier` | `@db.UniqueIdentifier` |
+
+#### SQLite Copy Anchor Link
+
+#### CockroachDB Copy Anchor Link
+
+| Native database type | Native database type attribute | Notes |
+| --- | --- | --- |
+| `STRING(x)` | `TEXT(x)` | `VARCHAR(x)` | `@db.String(x)` | |
+| `CHAR(x)` | `@db.Char(x)` | |
+| `"char"` | `@db.CatalogSingleChar` | |
+| `BIT(x)` | `@db.Bit(x)` | |
+| `VARBIT` | `@db.VarBit` | |
+| `UUID` | `@db.Uuid` | |
+| `INET` | `@db.Inet` | |
+
+Note that the `xml` and `citext` types supported in PostgreSQL are not currently supported in CockroachDB.
+
+#### Clients Copy Anchor Link
+
+| Prisma Client JS |
+| --- |
+| `string` |
+
+### `Boolean` Copy Anchor Link
+
+True or false value.
+
+#### Default type mappings Copy Anchor Link
+
+| Connector | Default mapping |
+| --- | --- |
+| PostgreSQL | `boolean` |
+| SQL Server | `bit` |
+| MySQL | `TINYINT(1)` |
+| MongoDB | `Bool` |
+| SQLite | `INTEGER` |
+| CockroachDB | `BOOL` |
+
+#### PostgreSQL Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `boolean` | `@db.Boolean` | |
+
+#### MySQL Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `TINYINT(1)` | `@db.TinyInt(1)` | `TINYINT` maps to `Int` if the max length is greater than 1 (for example, `TINYINT(2)`) or the default value is anything other than `1`, `0`, or `NULL` |
+| `BIT(1)` | `@db.Bit` | |
+
+#### MongoDB Copy Anchor Link
+
+`Bool`
+
+#### Microsoft SQL Server Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `bit` | `@db.Bit` | |
+
+#### SQLite Copy Anchor Link
+
+#### CockroachDB Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `BOOL` | `@db.Bool` | |
+
+#### Clients Copy Anchor Link
+
+| Prisma Client JS |
+| --- |
+| `boolean` |
+
+### `Int` Copy Anchor Link
+
+#### Default type mappings Copy Anchor Link
+
+| Connector | Default mapping |
+| --- | --- |
+| PostgreSQL | `integer` |
+| SQL Server | `int` |
+| MySQL | `INT` |
+| MongoDB | `Int` |
+| SQLite | `INTEGER` |
+| CockroachDB | `INT` |
+
+#### PostgreSQL Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `integer` | `int`, `int4` | `@db.Integer` | |
+| `smallint` | `int2` | `@db.SmallInt` | |
+| `smallserial` | `serial2` | `@db.SmallInt @default(autoincrement())` | |
+| `serial` | `serial4` | `@db.Int @default(autoincrement())` | |
+| `oid` | `@db.Oid` | |
+
+#### MySQL Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `INT` | `@db.Int` | |
+| `INT UNSIGNED` | `@db.UnsignedInt` | |
+| `SMALLINT` | `@db.SmallInt` | |
+| `SMALLINT UNSIGNED` | `@db.UnsignedSmallInt` | |
+| `MEDIUMINT` | `@db.MediumInt` | |
+| `MEDIUMINT UNSIGNED` | `@db.UnsignedMediumInt` | |
+| `TINYINT` | `@db.TinyInt` | `TINYINT` maps to `Int` if the max length is greater than 1 (for example, `TINYINT(2)`) or the default value is anything other than `1`, `0`, or `NULL`. `TINYINT(1)` maps to `Boolean`. |
+| `TINYINT UNSIGNED` | `@db.UnsignedTinyInt` | `TINYINT(1) UNSIGNED` maps to `Int`, not `Boolean` |
+| `YEAR` | `@db.Year` | |
+
+#### MongoDB Copy Anchor Link
+
+`Int`
+
+| Native database type attribute | Notes |
+| --- | --- |
+| `@db.Int` | |
+| `@db.Long` | |
+
+#### Microsoft SQL Server Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `int` | `@db.Int` | |
+| `smallint` | `@db.SmallInt` | |
+| `tinyint` | `@db.TinyInt` | |
+| `bit` | `@db.Bit` | |
+
+#### SQLite Copy Anchor Link
+
+#### CockroachDB Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `INTEGER` | `INT` | `INT8` | `@db.Int8` | Note that this differs from PostgreSQL, where `integer` and `int` are aliases for `int4` and map to `@db.Integer` |
+| `INT4` | `@db.Int4` | |
+| `INT2` | `SMALLINT` | `@db.Int2` | |
+| `SMALLSERIAL` | `SERIAL2` | `@db.Int2 @default(autoincrement())` | |
+| `SERIAL` | `SERIAL4` | `@db.Int4 @default(autoincrement())` | |
+| `SERIAL8` | `BIGSERIAL` | `@db.Int8 @default(autoincrement())` | |
+
+#### Clients Copy Anchor Link
+
+| Prisma Client JS |
+| --- |
+| `number` |
+
+### `BigInt` Copy Anchor Link
+
+#### Default type mappings Copy Anchor Link
+
+| Connector | Default mapping |
+| --- | --- |
+| PostgreSQL | `bigint` |
+| SQL Server | `int` |
+| MySQL | `BIGINT` |
+| MongoDB | `Long` |
+| SQLite | `INTEGER` |
+| CockroachDB | `INTEGER` |
+
+#### PostgreSQL Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `bigint` | `int8` | `@db.BigInt` | |
+| `bigserial` | `serial8` | `@db.BigInt @default(autoincrement())` | |
+
+#### MySQL Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `BIGINT` | `@db.BigInt` | |
+| `SERIAL` | `@db.UnsignedBigInt @default(autoincrement())` | |
+
+#### MongoDB Copy Anchor Link
+
+#### Microsoft SQL Server Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `bigint` | `@db.BigInt` | |
+
+#### SQLite Copy Anchor Link
+
+#### CockroachDB Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `BIGINT` | `INT` | `INT8` | `@db.Int8` | Note that this differs from PostgreSQL, where `int` is an alias for `int4` |
+| `bigserial` | `serial8` | `@db.Int8 @default(autoincrement())` | |
+
+#### Clients Copy Anchor Link
+
+| Client | Type | Description |
+| --- | --- | --- |
+| Prisma Client JS | `BigInt` | See examples of working with `BigInt` |
+
+### `Float` Copy Anchor Link
+
+Floating point number.
+
+#### Default type mappings Copy Anchor Link
+
+| Connector | Default mapping |
+| --- | --- |
+| PostgreSQL | `double precision` |
+| SQL Server | `float(53)` |
+| MySQL | `DOUBLE` |
+| MongoDB | `Double` |
+| SQLite | `REAL` |
+| CockroachDB | `DOUBLE PRECISION` |
+
+#### PostgreSQL Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `double precision` | `@db.DoublePrecision` | |
+| `real` | `@db.Real` | |
+
+#### MySQL Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `FLOAT` | `@db.Float` | |
+| `DOUBLE` | `@db.Double` | |
+
+#### MongoDB Copy Anchor Link
+
+`Double`
+
+#### Microsoft SQL Server Copy Anchor Link
+
+| Native database types | Native database type attribute |
+| --- | --- |
+| `float` | `@db.Float` |
+| `money` | `@db.Money` |
+| `smallmoney` | `@db.SmallMoney` |
+| `real` | `@db.Real` |
+
+#### SQLite connector Copy Anchor Link
+
+#### CockroachDB Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `DOUBLE PRECISION` | `FLOAT8` | `@db.Float8` | |
+| `REAL` | `FLOAT4` | `FLOAT` | `@db.Float4` | |
+
+#### Clients Copy Anchor Link
+
+| Prisma Client JS |
+| --- |
+| `number` |
+
+### `Decimal` Copy Anchor Link
+
+#### Default type mappings Copy Anchor Link
+
+| Connector | Default mapping |
+| --- | --- |
+| PostgreSQL | `decimal(65,30)` |
+| SQL Server | `decimal(32,16)` |
+| MySQL | `DECIMAL(65,30)` |
+| MongoDB | Not supported |
+| SQLite | `DECIMAL` |
+| CockroachDB | `DECIMAL` |
+
+#### PostgreSQL Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `decimal` | `numeric` | `@db.Decimal(p, s)`† | |
+| `money` | `@db.Money` | |
+
+- † `p` (precision), the maximum total number of decimal digits to be stored. `s` (scale), the number of decimal digits that are stored to the right of the decimal point.
+
+#### MySQL Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `DECIMAL` | `NUMERIC` | `@db.Decimal(p, s)`† | |
+
+- † `p` (precision), the maximum total number of decimal digits to be stored. `s` (scale), the number of decimal digits that are stored to the right of the decimal point.
+
+#### MongoDB Copy Anchor Link
+
+#### Microsoft SQL Server Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `decimal` | `numeric` | `@db.Decimal(p, s)`† | |
+
+- † `p` (precision), the maximum total number of decimal digits to be stored. `s` (scale), the number of decimal digits that are stored to the right of the decimal point.
+
+#### SQLite Copy Anchor Link
+
+`DECIMAL` (changed from `REAL` in 2.17.0)
+
+#### CockroachDB Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `DECIMAL` | `DEC` | `NUMERIC` | `@db.Decimal(p, s)`† | |
+| `money` | Not yet | PostgreSQL's `money` type is not yet supported by CockroachDB |
+
+- † `p` (precision), the maximum total number of decimal digits to be stored. `s` (scale), the number of decimal digits that are stored to the right of the decimal point.
+
+#### Clients Copy Anchor Link
+
+| Client | Type | Description |
+| --- | --- | --- |
+| Prisma Client JS | `Decimal` | See examples of working with `Decimal` |
+
+### `DateTime` Copy Anchor Link
+
+#### Remarks Copy Anchor Link
+
+- Prisma Client returns all `DateTime` as native `Date` objects.
+- Currently, Prisma ORM does not support zero dates (`0000-00-00 00:00:00`, `0000-00-00`, `00:00:00`) in MySQL.
+- There currently is a bug that doesn't allow you to pass in `DateTime` values as strings and produces a runtime error when you do. `DateTime` values need to be passed as `Date` objects (i.e. `new Date('2024-12-04')` instead of `'2024-12-04'`).
+
+You can find more info and examples in this section: Working with `DateTime`.
+
+#### Default type mappings Copy Anchor Link
+
+| Connector | Default mapping |
+| --- | --- |
+| PostgreSQL | `timestamp(3)` |
+| SQL Server | `datetime2` |
+| MySQL | `DATETIME(3)` |
+| MongoDB | `Timestamp` |
+| SQLite | `NUMERIC` |
+| CockroachDB | `TIMESTAMP` |
+
+#### PostgreSQL Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `timestamp(x)` | `@db.Timestamp(x)` | |
+| `timestamptz(x)` | `@db.Timestamptz(x)` | |
+| `date` | `@db.Date` | |
+| `time(x)` | `@db.Time(x)` | |
+| `timetz(x)` | `@db.Timetz(x)` | |
+
+#### MySQL Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `DATETIME(x)` | `@db.DateTime(x)` | |
+| `DATE(x)` | `@db.Date(x)` | |
+| `TIME(x)` | `@db.Time(x)` | |
+| `TIMESTAMP(x)` | `@db.Timestamp(x)` | |
+
+You can also use MySQL's `YEAR` type with `Int`:
+
+Copy Text
+
+```
+yearField     Int    @db.Year
+```
+
+#### MongoDB Copy Anchor Link
+
+#### Microsoft SQL Server Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `date` | `@db.Date` | |
+| `time` | `@db.Time` | |
+| `datetime` | `@db.DateTime` | |
+| `datetime2` | `@db.DateTime2` | |
+| `smalldatetime` | `@db.SmallDateTime` | |
+| `datetimeoffset` | `@db.DateTimeOffset` | |
+
+#### SQLite Copy Anchor Link
+
+`NUMERIC` or `STRING`. If the underlying data type is `STRING`, you must use one of the following formats:
+
+- RFC 3339 (`1996-12-19T16:39:57-08:00`)
+- RFC 2822 (`Tue, 1 Jul 2003 10:52:37 +0200`)
+
+#### CockroachDB Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `TIMESTAMP(x)` | `@db.Timestamp(x)` | |
+| `TIMESTAMPTZ(x)` | `@db.Timestamptz(x)` | |
+| `DATE` | `@db.Date` | |
+| `TIME(x)` | `@db.Time(x)` | |
+| `TIMETZ(x)` | `@db.Timetz(x)` | |
+
+#### Clients Copy Anchor Link
+
+| Prisma Client JS |
+| --- |
+| `Date` |
+
+### `Json` Copy Anchor Link
+
+A JSON object.
+
+#### Default type mappings Copy Anchor Link
+
+| Connector | Default mapping |
+| --- | --- |
+| PostgreSQL | `jsonb` |
+| SQL Server | Not supported |
+| MySQL | `JSON` |
+| MongoDB | A valid `BSON` object (Relaxed mode) |
+| SQLite | `JSONB` |
+| CockroachDB | `JSONB` |
+
+#### PostgreSQL Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `json` | `@db.Json` | |
+| `jsonb` | `@db.JsonB` | |
+
+#### MySQL Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `JSON` | `@db.Json` | |
+
+#### MongoDB Copy Anchor Link
+
+A valid `BSON` object (Relaxed mode)
+
+#### Microsoft SQL Server Copy Anchor Link
+
+Microsoft SQL Server does not have a specific data type for JSON. However, there are a number of built-in functions for reading and modifying JSON.
+
+#### SQLite Copy Anchor Link
+
+#### CockroachDB Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `JSON` | `JSONB` | `@db.JsonB` | |
+
+#### Clients Copy Anchor Link
+
+| Prisma Client JS |
+| --- |
+| `object` |
+
+### `Bytes` Copy Anchor Link
+
+#### Default type mappings Copy Anchor Link
+
+| Connector | Default mapping |
+| --- | --- |
+| PostgreSQL | `bytea` |
+| SQL Server | `varbinary` |
+| MySQL | `LONGBLOB` |
+| MongoDB | `BinData` |
+| SQLite | `BLOB` |
+| CockroachDB | `BYTES` |
+
+#### PostgreSQL Copy Anchor Link
+
+| Native database types | Native database type attribute |
+| --- | --- |
+| `bytea` | `@db.ByteA` |
+
+#### MySQL Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `LONGBLOB` | `@db.LongBlob` | |
+| `BINARY` | `@db.Binary` | |
+| `VARBINARY` | `@db.VarBinary` | |
+| `TINYBLOB` | `@db.TinyBlob` | |
+| `BLOB` | `@db.Blob` | |
+| `MEDIUMBLOB` | `@db.MediumBlob` | |
+| `BIT` | `@db.Bit` | |
+
+#### MongoDB Copy Anchor Link
+
+`BinData`
+
+| Native database type attribute | Notes |
+| --- | --- |
+| `@db.ObjectId` | Required if the underlying BSON type is `OBJECT_ID` (ID fields, relation scalars) |
+| `@db.BinData` | |
+
+#### Microsoft SQL Server Copy Anchor Link
+
+| Native database types | Native database type attribute | Notes |
+| --- | --- | --- |
+| `binary` | `@db.Binary` | |
+| `varbinary` | `@db.VarBinary` | |
+| `image` | `@db.Image` | |
+
+#### SQLite Copy Anchor Link
+
+`BLOB`
+
+#### CockroachDB Copy Anchor Link
+
+| Native database types | Native database type attribute |
+| --- | --- |
+| `BYTES` | `BYTEA` | `BLOB` | `@db.Bytes` |
+
+#### Clients Copy Anchor Link
+
+| Client | Type | Description |
+| --- | --- | --- |
+| Prisma Client JS | `Uint8Array` | See examples of working with `Bytes` |
+| Prisma Client JS (before v6) | `Buffer` | See examples of working with `Bytes` |
+
+### `Unsupported` Copy Anchor Link
+
+Not supported by MongoDB The MongoDB connector does not support the `Unsupported` type.
+
+The `Unsupported` type was introduced in 2.17.0 and allows you to represent data types in the Prisma schema that are not supported by Prisma Client. Fields of type `Unsupported` can be created during Introspection with `prisma db pull` or written by hand, and created in the database with Prisma Migrate or `db push`.
+
+#### Remarks Copy Anchor Link
+
+- Fields with `Unsupported` types are not available in the generated client.
+- If a model contains a required `Unsupported` type, `prisma.model.create(..)`, `prisma.model.update(...)` and `prisma.model.upsert(...)` are not available in Prisma Client.
+- When you introspect a database that contains unsupported types, Prisma ORM will provide the following warning:
+
+Copy Text
+
+```
+*** WARNING ***
+
+These fields are not supported by Prisma Client, because Prisma does not currently support their types.
+* Model "Post", field: "circle", original data type: "circle"
+```
+
+#### Examples Copy Anchor Link
+
+Copy Text
+
+```
+model Star {
+  id       Int                    @id @default(autoincrement())
+  position Unsupported("circle")?
+  example1 Unsupported("circle")
+  circle   Unsupported("circle")? @default(dbgenerated("'<(10,4),11>'::circle"))
+}
+```
+
+## `model` field type modifiers Copy Anchor Link
+
+### `[]` modifier Copy Anchor Link
+
+Makes a field a list.
+
+#### Remarks Copy Anchor Link
+
+- Cannot be optional (for example `Post[]?`).
+
+##### Relational databases Copy Anchor Link
+
+- Scalar lists (arrays) are only supported in the data model if your database natively supports them. Currently, scalar lists are therefore only supported when using PostgreSQL or CockroachDB (since MySQL and SQLite don't natively support scalar lists).
+
+##### MongoDB Copy Anchor Link
+
+#### Examples Copy Anchor Link
+
+##### Define a scalar list Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id             Int      @id @default(autoincrement())
+  favoriteColors String[]
+}
+```
+
+##### Define a scalar list with a default value Copy Anchor Link
+
+Relational databases
+
+Copy Text
+
+```
+model User {
+  id             Int      @id @default(autoincrement())
+  favoriteColors String[] @default(["red", "blue", "green"]) 
+}
+```
+
+### `?` modifier Copy Anchor Link
+
+Makes a field optional.
+
+#### Remarks Copy Anchor Link
+
+- Cannot be used with a list field (for example, `Posts[]`)
+
+#### Examples Copy Anchor Link
+
+##### Optional `name` field Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id   Int     @id @default(autoincrement())
+  name String?
+}
+```
+
+## Attributes Copy Anchor Link
+
+Attributes modify the behavior of a field or block (e.g. models). There are two ways to add attributes to your data model:
+
+- Field attributes are prefixed with `@`
+- Block attributes are prefixed with `@@`
+
+Some attributes take arguments. Arguments in attributes are always named, but in most cases the argument name can be omitted.
+
+> Note: The leading underscore in a signature means the argument name can be omitted.
+
+### `@id` Copy Anchor Link
+
+Defines a single-field ID on the model.
+
+#### Remarks Copy Anchor Link
+
+##### General Copy Anchor Link
+
+- Cannot be defined on a relation field
+- Cannot be optional
+
+##### Relational databases Copy Anchor Link
+
+- Corresponding database construct: `PRIMARY KEY`
+- Can be annotated with a `@default` attribute that uses functions to auto-generate an ID:
+
+- `autoincrement()`
+- `cuid()`
+- `uuid()`
+- `ulid()`
+- Can be defined on any scalar field (`String`, `Int`, `enum`)
+
+##### MongoDB Copy Anchor Link
+
+- Corresponding database construct: Any valid BSON type, except arrays
+- Every model must define an `@id` field
+- The underlying ID field name is always `_id`, and must be mapped with `@map("_id")`
+- Can be defined on any scalar field (`String`, `Int`, `enum`) unless you want to use `ObjectId` in your database
+- To use an `ObjectId` as your ID, you must:
+
+- Use the `String` or `Bytes` field type
+- Annotate your field with `@db.ObjectId`:
+
+Copy Text
+
+```
+id   String  @db.ObjectId  @map("_id")
+```
+- Optionally, annotate your field with a `@default` attribute that uses the `auto()` function to auto-generate an `ObjectId`
+
+Copy Text
+
+```
+id   String  @db.ObjectId  @map("_id") @default(auto())
+```
+- `cuid()`, `uuid()` and `ulid()` are supported but do not generate a valid `ObjectId` - use `auto()` instead for `@id`
+- `autoincrement()` is not supported
+
+#### Arguments Copy Anchor Link
+
+| Name | Required | Type | Description |
+| --- | --- | --- | --- |
+| `map` | No | `String` | The name of the underlying primary key constraint in the database. Not supported for MySQL or MongoDB. |
+| `length` | No | `number` | Allows you to specify a maximum length for the subpart of the value to be indexed. MySQL only. |
+| `sort` | No | `String` | Allows you to specify in what order the entries of the ID are stored in the database. The available options are `Asc` and `Desc`. SQL Server only. |
+| `clustered` | No | `Boolean` | Defines whether the ID is clustered or non-clustered. Defaults to `true`. SQL Server only. |
+
+#### Signature Copy Anchor Link
+
+Copy Text
+
+```
+@id(map: String?, length: number?, sort: String?, clustered: Boolean?)
+```
+
+#### Examples Copy Anchor Link
+
+In most cases, you want your database to create the ID. To do this, annotate the ID field with the `@default` attribute and initialize the field with a function.
+
+##### Generate autoincrementing integers as IDs (Relational databases only) Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id   Int    @id @default(autoincrement())
+  name String
+}
+```
+
+##### Generate `ObjectId` as IDs (MongoDB only) Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+}
+```
+
+##### Generate `cuid()` values as IDs Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id   String @id @default(cuid())
+  name String
+}
+```
+
+You cannot use `cuid()` to generate a default value if your `id` field is of type `ObjectId`. Use the following syntax to generate a valid `ObjectId`:
+
+Copy Text
+
+```
+id    String  @id @default(auto()) @db.ObjectId @map("_id")
+```
+
+##### Generate `uuid()` values as IDs Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id   String @id @default(uuid())
+  name String
+}
+```
+
+You cannot use `uuid()` to generate a default value if your `id` field is of type `ObjectId`. Use the following syntax to generate a valid `ObjectId`:
+
+Copy Text
+
+```
+id    String  @id @default(auto()) @db.ObjectId @map("_id")
+```
+
+##### Generate `ulid()` values as IDs Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id   String @id @default(ulid())
+  name String
+}
+```
+
+You cannot use `ulid()` to generate a default value if your `id` field is of type `ObjectId`. Use the following syntax to generate a valid `ObjectId`:
+
+Copy Text
+
+```
+id    String  @id @default(auto()) @db.ObjectId @map("_id")
+```
+
+##### Single-field IDs without default values Copy Anchor Link
+
+In the following example, `id` does not have a default value:
+
+Copy Text
+
+```
+model User {
+  id   String @id
+  name String
+}
+```
+
+Copy Text
+
+```
+model User {
+id    String   @id  @map("_id")
+name  String
+}
+```
+
+Note that in the above case, you must provide your own ID values when creating new records for the `User` model using Prisma Client, e.g.:
+
+Copy Text
+
+```
+const newUser = await prisma.user.create({
+  data: {
+    id: 1,
+    name: "Alice",
+  },
+});
+```
+
+###### Specify an ID on relation scalar field without a default value Copy Anchor Link
+
+In the following example, `authorId` is a both a relation scalar and the ID of `Profile`:
+
+Copy Text
+
+```
+model Profile {
+  authorId Int    @id
+  author   User   @relation(fields: [authorId], references: [id])
+  bio      String
+}
+
+model User {
+  id      Int      @id
+  email   String   @unique
+  name    String?
+  profile Profile?
+}
+```
+
+In this scenario, you cannot create a `Profile` only - you must use Prisma Client's nested writes create a `User` or connect the profile to an existing user.
+
+The following example creates a user and a profile:
+
+Copy Text
+
+```
+const userWithProfile = await prisma.user.create({
+  data: {
+    id: 3,
+    email: "bob@prisma.io",
+    name: "Bob Prismo",
+    profile: {
+      create: {
+        bio: "Hello, I'm Bob Prismo and I love apples, blue nail varnish, and the sound of buzzing mosquitoes.",
+      },
+    },
+  },
+});
+```
+
+The following example connects a new profile to a user:
+
+Copy Text
+
+```
+const profileWithUser = await prisma.profile.create({
+  data: {
+    bio: "Hello, I'm Bob and I like nothing at all. Just nothing.",
+    author: {
+      connect: {
+        id: 22,
+      },
+    },
+  },
+});
+```
+
+### `@@id` Copy Anchor Link
+
+Not supported by MongoDB The MongoDB connector does not support composite IDs.
+
+Defines a multi-field ID (composite ID) on the model.
+
+#### Remarks Copy Anchor Link
+
+- Corresponding database type: `PRIMARY KEY`
+- Can be annotated with a `@default` attribute that uses functions to auto-generate an ID
+- Cannot be optional
+- Can be defined on any scalar field (`String`, `Int`, `enum`)
+- Cannot be defined on a relation field
+- The name of the composite ID field in Prisma Client has the following pattern: `field1_field2_field3`
+
+#### Arguments Copy Anchor Link
+
+| Name | Required | Type | Description |
+| --- | --- | --- | --- |
+| `fields` | Yes | `FieldReference[]` | A list of field names - for example, `["firstname", "lastname"]` |
+| `name` | No | `String` | The name that Prisma Client will expose for the argument covering all fields, e.g. `fullName` in `fullName: { firstName: "First", lastName: "Last"}` |
+| `map` | No | `String` | The name of the underlying primary key constraint in the database. Not supported for MySQL. |
+| `length` | No | `number` | Allows you to specify a maximum length for the subpart of the value to be indexed. MySQL only. |
+| `sort` | No | `String` | Allows you to specify in what order the entries of the ID are stored in the database. The available options are `Asc` and `Desc`. SQL Server only. |
+| `clustered` | No | `Boolean` | Defines whether the ID is clustered or non-clustered. Defaults to `true`. SQL Server only. |
+
+The name of the `fields` argument on the `@@id` attribute can be omitted:
+
+Copy Text
+
+```
+@@id(fields: [title, author])
+@@id([title, author])
+```
+
+#### Signature Copy Anchor Link
+
+Copy Text
+
+```
+@@id(_ fields: FieldReference[], name: String?, map: String?)
+```
+
+#### Examples Copy Anchor Link
+
+##### Specify a multi-field ID on two `String` fields (Relational databases only) Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  firstName String
+  lastName  String
+  email     String  @unique
+  isAdmin   Boolean @default(false)
+
+  @@id([firstName, lastName])
+}
+```
+
+When you create a user, you must provide a unique combination of `firstName` and `lastName`:
+
+Copy Text
+
+```
+const user = await prisma.user.create({
+  data: {
+    firstName: "Alice",
+    lastName: "Smith",
+  },
+});
+```
+
+To retrieve a user, use the generated composite ID field (`firstName_lastName`):
+
+Copy Text
+
+```
+const user = await prisma.user.findUnique({
+  where: {
+    firstName_lastName: {
+      firstName: "Alice",
+      lastName: "Smith",
+    },
+  },
+});
+```
+
+##### Specify a multi-field ID on two `String` fields and one `Boolean` field (Relational databases only) Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  firstName String
+  lastName  String
+  email     String  @unique
+  isAdmin   Boolean @default(false)
+
+  @@id([firstName, lastName, isAdmin])
+}
+```
+
+When creating new `User` records, you now must provide a unique combination of values for `firstName`, `lastName` and `isAdmin`:
+
+Copy Text
+
+```
+const user = await prisma.user.create({
+  data: {
+    firstName: "Alice",
+    lastName: "Smith",
+    isAdmin: true,
+  },
+});
+```
+
+##### Specify a multi-field ID that includes a relation field (Relational databases only) Copy Anchor Link
+
+Copy Text
+
+```
+model Post {
+  title     String
+  published Boolean @default(false)
+  author    User    @relation(fields: [authorId], references: [id])
+  authorId  Int
+
+  @@id([authorId, title])
+}
+
+model User {
+  id    Int     @default(autoincrement())
+  email String  @unique
+  name  String?
+  posts Post[]
+}
+```
+
+When creating new `Post` records, you now must provide a unique combination of values for `authorId` (foreign key) and `title`:
+
+Copy Text
+
+```
+const post = await prisma.post.create({
+  data: {
+    title: "Hello World",
+    author: {
+      connect: {
+        email: "alice@prisma.io",
+      },
+    },
+  },
+});
+```
+
+### `@default` Copy Anchor Link
+
+Defines a default value for a field.
+
+#### Remarks Copy Anchor Link
+
+- Default values that cannot yet be represented in the Prisma schema are represented by the `dbgenerated()` function when you use introspection.
+- Default values are not allowed on relation fields in the Prisma schema. Note however that you can still define default values on the fields backing a relation (the ones listed in the `fields` argument in the `@relation` attribute). A default value on the field backing a relation will mean that relation is populated automatically for you.
+- Default values can be used with scalar lists in databases that natively support them.
+- JSON data. Note that JSON needs to be enclosed with double-quotes inside the `@default` attribute, e.g.: `@default("[]")`. If you want to provide a JSON object, you need to enclose it with double-quotes and then escape any internal double quotes using a backslash, e.g.: `@default("{ \"hello\": \"world\" }")`.
+
+##### Relational databases Copy Anchor Link
+
+- Corresponding database construct: `DEFAULT`
+- Default values can be a static value (`4`, `"hello"`) or one of the following functions: 
+
+- `autoincrement()`
+- `sequence()` (CockroachDB only)
+- `dbgenerated(...)`
+- `cuid()`
+- `cuid(2)`
+- `uuid()`
+- `uuid(4)`
+- `uuid(7)`
+- `ulid()`
+- `nanoid()`
+- `now()`
+
+##### MongoDB Copy Anchor Link
+
+- Default values can be a static value (`4`, `"hello"`) or one of the following functions: 
+
+- `auto()` (can only be used with `@db.ObjectId` to generate an `ObjectId` in MongoDB)
+- `cuid()`
+- `uuid()`
+- `ulid()`
+- `now()`
+
+#### Arguments Copy Anchor Link
+
+| Name | Required | Type | Description |
+| --- | --- | --- | --- |
+| `value` | Yes | An expression (e.g. `5`, `true`, `now()`) | |
+| `map` | No | String | SQL Server only. |
+
+The name of the `value` argument on the `@default` attribute can be omitted:
+
+Copy Text
+
+```
+id Int @id @default(value: autoincrement())
+id Int @id @default(autoincrement())
+```
+
+#### Signature Copy Anchor Link
+
+Copy Text
+
+```
+@default(_ value: Expression, map: String?)
+```
+
+#### Examples Copy Anchor Link
+
+##### Default value for an `Int` Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  email        String @unique
+  profileViews Int    @default(0)
+}
+```
+
+##### Default value for a `Float` Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  email  String @unique
+  number Float  @default(1.1)
+}
+```
+
+##### Default value for `Decimal` Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  email  String  @unique
+  number Decimal @default(22.99)
+}
+```
+
+##### Default value for `BigInt` Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  email  String @unique
+  number BigInt @default(34534535435353)
+}
+```
+
+##### Default value for a `String` Copy Anchor Link
+
+Relational databases
+
+Copy Text
+
+```
+model User {
+  email String @unique
+  name  String @default("")
+}
+```
+
+##### Default value for a `Boolean` Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  email   String  @unique
+  isAdmin Boolean @default(false)
+}
+```
+
+##### Default value for a `DateTime` Copy Anchor Link
+
+Note that static default values for `DateTime` are based on the ISO 8601 standard.
+
+Copy Text
+
+```
+model User {
+  email String   @unique
+  data  DateTime @default("2020-03-19T14:21:00+02:00")
+}
+```
+
+##### Default value for a `Bytes` Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  email  String @unique
+  secret Bytes  @default("SGVsbG8gd29ybGQ=")
+}
+```
+
+##### Default value for an `enum` Copy Anchor Link
+
+Copy Text
+
+```
+enum Role {
+  USER
+  ADMIN
+}
+```
+
+Copy Text
+
+```
+model User {
+  id      Int      @id @default(autoincrement())
+  email   String   @unique
+  name    String?
+  role    Role     @default(USER) 
+  posts   Post[]
+  profile Profile?
+}
+```
+
+Copy Text
+
+```
+enum Role {
+  USER
+  ADMIN
+}
+```
+
+Copy Text
+
+```
+model User {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  email   String   @unique
+  name    String?
+  role    Role     @default(USER) 
+  posts   Post[]
+  profile Profile?
+}
+```
+
+##### Default values for scalar lists Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id             Int      @id @default(autoincrement())
+  posts          Post[]
+  favoriteColors String[] @default(["red", "yellow", "purple"]) 
+  roles          Role[]   @default([USER, DEVELOPER])
+}
+
+enum Role {
+  USER
+  DEVELOPER
+  ADMIN
+}
+```
+
+### `@unique` Copy Anchor Link
+
+Defines a unique constraint for this field.
+
+#### Remarks Copy Anchor Link
+
+##### General Copy Anchor Link
+
+- A field annotated with `@unique` can be optional or required
+- A field annotated with `@unique` must be required if it represents the only unique constraint on a model without an `@id` / `@@id`
+- A model can have any number of unique constraints
+- Can be defined on any scalar field
+- Cannot be defined on a relation field
+
+##### Relational databases Copy Anchor Link
+
+- Corresponding database construct: `UNIQUE`
+- `NULL` values are considered to be distinct (multiple rows with `NULL` values in the same column are allowed)
+- Adding a unique constraint automatically adds a corresponding unique index to the specified column(s).
+
+##### MongoDB Copy Anchor Link
+
+- Enforced by a unique index in MongoDB
+
+#### Arguments Copy Anchor Link
+
+| Name | Required | Type | Description |
+| --- | --- | --- | --- |
+| `map` | No | `String` | |
+| `length` | No | `number` | Allows you to specify a maximum length for the subpart of the value to be indexed. MySQL only. |
+| `sort` | No | `String` | Allows you to specify in what order the entries of the constraint are stored in the database. The available options are `Asc` and `Desc`. |
+| `clustered` | No | `Boolean` | Defines whether the constraint is clustered or non-clustered. Defaults to `false`. SQL Server only. |
+| `where` | No | `function` or `object` | Defines a partial index that only includes rows matching the specified condition. Accepts `raw("SQL expression")` or an object literal like `{ field: value }`. PostgreSQL, SQLite, SQL Server, and CockroachDB. Requires the `partialIndexes` Preview feature. |
+
+- ¹ Can be required by some of the index and field types.
+
+#### Signature Copy Anchor Link
+
+Copy Text
+
+```
+@unique(map: String?, length: number?, sort: String?, clustered: Boolean?, where: raw(String) | { field: value }?)
+```
+
+> Note: The `where` argument accepts either `raw("SQL expression")` for raw SQL predicates or an object literal like `{ field: value }` for type-safe conditions. See Configuring partial indexes for details.
+
+> Note: Before the `partialIndexes` Preview feature, the signature was:
+> 
+> Copy Text
+> 
+> ```
+> @unique(map: String?, length: number?, sort: String?, clustered: Boolean?)
+> ```
+
+#### Examples Copy Anchor Link
+
+##### Specify a unique attribute on a required `String` field Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  email String @unique
+  name  String
+}
+```
+
+##### Specify a unique attribute on an optional `String` field Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id    Int     @id @default(autoincrement())
+  email String? @unique
+  name  String
+}
+```
+
+##### Specify a unique attribute on relation scalar field `authorId` Copy Anchor Link
+
+Copy Text
+
+```
+model Post {
+  author    User    @relation(fields: [authorId], references: [id])
+  authorId  Int     @unique
+  title     String
+  published Boolean @default(false)
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String? @unique
+  name  String
+  Post  Post[]
+}
+```
+
+##### Specify a unique attribute with `cuid()` values as default values Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  token String @unique @default(cuid())
+  name  String
+}
+```
+
+### `@@unique` Copy Anchor Link
+
+Defines a compound unique constraint for the specified fields.
+
+#### Remarks Copy Anchor Link
+
+##### General Copy Anchor Link
+
+- All fields that make up the unique constraint must be mandatory fields. The following model is not valid because `id` could be `null`:
+
+Copy Text
+
+```
+model User {
+  firstname Int
+  lastname  Int
+  id        Int?
+
+  @@unique([firstname, lastname, id])
+}
+```
+
+The reason for this behavior is that all connectors consider `null` values to be distinct, which means that two rows that look identical are considered unique:
+
+Copy Text
+
+```
+ firstname  | lastname | id
+ -----------+----------+------
+ John       | Smith    | null
+ John       | Smith    | null
+```
+- A model can have any number of `@@unique` blocks
+
+##### Relational databases Copy Anchor Link
+
+- Corresponding database construct: `UNIQUE`
+- A `@@unique` block is required if it represents the only unique constraint on a model without an `@id` / `@@id`
+- Adding a unique constraint automatically adds a corresponding unique index to the specified column(s)
+
+##### MongoDB Copy Anchor Link
+
+- Enforced by a compound index in MongoDB
+- A `@@unique` block cannot be used as the only unique identifier for a model - MongoDB requires an `@id` field
+
+#### Arguments Copy Anchor Link
+
+| Name | Required | Type | Description |
+| --- | --- | --- | --- |
+| `fields` | Yes | `FieldReference[]` | A list of field names - for example, `["firstname", "lastname"]`. Fields must be mandatory - see remarks. |
+| `name` | No | `String` | The name of the unique combination of fields - defaults to `fieldName1_fieldName2_fieldName3` |
+| `map` | No | `String` | |
+| `length` | No | `number` | Allows you to specify a maximum length for the subpart of the value to be indexed. MySQL only. |
+| `sort` | No | `String` | Allows you to specify in what order the entries of the constraint are stored in the database. The available options are `Asc` and `Desc`. |
+| `clustered` | No | `Boolean` | Defines whether the constraint is clustered or non-clustered. Defaults to `false`. SQL Server only. |
+| `where` | No | `function` or `object` | Defines a partial index that only includes rows matching the specified condition. Accepts `raw("SQL expression")` or an object literal like `{ field: value }`. PostgreSQL, SQLite, SQL Server, and CockroachDB. Requires the `partialIndexes` Preview feature. |
+
+The name of the `fields` argument on the `@@unique` attribute can be omitted:
+
+Copy Text
+
+```
+@@unique(fields: [title, author])
+@@unique([title, author])
+@@unique(fields: [title, author], name: "titleAuthor")
+```
+
+The `length` and `sort` arguments are added to the relevant field names:
+
+Copy Text
+
+```
+@@unique(fields: [title(length:10), author])
+@@unique([title(sort: Desc), author(sort: Asc)])
+```
+
+#### Signature Copy Anchor Link
+
+> Copy Text
+> 
+> ```
+> @@unique(_ fields: FieldReference[], name: String?, map: String?, where: raw(String) | { field: value }?)
+> ```
+
+> Note: The `where` argument accepts either `raw("SQL expression")` for raw SQL predicates or an object literal like `{ field: value }` for type-safe conditions. See Configuring partial indexes for details.
+
+> Note: Before the `partialIndexes` Preview feature (and before version 4.0.0 / 3.5.0 with the `extendedIndexes` Preview feature), the signature was:
+> 
+> Copy Text
+> 
+> ```
+> @@unique(_ fields: FieldReference[], name: String?, map: String?)
+> ```
+
+#### Examples Copy Anchor Link
+
+##### Specify a multi-field unique attribute on two `String` fields Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id        Int     @default(autoincrement())
+  firstName String
+  lastName  String
+  isAdmin   Boolean @default(false)
+
+  @@unique([firstName, lastName])
+}
+```
+
+To retrieve a user, use the generated field name (`firstname_lastname`):
+
+Copy Text
+
+```
+const user = await prisma.user.findUnique({
+  where: {
+    firstName_lastName: {
+      firstName: "Alice",
+      lastName: "Smith",
+      isAdmin: true,
+    },
+  },
+});
+```
+
+##### Specify a multi-field unique attribute on two `String` fields and one `Boolean` field Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id        Int     @default(autoincrement())
+  firstName String
+  lastName  String
+  isAdmin   Boolean @default(false)
+
+  @@unique([firstName, lastName, isAdmin])
+}
+```
+
+##### Specify a multi-field unique attribute that includes a relation field Copy Anchor Link
+
+Copy Text
+
+```
+model Post {
+  id        Int     @default(autoincrement())
+  author    User    @relation(fields: [authorId], references: [id])
+  authorId  Int
+  title     String
+  published Boolean @default(false)
+
+  @@unique([authorId, title])
+}
+
+model User {
+  id    Int    @id @default(autoincrement())
+  email String @unique
+  posts Post[]
+}
+```
+
+##### Specify a custom `name` for a multi-field unique attribute Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id        Int     @default(autoincrement())
+  firstName String
+  lastName  String
+  isAdmin   Boolean @default(false)
+
+  @@unique(fields: [firstName, lastName, isAdmin], name: "admin_identifier")
+}
+```
+
+To retrieve a user, use the custom field name (`admin_identifier`):
+
+Copy Text
+
+```
+const user = await prisma.user.findUnique({
+  where: {
+    admin_identifier: {
+      firstName: "Alice",
+      lastName: "Smith",
+      isAdmin: true,
+    },
+  },
+});
+```
+
+### `@@index` Copy Anchor Link
+
+Defines an index in the database.
+
+#### Remarks Copy Anchor Link
+
+##### Relational databases Copy Anchor Link
+
+- Corresponding database construct: `INDEX`
+- There are some additional index configuration options that cannot be provided via the Prisma schema yet. These include: 
+
+- PostgreSQL and CockroachDB: 
+
+- Define index fields as expressions (e.g. `CREATE INDEX title ON public."Post"((lower(title)) text_ops);`)
+- Create indexes concurrently with `CONCURRENTLY`
+
+While you cannot configure these option in your Prisma schema, you can still configure them on the database-level directly.
+
+##### MongoDB Copy Anchor Link
+
+#### Arguments Copy Anchor Link
+
+| Name | Required | Type | Description |
+| --- | --- | --- | --- |
+| `fields` | Yes | `FieldReference[]` | A list of field names - for example, `["firstname", "lastname"]` |
+| `name` | No | `String` | The name that Prisma Client will expose for the argument covering all fields, e.g. `fullName` in `fullName: { firstName: "First", lastName: "Last"}` |
+| `map` | No | `map` | The name of the index in the underlying database (Prisma generates an index name that respects identifier length limits if you do not specify a name. Prisma uses the following naming convention: `tablename.field1_field2_field3_unique`) |
+| `length` | No | `number` | Allows you to specify a maximum length for the subpart of the value to be indexed. MySQL only. |
+| `sort` | No | `String` | Allows you to specify in what order the entries of the index or constraint are stored in the database. The available options are `asc` and `desc`. |
+| `clustered` | No | `Boolean` | Defines whether the index is clustered or non-clustered. Defaults to `false`. SQL Server only. |
+| `type` | No | `identifier` | Allows you to specify an index access method. Defaults to `BTree`. PostgreSQL and CockroachDB only. |
+| `ops` | No | `identifier` or a `function` | Allows you to define the index operators for certain index types. PostgreSQL only. |
+| `where` | No | `function` or `object` | Defines a partial index that only includes rows matching the specified condition. Accepts `raw("SQL expression")` or an object literal like `{ field: value }`. PostgreSQL, SQLite, SQL Server, and CockroachDB. Requires the `partialIndexes` Preview feature. |
+
+The name of the `fields` argument on the `@@index` attribute can be omitted:
+
+Copy Text
+
+```
+@@index(fields: [title, author])
+@@index([title, author])
+```
+
+The `length` and `sort` arguments are added to the relevant field names:
+
+Copy Text
+
+```
+@@index(fields: [title(length:10), author])
+@@index([title(sort: Asc), author(sort: Desc)])
+```
+
+#### Signature Copy Anchor Link
+
+Copy Text
+
+```
+@@index(_ fields: FieldReference[], map: String?, where: raw(String) | { field: value }?)
+```
+
+> Note: The `where` argument accepts either `raw("SQL expression")` for raw SQL predicates or an object literal like `{ field: value }` for type-safe conditions. See Configuring partial indexes for details.
+
+> Note: With the `partialIndexes` Preview feature, the `where` argument is available. Before this Preview feature, the signature was:
+> 
+> Copy Text
+> 
+> ```
+> @@index(_ fields: FieldReference[], map: String?)
+> ```
+
+#### Examples Copy Anchor Link
+
+Assume you want to add an index for the `title` field of the `Post` model
+
+##### Define a single-column index (Relational databases only) Copy Anchor Link
+
+Copy Text
+
+```
+model Post {
+  id      Int     @id @default(autoincrement())
+  title   String
+  content String?
+
+  @@index([title])
+}
+```
+
+##### Define a multi-column index (Relational databases only) Copy Anchor Link
+
+Copy Text
+
+```
+model Post {
+  id      Int     @id @default(autoincrement())
+  title   String
+  content String?
+
+  @@index([title, content])
+}
+```
+
+##### Define an index with a name (Relational databases only) Copy Anchor Link
+
+Copy Text
+
+```
+model Post {
+  id      Int     @id @default(autoincrement())
+  title   String
+  content String?
+
+  @@index(fields: [title, content], name: "main_index")
+}
+```
+
+##### Define an index on a composite type field (Relational databases only) Copy Anchor Link
+
+Copy Text
+
+```
+type Address {
+  street String
+  number Int
+}
+
+model User {
+  id      Int     @id
+  email   String
+  address Address
+
+  @@index([address.number])
+}
+```
+
+### `@relation` Copy Anchor Link
+
+Defines meta information about the relation. Learn more about the `@relation` attribute.
+
+#### Remarks Copy Anchor Link
+
+##### Relational databases Copy Anchor Link
+
+- Corresponding database constructs: `FOREIGN KEY` / `REFERENCES`
+
+##### MongoDB Copy Anchor Link
+
+- If your model's primary key is of type `ObjectId` in the underlying database, both the primary key and the foreign key must have the `@db.ObjectId` attribute
+
+#### Arguments Copy Anchor Link
+
+| Name | Type | Required | Description | Example |
+| --- | --- | --- | --- | --- |
+| `name` | `String` | Sometimes (e.g. to disambiguate a relation) | Defines the name of the relationship. In an m-n-relation, it also determines the name of the underlying relation table. | `"CategoryOnPost"`, `"MyRelation"` |
+| `fields` | `FieldReference[]` | On annotated relation fields | A list of fields of the current model | `["authorId"]`, `["authorFirstName, authorLastName"]` |
+| `references` | `FieldReference[]` | On annotated relation fields | A list of fields of the model on the other side of the relation | `["id"]`, `["firstName, lastName"]` |
+| `map` | `String` | No | Defines a custom name for the foreign key in the database. | `["id"]`, `["firstName, lastName"]` |
+| `onUpdate` | Enum. See Types of referential actions for values. | No | Defines the referential action to perform when a referenced entry in the referenced model is being updated. | `Cascade`, `NoAction` |
+| `onDelete` | Enum. See Types of referential actions for values. | No | Defines the referential action to perform when a referenced entry in the referenced model is being deleted. | `Cascade`, `NoAction` |
+
+The name of the `name` argument on the `@relation` attribute can be omitted (`references` is required):
+
+Copy Text
+
+```
+@relation(name: "UserOnPost", references: [id])
+@relation("UserOnPost", references: [id])
+
+// or
+
+@relation(name: "UserOnPost")
+@relation("UserOnPost")
+```
+
+#### Signature Copy Anchor Link
+
+Copy Text
+
+```
+@relation(_ name: String?, fields: FieldReference[]?, references: FieldReference[]?, onDelete: ReferentialAction?, onUpdate: ReferentialAction?, map: String?)
+```
+
+With SQLite, the signature changes to:
+
+Copy Text
+
+```
+@relation(_ name: String?, fields: FieldReference[]?, references: FieldReference[]?, onDelete: ReferentialAction?, onUpdate: ReferentialAction?)
+```
+
+#### Examples Copy Anchor Link
+
+See: The `@relation` attribute.
+
+### `@map` Copy Anchor Link
+
+Maps a field name or enum value from the Prisma schema to a column or document field with a different name in the database. If you do not use `@map`, the Prisma field name matches the column name or document field name exactly.
+
+> See Using custom model and field names to see how `@map` and `@@map` changes the generated Prisma Client.
+
+#### Remarks Copy Anchor Link
+
+##### General Copy Anchor Link
+
+- `@map` does not rename the columns / fields in the database
+- `@map` does change the field names in the generated client
+
+##### MongoDB Copy Anchor Link
+
+Your `@id` field must include `@map("_id")`. For example:
+
+Copy Text
+
+```
+model User {
+  id String @default(auto()) @map("_id") @db.ObjectId
+}
+```
+
+#### Arguments Copy Anchor Link
+
+| Name | Type | Required | Description | Example |
+| --- | --- | --- | --- | --- |
+| `name` | `String` | Yes | The database column (relational databases) or document field (MongoDB) name. | `"comments"`, `"someFieldName"` |
+
+The name of the `name` argument on the `@map` attribute can be omitted:
+
+Copy Text
+
+```
+@map(name: "is_admin")
+@map("users")
+```
+
+#### Signature Copy Anchor Link
+
+Copy Text
+
+```
+@map(_ name: String)
+```
+
+#### Examples Copy Anchor Link
+
+##### Map the `firstName` field to a column called `first_name` Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id        Int    @id @default(autoincrement())
+  firstName String @map("first_name")
+}
+```
+
+The generated client:
+
+Copy Text
+
+```
+await prisma.user.create({
+  data: {
+    firstName: "Yewande", // first_name */} firstName
+  },
+});
+```
+
+##### Map an enum named `ADMIN` to a database enum named `admin` Copy Anchor Link
+
+Copy Text
+
+```
+enum Role {
+  ADMIN    @map("admin")
+  CUSTOMER
+}
+```
+
+In Prisma ORM v7 and later, the generated TypeScript enum uses the mapped values:
+
+Copy Text
+
+```
+export const Role = {
+  ADMIN: "admin",
+  CUSTOMER: "CUSTOMER",
+} as const;
+```
+
+This means `Role.ADMIN` evaluates to `"admin"`, not `"ADMIN"`.
+
+### `@@map` Copy Anchor Link
+
+Maps the Prisma schema model name to a table (relational databases) or collection (MongoDB) with a different name, or an enum name to a different underlying enum in the database. If you do not use `@@map`, the model name matches the table (relational databases) or collection (MongoDB) name exactly.
+
+> See Using custom model and field names to see how `@map` and `@@map` changes the generated Prisma Client.
+
+#### Arguments Copy Anchor Link
+
+| Name | Type | Required | Description | Example |
+| --- | --- | --- | --- | --- |
+| `name` | `String` | Yes | The database table (relational databases) or collection (MongoDB) name. | `"comments"`, `"someTableOrCollectionName"` |
+
+The name of the `name` argument on the `@@map` attribute can be omitted
+
+Copy Text
+
+```
+@@map(name: "users")
+@@map("users")
+```
+
+#### Signature Copy Anchor Link
+
+Copy Text
+
+```
+@@map(_ name: String)
+```
+
+#### Examples Copy Anchor Link
+
+##### Map the `User` model to a database table/collection named `users` Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  @@map("users")
+}
+```
+
+The generated client:
+
+Copy Text
+
+```
+await prisma.user.create({
+  // users */} user
+  data: {
+    name: "Yewande",
+  },
+});
+```
+
+##### Map the `Role` enum to a native enum in the database named `_Role` its values to lowercase values in the database Copy Anchor Link
+
+Copy Text
+
+```
+enum Role {
+  ADMIN    @map("admin")
+  CUSTOMER @map("customer")
+
+  @@map("_Role")
+}
+```
+
+### `@updatedAt` Copy Anchor Link
+
+Automatically stores the time when a record was last updated. If you do not supply a time yourself, Prisma Client will automatically set the value for fields with this attribute.
+
+#### Remarks Copy Anchor Link
+
+- Compatible with `DateTime` fields
+- Implemented at Prisma ORM level
+
+In versions before 4.4.0, if you're also using `now()`, the time might differ from the `@updatedAt` values if your database and app have different time zones. This happens because `@updatedAt` operates at the Prisma ORM level, while `now()` operates at the database level.
+
+If you pass an empty update clause, the @updatedAt value will remain unchanged. For example:
+
+Copy Text
+
+```
+await prisma.user.update({
+  where: {
+    id: 1,
+  },
+  data: {}, //<- Empty update clause
+});
+```
+
+#### Arguments Copy Anchor Link
+
+#### Signature Copy Anchor Link
+
+Copy Text
+
+```
+@updatedAt
+```
+
+#### Examples Copy Anchor Link
+
+Copy Text
+
+```
+model Post {
+  id        String   @id
+  updatedAt DateTime @updatedAt
+}
+```
+
+### `@ignore` Copy Anchor Link
+
+Add `@ignore` to a field that you want to exclude from Prisma Client (for example, a field that you do not want Prisma Client users to update). Ignored fields are excluded from the generated Prisma Client. The model's `create` method is disabled when doing this for required fields with no `@default` (because the database cannot create an entry without that data).
+
+#### Remarks Copy Anchor Link
+
+- Prisma ORM automatically adds `@ignore` to fields that refer to invalid models when you introspect.
+
+#### Examples Copy Anchor Link
+
+The following example demonstrates manually adding `@ignore` to exclude the `email` field from Prisma Client:
+
+schema.prisma
+
+Copy Text
+
+```
+model User {
+  id    Int    @id
+  name  String
+  email String @ignore // this field will be excluded
+}
+```
+
+### `@@ignore` Copy Anchor Link
+
+Add `@@ignore` to a model that you want to exclude from Prisma Client (for example, a model that you do not want Prisma users to update). Ignored models are excluded from the generated Prisma Client.
+
+#### Remarks Copy Anchor Link
+
+- Prisma ORM adds `@@ignore` to an invalid model during introspection. (It also adds `@ignore` to relations pointing to such a model)
+
+#### Examples Copy Anchor Link
+
+In the following example, the `Post` model is invalid because it does not have a unique identifier. Use `@@ignore` to exclude it from the generated Prisma Client API:
+
+schema.prisma
+
+Copy Text
+
+```
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Post {
+  id       Int  @default(autoincrement()) // no unique identifier
+  author   User @relation(fields: [authorId], references: [id])
+  authorId Int
+
+  @@ignore
+}
+```
+
+In the following example, the `Post` model is invalid because it does not have a unique identifier, and the `posts` relation field on `User` is invalid because it refers to the invalid `Post` model. Use `@@ignore` on the `Post` model and `@ignore` on the `posts` relation field in `User` to exclude both the model and the relation field from the generated Prisma Client API:
+
+schema.prisma
+
+Copy Text
+
+```
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Post {
+  id       Int  @default(autoincrement()) // no unique identifier
+  author   User @relation(fields: [authorId], references: [id])
+  authorId Int
+
+  @@ignore
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  name  String?
+  posts Post[]  @ignore
+}
+```
+
+### `@@schema` Copy Anchor Link
+
+Add `@@schema` to a model to specify which schema in your database should contain the table associated with that model. Learn more about adding multiple schema's here.
+
+Multiple database schema support is only available with the PostgreSQL, CockroachDB, and SQL Server connectors.
+
+#### Arguments Copy Anchor Link
+
+| Name | Type | Required | Description | Example |
+| --- | --- | --- | --- | --- |
+| `name` | `String` | Yes | The name of the database schema. | `"base"`, `"auth"` |
+
+The name of the `name` argument on the `@@schema` attribute can be omitted
+
+Copy Text
+
+```
+@@schema(name: "auth")
+@@schema("auth")
+```
+
+#### Signature Copy Anchor Link
+
+Copy Text
+
+```
+@@schema(_ name: String)
+```
+
+#### Examples Copy Anchor Link
+
+##### Map the `User` model to a database schema named `auth` Copy Anchor Link
+
+Copy Text
+
+```
+generator client {
+  provider        = "prisma-client"
+  output          = "./generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["auth"] 
+}
+
+model User {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  @@schema("auth") 
+}
+```
+
+For more information about using the `multiSchema` feature, refer to Multi-schema.
+
+### `@shardKey` Copy Anchor Link
+
+This feature requires the `shardKeys` Preview feature flag on your `generator`:
+
+Copy Text
+
+```
+generator client {
+  provider = "prisma-client"
+  output = "../generated/prisma"
+  previewFeatures = ["shardKeys"]
+}
+```
+
+The `@shardKey` attribute is only compatible with PlanetScale databases. It enables you define a shard key on a field of your model:
+
+Copy Text
+
+```
+model User {
+  id     String @default(uuid())
+  region String @shardKey
+}
+```
+
+### `@@shardKey` Copy Anchor Link
+
+This feature requires the `shardKeys` Preview feature flag on your `generator`:
+
+Copy Text
+
+```
+generator client {
+  provider = "prisma-client"
+  output = "../generated/prisma"
+  previewFeatures = ["shardKeys"]
+}
+```
+
+The `@@shardKey` attribute is only compatible with PlanetScale databases. It enables you define a shard key on multiple fields of your model:
+
+Copy Text
+
+```
+model User {
+  id         String @default(uuid())
+  country    String
+  customerId String
+  @@shardKey([country, customerId])
+}
+```
+
+## Attribute functions Copy Anchor Link
+
+### `auto()` Copy Anchor Link
+
+This function is available on MongoDB only.
+
+Represents default values that are automatically generated by the database.
+
+#### Remarks Copy Anchor Link
+
+##### MongoDB Copy Anchor Link
+
+Used to generate an `ObjectId` for `@id` fields:
+
+Copy Text
+
+```
+id  String  @map("_id") @db.ObjectId @default(auto())
+```
+
+##### Relational databases Copy Anchor Link
+
+The `auto()` function is not available on relational databases.
+
+#### Example Copy Anchor Link
+
+##### Generate `ObjectId` (MongoDB only) Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id   String  @id @default(auto()) @map("_id") @db.ObjectId
+  name String?
+}
+```
+
+### `autoincrement()` Copy Anchor Link
+
+Not supported by MongoDB The MongoDB connector does not support the `autoincrement()` function.
+
+Create a sequence of integers in the underlying database and assign the incremented values to the ID values of the created records based on the sequence.
+
+#### Remarks Copy Anchor Link
+
+- Compatible with `Int` on most databases (`BigInt` on CockroachDB)
+- Implemented on the database-level, meaning that it manifests in the database schema and can be recognized through introspection. Database implementations:
+
+| Database | Implementation |
+| --- | --- |
+| PostgreSQL | `SERIAL` type |
+| MySQL | `AUTO_INCREMENT` attribute |
+| SQLite | `AUTOINCREMENT` keyword |
+| CockroachDB | `SERIAL` type |
+
+#### Examples Copy Anchor Link
+
+##### Generate autoincrementing integers as IDs (Relational databases only) Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id   Int    @id @default(autoincrement())
+  name String
+}
+```
+
+### `sequence()` Copy Anchor Link
+
+Only supported by CockroachDB The sequence function is only supported by CockroachDB connector.
+
+Create a sequence of integers in the underlying database and assign the incremented values to the values of the created records based on the sequence.
+
+#### Optional arguments Copy Anchor Link
+
+| Argument | Example |
+| --- | --- |
+| `virtual` | `@default(sequence(virtual))` Virtual sequences are sequences that do not generate monotonically increasing values and instead produce values like those generated by the built-in function `unique_rowid()`. |
+| `cache` | `@default(sequence(cache: 20))` The number of sequence values to cache in memory for reuse in the session. A cache size of `1` means that there is no cache, and cache sizes of less than `1` are not valid. |
+| `increment` | `@default(sequence(increment: 4))` The new value by which the sequence is incremented. A negative number creates a descending sequence. A positive number creates an ascending sequence. |
+| `minValue` | `@default(sequence(minValue: 10))` The new minimum value of the sequence. |
+| `maxValue` | `@default(sequence(maxValue: 3030303))` The new maximum value of the sequence. |
+| `start` | `@default(sequence(start: 2))` The value the sequence starts at, if it's restarted or if the sequence hits the `maxValue`. |
+
+#### Examples Copy Anchor Link
+
+##### Generate sequencing integers as IDs Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id   Int    @id @default(sequence(maxValue: 4294967295))
+  name String
+}
+```
+
+### `cuid()` Copy Anchor Link
+
+Generate a globally unique identifier based on the `cuid` spec.
+
+If you'd like to use `cuid2` values, you can pass `2` as an argument to the `cuid` function: `cuid(2)`.
+
+#### Remarks Copy Anchor Link
+
+- Compatible with `String`.
+- Implemented by Prisma ORM and therefore not "visible" in the underlying database schema. You can still use `cuid()` when using introspection by manually changing your Prisma schema and generating Prisma Client, in that case the values will be generated by Prisma ORM.
+- Since the length of `cuid()` output is undefined per the cuid creator, a safe field size is 30 characters, in order to allow for enough characters for very large values. If you set the field size as less than 30, and then a larger value is generated by `cuid()`, you might see Prisma Client errors such as `Error: The provided value for the column is too long for the column's type.`
+- For MongoDB: `cuid()` does not generate a valid `ObjectId`. You can use `@db.ObjectId` syntax if you want to use `ObjectId` in the underlying database. However, you can still use `cuid()` if your `_id` field is not of type `ObjectId`.
+
+#### Examples Copy Anchor Link
+
+##### Generate `cuid()` values as IDs Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id   String @id @default(cuid())
+  name String
+}
+```
+
+##### Generate `cuid(2)` values as IDs based on the `cuid2` spec Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id   String @id @default(cuid(2))
+  name String
+}
+```
+
+### `uuid()` Copy Anchor Link
+
+Generate a globally unique identifier based on the UUID spec. Prisma ORM supports versions 4 (default) and 7.
+
+#### Remarks Copy Anchor Link
+
+- Compatible with `String`.
+- Implemented by Prisma ORM and therefore not "visible" in the underlying database schema. You can still use `uuid()` when using introspection by manually changing your Prisma schema and generating Prisma Client, in that case the values will be generated by Prisma ORM.
+- For relational databases: If you do not want to use Prisma ORM's `uuid()` function, you can use the native database function with `dbgenerated`.
+- For MongoDB: `uuid()` does not generate a valid `ObjectId`. You can use `@db.ObjectId` syntax if you want to use `ObjectId` in the underlying database. However, you can still use `uuid()` if your `_id` field is not of type `ObjectId`.
+
+#### Examples Copy Anchor Link
+
+##### Generate `uuid()` values as IDs using UUID v4 Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id   String @id @default(uuid())
+  name String
+}
+```
+
+##### Generate `uuid(7)` values as IDs using UUID v7 Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id   String @id @default(uuid(7))
+  name String
+}
+```
+
+### `ulid()` Copy Anchor Link
+
+Generate a universally unique lexicographically sortable identifier based on the ULID spec.
+
+#### Remarks Copy Anchor Link
+
+- `ulid()` will produce 128-bit random identifier represented as a 26-character long alphanumeric string, e.g.: `01ARZ3NDEKTSV4RRFFQ69G5FAV`
+
+#### Examples Copy Anchor Link
+
+##### Generate `ulid()` values as IDs Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id   String @id @default(ulid())
+  name String
+}
+```
+
+### `nanoid()` Copy Anchor Link
+
+Generated values based on the Nano ID spec. `nanoid()` accepts an integer value between 2 and 255 that specifies the length of the generate ID value, e.g. `nanoid(16)` will generated ID with 16 characters. If you don't provide a value to the nanoid() function, the default value is 21.
+
+Nano ID is quite comparable to UUID v4 (random-based). It has a similar number of random bits in the ID (126 in Nano ID and 122 in UUID), so it has a similar collision probability:
+
+For there to be a one in a billion chance of duplication, 103 trillion version 4 IDs must be generated.
+
+There are two main differences between Nano ID and UUID v4:
+
+- Nano ID uses a bigger alphabet, so a similar number of random bits are packed in just 21 symbols instead of 36.
+- Nano ID code is 4 times smaller than uuid/v4 package: 130 bytes instead of 423.
+
+#### Remarks Copy Anchor Link
+
+- Compatible with `String`.
+- Implemented by Prisma ORM and therefore not "visible" in the underlying database schema. You can still use `uuid()` when using introspection by manually changing your Prisma schema and generating Prisma Client, in that case the values will be generated by Prisma ORM.
+- For MongoDB: `nanoid()` does not generate a valid `ObjectId`. You can use `@db.ObjectId` syntax if you want to use `ObjectId` in the underlying database. However, you can still use `nanoid()` if your `_id` field is not of type `ObjectId`.
+
+#### Examples Copy Anchor Link
+
+##### Generate `nanoid()` values with 21 characters as IDs Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id   String @id @default(nanoid())
+  name String
+}
+```
+
+##### Generate `nanoid()` values with 16 characters as IDs Copy Anchor Link
+
+Copy Text
+
+```
+model User {
+  id   String @id @default(nanoid(16))
+  name String
+}
+```
+
+### `now()` Copy Anchor Link
+
+Set a timestamp of the time when a record is created.
+
+#### Remarks Copy Anchor Link
+
+##### General Copy Anchor Link
+
+- Compatible with `DateTime`
+
+In versions before 4.4.0, if you're also using `@updatedAt`, the time might differ from the `now()` values if your database and app have different time zones. This happens because `@updatedAt` operates at the Prisma ORM level, while `now()` operates at the database level.
+
+##### Relational databases Copy Anchor Link
+
+- Implemented on the database-level, meaning that it manifests in the database schema and can be recognized through introspection. Database implementations:
+
+| Database | Implementation |
+| --- | --- |
+| PostgreSQL | `CURRENT_TIMESTAMP` and aliases like `now()` |
+| MySQL | `CURRENT_TIMESTAMP` and aliases like `now()` |
+| SQLite | `CURRENT_TIMESTAMP` and aliases like `date('now')` |
+| CockroachDB | `CURRENT_TIMESTAMP` and aliases like `now()` |
+
+##### MongoDB Copy Anchor Link
+
+#### Examples Copy Anchor Link
+
+##### Set current timestamp value when a record is created Copy Anchor Link
+
+Relational databases
+
+Copy Text
+
+```
+model User {
+  id        String   @id
+  createdAt DateTime @default(now())
+}
+```
+
+### `dbgenerated(...)` Copy Anchor Link
+
+Represents default values that cannot be expressed in the Prisma schema (such as `random()`).
+
+#### Remarks Copy Anchor Link
+
+##### Relational databases Copy Anchor Link
+
+- Compatible with any scalar type
+- Can not be an empty string `dbgenerated("")`
+- Accepts a `String` value, which allows you to:
+
+- Set default values for `Unsupported` types
+- Override default value behavior for supported types
+- String values in `dbgenerated(...)` might not match what the DB returns as the default value, because values such as strings may be explicitly cast (e.g. `'hello'::STRING`). When a mismatch is present, Prisma Migrate indicates a migration is still needed. You can use `prisma db pull` to infer the correct value to resolve the discrepancy. (Related issue)
+
+#### Examples Copy Anchor Link
+
+##### Set default value for `Unsupported` type Copy Anchor Link
+
+Copy Text
+
+```
+circle     Unsupported("circle")?   @default(dbgenerated("'<(10,4),11>'::circle"))
+```
+
+##### Override default value behavior for supported types Copy Anchor Link
+
+You can also use `dbgenerated(...)` to set the default value for supported types. For example, in PostgreSQL you can generate UUIDs at the database level rather than rely on Prisma ORM's `uuid()`:
+
+Copy Text
+
+```
+model User {
+  id   String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id   String  @id @default(uuid()) @db.Uuid
+  test String?
+}
+```
+
+`gen_random_uuid()` is a PostgreSQL function. To use it in PostgreSQL versions 12.13 and earlier, you must enable the `pgcrypto` extension. See PostgreSQL extensions for how to install extensions.
+
+## Attribute argument types Copy Anchor Link
+
+### `FieldReference[]` Copy Anchor Link
+
+An array of field names: `[id]`, `[firstName, lastName]`
+
+### `String` Copy Anchor Link
+
+A variable length text in double quotes: `""`, `"Hello World"`, `"Alice"`
+
+### `Expression` Copy Anchor Link
+
+An expression that can be evaluated by Prisma ORM: `42.0`, `""`, `Bob`, `now()`, `cuid()`
+
+## `enum` Copy Anchor Link
+
+Not supported Microsoft SQL Server The Microsoft SQL Server connector does not support the `enum` type.
+
+Defines an enum .
+
+### Remarks Copy Anchor Link
+
+- Enums are natively supported by PostgreSQL and MySQL
+- Enums are implemented and enforced at Prisma ORM level in SQLite and MongoDB
+
+### Naming conventions Copy Anchor Link
+
+- Enum names must start with a letter (they are typically spelled in PascalCase)
+- Enums must use the singular form (e.g. `Role` instead of `role`, `roles` or `Roles`).
+- Must adhere to the following regular expression: `[A-Za-z][A-Za-z0-9_]*`
+
+### Examples Copy Anchor Link
+
+#### Specify an `enum` with two possible values Copy Anchor Link
+
+Copy Text
+
+```
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id   Int  @id @default(autoincrement())
+  role Role
+}
+```
+
+#### Specify an `enum` with two possible values and set a default value Copy Anchor Link
+
+Copy Text
+
+```
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id   Int  @id @default(autoincrement())
+  role Role @default(USER)
+}
+```
+
+## `type` Copy Anchor Link
+
+Composite types are available for MongoDB only.
+
+Defines a composite type.
+
+### Naming conventions Copy Anchor Link
+
+Type names must:
+
+- start with a letter (they are typically spelled in PascalCase)
+- adhere to the following regular expression: `[A-Za-z][A-Za-z0-9_]*`
+
+### Examples Copy Anchor Link
+
+#### Define a `Product` model with a list of `Photo` composite types Copy Anchor Link
+
+Copy Text
+
+```
+model Product {
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
+  name   String
+  photos Photo[]
+}
+
+type Photo {
+  height Int
+  width  Int
+  url    String
+}
+```
+
+## Where to go next Copy Anchor Link
+
+- Prisma schema overview if you want a guided explanation of how schema pieces fit together
+- Data model / models for practical modeling patterns beyond the raw reference
+- Prisma Migrate getting started if you are ready to apply schema changes to a real database
+- Add Prisma ORM to an existing PostgreSQL project if you want to connect this schema workflow to a live application
+
+Last updated on 9/11/2026
+
+Complete reference for prisma.config.ts configuration options
+
+### On this page
+
+`datasource` Fields Remarks Examples PostgreSQL datasource Specify a PostgreSQL data source via an environment variable MySQL datasource MongoDB datasource SQLite datasource CockroachDB datasource Multi-schema datasource (PostgreSQL)`generator` Fields for `prisma-client-js` provider Fields for `prisma-client` provider`binaryTargets` options macOS Windows Linux (Alpine on x86_64 architectures) Linux (Alpine on ARM64 architectures) Linux (Debian), x86_64 Linux (Ubuntu), x86_64 Linux (CentOS), x86_64 Linux (Fedora), x86_64 Linux (Linux Mint), x86_64 Linux (Arch Linux), x86_64 Linux ARM64 (all major distros but Alpine) Examples Specify the `prisma-client-js` generator with the default `output`, `previewFeatures`, `engineType` and `binaryTargets` Specify a custom `output` location for Prisma Client Specify custom `binaryTargets` to ensure compatibility with the OS Specify a `provider` pointing to some custom generator implementation`model` Remarks Naming conventions Order of fields Examples A model named `User` with two scalar fields`model` fields Remarks Naming conventions`model` field scalar types`String` Default type mappings PostgreSQL MySQL MongoDB Microsoft SQL Server SQLite CockroachDB Clients`Boolean` Default type mappings PostgreSQL MySQL MongoDB Microsoft SQL Server SQLite CockroachDB Clients`Int` Default type mappings PostgreSQL MySQL MongoDB Microsoft SQL Server SQLite CockroachDB Clients`BigInt` Default type mappings PostgreSQL MySQL MongoDB Microsoft SQL Server SQLite CockroachDB Clients`Float` Default type mappings PostgreSQL MySQL MongoDB Microsoft SQL Server SQLite connector CockroachDB Clients`Decimal` Default type mappings PostgreSQL MySQL MongoDB Microsoft SQL Server SQLite CockroachDB Clients`DateTime` Remarks Default type mappings PostgreSQL MySQL MongoDB Microsoft SQL Server SQLite CockroachDB Clients`Json` Default type mappings PostgreSQL MySQL MongoDB Microsoft SQL Server SQLite CockroachDB Clients`Bytes` Default type mappings PostgreSQL MySQL MongoDB Microsoft SQL Server SQLite CockroachDB Clients`Unsupported` Remarks Examples`model` field type modifiers`[]` modifier Remarks Relational databases MongoDB Examples Define a scalar list Define a scalar list with a default value`?` modifier Remarks Examples Optional `name` field Attributes`@id` Remarks General Relational databases MongoDB Arguments Signature Examples Generate autoincrementing integers as IDs (Relational databases only) Generate `ObjectId` as IDs (MongoDB only) Generate `cuid()` values as IDs Generate `uuid()` values as IDs Generate `ulid()` values as IDs Single-field IDs without default values Specify an ID on relation scalar field without a default value`@@id` Remarks Arguments Signature Examples Specify a multi-field ID on two `String` fields (Relational databases only) Specify a multi-field ID on two `String` fields and one `Boolean` field (Relational databases only) Specify a multi-field ID that includes a relation field (Relational databases only)`@default` Remarks Relational databases MongoDB Arguments Signature Examples Default value for an `Int` Default value for a `Float` Default value for `Decimal` Default value for `BigInt` Default value for a `String` Default value for a `Boolean` Default value for a `DateTime` Default value for a `Bytes` Default value for an `enum` Default values for scalar lists`@unique` Remarks General Relational databases MongoDB Arguments Signature Examples Specify a unique attribute on a required `String` field Specify a unique attribute on an optional `String` field Specify a unique attribute on relation scalar field `authorId` Specify a unique attribute with `cuid()` values as default values`@@unique` Remarks General Relational databases MongoDB Arguments Signature Examples Specify a multi-field unique attribute on two `String` fields Specify a multi-field unique attribute on two `String` fields and one `Boolean` field Specify a multi-field unique attribute that includes a relation field Specify a custom `name` for a multi-field unique attribute`@@index` Remarks Relational databases MongoDB Arguments Signature Examples Define a single-column index (Relational databases only) Define a multi-column index (Relational databases only) Define an index with a name (Relational databases only) Define an index on a composite type field (Relational databases only)`@relation` Remarks Relational databases MongoDB Arguments Signature Examples`@map` Remarks General MongoDB Arguments Signature Examples Map the `firstName` field to a column called `first_name` Map an enum named `ADMIN` to a database enum named `admin``@@map` Arguments Signature Examples Map the `User` model to a database table/collection named `users` Map the `Role` enum to a native enum in the database named `_Role` its values to lowercase values in the database`@updatedAt` Remarks Arguments Signature Examples`@ignore` Remarks Examples`@@ignore` Remarks Examples`@@schema` Arguments Signature Examples Map the `User` model to a database schema named `auth``@shardKey``@@shardKey` Attribute functions`auto()` Remarks MongoDB Relational databases Example Generate `ObjectId` (MongoDB only)`autoincrement()` Remarks Examples Generate autoincrementing integers as IDs (Relational databases only)`sequence()` Optional arguments Examples Generate sequencing integers as IDs`cuid()` Remarks Examples Generate `cuid()` values as IDs Generate `cuid(2)` values as IDs based on the `cuid2` spec`uuid()` Remarks Examples Generate `uuid()` values as IDs using UUID v4 Generate `uuid(7)` values as IDs using UUID v7`ulid()` Remarks Examples Generate `ulid()` values as IDs`nanoid()` Remarks Examples Generate `nanoid()` values with 21 characters as IDs Generate `nanoid()` values with 16 characters as IDs`now()` Remarks General Relational databases MongoDB Examples Set current timestamp value when a record is created`dbgenerated(...)` Remarks Relational databases Examples Set default value for `Unsupported` type Override default value behavior for supported types Attribute argument types`FieldReference[]``String``Expression``enum` Remarks Naming conventions Examples Specify an `enum` with two possible values Specify an `enum` with two possible values and set a default value`type` Naming conventions Examples Define a `Product` model with a list of `Photo` composite types Where to go next

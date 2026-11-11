@@ -201,10 +201,10 @@ description: >-
     - 读 `scripts/prod-dev.ts`、`scripts/verify-env.ts`、`next.config.ts`。
     - 对照 README 分清三件事：`pnpm dev` 用 `.env.local` 连 dev 库；`pnpm run prod:dev` 把 `.env.production.local` 注入后再跑 `next dev`，`NODE_ENV` 仍是 `development` 以便热更新，`APP_ENV` 来自 prod env；`pnpm run prod:build` 后再 `pnpm run prod:start` 才是本地 `next start` 的 production build。
     - 学完标准：能说出两条本地 prod 命令分别在什么时候用、env 谁覆盖谁、为什么改 `NEXT_PUBLIC_*` 必须重新 build，以及这条链路为什么会碰到 prod 数据。
-  - 第 2 章：请求进应用之后先经过什么。
+  - 第 2 章：请求进应用之后先经过什么。第一条具体请求是浏览器打开 `http://localhost:3000`，也就是 `/`。先追这次请求在服务端和浏览器分别加载并执行了什么；其它地址只对照它们进入哪个 layout。
     - `src/app/layout.tsx`，以及三个路由组：`(marketing)`、`(auth)`、`(app)` 各自的 `layout.tsx`。
     - `src/components/providers/`、`src/lib/site.ts`、`src/lib/features.ts`、`src/lib/prisma.ts`、`instrumentation.ts` 与 `sentry.*.config.ts`。
-    - 学完标准：能指出公开页、登录页、登录后页面各从哪个 layout 进来，以及当前 release 里 AI chat 开关在哪里关掉。
+    - 学完标准：能指出公开页、登录页、登录后页面各从哪个 layout 进来，以及当前 release 里 AI chat 开关在哪里关掉。也能说出打开首页时，服务端先执行哪些文件，浏览器随后再执行哪些逻辑。
   - 第 3 章：按真实用户顺序读页面，先页面再点进它调用的组件。
     - `/`：`src/app/(marketing)/page.tsx` 与 `src/components/marketing/`。
     - 登录：`src/app/(auth)/sign-in/page.tsx`、`src/components/auth/`、`src/app/auth/continue`。
@@ -235,7 +235,7 @@ description: >-
     - `e2e/` 与 `playwright.config.ts`，对照 `package.json` 的 `qa:launch`。
     - 学完标准：能指出登录、计划入口、analytics、观测、Stripe/Creem webhook 各自有哪份测试，以及哪些测试故意不打真实外部服务。
 - 正在学习的内容:
-  - 第 1 章，本地 prod 启动。用户还没学完这一章。下次仍从第 1 章继续：两条本地 prod 命令分别什么时候用、env 谁覆盖谁、为什么改 `NEXT_PUBLIC_*` 必须重新 build，以及这条链路为什么会碰到 prod 数据。按「章节完成判断」，用户主动说开始学习第 2 章之前，不把这里改成第 2 章。
+  - 第 2 章，请求进应用之后先经过什么。用户已确认第 1 章学完。首页 `http://localhost:3000` 的服务端和浏览器执行顺序已经写进 `README.md` 的「浏览器打开 `http://localhost:3000`」。登录页和登录后页面还没有按同一次请求展开。第 2 章还没被用户说学完。下次仍停在第 2 章，直到用户主动说开始第 3 章。
 - 已经学习的内容:
   - 2026-09-23：只核对了目录、启动脚本和 README 工程入口，用来写出上面的大纲。
   - 2026-09-23：讲完 `package.json` 的顶层字段、`engines`、全部 `scripts`、`dependencies` 与 `devDependencies`。`zustand` 只出现在依赖清单里，当前 `src` 没有引用。
@@ -254,13 +254,17 @@ description: >-
   - 2026-11-09：在 `README.md` 的「部署」写明 Vercel 是线上网站的托管平台。它提供页面并执行接口；记录留在 Supabase。`main` 分支触发 Production 发布，`vercel.json` 负责每日统计清理。第 1 章仍未学完。
   - 2026-11-09：讲清 Prisma 生成的客户端不在 `src/`，而在 `node_modules/.pnpm/.../node_modules/.prisma/client/`。业务代码通过 `@prisma/client` 使用它。第 1 章仍未学完。
   - 2026-11-09：更正生成目录。pnpm 不会在项目根创建 `node_modules/.prisma/client`；当前实际路径在 `@prisma+client@6.19.3_prisma@6.19.3_typescript@5.9.3` 下面，并且 `.prisma` 是隐藏目录。第 1 章仍未学完。
-  - 2026-11-03：讲清项目数据库是 Supabase 上的 PostgreSQL，由 Prisma 6 访问，并启用 pgvector。dev 与 prod 是两套隔离库。仓库没有写死 Postgres 主版本号。第 1 章仍未学完。 
+  - 2026-11-03：讲清项目数据库是 Supabase 上的 PostgreSQL，由 Prisma 6 访问，并启用 pgvector。dev 与 prod 是两套隔离库。仓库没有写死 Postgres 主版本号。第 1 章仍未学完。
+  - 2026-11-10：用户确认第 1 章学完，开始第 2 章。所有页面先经过 `src/app/layout.tsx`。公开页再进 `(marketing)` layout，登录页再进 `(auth)` layout，onboarding、计划、当天、完成和 `/chat` 再进 `(app)` layout。括号目录不出现在网址里。`(auth)` layout 只包住页面并禁止搜索引擎收录；读会话的是 `/sign-in` 页面本身。公开页和登录后页面的 layout 会调用 `getAuthSession`。AI 开关是 `src/lib/features.ts` 里写死的 `AI_CHAT_ENABLED = false`：`/chat` 直接渲染暂停页，`POST /api/chat` 返回 503，当天页不显示 Ask AI。`prisma.ts` 仍不在进程启动时执行；第一次 import 时若 `APP_ENV=prod` 会检查数据库地址，已登录请求的 jwt 回调才会查当前计划。`src/lib/prisma.ts` 顶部注释仍写着 schema 还不存在，这句已经过时。第 2 章尚未学完。
+  - 2026-11-10：确认第 2 章的第一条具体请求就是浏览器打开 `http://localhost:3000`。这次不再执行 `scripts/prod-dev.ts`。服务端匹配 `src/app/(marketing)/page.tsx`，先跑根 layout 和 marketing layout，再跑落地页。两处 `getAuthSession` 都会加载 `src/lib/prisma.ts`；没有登录 cookie 时不查 `Program`。浏览器随后水合 `Providers`，`AcquisitionCapture` 只处理地址栏来源，`AnalyticsPageView` 在 `NEXT_PUBLIC_ANALYTICS_PROVIDER=first_party` 且未 opt-out 时才 `POST /api/analytics/events`。`SessionProvider` 再请求 `GET /api/auth/session`。`src/lib/features.ts`、`error.tsx`、`not-found.tsx` 不在这次成功打开里执行。第 2 章尚未学完。
+  - 2026-11-11：把首页这次请求的服务端和浏览器执行顺序写进 `README.md` 的「浏览器打开 `http://localhost:3000`」，放在 `prod:dev` 启动结束之后。与启动节已有结论对齐：`prod:dev` 使用 Turbopack，这次打开不执行 `sentry.client.config.ts`。第 2 章尚未学完。 
 
 ## 最新待继续问题(不要修改这部分的子内容)
 - 我的技术栈是`IOS,Android,react native, React, VUE, 微信小程序`,没有后端开发经验;
 - 你执行 `pnpm run prod:dev`
+<!-- - 浏览器访问 ` ` 后, 先经过什么, 在服务端和浏览器分别加载并执行了什么  -->
 <!-- - 给 `/Users/stark/Desktop/work/MyStartupProject1/prisma/schema.prisma` 文件里每行都加上中文注释, 方便我学习这个项目; 文件顶部也加上中文注释,内容包含为什么在项目里使用这个文件,在项目里是做什么的,用途是什么, 实际承担的职责是什么, 文件内容的编译加载顺序和执行顺序是什么 等; -->
--  在 `/Users/stark/Desktop/work/MyStartupProject1/README.md` 里的合适地方解释项目里使用的 `Vercel`  是什么东西, 为什么在项目里使用,它是做什么的,用途是什么, 实际承担的职责是什么等 ;
+<!-- -  在 `/Users/stark/Desktop/work/MyStartupProject1/README.md` 里的合适地方解释项目里使用的 `Vercel`  是什么东西, 为什么在项目里使用,它是做什么的,用途是什么, 实际承担的职责是什么等 ; -->
 <!-- - 借鉴`/Users/stark/.codex/skills/csx-web-react/SKILL.md`,优化当前skill,让每次执行完当前项目相关的任务后,先判断是否需要在当前skill里或者相关文档里更新项目的最新状态和下一步需要做的任务列表,以及沉淀项目的事实,如果需要,再这么做;用于新chat里恢复上下文 -->
 <!-- - 精简优化`/Users/stark/Desktop/work/MyStartupProject1/项目主档案.md`和`/Users/stark/Desktop/work/MyStartupProject1/README.md`,项目主档案只沉淀项目里已经做过的所有需求的事实,而`README.md`只保留和具体需求无关的通用的项目配置和架构与部署事实 -->
 <!-- - 在prod环境里清除`stark19852020@gmail.com`这个账户,我需要重新测试这个账户 -->

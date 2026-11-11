@@ -1,0 +1,1206 @@
+# Prisma 7 breaking changes to Prisma config file, and prisma schema
+
+- State: closed
+- Author: Stuart-wdas
+- Created: 2025-11-19T15:08:20Z
+- Updated: 2026-03-23T06:03:52Z
+- Repository: prisma/orm
+- Number: #28573
+
+---
+
+When upgrading to the latest version of prisma, i am getting issues with the config file saying engine:'classic' engine doesnt exist, then on project build i am getting an error saying the url in the db source block is deprecated but when removing it i get and error saying it is required to be added. 
+
+ 
+
+`npx prisma generate
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma
+Error: Prisma schema validation - (get-config wasm)
+Error code: P1012
+error: The datasource property `url` is no longer supported in schema files. Move connection URLs for Migrate to `prisma.config.ts` and pass either `adapter` for a direct database connection or `accelerateUrl` for Accelerate to the `PrismaClient` constructor. See https://pris.ly/d/config-datasource and https://pris.ly/d/prisma7-client-config
+ --> prisma\schema.prisma:11
+ |
+10 | provider = "postgresql"
+11 | url = env("DATABASE_URL")
+ |
+
+Validation Error Count: 1
+[Context: getConfig]
+
+Prisma CLI Version : 7.0.0`
+ `{
+ "name": "ypay",
+ "version": "0.1.0",
+ "private": true,
+ "scripts": {
+ "dev": "next dev",
+ "build": "next build",
+ "start": "next start",
+ "lint": "next lint"
+ },
+ "dependencies": {
+ "@aws-sdk/client-s3": "^3.856.0",
+ "@prisma/adapter-pg": "^7.0.0",
+ "@prisma/client": "7.0.0",
+ "@prisma/extension-accelerate": "^2.0.2",
+ "@radix-ui/react-accordion": "^1.2.11",
+ "@radix-ui/react-alert-dialog": "^1.1.14",
+ "@radix-ui/react-avatar": "^1.1.10",
+ "@radix-ui/react-dialog": "^1.1.14",
+ "@radix-ui/react-dropdown-menu": "^2.1.15",
+ "@radix-ui/react-label": "^2.1.7",
+ "@radix-ui/react-separator": "^1.1.7",
+ "@radix-ui/react-slot": "^1.2.3",
+ "@radix-ui/react-switch": "^1.2.5",
+ "@radix-ui/react-tabs": "^1.1.12",
+ "@radix-ui/react-tooltip": "^1.2.7",
+ "@tanstack/react-query": "^5.83.0",
+ "@tanstack/react-table": "^8.21.3",
+ "axios": "^1.10.0",
+ "better-auth": "^1.2.12",
+ "class-variance-authority": "^0.7.1",
+ "clsx": "^2.1.1",
+ "dotenv": "^17.2.0",
+ "input-otp": "^1.4.2",
+ "lucide-react": "^0.525.0",
+ "next": "15.3.5",
+ "next-pwa": "^5.6.0",
+ "next-themes": "^0.4.6",
+ "nodemailer": "^7.0.5",
+ "oidc-client-ts": "^3.3.0",
+ "react": "^19.0.0",
+ "react-dom": "^19.0.0",
+ "react-oidc-context": "^3.3.0",
+ "react-webcam": "^7.2.0",
+ "sonner": "^2.0.6",
+ "tailwind-merge": "^3.3.1",
+ "web-push": "^3.6.7",
+ "zod": "^4"
+ },
+ "devDependencies": {
+ "@eslint/eslintrc": "^3",
+ "@tailwindcss/postcss": "^4",
+ "@types/minimatch": "^6.0.0",
+ "@types/next-pwa": "^5.6.9",
+ "@types/node": "^20.19.10",
+ "@types/nodemailer": "^6.4.17",
+ "@types/react": "^19.1.8",
+ "@types/react-dom": "^19",
+ "@types/web-push": "^3.6.4",
+ "eslint": "^9",
+ "eslint-config-next": "15.3.5",
+ "prisma": "^7.0.0",
+ "tailwindcss": "^4",
+ "tsx": "^4.20.3",
+ "tw-animate-css": "^1.3.5",
+ "typescript": "^5"
+ }
+}
+`
+Prisma config file: 
+`// Source - https://stackoverflow.com/q/79805715
+// Posted by Amrita Pathak, modified by community. See post 'Timeline' for change history
+// Retrieved 2025-11-10, License - CC BY-SA 4.0
+
+import { defineConfig, env } from 'prisma/config';
+import 'dotenv/config';
+export default defineConfig({
+ schema: 'prisma/schema.prisma',
+ migrations: {
+ path: 'prisma/migrations',
+ },
+ engine: 'classic',
+ datasource: {
+ url: env('DATABASE_URL'),
+ },
+});
+`
+
+Ive tried removing, adding and following the docs repeatedly, but have had no luck using prisma since having to upgrade from 6.19.0
+
+## Timeline
+
+**check-James** commented on 2025-11-19T15:14:24Z:
+
+> Having the same issue. Ever since i upgraded from 6.19 i have officially went through the worst day of dev
+
+**jacek-prisma** commented on 2025-11-19T15:20:39Z:
+
+> Hi @Stuart-wdas and @check-James,
+> Make sure you upgrade the VSCode extension, you should be using version 7.0.0. It looks like you're still using an older version.
+
+- check-James mentioned
+
+- check-James subscribed
+
+- Stuart-wdas mentioned
+
+- Stuart-wdas subscribed
+
+**Stuart-wdas** commented on 2025-11-19T16:04:30Z:
+
+> @jacek-prisma Ive been having problems since with the docker build: `payanyday_web_app_dev | npm warn exec The following package was not found and will be installed: prisma@7.0.0 
+> payanyday_web_app_dev | Prisma schema loaded from prisma/schema.prisma
+> payanyday_web_app_dev | Error: The datasource property is required in your Prisma config file when using prisma db push.
+> payanyday_web_app_dev | npm notice 
+> payanyday_web_app_dev | npm notice New major version of npm available! 10.9.4 -> 11.6.2 
+> payanyday_web_app_dev | npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.2 
+> payanyday_web_app_dev | npm notice To update run: npm install -g npm@11.6.2
+> payanyday_web_app_dev | npm notice 
+> payanyday_postgres_db_dev | 2025-11-19 16:03:05.719 UTC [33] WARNING: database "template1" has a collation version mismatch 
+> payanyday_postgres_db_dev | 2025-11-19 16:03:05.719 UTC [33] DETAIL: The database was created using collation version 2.36, but the operating system provides version 2.41. 
+> payanyday_postgres_db_dev | 2025-11-19 16:03:05.719 UTC [33] HINT: Rebuild all objects in this database that use the default collation and run ALTER DATABASE template1 REFRESH COLLATION VERSION, or build PostgreSQL with the right library version. 
+> payanyday_web_app_dev exited with code 1` Is this something you have run into? Thank you for the help - it says data source must be included but it is?
+
+- jacek-prisma mentioned
+
+- jacek-prisma subscribed
+
+**Domains18** commented on 2025-11-19T16:23:32Z:
+
+> absolutely, Prisma now officially sucks. Have had the same problem, had to degrade to v6.15
+
+- Domains18 mentioned
+
+- Domains18 subscribed
+
+**Domains18** commented on 2025-11-19T16:33:32Z:
+
+> @Stuart-wdas I used to have my reservations but Prisma seemed to get it , then they started having funny updates, now we need a config file and specify the output dir. Well it had a good run :) btw that config file and output dir works sometimes, sometimes it doesn't. 
+
+- Stuart-wdas mentioned
+
+- Stuart-wdas subscribed
+
+**Stuart-wdas** commented on 2025-11-19T16:35:02Z:
+
+> @Domains18 seems orms are a mess
+
+- Domains18 mentioned
+
+- Domains18 subscribed
+
+**Castrosteven** commented on 2025-11-19T20:30:46Z:
+
+> wtf guys have you heard of QA?
+
+**mcfriend99** commented on 2025-11-19T21:56:51Z:
+
+> Same issue here. Had to rollback with npm audit fix to version 6.19.0.
+
+**innocentinnox** commented on 2025-11-19T23:06:45Z:
+
+> Just upgraded a few minutes ago to v7 and I get the same issue: _[PrismaClientConstructorValidationError]: Using engine type "client" requires either "adapter" or "accelerateUrl" to be provided to PrismaClient constructor._
+> 
+> Here is my prisma.schema
+> 
+> `generator client {
+> provider = "prisma-client-js"
+> previewFeatures = []
+> }
+> 
+> datasource db {
+> provider = "mysql"
+> relationMode = "prisma"
+> }
+> `
+> 
+> and prisma.config.ts
+> `import 'dotenv/config'
+> import type { PrismaConfig } from "prisma";
+> import { env } from "prisma/config";
+> 
+> export default {
+> schema: "prisma",
+> migrations: {
+> path: "prisma/migrations",
+> seed: 'tsx prisma/seed.ts',
+> },
+> datasource: { 
+> url: env("DATABASE_URL"), 
+> shadowDatabaseUrl: env("SHADOW_DATABASE_URL")
+> }
+> } satisfies PrismaConfig;`
+
+**innocentinnox** commented on 2025-11-19T23:10:30Z:
+
+> > @Domains18 seems orms are a mess
+> 
+> Prisma is really good, but it seems like they missed something small. I trust it will be fixed soon. 
+> Let's just be patient as we rollback to v6 
+
+**RicharsonCV** commented on 2025-11-19T23:16:47Z:
+
+> I put `prisma.config.ts` at the root of the project and it worked
+
+**ikhsan-farizki** commented on 2025-11-20T05:02:06Z:
+
+> Here is the setup I'm using with **Prisma v6.15.0**.
+> 
+> ### `schema.prisma`
+> 
+> ```prisma
+> generator client {
+> provider = "prisma-client-js"
+> output = "../src/generated/prisma"
+> }
+> 
+> datasource db {
+> provider = "postgresql"
+> url = env("DATABASE_URL") // You can safely ignore the error on this line.
+> }
+> ```
+> 
+> ### `prisma.config.ts` (in the project root)
+> 
+> ```ts
+> import "dotenv/config";
+> import { defineConfig, env } from "prisma/config";
+> 
+> export default defineConfig({
+> schema: "prisma/schema.prisma",
+> datasource: {
+> url: env("DATABASE_URL"),
+> },
+> });
+> ```
+> 
+> This configuration works correctly for me. Hope it helps!
+> 
+> ---
+
+**AmanVarshney01** commented on 2025-11-20T06:23:38Z:
+
+> The reason you're seeing this error is because the Prisma VS Code extension (make sure to update to the latest version 😄 ) now defaults to the Prisma 7 language server. 
+> In Prisma 7, the `url` field in the PSL datasource block was removed so the extension shows a validation error even if your project is still on Prisma 6.
+> 
+> If you want to keep using Prisma 6, just pin the extension to the Prisma 6 version in VS Code. 
+> 
+> 
+
+- Stuart-wdas closed
+
+**Domains18** commented on 2025-11-20T09:44:56Z:
+
+> > > @Domains18 seems orms are a mess
+> > 
+> > Prisma is really good, but it seems like they missed something small. I trust it will be fixed soon. Let's just be patient as we rollback to v6
+> 
+> Noo, imagine prisma throws an error and then refers you to a non existent documentation
+> 
+> 
+
+**AmanVarshney01** commented on 2025-11-20T09:58:07Z:
+
+> @Domains18 Could you share the link and the error you're seeing?
+
+- Domains18 mentioned
+
+- Domains18 subscribed
+
+**Domains18** commented on 2025-11-20T10:02:19Z:
+
+> > @Domains18 Could you share the link and the error you're seeing?
+> 
+> I migrated to v7, created the prisma.config.ts file at the root, this one solved the migration issue, but now the app crashes with an error:
+> ```
+> PrismaClientConstructorValidationError: Using engine type "client" requires either "adapter" or "accelerateUrl" to be provided to PrismaClient constructor.
+> Read more at https://pris.ly/d/client-constructor
+> ```
+> 
+> notice the read more link, that link does not lead anywhere meaningful, not to mention v7 docs says this:
+> 
+> 
+
+**AmanVarshney01** commented on 2025-11-20T10:52:13Z:
+
+> @Domains18 Sorry about the link we’ve just fixed it.
+> 
+> When using the Rust-free client (which is the default in Prisma 7), you now need to initialize your client with an adapter.
+> 
+> Driver adapters: https://www.prisma.io/docs/orm/overview/databases/database-drivers#driver-adapters
+> 
+> Or check the quickstart to see which adapter you should use based on your database: 
+> https://www.prisma.io/docs/getting-started/prisma-orm/quickstart/prisma-postgres
+> 
+
+- Domains18 mentioned
+
+- Domains18 subscribed
+
+**faisalgolpik** commented on 2025-11-20T15:40:37Z:
+
+> just put prisma.config.ts at the root of the project and it worked
+
+**nonacc** commented on 2025-11-20T17:45:26Z:
+
+> ### Fix for Prisma 7 Seeding Error (Cannot read properties of undefined (__internal))
+> 
+> I ran into this issue when trying to seed my PostgreSQL database after upgrading to Prisma v7.
+> The error looked like this:
+> 
+> `TypeError: Cannot read properties of undefined (reading '__internal')
+> at new t (.../getPrismaClient.ts:239:27)`
+> 
+> After some digging, the root cause was that Prisma 7 no longer auto-detects the database provider and now requires an explicit adapter. My previous seeding setup didn't load a provider at all, which resulted in the internal client failing during initialization.
+> 
+> ### ✅ What fixed it
+> 
+> Here’s the full list of changes that solved the problem:
+> 
+> 1. Updated `prisma.config.ts` to use `process.env.DATABASE_URL` (Prisma 7 is strict about where the connection URL comes from.
+> 2. Updated the seed script to use `ts-node` instead of `ts-node-dev`; ts-node-dev caused the adapter instance to initialize incorrectly during hot reload.
+> 3. Installed the PostgreSQL adapter dependencies: `npm install @prisma/adapter-pg pg`.
+> 4. Updated the seed file `(src/prisma/seed/root.ts)` to explicitly use the Prisma 7 PostgreSQL adapter, like so:
+> 
+> ```
+> import { PrismaClient } from '@prisma/client'
+> import { PrismaPg } from '@prisma/adapter-pg'
+> import { Pool } from 'pg'
+> 
+> // Set up PostgreSQL adapter for Prisma 7
+> const pool = new Pool({ connectionString: process.env.DATABASE_URL })
+> const adapter = new PrismaPg(pool)
+> const prisma = new PrismaClient({ adapter })
+> 
+> export default prisma
+> ```
+> 
+> ### Takeaway
+> 
+> If you're seeding with Prisma 7 + PostgreSQL, you MUST explicitly provide an adapter.. 
+> Prisma won’t connect automatically anymore. Once the adapter is wired up, everything works smoothly.
+> 
+> Hope this saves someone else a couple hours of debugging.
+
+**sylla156** commented on 2025-11-20T18:53:22Z:
+
+> On my side, I fixed the problem by downgrading my Prisma extension in VSCode to the version I was using in the package.json.
+> 
+> 
+
+**jcubic** commented on 2025-11-20T19:42:48Z:
+
+> @Stuart-wdas how it was fixed? Will there be a new version 7.0.1 with a fix?
+
+- Stuart-wdas mentioned
+
+- Stuart-wdas subscribed
+
+**MaciejGL** commented on 2025-11-20T22:38:08Z:
+
+> > Hi @Stuart-wdas and @check-James, Make sure you upgrade the VSCode extension, you should be using version 7.0.0. It looks like you're still using an older version.
+> 
+> Nice, I completely forgot about upgrading extension. Thanks!
+
+**Domains18** commented on 2025-11-21T06:36:20Z:
+
+> also important, I avoided the specifying the output dir by using prisma-client-js provider
+> ```prisma
+> generator client {
+> provider = "prisma-client-js"
+> }
+> 
+> datasource db {
+> provider = "postgresql"
+> }
+> ```
+> 
+> using `prisma-client` as provider generated a bunch of code that was not typesafe and no matter how I much I tried to ignore it in tsconfig it kept failing the build. Typescript kept linting it, also the documentation is misleading, turning the codebase into module from package.json will just not work. Hope this helps someone hours of debugging I wasted yersterday.
+
+**buzzlightyear2k** commented on 2025-11-21T09:17:24Z:
+
+> should i upgrade to prisma package to 7.0 or downgrade the vs code extension to 6.x ? Any advice ?
+
+**jacek-prisma** commented on 2025-11-21T09:20:16Z:
+
+> @buzzlightyear2k 
+> Prisma VSCode extension version 7 supports both Prisma 6 and Prisma 7 via the new commands `Pin/Unpin to Prisma 6`, so you can upgrade even if you're using Prisma 6.
+
+- buzzlightyear2k mentioned
+
+- buzzlightyear2k subscribed
+
+**Domains18** commented on 2025-11-21T09:22:42Z:
+
+> 
+> > should i upgrade to prisma package to 7.0 or downgrade the vs code extension to 6.x ? Any advice ?
+> 
+> continue using v7. 
+
+**ManishPJha** commented on 2025-11-21T09:37:14Z:
+
+> @AmanVarshney01 Thanks, man, you saved my day 👍 
+
+- AmanVarshney01 mentioned
+
+- AmanVarshney01 subscribed
+
+- Referenced by issue #28622: url is no longer support in datasource
+
+**PointBreakDevTeam** commented on 2025-11-22T00:10:41Z:
+
+> ## V7 Build solution with postgres/supabase
+> 
+> I debugged for _HOURS_ on this, even diving into prisma lib files to see if i could find a hacky fix. Eventually, I came full circle and restarted it. Followed the docs from scratch and got a working solution for postgres:
+> 
+> ### My prisma.schema file:
+> 
+> ```prisma
+> // Tells prisma to run without Rust. See - https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration/no-rust-engine#1-set-enginetype-on-the-generator-block
+> generator client {
+> provider = "prisma-client" // no -js postfix, prisma-client-js has not been tested 
+> output = "../src/lib/prisma/generated" // Output (Mine is custom)
+> engineType = "client" // No Rust 
+> }
+> ```
+> 
+> ### My prisma.config.ts file: 
+> ```ts
+> import { defineConfig, env } from "prisma/config";
+> 
+> import "dotenv/config";
+> 
+> export default defineConfig({
+> schema: "prisma/schema.prisma",
+> migrations: {
+> path: "prisma/migrations",
+> seed: "bun run src/lib/prisma/seed.ts",
+> },
+> datasource: {
+> url: env("DIRECT_URL"),
+> },
+> });
+> ```
+> 
+> ### My prisma client file:
+> 
+> ```ts
+> import { PrismaPg } from "@prisma/adapter-pg";
+> 
+> import { isProduction } from "@/lib/env";
+> import { PrismaClient } from "@/lib/prisma/generated/client";
+> 
+> export const adapter = new PrismaPg({
+> connectionString: process.env.DIRECT_URL,
+> });
+> 
+> export const prisma = new PrismaClient({
+> adapter,
+> log: isProduction ? ["error"] : ["query", "error"],
+> });
+> ```
+> 
+> ### Notable deps: 
+> ```json 
+> "@prisma/adapter-pg": "^7.0.0",
+> "@prisma/client": "^7.0.0",
+> "@prisma/client-runtime-utils": "^7.0.0",
+> "@supabase/ssr": "^0.7.0",
+> "@supabase/supabase-js": "^2.83.0",
+> "pg": "^8.16.3"
+> ```
+> 
+> ### Remarks
+> I hope this helps someone running into a similar issue. These kinds of issues are a testament to why we still need developers instead of agents. At least for now 😂 
+> 
+> - Christian (https://github.com/cbmongithub)
+
+**parabola-of-the-skies** commented on 2025-11-22T20:23:59Z:
+
+> I thought this might be helpful, this is my update to 7.0. I'm using `NeonDB` `postgres`.
+> 
+> I updated the `schema` to remove the url field.
+> 
+> ```
+> datasource db {
+> provider = "postgresql"
+> extensions = [vector]
+> }
+> ```
+> 
+> This is the `prisma.config.ts` file.
+> 
+> ```
+> import { defineConfig, env } from 'prisma/config';
+> import 'dotenv/config';
+> 
+> export default defineConfig({
+> schema: 'prisma/schema.prisma',
+> datasource: {
+> url: env('DATABASE_URL'),
+> },
+> });
+> ```
+> 
+> And this is the `@/util/prisma.ts` file:
+> 
+> ```
+> import { PrismaClient } from "@prisma/client";
+> import { PrismaPg } from "@prisma/adapter-pg";
+> import { Pool } from "pg";
+> 
+> const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+> const adapter = new PrismaPg(pool);
+> 
+> const prisma = new PrismaClient({ adapter });
+> export default prisma;
+> ```
+
+**guyrandalf** commented on 2025-11-23T06:18:59Z:
+
+> Best way is to downgrade the extension to 6.18 or less.
+> Mac:
+> cmd+shift+X
+> settings icon
+> install specific version
+
+**ahp98** commented on 2025-11-23T10:33:35Z:
+
+> For those who sill strugle, if you use postgres check this page out, no matter using nestjs or pure nodejs it worked for me add adapter
+> 
+> https://www.prisma.io/docs/getting-started/prisma-orm/quickstart/prisma-postgres
+
+- Referenced in commit f5f0d47
+
+**jawadali97** commented on 2025-11-25T01:43:29Z:
+
+> I ran into this and a few other issue, and guess what, the Release Notes had the solution of all my problems. Following this guide I was able to successfully upgrade from v6.10.1 to v7.
+> 
+> The issue in my case was that after upgrading, I didn't changed `provider = "prisma-client-js"` to `provider = "prisma-client"` in generator. After making this change it worked absolutely fine.
+
+**mashood-memon** commented on 2025-11-25T16:41:50Z:
+
+> same issue, had to downgrade to 6.19 version to make it work
+
+**cleverlight** commented on 2025-11-26T16:22:01Z:
+
+> For me the most difficult breaking change to debug was the difference of the implicit defaults, since Prisma switched to adapters.
+> 
+> On `6.19` I could use a simple connection string and still be compliant with the "Enforce SSL on incoming connections" in Supabase. When I moved to `7.0.0` I started getting a P1010 error from Prisma ("User {database_user} was denied access on the database {database_name}"). I believe that was misleading, because the error was actually that it couldn't make an SSL connection. Many hours later I arrived at:
+> 
+> ```javascript
+> import {PrismaClient} from "@/../prisma/generated/client";
+> import { PrismaPg } from '@prisma/adapter-pg';
+> import pg from "pg";
+> 
+> const config_object = {
+> connectionString: process.env.POSTGRES_DATABASE_URL,
+> ssl: {
+> require: true,
+> // even though dotenv can handle new lines in environment variables, not all environments do
+> ca: process.env.POSTGRES_SUPABASE_ROOT_CERT?.replace(/\\n/g, '\n') || undefined,
+> }
+> };
+> const pool = new pg.Pool(config_object);
+> const adapter = new PrismaPg(pool);
+> const prisma = new PrismaClient({ adapter });
+> export default prisma;
+> ```
+> 
+> The solution was to add the `ssl` block to the configuration object (which can be used with either `pg.Pool()` or `PrismaPg()` if not connection pooling.
+> 
+> ```
+> const config_object = {
+> ...
+> ssl: {
+> require: true,
+> }
+> };
+> ```
+> 
+> Once that was there, I started getting a more indicative self-signed cert error, which then led me to properly embed the Supabase root certificate. I hope this breadcrumb trail helps someone else.
+
+**afrofashionfusion** commented on 2025-11-27T17:09:00Z:
+
+> Hi guys, I'm having issues connecting prisma to Supabase, can anyone help? Especially because Supabase adds a DB_URL and DIRECT_URL to the datasource in schema.prisma but that is redacted now, and I don't see where to add direct_url anymore
+
+**sacramentomarcos** commented on 2025-11-27T17:55:54Z:
+
+> @afrofashionfusion, you may add the direct_url and url inside datasource object, in prisma.config.ts. If you don't have a file named like that, just create one.
+
+- afrofashionfusion mentioned
+
+- afrofashionfusion subscribed
+
+**dath2006** commented on 2025-11-27T18:23:02Z:
+
+> Still an cli error persists, as I ran prisma db push, it gave an error stating the url field in the data source is missing, but if the url is added, then it shows deprecated error as of v7
+
+**Mauroariza** commented on 2025-11-27T23:58:50Z:
+
+> > Still an cli error persists, as I ran prisma db push, it gave an error stating the url field in the data source is missing, but if the url is added, then it shows deprecated error as of v7
+> 
+> I solved it by following the prisma.config.ts showed in the official page, at least it works for postgres
+> 
+> 
+> 
+> 
+> 
+> 
+
+**sacramentomarcos** commented on 2025-11-28T01:34:28Z:
+
+> @Mauroariza, but what does "prisma/config" points to?
+> There's no archive in my repo that solves this importation.
+> Is there anything that needs to be installed to get "prisma/config"?
+> If possible, please share the folders structure.
+
+- Mauroariza mentioned
+
+- Mauroariza subscribed
+
+**Mauroariza** commented on 2025-11-28T02:20:10Z:
+
+> > @Mauroariza, but what does "prisma/config" points to? 
+> 
+> Hi! The `"prisma/config"` import refers to the `@prisma/config` package (version 7.0.1), which is an internal Prisma module that provides programmatic configuration APIs for Prisma 7.x. It exports `defineConfig` for structured config and `env` for typed environment variables.
+> 
+> To get access to `"prisma/config"`, you just need to install Prisma 7.x - it comes bundled automatically. In your `package.json`, add:
+> 
+> json
+> "prisma": "^7.0.1"
+> 
+> 
+> Then run `npm install`. The `@prisma/config` package will be installed as a dependency.
+> 
+> Here's the folder structure from my project:
+> 
+> 
+> prisma/
+> ├── schema.prisma # Main schema with generator + datasource
+> ├── prisma.config.ts # Programmatic config using defineConfig
+> ├── shared/ # Shared models (users, roles, enums)
+> ├── auth/ # Auth models (OAuth, refresh tokens) 
+> ├── admin/ # Admin-specific models
+> ├── client/ # Client-specific models
+> 
+> └── migrations/ # Database migrations
+> 
+> 
+> The `prisma.config.ts` file uses it like this:
+> 
+> typescript
+> import { defineConfig, env } from 'prisma/config'
+> 
+> export default defineConfig({
+> schema: 'prisma', //use this config if not, you can have errors.
+> migrations: {
+> path: 'prisma/migrations',
+> },
+> datasource: {
+> url: env('DATABASE_URL'),
+> },
+> })
+> 
+> 
+> This setup allows modular Prisma schemas while keeping configuration centralized. If you're still getting import errors, ensure you're on Prisma 7.x and run `npm install` again.
+> 
+> note : I use multischema, my squemas are in separated files and not in schema.prisma
+> 
+> 
+> 
+
+**Zering-Max** commented on 2025-11-29T10:07:42Z:
+
+> Hi !
+> 
+> I had the same problem of uncompatibility between the prisma version (6.17.1) in the project and the prisma VSC extension version (auto-update to v7...).
+> 
+> I have tried to retrograde to v6.17.1 in VSC extension and I have always my problem when I try my terminal comand (he "does'nt see" my url address because he still considers according to prisma v7 'this manner of code is deprecated').
+> 
+> How can I resolve this problem (I don't want to modify my code with the 'prisma.config.ts') like @AmanVarshney01 has done ?
+> 
+> 
+> 
+> 
+> 
+
+- AmanVarshney01 mentioned
+
+- AmanVarshney01 subscribed
+
+**Ifeanyijasper** commented on 2025-11-29T13:17:43Z:
+
+> ### This is what i have at lib/prisma.ts, maybe it might help someone
+> 
+> import "dotenv/config";
+> import { PrismaClient } from '@prisma/client'
+> import { PrismaPg } from '@prisma/adapter-pg'
+> 
+> const globalForPrisma = globalThis as unknown as {
+> prisma: PrismaClient
+> }
+> const connectionString = `${process.env.DATABASE_URL}`
+> const adapter = new PrismaPg({ connectionString })
+> 
+> export const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter })
+> 
+> if (process.env.NODE_ENV !== 'production') {
+> globalForPrisma.prisma = prisma
+> }
+> 
+
+**mukulkathuria** commented on 2025-11-29T13:36:35Z:
+
+> This is what i found from official documentation ie: https://www.prisma.io/docs/getting-started/prisma-orm/quickstart/postgresql
+> 
+> And for Nest.js Application what you can do is :
+> 
+> // PrismaService.ts file
+> import {
+> Injectable,
+> OnModuleDestroy,
+> OnModuleInit,
+> } from '@nestjs/common';
+> import { PrismaPg } from '@prisma/adapter-pg';
+> import { PrismaClient } from '@prisma/client';
+> import { ConfigService } from '@nestjs/config';
+> 
+> @Injectable()
+> export class PrismaService
+> extends PrismaClient
+> implements OnModuleInit, OnModuleDestroy
+> {
+> constructor(private configService: ConfigService) {
+> const connectionString = configService.get ('DB_URL');
+> const adapter = new PrismaPg({ connectionString });
+> 
+> super({
+> adapter,
+> log: ['info', 'warn', 'error'],
+> });
+> }
+> 
+> async onModuleInit() {
+> await this.$connect();
+> }
+> 
+> async onModuleDestroy() {
+> await this.$disconnect();
+> }
+> }
+> 
+> Hope this helps :)
+
+**sklawik** commented on 2025-11-29T17:26:31Z:
+
+> How confusing it may be. 
+> npx prisma init was supposed to make it easy to start with prisma.
+> cmd did set my project with prisma, that uses schema.prisma with an url that throws away an error saying url is now outdated and you should create a new config file without giving me any template.
+
+- jcubic unsubscribed
+
+**Ella-1** commented on 2025-12-04T10:04:52Z:
+
+> This error is cause by the recent upgrade by prisma, the best solution is to comment out the line and handle everything in your prisma.config.ts
+> 
+> datasource db {
+> provider = "postgresql"
+> // url = env("DATABASE_URL")
+> }
+> 
+> 
+> and in your config file
+> 
+> 
+> // This file was generated by Prisma and assumes you have installed the following:
+> // npm install --save-dev prisma dotenv
+> import 'dotenv/config';
+> import { defineConfig, env } from 'prisma/config';
+> 
+> export default defineConfig({
+> schema: 'prisma/schema.prisma',
+> migrations: {
+> path: 'prisma/migrations',
+> },
+> datasource: {
+> // Here
+> url: env('DATABASE_URL'),
+> },
+> });
+> 
+> 
+> i hope this helps
+
+**arielweinberger** commented on 2025-12-05T20:53:25Z:
+
+> I don't want to have my DATABASE_URL configured when I run `prisma generate` in my Dockerfile. How do I fix this? 🤦‍♂️
+> 
+> This was working fine before Prisma 7. But this new `prisma.config.ts` file just screams at you if the env variable isn't set. Isn't it used at runtime/during migrations only?
+
+**treefitty** commented on 2025-12-07T06:40:20Z:
+
+> Yeah, the ops pipelines have been overlooked in this update.... I hope to be proven wrong
+
+**treefitty** commented on 2025-12-07T20:32:48Z:
+
+> I was able to make things work in my scenario which I'll detail below in case it helps someone. Please note that I use an Nx monorepo, so there will be some specific Nx steps that may not apply:
+> 
+> 1. Note: I build in ESM
+> 2. Made an `@project/prisma` compiler option path in `tsconfig.base.ts` because the final compiled `js` was trying to resolve `@prisma/client` which (while being a part of the prisma build flow) would not resolve properly once compiled
+> 3. Specified an `output` in the `schema.prisma` to `./generated` (basically getting it out of the `node_modules`
+> 4. Added an Nx asset directive to copy the generated prisma client to the artefacts directory (see below)
+> 5. Changed the import in the root source dir `prisma.client.ts` to the new tsconfig reference `@project/prisma`
+> 6. Changed the permissions to the prisma engines directory in `node_modules` (see below)
+> 
+> `project.json` asset copy entry:
+> 
+> ```json
+> {
+> "glob": "generated/**/*",
+> "input": "prisma",
+> "output": "prisma"
+> },
+> ```
+> 
+> Change `node_modules` permissions:
+> 
+> ```dockerfile
+> RUN chown -R nodejs:nodejs "/app/node_modules/.pnpm/@prisma+engines"*
+> ```
+> 
+> Finally, I can run the container normally and it will hit my `CMD` and start the node app.
+> I can alternativevly override the `CMD` and run the prisma migrate command like this:
+> 
+> ```dockerfile
+> docker run \
+> --name CONTAINER \
+> --env-file .env \
+> -e DATABASE_URL=postgresql://USER:PASS@PG_CONTAINER:5432/DB_NAME \
+> --network NETWORK \
+> IMAGE:TAG \
+> pnpm prisma migrate deploy --schema=prisma/schema.prisma
+> ```
+> 
+> Replace the all caps with your relevant details and you should be good to go
+
+- Referenced by issue #32: Upgrade Prisma ORM from v6 to v7
+
+**masahmad71** commented on 2025-12-08T09:48:00Z:
+
+> > @Mauroariza, but what does "prisma/config" points to? There's no archive in my repo that solves this importation. Is there anything that needs to be installed to get "prisma/config"? If possible, please share the folders structure.
+> 
+> just npm i @prisma/config --save-dev and change "prisma/config" to "@prisma/config". Worked in my case.
+
+- Referenced by PR #9: Implemented the User Async function
+
+**kangwuyi** commented on 2025-12-19T05:21:09Z:
+
+> prisma 7 is terrible! it change my config script!
+
+**kangwuyi** commented on 2025-12-19T05:29:32Z:
+
+> 尤其是当我试图使用多个数据源时，脚本变的更加复杂和不可控。我怀疑 prisma 团队的架构师是否换人了，他们的一些新的更改变的不再好用。
+
+**shourovr82** commented on 2025-12-19T14:25:42Z:
+
+> > Here is the setup I'm using with **Prisma v6.15.0**.
+> > 
+> > ### `schema.prisma`
+> > generator client {
+> > provider = "prisma-client-js"
+> > output = "../src/generated/prisma"
+> > }
+> > 
+> > datasource db {
+> > provider = "postgresql"
+> > url = env("DATABASE_URL") // You can safely ignore the error on this line.
+> > }
+> > ### `prisma.config.ts` (in the project root)
+> > import "dotenv/config";
+> > import { defineConfig, env } from "prisma/config";
+> > 
+> > export default defineConfig({
+> > schema: "prisma/schema.prisma",
+> > datasource: {
+> > url: env("DATABASE_URL"),
+> > },
+> > });
+> > This configuration works correctly for me. Hope it helps!
+> 
+> hello brother. 
+> where do you import models , prismaClient from ?
+> if its from ../generated folder , did you checked after build the project ?
+> i am facing runtime issue. the generated folder isnt existing inside the dist folder
+
+**otsairaze** commented on 2025-12-23T00:14:48Z:
+
+> Fixed: "The datasource property is required in your Prisma config file" when using Prisma 7 in Docker
+> 
+> Hi everyone,
+> 
+> I spent 3 days troubleshooting an issue with Prisma 7 in a Dockerized environment (NestJS). I kept getting the following error during prisma migrate deploy:
+> 
+> Error: The datasource property is required in your Prisma config file when using prisma migrate deploy.
+> 
+> Even though I had the datasource block in my schema.prisma, the migration kept failing. It turns out that in Prisma 7, the prisma.config.ts file is mandatory for runtime operations like migrations in Docker, but it often gets lost during multi-stage builds.
+> 
+> The Solution: The fix was simple but not obvious: you must explicitly copy the prisma.config.ts file into your final Docker stage.
+> 
+> Here is the part of my Dockerfile that solved it:
+> 
+> ```
+> COPY --from=builder --chown=node:node /app/prisma.config.ts ./
+> ```
+> 
+> Also, make sure to copy your generated folder or run prisma generate during the build stage to avoid runtime import issues.
+
+**Nikoobox** commented on 2025-12-26T19:21:18Z:
+
+> Why is this closed? whats the resolution?
+
+**yhc44** commented on 2025-12-31T19:33:55Z:
+
+> Are you guys serious @jacek-prisma ?
+> 
+> What is the solution of this? CI compeltely broken
+
+- jacek-prisma mentioned
+
+- jacek-prisma subscribed
+
+**hd719** commented on 2026-01-02T15:59:02Z:
+
+> Following this doc ended working for me https://www.prisma.io/docs/orm/more/upgrade-guides/upgrading-versions/upgrading-to-prisma-7#driver-adapters-and-client-instantiation
+> 
+> Going from this 
+> 
+> ```
+> import { PrismaClient } from '@prisma/client';
+> const prisma = new PrismaClient({
+> datasources: {
+> db: { url: process.env.DATABASE_URL },
+> },
+> datasourceUrl: process.env.DATABASE_URL,
+> });
+> ```
+> 
+> to this 
+> 
+> ```
+> import { PrismaClient } from './generated/prisma/client';
+> import { PrismaPg } from '@prisma/adapter-pg';
+> 
+> const adapter = new PrismaPg({ 
+> connectionString: process.env.DATABASE_URL 
+> });
+> const prisma = new PrismaClient({ adapter });
+> ```
+
+**Avokadomos** commented on 2026-01-02T21:45:31Z:
+
+> This is it. 👆
+> 
+> For self-hosted PostgreSQL (not serverless) you need the PrismaPg driver adapter. Follow the example here: https://www.prisma.io/docs/orm/overview/databases/postgresql
+
+**brunoalbim** commented on 2026-01-05T02:09:51Z:
+
+> Unfortunately using Prisma 7 with Docker is very problematic. Lack of correct documentation.
+
+**devhindo** commented on 2026-01-07T22:43:01Z:
+
+> this still happens to me - latest version on everything
+
+**ikhsan-farizki** commented on 2026-01-08T03:18:15Z:
+
+> > > Here is the setup I'm using with **Prisma v6.15.0**.
+> > > ### `schema.prisma`
+> > > generator client {
+> > > provider = "prisma-client-js"
+> > > output = "../src/generated/prisma"
+> > > }
+> > > datasource db {
+> > > provider = "postgresql"
+> > > url = env("DATABASE_URL") // You can safely ignore the error on this line.
+> > > }
+> > > ### `prisma.config.ts` (in the project root)
+> > > import "dotenv/config";
+> > > import { defineConfig, env } from "prisma/config";
+> > > export default defineConfig({
+> > > schema: "prisma/schema.prisma",
+> > > datasource: {
+> > > url: env("DATABASE_URL"),
+> > > },
+> > > });
+> > > This configuration works correctly for me. Hope it helps!
+> > 
+> > hello brother. where do you import models , prismaClient from ? if its from ../generated folder , did you checked after build the project ? i am facing runtime issue. the generated folder isnt existing inside the dist folder
+> 
+> Sorry for the late reply, I just got the chance to check this now.
+> 
+> I’m importing `PrismaClient` from the generated folder (`src/generated/prisma`).
+> 
+> For me, the generated folder is never expected to be inside `dist` / `.next`. Prisma Client isn’t bundled, it’s used directly at runtime.
+> 
+> I always run `prisma generate` before dev and before build, so the client is already available when the app starts. That’s why I don’t run into runtime issues even though the generated folder doesn’t appear in the build output.
+> 
+> As long as `prisma generate` is executed and the generated folder exists in the runtime environment (and isn’t ignored by git or Docker), Prisma should work fine.
+> 
+> Hope this helps.
+
+- Referenced in commit 15ccba2
+
+**joe105598055** commented on 2026-01-13T07:42:53Z:
+
+> Try updating to the latest version of the Prisma VS Code extension.
+
+**wildfeds** commented on 2026-01-15T07:55:24Z:
+
+> > Here is the setup I'm using with **Prisma v6.15.0**.
+> > 
+> > ### `schema.prisma`
+> > generator client {
+> > provider = "prisma-client-js"
+> > output = "../src/generated/prisma"
+> > }
+> > 
+> > datasource db {
+> > provider = "postgresql"
+> > url = env("DATABASE_URL") // You can safely ignore the error on this line.
+> > }
+> > ### `prisma.config.ts` (in the project root)
+> > import "dotenv/config";
+> > import { defineConfig, env } from "prisma/config";
+> > 
+> > export default defineConfig({
+> > schema: "prisma/schema.prisma",
+> > datasource: {
+> > url: env("DATABASE_URL"),
+> > },
+> > });
+> > This configuration works correctly for me. Hope it helps!
+> 
+> This also works for Prisma 7.2.0; However, VS Code extension will still unpleasantly complaining url missing.
+
+**Harlloh** commented on 2026-01-15T22:15:48Z:
+
+> So i had similar issue, and after doing a little bit of digging. I was able to resolve the issue. This helped https://www.prisma.io/docs/orm/more/upgrade-guides/upgrading-versions/upgrading-to-prisma-7#driver-adapters-and-client-instantiation
+> i got the solution from a closed github issue thread, https://github.com/prisma/prisma/issues/28665
+> 
+> seems the version of prisma needs to use an adapter, i had to install two new packages @prisma/adapter-pg pg and updated my db.js file
+> 
+> // Create the PostgreSQL pool
+> const pool = new pg.Pool({
+> connectionString: process.env.DATABASE_URL,
+> });
+> 
+> // Create the adapter
+> const adapter = new PrismaPg(pool);
+> 
+> // Initialize Prisma Client with the adapter
+> const prisma = new PrismaClient({
+> adapter,
+> log: process.env.NODE_ENV === 'development' ? ["query", "error", "warn"] : ["error"],
+> });
+
+**briankibiku** commented on 2026-01-16T08:37:24Z:
+
+> Long story short, downgrade to Prisma v6.15.0.
+
+**Harlloh** commented on 2026-01-16T10:38:36Z:
+
+> > Long story short, downgrade to Prisma v6.15.0.
+> 
+> no, @briankibiku no need to downgrade, you just need to use an adapter now.
+> 
+> Go through this doc, https://www.prisma.io/docs/orm/more/upgrade-guides/upgrading-versions/upgrading-to-prisma-7#driver-adapters-and-client-instantiation
+
+- briankibiku mentioned
+
+- briankibiku subscribed
+
+- Referenced in commit 6ca01fd
+
+- avanderpluijm subscribed
+
+- Referenced by PR #8: キーボード操作可能なテトリスゲームを実装
+
+**jtmozley** commented on 2026-02-01T01:31:32Z:
+
+> My fix for this was going in the command pallete and unpinning workspace from prisma 6
+> 
+> 
+
+**Giorgi-Garsevanishvili** commented on 2026-02-01T13:01:58Z:
+
+> > The reason you're seeing this error is because the Prisma VS Code extension (make sure to update to the latest version 😄 ) now defaults to the Prisma 7 language server. In Prisma 7, the `url` field in the PSL datasource block was removed so the extension shows a validation error even if your project is still on Prisma 6.
+> > 
+> > If you want to keep using Prisma 6, just pin the extension to the Prisma 6 version in VS Code.
+> > 
+> > 
+> 
+> If you updated the extension before modifying the code, VS Code may have offered to pin the project to Prisma 6. In that case, the extension will stop showing errors even though it supports newer Prisma versions. However, after upgrading Prisma and updating the schema, the project may still be marked as Prisma 6 due to the existing pin. To remove the error, you need to unpin Prisma 6 so the extension can use the newer Prisma version.
+> 
+> 
+
+- devhindo unsubscribed
+
+- Referenced by PR #248: Update renovate.json
+
+- Referenced by PR #7473: Postgres: IaC guides (Terraform, Pulumi, Alchemy)
+
+- Referenced by PR #118: chore: upgrade prisma to v7
+
+**DecimalPoint-0** commented on 2026-03-02T09:36:55Z:
+
+> So, after going through all comments and suggestions, i guess as at now, the only viable option is to downgrade
+
+**mcfriend99** commented on 2026-03-02T10:32:54Z:
+
+> > So, after going through all comments and suggestions, i guess as at now, the only viable option is to downgrade
+> 
+> Which is crazy when you realize this is over 3 months old.
+
+- Referenced by issue #17: Fails to start due to Prisma 7 Schema Validation Error (P1012)
+
+**Dodong2** commented on 2026-03-05T07:06:15Z:
+
+> so this error still existing huh?, and no solutions
+
+**byte-curious** commented on 2026-03-12T19:16:45Z:
+
+> Hope so this will help you : https://formal-syntax.pages.dev/posts/prisma-version7/prisma-v7-error/
+> You can go through this short blog post , it may be solve your errors.
+
+**ltann** commented on 2026-03-23T06:03:52Z:
+
+> > > Long story short, downgrade to Prisma v6.15.0.
+> > 
+> > no, @briankibiku no need to downgrade, you just need to use an adapter now.
+> > 
+> > Go through this doc, https://www.prisma.io/docs/orm/more/upgrade-guides/upgrading-versions/upgrading-to-prisma-7#driver-adapters-and-client-instantiation
+> 
+> I had multiple problems with running it with Prisma v7, needed to add an additional instance new Prisma() and I didn't know where best to put that code so I gave up and returned to Prisma v6.15.0 :) 
+
+- Referenced by PR #116: 114-fix-getorganizationlistquery
+
+- Referenced by PR #2: feat: chart form rebuild with DesignOS alignment
+
+- Referenced by PR #129: fix(prisma): published package に prisma.config.ts を同梱し migration 失敗を修正
+
+- Referenced by PR #1: Feat/auth module
+
+- Referenced by PR #24: feat(budget): participatory budgeting module
+
+- Referenced by PR #176: chore(deps-dev): bump prisma from 5.22.0 to 7.9.1
+
+- Referenced by PR #112: feat(#14): add link reordering with drag-and-drop UI
+
+- Referenced by PR #97: feat(observability): server-side Sentry + pino structured logging
+
+- Referenced by PR #4: implement prisma
+
+- Referenced by PR #56: docs: update to Node.js 22.14.0 LTS and add version strategy
+
+- Referenced by PR #5: implement prisma
+
+- Referenced by PR #1: implement auth
+
+- Referenced by PR #4: Upgrade editor to Tiptap v3 and migrate database to Prisma v7
+
+- Referenced by PR #10: Feature/auth
+
+- Referenced by PR #2058: Update create app with db setup

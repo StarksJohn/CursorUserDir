@@ -10,6 +10,12 @@
         "format": "uuid",
         "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
       },
+      "promptId": {
+        "description": "Generate one fresh UUID for each user prompt that imports code or design into Figma. Pass that same promptId to every html_to_figma, generate_figma_design, and send_code_to_figma call (including upload continuations) for that prompt. Never reuse it for a later user prompt. This opens one Agent chat per destination file, for the first completed import.",
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+      },
       "fileKey": {
         "type": "string",
         "minLength": 1,
@@ -71,37 +77,6 @@
         "required": [
           "fileKey",
           "archivePath"
-        ],
-        "additionalProperties": false
-      },
-      "github": {
-        "description": "Import a GitHub repository the user can already read. Single call: no upload is involved, so omit upload. Cannot be combined with upload or repairFrom.",
-        "type": "object",
-        "properties": {
-          "owner": {
-            "type": "string",
-            "minLength": 1,
-            "description": "GitHub account or organization that owns the repository, such as figma."
-          },
-          "name": {
-            "type": "string",
-            "minLength": 1,
-            "description": "Repository name on its own, without the owner prefix."
-          },
-          "ref": {
-            "description": "Branch, tag or commit SHA to import. Defaults to the repository default branch.",
-            "type": "string",
-            "minLength": 1
-          },
-          "createLayer": {
-            "description": "Required when importing into a Design file, which always creates a new code layer. Omit for a standalone Figma Code file.",
-            "type": "boolean",
-            "const": true
-          }
-        },
-        "required": [
-          "owner",
-          "name"
         ],
         "additionalProperties": false
       }

@@ -1,26 +1,3 @@
----
-pid: 4103
-cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
-command: "set -euo pipefail\npython3 << 'PY'\nimport re, time, pathlib\np = pathlib.Path(\"android/app/build.gradle\")\ntext = p.read_text()\nm = re.search(r'versionCode\\s+(\\d+)', text)\nif not m:\n    raise SystemExit(\"versionCode not found\")\nold = int(m.group(1))\nnew = int(time.time())\nif new <= old:\n    new = old + 1\nif new <= 0 or new >= 2100000000:\n    raise SystemExit(f\"invalid versionCode {new}\")\ntext2, n = re.subn(r'(versionCode\\s+)\\d+', lambda match: match.group(1) + str(new), text, count=1)\nif n != 1:\n    raise SystemExit(\"replace failed\")\np.write_text(text2)\nprint(f\"old_versionCode={old}\")\nprint(f\"new_versionCode={new}\")\nPY\necho \"=== DIFF ===\"\ngit diff --unified=1 -- android/app/build.gradle\necho \"=== START GRADLE ===\"\ncd android\nGRADLE_USER_HOME=\"$HOME/.gradle\" ENVFILE=.env.development SENTRY_DISABLE_AUTO_UPLOAD=true ./gradlew assembleDevRelease\necho \"=== GRADLE EXIT $? ===\""
-title: "Bump versionCode and build dev release APK"
-status: succeeded
-started_at: 2026-11-09T02:46:48.469Z
-running_for_ms: 185471   
----
-old_versionCode=1793873041
-new_versionCode=1794192409
-=== DIFF ===
-diff --git a/android/app/build.gradle b/android/app/build.gradle
-index 328cfe4d..96328e9c 100644
---- a/android/app/build.gradle
-+++ b/android/app/build.gradle
-@@ -93,3 +93,3 @@ android {
-         targetSdkVersion rootProject.ext.targetSdkVersion
--        versionCode 1793873041
-+        versionCode 1794192409
-         versionName "1.2.3"
-=== START GRADLE ===
-Starting a Gradle Daemon (subsequent builds will be faster)
 > Task :gradle-plugin:settings-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :gradle-plugin:shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :gradle-plugin:shared:compileKotlin UP-TO-DATE
@@ -66,7 +43,6 @@ Reading env from: .env.development
 :react-native-firebase_messaging:android.targetSdk using custom value: 36
 :react-native-firebase_messaging:android.minSdk using custom value: 24
 :react-native-firebase_messaging:reactNativeAndroidDir /Users/stark/Desktop/work/RN/heals-app-rn/node_modules/react-native
-Warning: SDK processing. This version only understands SDK XML versions up to 3 but an SDK XML file of version 4 was encountered. This can happen if you use versions of Android Studio and the command-line tools that were released at different times.
 
 > Task :app:generateAutolinkingNewArchitectureFiles UP-TO-DATE
 > Task :app:generateAutolinkingPackageList UP-TO-DATE
@@ -851,7 +827,7 @@ Warning: SDK processing. This version only understands SDK XML versions up to 3 
 [22m[39m[2m              Fast - Scalable - Integrated
 
 [22m
-info Bundle Debug ID: 71d4e688-c711-46d2-92f9-91f4276f64ca
+info Bundle Debug ID: 1078a726-7a56-460a-8131-9ee77f4c4b31
 LOG:Writing bundle output to: /Users/stark/Desktop/work/RN/heals-app-rn/android/app/build/generated/assets/createBundleDevReleaseJsAndAssets/index.android.bundle
 LOG:Writing sourcemap output to: /Users/stark/Desktop/work/RN/heals-app-rn/android/app/build/intermediates/sourcemaps/react/devRelease/index.android.bundle.packager.map
 LOG:Done writing bundle output
@@ -859,7 +835,7 @@ LOG:Done writing sourcemap output
 Copying 76 asset files
 Done copying assets
 
-> Task :app:createBundleDevReleaseJsAndAssets_SentryUpload_com.healshealthcare.healspass.dev@1.2.3+1794192409_1794192409 SKIPPED
+> Task :app:createBundleDevReleaseJsAndAssets_SentryUpload_com.healshealthcare.healspass.dev@1.2.3+1794303344_1794303344 SKIPPED
 > Task :app:generateDevReleaseResValues UP-TO-DATE
 > Task :app:processDevReleaseGoogleServices UP-TO-DATE
 > Task :app:mapDevReleaseSourceSetPaths UP-TO-DATE
@@ -960,7 +936,6 @@ Done copying assets
 > Task :react-native-blob-util:compileReleaseLibraryResources UP-TO-DATE
 > Task :react-native-bootsplash:compileReleaseLibraryResources UP-TO-DATE
 > Task :react-native-clipboard_clipboard:compileReleaseLibraryResources UP-TO-DATE
-> Task :app:processDevReleaseManifestForPackage
 > Task :react-native-community_blur:compileReleaseLibraryResources UP-TO-DATE
 > Task :react-native-community_checkbox:compileReleaseLibraryResources UP-TO-DATE
 > Task :react-native-community_geolocation:compileReleaseLibraryResources UP-TO-DATE
@@ -977,6 +952,7 @@ Done copying assets
 > Task :react-native-gesture-handler:compileReleaseLibraryResources UP-TO-DATE
 > Task :react-native-google-signin_google-signin:compileReleaseLibraryResources UP-TO-DATE
 > Task :react-native-image-picker:compileReleaseLibraryResources UP-TO-DATE
+> Task :app:processDevReleaseManifestForPackage
 > Task :react-native-keychain:compileReleaseLibraryResources UP-TO-DATE
 > Task :react-native-linear-gradient:compileReleaseLibraryResources UP-TO-DATE
 > Task :react-native-pager-view:compileReleaseLibraryResources UP-TO-DATE
@@ -1233,7 +1209,7 @@ Done copying assets
 > Task :app:mergeDevReleaseAssets
 > Task :app:compressDevReleaseAssets
 
-> Task :app:createBundleDevReleaseJsAndAssets_SentryCollectModules_com.healshealthcare.healspass.dev@1.2.3+1794192409_1794192409
+> Task :app:createBundleDevReleaseJsAndAssets_SentryCollectModules_com.healshealthcare.healspass.dev@1.2.3+1794303344_1794303344
 Sentry Logger [log]: Reading source map from /Users/stark/Desktop/work/RN/heals-app-rn/android/app/build/generated/sourcemaps/react/devRelease/index.android.bundle.map
 Sentry Logger [log]: Saving modules to /Users/stark/Desktop/work/RN/heals-app-rn/android/app/src/main/assets/modules.json
 Sentry Logger [log]: Resolving modules from paths /Users/stark/Desktop/work/RN/heals-app-rn/node_modules
@@ -1462,7 +1438,6 @@ Sentry Logger [log]: Modules collected and saved to: /Users/stark/Desktop/work/R
 > Task :react-native-google-signin_google-signin:mergeReleaseConsumerProguardFiles UP-TO-DATE
 > Task :react-native-google-signin_google-signin:mergeReleaseJavaResource UP-TO-DATE
 > Task :react-native-google-signin_google-signin:syncReleaseLibJars UP-TO-DATE
-> Task :app:processDevReleaseResources
 > Task :react-native-google-signin_google-signin:bundleReleaseLocalLintAar UP-TO-DATE
 > Task :react-native-bootsplash:stripReleaseDebugSymbols NO-SOURCE
 > Task :react-native-bootsplash:copyReleaseJniLibsProjectAndLocalJars UP-TO-DATE
@@ -1728,6 +1703,7 @@ Sentry Logger [log]: Modules collected and saved to: /Users/stark/Desktop/work/R
 > Task :react-native-pdf:stripReleaseDebugSymbols NO-SOURCE
 > Task :react-native-pdf:copyReleaseJniLibsProjectAndLocalJars UP-TO-DATE
 > Task :react-native-pdf:extractDeepLinksForAarRelease UP-TO-DATE
+> Task :app:processDevReleaseResources
 > Task :react-native-pdf:extractReleaseAnnotations UP-TO-DATE
 > Task :react-native-pdf:mergeReleaseGeneratedProguardFiles UP-TO-DATE
 > Task :react-native-pdf:mergeReleaseConsumerProguardFiles UP-TO-DATE
@@ -1923,12 +1899,12 @@ w: file:///Users/stark/Desktop/work/RN/heals-app-rn/android/app/src/main/java/co
 > Task :app:generateDevReleaseLintVitalReportModel
 > Task :app:processDevReleaseJavaRes UP-TO-DATE
 > Task :app:mergeDevReleaseJavaResource UP-TO-DATE
-> Task :app:mergeDexDevRelease
-> Task :app:compileDevReleaseArtProfile
 > Task :app:lintVitalAnalyzeDevRelease
 > Task :app:createBundleDevReleaseJsAndAssets_SentryUploadCleanUp SKIPPED
 > Task :app:lintVitalReportDevRelease
 > Task :app:lintVitalDevRelease
+> Task :app:mergeDexDevRelease
+> Task :app:compileDevReleaseArtProfile
 > Task :app:packageDevRelease
 > Task :app:createDevReleaseApkListingFileRedirect
 > Task :app:createBundleDevReleaseJsAndAssets_SentryCollectModulesCleanUp
@@ -1942,12 +1918,5 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 3m 3s
+BUILD SUCCESSFUL in 1m 55s
 1551 actionable tasks: 49 executed, 1502 up-to-date
-=== GRADLE EXIT 0 ===
-
----
-exit_code: 0
-elapsed_ms: 185470
-ended_at: 2026-11-09T02:49:53.939Z
----
