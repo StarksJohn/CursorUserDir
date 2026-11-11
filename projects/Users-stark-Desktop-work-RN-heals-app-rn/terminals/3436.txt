@@ -5,7 +5,7 @@ command: "npm start"
 title: "Start Metro dev server in background"
 status: running  
 started_at: 2026-11-11T06:03:22.139Z
-running_for_ms: 6026343  
+running_for_ms: 8936814  
 ---
 
 > Heals@0.0.1 start
@@ -63,3 +63,57 @@ info Bundle Debug ID: bc172571-76bf-464c-9938-8b89faf8d482
 [33m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m [32m[42m[49m[39m[47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m 0% [22m[2m(0/1)[22m
 info Bundle Debug ID: 830aa187-7650-4b22-85b2-927f32c5ceaf
 [32m[7m[1m BUNDLE [22m[27m[39m[0m[2m ./[22m[0m[1mindex.js[22m 
+[31m[7m[1m ERROR [22m[27m[39m SyntaxError: /Users/stark/Desktop/work/RN/heals-app-rn/src/screens/profile/profile-edit-screen/profile-healthInfo-screen.tsx: Adjacent JSX elements must be wrapped in an enclosing tag. Did you want a JSX fragment <>...</>? (291:10)
+
+  289 |               }
+  290 |             </View>
+> 291 |           </View>
+      |           ^
+  292 |         </View>
+  293 |         <View style={stylesHealthInfo.submitButton}>
+  294 |           {renderNextButton()}
+[31m[7m[1m ERROR [22m[27m[39m SyntaxError: /Users/stark/Desktop/work/RN/heals-app-rn/src/screens/profile/profile-edit-screen/profile-healthInfo-screen.tsx: Adjacent JSX elements must be wrapped in an enclosing tag. Did you want a JSX fragment <>...</>? (291:10)
+
+  289 |               }
+  290 |             </View>
+> 291 |           </View>
+      |           ^
+  292 |         </View>
+  293 |         <View style={stylesHealthInfo.submitButton}>
+  294 |           {renderNextButton()}
+[31m[7m[1m ERROR [22m[27m[39m SyntaxError: /Users/stark/Desktop/work/RN/heals-app-rn/src/screens/profile/profile-edit-screen/profile-healthInfo-screen.tsx: Adjacent JSX elements must be wrapped in an enclosing tag. Did you want a JSX fragment <>...</>? (291:10)
+
+  289 |               }
+  290 |             </View>
+> 291 |           </View>
+      |           ^
+  292 |         </View>
+  293 |         <View style={stylesHealthInfo.submitButton}>
+  294 |           {renderNextButton()}
+[31m[7m[1m ERROR [22m[27m[39m SyntaxError: /Users/stark/Desktop/work/RN/heals-app-rn/src/screens/profile/profile-edit-screen/profile-healthInfo-screen.tsx: Expected corresponding JSX closing tag for <TouchableOpacity>. (220:14)
+
+  218 |                 </AppText>
+  219 |
+> 220 |               </View>
+      |               ^
+  221 |               {!isAcceptTNC && isTapSubmit
+  222 |                 ? <AppText
+  223 |                   style={{
+[31m[7m[1m ERROR [22m[27m[39m SyntaxError: /Users/stark/Desktop/work/RN/heals-app-rn/src/screens/profile/profile-edit-screen/profile-healthInfo-screen.tsx: Expected corresponding JSX closing tag for <TouchableOpacity>. (220:14)
+
+  218 |                 </AppText>
+  219 |
+> 220 |               </View>
+      |               ^
+  221 |               {!isAcceptTNC && isTapSubmit
+  222 |                 ? <AppText
+  223 |                   style={{
+[31m[7m[1m ERROR [22m[27m[39m SyntaxError: /Users/stark/Desktop/work/RN/heals-app-rn/src/screens/profile/profile-edit-screen/profile-healthInfo-screen.tsx: Expected corresponding JSX closing tag for <TouchableOpacity>. (286:14)
+
+  284 |                   </AppText>
+  285 |                 </View>
+> 286 |               </View>
+      |               ^
+  287 |               {!isAcceptInfoCollection && isTapSubmit
+  288 |                 ? <AppText
+  289 |                   size='xsmall'
