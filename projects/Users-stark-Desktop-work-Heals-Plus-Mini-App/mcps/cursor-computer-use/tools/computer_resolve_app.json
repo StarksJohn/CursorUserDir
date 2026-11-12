@@ -1,0 +1,47 @@
+{
+  "name": "computer_resolve_app",
+  "description": "Resolve one macOS app by exactly one selector, launching it if it is not running, and return the pid and target_id for its app target. The launch asks macOS not to activate the app. Some apps, such as Chromium browsers, bring themselves to the front anyway, and the reply says when that happens.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "pid": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "bundle_id": {
+        "type": "string",
+        "description": "Bundle identifier, e.g. \"com.apple.calculator\"."
+      },
+      "app_path": {
+        "type": "string",
+        "description": "Path to the .app bundle."
+      },
+      "app_name": {
+        "type": "string",
+        "description": "Localized app name, e.g. \"Calculator\"."
+      }
+    },
+    "oneOf": [
+      {
+        "required": [
+          "pid"
+        ]
+      },
+      {
+        "required": [
+          "bundle_id"
+        ]
+      },
+      {
+        "required": [
+          "app_path"
+        ]
+      },
+      {
+        "required": [
+          "app_name"
+        ]
+      }
+    ]
+  }
+}

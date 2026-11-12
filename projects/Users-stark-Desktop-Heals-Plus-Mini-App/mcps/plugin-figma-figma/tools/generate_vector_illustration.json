@@ -1,0 +1,58 @@
+{
+  "name": "generate_vector_illustration",
+  "description": "Generate a vector graphic (logo, icon, mark, or stylized illustration) from a text prompt and insert it into a Figma file as editable vectors. Set `kind: \"icon\"` for a small single-concept glyph, mark, or logo that must stay legible at UI sizes, and `kind: \"illustration\"` for a larger multi-element scene or spot illustration. The generation strategy is chosen server-side; the user only sees the final vector node. Use this for logo, icon, and vector-illustration requests. Do NOT use it for photographic or photorealistic image generation. Use an editable Design or Slides file. If no editable file exists, call create_new_file first. Use currentPageId to select a page and parentNodeId to place inside an existing node. Returns fileKey, nodeId, kind, width, and height. **This is a paid feature — each call consumes Figma AI credits against the destination file's plan (different models have different per-call costs).**",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "fileKey": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[0-9a-zA-Z]{22,128}$",
+        "description": "The key of the Figma file to use. If the URL is provided, extract the file key from the URL. The given URL must be in the format https://figma.com/design/:fileKey/:fileName?node-id=:int1-:int2. The extracted fileKey would be `:fileKey`."
+      },
+      "prompt": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Text description of the vector illustration to generate, e.g. \"a fox jumping over a fence, flat vector style\"."
+      },
+      "kind": {
+        "description": "What kind of vector to generate. Use \"icon\" for a small single-concept glyph, mark, or logo built from a few shapes that must stay legible at UI sizes. Use \"illustration\" for a larger multi-element scene or spot illustration. Defaults to \"illustration\".",
+        "type": "string",
+        "enum": [
+          "icon",
+          "illustration"
+        ]
+      },
+      "width": {
+        "description": "Integer width in pixels between 16 and 2048.",
+        "type": "integer",
+        "minimum": 16,
+        "maximum": 2048
+      },
+      "height": {
+        "description": "Integer height in pixels between 16 and 2048.",
+        "type": "integer",
+        "minimum": 16,
+        "maximum": 2048
+      },
+      "currentPageId": {
+        "description": "The GUID of the page to target. Always pass this when available. Use the page the user is currently viewing unless the request explicitly refers to a different page.",
+        "type": "string"
+      },
+      "parentNodeId": {
+        "description": "Optional parent container GUID on the destination page, e.g. \"123:456\" (convert URL-form \"123-456\" to colon form). Nested instance IDs (\"I123:456;789:012\") are unsupported. Omit to insert at the page root near the viewport center.",
+        "type": "string"
+      }
+    },
+    "required": [
+      "fileKey",
+      "prompt"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

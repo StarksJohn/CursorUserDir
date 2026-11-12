@@ -1,0 +1,36 @@
+{
+  "name": "create_generative_plugin",
+  "description": "You MUST load the figma-generative-plugins skill before calling this tool. If it is not installed, read skill://figma/figma-generative-plugins/SKILL.md with resources/read or get_figma_skill. Use this for requests to build, create, upload, or publish a “Figma plugin,” “generative plugin,” or “custom tool.” It creates a generative plugin in the account library; it does not install an existing Figma Community plugin. Creates a new generative plugin in the authenticated user's account library and returns its id. The plugin starts as a working scaffold — a runnable starter that draws a square — so it is a structural starting point, not a finished plugin: follow this call with the update tool to replace the scaffold's source with the behavior the user asked for. planKey names the plan that will own the plugin; take it from the plans list returned by whoami.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Display name for the new resource."
+      },
+      "description": {
+        "type": "string",
+        "minLength": 1,
+        "description": "One-line description of what the resource does."
+      },
+      "planKey": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^(team|organization)::\\d+$",
+        "description": "The team or organization key (e.g. \"team::1234567890\" or \"organization::1234567890\"). Use the `key` field verbatim from one of the user's plans. If the user has more than one plan, ask which one to use before calling."
+      }
+    },
+    "required": [
+      "name",
+      "description",
+      "planKey"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

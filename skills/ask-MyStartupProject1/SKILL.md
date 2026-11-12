@@ -263,7 +263,7 @@ description: >-
 - 我的技术栈是`IOS,Android,react native, React, VUE, 微信小程序`,没有后端开发经验;
 - 你执行 `pnpm run prod:dev`
 <!-- - 浏览器访问 ` ` 后, 先经过什么, 在服务端和浏览器分别加载并执行了什么  -->
-<!-- - 给 `/Users/stark/Desktop/work/MyStartupProject1/prisma/schema.prisma` 文件里每行都加上中文注释, 方便我学习这个项目; 文件顶部也加上中文注释,内容包含为什么在项目里使用这个文件,在项目里是做什么的,用途是什么, 实际承担的职责是什么, 文件内容的编译加载顺序和执行顺序是什么 等; -->
+<!-- - 给 `/Users/stark/Desktop/work/MyStartupProject1/prisma/schema.prisma` 文件里每行都加上中文注释, 方便我学习这个项目; 文件顶部也加上中文注释,内容包含这个文件是前端执行的代码, 还是后端执行的代码, 为什么在项目里使用这个文件,在项目里是做什么的,用途是什么, 实际承担的职责是什么, 文件内容的编译加载顺序和执行顺序是什么, 在什么时候编译,,加载,执行这个文件 等; -->
 <!-- -  在 `/Users/stark/Desktop/work/MyStartupProject1/README.md` 里的合适地方解释项目里使用的 `Next.js` 是什么, 为什么在项目里使用,它是做什么的,用途是什么, 实际承担的职责是什么等 ; -->
 <!-- - 借鉴`/Users/stark/.codex/skills/csx-web-react/SKILL.md`,优化当前skill,让每次执行完当前项目相关的任务后,先判断是否需要在当前skill里或者相关文档里更新项目的最新状态和下一步需要做的任务列表,以及沉淀项目的事实,如果需要,再这么做;用于新chat里恢复上下文 -->
 <!-- - 精简优化`/Users/stark/Desktop/work/MyStartupProject1/项目主档案.md`和`/Users/stark/Desktop/work/MyStartupProject1/README.md`,项目主档案只沉淀项目里已经做过的所有需求的事实,而`README.md`只保留和具体需求无关的通用的项目配置和架构与部署事实 -->
