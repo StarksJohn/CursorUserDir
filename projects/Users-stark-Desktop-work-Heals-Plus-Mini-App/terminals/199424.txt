@@ -1,0 +1,30 @@
+---
+pid: 59257
+cwd: "/Users/stark/Desktop/work/Heals Plus Mini App"
+command: "\"/Applications/HBuilderX.app/Contents/MacOS/cli\" launch mp-weixin --project \"/Users/stark/Desktop/work/Heals Plus Mini App\" --runtime-log true"
+title: "Rerun WeChat mini program compile"
+status: running  
+started_at: 2026-11-12T08:55:33.381Z
+running_for_ms: 2740728  
+---
+16:55:33.616 HBuilderX Version: 5.34
+16:55:33.634 项目 Heals Plus Mini App 开始编译
+16:55:34.943 请注意运行模式下，因日志输出、sourcemap 以及未压缩源码等原因，性能和包体积，均不及发行模式。若要正式发布，请点击发行菜单或使用 cli 发布命令进行发布
+16:55:34.944 编译器版本：5.34（vue3）
+16:55:34.945 正在编译中...
+16:55:48.408 项目 Heals Plus Mini App 编译成功。 运行日志回显已开启，详情：https://uniapp.dcloud.net.cn/tutorial/run/mp-log.html
+16:55:48.409 正在启动微信开发者工具...
+16:55:49.168 [31m[微信小程序开发者工具] - initialize[39m
+16:55:49.174 [31m[微信小程序开发者工具] (node:59876) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.[39m
+16:55:49.175 [31m[微信小程序开发者工具] (Use `Electron --trace-deprecation ...` to show where the warning was created)[39m
+16:55:49.185 [微信小程序开发者工具] Please ensure that the IDE has been properly installed
+16:55:49.185 [31m[微信小程序开发者工具] ✖ initialize error: Error: ENOENT: no such file or directory, open '/Users/stark/Library/Application Support/微信开发者工具/d1e8765721a6c23d43b14c95b1843e6b/Default/.cli', Error: ENOENT: no such file or directory, open '/Users/stark/Library/Application Support/微信开发者工具/d1e8765721a6c23d43b14c95b1843e6b/Default/.cli'[39m
+16:55:49.186 [31m[微信小程序开发者工具]     at Object.writeFileSync (node:fs:2426:20)[39m
+16:55:49.186 [31m[微信小程序开发者工具]     at /Applications/wechatwebdevtools.app/Contents/Resources/app.asar.unpacked/js/common/cli/index.js:129:43084[39m
+16:55:49.187 [31m[微信小程序开发者工具]     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+16:55:49.201 [31m启动微信开发者工具失败，请参阅启动日志！[39m
+16:55:49.202 [31m注：[39m
+16:55:49.203 [31m1. 如果微信开发者工具已打开，关闭并重试[39m
+16:55:49.204 [31m2. 请将微信开发者工具升级到最新版本[39m
+16:55:49.205 ready in 14287ms.
+17:37:35.015 [33m[0mYou are running the esm-bundler build of vue-i18n. It is recommended to configure your bundler to explicitly replace feature flag globals with boolean literals to get proper tree-shaking in the final bundle.[0m[39m

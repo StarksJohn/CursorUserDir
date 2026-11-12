@@ -1,15 +1,12 @@
 ---
-pid: 13770
+pid: 46075
 cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
-command: "test -w \"$HOME/.gradle\" && test -f .env.development && node -v && npm start > /tmp/heals-metro.log 2>&1 & echo \"metro_pid=$!\" && ready=0 && for i in $(seq 1 90); do if curl -sf --max-time 2 localhost:8081/status | grep -q \"packager-status:running\"; then echo METRO_READY; ready=1; break; fi; sleep 1; done && if [ \"$ready\" != 1 ]; then echo METRO_FAILED; tail -n 80 /tmp/heals-metro.log; exit 1; fi && GRADLE_USER_HOME=\"$HOME/.gradle\" npm run android:dev -- --active-arch-only"
-title: "Start Metro and install dev debug"
+command: "GRADLE_USER_HOME=\"$HOME/.gradle\" npm run android:dev -- --active-arch-only"
+title: "Build and install dev debug APK"
 status: succeeded
-started_at: 2026-11-12T07:54:23.275Z
-running_for_ms: 164712   
+started_at: 2026-11-12T09:33:25.917Z
+running_for_ms: 126379   
 ---
-v20.20.2
-metro_pid=13783
-METRO_READY
 
 > Heals@0.0.1 android:dev
 > ENVFILE=.env.development react-native run-android --mode=devDebug --appIdSuffix=dev --active-arch-only
@@ -17,7 +14,6 @@ METRO_READY
 info A dev server is already running for this project on port 8081.
 info Detected architectures arm64-v8a
 info Installing the app...
-Starting a Gradle Daemon (subsequent builds will be faster)
 > Task :gradle-plugin:settings-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :gradle-plugin:shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :gradle-plugin:shared:compileKotlin UP-TO-DATE
@@ -274,7 +270,7 @@ Reading env from: .env.development
 [22m[39m[2m              Fast - Scalable - Integrated
 
 [22m
-info Bundle Debug ID: 2b9cf029-a975-4c0b-9d8f-7e57b9e6353a
+info Bundle Debug ID: a1cc0b3b-9fe2-4383-8167-9ec03fa7ca00
 LOG:Writing bundle output to: /Users/stark/Desktop/work/RN/heals-app-rn/android/app/build/generated/assets/createBundleDevDebugJsAndAssets/index.android.bundle
 LOG:Writing sourcemap output to: /Users/stark/Desktop/work/RN/heals-app-rn/android/app/build/intermediates/sourcemaps/react/devDebug/index.android.bundle.packager.map
 LOG:Done writing bundle output
@@ -500,7 +496,6 @@ Done copying assets
 > Task :react-native-agora:generateDebugRFile UP-TO-DATE
 > Task :react-native-async-storage_async-storage:compileDebugLibraryResources UP-TO-DATE
 > Task :react-native-async-storage_async-storage:parseDebugLocalResources UP-TO-DATE
-> Task :app:processDevDebugManifestForPackage
 > Task :react-native-async-storage_async-storage:generateDebugRFile UP-TO-DATE
 > Task :react-native-biometrics:compileDebugLibraryResources UP-TO-DATE
 > Task :react-native-biometrics:parseDebugLocalResources UP-TO-DATE
@@ -508,6 +503,7 @@ Done copying assets
 > Task :react-native-blob-util:compileDebugLibraryResources UP-TO-DATE
 > Task :react-native-blob-util:parseDebugLocalResources UP-TO-DATE
 > Task :react-native-blob-util:generateDebugRFile UP-TO-DATE
+> Task :app:processDevDebugManifestForPackage
 > Task :react-native-bootsplash:compileDebugLibraryResources UP-TO-DATE
 > Task :react-native-bootsplash:parseDebugLocalResources UP-TO-DATE
 > Task :react-native-bootsplash:generateDebugRFile UP-TO-DATE
@@ -1071,10 +1067,10 @@ Done copying assets
 > Task :react-native-restart:bundleLibRuntimeToDirDebug UP-TO-DATE
 > Task :react-native-share:bundleLibRuntimeToDirDebug UP-TO-DATE
 > Task :react-native-svg:bundleLibRuntimeToDirDebug UP-TO-DATE
-> Task :app:processDevDebugResources
 > Task :react-native-vector-icons:bundleLibRuntimeToDirDebug UP-TO-DATE
 > Task :react-native-worklets:bundleLibRuntimeToDirDebug UP-TO-DATE
 > Task :app:preProdDebugBuild
+> Task :app:processDevDebugResources
 > Task :react-native-worklets:configureCMakeDebug[arm64-v8a]
 > Task :app:mergeLibDexDevDebug UP-TO-DATE
 > Task :react-native-worklets:buildCMakeDebug[arm64-v8a][worklets]
@@ -1155,6 +1151,7 @@ w: file:///Users/stark/Desktop/work/RN/heals-app-rn/android/app/src/main/java/co
 > Task :react-native-encrypted-storage:copyDebugJniLibsProjectOnly UP-TO-DATE
 > Task :react-native-file-viewer:mergeDebugJniLibFolders UP-TO-DATE
 > Task :react-native-file-viewer:mergeDebugNativeLibs NO-SOURCE
+> Task :app:mergeProjectDexDevDebug
 > Task :react-native-file-viewer:copyDebugJniLibsProjectOnly UP-TO-DATE
 > Task :react-native-firebase_app:mergeDebugJniLibFolders UP-TO-DATE
 > Task :react-native-firebase_app:mergeDebugNativeLibs NO-SOURCE
@@ -1201,7 +1198,6 @@ w: file:///Users/stark/Desktop/work/RN/heals-app-rn/android/app/src/main/java/co
 > Task :react-native-safe-area-context:mergeDebugNativeLibs NO-SOURCE
 > Task :react-native-safe-area-context:copyDebugJniLibsProjectOnly UP-TO-DATE
 > Task :react-native-screens:configureCMakeDebug[arm64-v8a]
-> Task :app:mergeProjectDexDevDebug
 > Task :react-native-screens:buildCMakeDebug[arm64-v8a]
 > Task :react-native-screens:mergeDebugJniLibFolders UP-TO-DATE
 > Task :react-native-screens:mergeDebugNativeLibs UP-TO-DATE
@@ -1244,7 +1240,7 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 2m 29s
+BUILD SUCCESSFUL in 2m 1s
 898 actionable tasks: 32 executed, 866 up-to-date
 info Connecting to the development server...
 8081
@@ -1253,6 +1249,6 @@ Starting: Intent { act=android.intent.action.MAIN cat=[android.intent.category.L
 
 ---
 exit_code: 0
-elapsed_ms: 164710
-ended_at: 2026-11-12T07:57:07.985Z
+elapsed_ms: 126379
+ended_at: 2026-11-12T09:35:32.296Z
 ---

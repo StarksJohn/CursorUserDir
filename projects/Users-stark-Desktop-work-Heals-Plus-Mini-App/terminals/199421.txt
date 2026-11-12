@@ -1,0 +1,31 @@
+---
+pid: 48447
+cwd: "/Users/stark/Desktop/work/Heals Plus Mini App"
+command: "for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18; do\n  busy=$(ps aux | grep -E 'HBuilderX.app/.*/(unzip|git clone|plugin-manager)' | grep -v grep || true)\n  if [ -z \"$busy\" ]; then\n    echo \"STABLE at $i\"\n    break\n  fi\n  echo \"BUSY $i\"\n  echo \"$busy\" | cut -c1-180\n  sleep 5\ndone\necho \"---UPDATE DIR---\"\nls \"/Applications/HBuilderX.app/Contents/HBuilderX/update\" 2>/dev/null | head\nls \"/Applications/HBuilderX.app/Contents/HBuilderX/plugins\" 2>/dev/null | head -40"
+title: "Wait until HBuilderX finishes first-launch plugins"
+status: failed   
+started_at: 2026-11-12T08:51:11.765Z
+running_for_ms: 41174    
+---
+BUSY 1
+stark            47145   0.0  1.3 68574892 216708   ??  S     4:50PM   0:02.39 /Applications/HBuilderX.app/Contents/HBuilderX/plugins/node/node /Applications/HBuilderX.app/Contents
+BUSY 2
+stark            47145   0.0  1.0 68529600 171500   ??  S     4:50PM   0:02.65 /Applications/HBuilderX.app/Contents/HBuilderX/plugins/node/node /Applications/HBuilderX.app/Contents
+BUSY 3
+stark            47145   0.0  1.0 68529600 171500   ??  S     4:50PM   0:02.65 /Applications/HBuilderX.app/Contents/HBuilderX/plugins/node/node /Applications/HBuilderX.app/Contents
+BUSY 4
+stark            47145   0.1  1.0 68529856 171608   ??  S     4:50PM   0:02.65 /Applications/HBuilderX.app/Contents/HBuilderX/plugins/node/node /Applications/HBuilderX.app/Contents
+BUSY 5
+stark            47145   0.0  1.0 68529856 171656   ??  S     4:50PM   0:02.66 /Applications/HBuilderX.app/Contents/HBuilderX/plugins/node/node /Applications/HBuilderX.app/Contents
+BUSY 6
+stark            47145   0.0  1.0 68529856 171656   ??  S     4:50PM   0:02.66 /Applications/HBuilderX.app/Contents/HBuilderX/plugins/node/node /Applications/HBuilderX.app/Contents
+BUSY 7
+stark            47145   0.0  1.0 68529856 171740   ??  S     4:50PM   0:02.66 /Applications/HBuilderX.app/Contents/HBuilderX/plugins/node/node /Applications/HBuilderX.app/Contents
+BUSY 8
+stark            47145   0.0  1.0 68529856 171740   ??  S     4:50PM   0:02.66 /Applications/HBuilderX.app/Contents/HBuilderX/plugins/node/node /Applications/HBuilderX.app/Contents
+
+---
+exit_code: unknown
+elapsed_ms: 41174
+ended_at: 2026-11-12T08:51:52.939Z
+---

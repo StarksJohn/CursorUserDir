@@ -1,0 +1,20 @@
+---
+pid: 53209
+cwd: "/Users/stark/Desktop/work/Heals Plus Mini App"
+command: "CLI=\"/Applications/HBuilderX.app/Contents/MacOS/cli\"\n\"$CLI\" project open --path \"/Users/stark/Desktop/work/Heals Plus Mini App\"\necho \"OPEN_PROJECT_EXIT:$?\"\ntest -d \"/Users/stark/Desktop/work/Heals Plus Mini App/node_modules/dayjs\" && echo DAYJS_OK || echo DAYJS_MISSING"
+title: "Import the mini program project into HBuilderX"
+status: succeeded
+started_at: 2026-11-12T08:53:02.419Z
+running_for_ms: 74085    
+---
+正在导入项目...
+项目导入成功
+
+OPEN_PROJECT_EXIT:0
+DAYJS_MISSING
+
+---
+exit_code: 0
+elapsed_ms: 74085
+ended_at: 2026-11-12T08:54:16.504Z
+---
