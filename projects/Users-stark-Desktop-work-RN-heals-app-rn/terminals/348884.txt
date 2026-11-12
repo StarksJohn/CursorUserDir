@@ -3,9 +3,9 @@ pid: 13770
 cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
 command: "test -w \"$HOME/.gradle\" && test -f .env.development && node -v && npm start > /tmp/heals-metro.log 2>&1 & echo \"metro_pid=$!\" && ready=0 && for i in $(seq 1 90); do if curl -sf --max-time 2 localhost:8081/status | grep -q \"packager-status:running\"; then echo METRO_READY; ready=1; break; fi; sleep 1; done && if [ \"$ready\" != 1 ]; then echo METRO_FAILED; tail -n 80 /tmp/heals-metro.log; exit 1; fi && GRADLE_USER_HOME=\"$HOME/.gradle\" npm run android:dev -- --active-arch-only"
 title: "Start Metro and install dev debug"
-status: running  
+status: succeeded
 started_at: 2026-11-12T07:54:23.275Z
-running_for_ms: 155110   
+running_for_ms: 164712   
 ---
 v20.20.2
 metro_pid=13783
@@ -1234,3 +1234,25 @@ w: file:///Users/stark/Desktop/work/RN/heals-app-rn/android/app/src/main/java/co
 
 > Task :app:installDevDebug
 Installing APK 'app-dev-debug.apk' on 'PJJ110 - 16' for :app:dev-debug
+Installed on 1 device.
+
+[Incubating] Problems report is available at: file:///Users/stark/Desktop/work/RN/heals-app-rn/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 29s
+898 actionable tasks: 32 executed, 866 up-to-date
+info Connecting to the development server...
+8081
+info Starting the app on "4ae24c72"...
+Starting: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.healshealthcare.healspass.dev/com.healshealthcare.healspass.MainActivity }
+
+---
+exit_code: 0
+elapsed_ms: 164710
+ended_at: 2026-11-12T07:57:07.985Z
+---
