@@ -99,7 +99,7 @@ description: >-
 
 ## 当前活跃需求(不要修改这部分的子内容)
 
-- 把当前项目的 dev 环境 debug 包运行到当前 Mac 系统已安装的微信开发者工具里，直到开发者工具模拟器前台打开的是这个小程序，并且之后只改页面、组件、文案或接口代码时，模拟器能在 dev 产物更新后重新编译刷新。验收通过前不要自动停止。同一阻塞连续 3 次没有进展就停止并报告。本任务只走 HBuilderX 的微信小程序 dev 编译，并让微信开发者工具打开 dev 产物。禁止执行 `npm run android:dev`、Gradle、Metro、`adb reverse tcp:8081`，禁止使用 `heals-app-rn` 的包名，禁止 `cli upload`、`cli auto-preview` 和发行上传。本任务不连接 Android 真机，不要求手机微信前台，禁止改用 `unpackage/dist/build/mp-weixin`。
+- 把当前项目的 `dev` 环境 `debug` 包运行到当前 Mac 系统已安装的`微信开发者工具`里，直到开发者工具模拟器前台打开的是这个小程序，并且之后只改页面、组件、文案或接口代码时，模拟器能在 dev 产物更新后重新编译刷新。验收通过前不要自动停止。同一阻塞连续 3 次没有进展就停止并报告。本任务只走 HBuilderX 的微信小程序 dev 编译，并让微信开发者工具打开 dev 产物。禁止执行 `npm run android:dev`、Gradle、Metro、`adb reverse tcp:8081`，禁止使用 `heals-app-rn` 的包名，禁止 `cli upload`、`cli auto-preview` 和发行上传。本任务不连接 Android 真机，不要求手机微信前台，禁止改用 `unpackage/dist/build/mp-weixin`。
   1. 定位工具：当场查找 HBuilderX 和微信开发者工具。macOS 命令行是 `<安装路径>/Contents/MacOS/cli`。微信开发者工具先执行 `cli -h`，确认有 `open`。没有 `open` 就停止。本仓库 `package.json` 没有小程序脚本，禁止新建 npm 脚本代替 HBuilderX。找不到这两个应用就停止并报告查找范围，不要擅自安装。
   2. 切到 dev 接口：读取 `apis/index.js`。生效值如果是注释里标成 prod 的域名，把 `origin`、`hpOrigin`、`passportOrigin` 改成同一文件注释里标成 dev 的地址，并把请求头里的 `x-client-secret` 改成注释里标成 dev 的值。prod 值留在注释里。已经是 dev 注释值就不要再改。secret、测试账号和 AppSecret 不得写入 Skill、提交说明或回复。只改这些赋值，保留工作区里已有的其它改动。不要提交，不要 push。
   3. 编译 debug 产物：用 HBuilderX「运行到小程序模拟器 -> 微信开发者工具」编译。产物目录必须是项目根下的 `unpackage/dist/dev/mp-weixin`。禁止改用 `unpackage/dist/build/mp-weixin`。该目录的 `project.config.json` 必须含有 appid 和 projectname。AppID 以当前 `manifest.json` 的 `mp-weixin.appid` 为准。
@@ -107,7 +107,7 @@ description: >-
   5. 选择快路径或重新打开：开发者工具已经打开上述 dev 目录、HBuilderX 运行会话还在，并且这次只改了 `pages/`、`packageB/`、`components/`、`locale/`、`utils/`、`apis/`、`styles/` 时，走快路径。快路径不关闭微信开发者工具、不重新导入项目。等 dev 产物新于上次编译后，让开发者工具重新编译当前项目。`manifest.json`、`pages.json`、新增静态资源，或开发者工具没有打开 dev 目录时，重新编译并在需要时执行 `cli open --project "<dev 产物绝对路径>"`。
   6. 代码更新后的刷新：保存源码后，HBuilderX 会更新 `unpackage/dist/dev/mp-weixin`。产物变新就让微信开发者工具重新编译该 dev 目录。这是本任务在 Mac 模拟器上看到最新 UI 的路径。代码热重载只更新当前已打开的开发者工具模拟器，不能把它当成手机已经更新。用户本轮没有另行要求断点或真机时，不要启动真机调试，不要执行 `cli auto-preview`。
   7. 验收：微信开发者工具当前打开的项目路径是项目根下的 `unpackage/dist/dev/mp-weixin`，模拟器已经展示本小程序页面，而不是空白项目或 `unpackage/dist/build/mp-weixin`。HBuilderX 和控制台没有阻塞运行的红色报错。最终报告写明走的是快路径还是重新打开、dev 产物路径、`apis/index.js` 哪些常量处于 dev、开发者工具打开结果，以及没有上传、没有自动预览到手机、没有提交。编译失败或开发者工具未登录导致项目打不开时停止并说明，不要改微信公众平台配置。
-  8. 
+
 <!-- - 把当前项目的 dev 环境 debug 包运行到当前 adb 已连接的 Android 真机上，直到手机微信前台打开的是这个小程序，并且之后只改页面、组件、文案或接口代码时，真机能通过自动预览更新。验收通过前不要自动停止。同一阻塞连续 3 次没有进展就停止并报告。真机时区按东八区核对。本任务只走 HBuilderX 的微信小程序 dev 编译和微信开发者工具自动预览。禁止执行 `npm run android:dev`、Gradle、Metro、`adb reverse tcp:8081`，禁止使用 `heals-app-rn` 的包名，禁止 `cli upload` 和发行上传。
   1. 锁定设备：`adb devices -l` 只接受状态为 `device` 的一台手机。没有手机就停止。多于一台时列出序列号和 model 后停止，不要猜。后续 adb 命令都带 `-s <serial>`。用 `adb shell getprop persist.sys.timezone` 核对是否为 `Asia/Shanghai`。不一致只写入报告，不因此重装微信。
   2. 定位工具：当场查找 HBuilderX 和微信开发者工具。macOS 命令行是 `<安装路径>/Contents/MacOS/cli`，Windows 是 `<安装路径>/cli.bat`。先执行 `cli -h`，没有 `auto-preview` 就停止。本仓库 `package.json` 没有小程序脚本，禁止新建 npm 脚本代替 HBuilderX。找不到这两个应用就停止并报告查找范围，不要擅自安装。
