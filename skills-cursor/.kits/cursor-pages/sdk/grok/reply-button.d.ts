@@ -9,10 +9,17 @@ export interface ReplyButtonProps {
     variant?: ButtonVariant;
 }
 /**
- * A reply option. Pressing it opens the viewer's messenger with the reply
- * filled in, for the viewer to send. It shows disabled, its label still read,
- * where the host delivers no replies or the text it would send runs past 300
- * characters.
+ * NOT AVAILABLE unless your instructions name `ReplyButton`. It works only
+ * on a host that delivers replies, and the desktop and phone apps do not:
+ * there it renders disabled, its label read but nothing happening when it is
+ * pressed, and `WriteCanvas` refuses a page that imports it. To offer the
+ * viewer something to ask for, write it as text (a `Callout` such as "Ask me
+ * for your morning brief"); where your instructions teach routine or
+ * connector action buttons, use a `Button` whose `onClick` runs that action.
+ *
+ * Where it is available: pressing it opens the viewer's messenger with the
+ * reply filled in, for the viewer to send. It shows disabled when the text it
+ * would send runs past 300 characters.
  *
  * @kitUnlisted Only a host that delivers replies teaches it, in its own prompt.
  */

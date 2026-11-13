@@ -9,8 +9,9 @@
  * and ask the IDE to open an agent, a chat, or a file. Everything from
  * `grok/canvas` is here under the same names and styled the same way;
  * `useCursorPageTheme()` is `useGrokTheme()` plus `diff` tones and a
- * `category` palette. Wrap the canvas in one `Page`, and never hardcode
- * colors or fonts.
+ * `category` palette. Wrap the canvas in one `Page`, take colors and fonts
+ * from the theme, and give the `Page` a `palette` when the person asks for
+ * their own series colors.
  */
 export * from "../grok/index.js";
 /** Diffs: the unified diff body, and the `+N` / `-N` pair. */

@@ -24,7 +24,7 @@
         "type": "string"
       },
       "revision_range": {
-        "description": "Optional revision range (e.g., 'HEAD', 'main..feature', 'abc123', 'HEAD~5..HEAD'). For 'diff' action, shows differences for the specified range. For 'log' action, shows commits in the range. Defaults to HEAD.",
+        "description": "Optional revision range (e.g., 'HEAD', 'main..feature', 'abc123', 'HEAD~5..HEAD'). For 'diff' action, shows differences for the specified range. For 'log' action, shows commits in the range. Defaults to HEAD. Must not start with '-'.",
         "type": "string"
       },
       "since": {

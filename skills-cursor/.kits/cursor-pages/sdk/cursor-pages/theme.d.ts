@@ -30,7 +30,9 @@ export interface CursorPageTheme extends GrokTheme {
 /**
  * Returns the Cursor page theme for the viewer's current light/dark mode:
  * `useGrokTheme()` plus `diff` and `category`. Call it in each component
- * that needs colors; prefer the built-in components first.
+ * that needs colors; prefer the built-in components first. Under a `Page`
+ * with a `palette`, `dataviz.categorical` holds the page's own series
+ * colors, and `diff` and `category` stay the kit's.
  *
  * @example
  * ```tsx

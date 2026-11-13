@@ -1,3 +1,4 @@
+import { type Context } from "react";
 import { type GrokDataViz, type GrokPalette, type GrokTextStyle, type GrokWeightScale } from "./tokens.js";
 export type { GrokDataViz, GrokPalette, GrokTextStyle, GrokWeightScale } from "./tokens.js";
 /**
@@ -77,6 +78,8 @@ export interface GrokTheme extends GrokPalette {
 /**
  * Returns the Grok theme for the viewer's current light/dark mode. Call it in
  * each component that needs colors; prefer the built-in components first.
+ * Under a `Page` with a `palette`, `dataviz.categorical` holds the page's
+ * own series colors.
  *
  * @example
  * ```tsx

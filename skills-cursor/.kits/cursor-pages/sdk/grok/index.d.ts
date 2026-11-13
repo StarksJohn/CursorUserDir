@@ -8,7 +8,8 @@
  * carry several series with a legend and a hover detail, `Scatter` puts two
  * measures per item in a cloud of dots, `Heatmap` and `CalendarHeatmap` color
  * a matrix or a year of days on the sequential ramp, `Diagram` draws a
- * flowchart or an org chart, and any richer visual (timeline) is inline SVG
+ * flowchart or an org chart, `Sequence` draws the messages between actors
+ * down their lifelines, and any richer visual (timeline) is inline SVG
  * or divs colored from
  * `useGrokTheme()` (`dataviz` for data marks, neutral `text` for every label,
  * type scale). A page has one width, set on the `Page`: the reading column
@@ -18,8 +19,9 @@
  * updates: a `Checklist` or `Checkbox` shows recorded status and takes no
  * input from the viewer, while `Segmented`, `Toggle`, `Select`, `Input`, and
  * `Button` are view controls the reader may operate to change what is shown,
- * never what is recorded. Wrap the canvas in one `Page`, and never hardcode
- * colors or fonts.
+ * never what is recorded. Wrap the canvas in one `Page`, take colors and
+ * fonts from the theme, and give the `Page` a `palette` when the person asks
+ * for their own series colors.
  */
 /**
  * React authoring utilities re-exported so canvases need one public import:
@@ -61,6 +63,9 @@ export { computeDAGLayout } from "./dag.js";
 /** A drawn diagram on that layout: node cards, lines, arrowheads, labels, for a relationship diagram, a flowchart, an org chart. */
 export type { DiagramEdge, DiagramNode, DiagramNodeKind, DiagramProps } from "./diagram.js";
 export { Diagram } from "./diagram.js";
+/** A sequence diagram: actors as columns with lifelines, messages as arrows down them, self-calls as loops, replies dashed, notes between. */
+export type { SequenceActor, SequenceMessage, SequenceNote, SequenceProps, SequenceRow, } from "./sequence.js";
+export { Sequence } from "./sequence.js";
 /** Page shell, text, callout, checklist, rows, table. */
 export type { CalloutProps, CalloutTone, ChecklistItem, ChecklistProps, PageProps, Row, RowsProps, SectionProps, TableCell, TableProps, TextProps, Tone, } from "./components.js";
 export { Callout, Checklist, Page, Rows, Section, Table, Text } from "./components.js";
@@ -90,21 +95,53 @@ export { Divider } from "./divider.js";
 /** A picture uploaded beside the page (`asset:<name>`), with an optional caption; never a web address. */
 export type { ImageProps } from "./image.js";
 export { Image } from "./image.js";
+/** A clip or a sound uploaded beside the page (`asset:<name>`): the clip silent and looping on its own by default, the sound waiting for play; never a web address. */
+export type { AudioProps, VideoProps } from "./media.js";
+export { Audio, Video } from "./media.js";
 /** Layout, view switching, and headline figures. */
 export type { GridColumns, GridProps, Metric, MetricsProps, SegmentedOption, SegmentedProps, } from "./layout.js";
 export { Grid, Metrics, Segmented } from "./layout.js";
 /** A field and a pressable for a tool page (the pressable is `quiet` (tinted) or `primary` (filled), one `primary` per row), the pick and switch of a filter row, and the tick, which shows a recorded status and is read-only on the page. */
 export type { ButtonProps, ButtonVariant, CheckboxProps, InputProps, SelectOption, SelectProps, ToggleProps, } from "./controls.js";
 export { Button, Checkbox, Input, Select, Toggle } from "./controls.js";
-/** A reply option: opens the viewer's messenger with the reply filled in, or shows disabled where the host delivers no replies. */
+/** Controls that stay on screen while the page scrolls, on every surface: a row pinned to the top or bottom edge, and the button that returns to the top. */
+export type { BackToTopProps, FloatingAlign, FloatingEdge, FloatingProps } from "./floating.js";
+export { BackToTop, Floating } from "./floating.js";
+/** NOT AVAILABLE unless your instructions name it: a reply option that renders disabled on the desktop and phone apps, which deliver no replies, and that `WriteCanvas` refuses there. Offer the ask as text, or as a `Button` whose `onClick` runs an action your instructions teach. */
 export type { ReplyButtonProps } from "./reply-button.js";
 export { ReplyButton } from "./reply-button.js";
+/** Products and places for a consumer page: one as a raised card led by its photo, several as rows with a thumbnail each. */
+export type { ProductCardProps, ProductItem, ProductRowsProps } from "./product-card.js";
+export { ProductCard, ProductRows } from "./product-card.js";
+/** A consumer page's count-and-date line under its title, and its closing line. */
+export type { FootnoteProps, PageMetaProps } from "./consumer-page.js";
+export { Footnote, PageMeta } from "./consumer-page.js";
+/** A consumer page's photos: one swipeable hero gallery, or a strip of tiles that scrolls sideways. */
+export type { GalleryPhoto, GalleryProps } from "./gallery.js";
+export { Gallery } from "./gallery.js";
+export type { PhotoStripItem, PhotoStripProps } from "./photo-strip.js";
+export { PhotoStrip } from "./photo-strip.js";
+/** The photo a product or place page opens with, above its eyebrow and title. */
+export type { PageHeroProps } from "./hero.js";
+export { PageHero } from "./hero.js";
+/** A consumer page's links out: a labeled pill or words with an arrow, and linked words inside a line. */
+export type { LinkButtonProps, LinkButtonVariant, TextLinkProps } from "./link.js";
+export { LinkButton, TextLink } from "./link.js";
+/** A consumer page's reviews headline: the score, its stars and the count. */
+export type { RatingSummaryProps } from "./rating.js";
+export { RatingSummary } from "./rating.js";
+/** NOT AVAILABLE unless your instructions name it: a consumer page's offer to watch something, answered through a reply, so it renders disabled on the desktop and phone apps and `WriteCanvas` refuses it there. Make the offer in a `Callout` instead. */
+export type { WatchCardProps } from "./watch-card.js";
+export { WatchCard } from "./watch-card.js";
+/** A consumer page's card layouts: a handful of rich cards to swipe through, or many compact ones in a grid. */
+export type { CardCarouselProps, CardGridProps } from "./card-layout.js";
+export { CardCarousel, CardGrid } from "./card-layout.js";
 /** Display math: a centered equation line and the fraction, exponent, root, sum, and delimiters it is built from. */
 export type { EquationProps, FracProps, ParenProps, PowProps, SqrtProps, SumProps, } from "./equation.js";
 export { Equation, Frac, Paren, Pow, Sqrt, Sum } from "./equation.js";
-/** Live sources: the value of a connector read the page declares in its `cursor-canvas-sources` block, and the caption saying how current it is. */
+/** Live sources: the value of a connector read or routine slot the page declares in its `cursor-canvas-sources` block, the caption saying how current it is, and the ask for a fresh read. */
 export type { LiveSource, SourceJson, SourceStampProps } from "./live-sources.js";
-export { SourceStamp, useSource } from "./live-sources.js";
+export { SourceStamp, refreshSources, useSource } from "./live-sources.js";
 /** Page width. */
 export type { PageWidth } from "./width.js";
 /** Tokens. */

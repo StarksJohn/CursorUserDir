@@ -98,6 +98,7 @@ description: >-
 - 不把医学建议写成确诊或处方替代，不混入其它项目假设，不创建无关文档或脚本。
 
 ## 当前活跃需求(不要修改这部分的子内容)
+<!-- - 解决当前正在 打开的 `微信开发者工具` 里的 模拟器里的 正在打开的 图 1页面(结合 微信开发者工具 里的 Console里的 日志 )的问题(如果是 API 问题, 你把 API 请求的 url+header+参数, 以及返回的数据 等 完整信息 给我, 我反馈给 后端开发人员) :  为什么 登录失败  -->
 
 - 把当前项目的 `dev` 环境 `debug` 包运行到当前 Mac 系统已安装的`微信开发者工具`里，直到开发者工具模拟器前台打开的是这个小程序，并且之后只改页面、组件、文案或接口代码时，模拟器能在 dev 产物更新后重新编译刷新。验收通过前不要自动停止。同一阻塞连续 3 次没有进展就停止并报告。本任务只走 HBuilderX 的微信小程序 dev 编译，并让微信开发者工具打开 dev 产物。禁止执行 `npm run android:dev`、Gradle、Metro、`adb reverse tcp:8081`，禁止使用 `heals-app-rn` 的包名，禁止 `cli upload`、`cli auto-preview` 和发行上传。本任务不连接 Android 真机，不要求手机微信前台，禁止改用 `unpackage/dist/build/mp-weixin`。
   1. 定位工具：当场查找 HBuilderX 和微信开发者工具。macOS 命令行是 `<安装路径>/Contents/MacOS/cli`。微信开发者工具先执行 `cli -h`，确认有 `open`。没有 `open` 就停止。本仓库 `package.json` 没有小程序脚本，禁止新建 npm 脚本代替 HBuilderX。找不到这两个应用就停止并报告查找范围，不要擅自安装。

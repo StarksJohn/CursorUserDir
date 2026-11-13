@@ -5,11 +5,11 @@
  * compose with the generic `Card` / `CardHeader` / `CardBody` / `Pill` /
  * `Text` primitives to build any diff layout an agent can imagine:
  *
- * - `DiffView` — a monospaced, syntax-highlighted unified diff renderer.
- *   Drops into any container (a `Card`, a table cell, a bare layout,
- *   nothing at all). No card chrome, no header, no path display. Pass
- *   `path` to auto-detect the language for highlighting, or `language`
- *   to override.
+ * - `DiffView` — a monospaced unified diff renderer: a plain diff body
+ *   with added / removed / unchanged line tints, a line-number gutter, and
+ *   an accent strip. Drops into any container (a `Card`, a table cell, a
+ *   bare layout, nothing at all). No card chrome, no header, no path
+ *   display.
  *
  * - `DiffStats` — the canonical `+N` green / `-N` red glyph pair. Use
  *   it anywhere a small "added/deleted" summary makes sense — in a
@@ -63,26 +63,14 @@ export type DiffLineData = {
 export type DiffViewProps = {
     lines?: DiffLineData[];
     /**
-     * File path used to infer the syntax-highlighting language from the
-     * extension (e.g. `"src/utils.ts"` → `typescript`). The most ergonomic
-     * way to enable highlighting — pass the same path you show in the
-     * enclosing card header. Unknown extensions silently render as plain
-     * text.
-     *
-     * If both `path` and `language` are provided, `language` wins.
+     * The file the diff is of (e.g. `"src/utils.ts"`). Accepted so a page
+     * can state it beside the lines; the body renders the same with or
+     * without it.
      */
     path?: string;
     /**
-     * Explicit language override for syntax highlighting (e.g.
-     * `"typescript"`, `"python"`, `"tsx"`). Use this when no file path is
-     * available, when the path's extension is misleading, or when the
-     * content is a snippet rather than a real file. Accepts common
-     * aliases (`ts`, `py`, `rs`, `md`, etc.). Unknown languages silently
-     * fall back to plain text.
-     *
-     * Highlighting is applied per line, so multi-line constructs (block
-     * comments, template literals) may not colorize perfectly across line
-     * boundaries. For typical diff-sized inputs this is fine.
+     * The language of the diffed code (e.g. `"typescript"`). Accepted and
+     * ignored: the body renders as plain monospaced text in every language.
      */
     language?: string;
     /** Show line numbers in the gutter. Default `true`. */
@@ -94,16 +82,14 @@ export type DiffViewProps = {
     style?: CSSProperties;
 };
 /**
- * Unified diff body renderer with monospaced type, colored line
- * backgrounds, line-number gutter, accent strip, and optional Shiki
- * syntax highlighting.
+ * Unified diff body renderer: a plain preformatted body with monospaced
+ * type, colored line backgrounds, a line-number gutter, and an accent
+ * strip.
  *
  * `DiffView` does not provide any surrounding chrome — place it inside
  * a `Card` + `CardBody` (with `padding: 0`) when you want the standard
  * bordered "file diff" look, or drop it anywhere else if you want the
  * bare renderer.
- *
- * Pass `path` to enable syntax highlighting from the file extension.
  *
  * @example
  * ```tsx
@@ -126,5 +112,5 @@ export type DiffViewProps = {
  * </Card>
  * ```
  */
-export declare function DiffView({ lines, path, language, showLineNumbers, coloredLineNumbers, showAccentStrip, style, }: DiffViewProps): JSX.Element;
+export declare function DiffView({ lines, showLineNumbers, coloredLineNumbers, showAccentStrip, style, }: DiffViewProps): JSX.Element;
 //# sourceMappingURL=diff-view.d.ts.map

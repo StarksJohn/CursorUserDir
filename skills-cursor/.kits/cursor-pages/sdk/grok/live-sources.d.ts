@@ -1,5 +1,9 @@
 import { type JSX } from "react";
-/** A JSON value as a connector returned it. */
+/**
+ * A JSON value as a connector returned it.
+ *
+ * @kitFeature live-sources Listed only for an author whose host teaches the declaration block.
+ */
 export type SourceJson = string | number | boolean | null | readonly SourceJson[] | {
     readonly [key: string]: SourceJson;
 };
@@ -7,12 +11,17 @@ export type SourceJson = string | number | boolean | null | readonly SourceJson[
  * What `useSource` returns: the current value and where it came from.
  * `fresh` is false while the page shows the authoring snapshot and true once
  * a refresh replaced it; `asOf` stamps the value either way; `error` is a
- * short reason when the last refresh failed and the snapshot stayed.
+ * short reason when the last refresh failed and the snapshot stayed;
+ * `updating` is true while the shell is reading a newer value, so the page
+ * can show that beside the value it still has.
+ *
+ * @kitFeature live-sources Listed only for an author whose host teaches the declaration block.
  */
 export interface LiveSource<T = SourceJson> {
     readonly value: T;
     readonly asOf: string;
     readonly fresh: boolean;
+    readonly updating?: boolean;
     readonly error?: string;
 }
 /**
@@ -28,8 +37,26 @@ export interface LiveSource<T = SourceJson> {
  * <Table rows={bugs.value.map(...)} />
  * <SourceStamp source={bugs} />
  * ```
+ *
+ * @kitFeature live-sources Listed only for an author whose host teaches the declaration block.
  */
 export declare function useSource<T = SourceJson>(id: string): LiveSource<T>;
+/**
+ * Asks the page shell to read the named sources again now. Pass the ids of
+ * declared sources (a routine slot a button is bound to, most often); ids
+ * the page does not declare are dropped. The shell decides whether to
+ * answer: a press from a focused page refreshes, a page cannot refresh on
+ * its own schedule, and the values arrive through `useSource`, which
+ * reports `updating` meanwhile. A no-op outside a page frame.
+ *
+ * @example
+ * ```tsx
+ * <Button onClick={() => refreshSources(["incidents"])}>Refresh incidents</Button>
+ * ```
+ *
+ * @kitFeature live-sources Listed only for an author whose host teaches the declaration block.
+ */
+export declare function refreshSources(ids: readonly string[]): void;
 export interface SourceStampProps {
     /** The source whose stamp to show, as `useSource` returned it. */
     source: LiveSource<unknown>;
@@ -43,5 +70,7 @@ export interface SourceStampProps {
  * the relative age stays true while the page is open, and its tooltip is
  * always the exact time of the read. Put it under the block that shows
  * the value.
+ *
+ * @kitFeature live-sources Listed only for an author whose host teaches the declaration block.
  */
 export declare function SourceStamp({ source }: SourceStampProps): JSX.Element;

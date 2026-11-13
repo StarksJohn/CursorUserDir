@@ -29,6 +29,42 @@ export interface PageProps {
      * a diagram; `full` spans the page. On a phone every width is the one column.
      */
     width?: PageWidth;
+    /**
+     * BCP 47 tag of the language the page is written in, such as `ja`, `ko`,
+     * `zh-Hans` or `zh-Hant`. Japanese, Chinese and Korean share Han code
+     * points that each draws differently, and the host picks the glyph shapes
+     * from this tag. Without it the host reads the text; set it when the page
+     * is in one of those languages, and always when its Han text has no kana,
+     * hangul or bopomofo to tell them apart.
+     */
+    lang?: string;
+    /**
+     * The person's own series colors, in order, when they asked for them (a
+     * brand, a palette): CSS colors, six-digit hex preferred. Every chart on
+     * the page draws series `i` in `palette[i]`, in light and dark alike, and a
+     * series past the list takes the kit's hue; `useGrokTheme().dataviz` reads
+     * the same, so a custom visual follows. Leave it out for the kit's palette.
+     */
+    palette?: readonly string[];
+    /**
+     * The card a texted link to the page previews as in a messenger, drawn by
+     * the page host: which card, its words, and up to four of the page's own
+     * photos. Every value is a literal. Renders nothing on the page.
+     *
+     * @kitUnlisted Only a host that texts page links teaches it, in its own prompt.
+     */
+    preview?: {
+        /** Which card: `picks`, `compare`, `product`, `ready-to-pay`, `shipped`, `delivered`, `restaurant`, `trip`, `tickets`, `price-drop` or `watching`. */
+        kind: string;
+        /** Two lines at most; the page's title when unset. */
+        title?: string;
+        /** One deciding fact: a price, a time, a date or a condition. */
+        subline?: string;
+        /** Where it is sold, booked or tracked; several names stack their marks. */
+        source?: string | readonly string[];
+        /** Up to four of the page's photos, each the `asset:<name>` its upload returned. */
+        photos?: readonly string[];
+    };
     /** `Section`s, each 64 px below what precedes it; a block placed directly here keeps a block's spacing. */
     children?: ReactNode;
 }
@@ -44,8 +80,10 @@ export interface PageProps {
  *   <Section heading="Pickup orders by neighborhood">…</Section>
  * </Page>
  * ```
+ *
+ * @kitNote A page in Japanese, Chinese or Korean sets `lang` (`ja`, `zh-Hans`, `zh-Hant`, `ko`) so its Han characters take that language's shapes.
  */
-export declare function Page({ title: fullTitle, summary: fullSummary, width, children, }: PageProps): JSX.Element;
+export declare function Page({ title: fullTitle, summary: fullSummary, width, lang, palette, children, }: PageProps): JSX.Element;
 export interface SectionProps {
     /** Section heading. Also names any chart inside; charts have no title of their own. */
     heading?: string;

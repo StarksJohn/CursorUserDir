@@ -80,6 +80,16 @@ export type DAGLayoutResult = {
     height: number;
 };
 /**
+ * Counts the pairs of forward edges that cross: two edges between the same
+ * pair of ranks whose ends are in opposite order. An edge that skips ranks
+ * is compared only with edges between the same two ranks, so the count is
+ * exact for a drawing of neighbouring ranks and a close bound otherwise.
+ */
+export declare function countEdgeCrossings(rankGroups: ReadonlyMap<number, readonly string[]>, edges: ReadonlyArray<{
+    from: string;
+    to: string;
+}>, rank: ReadonlyMap<string, number>): number;
+/**
  * Compute a hierarchical layout for a directed graph.
  *
  * Returns node positions, edge anchor points, rank bounding boxes, and

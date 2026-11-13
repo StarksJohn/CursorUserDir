@@ -8,9 +8,9 @@ export type DiagramNodeKind = "box" | "decision" | "terminal" | "person";
 export interface DiagramNode {
     /** Unique id, the one edges name in `from` and `to`. */
     id: string;
-    /** The node's name; a person's name on a `person`. One line, cut with an ellipsis when long. */
+    /** The node's name; a person's name on a `person`. Wraps onto more lines when it runs past the node's widest. */
     label: string;
-    /** A second line under the label: a role on a `person`, a note on a `box`. A `box` with one draws as a card with an accent bar. */
+    /** A line under the label: a role on a `person`, a note on a `box`. A `box` with one draws as a card with an accent bar. Wraps like the label. */
     detail?: string;
     /** `box` (default): a card or a step. `decision`: a diamond. `terminal`: a pill for a start or end. `person`: an initials tile beside the name and role. */
     kind?: DiagramNodeKind;

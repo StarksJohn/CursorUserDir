@@ -5,7 +5,7 @@ React re-exports: types ChangeEvent, CSSProperties, FocusEvent, FormEvent, Keybo
 ## Page, text, lists, table, links
 <Callout> { lead?: string; tone?: CalloutTone; children?: ReactNode }
 <Checklist> { items: ChecklistItem[] } — Shows recorded status (`done`), as of when the page was written; the viewer cannot tick an item. Say so in copy ("status as of…"), and update the page when a status changes.
-<Page> { title: string; summary?: string; sources?: string[]; width?: PageWidth; children?: ReactNode }
+<Page> { title: string; summary?: string; sources?: string[]; width?: PageWidth; lang?: string; palette?: string[]; children?: ReactNode } — A page in Japanese, Chinese or Korean sets `lang` (`ja`, `zh-Hans`, `zh-Hant`, `ko`) so its Han characters take that language's shapes.
 <Rows> { rows: Row[] }
 <Section> { heading?: string; id?: string; caption?: string; actions?: ReactNode; collapsible?: boolean; defaultOpen?: boolean; children?: ReactNode }
 <Table> { columns: string[]; rows: (TableCell[])[]; emphasis?: number; align?: ("auto" | "start" | "end")[] }
@@ -51,6 +51,12 @@ SegmentedOption<T extends string = string> { value: T; label: string; count?: nu
 ButtonVariant = "primary" | "quiet"
 SelectOption<T extends string = string> { value: T; label: string }
 
+## Controls that stay on screen
+<BackToTop> { label?: string }
+<Floating> { edge?: FloatingEdge; align?: FloatingAlign; bar?: boolean; children?: ReactNode } — Last in the `Page`. Pins to the visible screen where the page is read, including the phone, where a hand-written `position: fixed` or `sticky` does not reach the screen. `bar` only with controls that are always shown.
+FloatingAlign = "start" | "center" | "end"
+FloatingEdge = "top" | "bottom"
+
 ## Charts
 <Bars> { bars: Bar[]; emphasis?: number | "none" }
 <Columns> { points: ColumnPoint[]; emphasis?: number | "none" }
@@ -86,14 +92,19 @@ ScatterPoint { x: number; y: number; label?: string; size?: number; series?: str
 DayEvent { start: number; end: number; title: string; flag?: boolean; free?: boolean; selected?: boolean }
 MonthEvent { date: string; title: string }
 
-## Diagram, matrix, Venn, and flow / dependency layout
+## Diagram, sequence, matrix, Venn, and flow / dependency layout
 <Diagram> { nodes: DiagramNode[]; edges: DiagramEdge[]; direction?: "horizontal" | "vertical" }
+<Sequence> { actors: SequenceActor[]; messages: SequenceRow[] }
 <Matrix2x2> { axes: MatrixAxes; quadrants?: [string, string, string, string]; points: MatrixPoint[] }
 <Venn> { sets: VennSet[]; overlap?: number | string }
 computeDAGLayout(options: DAGLayoutOptions): DAGLayoutResult
 DiagramEdge { from: string; to: string; label?: string; detail?: string; dashed?: boolean }
 DiagramNode { id: string; label: string; detail?: string; kind?: DiagramNodeKind; avatar?: string; series?: number }
 DiagramNodeKind = "box" | "decision" | "terminal" | "person"
+SequenceActor { id: string; label: string; detail?: string }
+SequenceMessage { from: string; to: string; label?: string; reply?: boolean }
+SequenceNote { note: string; over?: string }
+SequenceRow = SequenceMessage | SequenceNote
 MatrixAxes { x: [string, string]; y?: [string, string] }
 MatrixPoint { label: string; x: number; y: number }
 VennSet { label: string; count?: number | string; items?: string[] }
@@ -156,9 +167,6 @@ CursorPageTheme extends GrokTheme { diff: CursorPageDiffTones; category: Readonl
 <WeekView> { week: string; start: number; end: number; events: WeekEvent[]; today?: string; now?: number }
 WeekEvent extends DayEvent { date: string }
 
-## image
-<Image> { src: string; alt: string; caption?: string; fit?: "contain" | "cover"; width?: number | string; height?: number; ratio?: number | string }
-
 ## link-cards
 <LinkCards> { links: Link[]; numbered?: boolean }
 Link { title: string; site?: string; date?: string; href: string }
@@ -170,9 +178,3 @@ Link { title: string; site?: string; date?: string; href: string }
 ListItem = string | { text: ReactNode; items?: ListItem[]; bullets?: boolean }
 ListMarker = "pro" | "con"
 Step { title: ReactNode; detail?: ReactNode }
-
-## live-sources
-<SourceStamp> { source: LiveSource<unknown> }
-useSource<T = SourceJson>(id: string): LiveSource<T>
-LiveSource<T = SourceJson> { value: T; asOf: string; fresh: boolean; error?: string }
-SourceJson = string | number | boolean | null | SourceJson[] | { [key: string]: SourceJson }

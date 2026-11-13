@@ -1,0 +1,54 @@
+{
+  "name": "git_compose_apply",
+  "description": "Create commits from a plan you authored over the hunks listed by git_compose_collect. Every collected hunk must appear in exactly one commit; commits are created in the order given. Show the user the plan before applying unless they already asked for these commits. Fails with stale_collection (nothing modified) if the changes were edited since collecting. Use dry_run to validate the plan and see the commit/file layout without changing anything. The result carries an undo_id. Commits are signed when the repository sets commit.gpgsign; a signing failure returns signing_failed with nothing modified. Fails with timed_out if the apply runs past its time limit; follow the message to check the repository before retrying.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "based_on": {
+        "description": "The `based_on` token from git_compose_collect, verbatim",
+        "type": "string"
+      },
+      "commits": {
+        "description": "Commits to create, in order (dependencies first)",
+        "items": {
+          "properties": {
+            "explanation": {
+              "description": "Optional rationale for the grouping",
+              "type": "string"
+            },
+            "hunkIndices": {
+              "description": "Hunk indices for this commit",
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            "message": {
+              "description": "Commit message (subject line first)",
+              "type": "string"
+            }
+          },
+          "required": [
+            "message",
+            "hunkIndices"
+          ],
+          "type": "object"
+        },
+        "type": "array"
+      },
+      "directory": {
+        "description": "The repository working directory",
+        "type": "string"
+      },
+      "dry_run": {
+        "description": "Validate and return the layout without creating commits",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "directory",
+      "based_on",
+      "commits"
+    ]
+  }
+}

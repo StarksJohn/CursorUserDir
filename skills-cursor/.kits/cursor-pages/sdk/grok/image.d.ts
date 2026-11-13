@@ -36,5 +36,7 @@ export interface ImageProps {
  * alt text up, marked broken, until the host hands over others. Never a web
  * address: the frame fetches nothing from the internet, so a web picture
  * must be downloaded and uploaded as an asset first.
+ *
+ * @kitFeature page-assets Listed only for an author whose turn can upload an asset.
  */
 export declare function Image(props: ImageProps): JSX.Element;

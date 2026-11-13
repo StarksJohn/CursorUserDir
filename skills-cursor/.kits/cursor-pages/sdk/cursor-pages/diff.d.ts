@@ -27,16 +27,13 @@ export type DiffLineData = {
 export interface DiffViewProps {
     lines?: DiffLineData[];
     /**
-     * File path the highlighting language is inferred from (`"src/utils.ts"`
-     * → TypeScript). Pass the same path you show beside the diff. An unknown
-     * extension renders plain text. `language` wins when both are given.
+     * The file the diff is of (`"src/utils.ts"`). Pass the same path you
+     * show beside the diff; the body renders the same with or without it.
      */
     path?: string;
     /**
-     * Explicit highlighting language (`"typescript"`, `"python"`, `"tsx"`,
-     * and common aliases such as `ts`, `py`, `rs`, `md`). An unknown language
-     * renders plain text. Lines are highlighted one at a time, so a construct
-     * that spans lines (a block comment) may color imperfectly across them.
+     * The language of the diffed code (`"typescript"`). Accepted and
+     * ignored: the body renders as plain monospaced text in every language.
      */
     language?: string;
     /** Show line numbers in the gutter. Default `true`. */
@@ -48,11 +45,10 @@ export interface DiffViewProps {
     style?: CSSProperties;
 }
 /**
- * A unified diff in the page's monospace: added lines on the success tint,
- * removed lines on the danger tint, a line-number gutter, an edge strip,
- * and syntax highlighting when `path` or `language` names the language. It
- * draws no chrome of its own; it sits in a `Section`, a `CollapsibleSection`,
- * or a grid cell.
+ * A unified diff in the page's monospace, as a plain preformatted body:
+ * added lines on the success tint, removed lines on the danger tint, a
+ * line-number gutter, and an edge strip. It draws no chrome of its own; it
+ * sits in a `Section`, a `CollapsibleSection`, or a grid cell.
  *
  * @example
  * ```tsx
