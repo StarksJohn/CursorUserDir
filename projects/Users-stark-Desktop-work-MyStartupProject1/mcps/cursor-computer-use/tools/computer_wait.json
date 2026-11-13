@@ -1,0 +1,15 @@
+{
+  "name": "computer_wait",
+  "description": "Wait for a page load or animation to settle. Returns text only; it does not capture the display. Observe afterward with computer_screenshot (app target) or computer_app_state.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "ms": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 30000,
+        "description": "Milliseconds to wait. Defaults to 1000."
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+---
+pid: 31651
+cwd: "/Users/stark/Desktop/work/Heals Plus Mini App"
+command: "stat -f \"dist_mtime=%Sm\" -t \"%Y-%m-%d %H:%M:%S\" \"/Users/stark/Desktop/work/Heals Plus Mini App/unpackage/dist/dev/mp-weixin\"; echo \"launch start $(date '+%Y-%m-%d %H:%M:%S')\"; /Applications/HBuilderX.app/Contents/MacOS/cli launch mp-weixin --project \"/Users/stark/Desktop/work/Heals Plus Mini App\"; echo \"launch_exit=$?\"; echo \"launch end $(date '+%Y-%m-%d %H:%M:%S')\"; stat -f \"dist_mtime_after=%Sm\" -t \"%Y-%m-%d %H:%M:%S\" \"/Users/stark/Desktop/work/Heals Plus Mini App/unpackage/dist/dev/mp-weixin\""
+title: "Compile and launch WeChat mini program dev"
+status: running  
+started_at: 2026-11-13T07:00:02.853Z
+running_for_ms: 2197602  
+---
+dist_mtime=2026-11-12 16:55:47
+launch start 2026-11-13 15:00:02
+15:00:02.980 HBuilderX Version: 5.34
+15:00:02.996 项目 Heals Plus Mini App 开始编译
+15:00:04.309 请注意运行模式下，因日志输出、sourcemap 以及未压缩源码等原因，性能和包体积，均不及发行模式。若要正式发布，请点击发行菜单或使用 cli 发布命令进行发布
+15:00:04.310 编译器版本：5.34（vue3）
+15:00:04.310 正在编译中...
+15:00:16.915 项目 Heals Plus Mini App 编译成功。 前端运行日志，请另行在小程序开发工具的控制台查看。如需在 HBuilder 查看日志输出，可开启运行日志回显，详情：https://uniapp.dcloud.net.cn/tutorial/run/mp-log.html
+15:00:16.916 正在启动微信开发者工具...
+15:00:17.775 [31m[微信小程序开发者工具] - initialize[39m
+15:00:17.781 [31m[微信小程序开发者工具] (node:31703) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.[39m
+15:00:17.782 [31m[微信小程序开发者工具] (Use `Electron --trace-deprecation ...` to show where the warning was created)[39m
+15:00:17.797 [31m[微信小程序开发者工具] ✖ IDE may already started at port 38362, trying to connect[39m
+15:00:20.746 [31m[微信小程序开发者工具] ✔ IDE server started successfully, listening on http://127.0.0.1:38362[39m
+15:00:20.747 [31m[微信小程序开发者工具] - preparing[39m
+15:00:22.959 [31m[微信小程序开发者工具] ✔ open[39m
+15:00:22.973 微信开发者工具已启动，在HBuilder中修改文件并保存，会自动刷新微信模拟器。
+15:00:22.973 [33m注：[39m
+15:00:22.974 [33m1. 可以通过微信开发者工具切换pages.json中condition配置的页面，或者关闭微信开发者工具，然后再从HBuilder中启动指定页面[39m
+15:00:22.975 [33m2. 如果出现微信开发者工具启动后白屏的问题，检查是否启动多个微信开发者工具，如果是则关闭所有打开的微信开发者工具，然后再重新运行[39m
+15:00:22.975 [31m3. 运行模式下不压缩代码且含有sourcemap，体积较大；若要正式发布，请点击发行菜单进行发布[39m
+15:00:22.976 ready in 13483ms.

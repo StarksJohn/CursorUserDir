@@ -1,0 +1,85 @@
+{
+  "name": "get_comments",
+  "description": "Get comments on a Figma file. If the URL is of the format https://figma.com/design/:fileKey/branch/:branchKey/:fileName then use the branchKey as the fileKey.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "sessionId": {
+        "description": "After create_session succeeds, pass its exact returned UUID here on every file-tool call for this task, even when fileKey differs.",
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+      },
+      "pageId": {
+        "description": "Filter comments to only those on this page.",
+        "type": "string"
+      },
+      "userId": {
+        "description": "Filter comments to only those by this user ID.",
+        "type": "string"
+      },
+      "mentionedUserId": {
+        "description": "Filter to comments that @mention this user ID.",
+        "type": "string"
+      },
+      "unreadOnly": {
+        "description": "When true, return only unread comments for the authenticated user; false or omission leaves read status unfiltered. Applies to individual comments, including replies, and combines with the other filters. Does not mark comments as read.",
+        "type": "boolean"
+      },
+      "resolved": {
+        "description": "If true, only return resolved comments. If false, only unresolved. If omitted, return both.",
+        "type": "boolean"
+      },
+      "rootOnly": {
+        "description": "If true, only return root (thread-starting) comments, excluding replies.",
+        "type": "boolean"
+      },
+      "threadId": {
+        "description": "Return only comments in this thread (the root comment and its replies).",
+        "type": "string"
+      },
+      "limit": {
+        "description": "Maximum comments per page (1–50; default 20). Filters apply before pagination.",
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 50
+      },
+      "cursor": {
+        "description": "Pagination cursor from a previous response (the nextCursor value). Pass this to fetch the next page of results.",
+        "type": "string"
+      },
+      "nodeId": {
+        "description": "Return unresolved comment threads overlapping this canvas layer in Figma Design, FigJam, or Figma Slides, including replies. Cannot be combined with filters or pagination.",
+        "anyOf": [
+          {
+            "type": "string",
+            "pattern": "^\\d+[:-]\\d+$"
+          },
+          {
+            "type": "string",
+            "pattern": "^I\\d+[:-]\\d+(?:;\\d+[:-]\\d+)*$"
+          },
+          {
+            "type": "string",
+            "pattern": "^T\\d+[:-]\\d+(?:;\\d+[:-]\\d+){2}$"
+          }
+        ]
+      },
+      "fileKey": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[0-9a-zA-Z]{22,128}$",
+        "description": "The key of the Figma file to get comments from. Extract from a Figma URL: https://figma.com/design/:fileKey/:fileName"
+      }
+    },
+    "required": [
+      "fileKey"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

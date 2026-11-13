@@ -7,6 +7,8 @@ description: >-
 metadata:
   surfaces:
     - ide
+disabled-environments:
+  - cloud
 ---
 # Updating Cursor Settings
 

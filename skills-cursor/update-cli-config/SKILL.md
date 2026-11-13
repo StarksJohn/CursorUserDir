@@ -8,6 +8,8 @@ description: >-
 metadata:
   surfaces:
     - cli
+disabled-environments:
+  - cloud
 ---
 # Cursor CLI Configuration
 
