@@ -115,6 +115,7 @@ description: >-
 <!-- - 暂时让 '/Users/stark/Desktop/work/RN/heals-app-rn/src/screens/appointments-screen/appointments-screen.tsx'页面显示出来,但不需要让真机直接停在预约页 -->
 <!-- - 我现在准备重新走一遍 真机所在的当前页面的操作流程 , 你准备根据代码逻辑和adb截图(IOS时你自己判断怎么截图真机显示的页面)实时监听 我的实际操作 ,同时根据 API 返回的数据日志和其它逻辑日志来判断 我操作后的逻辑是否正确,以及真机页面实时显示的 UI数据 是否正确, 也就是我在页面上操作的每一步,你都要监听相关的 API 日志 和 执行的代码逻辑 等是否都正确, 并且根据操作前 页面的状态 来判断 操作后的代码执行逻辑是否正确以及页面的状态是否正确; 不要遗漏最新的 API 日志; 如果遇到问题直接解决 ; 你准备好了告诉我,我再开始操作 -->
 <!-- - code reviewed the PR submitted by Ivan (https://bitbucket.org/healshealthcare/heals-app-rn/pull-requests/5), found 4 errors, and sent him the feedback. -->
+<!-- - 如果是 API 问题, 你把 API 请求的 url+header+参数, 以及返回的数据 等 完整信息 给我, 我反馈给 后端开发人员 ; 如果前端问题, 你直接修改; -->
   
 - TECH-8757
   <!-- - 你读取 `https://ais-pre-hce4mtkty7p4aewqsgaizl-663605729382.us-west2.run.app/`页面的UI节点数据,借鉴 `https://aistudio.google.com/apps/c068b31c-3b5b-42e7-b660-02eea479db8a?showAssistant=true&showCode=true`页面里`code`区域的项目源码;帮我实现`heals-app-rn`项目的其它需求; -->
@@ -164,7 +165,7 @@ description: >-
     14. 最终报告目标 App（含实时读到的 App Store Connect App ID）、version/build、Xcode/SDK、New Arch / 依赖校验（`RCTNewArchEnabled=true`、Reanimated / worklets / date-picker / screens 与 `package.json` 一致）、Archive 和 IPA 路径、IPA 大小/SHA-256、签名与 provisioning 校验、上传回执、App Store Connect 实际状态、测试用户核对结果（是否含彭燕 / `cham2015@126.com` / iPad Air（第三代））、dSYM/合规风险和未覆盖范围。除非用户明确要求，不提交或 push；完成项目产物和验证后，仅把新增或变化的通用工程/环境/发布事实更新到项目 `README_stark.md`，不写单次状态流水或秘密。 -->
 
 - android:
-  -  你执行`npm run android:dev`,把当前项目的`1.2.3`版本的 `dev`环境的debug模式的apk运行到如图![img_143139.png](img_143139.png) ![img_143147.png](img_143147.png)型号的真机上,直到你用 adb 截取真机当前画面(比如遇到LogBox红条报错(不用管黄条警告),直接解决),检查完毕真机上运行的 APP 没问题为止,否则不要自动停止任务; 真机所在的时区是 `东八区`;  你要对比下当前分支在上次commit时是否改过 安卓原生代码, 如果没改过,  不需要每次都 重跑 Gradle ; 
+  -  你执行`npm run android:dev`,把当前项目的`1.2.2`版本的 `dev`环境的debug模式的apk运行到如图![img_143139.png](img_143139.png) ![img_143147.png](img_143147.png)型号的真机上,直到你用 adb 截取真机当前画面(比如遇到LogBox红条报错(不用管黄条警告),直接解决),检查完毕真机上运行的 APP 没问题为止,否则不要自动停止任务; 真机所在的时区是 `东八区`;  你要对比下当前分支在上次commit时是否改过 安卓原生代码, 如果没改过,  不需要每次都 重跑 Gradle ; 
     1. 锁定设备：`adb devices -l` 里按 `model:PJJ110` 取序列号，后续命令都带 `-s <serial>`；确认 `adb shell getprop persist.sys.timezone` 为 `Asia/Shanghai`。
     2. 先判断是否需要重跑 Gradle（Debug 包的 JS 由 Metro 实时提供，只改 `src/` 等 JS 不需要重编原生）。读取 `adb shell dumpsys package com.healshealthcare.healspass.dev` 的 `versionName`、`versionCode`、`pkgFlags`、`lastUpdateTime`，再执行以下检查（构建产物目录必须排除）：
        - `find android package.json package-lock.json patches app.json react-native.config.js .env.development \( -path 'android/app/build' -o -path 'android/build' -o -path 'android/.gradle' -o -path 'android/app/.cxx' -o -path 'android/.kotlin' -o -path '*/build' \) -prune -o -type f -newermt '<lastUpdateTime>' -print`：用文件修改时间判断，能覆盖未提交改动、切分支和 merge。
