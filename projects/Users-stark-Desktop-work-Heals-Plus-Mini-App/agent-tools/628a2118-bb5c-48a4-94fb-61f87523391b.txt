@@ -1,0 +1,805 @@
+{
+  "mode": "namespace",
+  "namespace": "cursor-computer-use",
+  "namespaceStatus": "ready",
+  "namespaceDescription": "Screenshots use a fixed 1280×800 canvas. Coordinates are pixels in the most recent computer_screenshot image, with (0, 0) at the top-left; x grows rightward and y grows downward. Valid coordinates are x=0..1279 and y=0..799. These tools drive one macOS app in the background. They do not take the display or move the real cursor. - When the task needs Computer Use, go straight to the action it needs; computer_check_permissions is not required first. Do not call Computer Use tools in parallel; they act on one machine and run one at a time. - Default to an app target: call computer_apps or computer_resolve_app, then pass {\"scope\":\"app\",\"pid\":…,\"target_id\":…} on every action. Do not call computer_start_control first. - Observe with computer_screenshot (app target) for the image. Call computer_app_state when you need element ids (first observe, or a screenshot that omitted snapshot_id). Skip computer_app_state when a screenshot reused a live snapshot_id. computer_wait only delays; it returns no image. Prefer computer_set_value or computer_type with element_id. Without element_id, computer_type inserts into the click-selected field via AX, or the focused field. A missed click target is refused. If nothing is focused, click a field first. Does not raise or move the real cursor. Screen-scope typing is refused. - Spotlight, Notification Center, and menu extras are not listed by computer_apps and are unsupported. - computer_start_control is escalation only: it takes the Mac and moves the real cursor. Use it only when the user asks to take over the display. After screen-scope work, call computer_release_control. - If an action is refused because Accessibility or Screen Recording is off, tell the user what the refusal says and retry the action after they allow Computer Use.",
+  "tools": [
+    {
+      "tool": "computer_app_action",
+      "description": "Perform an accessibility action on an element by id: \"press\" for buttons, links, menu items, checkboxes, and tabs (implied, so not listed), or an entry from the element's actions= list such as \"show-menu\" or \"scroll-to-visible\". Prefer this over coordinate clicks when the element is in the tree. Returns text only; the snapshot_id stays valid until the tree changes, so act on more elements from the same computer_screenshot or computer_app_state result.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "type": "string",
+                "const": "app"
+              },
+              "pid": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "pid from computer_apps or computer_resolve_app."
+              },
+              "target_id": {
+                "type": "string",
+                "minLength": 1,
+                "description": "target_id from computer_apps or computer_resolve_app."
+              }
+            },
+            "required": [
+              "scope",
+              "pid",
+              "target_id"
+            ],
+            "description": "The app to act on."
+          },
+          "element_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "An element id in brackets from computer_app_state."
+          },
+          "snapshot_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The snapshot_id from computer_app_state, or from a screenshot that reused a live handle. It stays valid across actions until you read a new tree, the window or app changes, or an edit opens a sheet or replaces the tree. Do not call computer_app_state after a screenshot that reused snapshot_id; read computer_app_state when a screenshot omitted the tree or an action reports the snapshot stale."
+          },
+          "action": {
+            "type": "string",
+            "description": "\"press\", or an action name from the element's actions= list."
+          }
+        },
+        "required": [
+          "target",
+          "element_id",
+          "snapshot_id",
+          "action"
+        ]
+      }
+    },
+    {
+      "tool": "computer_app_state",
+      "description": "Read the app's accessibility tree as text (no image): one element per line, \"[id] ROLE name=… value=… settable actions=…\", indented by depth; settable means computer_set_value can replace the value. The last line is the snapshot_id that element actions must quote. Call this when you need the tree (first observe, or a screenshot that omitted snapshot_id). Skip it when a screenshot reused a live snapshot_id. Call again when an action reports the snapshot stale. A line ending in \"(+N descendants omitted)\" was cut to fit: pass that element_id with the current snapshot_id to expand it, and the new ids join the same snapshot. When a result says an element's children did not fit, pass the child_offset it names with that element_id to read the rest.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "type": "string",
+                "const": "app"
+              },
+              "pid": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "pid from computer_apps or computer_resolve_app."
+              },
+              "target_id": {
+                "type": "string",
+                "minLength": 1,
+                "description": "target_id from computer_apps or computer_resolve_app."
+              }
+            },
+            "required": [
+              "scope",
+              "pid",
+              "target_id"
+            ],
+            "description": "The app to act on."
+          },
+          "element_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "An element id in brackets from computer_app_state."
+          },
+          "snapshot_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The snapshot_id from computer_app_state, or from a screenshot that reused a live handle. It stays valid across actions until you read a new tree, the window or app changes, or an edit opens a sheet or replaces the tree. Do not call computer_app_state after a screenshot that reused snapshot_id; read computer_app_state when a screenshot omitted the tree or an action reports the snapshot stale."
+          },
+          "child_offset": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "With element_id and snapshot_id: the first direct child to show, as named by a computer_app_state result whose children did not fit."
+          }
+        },
+        "required": [
+          "target"
+        ]
+      }
+    },
+    {
+      "tool": "computer_apps",
+      "description": "List running macOS apps, frontmost first, with the pid and target_id an app target needs. Regular applications only: Spotlight, Notification Center, and menu extras are unsupported. No permission or screen control is required.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "tool": "computer_check_permissions",
+      "description": "Passively report whether the Accessibility and Screen Recording permissions the computer-use helper needs are granted. On Windows both are always granted. Not needed before acting: an action that needs a missing permission is refused with what the user has to do. Do not call Computer Use tools in parallel; they act on one machine and run one at a time.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "tool": "computer_click",
+      "description": "Click at a screen coordinate. Coordinates are pixels in the fixed 1280×800 screenshot canvas, origin (0, 0) at the top-left. Locate the target in a fresh screenshot first. Returns a screenshot taken after the click. With an app target the result is text only; observe again before the next action.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "description": "Default: {\"scope\":\"app\",\"pid\":…,\"target_id\":…} from computer_apps or computer_resolve_app. That drives one macOS app without taking screen control or moving the real cursor (a cursor overlay is still shown), and needs no computer_start_control. Omit (or {\"scope\":\"screen\"}) only to escalate to full-display remote control.",
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "const": "screen"
+                  }
+                },
+                "required": [
+                  "scope"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "const": "app"
+                  },
+                  "pid": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "pid from computer_apps or computer_resolve_app."
+                  },
+                  "target_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "target_id from computer_apps or computer_resolve_app."
+                  }
+                },
+                "required": [
+                  "scope",
+                  "pid",
+                  "target_id"
+                ]
+              }
+            ]
+          },
+          "x": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1279,
+            "description": "X pixel coordinate in the 1280×800 screenshot canvas."
+          },
+          "y": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 799,
+            "description": "Y pixel coordinate in the 1280×800 screenshot canvas."
+          },
+          "button": {
+            "type": "string",
+            "enum": [
+              "left",
+              "right",
+              "middle"
+            ],
+            "description": "Mouse button. Defaults to left."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3,
+            "description": "Click count; 2 double-clicks. Defaults to 1."
+          },
+          "coordinate_token": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Required with an app target: the coordinate_token from the latest computer_screenshot of this app. It stays valid until the next screenshot or until the window moves or resizes; screenshot again when an action reports it stale."
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
+      }
+    },
+    {
+      "tool": "computer_drag",
+      "description": "Press the mouse button at one coordinate, drag to another, and release. Coordinates are pixels in the fixed 1280×800 screenshot canvas, origin (0, 0) at the top-left. Locate both points in a fresh screenshot first. Returns a screenshot taken after the drag. With an app target the result is text only; observe again before the next action.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "description": "Default: {\"scope\":\"app\",\"pid\":…,\"target_id\":…} from computer_apps or computer_resolve_app. That drives one macOS app without taking screen control or moving the real cursor (a cursor overlay is still shown), and needs no computer_start_control. Omit (or {\"scope\":\"screen\"}) only to escalate to full-display remote control.",
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "const": "screen"
+                  }
+                },
+                "required": [
+                  "scope"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "const": "app"
+                  },
+                  "pid": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "pid from computer_apps or computer_resolve_app."
+                  },
+                  "target_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "target_id from computer_apps or computer_resolve_app."
+                  }
+                },
+                "required": [
+                  "scope",
+                  "pid",
+                  "target_id"
+                ]
+              }
+            ]
+          },
+          "from": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1279
+              },
+              "y": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 799
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "description": "Drag start point in latest-screenshot pixels."
+          },
+          "to": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1279
+              },
+              "y": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 799
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "description": "Drag end point in latest-screenshot pixels."
+          },
+          "button": {
+            "type": "string",
+            "enum": [
+              "left",
+              "right",
+              "middle"
+            ],
+            "description": "Mouse button to hold. Defaults to left."
+          },
+          "coordinate_token": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Required with an app target: the coordinate_token from the latest computer_screenshot of this app. It stays valid until the next screenshot or until the window moves or resizes; screenshot again when an action reports it stale."
+          }
+        },
+        "required": [
+          "from",
+          "to"
+        ]
+      }
+    },
+    {
+      "tool": "computer_key",
+      "description": "Press a key or shortcut, such as \"Return\", \"Escape\", \"Tab\", or a chord like \"cmd+l\" on macOS and \"ctrl+l\" on Windows. Combine modifiers with \"+\" (cmd, ctrl, alt, shift). Returns a screenshot taken after the key press. With an app target the result is text only; observe again before the next action.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "description": "Default: {\"scope\":\"app\",\"pid\":…,\"target_id\":…} from computer_apps or computer_resolve_app. That drives one macOS app without taking screen control or moving the real cursor (a cursor overlay is still shown), and needs no computer_start_control. Omit (or {\"scope\":\"screen\"}) only to escalate to full-display remote control.",
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "const": "screen"
+                  }
+                },
+                "required": [
+                  "scope"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "const": "app"
+                  },
+                  "pid": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "pid from computer_apps or computer_resolve_app."
+                  },
+                  "target_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "target_id from computer_apps or computer_resolve_app."
+                  }
+                },
+                "required": [
+                  "scope",
+                  "pid",
+                  "target_id"
+                ]
+              }
+            ]
+          },
+          "key": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Key or shortcut, e.g. \"Return\", \"Tab\", or \"cmd+shift+s\"."
+          }
+        },
+        "required": [
+          "key"
+        ]
+      }
+    },
+    {
+      "tool": "computer_move",
+      "description": "Move the mouse cursor to a screen coordinate without clicking. Coordinates are pixels in the fixed 1280×800 screenshot canvas, origin (0, 0) at the top-left. Useful for revealing hover UI. Returns a screenshot taken after the move. With an app target the result is text only; observe again before the next action.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "description": "Default: {\"scope\":\"app\",\"pid\":…,\"target_id\":…} from computer_apps or computer_resolve_app. That drives one macOS app without taking screen control or moving the real cursor (a cursor overlay is still shown), and needs no computer_start_control. Omit (or {\"scope\":\"screen\"}) only to escalate to full-display remote control.",
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "const": "screen"
+                  }
+                },
+                "required": [
+                  "scope"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "const": "app"
+                  },
+                  "pid": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "pid from computer_apps or computer_resolve_app."
+                  },
+                  "target_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "target_id from computer_apps or computer_resolve_app."
+                  }
+                },
+                "required": [
+                  "scope",
+                  "pid",
+                  "target_id"
+                ]
+              }
+            ]
+          },
+          "x": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1279,
+            "description": "X pixel coordinate in the 1280×800 screenshot canvas."
+          },
+          "y": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 799,
+            "description": "Y pixel coordinate in the 1280×800 screenshot canvas."
+          },
+          "coordinate_token": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Required with an app target: the coordinate_token from the latest computer_screenshot of this app. It stays valid until the next screenshot or until the window moves or resizes; screenshot again when an action reports it stale."
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
+      }
+    },
+    {
+      "tool": "computer_release_control",
+      "description": "Release remote control after the final screen-scope action.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "tool": "computer_resolve_app",
+      "description": "Resolve one macOS app by exactly one selector, launching it if it is not running, and return the pid and target_id for its app target. The launch asks macOS not to activate the app. Some apps, such as Chromium browsers, bring themselves to the front anyway, and the reply says when that happens.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pid": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "bundle_id": {
+            "type": "string",
+            "description": "Bundle identifier, e.g. \"com.apple.calculator\"."
+          },
+          "app_path": {
+            "type": "string",
+            "description": "Path to the .app bundle."
+          },
+          "app_name": {
+            "type": "string",
+            "description": "Localized app name, e.g. \"Calculator\"."
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "pid"
+            ]
+          },
+          {
+            "required": [
+              "bundle_id"
+            ]
+          },
+          {
+            "required": [
+              "app_path"
+            ]
+          },
+          {
+            "required": [
+              "app_name"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "tool": "computer_screenshot",
+      "description": "Take a screenshot of the primary display, or of one app's window with an app target. Coordinates are pixels in the fixed 1280×800 screenshot canvas, origin (0, 0) at the top-left. Take one before your first coordinate-based action and whenever the screen may have changed. An app-target screenshot is the image. When a live snapshot is still fresh it reuses that snapshot_id and does not walk. If snapshot_id is present, do not call computer_app_state. Otherwise the image returns without a tree; call computer_app_state when you need element ids.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "description": "Default: {\"scope\":\"app\",\"pid\":…,\"target_id\":…} from computer_apps or computer_resolve_app. That drives one macOS app without taking screen control or moving the real cursor (a cursor overlay is still shown), and needs no computer_start_control. Omit (or {\"scope\":\"screen\"}) only to escalate to full-display remote control.",
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "const": "screen"
+                  }
+                },
+                "required": [
+                  "scope"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "const": "app"
+                  },
+                  "pid": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "pid from computer_apps or computer_resolve_app."
+                  },
+                  "target_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "target_id from computer_apps or computer_resolve_app."
+                  }
+                },
+                "required": [
+                  "scope",
+                  "pid",
+                  "target_id"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "tool": "computer_scroll",
+      "description": "Scroll at a screen coordinate. Coordinates are pixels in the fixed 1280×800 screenshot canvas, origin (0, 0) at the top-left. Returns a screenshot taken after scrolling. With an app target the result is text only; observe again before the next action.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "description": "Default: {\"scope\":\"app\",\"pid\":…,\"target_id\":…} from computer_apps or computer_resolve_app. That drives one macOS app without taking screen control or moving the real cursor (a cursor overlay is still shown), and needs no computer_start_control. Omit (or {\"scope\":\"screen\"}) only to escalate to full-display remote control.",
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "const": "screen"
+                  }
+                },
+                "required": [
+                  "scope"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "const": "app"
+                  },
+                  "pid": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "pid from computer_apps or computer_resolve_app."
+                  },
+                  "target_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "target_id from computer_apps or computer_resolve_app."
+                  }
+                },
+                "required": [
+                  "scope",
+                  "pid",
+                  "target_id"
+                ]
+              }
+            ]
+          },
+          "x": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1279,
+            "description": "X pixel coordinate in the 1280×800 screenshot canvas."
+          },
+          "y": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 799,
+            "description": "Y pixel coordinate in the 1280×800 screenshot canvas."
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "up",
+              "down",
+              "left",
+              "right"
+            ],
+            "description": "Scroll direction. Defaults to down."
+          },
+          "amount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Scroll amount in wheel ticks. Defaults to 3."
+          },
+          "coordinate_token": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Required with an app target: the coordinate_token from the latest computer_screenshot of this app. It stays valid until the next screenshot or until the window moves or resizes; screenshot again when an action reports it stale."
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
+      }
+    },
+    {
+      "tool": "computer_set_value",
+      "description": "Replace the value of a settable element by id through accessibility, without keystrokes. Returns text only; the snapshot_id stays valid while the tree is unchanged, so fill the other elements from the same computer_screenshot or computer_app_state result. If the edit opens a sheet or replaces rows, the result says the snapshot is stale — take a screenshot or read computer_app_state before using element ids.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "type": "string",
+                "const": "app"
+              },
+              "pid": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "pid from computer_apps or computer_resolve_app."
+              },
+              "target_id": {
+                "type": "string",
+                "minLength": 1,
+                "description": "target_id from computer_apps or computer_resolve_app."
+              }
+            },
+            "required": [
+              "scope",
+              "pid",
+              "target_id"
+            ],
+            "description": "The app to act on."
+          },
+          "element_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "An element id in brackets from computer_app_state."
+          },
+          "snapshot_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The snapshot_id from computer_app_state, or from a screenshot that reused a live handle. It stays valid across actions until you read a new tree, the window or app changes, or an edit opens a sheet or replaces the tree. Do not call computer_app_state after a screenshot that reused snapshot_id; read computer_app_state when a screenshot omitted the tree or an action reports the snapshot stale."
+          },
+          "value": {
+            "type": "string",
+            "description": "The new value."
+          }
+        },
+        "required": [
+          "target",
+          "element_id",
+          "snapshot_id",
+          "value"
+        ]
+      }
+    },
+    {
+      "tool": "computer_start_control",
+      "description": "Escalation only: take over the display and move the real cursor. App targets need no session. Do not call this to type or fill a form.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "tool": "computer_type",
+      "description": "Type into a macOS app. Prefer computer_set_value or computer_type with element_id. Without element_id, inserts into the click-selected field via AX, or the focused field. A missed click target is refused. If nothing is focused, click a field first. Does not raise or move the real cursor. Screen-scope typing is refused. The result is text only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "description": "Default: {\"scope\":\"app\",\"pid\":…,\"target_id\":…} from computer_apps or computer_resolve_app. That drives one macOS app without taking screen control or moving the real cursor (a cursor overlay is still shown), and needs no computer_start_control. Omit (or {\"scope\":\"screen\"}) only to escalate to full-display remote control.",
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "const": "screen"
+                  }
+                },
+                "required": [
+                  "scope"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "const": "app"
+                  },
+                  "pid": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "pid from computer_apps or computer_resolve_app."
+                  },
+                  "target_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "target_id from computer_apps or computer_resolve_app."
+                  }
+                },
+                "required": [
+                  "scope",
+                  "pid",
+                  "target_id"
+                ]
+              }
+            ]
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000,
+            "description": "Text to type."
+          },
+          "element_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "An element id in brackets from computer_app_state."
+          },
+          "snapshot_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The snapshot_id from computer_app_state, or from a screenshot that reused a live handle. It stays valid across actions until you read a new tree, the window or app changes, or an edit opens a sheet or replaces the tree. Do not call computer_app_state after a screenshot that reused snapshot_id; read computer_app_state when a screenshot omitted the tree or an action reports the snapshot stale."
+          },
+          "coordinate_token": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Required with an app target: the coordinate_token from the latest computer_screenshot of this app. It stays valid until the next screenshot or until the window moves or resizes; screenshot again when an action reports it stale."
+          }
+        },
+        "required": [
+          "text"
+        ]
+      }
+    },
+    {
+      "tool": "computer_wait",
+      "description": "Wait for a page load or animation to settle. Returns text only; it does not capture the display. Observe afterward with computer_screenshot (app target) or computer_app_state.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ms": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 30000,
+            "description": "Milliseconds to wait. Defaults to 1000."
+          }
+        }
+      }
+    },
+    {
+      "tool": "mcp_auth",
+      "description": "Authenticate this MCP server so its tools can be used.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ]
+}

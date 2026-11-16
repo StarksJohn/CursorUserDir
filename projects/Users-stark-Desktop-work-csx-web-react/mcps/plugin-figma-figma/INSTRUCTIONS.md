@@ -36,6 +36,7 @@ Extract fileKey and nodeId from Figma URLs:
 - figma.com/make/:makeFileKey/:makeFileName → use makeFileKey
 - figma.com/board/:fileKey/:fileName?node-id=:nodeId → FigJam file, use get_figjam
 - figma.com/slides/:fileKey/:fileName?node-id=:nodeId → Figma Slides file
+- figma.com/spec/:fileKey/:fileName?node-id=:nodeId → Figma Specs file, load the figma-spec skill and use use_figma
 
 DESIGN-TO-CODE WORKFLOW (Figma → code):
 MANDATORY: load the /figma-design-to-code skill BEFORE calling get_design_context — it carries the full workflow (adapting the reference, reusing existing project components and tokens, and honoring the response's hints by priority). After create_session, call get_design_context with the nodeId and fileKey — it is your primary tool; its output is a REFERENCE to adapt to the target project, not final code.

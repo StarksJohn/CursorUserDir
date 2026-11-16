@@ -62,7 +62,17 @@
       "commitMessage": {
         "type": "string",
         "minLength": 1,
-        "description": "Required Git commit message describing this update."
+        "description": "A concise title capturing the user's requested goal or change. Describe the intent, not the implementation."
+      },
+      "versionDescription": {
+        "description": "A single-line summary of the actual changes delivered in this version. Focus on the user-visible result.",
+        "type": "string",
+        "minLength": 1
+      },
+      "versionDetail": {
+        "description": "Adds the key implementation detail in 1–2 short sentences. Keep it proportional to the change; a small fix needs only one sentence. Do not repeat the outcome summary or list routine implementation steps. Include only details supported by the work performed.",
+        "type": "string",
+        "minLength": 1
       },
       "kind": {
         "type": "string",

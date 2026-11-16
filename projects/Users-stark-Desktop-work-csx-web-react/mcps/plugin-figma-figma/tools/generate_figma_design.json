@@ -10,6 +10,12 @@
         "format": "uuid",
         "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
       },
+      "promptId": {
+        "description": "Generate one fresh UUID for each user prompt that imports code or design into Figma. Pass that same promptId to every html_to_figma, generate_figma_design, and send_code_to_figma call (including upload continuations) for that prompt. Never reuse it for a later user prompt. This opens one Agent chat per destination file, for the first completed import.",
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+      },
       "fileKey": {
         "type": "string",
         "minLength": 1,
