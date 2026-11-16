@@ -1,0 +1,15 @@
+---
+pid: 40477
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "mkdir -p /tmp/heals-live-shots; while true; do ts=$(date +%H%M%S); adb -s 4ae24c72 exec-out screencap -p > \"/tmp/heals-live-shots/${ts}.png\" || exit 1; sleep 2; done"
+title: "每 2 秒截取真机当前页面"
+status: aborted  
+started_at: 2026-11-16T03:27:52.148Z
+running_for_ms: 455412   
+---
+
+---
+exit_code: unknown
+elapsed_ms: 455412
+ended_at: 2026-11-16T03:35:27.572Z
+---

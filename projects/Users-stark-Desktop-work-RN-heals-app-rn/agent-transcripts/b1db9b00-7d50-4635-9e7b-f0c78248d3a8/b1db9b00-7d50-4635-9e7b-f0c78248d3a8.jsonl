@@ -1730,3 +1730,4 @@
 {"role":"assistant","message":{"content":[{"type":"tool_use","name":"Read","input":{"offset":64,"path":"/Users/stark/.cursor/projects/Users-stark-Desktop-work-RN-heals-app-rn/terminals/8636.txt"}}]}}
 {"role":"assistant","message":{"content":[{"type":"text","text":"DevTools 已经重新连上这台 PJJ110。Chrome 里当前标签标题是 **Heals (Dev) (PJJ110) - React Native DevTools**。\n\nMetro 日志确认：\n\n`Connection established to DevTools for app='com.healshealthcare.healspass.dev' on device='PJJ110 - 16 - API 36'.`\n\n这次断开前，`adb reverse` 列表是空的。现在 `4ae24c72` 上已重新设置 `tcp:8081 tcp:8081`。dev 包已重启，前台是 `com.healshealthcare.healspass.dev/com.healshealthcare.healspass.MainActivity`。Metro 进程原本还在 `8081`，设备连接恢复后打开了 DevTools，这条 DevTools 连接目前仍保持着。"}]}}
 {"type":"turn_ended","status":"success"}
+{"type":"turn_ended","status":"error","error":"composer_abort_controller_aborted"}
