@@ -1,0 +1,20 @@
+---
+pid: 15292
+cwd: "/Users/stark/Desktop/work/Heals Plus Mini App"
+command: "CLI=\"/Applications/HBuilderX.app/Contents/MacOS/cli\"\necho \"LOG_LINES_BEFORE=$(wc -l < \"$HOME/Library/Application Support/HBuilder X/.log\")\"\n\"$CLI\" launch mp-weixin --project \"/Users/stark/Desktop/work/Heals Plus Mini App\" --ui true\necho \"LAUNCH_EXIT:$?\"\n"
+title: "Run mini program to WeChat simulator"
+status: succeeded
+started_at: 2026-11-16T07:04:30.862Z
+running_for_ms: 396      
+---
+LOG_LINES_BEFORE=    1571
+15:04:31.018 HBuilderX Version: 5.34
+15:04:31.028 运行命令已下发，请回到 HBuilder 查看运行日志；也可使用 logcat 命令查看运行日志。
+
+LAUNCH_EXIT:0
+
+---
+exit_code: 0
+elapsed_ms: 396
+ended_at: 2026-11-16T07:04:31.258Z
+---
