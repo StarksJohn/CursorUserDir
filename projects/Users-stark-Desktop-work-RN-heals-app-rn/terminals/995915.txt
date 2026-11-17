@@ -1,0 +1,44 @@
+---
+pid: 38524
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "echo \"=== GIT ===\"\ngit rev-parse --show-toplevel\ngit branch --show-current\ngit rev-parse --short HEAD\ngit status --short\necho \"=== ENV FILE ===\"\ntest -f .env.development && echo \"env.development=present\" || echo \"env.development=MISSING\"\necho \"=== TOOLS ===\"\njava -version 2>&1\necho \"ANDROID_HOME=${ANDROID_HOME-<empty>}\"\necho \"JAVA_HOME=${JAVA_HOME-<empty>}\"\ntest -x android/gradlew && echo \"gradlew=ok\" || echo \"gradlew=missing\"\necho \"GRADLE_USER_HOME=${GRADLE_USER_HOME-<empty>}\"\necho \"HOME_GRADLE_WRITABLE=$(test -w \"$HOME/.gradle\" && echo yes || echo no)\"\nls \"$HOME/.gradle/wrapper/dists\" 2>/dev/null | head -20\necho \"=== TIMESTAMP ===\"\ndate +%s\necho \"=== GRADLE STATUS ===\"\ncd android && ./gradlew --status 2>&1 | head -40\necho \"=== OTHER GRADLE ===\"\nps aux | awk '/[Gg]radle/ && !/awk/ {print}'"
+title: "Check git, JDK, SDK, and Gradle locks"
+status: failed   
+started_at: 2026-11-17T08:49:47.205Z
+running_for_ms: 49989    
+---
+=== GIT ===
+/Users/stark/Desktop/work/RN/heals-app-rn
+1.2.3-stark
+6fbdffd9
+=== ENV FILE ===
+env.development=present
+=== TOOLS ===
+openjdk version "17.0.18" 2026-01-20
+OpenJDK Runtime Environment Homebrew (build 17.0.18+0)
+OpenJDK 64-Bit Server VM Homebrew (build 17.0.18+0, mixed mode, sharing)
+ANDROID_HOME=/Users/stark/Library/Android/sdk
+JAVA_HOME=/usr/local/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home
+gradlew=ok
+GRADLE_USER_HOME=/var/folders/12/1f34s4v50j53x3t_f2dwdt6r0000gn/T/cursor-sandbox-cache/6b7a6eb5e2942a057263a32fa18bac9d/gradle
+HOME_GRADLE_WRITABLE=yes
+CACHEDIR.TAG
+gradle-5.4.1-all
+gradle-5.6.4-all
+gradle-6.6.1-all
+gradle-6.8.3-bin
+gradle-7.5.1-all
+gradle-8.12-bin
+gradle-8.13-all
+gradle-8.14.3-bin
+gradle-8.8-all
+gradle-9.3.1-bin
+=== TIMESTAMP ===
+1794905387
+=== GRADLE STATUS ===
+
+---
+exit_code: unknown
+elapsed_ms: 49989
+ended_at: 2026-11-17T08:50:37.194Z
+---
