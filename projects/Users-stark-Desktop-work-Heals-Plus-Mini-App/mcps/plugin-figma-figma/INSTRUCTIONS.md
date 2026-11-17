@@ -57,9 +57,6 @@ DESIGN SYSTEM / LIBRARY WORKFLOW:
 - To build or extend a design system in Figma from a codebase, load the /figma-generate-library skill.
 - To map Figma components to codebase components, load the /figma-code-connect skill.
 
-READING SKILLS:
-To load a Figma skill's guidance, call the get_figma_skill tool with the skill's skill:// URI. get_figma_skill reads one resource per call. Start from the skill index (skill://index.json), then read a skill's guidance (skill://figma/<skill-name>/SKILL.md). A SKILL.md's relative links (e.g. references/foo.md) are themselves resources: read them as skill://figma/<skill-name>/references/<path>.
-
 GENERATIVE PLUGIN AND SHADER CAPABILITIES:
 - Create, list, read, and update generative plugins in the authenticated user's account library (create_generative_plugin, list_generative_plugins, get_generative_plugin, update_generative_plugin).
 - Create, list, read, and update shader effects and fills in the authenticated user's account library (create_shader, list_shaders, get_shader, update_shader).
