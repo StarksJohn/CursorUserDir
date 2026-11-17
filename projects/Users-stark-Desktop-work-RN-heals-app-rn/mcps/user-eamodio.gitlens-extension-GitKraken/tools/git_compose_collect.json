@@ -1,0 +1,38 @@
+{
+  "name": "git_compose_collect",
+  "description": "Start here to turn uncommitted changes into one or more clean commits. Returns an index map of the changed hunks (grouped by file, no patch bodies), authoring instructions, and a `based_on` token. If you made these changes in this session, author the commit plan from this index map and call git_compose_apply. If you did not, call git_compose_read for the hunks you need before authoring. Read-only: nothing is modified.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "directory": {
+        "description": "The repository working directory",
+        "type": "string"
+      },
+      "exclude": {
+        "description": "Glob patterns; matching files are skipped. Same syntax limits as include",
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "include": {
+        "description": "Glob patterns; only matching files are collected. No brace {a,b} or bracket [abc] groups, and ** must be its own path segment (src/**/x.go)",
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "include_untracked": {
+        "description": "Include untracked files (default true)",
+        "type": "boolean"
+      },
+      "staged_only": {
+        "description": "Only collect staged changes (default false)",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "directory"
+    ]
+  }
+}

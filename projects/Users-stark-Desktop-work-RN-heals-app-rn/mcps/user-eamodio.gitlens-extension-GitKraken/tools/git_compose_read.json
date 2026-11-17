@@ -1,0 +1,39 @@
+{
+  "name": "git_compose_read",
+  "description": "Read the patch bodies of collected hunks, selected by `hunk_indices` or by `files` (exactly one of the two), so you can understand changes you did not write before authoring a plan. Fails with stale_collection if the changes were edited since git_compose_collect. Read-only.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "based_on": {
+        "description": "The `based_on` token from git_compose_collect, verbatim",
+        "type": "string"
+      },
+      "directory": {
+        "description": "The repository working directory",
+        "type": "string"
+      },
+      "files": {
+        "description": "File paths to read all hunks of, as listed by git_compose_collect",
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "hunk_indices": {
+        "description": "Hunk indices to read, as listed by git_compose_collect",
+        "items": {
+          "type": "integer"
+        },
+        "type": "array"
+      },
+      "max_bytes": {
+        "description": "Maximum patch bytes to return (default 50000, max 200000). Omitted hunks are listed in omitted_indices; read them in another call.",
+        "type": "number"
+      }
+    },
+    "required": [
+      "directory",
+      "based_on"
+    ]
+  }
+}
