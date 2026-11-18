@@ -52,8 +52,8 @@ Rules are `.mdc` files in `.cursor/rules/` with YAML frontmatter:
 ```markdown
 ---
 description: Brief description of what this rule does
-globs: **/*.ts  # File pattern for file-specific rules
-alwaysApply: false  # Set to true if rule should always apply
+globs: **/*.ts
+alwaysApply: false
 ---
 
 # Rule Title

@@ -1,0 +1,868 @@
+# payme demo
+
+- Owner: AlanNggg
+- Created: 2025-03-18T10:32:57Z
+- Public: yes
+- Comments: 0
+- Forks: 0
+
+## payme.php
+
+Language: PHP
+
+ baseUrl = rtrim($baseUrl, '/');
+ $this->clientId = $clientId;
+ $this->clientSecret = $clientSecret;
+ $this->signingKeyId = $signingKeyId;
+ $this->signingKey = $signingKey;
+ $this->apiVersion = $apiVersion;
+ $this->timeout = $timeout;
+ $this->accessToken = null;
+ $this->tokenExpiry = null;
+ }
+
+ /**
+ * Compute HTTP Signature for request authentication
+ * 
+ * @param array $headerHash Array of header values
+ * @param array $headers Array of header names to include in signature
+ * @return string The computed signature
+ */
+ private function computeHttpSignature($headerHash, $headers)
+ {
+ $signingBase = implode("\n", array_map(
+ function($header) use ($headerHash) {
+ return strtolower($header) . ": " . $headerHash[$header];
+ },
+ $headers
+ ));
+
+ $hash = hash_hmac('sha256', $signingBase, base64_decode($this->signingKey), true);
+ $signature = base64_encode($hash);
+
+ return sprintf(
+ 'keyId="%s",algorithm="hmac-sha256",headers="%s",signature="%s"',
+ $this->signingKeyId,
+ implode(' ', $headers),
+ $signature
+ );
+ }
+
+ /**
+ * Generate signed headers for API request
+ * 
+ * @param string $method HTTP method
+ * @param string $endpoint API endpoint
+ * @param array|null $data Request data
+ * @return array Array of headers
+ */
+ private function generateSignedHeaders($method, $endpoint, $data = null)
+ {
+ $targetUrl = '/' . ltrim($endpoint, '/');
+ $method = strtolower($method);
+ $utcNow = gmdate('Y-m-d\TH:i:s\Z');
+ $traceId = "a7ca5bc3-3c7b-40e2-9c38-7aeb41eccab8";
+
+ $digest = null;
+ if ($data !== null) {
+ $jsonData = json_encode($data);
+ $sha256digest = hash('sha256', $jsonData, true);
+ $digest = 'SHA-256=' . base64_encode($sha256digest);
+ }
+
+ $headerHash = [
+ 'Request-Date-Time' => $utcNow,
+ 'Api-Version' => $this->apiVersion,
+ 'Trace-Id' => $traceId,
+ 'Authorization' => 'Bearer ' . $this->getValidAccessToken(),
+ '(request-target)' => $method . ' ' . $targetUrl
+ ];
+
+ if ($digest) {
+ $headerHash['Digest'] = $digest;
+ }
+
+ $signatureHeaders = ['(request-target)', 'Api-Version', 'Request-Date-Time', 'Trace-Id', 'Authorization'];
+ if ($digest) {
+ $signatureHeaders[] = 'Digest';
+ }
+
+ $signature = $this->computeHttpSignature($headerHash, $signatureHeaders);
+
+ $headers = [
+ 'Authorization: Bearer ' . $this->getValidAccessToken(),
+ 'Api-Version: ' . $this->apiVersion,
+ 'Request-Date-Time: ' . $utcNow,
+ 'Trace-Id: ' . $traceId,
+ 'Signature: ' . $signature,
+ 'Accept: application/json',
+ 'Content-Type: application/json'
+ ];
+
+ if ($digest) {
+ $headers[] = 'Digest: ' . $digest;
+ }
+
+ return $headers;
+ }
+
+ /**
+ * Send HTTP request to the API
+ * 
+ * @param string $method HTTP method
+ * @param string $url Full URL
+ * @param array|null $data Request data
+ * @return array Response data
+ * @throws Exception If request fails
+ */
+ private function sendRequest($method, $url, $data = null)
+ {
+ try {
+ $curl = curl_init();
+ $endpoint = parse_url($url, PHP_URL_PATH);
+ $headers = $this->generateSignedHeaders($method, $endpoint, $data);
+
+ $options = [
+ CURLOPT_URL => $url,
+ CURLOPT_RETURNTRANSFER => true,
+ CURLOPT_ENCODING => '',
+ CURLOPT_MAXREDIRS => 10,
+ CURLOPT_TIMEOUT => $this->timeout,
+ CURLOPT_FOLLOWLOCATION => true,
+ CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+ CURLOPT_CUSTOMREQUEST => $method,
+ CURLOPT_HTTPHEADER => $headers,
+ CURLOPT_SSL_VERIFYPEER => false,
+ CURLOPT_SSL_VERIFYHOST => false
+ ];
+
+ if ($data !== null) {
+ $options[CURLOPT_POSTFIELDS] = json_encode($data);
+ }
+
+ curl_setopt_array($curl, $options);
+
+ $response = curl_exec($curl);
+ $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+ if ($response === false) {
+ throw new Exception('Curl error: ' . curl_error($curl));
+ }
+
+ curl_close($curl);
+
+ $responseData = json_decode($response, true);
+
+ if (json_last_error() !== JSON_ERROR_NONE) {
+ throw new Exception('JSON decode error: ' . json_last_error_msg());
+ }
+
+ if ($httpCode >= 400) {
+ throw new Exception(
+ 'API request failed with status ' . $httpCode .
+ ': ' . (isset($responseData['message']) ? $responseData['message'] : 'Unknown error')
+ );
+ }
+
+ return $responseData;
+ } catch (Exception $e) {
+ throw new Exception('API request failed: ' . $e->getMessage());
+ }
+ }
+
+ /**
+ * Get OAuth2 access token
+ * 
+ * @return string Access token
+ * @throws Exception If token request fails
+ */
+ private function getAccessToken()
+ {
+ try {
+ $curl = curl_init();
+
+ $headers = [
+ 'Content-Type: application/json',
+ 'Api-Version: ' . $this->apiVersion,
+ ];
+
+ $postFields = http_build_query([
+ 'grant_type' => 'client_credentials',
+ 'client_id' => $this->clientId,
+ 'client_secret' => $this->clientSecret
+ ]);
+
+ $options = [
+ CURLOPT_URL => $this->baseUrl . '/oauth2/token',
+ CURLOPT_RETURNTRANSFER => true,
+ CURLOPT_ENCODING => '',
+ CURLOPT_MAXREDIRS => 10,
+ CURLOPT_TIMEOUT => $this->timeout,
+ CURLOPT_FOLLOWLOCATION => true,
+ CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+ CURLOPT_CUSTOMREQUEST => 'POST',
+ CURLOPT_POSTFIELDS => $postFields,
+ CURLOPT_HTTPHEADER => $headers,
+ CURLOPT_SSL_VERIFYPEER => false,
+ CURLOPT_SSL_VERIFYHOST => false
+ ];
+
+ curl_setopt_array($curl, $options);
+
+ $response = curl_exec($curl);
+ $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+ if ($response === false) {
+ throw new Exception('Curl error: ' . curl_error($curl));
+ }
+
+ curl_close($curl);
+
+ $responseData = json_decode($response, true);
+
+ if (json_last_error() !== JSON_ERROR_NONE) {
+ throw new Exception('JSON decode error: ' . json_last_error_msg());
+ }
+
+ if ($httpCode >= 400) {
+ throw new Exception(
+ 'Token request failed with status ' . $httpCode .
+ ': ' . (isset($responseData['message']) ? $responseData['message'] : 'Unknown error')
+ );
+ }
+
+ $this->accessToken = $responseData['accessToken'];
+ $this->tokenExpiry = strtotime($responseData['expiresOn']);
+
+ return $this->accessToken;
+ } catch (Exception $e) {
+ throw new Exception('Token request failed: ' . $e->getMessage());
+ }
+ }
+
+ /**
+ * Check if current token is expired or about to expire
+ * 
+ * @return bool True if token is expired or about to expire
+ */
+ private function isTokenExpired()
+ {
+ if (!$this->accessToken || !$this->tokenExpiry) {
+ return true;
+ }
+ return $this->tokenExpiry <= (time() + 300); // 5 minutes buffer
+ }
+
+ /**
+ * Get valid access token, refreshing if necessary
+ * 
+ * @return string Valid access token
+ */
+ private function getValidAccessToken()
+ {
+ if ($this->isTokenExpired()) {
+ return $this->getAccessToken();
+ }
+ return $this->accessToken;
+ }
+
+ /**
+ * Send GET request
+ * 
+ * @param string $endpoint API endpoint
+ * @param array $params Query parameters
+ * @return array Response data
+ */
+ public function get($endpoint, $params = [])
+ {
+ $url = $this->buildUrl($endpoint, $params);
+ return $this->sendRequest('GET', $url);
+ }
+
+ /**
+ * Send POST request
+ * 
+ * @param string $endpoint API endpoint
+ * @param array $data Request data
+ * @return array Response data
+ */
+ public function post($endpoint, $data = [])
+ {
+ $url = $this->buildUrl($endpoint);
+ return $this->sendRequest('POST', $url, $data);
+ }
+
+ /**
+ * Send PUT request
+ * 
+ * @param string $endpoint API endpoint
+ * @param array $data Request data
+ * @return array Response data
+ */
+ public function put($endpoint, $data = [])
+ {
+ $url = $this->buildUrl($endpoint);
+ return $this->sendRequest('PUT', $url, $data);
+ }
+
+ /**
+ * Send DELETE request
+ * 
+ * @param string $endpoint API endpoint
+ * @return array Response data
+ */
+ public function delete($endpoint)
+ {
+ $url = $this->buildUrl($endpoint);
+ return $this->sendRequest('DELETE', $url);
+ }
+
+ /**
+ * Build URL with query parameters
+ * 
+ * @param string $endpoint API endpoint
+ * @param array $params Query parameters
+ * @return string Complete URL
+ */
+ private function buildUrl($endpoint, $params = [])
+ {
+ $url = $this->baseUrl . '/' . ltrim($endpoint, '/');
+ if (!empty($params)) {
+ $url .= '?' . http_build_query($params);
+ }
+ return $url;
+ }
+
+ /**
+ * Build signing base string from headers
+ * 
+ * @param array $headers Request headers
+ * @param string $headerList Comma-separated list of headers to include
+ * @return string Signing base string
+ */
+ private function buildSigningBase($headers, $headerList)
+ {
+ $headerNames = explode(' ', $headerList);
+ $signingBase = [];
+
+ foreach ($headerNames as $headerName) {
+ $headerName = strtolower($headerName);
+ 
+ if ($headerName === '(request-target)') {
+ // Handle special (request-target) header
+ $method = isset($_SERVER['REQUEST_METHOD']) ? strtolower($_SERVER['REQUEST_METHOD']) : 'post';
+ $path = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
+ $signingBase[] = "(request-target): " . $method . " " . $path;
+ } else {
+ // Convert header name to proper format (e.g., 'api-version' to 'Api-Version')
+ $headerKey = implode('-', array_map('ucfirst', explode('-', $headerName)));
+ if (!isset($headers[$headerKey])) {
+ throw new Exception("Required header not found: " . $headerKey);
+ }
+ $signingBase[] = $headerName . ": " . $headers[$headerKey];
+ }
+ }
+
+ return implode("\n", $signingBase);
+ }
+
+ /**
+ * Verify the signature of an incoming webhook request
+ * 
+ * @param array $headers Request headers
+ * @param string $body Request body
+ * @return bool True if signature is valid
+ * @throws Exception If verification fails
+ */
+ public function verifyWebhookSignature($headers, $body)
+ {
+ $signatureHeader = isset($headers['Signature']) ? $headers['Signature'] : null;
+ if (!$signatureHeader) {
+ throw new Exception("Missing Signature header");
+ }
+
+ // Parse signature components
+ $components = $this->parseSignatureHeader($signatureHeader);
+ if (!$components) {
+ throw new Exception("Invalid signature header format");
+ }
+
+ // Verify keyId matches
+ if ($components['keyId'] !== $this->signingKeyId) {
+ throw new Exception("Invalid keyId in signature");
+ }
+
+ // Verify algorithm
+ if ($components['algorithm'] !== 'hmac-sha256') {
+ throw new Exception("Invalid signature algorithm: " . $components['algorithm']);
+ }
+
+ // Build signing base from headers
+ $signingBase = $this->buildSigningBase($headers, $components['headers']);
+
+ // Compute expected signature
+ $expectedSignature = $this->computeSignature($signingBase);
+
+ // Compare signatures
+ return hash_equals($expectedSignature, $components['signature']);
+ }
+
+ /**
+ * Parse signature header into components
+ * 
+ * @param string $signatureHeader Raw signature header
+ * @return array|null Array of signature components or null if invalid
+ */
+ private function parseSignatureHeader($signatureHeader)
+ {
+ $components = [];
+ $parts = explode(',', $signatureHeader);
+ foreach ($parts as $part) {
+ $keyValue = explode('=', $part, 2);
+ if (count($keyValue) !== 2) {
+ return null;
+ }
+
+ $key = trim($keyValue[0]);
+ $value = trim($keyValue[1], '"');
+
+ switch ($key) {
+ case 'keyId':
+ case 'algorithm':
+ case 'headers':
+ case 'signature':
+ $components[$key] = $value;
+ break;
+ default:
+ return null;
+ }
+ }
+
+ // Verify all required components are present
+ $required = ['keyId', 'algorithm', 'headers', 'signature'];
+ foreach ($required as $component) {
+ if (!isset($components[$component])) {
+ return null;
+ }
+ }
+
+ return $components;
+ }
+
+ /**
+ * Compute signature for a given signing base
+ * 
+ * @param string $signingBase The signing base string
+ * @return string Base64 encoded signature
+ */
+ private function computeSignature($signingBase)
+ {
+ $hash = hash_hmac('sha256', $signingBase, base64_decode($this->signingKey), true);
+ return base64_encode($hash);
+ }
+
+ /**
+ * Verify the signature of an API response
+ * 
+ * @param array $headers Response headers
+ * @param string $body Response body
+ * @return bool True if signature is valid
+ */
+ public function verifyResponseSignature($headers, $body)
+ {
+ return $this->verifyWebhookSignature($headers, $body);
+ }
+}
+
+// PaymeApi.php
+/**
+ * PaymeApi class handles all payment-related operations with the Payme API
+ */
+class PaymeApi
+{
+ /** @var PaymeClient */
+ private $paymeClient;
+
+ public function __construct()
+ {
+ $this->paymeClient = new PaymeClient(
+ PAYME_BASE_URL,
+ PAYME_CLIENT_ID,
+ PAYME_CLIENT_SECRET,
+ PAYME_SIGNING_KEY_ID,
+ PAYME_SIGNING_KEY,
+ PAYME_API_VERSION
+ );
+ }
+
+ /**
+ * Create a new payment request
+ * 
+ * @param float $amount The total amount to charge
+ * @param string $orderId Unique order identifier
+ * @param string $description Payment description
+ * @param array $items Array of items in the payment
+ * @return array Response containing payment details or error information
+ */
+ public function createPayment($amount, $orderId, $description, $items = [])
+ {
+ try {
+ $shoppingCart = $this->formatShoppingCart($amount, $description, $items);
+
+ $paymentData = [
+ "totalAmount" => $amount,
+ "currencyCode" => "HKD",
+ "effectiveDuration" => 600, // 10 minutes
+ "notificationUri" => PAYME_NOTIFICATION_URI,
+ "appSuccessCallback" => PAYME_SUCCESS_CALLBACK,
+ "appFailCallback" => PAYME_FAIL_CALLBACK,
+ "merchantData" => [
+ "orderId" => $orderId,
+ "orderDescription" => $description,
+ "additionalData" => "Order Reference: " . $orderId,
+ "shoppingCart" => $shoppingCart
+ ]
+ ];
+
+ $response = $this->paymeClient->post('/payments/paymentrequests', $paymentData);
+
+ return [
+ 'success' => true,
+ 'paymentRequestId' => isset($response['paymentRequestId']) ? $response['paymentRequestId'] : null,
+ 'totalAmount' => isset($response['totalAmount']) ? $response['totalAmount'] : null,
+ 'currencyCode' => isset($response['currencyCode']) ? $response['currencyCode'] : null,
+ 'notificationUri' => isset($response['notificationUri']) ? $response['notificationUri'] : null,
+ 'appSuccessCallback' => isset($response['appSuccessCallback']) ? $response['appSuccessCallback'] : null,
+ 'appFailCallback' => isset($response['appFailCallback']) ? $response['appFailCallback'] : null,
+ 'createdTime' => isset($response['createdTime']) ? $response['createdTime'] : null,
+ 'effectiveDuration' => isset($response['effectiveDuration']) ? $response['effectiveDuration'] : null,
+ 'webLink' => isset($response['webLink']) ? $response['webLink'] : null,
+ 'appLink' => isset($response['appLink']) ? $response['appLink'] : null,
+ 'statusDescription' => isset($response['statusDescription']) ? $response['statusDescription'] : null,
+ 'statusCode' => isset($response['statusCode']) ? $response['statusCode'] : null,
+ 'businessLogos' => isset($response['businessLogos']) ? $response['businessLogos'] : null,
+ 'expiry_time' => time() + (isset($response['effectiveDuration']) ? $response['effectiveDuration'] : 600)
+ ];
+ } catch (Exception $e) {
+ return [
+ 'success' => false,
+ 'error' => $e->getMessage()
+ ];
+ }
+ }
+
+ /**
+ * Check the status of a payment
+ * 
+ * @param string $paymentId The payment request ID
+ * @return array Payment status information or error details
+ */
+ public function checkPaymentStatus($paymentId)
+ {
+ try {
+ $response = $this->paymeClient->get('/payments/paymentrequests/' . $paymentId);
+
+ return [
+ 'success' => true,
+ 'paymentRequestId' => isset($response['paymentRequestId']) ? $response['paymentRequestId'] : null,
+ 'totalAmount' => isset($response['totalAmount']) ? $response['totalAmount'] : null,
+ 'currencyCode' => isset($response['currencyCode']) ? $response['currencyCode'] : 'HKD',
+ 'appSuccessCallback' => isset($response['appSuccessCallback']) ? $response['appSuccessCallback'] : null,
+ 'appFailCallback' => isset($response['appFailCallback']) ? $response['appFailCallback'] : null,
+ 'createdTime' => isset($response['createdTime']) ? $response['createdTime'] : null,
+ 'effectiveDuration' => isset($response['effectiveDuration']) ? $response['effectiveDuration'] : 600,
+ 'statusDescription' => isset($response['statusDescription']) ? $response['statusDescription'] : null,
+ 'statusCode' => isset($response['statusCode']) ? $response['statusCode'] : null
+ ];
+ } catch (Exception $e) {
+ return [
+ 'success' => false,
+ 'error' => $e->getMessage()
+ ];
+ }
+ }
+
+ /**
+ * Cancel a payment request
+ * 
+ * @param string $paymentRequestId The payment request ID to cancel
+ * @return array Cancellation status or error details
+ */
+ public function cancelPayment($paymentRequestId)
+ {
+ try {
+ $response = $this->paymeClient->post('/payments/paymentrequests/' . $paymentRequestId . '/cancel', []);
+
+ return [
+ 'success' => true,
+ 'paymentRequestId' => isset($response['paymentRequestId']) ? $response['paymentRequestId'] : null,
+ 'statusCode' => isset($response['statusCode']) ? $response['statusCode'] : null,
+ 'statusDescription' => isset($response['statusDescription']) ? $response['statusDescription'] : null
+ ];
+ } catch (Exception $e) {
+ return [
+ 'success' => false,
+ 'error' => $e->getMessage()
+ ];
+ }
+ }
+
+ /**
+ * Format shopping cart items for the payment request
+ * 
+ * @param float $amount Total amount
+ * @param string $description Payment description
+ * @param array $items Array of items
+ * @return array Formatted shopping cart items
+ */
+ private function formatShoppingCart($amount, $description, $items)
+ {
+ if (empty($items)) {
+ return [[
+ "category1" => "Credit Purchase",
+ "category2" => "Virtual Credits",
+ "category3" => "Member Credits",
+ "quantity" => 1,
+ "price" => $amount,
+ "name" => $description,
+ "sku" => "CR" . time() . rand(1000, 9999),
+ "currencyCode" => "HKD"
+ ]];
+ }
+
+ return array_map(function ($item) {
+ return [
+ "category1" => "Credit Purchase",
+ "category2" => "Virtual Credits",
+ "category3" => "Member Credits",
+ "quantity" => $item['quantity'],
+ "price" => $item['price'],
+ "name" => $item['name'],
+ "sku" => "CR" . time() . rand(1000, 9999),
+ "currencyCode" => "HKD"
+ ];
+ }, $items);
+ }
+
+ /**
+ * Verify the signature of an incoming webhook request
+ * 
+ * @param array $headers Request headers
+ * @param string $body Request body
+ * @return array Verification result with status and details
+ */
+ public function verifyWebhookSignature($headers, $body)
+ {
+ try {
+ $isValid = $this->paymeClient->verifyWebhookSignature($headers, $body);
+
+ return [
+ 'success' => true,
+ 'isValid' => $isValid,
+ 'message' => $isValid ? 'Signature is valid' : 'Signature is invalid'
+ ];
+ } catch (Exception $e) {
+ return [
+ 'success' => false,
+ 'isValid' => false,
+ 'message' => 'Verification failed: ' . $e->getMessage()
+ ];
+ }
+ }
+
+ /**
+ * Verify the signature of an API response
+ * 
+ * @param array $headers Response headers
+ * @param string $body Response body
+ * @return array Verification result with status and details
+ */
+ public function verifyResponseSignature($headers, $body)
+ {
+ try {
+ $isValid = $this->paymeClient->verifyResponseSignature($headers, $body);
+
+ return [
+ 'success' => true,
+ 'isValid' => $isValid,
+ 'message' => $isValid ? 'Signature is valid' : 'Signature is invalid'
+ ];
+ } catch (Exception $e) {
+ return [
+ 'success' => false,
+ 'isValid' => false,
+ 'message' => 'Verification failed: ' . $e->getMessage()
+ ];
+ }
+ }
+}
+
+// webhook.php
+// Set up logging
+$logFile = __DIR__ . '/logs/webhook.log';
+$logDir = dirname($logFile);
+if (!file_exists($logDir)) {
+ mkdir($logDir, 0755, true);
+}
+
+function logWebhook($message, $data = null)
+{
+ try {
+ echo "logWebhook: " . $message . "\n";
+ global $logFile;
+ $timestamp = date('Y-m-d H:i:s');
+ $logMessage = "[$timestamp] $message";
+ if ($data !== null) {
+ if (is_array($data) || is_object($data)) {
+ $logMessage .= "\nData: " . json_encode($data, JSON_PRETTY_PRINT);
+ } else {
+ $logMessage .= "\nData: " . $data;
+ }
+ }
+ $logMessage .= "\n" . str_repeat('-', 80) . "\n";
+ file_put_contents($logFile, $logMessage, FILE_APPEND);
+ } catch (Exception $e) {
+ echo "Error logging webhook: " . $e->getMessage() . "\n";
+ file_put_contents($logFile, "Error logging webhook: " . $e->getMessage() . "\n", FILE_APPEND);
+ }
+}
+
+try {
+ // Log webhook request received
+ logWebhook("Webhook request received");
+
+ $method = $_SERVER['REQUEST_METHOD'];
+ logWebhook("Request method: " . $method);
+
+ if ($method !== 'POST') {
+ throw new Exception("Invalid request method. Only POST is allowed.");
+ }
+
+ // Initialize PaymeApi
+ $paymeApi = new PaymeApi();
+ logWebhook("PaymeApi initialized");
+
+ // Get and log headers with debugging
+ $headers = [];
+ if (function_exists('getallheaders')) {
+ $headers = getallheaders();
+ } else {
+ // Fallback for servers where getallheaders() is not available
+ foreach ($_SERVER as $name => $value) {
+ if (substr($name, 0, 5) == 'HTTP_') {
+ $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+ }
+ }
+ }
+
+ // Log important headers specifically
+ $importantHeaders = [
+ 'X-Client-Id',
+ 'X-Event-Type',
+ 'Signature',
+ 'Digest'
+ ];
+
+ foreach ($importantHeaders as $header) {
+ if (isset($headers[$header])) {
+ logWebhook("Important Header: $header", $headers[$header]);
+ } else {
+ logWebhook("Warning: Missing important header: $header");
+ }
+ }
+
+ // Get and log body with debugging
+ $body = file_get_contents('php://input');
+ logWebhook("Debug: Body length", strlen($body));
+
+ // $computedDigest = 'SHA-256=' . base64_encode(hash('sha256', $body, true));
+ // if ($computedDigest !== $headers['Digest']) {
+ // throw new Exception("Body was tampered with " . $body . " " . $computedDigest . " != " . $headers['Digest']);
+ // }
+
+ // Parse and validate JSON body
+ $bodyData = json_decode($body, true);
+ if (json_last_error() !== JSON_ERROR_NONE) {
+ throw new Exception("Invalid JSON in request body: " . json_last_error_msg());
+ }
+
+ // Log parsed payment request data
+ if (isset($bodyData['paymentRequestId'])) {
+ logWebhook("Payment Request Details", $bodyData);
+ }
+
+ // Verify signature
+ if (!isset($headers['Signature'])) {
+ throw new Exception("Missing Signature header");
+ }
+
+ 
+
+ // Verify webhook signature
+ $verificationResult = $paymeApi->verifyWebhookSignature($headers, $body);
+ if (!$verificationResult['success'] || !$verificationResult['isValid']) {
+ logWebhook("Signature verification failed: " . $verificationResult['message']);
+ throw new Exception($verificationResult['message']);
+ }
+
+ logWebhook("Signature is valid");
+
+ // Log event type from headers for comparison
+ $eventType = isset($headers['X-Event-Type']) ? $headers['X-Event-Type'] : 'unknown';
+ logWebhook("Event type from headers: " . $eventType);
+
+ // Handle different webhook types
+ switch ($eventType) {
+ case 'payment.success':
+ logWebhook("Payment successful", [
+ 'client_id' => isset($headers['X-Client-Id']) ? $headers['X-Client-Id'] : 'unknown',
+ 'event_type' => $eventType,
+ 'body' => $bodyData
+ ]);
+ // Handle successful payment
+ break;
+ case 'payment.failed':
+ logWebhook("Payment failed", [
+ 'client_id' => isset($headers['X-Client-Id']) ? $headers['X-Client-Id'] : 'unknown',
+ 'event_type' => $eventType,
+ 'body' => $bodyData
+ ]);
+ // Handle failed payment
+ break;
+ case 'payment.cancelled':
+ logWebhook("Payment cancelled", [
+ 'client_id' => isset($headers['X-Client-Id']) ? $headers['X-Client-Id'] : 'unknown',
+ 'event_type' => $eventType,
+ 'body' => $bodyData
+ ]);
+ // Handle cancelled payment
+ break;
+ default:
+ logWebhook("Unknown webhook type: " . $webhookType, [
+ 'client_id' => isset($headers['X-Client-Id']) ? $headers['X-Client-Id'] : 'unknown',
+ 'event_type' => $eventType,
+ 'body' => $bodyData
+ ]);
+ }
+
+ logWebhook("Webhook processed successfully");
+
+ // Send success response
+ header('HTTP/1.1 200 OK');
+ echo json_encode(['status' => 'success']);
+ logWebhook("Success response sent");
+} catch (Exception $e) {
+ // Log the error with more context
+ logWebhook("Error occurred: " . $e->getMessage(), [
+ 'file' => $e->getFile(),
+ 'line' => $e->getLine(),
+ 'trace' => $e->getTraceAsString()
+ ]);
+
+ // Send error response
+ header('HTTP/1.1 400 Bad Request');
+ echo json_encode([
+ 'status' => 'error',
+ 'message' => $e->getMessage()
+ ]);
+}

@@ -1,0 +1,28 @@
+---
+pid: 77848
+cwd: "/private/tmp/heals-pay"
+command: "pkill -P 54641 2>/dev/null; kill 54641 2>/dev/null; python3 -c '\nimport io, re, subprocess, threading, time\nfrom pathlib import Path\nfrom PIL import Image, ImageChops, ImageStat\nSERIAL=\"4ae24c72\"\nOUT=Path(\"/tmp/heals-live\")\nOUT.mkdir(parents=True, exist_ok=True)\nAPI=OUT/\"api.log\"\nJS=OUT/\"js.log\"\ndef append(path, text):\n    with path.open(\"a\", encoding=\"utf-8\") as handle:\n        handle.write(text+\"\\n\")\nappend(API, \"# watch-restart %s\"%time.strftime(\"%H:%M:%S\"))\nappend(JS, \"# watch-restart %s\"%time.strftime(\"%H:%M:%S\"))\nFINISH=re.compile(r\"heals-pass-product/request/finish/[0-9a-f-]{8,}\", re.I)\nBEARER=re.compile(r\"(Bearer\\s+)[A-Za-z0-9._\\-]+\", re.I)\nSECRET=re.compile(r\"((?:accessToken|refreshToken|idToken|password|otp|x-client-secret)\\W{1,4})[^\\s,}]+\", re.I)\ndef red(s):\n    return SECRET.sub(r\"\\1[redacted]\", BEARER.sub(r\"\\1[redacted]\", s))\ndef grab():\n    raw=subprocess.check_output([\"adb\",\"-s\",SERIAL,\"exec-out\",\"screencap\",\"-p\"], stderr=subprocess.DEVNULL)\n    im=Image.open(io.BytesIO(raw)).convert(\"L\")\n    w,h=im.size\n    im=im.crop((0,int(h*0.055),w,h)).resize((36,64))\n    px=im.load()\n    for y in range(40,50):\n        for x in range(36):\n            px[x,y]=0\n    return im\ndef focus():\n    out=subprocess.run([\"adb\",\"-s\",SERIAL,\"shell\",\"dumpsys\",\"activity\",\"activities\"], capture_output=True, text=True).stdout\n    m=re.search(r\"topResumedActivity=ActivityRecord\\{\\S+ \\S+ (\\S+)\", out)\n    return m.group(1) if m else \"unknown\"\nlogcat=subprocess.Popen([\"adb\",\"-s\",SERIAL,\"logcat\",\"-v\",\"time\",\"-T\",\"1\",\"ReactNativeJS:V\",\"AndroidRuntime:E\",\"*:S\"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, bufsize=1)\nMARKS=(\"[api]\",\"[api-plan]\",\"api-client\",\"finishHPPurchase\",\"Exception\",\"Error\",\"error\",\"AndroidRuntime\")\ndef read_logs():\n    dump=False\n    for line in logcat.stdout:\n        clean=red(line.rstrip())\n        js=\"ReactNativeJS\" in clean\n        if js:\n            append(JS, clean)\n            if \"[api]\" in clean or \"api-client\" in clean or \"finishHPPurchase\" in clean:\n                append(API, clean)\n        if js and \"[api] GET 400\" in clean and FINISH.search(clean):\n            dump=True\n            continue\n        if dump:\n            if \"TRANSACTION_NOT_SETTLED\" in clean:\n                dump=False\n                continue\n            if \"[api] \" not in clean and \"finishHPPurchase\" not in clean:\n                continue\n            dump=False\n        if (js or \"AndroidRuntime\" in clean) and any(k in clean for k in MARKS):\n            print(\"LOGIC_EVENT \"+clean[:600], flush=True)\nthreading.Thread(target=read_logs, daemon=True).start()\nprev=grab()\nlast_focus=focus()\nprint(\"WATCH_READY focus=%s\"%last_focus, flush=True)\nwhile True:\n    time.sleep(3)\n    try:\n        now_focus=focus()\n        if now_focus!=last_focus:\n            print(\"FOCUS_CHANGED %s -> %s\"%(last_focus, now_focus), flush=True)\n            last_focus=now_focus\n        cur=grab()\n    except Exception as exc:\n        print(\"LOGIC_EVENT watcher-read-failed %s\"%exc, flush=True)\n        continue\n    mad=ImageStat.Stat(ImageChops.difference(prev, cur)).mean[0]\n    prev=cur\n    if mad<12:\n        continue\n    raw=subprocess.check_output([\"adb\",\"-s\",SERIAL,\"exec-out\",\"screencap\",\"-p\"], stderr=subprocess.DEVNULL)\n    path=OUT/(\"screen-%d.png\"%int(time.time()))\n    path.write_bytes(raw)\n    (OUT/\"latest.png\").write_bytes(raw)\n    print(\"SCREEN_CHANGED mad=%.1f file=%s\"%(mad, path), flush=True)\n'"
+title: "Restart quiet watcher with foreground tracking"
+status: failed   
+started_at: 2026-11-18T07:40:35.820Z
+running_for_ms: 1668285  
+---
+WATCH_READY focus=hk.com.hsbc.paymefromhsbc/com.cherrypicks.hsbcpayme.journeys.untrustedinstallerdetection.UntrustedInstallerDetectedActivity
+FOCUS_CHANGED hk.com.hsbc.paymefromhsbc/com.cherrypicks.hsbcpayme.journeys.untrustedinstallerdetection.UntrustedInstallerDetectedActivity -> unknown
+SCREEN_CHANGED mad=66.5 file=/tmp/heals-live/screen-1794988463.png
+SCREEN_CHANGED mad=64.4 file=/tmp/heals-live/screen-1794988475.png
+SCREEN_CHANGED mad=67.3 file=/tmp/heals-live/screen-1794988776.png
+SCREEN_CHANGED mad=65.8 file=/tmp/heals-live/screen-1794988784.png
+LOGIC_EVENT 11-18 16:00:57.130 W/ReactNativeJS(27815): Error: undefined
+SCREEN_CHANGED mad=67.1 file=/tmp/heals-live/screen-1794989101.png
+SCREEN_CHANGED mad=65.9 file=/tmp/heals-live/screen-1794989109.png
+SCREEN_CHANGED mad=65.8 file=/tmp/heals-live/screen-1794989188.png
+SCREEN_CHANGED mad=64.0 file=/tmp/heals-live/screen-1794989200.png
+SCREEN_CHANGED mad=68.0 file=/tmp/heals-live/screen-1794989233.png
+SCREEN_CHANGED mad=66.8 file=/tmp/heals-live/screen-1794989240.png
+
+---
+exit_code: unknown
+elapsed_ms: 1668284
+ended_at: 2026-11-18T08:08:24.129Z
+---

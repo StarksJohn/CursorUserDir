@@ -1,0 +1,123 @@
+---
+pid: 12507
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "pkill -f \"/tmp/heals-monitor/watch.py\" 2>/dev/null || true\npkill -f \"adb -s 4ae24c72 logcat -v time\" 2>/dev/null || true\nsleep 0.5\npython3 -u /tmp/heals-monitor/watch.py"
+title: "Start device screen and API log watcher"
+status: aborted  
+started_at: 2026-11-18T06:51:23.050Z
+running_for_ms: 940030   
+---
+BASELINE_SET 14:51:25 fd012285d07e54b5bece76003d8f2ae9
+LOGIC 14:51:35 11-18 14:45:52.633 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/c91babdc-68ca-4634-850b-4cce9c0aecfe {"success":true,"id":"c91babdc-68ca-4634-850b-4cce9c0aecfe","name":"Gordon Li","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"},{"planId":"93ba09c1-3612-434f-819b-c890f611eaec","expirationDate":"2036-11-30T00:00:00.000Z"},{"planId":"91b46b88-022c-44b5-aaba-3335129cb7ed","expirationDate":"2027-11-16T03:00:19.043Z"},{"planId":"77b08f92-13fd-4363-9f77-8a2b617a0f1b","expirationDate":"2027-11-16T03:01:16.929Z"}]}
+LOGIC 14:51:35 11-18 14:45:52.913 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/list count=74
+LOGIC 14:51:35 11-18 14:45:53.371 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/ticket/upcoming {"success":true,"count":0,"items":[]}
+LOGIC 14:51:35 11-18 14:45:53.799 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/inquiry {"success":true,"count":22}
+LOGIC 14:51:35 11-18 14:45:53.916 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/sponsorship {"success":true,"count":6}
+LOGIC 14:51:35 11-18 14:45:54.417 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/c91babdc-68ca-4634-850b-4cce9c0aecfe {"success":true,"id":"c91babdc-68ca-4634-850b-4cce9c0aecfe","name":"Gordon Li","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"},{"planId":"93ba09c1-3612-434f-819b-c890f611eaec","expirationDate":"2036-11-30T00:00:00.000Z"},{"planId":"91b46b88-022c-44b5-aaba-3335129cb7ed","expirationDate":"2027-11-16T03:00:19.043Z"},{"planId":"77b08f92-13fd-4363-9f77-8a2b617a0f1b","expirationDate":"2027-11-16T03:01:16.929Z"}]}
+LOGIC 14:51:35 11-18 14:46:08.635 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/c91babdc-68ca-4634-850b-4cce9c0aecfe {"success":true,"id":"c91babdc-68ca-4634-850b-4cce9c0aecfe","name":"Gordon Li","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"},{"planId":"93ba09c1-3612-434f-819b-c890f611eaec","expirationDate":"2036-11-30T00:00:00.000Z"},{"planId":"91b46b88-022c-44b5-aaba-3335129cb7ed","expirationDate":"2027-11-16T03:00:19.043Z"},{"planId":"77b08f92-13fd-4363-9f77-8a2b617a0f1b","expirationDate":"2027-11-16T03:01:16.929Z"}]}
+LOGIC 14:51:35 11-18 14:46:09.005 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/member/policies {"success":true,"keys":["success","data"]}
+LOGIC 14:51:35 11-18 14:46:09.273 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/list count=74
+LOGIC 14:51:35 11-18 14:46:09.587 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/drugs/insurance-plan/77b08f92-13fd-4363-9f77-8a2b617a0f1b/tags {"success":true,"count":6}
+LOGIC 14:51:35 11-18 14:46:12.926 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/list count=74
+LOGIC 14:51:35 11-18 14:46:15.603 I/ReactNativeJS(27815): [api] POST 201 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request {"success":true,"keys":["success","data"]}
+LOGIC 14:51:35 11-18 14:46:26.081 I/ReactNativeJS(27815): [api] POST 201 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/request {"success":true,"keys":["success","data"]}
+SCREEN_CHANGED 14:52:53 dbd1d32540a8a6e5d732c856a451770e
+SCREEN_CHANGED 14:53:36 d7d82aef4ba8a176144bb4960b15e944
+SCREEN_CHANGED 14:53:38 f0adc780464896ec1680cd236acb99d1
+SCREEN_CHANGED 14:53:44 8f65ae0df6e712456e8bac89035b1bc2
+SCREEN_CHANGED 14:53:46 4ccf38fdbe5b41fd11a807eefa4df281
+SCREEN_CHANGED 14:53:48 f5b782b1b8711424be88142e5ee63a76
+LOGIC 14:53:48 11-18 14:53:48.260 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/c91babdc-68ca-4634-850b-4cce9c0aecfe {"success":true,"id":"c91babdc-68ca-4634-850b-4cce9c0aecfe","name":"Gordon Li","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"},{"planId":"93ba09c1-3612-434f-819b-c890f611eaec","expirationDate":"2036-11-30T00:00:00.000Z"},{"planId":"91b46b88-022c-44b5-aaba-3335129cb7ed","expirationDate":"2027-11-16T03:00:19.043Z"},{"planId":"77b08f92-13fd-4363-9f77-8a2b617a0f1b","expirationDate":"2027-11-16T03:01:16.929Z"}]}
+LOGIC 14:53:48 11-18 14:53:48.604 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/list count=74
+SCREEN_CHANGED 14:53:50 9c3ae9bbab7ab2207149a95842b88025
+LOGIC 14:53:50 11-18 14:53:49.388 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/ticket/upcoming {"success":true,"count":0,"items":[]}
+LOGIC 14:53:50 11-18 14:53:49.394 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/inquiry {"success":true,"count":22}
+LOGIC 14:53:50 11-18 14:53:49.643 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/sponsorship {"success":true,"count":6}
+LOGIC 14:53:50 11-18 14:53:50.104 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/c91babdc-68ca-4634-850b-4cce9c0aecfe {"success":true,"id":"c91babdc-68ca-4634-850b-4cce9c0aecfe","name":"Gordon Li","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"},{"planId":"93ba09c1-3612-434f-819b-c890f611eaec","expirationDate":"2036-11-30T00:00:00.000Z"},{"planId":"91b46b88-022c-44b5-aaba-3335129cb7ed","expirationDate":"2027-11-16T03:00:19.043Z"},{"planId":"77b08f92-13fd-4363-9f77-8a2b617a0f1b","expirationDate":"2027-11-16T03:01:16.929Z"}]}
+SCREEN_CHANGED 14:54:24 bcc6b7ac375c28da7f82299fcb66a16f
+SCREEN_CHANGED 14:54:26 9c3ae9bbab7ab2207149a95842b88025
+SCREEN_CHANGED 14:54:30 18294346f17bebc5e47e476f26ad24d7
+SCREEN_CHANGED 14:56:01 ced6ab300378d155abef3a61bf773a4f
+SCREEN_CHANGED 14:56:03 6b37da8a4677debdd1fe1f25bd07c992
+LOGIC 14:56:03 11-18 14:56:03.416 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/c91babdc-68ca-4634-850b-4cce9c0aecfe {"success":true,"id":"c91babdc-68ca-4634-850b-4cce9c0aecfe","name":"Gordon Li","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"},{"planId":"93ba09c1-3612-434f-819b-c890f611eaec","expirationDate":"2036-11-30T00:00:00.000Z"},{"planId":"91b46b88-022c-44b5-aaba-3335129cb7ed","expirationDate":"2027-11-16T03:00:19.043Z"},{"planId":"77b08f92-13fd-4363-9f77-8a2b617a0f1b","expirationDate":"2027-11-16T03:01:16.929Z"}]}
+SCREEN_CHANGED 14:56:05 f36958ab6ffd4c3fa8111b6458947b8f
+LOGIC 14:56:05 11-18 14:56:04.212 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/provider?payorId=&planId=&specialty=&region=Hong%20Kong&page=1&limit=10 {"success":true,"count":10}
+LOGIC 14:56:05 11-18 14:56:04.904 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/member/policies {"success":true,"keys":["success","data"]}
+LOGIC 14:56:05 11-18 14:56:05.432 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/provider/options {"success":true,"keys":["success","data"]}
+SCREEN_CHANGED 14:56:07 86fb11383287e3ffa0b66fbb3d916194
+SCREEN_CHANGED 14:56:09 37beb1eefbc4d27000ef0255aadf9641
+SCREEN_CHANGED 14:56:27 6b355cb6f0b23ed8301062ceac0e28f1
+LOGIC 14:56:27 11-18 14:56:28.200 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/c91babdc-68ca-4634-850b-4cce9c0aecfe {"success":true,"id":"c91babdc-68ca-4634-850b-4cce9c0aecfe","name":"Gordon Li","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"},{"planId":"93ba09c1-3612-434f-819b-c890f611eaec","expirationDate":"2036-11-30T00:00:00.000Z"},{"planId":"91b46b88-022c-44b5-aaba-3335129cb7ed","expirationDate":"2027-11-16T03:00:19.043Z"},{"planId":"77b08f92-13fd-4363-9f77-8a2b617a0f1b","expirationDate":"2027-11-16T03:01:16.929Z"}]}
+SCREEN_CHANGED 14:56:29 12e07fa51affcd93f149375644ca54ca
+LOGIC 14:56:29 11-18 14:56:28.484 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/list count=74
+LOGIC 14:56:29 11-18 14:56:28.632 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/ticket/upcoming {"success":true,"count":0,"items":[]}
+LOGIC 14:56:29 11-18 14:56:28.777 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/sponsorship {"success":true,"count":6}
+LOGIC 14:56:29 11-18 14:56:29.233 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/c91babdc-68ca-4634-850b-4cce9c0aecfe {"success":true,"id":"c91babdc-68ca-4634-850b-4cce9c0aecfe","name":"Gordon Li","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"},{"planId":"93ba09c1-3612-434f-819b-c890f611eaec","expirationDate":"2036-11-30T00:00:00.000Z"},{"planId":"91b46b88-022c-44b5-aaba-3335129cb7ed","expirationDate":"2027-11-16T03:00:19.043Z"},{"planId":"77b08f92-13fd-4363-9f77-8a2b617a0f1b","expirationDate":"2027-11-16T03:01:16.929Z"}]}
+SCREEN_CHANGED 14:58:02 ab0cf50b77d15c65a43123bf9c96ca9e
+SCREEN_CHANGED 14:58:04 f0adc780464896ec1680cd236acb99d1
+SCREEN_CHANGED 14:58:10 8f65ae0df6e712456e8bac89035b1bc2
+SCREEN_CHANGED 14:58:12 e2250b9de2298e08581528321f56b8de
+SCREEN_CHANGED 14:58:14 f0adc780464896ec1680cd236acb99d1
+SCREEN_CHANGED 14:58:20 8f65ae0df6e712456e8bac89035b1bc2
+SCREEN_CHANGED 14:58:22 e2250b9de2298e08581528321f56b8de
+SCREEN_CHANGED 14:58:24 651d56b386743a63ef6c9e8f3871197f
+SCREEN_CHANGED 14:58:26 028ec4243b32df9b35949e06e23702ad
+SCREEN_CHANGED 14:58:28 4e3dcfa9d5b3769105e52e956c6dc7af
+SCREEN_CHANGED 14:58:30 db9f38d13000786d7ccd3f433d62b446
+SCREEN_CHANGED 14:58:32 df32895baf5c89f854e6acb84ed92c69
+SCREEN_CHANGED 14:58:34 8f757d4dc7dd24667aef6dbff81ae64f
+SCREEN_CHANGED 14:58:36 b99fc5eeeda18cce7f8f2de33f828c0c
+SCREEN_CHANGED 14:58:38 2ee6a0b67dc37d5fc3f079f8cbce555c
+SCREEN_CHANGED 14:58:40 6e9717ecde332dc21280dd93a4d14cb2
+LOGIC 14:58:40 11-18 14:58:40.024 I/ReactNativeJS(27815): [api] GET NO_STATUS https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/c91babdc-68ca-4634-850b-4cce9c0aecfe "Network Error"
+LOGIC 14:58:40 11-18 14:58:40.057 I/ReactNativeJS(27815):   error: [AxiosError: Network Error] }
+LOGIC 14:58:40 11-18 14:58:40.062 E/ReactNativeJS(27815): 'handleRequestError - extracted message:', 'Network Error', 'original error:', [AxiosError: Network Error]
+LOGIC 14:58:40 11-18 14:58:40.063 I/ReactNativeJS(27815): 'HomeScreen getUser error=', [AxiosError: Network Error]
+SCREEN_CHANGED 14:58:42 352d159a8c2996376d0a9f0929d2d588
+LOGIC 14:58:42 11-18 14:58:41.145 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/list count=74
+LOGIC 14:58:42 11-18 14:58:41.937 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/ticket/upcoming {"success":true,"count":0,"items":[]}
+LOGIC 14:58:42 11-18 14:58:41.940 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/inquiry {"success":true,"count":22}
+LOGIC 14:58:42 11-18 14:58:42.165 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/sponsorship {"success":true,"count":6}
+SCREEN_CHANGED 14:58:44 0d76e50462e5e84a617c7bba1b44accd
+LOGIC 14:58:44 11-18 14:58:42.666 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/c91babdc-68ca-4634-850b-4cce9c0aecfe {"success":true,"id":"c91babdc-68ca-4634-850b-4cce9c0aecfe","name":"Gordon Li","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"},{"planId":"93ba09c1-3612-434f-819b-c890f611eaec","expirationDate":"2036-11-30T00:00:00.000Z"},{"planId":"91b46b88-022c-44b5-aaba-3335129cb7ed","expirationDate":"2027-11-16T03:00:19.043Z"},{"planId":"77b08f92-13fd-4363-9f77-8a2b617a0f1b","expirationDate":"2027-11-16T03:01:16.929Z"}]}
+SCREEN_CHANGED 14:58:48 f0adc780464896ec1680cd236acb99d1
+SCREEN_CHANGED 14:58:52 8f65ae0df6e712456e8bac89035b1bc2
+SCREEN_CHANGED 14:58:54 e2250b9de2298e08581528321f56b8de
+SCREEN_CHANGED 14:58:56 e647427320a0cabed68e91655c4b1247
+SCREEN_CHANGED 14:58:58 18294346f17bebc5e47e476f26ad24d7
+LOGIC 14:58:58 11-18 14:58:56.929 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/c91babdc-68ca-4634-850b-4cce9c0aecfe {"success":true,"id":"c91babdc-68ca-4634-850b-4cce9c0aecfe","name":"Gordon Li","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"},{"planId":"93ba09c1-3612-434f-819b-c890f611eaec","expirationDate":"2036-11-30T00:00:00.000Z"},{"planId":"91b46b88-022c-44b5-aaba-3335129cb7ed","expirationDate":"2027-11-16T03:00:19.043Z"},{"planId":"77b08f92-13fd-4363-9f77-8a2b617a0f1b","expirationDate":"2027-11-16T03:01:16.929Z"}]}
+LOGIC 14:58:58 11-18 14:58:57.229 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/list count=74
+LOGIC 14:58:58 11-18 14:58:57.624 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/ticket/upcoming {"success":true,"count":0,"items":[]}
+LOGIC 14:58:58 11-18 14:58:57.975 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/inquiry {"success":true,"count":22}
+LOGIC 14:58:58 11-18 14:58:57.981 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/sponsorship {"success":true,"count":6}
+LOGIC 14:58:58 11-18 14:58:58.477 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/c91babdc-68ca-4634-850b-4cce9c0aecfe {"success":true,"id":"c91babdc-68ca-4634-850b-4cce9c0aecfe","name":"Gordon Li","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"},{"planId":"93ba09c1-3612-434f-819b-c890f611eaec","expirationDate":"2036-11-30T00:00:00.000Z"},{"planId":"91b46b88-022c-44b5-aaba-3335129cb7ed","expirationDate":"2027-11-16T03:00:19.043Z"},{"planId":"77b08f92-13fd-4363-9f77-8a2b617a0f1b","expirationDate":"2027-11-16T03:01:16.929Z"}]}
+SCREEN_CHANGED 15:04:49 f0adc780464896ec1680cd236acb99d1
+SCREEN_CHANGED 15:04:53 8f65ae0df6e712456e8bac89035b1bc2
+SCREEN_CHANGED 15:04:57 28763e8ab781bd01ab37852d5c90e49e
+SCREEN_CHANGED 15:04:59 f6f0a3b6c14b05f8976fa4e4c948a7cb
+LOGIC 15:04:59 11-18 15:04:58.450 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/c91babdc-68ca-4634-850b-4cce9c0aecfe {"success":true,"id":"c91babdc-68ca-4634-850b-4cce9c0aecfe","name":"Gordon Li","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"},{"planId":"93ba09c1-3612-434f-819b-c890f611eaec","expirationDate":"2036-11-30T00:00:00.000Z"},{"planId":"91b46b88-022c-44b5-aaba-3335129cb7ed","expirationDate":"2027-11-16T03:00:19.043Z"},{"planId":"77b08f92-13fd-4363-9f77-8a2b617a0f1b","expirationDate":"2027-11-16T03:01:16.929Z"}]}
+LOGIC 15:04:59 11-18 15:04:58.823 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/list count=74
+LOGIC 15:04:59 11-18 15:04:59.208 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/ticket/upcoming {"success":true,"count":0,"items":[]}
+LOGIC 15:04:59 11-18 15:04:59.605 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/inquiry {"success":true,"count":22}
+LOGIC 15:04:59 11-18 15:04:59.612 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/sponsorship {"success":true,"count":6}
+SCREEN_CHANGED 15:05:01 18294346f17bebc5e47e476f26ad24d7
+LOGIC 15:05:01 11-18 15:05:00.116 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/c91babdc-68ca-4634-850b-4cce9c0aecfe {"success":true,"id":"c91babdc-68ca-4634-850b-4cce9c0aecfe","name":"Gordon Li","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"},{"planId":"93ba09c1-3612-434f-819b-c890f611eaec","expirationDate":"2036-11-30T00:00:00.000Z"},{"planId":"91b46b88-022c-44b5-aaba-3335129cb7ed","expirationDate":"2027-11-16T03:00:19.043Z"},{"planId":"77b08f92-13fd-4363-9f77-8a2b617a0f1b","expirationDate":"2027-11-16T03:01:16.929Z"}]}
+SCREEN_CHANGED 15:06:11 4ab29ffbddc220cb8d0d8afbd5bf7796
+SCREEN_CHANGED 15:06:13 f0adc780464896ec1680cd236acb99d1
+SCREEN_CHANGED 15:06:17 8f65ae0df6e712456e8bac89035b1bc2
+SCREEN_CHANGED 15:06:19 e2250b9de2298e08581528321f56b8de
+SCREEN_CHANGED 15:06:21 a83b26935fb9af21c1e51379a1c3a3a0
+SCREEN_CHANGED 15:06:23 f6f0a3b6c14b05f8976fa4e4c948a7cb
+LOGIC 15:06:23 11-18 15:06:22.775 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/c91babdc-68ca-4634-850b-4cce9c0aecfe {"success":true,"id":"c91babdc-68ca-4634-850b-4cce9c0aecfe","name":"Gordon Li","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"},{"planId":"93ba09c1-3612-434f-819b-c890f611eaec","expirationDate":"2036-11-30T00:00:00.000Z"},{"planId":"91b46b88-022c-44b5-aaba-3335129cb7ed","expirationDate":"2027-11-16T03:00:19.043Z"},{"planId":"77b08f92-13fd-4363-9f77-8a2b617a0f1b","expirationDate":"2027-11-16T03:01:16.929Z"}]}
+LOGIC 15:06:23 11-18 15:06:23.124 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/list count=74
+LOGIC 15:06:23 11-18 15:06:23.702 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/ticket/upcoming {"success":true,"count":0,"items":[]}
+LOGIC 15:06:23 11-18 15:06:23.706 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/inquiry {"success":true,"count":22}
+LOGIC 15:06:23 11-18 15:06:23.954 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/heals-pass-product/sponsorship {"success":true,"count":6}
+SCREEN_CHANGED 15:06:25 18294346f17bebc5e47e476f26ad24d7
+LOGIC 15:06:25 11-18 15:06:24.470 I/ReactNativeJS(27815): [api] GET 200 https://heals-patient-gateway-dev.heals.asia/api/v1/health-passport/user/c91babdc-68ca-4634-850b-4cce9c0aecfe {"success":true,"id":"c91babdc-68ca-4634-850b-4cce9c0aecfe","name":"Gordon Li","policies":[{"planId":"f8ce616d-7675-4ac2-aa99-885831295ef3","expirationDate":"2031-08-31T00:00:00.000Z"},{"planId":"93ba09c1-3612-434f-819b-c890f611eaec","expirationDate":"2036-11-30T00:00:00.000Z"},{"planId":"91b46b88-022c-44b5-aaba-3335129cb7ed","expirationDate":"2027-11-16T03:00:19.043Z"},{"planId":"77b08f92-13fd-4363-9f77-8a2b617a0f1b","expirationDate":"2027-11-16T03:01:16.929Z"}]}
+
+---
+exit_code: unknown
+elapsed_ms: 940030
+ended_at: 2026-11-18T07:07:02.997Z
+---
