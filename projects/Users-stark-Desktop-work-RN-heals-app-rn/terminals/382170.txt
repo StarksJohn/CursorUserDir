@@ -1,0 +1,88 @@
+---
+pid: 93491
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "test -d ios/Pods && echo pods=ok || echo pods=missing; xcrun simctl boot 799751C2-6711-4EF9-BC4E-A28F279805B7; open -a Simulator; xcrun simctl bootstatus 799751C2-6711-4EF9-BC4E-A28F279805B7 -b"
+title: "Boot iPhone 16 Pro simulator and open Simulator"
+status: succeeded
+started_at: 2026-11-19T09:43:15.294Z
+running_for_ms: 75329    
+---
+pods=ok
+Monitoring boot status for iPhone 16 Pro (799751C2-6711-4EF9-BC4E-A28F279805B7).
+[2026-11-19 09:43:25 +0000] Status=1, isTerminal=NO, Elapsed=00:07.
+	Waiting on BackBoard
+
+[2026-11-19 09:43:28 +0000] Status=2, isTerminal=NO, Elapsed=00:09.
+	Waiting on Data Migration
+		Reason:(null)
+		Migration Elapsed:00:00 seconds
+
+[2026-11-19 09:44:08 +0000] Status=2, isTerminal=NO, Elapsed=00:50.
+	Waiting on Data Migration
+		Reason:Running plugin com.apple.securityd.KeychainMigrator (KeychainMigrator.migrator, user-agnostic)
+		Migration Elapsed:00:38 seconds
+
+[2026-11-19 09:44:11 +0000] Status=2, isTerminal=NO, Elapsed=00:53.
+	Waiting on Data Migration
+		Reason:Running plugin com.apple.addressbook.migrator (AddressBookLegacy.migrator)
+		Migration Elapsed:00:40 seconds
+
+[2026-11-19 09:44:14 +0000] Status=2, isTerminal=NO, Elapsed=00:56.
+	Waiting on Data Migration
+		Reason:Running plugin com.apple.locationd.migrator (CoreLocationMigrator.migrator)
+		Migration Elapsed:00:44 seconds
+
+[2026-11-19 09:44:15 +0000] Status=2, isTerminal=NO, Elapsed=00:57.
+	Waiting on Data Migration
+		Reason:Running plugin com.apple.PreferencesMigrator (PreferencesMigrator.migrator)
+		Migration Elapsed:00:46 seconds
+
+[2026-11-19 09:44:17 +0000] Status=2, isTerminal=NO, Elapsed=00:58.
+	Waiting on Data Migration
+		Reason:Running plugin com.apple.PreferencesMigrator (PreferencesMigrator.migrator)
+		Migration Elapsed:00:48 seconds
+
+[2026-11-19 09:44:18 +0000] Status=2, isTerminal=NO, Elapsed=00:59.
+	Waiting on Data Migration
+		Reason:Running plugin com.apple.coreaudio.HAENDataMigrator (HAENDataMigrator.migrator)
+		Migration Elapsed:00:49 seconds
+
+[2026-11-19 09:44:19 +0000] Status=4, isTerminal=NO, Elapsed=01:01.
+	Waiting on System App
+
+[2026-11-19 09:44:21 +0000] Status=4, isTerminal=NO, Elapsed=01:02.
+	Waiting on System App
+
+[2026-11-19 09:44:22 +0000] Status=4, isTerminal=NO, Elapsed=01:03.
+	Waiting on System App
+
+[2026-11-19 09:44:23 +0000] Status=4, isTerminal=NO, Elapsed=01:04.
+	Waiting on System App
+
+[2026-11-19 09:44:24 +0000] Status=4, isTerminal=NO, Elapsed=01:06.
+	Waiting on System App
+
+[2026-11-19 09:44:26 +0000] Status=4, isTerminal=NO, Elapsed=01:07.
+	Waiting on System App
+
+[2026-11-19 09:44:27 +0000] Status=4, isTerminal=NO, Elapsed=01:08.
+	Waiting on System App
+
+[2026-11-19 09:44:27 +0000] Status=4, isTerminal=NO, Elapsed=01:08.
+	Waiting on System App
+
+[2026-11-19 09:44:28 +0000] Status=4, isTerminal=NO, Elapsed=01:09.
+	Waiting on System App
+
+[2026-11-19 09:44:29 +0000] Status=4, isTerminal=NO, Elapsed=01:10.
+	Waiting on System App
+
+[2026-11-19 09:44:30 +0000] Status=4294967295, isTerminal=YES, Elapsed=01:11.
+	Finished
+
+
+---
+exit_code: 0
+elapsed_ms: 75329
+ended_at: 2026-11-19T09:44:30.622Z
+---
