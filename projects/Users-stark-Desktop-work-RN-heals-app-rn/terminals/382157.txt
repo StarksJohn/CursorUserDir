@@ -3,9 +3,9 @@ pid: 5037
 cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
 command: "\"$ANDROID_HOME/emulator/emulator\" -avd Pixel_8_Pro_API_34 -netdelay none -netspeed full -gpu auto -no-boot-anim"
 title: "Start Pixel 8 Pro API 34 emulator"
-status: running  
+status: failed   
 started_at: 2026-11-19T08:57:35.411Z
-running_for_ms: 390487   
+running_for_ms: 1050992  
 ---
 INFO         | Android emulator version 37.2.13.0 (build_id 16740729) (CL:N/A)
 INFO         | Graphics backend: gfxstream
@@ -128,3 +128,24 @@ INFO         | Warning: skipping QEventPoint(id=1 ts=0 pos=0,0 scn=440.702,787.9
 INFO         | Boot completed in 162992 ms
 INFO         | Increasing screen off timeout, logcat buffer size to 2M.
 INFO         | Warning: skipping QEventPoint(id=1 ts=0 pos=0,0 scn=491.071,231.135 gbl=491.071,231.135 Released ellipse=(1x1 ∡ 0) vel=0,0 press=-491.071,-231.135 last=-491.071,-231.135 Δ 491.071,231.135) : no target window (:0, )
+ERROR        | detected a hanging thread 'QEMU2 CPU0 thread'. No response for 20455 ms
+INFO         | Warning: skipping QEventPoint(id=1 ts=0 pos=0,0 scn=1298.33,703.835 gbl=1298.33,703.835 Released ellipse=(1x1 ∡ 0) vel=0,0 press=-1298.33,-703.835 last=-1298.33,-703.835 Δ 1298.33,703.835) : no target window (:0, )
+INFO         | Warning: skipping QEventPoint(id=1 ts=0 pos=0,0 scn=1485.72,459.438 gbl=1485.72,459.438 Released ellipse=(1x1 ∡ 0) vel=0,0 press=-1485.72,-459.438 last=-1485.72,-459.438 Δ 1485.72,459.438) : no target window (:0, )
+2026-11-19 17:12:54.513 qemu-system-x86_64[5049:273341] error messaging the mach port for IMKCFRunLoopWakeUpReliable
+INFO         | Warning: skipping QEventPoint(id=1 ts=0 pos=0,0 scn=1460.18,371.871 gbl=1460.18,371.871 Released ellipse=(1x1 ∡ 0) vel=0,0 press=-1460.18,-371.871 last=-1460.18,-371.871 Δ 1460.18,371.871) : no target window (:0, )
+INFO         | Warning: skipping QEventPoint(id=1 ts=0 pos=0,0 scn=1710.67,208.2 gbl=1710.67,208.2 Released ellipse=(1x1 ∡ 0) vel=0,0 press=-1710.67,-208.2 last=-1710.67,-208.2 Δ 1710.67,208.2) : no target window (:0, )
+INFO         | Wait for emulator (pid 5049) 20 seconds to shutdown gracefully before kill;you can set environment variable ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL(in seconds) to change the default value (20 seconds)
+
+INFO         | Wait for emulator (pid 5049) 20 seconds to shutdown gracefully before kill;you can set environment variable ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL(in seconds) to change the default value (20 seconds)
+
+INFO         | Saving with gfxstream=1
+INFO         | Saving snapshot 'default_boot' took 19308 ms
+INFO         | GPU Vendor=[Google (ATI Technologies Inc.)]
+INFO         | GPU Renderer=[Android Emulator OpenGL ES Translator (AMD Radeon Pro 5500M OpenGL Engine)]
+INFO         | GPU Version=[OpenGL ES 3.0 (4.1 ATI-7.1.6)]
+
+---
+exit_code: 137
+elapsed_ms: 1050992
+ended_at: 2026-11-19T09:15:06.395Z
+---
