@@ -60,7 +60,7 @@ If a linked skill is not available, read its docs page instead:
 | Question | Options | Guidance |
 | --- | --- | --- |
 | **Model** | `grok-4.7` + `reasoning_effort=high`, `fast=true` · Other id | Params, not id suffixes: `{ id: "grok-4.7", params: [{ id: "reasoning_effort", value: "high" }, { id: "fast", value: "true" }] }` |
-| **Channels** (multi) | playground + HTTP (always on) · Slack · GitHub · custom webhook · schedule | Slack: `~/.cursor/skills-cursor/agent-sdk-setup-slack/SKILL.md`. GitHub: `~/.cursor/skills-cursor/agent-sdk-github/SKILL.md`. No Discord/Teams pack; offer custom webhook. |
+| **Channels** (multi) | playground + HTTP (always on) · Slack · Microsoft Teams · GitHub · custom webhook · schedule | Slack: `~/.cursor/skills-cursor/agent-sdk-setup-slack/SKILL.md`. Teams: `~/.cursor/skills-cursor/agent-sdk-setup-teams/SKILL.md`. GitHub: `~/.cursor/skills-cursor/agent-sdk-github/SKILL.md`. No Discord pack; offer custom webhook. |
 | **MCP** (multi) | none · remote URL · local stdio · Cursor account connectors · Other | One file under `bot/mcp-connections/`. Account file is `account.ts`, never `cursor.ts`. Named local tools need `advertiseTools: true`. Privileged servers go in `bot/host-connections/`. |
 | **Capabilities** (multi) | server tools · agent tools · skills · subagents · hooks · sandbox seeds · evals (recommend) | Always recommend one smoke eval. |
 <!-- interview:end -->
@@ -77,6 +77,7 @@ something". Write files only after approval.
 | Purpose | Shape |
 | --- | --- |
 | Slack chat | `slackChannel({ envPrefix })` + suggested prompts. `npx --yes "@grok/agent-sdk@0.6.0" slack create` mints the bot. Prefix: `~/.cursor/skills-cursor/agent-sdk-setup-slack/SKILL.md` |
+| Teams chat | `teamsChannel()`, or `teamsChannel({ envPrefix })` for one bot per agent. `npx --yes "@grok/agent-sdk@0.6.0" channels teams init` writes it for the user's Azure Bot. Setup: `~/.cursor/skills-cursor/agent-sdk-setup-teams/SKILL.md` |
 | PR review with host prep | Channel `callTool` into a trimmed workspace `pr/` tree |
 | GitHub automation | `githubChannel()` hooks, replay fixtures |
 | Domain assistant | Server tools + one MCP connection + a skill |
@@ -135,7 +136,9 @@ npx --yes "@grok/agent-sdk@0.6.0" init ./<slug>
    Slack: `npx --yes "@grok/agent-sdk@0.6.0" slack create --dir ./<slug> --name "<Name>"`,
    not a hand-written channel. Manual Slack app:
    `npx --yes "@grok/agent-sdk@0.6.0" slack init --manual` (Slack CLI, or paste at
-   api.slack.com).
+   api.slack.com). Teams: `npx --yes "@grok/agent-sdk@0.6.0" channels teams init --dir ./<slug>
+   --app-id <id> --tenant-id <id>` with the client secret on stdin,
+   not a hand-written channel.
 4. Blank init writes `evals/evals.config.ts` (`maxConcurrency: 20`,
    cap 200) and `evals/smoke.eval.ts`. The smoke case uses `echo`
    and asserts `t.succeeded()` and `t.calledTool("echo")`. Replace
@@ -186,6 +189,7 @@ the hand-over commands above in "Test it locally".
 ## Channel setup
 
 - **Slack.** `~/.cursor/skills-cursor/agent-sdk-setup-slack/SKILL.md`
+- **Microsoft Teams.** `~/.cursor/skills-cursor/agent-sdk-setup-teams/SKILL.md`
 - **GitHub.** `~/.cursor/skills-cursor/agent-sdk-github/SKILL.md`
 - **Custom webhook.** `POST /v1/channels/<id>/<route>`.
   Loopback-only until you add `bearerAuth(...)`. Hosted callers

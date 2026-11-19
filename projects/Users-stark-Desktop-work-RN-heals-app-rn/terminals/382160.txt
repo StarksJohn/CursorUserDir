@@ -1,17 +1,20 @@
 ---
-pid: 7417
+pid: 9343
 cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
-command: "cd /Users/stark/Desktop/work/RN/heals-app-rn && GRADLE_USER_HOME=\"$HOME/.gradle\" npm run android:dev -- --active-arch-only 2>&1 | rg -v '^\\s*$' | cut -c1-220"
-title: "Build and install Heals Dev debug APK"
-status: succeeded
-started_at: 2026-11-18T08:02:28.815Z
-running_for_ms: 143601   
+command: "GRADLE_USER_HOME=\"$HOME/.gradle\" npm run android:dev -- --active-arch-only"
+title: "Build and install dev debug on emulator"
+status: running  
+started_at: 2026-11-19T09:00:50.661Z
+running_for_ms: 195239   
 ---
+
 > Heals@0.0.1 android:dev
 > ENVFILE=.env.development react-native run-android --mode=devDebug --appIdSuffix=dev --active-arch-only
+
 info A dev server is already running for this project on port 8081.
-info Detected architectures arm64-v8a
+info Detected architectures x86_64
 info Installing the app...
+Starting a Gradle Daemon (subsequent builds will be faster)
 > Task :gradle-plugin:settings-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :gradle-plugin:shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :gradle-plugin:shared:compileKotlin UP-TO-DATE
@@ -32,8 +35,10 @@ info Installing the app...
 > Task :gradle-plugin:react-native-gradle-plugin:processResources UP-TO-DATE
 > Task :gradle-plugin:react-native-gradle-plugin:classes UP-TO-DATE
 > Task :gradle-plugin:react-native-gradle-plugin:jar UP-TO-DATE
+
 > Configure project :app
 Reading env from: .env.development
+
 > Configure project :react-native-firebase_app
 :react-native-firebase_app package.json found at /Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native-firebase/app/package.json
 :react-native-firebase_app:firebase.bom using default value: 34.10.0
@@ -44,6 +49,7 @@ Reading env from: .env.development
 :react-native-firebase_app:android.targetSdk using custom value: 36
 :react-native-firebase_app:android.minSdk using custom value: 24
 :react-native-firebase_app:reactNativeAndroidDir /Users/stark/Desktop/work/RN/heals-app-rn/node_modules/react-native
+
 > Configure project :react-native-firebase_messaging
 :react-native-firebase_messaging package.json found at /Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native-firebase/messaging/package.json
 :react-native-firebase_app package.json found at /Users/stark/Desktop/work/RN/heals-app-rn/node_modules/@react-native-firebase/app/package.json
@@ -54,9 +60,7 @@ Reading env from: .env.development
 :react-native-firebase_messaging:android.targetSdk using custom value: 36
 :react-native-firebase_messaging:android.minSdk using custom value: 24
 :react-native-firebase_messaging:reactNativeAndroidDir /Users/stark/Desktop/work/RN/heals-app-rn/node_modules/react-native
-WARNING: The specified Android SDK Build Tools version (33.0.0) is ignored, as it is below the minimum supported version (35.0.0) for Android Gradle Plugin 8.11.0.
-Android SDK Build Tools 35.0.0 will be used.
-To suppress this warning, remove "buildToolsVersion '33.0.0'" from your build.gradle file, as each version of the Android Gradle Plugin now has a default version of the build tools.
+
 > Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :app:generateAutolinkingNewArchitectureFiles UP-TO-DATE
 > Task :app:generateAutolinkingPackageList UP-TO-DATE
@@ -245,6 +249,7 @@ To suppress this warning, remove "buildToolsVersion '33.0.0'" from your build.gr
 > Task :sentry_react-native:preDebugBuild UP-TO-DATE
 > Task :sentry_react-native:writeDebugAarMetadata UP-TO-DATE
 > Task :app:checkDevDebugAarMetadata UP-TO-DATE
+
 > Task :app:createBundleDevDebugJsAndAssets
 [34m
                         ▒▒▓▓▓▓▒▒
@@ -259,21 +264,21 @@ To suppress this warning, remove "buildToolsVersion '33.0.0'" from your build.gr
                   ▒▓▓▓▒░░░▒▓▓▒░░░▒▓▓▓▒
                      ▒▓▓▓▒░░░░▒▓▓▓▒
                         ▒▒▓▓▓▓▒▒
+
 [39m
 [33m[7m[1m WARN [22m[27m[39m the transform cache was reset.
 [34m[1m                Welcome to Metro [37mv0.83.7[39m
 [22m[39m[2m              Fast - Scalable - Integrated
+
 [22m
-transform[stderr]: [BABEL] Note: The code generator has deoptimised the styling of /Users/stark/Desktop/work/RN/heals-app-rn/src/assets/images/NewUserIcon_5.svg as it exceeds the max of 500KB.
-transform[stderr]: (node:8991) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
-transform[stderr]: (Use `node --trace-warnings ...` to show where the warning was created)
-info Bundle Debug ID: c2e49454-0692-4205-9864-1d5b804ffe21
+info Bundle Debug ID: 91e5c0e7-199a-4def-8a85-bc177ff0507a
 LOG:Writing bundle output to: /Users/stark/Desktop/work/RN/heals-app-rn/android/app/build/generated/assets/createBundleDevDebugJsAndAssets/index.android.bundle
 LOG:Writing sourcemap output to: /Users/stark/Desktop/work/RN/heals-app-rn/android/app/build/intermediates/sourcemaps/react/devDebug/index.android.bundle.packager.map
 LOG:Done writing bundle output
 LOG:Done writing sourcemap output
 Copying 76 asset files
 Done copying assets
+
 > Task :app:generateDevDebugResValues UP-TO-DATE
 > Task :app:processDevDebugGoogleServices UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:generateDebugResValues UP-TO-DATE
@@ -415,11 +420,11 @@ Done copying assets
 > Task :react-native-community_blur:extractDeepLinksDebug UP-TO-DATE
 > Task :react-native-community_blur:processDebugManifest UP-TO-DATE
 > Task :react-native-community_checkbox:extractDeepLinksDebug UP-TO-DATE
-> Task :app:parseDevDebugLocalResources
 > Task :react-native-community_checkbox:processDebugManifest UP-TO-DATE
 > Task :react-native-community_geolocation:extractDeepLinksDebug UP-TO-DATE
 > Task :react-native-community_geolocation:processDebugManifest UP-TO-DATE
 > Task :react-native-community_masked-view:extractDeepLinksDebug UP-TO-DATE
+> Task :app:parseDevDebugLocalResources
 > Task :react-native-community_masked-view:processDebugManifest UP-TO-DATE
 > Task :react-native-config:extractDeepLinksDebug UP-TO-DATE
 > Task :react-native-config:processDebugManifest UP-TO-DATE
@@ -477,14 +482,18 @@ Done copying assets
 > Task :react-native-worklets:processDebugManifest UP-TO-DATE
 > Task :sentry_react-native:extractDeepLinksDebug UP-TO-DATE
 > Task :sentry_react-native:processDebugManifest UP-TO-DATE
+> Task :app:mergeDevDebugResources
+
 > Task :app:processDevDebugMainManifest
 [io.agora.rtc:agora-special-full:4.6.2.70] /Users/stark/.gradle/caches/8.14.3/transforms/dba664b03755db7adcc7f1ceeb019505/transformed/agora-special-full-4.6.2.70/AndroidManifest.xml Warning:
-	Namespace 'io.agora.rtc' is used in multiple modules and/or libraries: io.agora.rtc:agora-special-full:4.6.2.70, io.agora.rtc:iris-rtc:4.6.2-build.1. Please ensure that all modules and libraries have a unique namespace.
+	Namespace 'io.agora.rtc' is used in multiple modules and/or libraries: io.agora.rtc:agora-special-full:4.6.2.70, io.agora.rtc:iris-rtc:4.6.2-build.1. Please ensure that all modules and libraries have a unique namespace. For more information, See https://developer.android.com/studio/build/configure-app-module#set-namespace
+
 > Task :app:processDevDebugManifest
 > Task :invertase_react-native-apple-authentication:compileDebugLibraryResources UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:parseDebugLocalResources UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:generateDebugRFile UP-TO-DATE
 > Task :react-native-agora:compileDebugLibraryResources UP-TO-DATE
+> Task :app:processDevDebugManifestForPackage
 > Task :react-native-agora:parseDebugLocalResources UP-TO-DATE
 > Task :react-native-agora:generateDebugRFile UP-TO-DATE
 > Task :react-native-async-storage_async-storage:compileDebugLibraryResources UP-TO-DATE
@@ -517,7 +526,6 @@ Done copying assets
 > Task :react-native-config:compileDebugLibraryResources UP-TO-DATE
 > Task :react-native-config:parseDebugLocalResources UP-TO-DATE
 > Task :react-native-config:generateDebugRFile UP-TO-DATE
-> Task :app:processDevDebugManifestForPackage
 > Task :react-native-date-picker:compileDebugLibraryResources UP-TO-DATE
 > Task :react-native-date-picker:parseDebugLocalResources UP-TO-DATE
 > Task :react-native-date-picker:generateDebugRFile UP-TO-DATE
@@ -601,7 +609,6 @@ Done copying assets
 > Task :sentry_react-native:generateDebugRFile UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :invertase_react-native-apple-authentication:generateDebugBuildConfig UP-TO-DATE
-> Task :app:mergeDevDebugResources
 > Task :invertase_react-native-apple-authentication:compileDebugKotlin UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:javaPreCompileDebug UP-TO-DATE
 > Task :invertase_react-native-apple-authentication:compileDebugJavaWithJavac UP-TO-DATE
@@ -766,10 +773,7 @@ Done copying assets
 > Task :react-native-vector-icons:bundleLibCompileToJarDebug UP-TO-DATE
 > Task :react-native-wallet-manager:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :react-native-wallet-manager:generateDebugBuildConfig UP-TO-DATE
-> Task :react-native-wallet-manager:compileDebugKotlin UP-TO-DATE
 > Task :react-native-wallet-manager:javaPreCompileDebug UP-TO-DATE
-> Task :react-native-wallet-manager:compileDebugJavaWithJavac UP-TO-DATE
-> Task :react-native-wallet-manager:bundleLibCompileToJarDebug UP-TO-DATE
 > Task :react-native-webview:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :react-native-webview:generateDebugBuildConfig UP-TO-DATE
 > Task :react-native-webview:compileDebugKotlin UP-TO-DATE
@@ -941,6 +945,7 @@ Done copying assets
 > Task :sentry_react-native:compileDebugShaders NO-SOURCE
 > Task :sentry_react-native:generateDebugAssets UP-TO-DATE
 > Task :sentry_react-native:mergeDebugAssets UP-TO-DATE
+> Task :app:processDevDebugResources
 > Task :app:mergeDevDebugAssets
 > Task :invertase_react-native-apple-authentication:bundleLibRuntimeToJarDebug UP-TO-DATE
 > Task :react-native-documents_picker:bundleLibRuntimeToJarDebug UP-TO-DATE
@@ -952,7 +957,6 @@ Done copying assets
 > Task :react-native-permissions:bundleLibRuntimeToJarDebug UP-TO-DATE
 > Task :react-native-safe-area-context:bundleLibRuntimeToJarDebug UP-TO-DATE
 > Task :react-native-screens:bundleLibRuntimeToJarDebug UP-TO-DATE
-> Task :react-native-wallet-manager:bundleLibRuntimeToJarDebug UP-TO-DATE
 > Task :react-native-webview:bundleLibRuntimeToJarDebug UP-TO-DATE
 > Task :react-native-async-storage_async-storage:bundleLibRuntimeToJarDebug UP-TO-DATE
 > Task :react-native-clipboard_clipboard:bundleLibRuntimeToJarDebug UP-TO-DATE
@@ -994,9 +998,9 @@ Done copying assets
 > Task :react-native-community_geolocation:processDebugJavaRes NO-SOURCE
 > Task :react-native-community_masked-view:processDebugJavaRes NO-SOURCE
 > Task :react-native-config:processDebugJavaRes NO-SOURCE
+> Task :app:compressDevDebugAssets
 > Task :react-native-date-picker:processDebugJavaRes NO-SOURCE
 > Task :react-native-device-info:processDebugJavaRes NO-SOURCE
-> Task :app:compressDevDebugAssets
 > Task :react-native-documents_picker:processDebugJavaRes UP-TO-DATE
 > Task :react-native-encrypted-storage:processDebugJavaRes NO-SOURCE
 > Task :react-native-file-viewer:processDebugJavaRes NO-SOURCE
@@ -1018,7 +1022,6 @@ Done copying assets
 > Task :react-native-share:processDebugJavaRes NO-SOURCE
 > Task :react-native-svg:processDebugJavaRes NO-SOURCE
 > Task :react-native-vector-icons:processDebugJavaRes NO-SOURCE
-> Task :react-native-wallet-manager:processDebugJavaRes UP-TO-DATE
 > Task :react-native-webview:processDebugJavaRes UP-TO-DATE
 > Task :react-native-worklets:processDebugJavaRes NO-SOURCE
 > Task :sentry_react-native:processDebugJavaRes NO-SOURCE
@@ -1034,7 +1037,6 @@ Done copying assets
 > Task :react-native-permissions:bundleLibRuntimeToDirDebug UP-TO-DATE
 > Task :react-native-safe-area-context:bundleLibRuntimeToDirDebug UP-TO-DATE
 > Task :react-native-screens:bundleLibRuntimeToDirDebug UP-TO-DATE
-> Task :react-native-wallet-manager:bundleLibRuntimeToDirDebug UP-TO-DATE
 > Task :react-native-webview:bundleLibRuntimeToDirDebug UP-TO-DATE
 > Task :react-native-async-storage_async-storage:bundleLibRuntimeToDirDebug UP-TO-DATE
 > Task :react-native-clipboard_clipboard:bundleLibRuntimeToDirDebug UP-TO-DATE
@@ -1064,176 +1066,17 @@ Done copying assets
 > Task :react-native-vector-icons:bundleLibRuntimeToDirDebug UP-TO-DATE
 > Task :react-native-worklets:bundleLibRuntimeToDirDebug UP-TO-DATE
 > Task :app:preProdDebugBuild
-> Task :app:processDevDebugResources
-> Task :react-native-worklets:configureCMakeDebug[arm64-v8a]
-> Task :app:mergeLibDexDevDebug UP-TO-DATE
-> Task :react-native-worklets:buildCMakeDebug[arm64-v8a][worklets]
-> Task :react-native-worklets:externalNativeBuildDebug
-> Task :react-native-worklets:generateJsonModelDebug
-> Task :react-native-worklets:prefabDebugConfigurePackage
-> Task :react-native-reanimated:configureCMakeDebug[arm64-v8a]
-> Task :react-native-reanimated:generateJsonModelDebug
-> Task :react-native-reanimated:prefabDebugConfigurePackage UP-TO-DATE
-> Task :app:configureCMakeDebug[arm64-v8a]
-> Task :react-native-worklets:prefabDebugPackage UP-TO-DATE
-> Task :react-native-reanimated:buildCMakeDebug[arm64-v8a][reanimated]
-> Task :react-native-worklets:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-worklets:mergeDebugNativeLibs UP-TO-DATE
-> Task :react-native-worklets:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-reanimated:externalNativeBuildDebug
-> Task :react-native-reanimated:prefabDebugPackage UP-TO-DATE
-> Task :app:buildCMakeDebug[arm64-v8a]
-> Task :app:mergeDevDebugJniLibFolders UP-TO-DATE
-> Task :invertase_react-native-apple-authentication:mergeDebugJniLibFolders UP-TO-DATE
-> Task :invertase_react-native-apple-authentication:mergeDebugNativeLibs NO-SOURCE
-> Task :invertase_react-native-apple-authentication:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-agora:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-agora:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-agora:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-async-storage_async-storage:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-async-storage_async-storage:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-async-storage_async-storage:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-biometrics:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-biometrics:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-biometrics:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-blob-util:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-blob-util:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-blob-util:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-bootsplash:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-bootsplash:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-bootsplash:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-clipboard_clipboard:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-clipboard_clipboard:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-clipboard_clipboard:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-community_blur:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-community_blur:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-community_blur:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-community_checkbox:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-community_checkbox:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-community_checkbox:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-community_geolocation:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-community_geolocation:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-community_geolocation:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-community_masked-view:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-community_masked-view:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-community_masked-view:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-config:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-config:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-config:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-date-picker:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-date-picker:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-date-picker:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-device-info:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-device-info:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-device-info:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-documents_picker:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-documents_picker:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-documents_picker:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-encrypted-storage:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-encrypted-storage:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-encrypted-storage:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-file-viewer:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-file-viewer:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-file-viewer:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-firebase_app:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-firebase_app:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-firebase_app:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-firebase_messaging:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-firebase_messaging:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-firebase_messaging:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-fs:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-fs:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-fs:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-gesture-handler:configureCMakeDebug[arm64-v8a]
-> Task :react-native-gesture-handler:buildCMakeDebug[arm64-v8a]
-> Task :react-native-gesture-handler:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-gesture-handler:mergeDebugNativeLibs UP-TO-DATE
-> Task :react-native-gesture-handler:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-google-signin_google-signin:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-google-signin_google-signin:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-google-signin_google-signin:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-image-picker:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-image-picker:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-image-picker:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-keychain:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-keychain:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-keychain:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-linear-gradient:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-linear-gradient:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-linear-gradient:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-pager-view:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-pager-view:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-pager-view:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-pdf:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-pdf:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-pdf:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-permissions:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-permissions:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-permissions:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-reanimated:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-reanimated:mergeDebugNativeLibs UP-TO-DATE
-> Task :react-native-reanimated:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-restart:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-restart:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-restart:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-safe-area-context:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-safe-area-context:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-safe-area-context:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-screens:configureCMakeDebug[arm64-v8a]
+> Task :react-native-wallet-manager:compileDebugKotlin
+> Task :react-native-worklets:configureCMakeDebug[x86_64]
+> Task :react-native-wallet-manager:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-wallet-manager:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :react-native-wallet-manager:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :react-native-wallet-manager:processDebugJavaRes UP-TO-DATE
+> Task :react-native-wallet-manager:bundleLibRuntimeToDirDebug UP-TO-DATE
+
 > Task :app:compileDevDebugKotlin
 w: file:///Users/stark/Desktop/work/RN/heals-app-rn/android/app/src/main/java/com/heals/MainApplication.kt:8:8 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
-w: file:///Users/stark/Desktop/work/RN/heals-app-rn/android/app/src/main/java/com/heals/MainApplication.kt:15:16 This declaration overrides a deprecated member but is not marked as deprecated itself. Add the '@Deprecated
+w: file:///Users/stark/Desktop/work/RN/heals-app-rn/android/app/src/main/java/com/heals/MainApplication.kt:15:16 This declaration overrides a deprecated member but is not marked as deprecated itself. Add the '@Deprecated' annotation or suppress the diagnostic.
 w: file:///Users/stark/Desktop/work/RN/heals-app-rn/android/app/src/main/java/com/heals/MainApplication.kt:15:33 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
-> Task :react-native-screens:buildCMakeDebug[arm64-v8a]
-> Task :app:compileDevDebugJavaWithJavac
-> Task :app:dexBuilderDevDebug
-> Task :app:mergeDevDebugGlobalSynthetics UP-TO-DATE
-> Task :app:processDevDebugJavaRes UP-TO-DATE
-> Task :app:mergeDevDebugJavaResource UP-TO-DATE
-> Task :react-native-screens:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-screens:mergeDebugNativeLibs UP-TO-DATE
-> Task :react-native-screens:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-share:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-share:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-share:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-svg:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-svg:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-svg:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-vector-icons:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-vector-icons:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-vector-icons:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-wallet-manager:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-wallet-manager:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-wallet-manager:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :react-native-webview:mergeDebugJniLibFolders UP-TO-DATE
-> Task :react-native-webview:mergeDebugNativeLibs NO-SOURCE
-> Task :react-native-webview:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :sentry_react-native:mergeDebugJniLibFolders UP-TO-DATE
-> Task :sentry_react-native:mergeDebugNativeLibs NO-SOURCE
-> Task :sentry_react-native:copyDebugJniLibsProjectOnly UP-TO-DATE
-> Task :app:mergeDevDebugNativeLibs UP-TO-DATE
-> Task :app:stripDevDebugDebugSymbols UP-TO-DATE
-> Task :app:validateSigningDevDebug UP-TO-DATE
-> Task :app:writeDevDebugAppMetadata UP-TO-DATE
-> Task :app:writeDevDebugSigningConfigVersions UP-TO-DATE
-> Task :app:mergeProjectDexDevDebug
-> Task :app:packageDevDebug
-> Task :app:createDevDebugApkListingFileRedirect
-> Task :app:installDevDebug
-Installing APK 'app-dev-debug.apk' on 'PJJ110 - 16' for :app:dev-debug
-Installed on 1 device.
-[Incubating] Problems report is available at: file:///Users/stark/Desktop/work/RN/heals-app-rn/android/build/reports/problems/problems-report.html
-Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
-You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
-For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
-BUILD SUCCESSFUL in 2m 18s
-898 actionable tasks: 37 executed, 861 up-to-date
-info Connecting to the development server...
-info Starting the app on "4ae24c72"...
-Starting: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.healshealthcare.healspass.dev/com.healshealthcare.healspass.MainActivity }
 
----
-exit_code: 0
-elapsed_ms: 143601
-ended_at: 2026-11-18T08:04:52.421Z
----
+> Task :react-native-worklets:buildCMakeDebug[x86_64][worklets]
