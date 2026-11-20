@@ -1,0 +1,36 @@
+{
+  "name": "create_branch",
+  "description": "Create a new branch from the latest checkpoint of a main Figma design file. This MUST NOT be used if the user wants to create a new file. This tool MUST ONLY be used if the user EXPLICITLY wants to create a new branch on an existing file. Branching is supported only for files on Organization and Enterprise plans. IMPORTANT: This tool only works for Figma design files (URL path `/design/`). It is NOT supported for FigJam (`/board/`), Slides (`/slides/`), Specs (`/spec/`), or Figma Make (`/make/`) files. The source must support branching and cannot already be a branch. Returns the new branch file key and URL.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "sessionId": {
+        "description": "After create_session succeeds, pass its exact returned UUID here on every file-tool call for this task, even when fileKey differs.",
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+      },
+      "fileKey": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[0-9a-zA-Z]{22,128}$",
+        "description": "The main Figma design file key to branch. For a URL like https://figma.com/design/:fileKey/:fileName, use :fileKey. Existing branch keys are not supported."
+      },
+      "branchName": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The name for the new branch. Cannot be empty. Must contain a non-whitespace character."
+      }
+    },
+    "required": [
+      "fileKey",
+      "branchName"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

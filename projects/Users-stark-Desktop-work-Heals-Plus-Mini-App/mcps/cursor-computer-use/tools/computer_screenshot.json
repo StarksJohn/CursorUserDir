@@ -1,0 +1,50 @@
+{
+  "name": "computer_screenshot",
+  "description": "Take a screenshot of the primary display, or of one app's window with an app target. Coordinates are pixels in the fixed 1280×800 screenshot canvas, origin (0, 0) at the top-left. Take one before your first coordinate-based action and whenever the screen may have changed. An app-target screenshot is the image. When a live snapshot is still fresh it reuses that snapshot_id and does not walk. If snapshot_id is present, do not call computer_app_state. Otherwise the image returns without a tree; call computer_app_state when you need element ids.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "target": {
+        "description": "Default: {\"scope\":\"app\",\"pid\":…,\"target_id\":…} from computer_apps or computer_resolve_app. That drives one macOS app without taking screen control or moving the real cursor (a cursor overlay is still shown), and needs no computer_start_control. Omit (or {\"scope\":\"screen\"}) only to escalate to full-display remote control.",
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "type": "string",
+                "const": "screen"
+              }
+            },
+            "required": [
+              "scope"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "type": "string",
+                "const": "app"
+              },
+              "pid": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "pid from computer_apps or computer_resolve_app."
+              },
+              "target_id": {
+                "type": "string",
+                "minLength": 1,
+                "description": "target_id from computer_apps or computer_resolve_app."
+              }
+            },
+            "required": [
+              "scope",
+              "pid",
+              "target_id"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -120,6 +120,8 @@ description: >-
   8. 代码更新后的刷新：保存源码后，HBuilderX 会更新 `unpackage/dist/dev/mp-weixin`。产物变新就再执行一次第 7 步。这是本项目最接近 RN debug 包保存后自动更新的官方路径。微信文档中的代码热重载只更新开发者工具模拟器，不能把它当成手机已经热重载。真机调试会另外上传一份调试包并提供断点，保存代码不会自动更新那次会话。用户本轮没有另行要求断点时，不要启动真机调试。
   9. 验收：`adb exec-out screencap -p` 必须显示微信前台已经打开本小程序，而不是只停在微信聊天列表。`cli auto-preview` 退出码为 0。HBuilderX 和控制台没有阻塞运行的红色报错。最终报告写明序列号、时区核对结果、走的是快路径还是重新打开、dev 产物路径、`apis/index.js` 哪些常量处于 dev、自动预览结果，以及没有上传、没有提交。域名白名单或登录账号不一致时停止并说明，不要改微信公众平台配置。 -->
 
+- 
+
 <!-- - 改动后刷新真机UI: 页面、组件、文案或接口代码已经改动并保存后，把最新 dev 产物再自动预览到当前 adb 已连接的 Android 真机，让手机微信前台打开的小程序显示最新 UI。验收通过前不要自动停止。同一阻塞连续 3 次没有进展就停止并报告。本条不重装 HBuilderX 或微信开发者工具，不切换 `apis/index.js` 的环境，不重新导入项目，不启动真机调试，不提交，不 push。禁止执行 `npm run android:dev`、Gradle、Metro、`adb reverse tcp:8081`，禁止使用 `heals-app-rn` 的包名，禁止 `cli upload` 和发行上传，禁止改用 `unpackage/dist/build/mp-weixin`。
   1. 锁定设备：`adb devices -l` 只接受状态为 `device` 的一台手机。没有手机就停止。多于一台时列出序列号和 model 后停止，不要猜。后续 adb 命令都带 `-s <serial>`。用 `adb shell getprop persist.sys.timezone` 核对是否为 `Asia/Shanghai`。不一致只写入报告，不因此重装微信。
   2. 确认产物：dev 产物目录必须是项目根下的 `unpackage/dist/dev/mp-weixin`，且其中 `project.config.json` 含有 appid 和 projectname。AppID 以当前 `manifest.json` 的 `mp-weixin.appid` 为准。HBuilderX 运行会话还在、微信开发者工具已经打开该 dev 目录，并且这次只改了 `pages/`、`packageB/`、`components/`、`locale/`、`utils/`、`apis/`、`styles/` 时，走快路径。快路径不关闭微信、不重装微信、不重新导入项目。等该目录新于上次自动预览后再推送。运行会话不在、开发者工具没有打开该 dev 目录，或改动涉及 `manifest.json`、`pages.json`、新增静态资源时，用 HBuilderX「运行到小程序模拟器 -> 微信开发者工具」重新编译，并执行 `cli open --project "<dev 产物绝对路径>"`。项目路径含空格，必须加引号。该 dev 目录已经打开时，不要再开第二个项目。
