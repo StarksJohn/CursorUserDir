@@ -1,0 +1,20 @@
+{
+  "name": "git_compose_undo",
+  "description": "Revert a git_compose_apply, restoring the previous HEAD and working-tree changes. Pass the `undo_id` from the apply result; omit it to list the undo ids available in the repository. Undo is validated first and refused with undo_blocked (nothing modified) if the branch has new commits or the working tree has any uncommitted changes, including changes a filtered or partial apply left behind. There is no force option: ask the user.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "directory": {
+        "description": "The repository working directory",
+        "type": "string"
+      },
+      "undo_id": {
+        "description": "The `undo_id` from git_compose_apply. Omit to list available ids.",
+        "type": "string"
+      }
+    },
+    "required": [
+      "directory"
+    ]
+  }
+}
