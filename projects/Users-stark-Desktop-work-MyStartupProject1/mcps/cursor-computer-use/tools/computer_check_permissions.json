@@ -1,0 +1,8 @@
+{
+  "name": "computer_check_permissions",
+  "description": "Passively report whether the Accessibility and Screen Recording permissions the computer-use helper needs are granted. On Windows both are always granted. Not needed before acting: an action that needs a missing permission is refused with what the user has to do. Do not call Computer Use tools in parallel; they act on one machine and run one at a time.",
+  "arguments": {
+    "type": "object",
+    "properties": {}
+  }
+}
