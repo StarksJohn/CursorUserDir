@@ -1,0 +1,51 @@
+{
+  "name": "rerun_checks",
+  "description": "Ask the CI app that reported a check run to run it again. Use it after checks_read shows a failure that looks like infrastructure trouble or a flaky test, not a problem in the change; investigate instead of re-running a check the change breaks or one whose re-run failed too. target takes the same shapes as checks_read. A run target re-requests that one run. A pull_request, commit, or suite target re-requests every run there that checks_read lists in failing and whose app declared it re-requestable (isRerequestable), at most 20 per call. Origin re-requests a run only when it is completed, is the latest run of its check, and is on the current head of an open pull request, with one re-request outstanding per run at a time. rerequested lists the runs this call re-requested: each reads status rerequested, which is pending and blocks a merge that requires it, until its app posts a new run, so follow it with checks_read. skipped lists the failing runs this call did not re-request, each with a message and a reason: not_rerequestable when its app does not accept re-runs, otherwise the error category Origin refused it with. truncated means the lists leave failing runs out; call again while calls keep re-requesting runs. For a run target, a refusal is the tool's error: not_found, or conflict when the run is still running, its app does not accept re-runs, it already has a re-request outstanding, or it is not on the current head of an open pull request. Other targets stop at a refusal that would repeat for every run, such as a permission or quota error or a commit that is not the current head of an open pull request; it is the tool's error when nothing was re-requested. Needs repository contents write, the same access as pushing.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "owner": {
+        "type": "string",
+        "description": "Origin namespace (owner) slug, taken from list_namespaces or an earlier Origin result. A GitHub owner or org name is not an Origin namespace unless list_namespaces returns it."
+      },
+      "name": {
+        "type": "string",
+        "description": "Origin repository name within that namespace"
+      },
+      "target": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "pull_request, commit, suite, or run"
+          },
+          "number": {
+            "description": "Pull request number, for a pull_request target",
+            "type": "number"
+          },
+          "sha": {
+            "description": "Commit SHA, for a commit target",
+            "type": "string"
+          },
+          "checkSuiteId": {
+            "description": "Check suite id, for a suite target",
+            "type": "string"
+          },
+          "checkRunId": {
+            "description": "Check run id, for a run target",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      }
+    },
+    "required": [
+      "owner",
+      "name",
+      "target"
+    ],
+    "$schema": "http://json-schema.org/draft-07/schema#"
+  }
+}
