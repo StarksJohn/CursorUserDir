@@ -1,0 +1,54 @@
+{
+  "name": "weave_request_report",
+  "description": "Requests a Weave report or gets the status of an existing report.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "action": {
+        "type": "string",
+        "enum": [
+          "request",
+          "status"
+        ],
+        "description": "Use \"request\" to create a report. For \"status\", pass only action, the same reportType, and the returned reportId."
+      },
+      "reportType": {
+        "type": "string",
+        "const": "credit_usage",
+        "description": "Report to request. Currently only credit_usage is supported."
+      },
+      "startDate": {
+        "description": "First UTC calendar day to include, YYYY-MM-DD. Omit for all history.",
+        "type": "string",
+        "format": "date",
+        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+      },
+      "endDate": {
+        "description": "Last UTC calendar day to include, YYYY-MM-DD, inclusive. Omit for today.",
+        "type": "string",
+        "format": "date",
+        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+      },
+      "sendEmail": {
+        "description": "Email the requester’s account when ready. Defaults to false for polling; set true when the user asks for email.",
+        "type": "boolean"
+      },
+      "reportId": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "description": "The id returned when the report was requested."
+      }
+    },
+    "required": [
+      "action",
+      "reportType"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

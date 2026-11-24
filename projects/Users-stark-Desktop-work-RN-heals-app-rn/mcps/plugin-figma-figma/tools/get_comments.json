@@ -1,6 +1,6 @@
 {
   "name": "get_comments",
-  "description": "Get comments on a Figma file. If the URL is of the format https://figma.com/design/:fileKey/branch/:branchKey/:fileName then use the branchKey as the fileKey.",
+  "description": "Get comments on a Figma file. Supports Figma Design (`/design/`), FigJam (`/board/`), Figma Slides (`/slides/`), and Figma Make (`/make/`) files. Other file types are unsupported by `get_comments`. To read comments on a Figma Specs file (`/spec/`), read the `figma-spec` skill and use `use_figma`. If the URL is of the format https://figma.com/design/:fileKey/branch/:branchKey/:fileName then use the branchKey as the fileKey.",
   "arguments": {
     "type": "object",
     "properties": {
