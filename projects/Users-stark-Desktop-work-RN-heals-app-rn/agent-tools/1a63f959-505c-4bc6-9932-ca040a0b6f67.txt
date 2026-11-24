@@ -1,0 +1,1128 @@
+# Some touchable components are not working (Native Android devices only)
+
+- State: closed
+- Author: DrZoidberg09
+- Created: 2024-05-21T22:17:49Z
+- Updated: 2026-01-12T20:49:40Z
+- Repository: react/react-native
+- Number: #44643
+
+## Labels
+
+- Platform: Android
+- Type: New Architecture
+
+---
+
+### Description 
+ 
+For me this issue still the issue #36710 persists on RN 0.74.1, Expo 51.0.8 and react-native-screens 3.31.1 running with fabric. 
+ 
+Same problem: Some components, e.g. custom buttons in the header bar or some modals (not all). This happens only on native Android devices. iOS or Android emulator are fine. 
+ 
+Additionally, native buttons work. Only "normal" RN components don't. 
+ 
+onPressIn works fine, normal onPress does not. 
+ 
+### Steps to reproduce 
+ 
+Have the mentioned setup. Use Expo Router with custom buttons or wix rnui ActionSheet (therefore probably not related to third party libs) 
+ 
+### React Native Version 
+ 
+0.74.2 
+ 
+### Affected Platforms 
+ 
+Runtime - Android 
+ 
+### Areas 
+ 
+Fabric - The New Renderer 
+ 
+### Output of `npx react-native info` 
+ 
+```text
+System:
+  OS: macOS 14.4.1
+  CPU: (8) arm64 Apple M1
+  Memory: 89.05 MB / 16.00 GB
+  Shell:
+    version: "5.9"
+    path: /bin/zsh
+Binaries:
+  Node:
+    version: 21.7.3
+    path: /opt/homebrew/bin/node
+  Yarn:
+    version: 1.22.19
+    path: ~/.yarn/bin/yarn
+  npm:
+    version: 10.7.0
+    path: /opt/homebrew/bin/npm
+  Watchman:
+    version: 2024.05.06.00
+    path: /opt/homebrew/bin/watchman
+Managers:
+  CocoaPods:
+    version: 1.15.2
+    path: /usr/local/bin/pod
+SDKs:
+  iOS SDK:
+    Platforms:
+      - DriverKit 23.2
+      - iOS 17.2
+      - macOS 14.2
+      - tvOS 17.2
+      - visionOS 1.0
+      - watchOS 10.2
+  Android SDK: Not Found
+IDEs:
+  Android Studio: 2022.3 AI-223.8836.35.2231.10811636
+  Xcode:
+    version: 15.2/15C500b
+    path: /usr/bin/xcodebuild
+Languages:
+  Java:
+    version: 17.0.8
+    path: /usr/bin/javac
+  Ruby:
+    version: 2.6.10
+    path: /usr/bin/ruby
+npmPackages:
+  "@react-native-community/cli": Not Found
+  react:
+    installed: 18.2.0
+    wanted: 18.2.0
+  react-native:
+    installed: 0.74.1
+    wanted: 0.74.1
+  react-native-macos: Not Found
+npmGlobalPackages:
+  "*react-native*": Not Found
+Android:
+  hermesEnabled: true
+  newArchEnabled: true
+iOS:
+  hermesEnabled: true
+  newArchEnabled: true
+```
+ 
+ 
+### Stacktrace or Logs 
+ 
+```text
+No relevant log?
+```
+ 
+ 
+### Reproducer 
+ 
+https://github.com/DrZoidberg09/RN-Android-Touch-Issue/ 
+ 
+### Screenshots and Videos 
+ 
+_No response_
+
+## Timeline
+
+- DrZoidberg09 added label "Needs: Triage :mag:"
+
+- DrZoidberg09 added label "Type: New Architecture"
+
+- github-actions[bot] added label "Needs: Author Feedback"
+
+- github-actions[bot] added label "Needs: Repro"
+
+- github-actions[bot] added label "Platform: Android"
+
+**cortinico** commented on 2024-05-22T10:00:41Z:
+
+> > Will add, if needed
+> 
+> Can we get a reproducer? As otherwise it's extremely hard to debug this issue.
+
+- cortinico removed label "Needs: Triage :mag:"
+
+**DrZoidberg09** commented on 2024-05-22T11:25:41Z:
+
+> Yes, will follow later today.
+
+- github-actions[bot] removed label "Needs: Author Feedback"
+
+- github-actions[bot] added label "Needs: Attention"
+
+- github-actions[bot] removed label "Needs: Repro"
+
+- cortinico removed label "Needs: Attention"
+
+**cortinico** commented on 2024-05-28T11:59:56Z:
+
+> > Yes, will follow later today.
+> 
+> Any news on this?
+
+- cortinico added label "Needs: Repro"
+
+**github-actions[bot]** commented on 2024-05-28T12:00:15Z:
+
+> | :warning: | Missing Reproducible Example |
+> | --- | --- |
+> | :information_source: | We could not detect a reproducible example in your issue report. Please provide either: If your bug is UI related: a Snack If your bug is build/update related: use our Reproducer Template |
+
+- github-actions[bot] added label "Needs: Author Feedback"
+
+**DrZoidberg09** commented on 2024-05-28T12:02:35Z:
+
+> I edited the original post. This is the repro: https://github.com/DrZoidberg09/RN-Android-Touch-Issue/
+
+- github-actions[bot] removed label "Needs: Author Feedback"
+
+- github-actions[bot] added label "Needs: Attention"
+
+**tcloudAce** commented on 2024-05-30T07:46:37Z:
+
+> same issue !! onPressIn and onPressOut is work, but onPress not work only! 
+
+**DrZoidberg09** commented on 2024-05-31T16:24:59Z:
+
+> @cortinico Anything else you need from me to look into this?
+
+- cortinico mentioned
+
+- cortinico subscribed
+
+**imransilvake** commented on 2024-06-01T13:24:28Z:
+
+> on Samsung devices onPress doesn't work. All customers with Samsung devices (S23, S24) are reporting it. any solution to make it work?
+
+**copiri-six** commented on 2024-06-01T15:37:15Z:
+
+> Just chiming in to say that we have been struggling with this as well. Both this issue and #36710 describe our problem quite well, although #36710 got hijacked and closed based on an unrelated bug being addressed (the solved bug had to do with the new architecture, while the OP stated his problem existed before the new architecture was even created).
+> 
+> Looking forward to any movement on this issue, because its random nature makes it effectively impossible to reliably reproduce.
+
+**tcloudAce** commented on 2024-06-03T00:35:45Z:
+
+> In my scenario, I can reproduce this error 100% of the time (onPress does not respond, but interestingly, the animation effect of TouchableOpacity still shows). I have tested it with Expo 51, Expo 50, React Native 0.74.1, and React Native 0.73.6. The test environment includes Samsung S23 and S24. In a real device environment, even onPressIn and onPressOut do not work, whereas on the emulator, onPressIn and onPressOut respond normally, but onPress does not respond.
+> 
+> My scenario is similar to a step-by-step installation guide Page, which is built with a ScrollView in RN. There are about 7 pages within the ScrollView. If a Modal is opened within these pages, the onPress of buttons inside the Modal does not respond. Currently, I have disabled react-native-screens and used onPressOut instead of onPress. Although it works, it causes accidental clicks when scrolling (due to onPressOut).
+> 
+> Additionally, to add more context, my ScrollView contains nested ScrollViews. In this environment, onPress 100% fails to respond. The issue does not occur with non-nested ScrollViews.
+
+**tcloudAce** commented on 2024-06-03T00:37:53Z:
+
+> @imransilvake @DrZoidberg09 Using react-native-handler-gesture to build a button can temporarily solve this problem. Here is the sample code:
+> import React from "react";
+> import { TapGestureHandler, State } from "react-native-gesture-handler";
+> import { View } from "react-native";
+> 
+> export default function Pressable({ onPress, children, style, disabled }) {
+> const onHandlerStateChange = (event) => {
+> if (event.nativeEvent.state === State.END) {
+> onPress();
+> }
+> };
+> 
+> return (
+>  onHandlerStateChange={onHandlerStateChange}
+> enabled={!disabled}
+> >
+> {children} 
+> 
+> );
+> }
+
+- imransilvake mentioned
+
+- imransilvake subscribed
+
+- DrZoidberg09 mentioned
+
+- DrZoidberg09 subscribed
+
+**tcloudAce** commented on 2024-06-03T01:56:34Z:
+
+> @cortinico In my scenario, the TextInput also cannot be focused. This is indeed a peculiar issue. 
+
+- cortinico mentioned
+
+- cortinico subscribed
+
+- gtwilliams03 subscribed
+
+**gtwilliams03** commented on 2024-06-04T02:51:39Z:
+
+> I have the same issue with our app. iOS and Android emulator work fine. iOS production app works fine. Recently though, the Android production app has become relatively unusable. You can log in and within a few seconds, pretty much every pressable item becomes unresponsive. 
+
+**tcloudAce** commented on 2024-06-04T02:56:04Z:
+
+> @gtwilliams03 If the buttons are not working, you can try the following code:
+> `import React from "react";
+> import { TapGestureHandler, State } from "react-native-gesture-handler";
+> import { View } from "react-native";
+> 
+> export default function Pressable({ onPress, children, style, disabled }) {
+> const onHandlerStateChange = (event) => {
+> if (event.nativeEvent.state === State.END) {
+> onPress();
+> }
+> };
+> 
+> return (
+>  onHandlerStateChange={onHandlerStateChange}
+> enabled={!disabled}
+> >
+> {children} 
+> 
+> );
+> }`
+
+- gtwilliams03 mentioned
+
+- gtwilliams03 subscribed
+
+**gtwilliams03** commented on 2024-06-04T11:27:32Z:
+
+> @tcloudAce Thank you - however this issue is pretty much with anything pressable (not just a button). Buttons, navigation tabs, etc. I should also add that the app responds to presses for a very short period of time (<3 seconds) and then ceases responding to any taps anywhere on the Android device screen. The emulators work fine so this is very difficult to reproduce/test.
+
+- tcloudAce mentioned
+
+- tcloudAce subscribed
+
+**tcloudAce** commented on 2024-06-05T06:48:49Z:
+
+> In my case, changing the component layout and applying the above code temporarily solved my problem. The only thing that is certain is that iOS and Android often cannot use the same layout. Code that runs successfully and without issues on Android usually works on iOS, but not the other way around. Moreover, this issue is not only present in the latest versions of React Native but has existed in many past versions as well. I hope this helps everyone. 
+
+- Referenced by issue #44610: Pressable gets stuck under the new architecture
+
+**cortinico** commented on 2024-06-19T19:12:59Z:
+
+> > DrZoidberg09/RN-Android-Touch-Issue
+> 
+> Can we get a non-expo reproducer using this template instead:
+> https://github.com/react-native-community/reproducer-react-native
+> 
+> The provided repro is quite involved (uses expo router) and I'd like to isolate this issue as much as possible.
+
+**DrZoidberg09** commented on 2024-06-19T21:27:05Z:
+
+> Tried to reproduce it with pure RN and the repo you shared. So far, I could not reproduce it. Even with the RN-Navigation header issue shown in the other Expo based repro.
+> 
+> So far, it seems it's neither react-native nor react-navigation, but Expo(-router). 
+> 
+> But I will keep trying to reproduce it in the next days.
+
+**cortinico** commented on 2024-06-19T22:00:01Z:
+
+> > So far, it seems it's neither react-native nor react-navigation, but Expo(-router).
+> 
+> That's sometimes related to `react-native-screens` (at least it was in the past). Worth a try with `-screens` to see if it reproduces there
+
+**DrZoidberg09** commented on 2024-06-19T22:42:36Z:
+
+> I have react-native-screens and react-navigation stack also running in the repro. Here it works fine. In the main project with Expo it is not.
+> 
+> Another weird behavior:
+> 
+> If I run Expo development build on the native device most is working pretty ok besides onPress in the header bar. (onPressOut and In is working nicely though). However, if I build a proper apk and run it on the native (Samsung) device. Everything pressable in a stack is not working, incl. every list, button, etc. (Also the positioning of position absolute items is different if I use development build or an apk on the same device...)
+
+**DrZoidberg09** commented on 2024-06-19T23:08:58Z:
+
+> This seems to be very close to the issue as well: https://github.com/software-mansion/react-native-screens/issues/2150
+
+**DrZoidberg09** commented on 2024-06-26T20:57:46Z:
+
+> @cortinico I could track it down to expo-router. Please look at the github repo. I added a reproducer for each: pure RN, expo with router and expo without router.
+> 
+> The two repos without router work. With router it does not.
+
+- cortinico mentioned
+
+- cortinico subscribed
+
+- Referenced by issue #30032: Pressable elements not working on native android devices (with new arch)
+
+**cortinico** commented on 2024-06-27T16:09:43Z:
+
+> > The two repos without router work. With router it does not.
+> 
+> Great so let's close it for now and move the conversation over to: https://github.com/expo/expo/issues/30032
+
+- cortinico closed
+
+- cortinico removed label "Needs: Repro"
+
+- cortinico removed label "Needs: Attention"
+
+- Referenced by issue #2219: Pressable elements not working in native-stack on Android devices with new architecture
+
+**tremblerz** commented on 2024-07-14T02:01:11Z:
+
+> I was encountering a similar issue -- TouchableOpacity (and other wrappers of Pressable) not working on Android but working fine in iOS. However, I was able to fix the issue by adding a `zIndex: 10` in the style property. 10 is just a number here, basically it had to be on the top.
+
+- Referenced by issue #45738: [$500] Android- Workspace- Unable to open workspaces that out of view after creating new workspace
+
+**littleski** commented on 2024-08-19T16:48:26Z:
+
+> I have done a little digging into Pressability.js
+> It seems that the condition to fire onPress is: `isPressInSignal(prevState) && signal === 'RESPONDER_RELEASE'`
+> and then that `!isPressCanceledByLongPress`
+> 
+> In my testings of this wonky behaviour.
+> * Sometimes, the events are in the right order (it's rare, but it is happening). (i get RESPONDER_ACTIVE_PRESS_IN as prevState)
+> * Sometime not at all, and when i get the RESPONDER_RELEASE signal, the prevState is RESPONDER_ACTIVE_PRESS_OUT and so onPress do not fire.
+> 
+> ```
+> const isPressInSignal = (signal: TouchState) =>
+> signal === 'RESPONDER_INACTIVE_PRESS_IN' ||
+> signal === 'RESPONDER_ACTIVE_PRESS_IN' ||
+> signal === 'RESPONDER_ACTIVE_LONG_PRESS_IN';
+> ```
+> 
+> onPressIn and onPressOut are not using the same State machine conditions, and thus, are not impacted by the issue.
+> 
+> Haven't fixed (as adding the prev event to the function is surely not what is supposed to happen), and i am trying to understand a bit more to not do shit, but maybe it can help someone understand more the issue.
+
+**DominikHinc** commented on 2024-08-21T18:53:04Z:
+
+> I investigated it a little more and from what I see this is a case of measure not synchronizing correctly with the coordinates of touches.
+> 
+> On Android with new architecture the touches will be returned as coordinates relative to the root view. So if the screen you are using is 300 x 700 pixels, it will fall somewhere between that.
+> 
+> The Pressablity.js file, mentioned by @littleski then takes those touch coordinates and compares them to the coordinates of the responder (returned by the measure function),
+> ```
+> _measureResponderRegion(): void {
+> if (this._responderID == null) {
+> return;
+> }
+> 
+> if (typeof this._responderID === 'number') {
+> UIManager.measure(this._responderID, this._measureCallback);
+> } else {
+> this._responderID.measure(this._measureCallback);
+> }
+> }
+> _measureCallback = (
+> left: number,
+> top: number,
+> width: number,
+> height: number,
+> pageX: number,
+> pageY: number,
+> ) => {
+> if (!left && !top && !width && !height && !pageX && !pageY) {
+> return;
+> }
+> this._responderRegion = { // <------ position of the responder relative to the root view (this is the problematic place, which is explained below
+> bottom: pageY + height,
+> left: pageX,
+> right: pageX + width,
+> top: pageY,
+> };
+> };
+> ```
+> 
+> BUT ONLY on the responder move:
+> 
+> ```
+> onResponderMove: (event: PressEvent): void => {
+> /* ... */
+> const touch = getTouchFromPressEvent(event); // <--- coordinates of users touch
+> /* ... */
+> if (this._isTouchWithinResponderRegion(touch, responderRegion)) {
+> this._receiveSignal('ENTER_PRESS_RECT', event);
+> } else {
+> this._cancelLongPressDelayTimeout();
+> this._receiveSignal('LEAVE_PRESS_RECT', event);
+> }
+> },
+> 
+> _isTouchWithinResponderRegion(
+> touch: $PropertyType<PressEvent, 'nativeEvent'>,
+> responderRegion: $ReadOnly<{|
+> bottom: number,
+> left: number,
+> right: number,
+> top: number,
+> |}>,
+> ): boolean {
+> /* ... */
+> return (
+> touch.pageX > regionLeft &&
+> touch.pageX < regionRight &&
+> touch.pageY > regionTop &&
+> touch.pageY < regionBottom
+> );
+> }
+> ```
+> 
+> And that is why this issue only appears on some android devices which are more sensitive. Emulators and less sensitive devices will never trigger the onResponderMove callback. I found out that this issue can be reproduced on emulators just by moving the mouse a little bit during a touch.
+> 
+> As for the reason why this bug even occurs at all, it comes down to the data returned from the measure. The pageX and pageY in some special circumstances will return coordinates far exceeding the boundaries of the screen. From what I tested for now, this is a case for both `react-native-tab-view` and `react-native-pager-view`. I haven't found a time to look into them, what exact construct is causing that, but I know for sure that the responder pageX and pageY is being offset there by the amount of the travel distance it had to do before appearing on the screen.
+> Let's take tab-view for example:
+> If we have 3 tabs in tab-view , each screen-wide with it's own touchable button (responder), the responder coordinates for the first tab button will be normal - it will respond to touches correctly, but for the second and third tab the coordinates will be offset (pageX) by respectively (in case of 300 pixel wide screen) - 300 pixels and 600 pixels, meaning that as soon as the responder calls `onResponderMove` the touch will be broken (put into LEAVE_PRESS_RECT state) which it then has no way of fixing, since the X position of the touch will be like 112 pixels and the responder X will be 412 pixels (out of screen).
+> 
+> For now I don't know how to fix it.
+
+- littleski mentioned
+
+- littleski subscribed
+
+**DominikHinc** commented on 2024-08-22T09:30:51Z:
+
+> It's definitely a react-native-pager-view issue, since tab-view also relies on that, for now I simply swapped all the buttons in the app with this component 
+> 
+> ```
+> const ManuallyHandledButton = ({ onPress, children, ...props }) => {
+> const _touchActivatePositionRef = useRef(null)
+> 
+> const _onPressIn = useCallback((e) => {
+> const { pageX, pageY } = e.nativeEvent
+> 
+> _touchActivatePositionRef.current = {
+> pageX,
+> pageY
+> }
+> }, [])
+> 
+> const _onPress = useCallback(
+> (e) => {
+> const { pageX, pageY } = e.nativeEvent
+> 
+> const absX = Math.abs(_touchActivatePositionRef.current.pageX - pageX)
+> const absY = Math.abs(_touchActivatePositionRef.current.pageY - pageY)
+> 
+> const dragged = absX > PRECISION || absY > PRECISION
+> 
+> if (!dragged) {
+> onPress?.(e)
+> }
+> },
+> [onPress]
+> )
+> 
+> return (
+>  onResponderStart={_onPressIn}
+> onResponderEnd={_onPress}
+> {...props}
+> >
+> {children}
+> 
+> )
+> }
+> 
+> 
+> const PressableForwarder =
+> global?.nativeFabricUIManager && IS_ANDROID
+> ? ManuallyHandledButton
+> : TouchableOpacity
+> 
+> export default PressableForwarder
+> 
+> ```
+> 
+> And it seems to work good enough
+
+**littleski** commented on 2024-08-22T09:31:54Z:
+
+> Pigging backing on @DominikHinc 
+> 
+> UiManager
+> ```
+> const UIManager: UIManagerJSInterface = {
+> ...UIManagerImpl,
+> measure(
+> reactTag: number,
+> callback: (
+> left: number,
+> top: number,
+> width: number,
+> height: number,
+> pageX: number,
+> pageY: number,
+> ) => void,
+> ): void {
+> if (isFabricReactTag(reactTag)) {
+> const FabricUIManager = nullthrows(getFabricUIManager());
+> const shadowNode =
+> FabricUIManager.findShadowNodeByTag_DEPRECATED(reactTag);
+> if (shadowNode) {
+> FabricUIManager.measure(shadowNode, callback);
+> } else {
+> console.warn(`measure cannot find view with tag #${reactTag}`);
+> // $FlowFixMe[incompatible-call]
+> callback();
+> }
+> } else {
+> // Paper
+> UIManagerImpl.measure(reactTag, callback);
+> }
+> },
+> ```
+> 
+> So here is the difference between new arch and old which seems logic. need to dig a bit in the Java to understand the difference and what may have been broken in the new arch java binding.
+
+- DominikHinc mentioned
+
+- DominikHinc subscribed
+
+**DominikHinc** commented on 2024-08-22T14:46:52Z:
+
+> @littleski turns out all I had to do was to implement this https://github.com/callstack/react-native-pager-view/issues/836 
+
+- littleski mentioned
+
+- littleski subscribed
+
+**littleski** commented on 2024-08-23T07:25:54Z:
+
+> The repro doesn't use this. It's more than likely that this is just a workaround for one lib. I don't use this package either. Might help understand the issue tho.
+
+**ap9101** commented on 2024-09-13T16:15:21Z:
+
+> i'm also faced same issue after enabling new architecture.
+> For those who are facing same issue in android and specifically in react native tab view then use this solution. upgrade react-native-pager-view to this version "^6.4.1" . Hope this will helps someone 
+
+**gtwilliams03** commented on 2024-09-23T10:37:30Z:
+
+> @ap9101 Thank you for your comment, however, when I upgraded our project to `react-native-pager-view` to version `^6.4.1` the screen with the `ViewPager` errors out with `requireNativeComponent: "LEGACY_RNCViewPager" was not found in the UIManager.` I tried versions `6.3.1` and `6.4.1` - seems like anything higher than `6.3.0` throws this error for me. Installing via `npx expo install react-native-pager-view` forces you back to `6.3.0`.
+
+- ap9101 mentioned
+
+- ap9101 subscribed
+
+- Referenced by PR #45865: Do not destroy views when there is a touch going on for New Architecture
+
+- Referenced by issue #48387: [New Arch][Android] Touchable components stop responding randomly
+
+**peaktan** commented on 2024-12-26T09:20:46Z:
+
+> > It's definitely a react-native-pager-view issue, since tab-view also relies on that, for now I simply swapped all the buttons in the app with this component
+> > 
+> > ```
+> > const ManuallyHandledButton = ({ onPress, children, ...props }) => {
+> > const _touchActivatePositionRef = useRef(null)
+> > 
+> > const _onPressIn = useCallback((e) => {
+> > const { pageX, pageY } = e.nativeEvent
+> > 
+> > _touchActivatePositionRef.current = {
+> > pageX,
+> > pageY
+> > }
+> > }, [])
+> > 
+> > const _onPress = useCallback(
+> > (e) => {
+> > const { pageX, pageY } = e.nativeEvent
+> > 
+> > const absX = Math.abs(_touchActivatePositionRef.current.pageX - pageX)
+> > const absY = Math.abs(_touchActivatePositionRef.current.pageY - pageY)
+> > 
+> > const dragged = absX > PRECISION || absY > PRECISION
+> > 
+> > if (!dragged) {
+> > onPress?.(e)
+> > }
+> > },
+> > [onPress]
+> > )
+> > 
+> > return (
+> >  > onResponderStart={_onPressIn}
+> > onResponderEnd={_onPress}
+> > {...props}
+> > >
+> > {children}
+> > 
+> > )
+> > }
+> > 
+> > 
+> > const PressableForwarder =
+> > global?.nativeFabricUIManager && IS_ANDROID
+> > ? ManuallyHandledButton
+> > : TouchableOpacity
+> > 
+> > export default PressableForwarder
+> > ```
+> > 
+> > And it seems to work good enough
+> 
+> 
+> Hello, we are also facing this problem. The problem is related to the measurement of `FabricUIManager.measure`. The `bottom` is calculated incorrectly, resulting in entering `LEAVE_PRESS_RECT`. Do you have any solution? What is the current situation?
+> 
+> 
+> https://github.com/user-attachments/assets/1e7ec0cb-55ac-4a3a-8f2e-4e431ce7d57f
+
+**peaktan** commented on 2024-12-26T09:20:51Z:
+
+> > It's definitely a react-native-pager-view issue, since tab-view also relies on that, for now I simply swapped all the buttons in the app with this component
+> > 
+> > ```
+> > const ManuallyHandledButton = ({ onPress, children, ...props }) => {
+> > const _touchActivatePositionRef = useRef(null)
+> > 
+> > const _onPressIn = useCallback((e) => {
+> > const { pageX, pageY } = e.nativeEvent
+> > 
+> > _touchActivatePositionRef.current = {
+> > pageX,
+> > pageY
+> > }
+> > }, [])
+> > 
+> > const _onPress = useCallback(
+> > (e) => {
+> > const { pageX, pageY } = e.nativeEvent
+> > 
+> > const absX = Math.abs(_touchActivatePositionRef.current.pageX - pageX)
+> > const absY = Math.abs(_touchActivatePositionRef.current.pageY - pageY)
+> > 
+> > const dragged = absX > PRECISION || absY > PRECISION
+> > 
+> > if (!dragged) {
+> > onPress?.(e)
+> > }
+> > },
+> > [onPress]
+> > )
+> > 
+> > return (
+> >  > onResponderStart={_onPressIn}
+> > onResponderEnd={_onPress}
+> > {...props}
+> > >
+> > {children}
+> > 
+> > )
+> > }
+> > 
+> > 
+> > const PressableForwarder =
+> > global?.nativeFabricUIManager && IS_ANDROID
+> > ? ManuallyHandledButton
+> > : TouchableOpacity
+> > 
+> > export default PressableForwarder
+> > ```
+> > 
+> > And it seems to work good enough
+> 
+> 
+> Hello, we are also facing this problem. The problem is related to the measurement of `FabricUIManager.measure`. The `bottom` is calculated incorrectly, resulting in entering `LEAVE_PRESS_RECT`. Do you have any solution? What is the current situation?
+> 
+> 
+> https://github.com/user-attachments/assets/1e7ec0cb-55ac-4a3a-8f2e-4e431ce7d57f
+
+**peaktan** commented on 2024-12-26T09:24:30Z:
+
+> > > It's definitely a react-native-pager-view issue, since tab-view also relies on that, for now I simply swapped all the buttons in the app with this component
+> > > ```
+> > > const ManuallyHandledButton = ({ onPress, children, ...props }) => {
+> > > const _touchActivatePositionRef = useRef(null)
+> > > 
+> > > const _onPressIn = useCallback((e) => {
+> > > const { pageX, pageY } = e.nativeEvent
+> > > 
+> > > _touchActivatePositionRef.current = {
+> > > pageX,
+> > > pageY
+> > > }
+> > > }, [])
+> > > 
+> > > const _onPress = useCallback(
+> > > (e) => {
+> > > const { pageX, pageY } = e.nativeEvent
+> > > 
+> > > const absX = Math.abs(_touchActivatePositionRef.current.pageX - pageX)
+> > > const absY = Math.abs(_touchActivatePositionRef.current.pageY - pageY)
+> > > 
+> > > const dragged = absX > PRECISION || absY > PRECISION
+> > > 
+> > > if (!dragged) {
+> > > onPress?.(e)
+> > > }
+> > > },
+> > > [onPress]
+> > > )
+> > > 
+> > > return (
+> > >  > > onResponderStart={_onPressIn}
+> > > onResponderEnd={_onPress}
+> > > {...props}
+> > > >
+> > > {children}
+> > > 
+> > > )
+> > > }
+> > > 
+> > > 
+> > > const PressableForwarder =
+> > > global?.nativeFabricUIManager && IS_ANDROID
+> > > ? ManuallyHandledButton
+> > > : TouchableOpacity
+> > > 
+> > > export default PressableForwarder
+> > > ```
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > And it seems to work good enough
+> > 
+> > @DominikHinc Hello, we are also facing this problem. The problem is related to the measurement of `FabricUIManager.measure`. The `bottom` is calculated incorrectly, resulting in entering `LEAVE_PRESS_RECT`. Do you have any solution? What is the current situation?
+> > 
+> > 42238487.mp4
+> 
+
+- DominikHinc mentioned
+
+- DominikHinc subscribed
+
+- ddrozdov subscribed
+
+- khorark subscribed
+
+- dabo248 subscribed
+
+**Qdafengzi** commented on 2025-05-29T02:57:54Z:
+
+> why close this? I have same issue
+> 
+> new architure RN 0.78.2 and then update to 0.79.2 , disappointed the same problem
+> 
+> "react-native-gesture-handler": "2.25.0",
+> "react-native-screens": "4.11.1",
+
+**Qdafengzi** commented on 2025-05-29T03:00:03Z:
+
+> @peaktan 这个问题 解决了吗？
+
+- peaktan mentioned
+
+- peaktan subscribed
+
+**syahbes** commented on 2025-06-03T12:39:18Z:
+
+> for me whats fixed this issue was to replace 'onPress' 
+> with 'onPressOut'
+> 
+> even with : 
+> ```
+> <TouchableOpacityonPressOut={() => {}>
+> Click me 
+> 
+> ```
+
+- littleski unsubscribed
+
+**Qdafengzi** commented on 2025-06-23T06:35:36Z:
+
+> 这个问题不能关闭呀，我使用FlatList 里面的item 不能响应点击事件，到底是哪里出了问题，有任何人可以帮助我吗？这个只发生在三星的机型中，有解决此问题的大佬 请你帮助我回复我。
+
+**syahbes** commented on 2025-06-23T06:43:46Z:
+
+> > 这个问题不能关闭呀，我使用FlatList 里面的item 不能响应点击事件，到底是哪里出了问题，有任何人可以帮助我吗？这个只发生在三星的机型中，有解决此问题的大佬 请你帮助我回复我。
+> 
+> 
+> Try to use `Pressable`
+> but from react-native-gesture-handler and not 'react-native'
+> 
+> `import { Pressable } from 'react-native-gesture-handler';`
+> let me know if you need more help about it
+
+**Qdafengzi** commented on 2025-06-23T06:53:43Z:
+
+> @syahbes Thanks! 
+> import { Pressable } from 'react-native-gesture-handler';
+> have try ,but not work
+> 
+> At first, I thought it was caused by the third-party drop-refresh library, but when I removed the drop-refresh library, the click event in the list still did not respond. I felt that someone must have messed up the global click event handling, and occasionally responded, but the effect was terrible
+> 
+> dependencies
+> 
+> ```
+> "dependencies": {
+> "@apollo/client": "3.13.8",
+> "@babel/plugin-proposal-decorators": "7.27.1",
+> "@dr.pogodin/react-native-fs": "2.33.1",
+> "@logrocket/react-native": "1.51.2",
+> "@os-team/i18next-react-native-language-detector": "1.1.6",
+> "@react-native-clipboard/clipboard": "1.16.2",
+> "@react-native-community/geolocation": "3.4.0",
+> "@react-native-community/hooks": "100.1.0",
+> "@react-native-community/netinfo": "11.4.1",
+> "@react-native-community/slider": "5.0.0",
+> "@react-native-firebase/analytics": "22.2.1",
+> "@react-native-firebase/app": "22.2.1",
+> "@react-native-firebase/crashlytics": "22.2.1",
+> "@react-native-firebase/perf": "22.2.1",
+> "@react-native-masked-view/masked-view": "0.3.2",
+> "@react-native/gradle-plugin": "0.79.2",
+> "@react-navigation/bottom-tabs": "7.3.16",
+> "@react-navigation/devtools": "7.0.32",
+> "@react-navigation/native": "7.1.12",
+> "@react-navigation/native-stack": "7.3.17",
+> "@react-navigation/stack": "7.3.5",
+> "@realm/react": "0.11.0",
+> "@rneui/base": "4.0.0-rc.8",
+> "@rneui/themed": "4.0.0-rc.8",
+> "@sdcx/nested-scroll": "0.14.0",
+> "@sdcx/pull-to-refresh": "0.27.0",
+> "@sentry/react-native": "6.15.1",
+> "@shopify/flash-list": "1.8.1",
+> "@types/lodash": "4.17.17",
+> "@types/react-native-svg-uri": "1.2.8",
+> "apollo-link-rest": "0.9.0",
+> "apollo-upload-client": "18.0.1",
+> "apollo3-cache-persist": "0.15.0",
+> "axios": "1.8.2",
+> "buffer": "6.0.3",
+> "deprecated-react-native-prop-types": "5.0.0",
+> "fbjs": "3.0.5",
+> "graphql": "16.9.0",
+> "i18next": "25.1.3",
+> "i18next-browser-languagedetector": "8.1.0",
+> "js-sha256": "0.11.0",
+> "libphonenumber-js": "1.12.8",
+> "lodash": "4.17.21",
+> "lottie-react-native": "7.2.2",
+> "mixpanel-react-native": "3.1.2",
+> "moment": "2.30.1",
+> "nullthrows": "1.1.1",
+> "qs": "6.12.2",
+> "query-string": "9.2.0",
+> "react": "19.0.0",
+> "react-i18next": "15.5.2",
+> "react-intl": "7.1.11",
+> "react-native": "0.79.2",
+> "react-native-animatable": "1.4.0",
+> "react-native-animated-pagination-dots": "0.1.73",
+> "react-native-awesome-alerts": "2.0.0",
+> "react-native-base64": "0.2.1",
+> "react-native-ble-manager": "12.1.4",
+> "react-native-collapsible-header-views": "1.1.2",
+> "react-native-collapsible-tab-view": "8.0.1",
+> "react-native-create-thumbnail": "2.1.1",
+> "react-native-device-info": "14.0.4",
+> "react-native-dialog": "9.3.0",
+> "react-native-dotenv": "3.4.11",
+> "react-native-drag-sort": "file:./thirdlib/react-native-drag-sort",
+> "react-native-draggable-flatlist": "4.0.3",
+> "react-native-element-dropdown": "2.12.4",
+> "react-native-fast-image": "8.6.3",
+> "react-native-gesture-handler": "2.25.0",
+> "react-native-get-random-values": "1.11.0",
+> "react-native-haptic-feedback": "2.3.3",
+> "react-native-hash": "3.0.3",
+> "react-native-image-crop-picker": "0.42.0",
+> "react-native-image-progress": "1.2.0",
+> "react-native-keyboard-accessory": "0.1.16",
+> "react-native-linear-gradient": "2.8.3",
+> "react-native-localize": "3.4.1",
+> "react-native-mmkv": "3.2.0",
+> "react-native-modal-popover": "file:./thirdlib/react-native-modal-popover",
+> "react-native-onesignal": "5.2.12",
+> "react-native-pager-view": "6.8.0",
+> "react-native-permissions": "5.4.0",
+> "react-native-progress": "5.0.1",
+> "react-native-reanimated": "3.17.5",
+> "react-native-render-html": "6.3.4",
+> "react-native-responsive-screen": "1.4.2",
+> "react-native-root-toast": "4.0.1",
+> "react-native-safe-area-context": "5.4.1",
+> "react-native-screens": "4.11.1",
+> "react-native-segmented-control-tab": "4.0.0",
+> "react-native-share": "12.0.10",
+> "react-native-skeleton-placeholder": "5.2.4",
+> "react-native-sound-player": "0.14.5",
+> "react-native-spinkit": "1.5.1",
+> "react-native-sqlite-2": "3.6.2",
+> "react-native-sqlite-storage": "6.0.1",
+> "react-native-sse": "1.2.1",
+> "react-native-svg": "15.11.2",
+> "react-native-toast-notifications": "3.4.0",
+> "react-native-vector-icons": "10.2.0",
+> "react-native-vision-camera": "4.6.4",
+> "react-native-webview": "13.13.5",
+> "react-native-youtube-iframe": "2.3.0",
+> "realm": "20.1.0",
+> "rn-fetch-blob": "0.12.0",
+> "shx": "0.4.0",
+> "uuidv7": "1.0.2",
+> "validator": "13.15.0"
+> },
+> ```
+> 
+
+- syahbes mentioned
+
+- syahbes subscribed
+
+**Qdafengzi** commented on 2025-06-23T07:06:35Z:
+
+> 有嫌疑的库
+> react-native-gesture-handler
+> react-native-screens
+> react-navigation
+> sentry
+> 
+
+**syahbes** commented on 2025-06-23T07:34:13Z:
+
+> and did you tried to add hitSlop?
+> ` `
+
+**Qdafengzi** commented on 2025-06-23T08:00:07Z:
+
+> @syahbes I tried it. It didn't work. 
+> I saw someone reply that removing the animation would still not work
+
+- syahbes mentioned
+
+- syahbes subscribed
+
+**syahbes** commented on 2025-06-23T08:03:45Z:
+
+> last idea that I have that might help you is to try
+> 
+> onPressIn / onPressOut
+
+**Qdafengzi** commented on 2025-06-23T08:54:54Z:
+
+> Really thanking you @syahbes , still doesn't work
+> 
+> I also found that even when the click event was triggered, it seemed to be very, very slow to respond, with a 3 to 5 second delay between the click triggering the UI change
+
+- syahbes mentioned
+
+- syahbes subscribed
+
+**Qdafengzi** commented on 2025-06-24T07:15:38Z:
+
+> @syahbes 原本以为就Android 上面有这样的问题 ，刚才iOS的同事也反馈了同样的问题😂 ，感觉我们使用了两周的时间把这个项目从0.72.4迁移到0.79.2的工作都白做了。
+
+- syahbes mentioned
+
+- syahbes subscribed
+
+**Qdafengzi** commented on 2025-06-25T08:16:19Z:
+
+> @syahbes I have new processing 🤪 when i click have three event can be response is :onTouchEnd onTouchStart onTouchEndCapture I'm going to use onTouchEnd, which is bullshit
+> ```
+>  onTouchEnd={(event)=>{
+> logger.log(`onTouchEnd：${event.nativeEvent.locationX} ${event.nativeEvent.locationY}`,);
+> }}
+> onTouchStart={(event)=>{
+> logger.log(`onTouchStart locationX :${event.nativeEvent.locationX} ${event.nativeEvent.locationY}`);
+> logger.log(`onTouchStart pageX:${event.nativeEvent.pageX} ${event.nativeEvent.pageY}`);
+> }}
+> onTouchEndCapture={(event)=>{
+> logger.log(`onTouchEndCapture：${event.nativeEvent.locationX} ${event.nativeEvent.locationY}`,);
+> }}
+> onHoverIn={(event)=>{
+> logger.log(`onHoverIn：${event.nativeEvent.locationX} ${event.nativeEvent.locationY}`,);
+> }}
+> onHoverOut={(event)=>{
+> logger.log(`onHoverOut：${event.nativeEvent.locationX} ${event.nativeEvent.locationY}`,);
+> }}
+> onPressIn={(event)=>{
+> logger.log(`onPressIn：${event.nativeEvent.locationX} ${event.nativeEvent.locationY}`,);
+> }}
+> onPressOut={(event)=>{
+> logger.log(`onPressOut：${event.nativeEvent.locationX} ${event.nativeEvent.locationY}`,);
+> }}
+> onPointerEnter={(event)=>{
+> logger.log(`onPointerEnter：${event.nativeEvent.screenX} ${event.nativeEvent.screenY}`,);
+> }}
+> onPointerUp={(event)=>{
+> logger.log(`onPointerUp：${event.nativeEvent.screenX} ${event.nativeEvent.screenY}`,);
+> }}
+> onLayout={(event)=>{
+> logger.log(`layout 位置：${event.nativeEvent.layout.x} ${event.nativeEvent.layout.y}`);
+> logger.log(`layout 位置：${event.nativeEvent.layout.width} ${event.nativeEvent.layout.height}`);
+> }}
+> onPress={() => {
+> // @ts-ignore
+> navigation.navigate(ScreensConstant.IDSetting);
+> }}
+> >
+> 
+> ```
+
+- syahbes mentioned
+
+- syahbes subscribed
+
+**Qdafengzi** commented on 2025-06-25T09:30:12Z:
+
+> The best solution
+> 
+> ```
+> const onTap = Gesture.Tap()
+> .enabled(true)
+> .onStart((event)=>{
+> logger.log("Gesture.Tap() onStart")
+> })
+> .onEnd((event)=>{
+> logger.log("Gesture.Tap() onEnd")
+> // @ts-ignore
+> navigation.navigate(ScreensConstant.IDSetting);
+> })
+> .runOnJS(true);
+> 
+> 
+> 
+> 
+> ```
+
+- syahbes mentioned
+
+- syahbes subscribed
+
+**onyedikachi23** commented on 2025-07-05T02:32:04Z:
+
+> Having the same issue. ` ` from expo-router passes props to child through asChild prop, but clicking the touchable (or even a pressable) won't navigate the link, but the `:active` styles from Nativewind shows the click feedback.
+
+- Dallas62 subscribed
+
+- Regina-v subscribed
+
+- Referenced by PR #5226: android: fix issue with buttons not immediately reacting in sheets
+
+**leoimelzer** commented on 2025-11-06T12:31:27Z:
+
+> It happened on our apps with the New Architecture enabled, only when testing on Native iOS devices, not reproduceable at the simulators.
+> 
+> Those are the respective versions to some of the relevant dependencies used there:
+> 
+> ```json
+> "dependencies": {
+> "@react-navigation/bottom-tabs": "7.7.3",
+> "@react-navigation/native": "7.1.19",
+> "@react-navigation/native-stack": "7.6.2",
+> "expo": "^53.0.0",
+> "react": "19.0.0",
+> "react-native": "0.79.6",
+> "react-native-gesture-handler": "~2.24.0",
+> "react-native-screens": "~4.11.1"
+> }
+> ```
+> 
+> I managed to workaround the problem with two different options:
+> 
+> - Using _onPressIn_ instead of _onPress_
+> - Using `Pressable` component from _react-native-gesture-handler_, instead of `Pressable` / `TouchableOpacity` from _react-native_
+> 
+> I chose the second option as it looked cleaner for me.
+
+- Referenced by issue #97: test(renderer): hit-testing during a running animation — the pressed node is the painted node

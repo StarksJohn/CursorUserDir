@@ -1,0 +1,2582 @@
+# Touchable components stop responding randomly
+
+- State: closed
+- Author: vrgimael
+- Created: 2023-03-29T23:04:55Z
+- Updated: 2026-07-04T03:14:56Z
+- Repository: react/react-native
+- Number: #36710
+- Assignees: cortinico
+
+## Labels
+
+- Resolution: PR Submitted
+- Needs: React Native Team Attention
+- Type: New Architecture
+- Impact: Bug
+- Resolution: Issue in another tool or repo
+- Never gets stale
+
+---
+
+### Description 
+ 
+We've been experiencing this issue in a couple of our apps, it's kinda driving us mad. 
+ 
+Basically, sometimes, completely unpredictably the touchable areas just stop responding. 
+ 
+We tried reproducing this consistently in several different ways but just couldn't pin point what causes it to happen and in which devices. It happens on both iOS and Android, and also in debug or release mode. Generally, it looks like it only happens after the user has been using the app for a little while (10+ minutes). It seems to happen in any button in the app randomly, and some times it also seemingly randomly starts working again. Closing and opening the app again always fixes the problem. 
+ 
+We had clients complain about it in quite a few occasion, but some of our public testers rarely ever experience this either which makes it even harder to understand. 
+ 
+I spent a very long time investigating it over literally the past entire year, but it's really really hard to debug, because when the issue happens in debug mode, anything you do in the code that causes hot reloading actually "fixes it", making it almost impossible to investigate. 
+ 
+I have added lots of debugging tools to try and understand what happens though, I got a few bits of information that might be able to help. 
+ 
+1. This is not a performance or execution queue issue, as we have other interactive components in the screen that update automatically based on time and these never freeze. 
+2. Other touch based components seem to continue working like scrolls or maps. 
+3. The zindex of the buttons I'm trying to interact with is much greater than anything else in the screen. 
+4. I have tried swapping out our "button" component's touchable with react-native-gesture-handler's, but the issue still persists. 
+5. This has been going for several different versions of RN and none resolved. 
+6. When the issue happens, the onPressIn and onPressOut events are fired almost simultaneously with only a few milliseconds difference but onPress is not fired - kinda like what happens when you're scrolling or actually interacting with another gesture handler. I tried to make a fallback mechanism that uses this behaviour to our advantage but it's outcome is not very consistent for a few different reasons. 
+7. Surprisingly (and this is what makes me think it's an issue with RN and not our code), when this issue happens and you manage to open the RN inspect menu by shaking the device, the tabs in the menu (Inspect, Perf, Network, Touchables) don't even work, exactly the same behaviour observed with our own buttons in the app. 
+8. It might be out of pure coincidence, but I have only seen this happen in apps that use react-native-maps - one of my hypothesis is that the gesture responder somehow gets confused with the map handler. 
+ 
+ 
+As far as I can tell, this has always happened - it's so rare that I was not very bothered by it. But as our apps grow and have a larger userbase now, this issue is coming up more frequently and we need to figure it out some time soon. 
+I suspect this is not too much of a problem in other apps because normally if a problem like this happens you'd just reopen the app and everything is fine again. However, it has already caused bad reviews in the App Store because our app's functionality is really time sensitive and if users aren't able to interact with the screen it's kinda problematic. 
+ 
+I've read all issues related to several relevant keywords in this repo (like touchable, onpressin, not responding, etc...), and there are a few issues that mention similar behaviour https://github.com/facebook/react-native/issues/34999 https://github.com/facebook/react-native/issues/36063 but none have barely any responses (possibly due to the rare nature of the problem). 
+ 
+Any help would be really appreciated. Please let me know if I can provide any other useful information. 
+ 
+Thanks 
+ 
+### React Native Version 
+ 
+0.70.6 
+ 
+### Output of `npx react-native info` 
+ 
+System: 
+ OS: macOS 13.2.1 
+ CPU: (10) arm64 Apple M1 Max 
+ Memory: 192.88 MB / 32.00 GB 
+ Shell: 5.8.1 - /bin/zsh 
+ Binaries: 
+ Node: 16.13.0 - ~/.nvm/versions/node/v16.13.0/bin/node 
+ Yarn: 1.19.1 - ~/.yarn/bin/yarn 
+ npm: 7.24.2 - ~/CodeLeap-Software/Client-Projects/x-follo-mobile/mobile/node_modules/.bin/npm 
+ Watchman: 2022.07.04.00 - /opt/homebrew/bin/watchman 
+ Managers: 
+ CocoaPods: 1.11.3 - /opt/homebrew/bin/pod 
+ SDKs: 
+ iOS SDK: 
+ Platforms: DriverKit 22.2, iOS 16.2, macOS 13.1, tvOS 16.1, watchOS 9.1 
+ Android SDK: 
+ API Levels: 26, 28, 29, 30, 31, 33 
+ Build Tools: 28.0.3, 29.0.2, 30.0.2, 30.0.3, 31.0.0, 32.0.0, 33.0.0 
+ System Images: android-30 | Google Play ARM 64 v8a, android-31 | ARM 64 v8a, android-31 | Google APIs ARM 64 v8a, android-31 | Google Play ARM 64 v8a, android-Sv2 | Google APIs ARM 64 v8a, android-Sv2 | Google Play ARM 64 v8a 
+ Android NDK: 22.1.7171670 
+ IDEs: 
+ Android Studio: 2020.3 AI-203.7717.56.2031.7784292 
+ Xcode: 14.2/14C18 - /usr/bin/xcodebuild 
+ Languages: 
+ Java: 11.0.13 - /Users/victor/Library/Java/JavaVirtualMachines/azul-11.0.13/Contents/Home/bin/javac 
+ npmPackages: 
+ @react-native-community/cli: Not Found 
+ react: ^18.2.0 => 18.2.0 
+ react-native: ^0.70.6 => 0.70.7 
+ react-native-macos: Not Found 
+ npmGlobalPackages: 
+ *react-native*: Not Found 
+ 
+ 
+### Steps to reproduce 
+ 
+The hardest thing about this is that it can't be reliably reproduced. See description above. 
+ 
+### Snack, code example, screenshot, or link to a repository 
+ 
+Example in our own app (that's in the App Stores too), a client sent us this recording of it happening in practice. Looking back now I should have taken more recordings of it but I'm not sure it would be of any use too. 
+ 
+https://user-images.githubusercontent.com/14969223/228675821-fb9b1eac-7228-4276-85ce-5d1c2bf2f284.mp4 
+ 
+ 
+EDIT 30/05/23 -> Here are the dependencies for this project: 
+```
+  "dependencies": {
+    "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
+    "@babel/runtime": "^7.14.6",
+    "@faker-js/faker": "^7.3.0",
+    "@googlemaps/polyline-codec": "^1.0.1",
+    "@invertase/react-native-apple-authentication": "^2.2.2",
+    "@miblanchard/react-native-slider": "^2.3.1",
+    "@react-native-async-storage/async-storage": "~1.17.3",
+    "@react-native-community/netinfo": "^9.3.6",
+    "@react-native-community/push-notification-ios": "^1.10.1",
+    "@react-native-firebase/analytics": "^15.2.0",
+    "@react-native-firebase/app": "^15.2.0",
+    "@react-native-firebase/auth": "^15.2.0",
+    "@react-native-firebase/crashlytics": "^15.2.0",
+    "@react-native-firebase/messaging": "^15.2.0",
+    "@react-native-google-signin/google-signin": "^8.0.0",
+    "@react-native-masked-view/masked-view": "^0.2.8",
+    "@react-navigation/bottom-tabs": "^6.3.2",
+    "@react-navigation/native": "^6.0.11",
+    "@react-navigation/stack": "^6.2.2",
+    "@sentry/react-native": "^3.1.1",
+    "callsites": "^3.1.0",
+    "date-fns": "^2.29.2",
+    "deep-equal": "^2.0.5",
+    "deep-object-diff": "^1.1.9",
+    "deprecated-react-native-prop-types": "^2.3.0",
+    "expo": "^48.0.6",
+    "expo-av": "^13.0.2",
+    "expo-battery": "^7.0.0",
+    "expo-cellular": "^5.0.1",
+    "expo-constants": "^14.0.2",
+    "expo-keep-awake": "^11.0.1",
+    "expo-linear-gradient": "^12.1.2",
+    "expo-linking": "^3.2.3",
+    "expo-local-authentication": "^13.0.2",
+    "expo-location": "^15.0.1",
+    "expo-network": "^5.0.0",
+    "expo-sensors": "^12.0.1",
+    "expo-store-review": "^6.0.0",
+    "expo-task-manager": "^11.0.1",
+    "faker": "^5.5.3",
+    "fs": "0.0.1-security",
+    "geolocation-utils": "^1.2.5",
+    "libphonenumber-js": "^1.9.25",
+    "lodash": "^4.17.21",
+    "lottie-ios": "3.4.1",
+    "lottie-react-native": "5.1.3",
+    "moment": "^2.29.1",
+    "npm": "^7.18.1",
+    "npm-license-crawler": "^0.2.1",
+    "patch-package": "^6.4.7",
+    "path": "^0.12.7",
+    "pretty-bytes": "^5.6.0",
+    "react": "^18.2.0",
+    "react-mixin": "^5.0.0",
+    "react-native": "^0.70.6",
+    "react-native-android-open-settings": "^1.3.0",
+    "react-native-animatable": "^1.3.3",
+    "react-native-background-timer": "^2.4.1",
+    "react-native-contacts": "^7.0.4",
+    "react-native-date-picker": "^4.2.5",
+    "react-native-device-info": "^10.3.0",
+    "react-native-fbsdk-next": "^10.0.0",
+    "react-native-flipper": "0.163.0",
+    "react-native-geocoding": "^0.5.0",
+    "react-native-geolocation-service": "^5.3.0-beta.1",
+    "react-native-gesture-handler": "^2.8.0",
+    "react-native-get-random-values": "^1.8.0",
+    "react-native-google-mobile-ads": "^9.1.1",
+    "react-native-google-places-autocomplete": "^2.5.1",
+    "react-native-gradle-plugin": "^0.70.0",
+    "react-native-iap": "^12.7.2",
+    "react-native-image-crop-picker": "^0.38.0",
+    "react-native-in-app-review": "^4.3.1",
+    "react-native-in-app-utils": "^6.1.0",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-localize": "^2.2.2",
+    "react-native-maps": "^1.3.2",
+    "react-native-notification-sounds": "^0.5.5",
+    "react-native-onesignal": "^4.5.1",
+    "react-native-permissions": "^3.6.0",
+    "react-native-pose": "^0.9.1",
+    "react-native-push-notification": "^8.1.1",
+    "react-native-render-html": "^6.3.4",
+    "react-native-ringer-mode": "^2.0.0",
+    "react-native-safe-area-context": "^4.3.1",
+    "react-native-screens": "^3.15.0",
+    "react-native-splash-screen": "^3.3.0",
+    "react-native-svg": "^13.4.0",
+    "react-native-system-navigation-bar": "^1.0.5",
+    "react-native-system-setting": "^1.7.6",
+    "react-native-vector-icons": "^9.2.0",
+    "react-redux": "^8.0.2",
+    "react-timer-hook": "^3.0.5",
+    "react-timer-mixin": "^0.13.4",
+    "react-use": "^17.4.0",
+    "redux": "^4.2.0",
+    "redux-flipper": "^2.0.2",
+    "redux-middleware-flipper": "^1.0.9",
+    "redux-sentry-middleware": "^0.2.2",
+    "redux-thunk": "^2.4.1",
+    "rn-async-storage-flipper": "^0.0.10",
+    "rn-emoji-keyboard": "^1.0.0",
+    "rn-sliding-up-panel": "^2.4.6",
+    "url-parse": "^1.5.10",
+    "uuid": "^8.3.2",
+    "validator": "^13.7.0"
+  },
+```
+
+## Timeline
+
+- vrgimael added label "Needs: Triage :mag:"
+
+- github-actions[bot] added label "Needs: Verify on Latest Version"
+
+**github-actions[bot]** commented on 2023-03-29T23:05:15Z:
+
+> | :warning: | Newer Version of React Native is Available! |
+> | --- | --- |
+> | :information_source: | You are on a supported minor version, but it looks like there's a newer patch available. Please upgrade to the highest patch for your minor or latest and verify if the issue persists (alternatively, create a new project and repro the issue in it). If it does not repro, please let us know so we can close out this issue. This helps us ensure we are looking at issues that still exist in the most recent releases. |
+
+- Referenced by issue #34999: onPress not fire occasionally when pressing
+
+- kleberfh subscribed
+
+**necolas** commented on 2023-03-30T20:53:25Z:
+
+> I think it will be difficult to get attention from the maintainers without a) providing a test case, b) steps to reproduce the issue in the test case, and c) verifying the issue is still present after upgrading to the latest version of React Native
+
+- Referenced by issue #36063: Touchable opacity not work randomly 1-5 days and it work later on iOS only
+
+**vrgimael** commented on 2023-03-30T20:58:57Z:
+
+> Hi @necolas thanks for the feedback, however you really should not close this issue..... other users have mentioned similar problems, please do not ignore this issue just because it happens intermittently. 
+> 
+> a) As I said, the problem cannot be reliably reproduced at all
+> b) The problem happens intermittently
+> c) This has been happening through several previous versions of RN... I will upgrade again but this certainly is not the problem.
+> 
+> I provided as much information as I could possibly gather from this and hoped it could be helpful to others too.
+
+- necolas mentioned
+
+- necolas subscribed
+
+**necolas** commented on 2023-03-30T21:02:39Z:
+
+> Hey. I'm not ignoring it, I'm telling you what this issue needs before engineers at Meta can spent time looking into it.
+
+- necolas removed label "Needs: Triage :mag:"
+
+- necolas added label "Needs: Repro"
+
+**github-actions[bot]** commented on 2023-03-30T23:26:49Z:
+
+> | :warning: | Missing Reproducible Example |
+> | --- | --- |
+> | :information_source: | It looks like your issue is missing a reproducible example. Please provide a Snack or a repository that demonstrates the issue you are reporting in a minimal, complete, and reproducible manner. |
+
+- github-actions[bot] added label "Needs: Author Feedback"
+
+**etodanik** commented on 2023-04-26T23:02:47Z:
+
+> For what its' worth, I'm also experiencing it, and it's very hard to understand how to give a reproducible example - because it doesn't happen reliably. But in an intermittent fashion onPress just won't fire for a bunch of times in a row.
+> 
+> I am also using maps.
+
+**NiuGuohui** commented on 2023-04-27T09:20:42Z:
+
+> I can provide a case:
+> ```
+>  style={{ width: 100, height: 100, backgroundColor: '#F00' }}
+> onTouchStart={() => {
+> console.log('start');
+> }}
+> >
+>  style={{ flex: 1 }}
+> underlayColor="#000"
+> onPress={() => {
+> console.log(123);
+> }}
+> >
+> 
+> 12323 
+> 
+> 
+> 
+> ```
+> Try clicking on the right part of the red area.
+> UI responds but does not trigger onPress event.
+> His parent element View triggered the onTouchStart event.
+> I am using 0.72.0-rc.1 for Android.
+> 
+> It worked normally when I disabled the new architecture!
+
+**etodanik** commented on 2023-04-27T14:26:33Z:
+
+> @necolas looks like we have a reproducible example :) 
+
+- necolas mentioned
+
+- necolas subscribed
+
+**vrgimael** commented on 2023-04-27T20:12:49Z:
+
+> Hmm I am not using the new architecture though, and this problem seems to have happened for a long time (before new architecture existed).
+> 
+> We tried this example on our project and it doesn't reproduce the issue unfortunately...
+> 
+> Any thoughts would be appreciated.
+
+- github-actions[bot] removed label "Needs: Author Feedback"
+
+- github-actions[bot] added label "Needs: Attention"
+
+**NiuGuohui** commented on 2023-04-28T01:26:03Z:
+
+> > Hmm I am not using the new architecture though, and this problem seems to have happened for a long time (before new architecture existed).
+> > 
+> > We tried this example on our project and it doesn't reproduce the issue unfortunately...
+> > 
+> > Any thoughts would be appreciated.
+> 
+> Sorry, this is my problem.This is a bug in `react-native-screens`.
+
+**Nantris** commented on 2023-04-28T02:08:53Z:
+
+> > This is a bug in react-native-screens.
+> 
+> @NiuGuohui can you please share a link to that issue (if there is one) for future readers?
+
+- NiuGuohui mentioned
+
+- NiuGuohui subscribed
+
+**NiuGuohui** commented on 2023-04-28T03:47:39Z:
+
+> > > This is a bug in react-native-screens.
+> > 
+> > @NiuGuohui can you please share a link to that issue (if there is one) for future readers?
+> 
+> In my case, I want to achieve a similar effect to iOS's UITableView (such as horizontally laid out tabs). When I use this pattern nested in a native-stack, I encounter a similar issue. I think this might be a minor issue with the react-native-screens library. see here
+> Here is my code (in a native-stack screen):
+> ```
+> 
+> // this is real tabBar component
+> 
+> <Tab.Navigator
+> initialRouteName="One"
+> sceneContainerStyle={{ flex: 1 }}
+> screenOptions={{ headerShown: false }}
+> // mock a empty tabBar
+> tabBar={props => null}
+> >
+> <Tab.Screen name="One" component={One} />
+> </Tab.Navigator>
+> 
+> ```
+
+- NiuGuohui mentioned
+
+- NiuGuohui subscribed
+
+**etodanik** commented on 2023-05-04T14:46:35Z:
+
+> I am using `expo-router` which I don't think is using `react-native-screens` and getting the exact same behavior. So it seems like a bug that transcends just one library?
+> 
+> @necolas would be very nice if someone from contributors acknowledges the existence of this, because it makes the app I'm working on have quite degraded UX. You've had a few reports here already?
+
+- necolas mentioned
+
+- necolas subscribed
+
+**vrgimael** commented on 2023-05-30T10:34:17Z:
+
+> We are experiencing this problem in some of our other apps too, this time with no map component mounted whatsoever (disproving my theory above).
+> 
+> User is unable to interact with any touchable component, but the app is clearly not frozen and scroll gestures work fine.
+> 
+> Closing and reopening the app mysteriously fixes the problem.
+> 
+> https://github.com/facebook/react-native/assets/14969223/8e829428-30a7-4311-9738-1cd1fb0e3457
+> 
+> I'm surprised there aren't many more people complaining about this issue, it certainly happens in many other cases. I can only assume people reopen the app without thinking about it much.
+> 
+> Here are the dependencies for the project:
+> ```
+> "dependencies": {
+> "@codeleap/common": "*",
+> "@codeleap/config": "*",
+> "@codeleap/mobile": "*",
+> "@faker-js/faker": "6.3.1",
+> "@googlemaps/polyline-codec": "^1.0.28",
+> "@gorhom/bottom-sheet": "^4.4.5",
+> "@gorhom/portal": "1.0.14",
+> "@invertase/react-native-apple-authentication": "^2.2.2",
+> "@react-native-community/async-storage": "^1.12.1",
+> "@react-native-community/netinfo": "8.3.1",
+> "@react-native-community/push-notification-ios": "^1.10.1",
+> "@react-native-firebase/analytics": "14.4.0",
+> "@react-native-firebase/app": "14.4.0",
+> "@react-native-firebase/auth": "14.4.0",
+> "@react-native-firebase/crashlytics": "14.4.0",
+> "@react-native-firebase/messaging": "14.4.0",
+> "@react-native-google-signin/google-signin": "^8.0.0",
+> "@react-navigation/bottom-tabs": "6.5.3",
+> "@react-navigation/drawer": "6.5.7",
+> "@react-navigation/native": "6.1.2",
+> "@react-navigation/native-stack": "6.9.8",
+> "@react-navigation/routers": "6.1.6",
+> "@react-navigation/stack": "6.3.11",
+> "@sentry/browser": "6.19.7",
+> "@sentry/react-native": "3.4.3",
+> "@supersami/rn-foreground-service": "^2.1.0",
+> "@turf/turf": "^6.5.0",
+> "expo": "^48.0.6",
+> "expo-cli": "^5.2.0",
+> "expo-file-system": "~15.2.2",
+> "expo-linear-gradient": "^12.1.2",
+> "expo-linking": "3.3.0",
+> "expo-local-authentication": "^13.0.2",
+> "expo-location": "^15.0.1",
+> "expo-task-manager": "^11.0.1",
+> "fs": "^0.0.1-security",
+> "geolocation-utils": "^1.2.5",
+> "global": "^4.4.0",
+> "intl": "^1.2.5",
+> "libphonenumber-js": "1.10.18",
+> "lottie-ios": "3.4.0",
+> "lottie-react-native": "5.1.4",
+> "moment": "2.29.4",
+> "moti": "^0.18.0",
+> "npm-license-crawler": "^0.2.1",
+> "patch-package": "6.5.1",
+> "performance-now": "^2.1.0",
+> "react": "18.1.0",
+> "react-devtools": "^4.22.0",
+> "react-devtools-core": "^4.23.0",
+> "react-native": "0.70.6",
+> "react-native-animatable": "^1.3.3",
+> "react-native-background-timer": "^2.4.1",
+> "react-native-base64": "^0.2.1",
+> "react-native-battery-optimization-check": "^1.0.8",
+> "react-native-blob-util": "^0.14.1",
+> "react-native-calendars": "1.1293.0",
+> "react-native-circular-progress": "^1.3.7",
+> "react-native-circular-progress-indicator": "^2.0.6",
+> "react-native-date-picker": "^4.2.6",
+> "react-native-device-info": "10.3.0",
+> "react-native-document-picker": "8.1.3",
+> "react-native-exit-app": "^1.1.0",
+> "react-native-fast-image": "8.6.3",
+> "react-native-fbsdk-next": "10.1.0",
+> "react-native-flipper": "^0.131.1",
+> "react-native-geocoding": "^0.5.0",
+> "react-native-gesture-handler": "^2.9.0",
+> "react-native-gifted-chat": "^0.16.3",
+> "react-native-google-places-autocomplete": "^2.5.1",
+> "react-native-image-crop-picker": "^0.37.2",
+> "react-native-image-viewing": "^0.2.2",
+> "react-native-keyboard-aware-scroll-view": "^0.9.5",
+> "react-native-maps": "^1.4.0",
+> "react-native-mask-input": "1.2.2",
+> "react-native-monorepo-tools": "1.2.1",
+> "react-native-permissions": "3.6.1",
+> "react-native-push-notification": "^8.1.1",
+> "react-native-reanimated": "2.14.4",
+> "react-native-render-html": "^6.3.4",
+> "react-native-safe-area-context": "^3.3.2",
+> "react-native-screens": "3.18.2",
+> "react-native-splash-screen": "^3.3.0",
+> "react-native-super-grid": "4.6.1",
+> "react-native-svg": "12.5.0",
+> "react-native-svg-app-icon": "^0.5.1",
+> "react-native-system-navigation-bar": "1.0.5",
+> "react-native-vector-icons": "^9.2.0",
+> "react-native-webview": "11.26.0",
+> "react-redux": "^7.2.6",
+> "redux-flipper": "^2.0.1",
+> "redux-middleware-flipper": "^1.0.9",
+> "redux-persist": "^6.0.0",
+> "rn-async-storage-flipper": "^0.0.10",
+> "rn-sliding-up-panel": "^2.4.6",
+> "yup": "^0.32.11"
+> },
+> ```
+> 
+> Thoughts?
+
+**mtjkln** commented on 2023-06-05T06:03:11Z:
+
+> Hello, Guys,
+> 
+> using React-Native 0.71.8 
+> 
+> When using new architecture the touchable works sometimes and sometimes it wont. The moment I build using old architecture it works perfectly. 
+> 
+> Please help us @necolas 
+
+- necolas mentioned
+
+- necolas subscribed
+
+**necolas** commented on 2023-06-05T18:19:08Z:
+
+> I tried to help by pointing out that a reproducible example will help the maintainers (not me) more easily look for the root cause of the problem. 
+
+- necolas added label "Type: New Architecture"
+
+- necolas added label "Impact: Bug"
+
+- cortinico removed label "Needs: Repro"
+
+- cortinico added label "Needs: Repro"
+
+**github-actions[bot]** commented on 2023-06-06T12:17:55Z:
+
+> | :warning: | Missing Reproducible Example |
+> | --- | --- |
+> | :information_source: | It looks like your issue is missing a reproducible example. Please provide either: If your bug is UI related: a Snack If your bug is build/update related: use our Reproducer Template |
+
+- github-actions[bot] added label "Needs: Author Feedback"
+
+**skinsapp** commented on 2023-06-11T11:53:32Z:
+
+> The issue is triggered when `useNativeDriver` is set to `true` as per this issue: https://github.com/facebook/react-native/issues/36504
+> 
+> `onPress` works until a translation animation -- with `useNativeDriver: true` -- occurs. Thereafter `onPress` never works again anywhere in the app. 
+> 
+> - android
+> - 71.10
+> - both debug + release modes
+
+- Referenced by issue #36504: onPress is not called after using useNativeDriver transform button
+
+**etodanik** commented on 2023-06-11T12:17:03Z:
+
+> @the-skins-app I guess there are a multitude of bugs because I get mine on iOS (not android only) ...
+
+- skinsapp mentioned
+
+- skinsapp subscribed
+
+**Crhaj** commented on 2023-06-15T14:40:04Z:
+
+> > I tried to help by pointing out that a reproducible example will help the maintainers (not me) more easily look for the root cause of the problem.
+> 
+> @necolas we understand that reproducible example would help tremendously but it seems like no one **can** provide that reliably. This issue seems to be completely random @vrgimael even mentioned it is happening across multiple different versions of RN. For us it is only happening in one of our apps where, unfortunately, it is big problem as it needs to be constantly running and communicating with other apps. 
+> 
+> It really needs some attention, this is making all applications that need quick & reliable interactions and cannot just be restarted virtually useless.
+> 
+> @vrgimael have you possibly also tried swapping out Touchable components for Pressable? Does the issue persist?
+
+- necolas mentioned
+
+- necolas subscribed
+
+- vrgimael mentioned
+
+- vrgimael subscribed
+
+**necolas** commented on 2023-06-15T16:19:58Z:
+
+> Please stop @-mentioning me 
+
+- cortinico removed label "Newer Patch Available"
+
+- cortinico removed label "Needs: Attention"
+
+- cortinico removed label "Needs: Repro"
+
+- cortinico added label "Needs: Repro"
+
+**github-actions[bot]** commented on 2023-06-15T17:33:52Z:
+
+> | :warning: | Missing Reproducible Example |
+> | --- | --- |
+> | :information_source: | It looks like your issue is missing a reproducible example. Please provide either: If your bug is UI related: a Snack If your bug is build/update related: use our Reproducer Template |
+
+**cortinico** commented on 2023-06-15T17:33:58Z:
+
+> Asking again: can we get a smaller reproducer using this template:
+> https://github.com/react-native-community/reproducer-react-native
+
+**horne3754sg** commented on 2023-06-21T11:40:14Z:
+
+> Hi all, I have been encountering this issue as well. 
+> 
+> I noticed that when I disable animations for react navigation, it seems to stop happening. When I enabled animations on navigators, it appears that randomly touch events stop responding, as well as the back button. 
+> 
+> I cant reliablity reproduce the issue though, it just happens at random.
+> 
+> Edit: I tried switching all my TouchableOpacity components to react-native-gesture-handler implementations and it seems to have addressed the issue for me.
+> 
+> Having read their docs it states:
+> 
+> > Gesture Handler library provides an implementation of RN's touchable components that are based on native buttons and does not rely on JS responder system utilized by RN. Our touchable implementation follows the same API and aims to be a drop-in replacement for touchables available in React Native.
+> > 
+> > The motivation for using RNGH touchables as a replacement for these imported from React Native is to follow built-in native behavior more closely by utilizing platform native touch system instead of relying on the JS responder system. These touchables and their feedback behavior are deeply integrated with native gesture ecosystem and could be connected with other native components (e.g. ScrollView) and Gesture Handlers easily and in a more predictable way, which follows native apps' behavior.
+> 
+> This leads me to believe the issue is in the JS responder system.
+
+**horne3754sg** commented on 2023-06-23T06:18:10Z:
+
+> @vrgimael are you able to try and switch the Touch components to the ones from `react-native-gesture-handler`. You may need to adjust some styling or set the container styling. But its 99% the same as the `react-native` touch components.
+> 
+
+- vrgimael mentioned
+
+- vrgimael subscribed
+
+**vrgimael** commented on 2023-06-27T10:22:25Z:
+
+> Hi @horne3754sg, we have already tried it and the same problem still happens. We were unable to tell whether it makes any different, but it doesn't seem like it.
+> 
+> We also tried Pressable a long time ago and it didn't seem to resolve anything either. Should there be any difference between Pressable and Touchable regarding this?
+
+- horne3754sg mentioned
+
+- horne3754sg subscribed
+
+- github-actions[bot] removed label "Needs: Author Feedback"
+
+- github-actions[bot] added label "Needs: Attention"
+
+**vrgimael** commented on 2023-06-27T10:30:04Z:
+
+> Here's what we're thinking:
+> 
+> We're considering building some automated testing to try to reliably reproduce the issue by just sending touch events in a certain way. This way we should be able to measure whether any of these changes would actually make any impact, because at the moment everything just seems like a hopeful guess.
+> 
+> Did anybody ever do anything similar? What would be the easiest way to go about this?
+
+**horne3754sg** commented on 2023-06-27T13:53:38Z:
+
+> @vrgimael I have been running into the same issues as well. I have not tried automating some tests.
+> 
+> I have switched all my Touchables to Pressables (which is recommended). But I am still hitting the same issue where they become unresponsive, but if I change the `onPress` prop to `onPressIn`, it works. The problem though, is that then causes other issues like in scroll views.
+> 
+> When I look at the log, I can see the different events being logged.
+> 
+> 3 taps and the first 2 only inPressIn/onPressOut fire and on the 3rd tap, all 3 onPress events fire. 
+> 
+> The problem is I cannot see what is preventing onPress from firing the first 2 taps.
+> 
+> image
+> 
+
+- vrgimael mentioned
+
+- vrgimael subscribed
+
+**vrgimael** commented on 2023-06-28T13:17:59Z:
+
+> Indeed, check point 6 of my OP:
+> 
+> _6. When the issue happens, the onPressIn and onPressOut events are fired almost simultaneously with only a few milliseconds difference but onPress is not fired - kinda like what happens when you're scrolling or actually interacting with another gesture handler. I tried to make a fallback mechanism that uses this behaviour to our advantage but it's outcome is not very consistent for a few different reasons._
+> 
+> I tried a solution using this and the x and y velocity to determine whether the user is tapping or trying to scroll, and although this seem to be the best workaround so far, it still doesn't work every time.
+> 
+> It just seems like some other touchable area is intercepting the touch event and preventing it from firing the actual "onPress" trigger of the desired target.
+
+**vrgimael** commented on 2023-06-28T13:21:14Z:
+
+> > The issue is triggered when `useNativeDriver` is set to `true` as per this issue: #36504
+> > 
+> > `onPress` works until a translation animation -- with `useNativeDriver: true` -- occurs. Thereafter `onPress` never works again anywhere in the app.
+> > 
+> > * android
+> > * 71.10
+> > * both debug + release modes
+> 
+> Regarding this - we observed the problem in both Android and iOS, so it might not actually be the same problem, although I'll do some more tests with animations as something related seems plausible.
+
+**Crhaj** commented on 2023-06-28T14:17:49Z:
+
+> > > The issue is triggered when `useNativeDriver` is set to `true` as per this issue: #36504
+> > > `onPress` works until a translation animation -- with `useNativeDriver: true` -- occurs. Thereafter `onPress` never works again anywhere in the app.
+> > > 
+> > > * android
+> > > * 71.10
+> > > * both debug + release modes
+> > 
+> > Regarding this - we observed the problem in both Android and iOS, so it might not actually be the same problem, although I'll do some more tests with animations as something related seems plausible.
+> 
+> There is a note in the linked issue that the bug occurs on android when the new architecture is enabled but at least in our case, it is happening also on old architecture so I'm not sure it is the same problem.
+
+**FluffyDiscord** commented on 2023-07-03T07:11:03Z:
+
+> Also experiencing this issue on Android new arch enabled. For now my workaround for simulating `onPress` is using onTouchStart/end and move
+
+**meabed** commented on 2023-07-05T06:34:27Z:
+
+> Having the same issue exactly, android touchable stop responding randomly
+> 
+> It doesn't happens on local development 
+> 
+> It happens on new architecture and old architecture, dev or prod build apk / aar, 
+> and react native >= 0.70 
+> 
+> ``` 
+> "react-native": "0.71.12"
+> ```
+
+**meabed** commented on 2023-07-05T21:43:21Z:
+
+> I have a case where i could reproduce this issue, and I just tested with `react-native 0.72.1` and the issue seems fixed. I will keep watching for it and update the issue incase if it happen again.
+
+**dunapanta** commented on 2023-07-07T00:56:46Z:
+
+> In my case, I note this unusual behavior happening on the Onboarding screens with animations specifically on iOS using `"react-native": "0.72.1"`. I will try using `onPressIn` to see if it resolves the issue. However, I will also stay updated on any new updates related to this problem.
+
+**Crhaj** commented on 2023-07-07T12:52:31Z:
+
+> > I have a case where i could reproduce this issue, and I just tested with `react-native 0.72.1` and the issue seems fixed. I will keep watching for it and update the issue incase if it happen again.
+> 
+> @meabed would it be possible to share the code where you were able to reproduce this issue consistently?
+
+- meabed mentioned
+
+- meabed subscribed
+
+**ice-cap0** commented on 2023-08-19T14:46:35Z:
+
+> seeing this issue as well
+
+**torver213** commented on 2023-08-22T00:36:41Z:
+
+> HOW TO FIX REACT NATIVE NOT RESPONDING TO CLICK EVENTS ON REAL DEVICES
+> 
+> Are you still facing this issue? I faced this same issue and it was so painful having a properly working app on emulators but buttons not responding to clicks on real devices.
+> 
+> Here are possible solutions that worked for me.
+> 
+> First of all install react-native-gesture-handler
+> 
+> `npm install react-native-gesture-handler`
+> 
+> import 'react-native-gesture-handler' at the top of your root app in *App.js* or *index.js*
+> 
+> `import 'react-native-gesture-handler'`
+> 
+> In `App.js` wrap your App with GestureHandlerRootView
+> 
+> `import { GestureHandlerRootView } from 'react-native-gesture-handler'`
+> 
+> ` 
+> 
+> `
+> 
+> Note: I used react native paper you can follow the docs to install 
+> 
+> *Optionally, you can install the library or use any library.*
+> 
+> 
+> *Example ~ Works quite well on emulators but sometimes don't respond to clicks on real devices. With multiple press, it responds but we don't want that. We want our app to respond once pressed. This is really awful most especially in a ScrollView or FlatList*
+> ```
+> import { Button } from 'react-native-paper'
+> import {Alert} from 'react-native'
+> 
+> const HomeScreen = () => {
+> return ( Alert.alert("Hello world")>Press me)
+> }
+> export default HomeScreen
+> 
+> ```
+> To fix the above code to respond fully well on real devices both android and iOS, particularly android devices. This solutions work in ScrollView or FlatList
+> 
+> *SOLUTION 1*
+> 
+> 1. Wrap all your components with gestureHandlerRootHOC
+> 2. change `onPress` event handler to `onPressIn` event handler
+> It's crazy but it works
+> 
+> ```
+> import { gestureHandlerRootHOC } from 'react-native-gesture-handler'
+> import {Button} from 'react-native-paper'
+> import {Alert} from 'react-native'
+> 
+> 
+> const HomeScreen = () => {
+> return ( Alert.alert("Hello world") title="Press me" />)
+> }
+> export default gestureHandlerRootHOC(HomeScreen)
+> 
+> //this will work perfectly on both emulators and real devices
+> 
+> ```
+> *SOLUTION 2*
+> 1. Wrap all your components with gestureHandlerRootHOC
+> 2. Wrap the *Button* component with any of the Touchable event handler.
+> 
+> *You can use TouchableOpacity but if you don't want the ripple effect, use TouchableWithoutFeedback.
+> Remember it's not just buttons but any component with onPress event handler can be wrapped with of TouchableWithoutFeedback or TouchableOpacity*
+> 
+> ```
+> import React, {Fragment} from 'react'
+> import {TouchableOpacity, TouchableWithoutFeedback, gestureHandlerRootHOC} from 'react-native-gesture-handler'; 
+> import { Button } from 'react-native-paper' 
+> 
+> 
+> const HomeScreen = () => {
+> return ( 
+> 
+> Alert.alert("Hello world")>
+> Press me 
+> 
+> 
+> Alert.alert("Hello world")>
+> Press me 
+> 
+> 
+>)
+> }
+> export default gestureHandlerRootHOC(HomeScreen)
+> ```
+> *Library versions*
+> ```
+> "react-native": "^0.72.3"
+> "react-native-paper": "^5.10.1"
+> "react-native-gesture-handler": "^2.12.1",
+> ```
+> 
+> These are the solutions that worked for me. My device was Android 10 API 29, development system MacBook Pro M2.
+> 
+> You can experiment more and try other possible solutions too. Happy coding :)
+
+**Crhaj** commented on 2023-08-22T07:21:53Z:
+
+> > I have a case where i could reproduce this issue, and I just tested with `react-native 0.72.1` and the issue seems fixed. I will keep watching for it and update the issue incase if it happen again.
+> 
+> @meabed kind reminder, would it be possible to share the code where you were able to reproduce this issue consistently? It would be greatly appreciated!
+
+- meabed mentioned
+
+- meabed subscribed
+
+**NotArtyom** commented on 2023-09-06T16:24:37Z:
+
+> Facing the same issue on some android devices (not all android devices though) with new arch enabled 
+> `"react-native": "0.72.4"`
+
+**mars-peng-lb** commented on 2023-09-08T05:56:05Z:
+
+> I have the same problem. 
+> Disabling all react-navigation animations can solve the problem, but it is still a problem because we need animations.
+> If you don't need animations, you can just do it in your navigator:
+> `screenOptions={{
+> animationEnabled: false
+> }}`
+
+**sneh2608** commented on 2023-09-25T15:10:29Z:
+
+> > I have the same problem. Disabling all react-navigation animations can solve the problem, but it is still a problem because we need animations. If you don't need animations, you can just do it in your navigator: `screenOptions={{ animationEnabled: false }}`
+> 
+> @satya164 Can you please look into this.We have to disable all animations to get this to work properly.
+
+- satya164 mentioned
+
+- satya164 subscribed
+
+**dibyopra** commented on 2023-09-27T04:45:55Z:
+
+> I can provide a case:
+> 
+> https://github.com/facebook/react-native/assets/50160911/035e9353-ecf6-4342-80a0-fd5e7764a5c9
+> 
+> 
+> 
+> in my case I have 3 button component
+> when the last button component is not responding when touched but the others is working perfectly
+> i tried comment the last button component and the result is only first button component is working
+> 
+> I have 2 apss that have bug like this
+> in this version I use "react-native": "0.72.4" (new architecture is disabled) and the other is "react-native": "^0.66.5"
+
+**IsuruSathyajith** commented on 2023-09-27T06:54:35Z:
+
+> 
+> > I have the same problem. Disabling all react-navigation animations can solve the problem, but it is still a problem because we need animations. If you don't need animations, you can just do it in your navigator: `screenOptions={{ animationEnabled: false }}`
+> 
+> This workaround supported to resolve this issue for me. However, it comes with the expense of animations on stack screen changes. 
+> Is there any ongoing discussion on React Navigation V6 to solve this anytime soon? (I couldn’t find)
+> For me; This issue existed only on devices running Android 13. For Example, I had the issue on a Pixel 6A & a Samsung S20 both of which were with Android 13.
+
+**sneh2608** commented on 2023-09-27T06:58:51Z:
+
+> Another workaround to solve this issue is to wrap your entry file in GestureHandlerRootView from react-native-gesture-handler and use Touchables from react-native-gesture-handler.
+> This works because Touchables in react-native-gesture-handler do not use JS Responder system.
+> Docs
+
+**IsuruSathyajith** commented on 2023-09-27T07:01:02Z:
+
+> 
+> > Another workaround to solve this issue is to wrap your entry file in GestureHandlerRootView from react-native-gesture-handler and use Touchables from react-native-gesture-handler. This works because Touchables in react-native-gesture-handler do not use JS Responder system. Docs
+> 
+> Does it make the keyboard touch events work as well? Currently keyboard doesn’t get poped up when clicked on a input field too.
+
+**sneh2608** commented on 2023-09-27T07:02:28Z:
+
+> > > Another workaround to solve this issue is to wrap your entry file in GestureHandlerRootView from react-native-gesture-handler and use Touchables from react-native-gesture-handler. This works because Touchables in react-native-gesture-handler do not use JS Responder system. Docs
+> > 
+> > Does it make the keyboard touch events work as well? Currently keyboard doesn’t get poped up when clicked on a input field too.
+> 
+> Yes...for that you will have to use TextInput also from react-native-gesture-handler
+
+- Referenced by issue #11619: Android 13 devices do not support touch events when animationEnabled on Stack Navigator is true
+
+**horne3754sg** commented on 2023-09-27T08:38:44Z:
+
+> > I have the same problem. Disabling all react-navigation animations can solve the problem, but it is still a problem because we need animations. If you don't need animations, you can just do it in your navigator: `screenOptions={{ animationEnabled: false }}`
+> 
+> This is what I have had to do for the time being on Android. Hopefully a bug fix can be provided in the near future.
+
+**skinsapp** commented on 2023-09-30T04:47:02Z:
+
+> My company is willing to put a bounty of $1,000 on fixing this and getting it merged. If anyone else would like to add to the bounty, please chime in.
+> 
+> The reason this needs to be top priority is because concurrent react has been out for a long time, yet -- in practice -- not in the react-native world, as this issue makes Android useless, given all workarounds are unacceptable for pro apps. 
+> 
+> For additional information, we currently have an app in both app stores, and I implemented an `onPressIn` hack + a timeout after scrolling so events aren't triggered while scrolling, and it's not satisfactory. The `onPress` prop of Pressable really needs to operate correctly for the new architecture to be ready for prime time.
+
+**etodanik** commented on 2023-09-30T05:29:56Z:
+
+> I’m shocked that the maintainers are ignoring this.
+> 
+> On Sat, Sep 30, 2023 at 07:47 the-skins-app ***@***.***>
+> wrote:
+> 
+> > My company is willing to put a bounty of $1,000 on fixing this and getting
+> > it merged. If anyone else would like to add to the bounty, please chime in.
+> >
+> > The reason this needs to be top priority is because concurrent react has
+> > been out for a long time, yet -- in practice -- not in the react-native
+> > world, as this issue makes Android useless, given all workarounds are
+> > unacceptable for pro apps.
+> >
+> > For additional information, we currently have an app in both app stores,
+> > and I implemented an onPressIn hack + a timeout after scrolling so events
+> > aren't triggered while scrolling, and it's not satisfactory. The onPress
+> > prop of Pressable really needs to operate correctly for the new
+> > architecture to be ready for prime time.
+> >
+> > —
+> > Reply to this email directly, view it on GitHub
+> >,
+> > or unsubscribe
+> > 
+> > .
+> > You are receiving this because you commented.Message ID:
+> > ***@***.***>
+> >
+
+**Christofon** commented on 2023-10-03T13:19:03Z:
+
+> > Another workaround to solve this issue is to wrap your entry file in GestureHandlerRootView from react-native-gesture-handler and use Touchables from react-native-gesture-handler. This works because Touchables in react-native-gesture-handler do not use JS Responder system. Docs
+> 
+> This works for me as well and I will keep it like that until fixed. 
+> 
+> One interesting thing I noticed was when only having the GestureHandlerRootView and a Touchable/Pressable in the App component, everything works flawlessly. As soon as react-navigation get's added, it stops working again.
+
+**IsuruSathyajith** commented on 2023-10-03T13:28:13Z:
+
+> 
+> > > Another workaround to solve this issue is to wrap your entry file in GestureHandlerRootView from react-native-gesture-handler and use Touchables from react-native-gesture-handler. This works because Touchables in react-native-gesture-handler do not use JS Responder system. Docs
+> > 
+> > This works for me as well and I will keep it like that until fixed.
+> > 
+> > One interesting thing I noticed was when only having the GestureHandlerRootView and a Button in the App component, everything works flawlessly. As soon as react-navigation get's added, it stops working again.
+> 
+> I tried creating a release build for Android without doing any workarounds we discussed and on the release build, all touch events worked fine, even on the same device I was trying before. Can you guys also try a release build and see what happens?
+
+**Christofon** commented on 2023-10-03T13:32:21Z:
+
+> > > > Another workaround to solve this issue is to wrap your entry file in GestureHandlerRootView from react-native-gesture-handler and use Touchables from react-native-gesture-handler. This works because Touchables in react-native-gesture-handler do not use JS Responder system. Docs
+> > > 
+> > > 
+> > > This works for me as well and I will keep it like that until fixed.
+> > > One interesting thing I noticed was when only having the GestureHandlerRootView and a Button in the App component, everything works flawlessly. As soon as react-navigation get's added, it stops working again.
+> > 
+> > I tried creating a release build for Android without doing any workarounds we discussed and on the release build, all touch events worked fine, even on the same device I was trying before. Can you guys also try a release build and see what happens?
+> 
+> Same behaviour in release build in my case. Already tried that. This also seems related to the Android version, does not happen on all our test devices.
+
+**IsuruSathyajith** commented on 2023-10-03T13:37:46Z:
+
+> 
+> > Same behaviour in release build in my case. Already tried that. This also seems related to the Android version, does not happen on all our test devices.
+> 
+> Yes, I mostly had it on Android 13 devices; so I created this issue for the React Navigation library back then -> https://github.com/react-navigation/react-navigation/issues/11619
+
+**souza-dev** commented on 2023-10-07T00:17:21Z:
+
+> > My company is willing to put a bounty of $1,000 on fixing this and getting it merged. If anyone else would like to add to the bounty, please chime in.
+> > 
+> > The reason this needs to be top priority is because concurrent react has been out for a long time, yet -- in practice -- not in the react-native world, as this issue makes Android useless, given all workarounds are unacceptable for pro apps.
+> > 
+> > For additional information, we currently have an app in both app stores, and I implemented an `onPressIn` hack + a timeout after scrolling so events aren't triggered while scrolling, and it's not satisfactory. The `onPress` prop of Pressable really needs to operate correctly for the new architecture to be ready for prime time.
+> 
+> All I had to do was disable the fabric in gradle. 
+
+- Referenced by PR #44: NativeMeasurer for Android
+
+**rupeshkk-iprogrammer** commented on 2023-10-23T06:37:38Z:
+
+> any update on the touchable components?
+
+**Roshett** commented on 2023-10-23T21:43:17Z:
+
+> I encountered with the same bug
+
+**sagarjeu** commented on 2023-10-24T14:14:03Z:
+
+> Any update @satya164 
+
+- satya164 mentioned
+
+- satya164 subscribed
+
+**javache** commented on 2023-10-30T11:14:14Z:
+
+> We expect some of this to be improved by https://github.com/facebook/react-native/commit/03f70bf995379f08a77abcf96bb0e31ff75ca8c3 which will ship in 0.73.
+
+**Crhaj** commented on 2023-10-30T16:35:51Z:
+
+> Thank you @javache, would it be possible to consider this to be also released as a patch for 0.72?
+
+- javache mentioned
+
+- javache subscribed
+
+**Siti-Shaufi** commented on 2023-11-01T04:28:58Z:
+
+> > Thank you @javache, would it be possible to consider this to be also released as a patch for 0.72?
+> 
+> Currently on react-native 0.72.6 and react 18.2.0 with expo. All with latest dependencies. Still same issue. :(
+
+- javache mentioned
+
+- javache subscribed
+
+**ravindraguptacapgemini** commented on 2023-11-05T15:03:26Z:
+
+> I am also facing the same issue, specially on Android devices. Clicks do not work randomly but the scroll works fine at the same moment. Not sure why React Native/Meta developers are not fixing it, as this is very prominent issue.
+> @cortinico 
+
+- cortinico mentioned
+
+- cortinico subscribed
+
+**ravindraguptacapgemini** commented on 2023-11-07T04:06:02Z:
+
+> > We expect some of this to be improved by 03f70bf which will ship in 0.73.
+> 
+> @javache I tried to patch this, but it did not work.
+
+- javache mentioned
+
+- javache subscribed
+
+**ryanstout** commented on 2023-11-22T21:39:37Z:
+
+> Same issue, our app is only for Android. Works in the emulator. Tried the latest RN and a few before. Thanks
+
+**aatiqDev1443** commented on 2023-11-28T14:10:20Z:
+
+> Not working mostly for below android 11.
+
+- Referenced by issue #41718: Bug- Sometimes buttons or touchableOpacity are not working on the android phone.
+
+**HadiModarres** commented on 2023-12-08T16:19:05Z:
+
+> Same issue with Android and new architecture enabled. I wonder how Meta works around these issues internally as they've been using the new architecture successfully in Facebook app for years. I assume they have their own alternative navigation library instead of `react-navigation`? Would be great if they could share their expertise, as adopting new architecture seems unattainable for the rest of us.
+
+**skinsapp** commented on 2023-12-20T03:25:13Z:
+
+> Is this working finally with RN 73? This is so important that Android with the new architecture is useless without this. Very sad. 
+> 
+> It seems that at this point this would be a low enough hanging fruit providing enormous value that it is finally worth prioritizing.
+
+**faceyspacey** commented on 2023-12-20T03:27:03Z:
+
+> Looking forward to being able to use Android with the new architecture finally. Waiting on this too.
+
+**Wahsner** commented on 2023-12-30T20:48:21Z:
+
+> Still appear to be having this issue in 0.73.X on Android where the onPress isnt being triggered on, in this instance, the RN component.
+> 
+> If I disable newArchEnabled the button handles the onPress everytime.
+> 
+> Is anyone else still having this issue?
+
+**mtjkln** commented on 2023-12-30T20:50:58Z:
+
+> @Wahsner 
+> 
+> Yeah, exact case when it stops working when you turn on new arch.
+> 
+> Its very frustrating, that it still exists. 
+
+- Wahsner mentioned
+
+- Wahsner subscribed
+
+**christophliftoff** commented on 2024-01-03T00:08:24Z:
+
+> Also experiencing this problem. It seems to be related to react-navigation, as all the reported instances from our users occur when the user attempts to navigate to a new screen. For example, user taps on the "back" button, no navigation occurs, but the back button's opacity changes, indicating that the button is partly responding to the touch.
+> 
+> As other's have reported on this GH issue, other components continue to work fine (such as scrollviews, etc). `TouchableOpacity` components stop working until the app is force closed and re-opened.
+
+**cortinico** commented on 2024-01-03T11:03:53Z:
+
+> Do we have a repro of any sort?
+
+**cipolleschi** commented on 2024-01-08T11:30:46Z:
+
+> Hi everyone, we might have landed a fix in main for this and we might be able to verify the fix using a nightly version.
+> 
+> Has any of you a repro that we can use to see if it is fixed? Pinging some of the recently active people: @christophliftoff, @mtjkln, @Wahsner, @faceyspacey, @the-skins-app?
+> 
+
+- faceyspacey mentioned
+
+- faceyspacey subscribed
+
+- Wahsner mentioned
+
+- Wahsner subscribed
+
+- mtjkln mentioned
+
+- mtjkln subscribed
+
+- skinsapp mentioned
+
+- skinsapp subscribed
+
+- christophliftoff mentioned
+
+- christophliftoff subscribed
+
+**joemun** commented on 2024-01-08T21:13:35Z:
+
+> > Hi everyone, we might have landed a fix in main for this and we might be able to verify the fix using a nightly version.
+> 
+> @cipolleschi Mind sharing the relevant commits? We can try to test as well, thanks!
+
+- cipolleschi mentioned
+
+- cipolleschi subscribed
+
+**Siti-Shaufi** commented on 2024-01-09T07:58:46Z:
+
+> > Hi everyone, we might have landed a fix in main for this and we might be able to verify the fix using a nightly version.
+> > 
+> > Has any of you a repro that we can use to see if it is fixed? Pinging some of the recently active people: @christophliftoff, @mtjkln, @Wahsner, @faceyspacey, @the-skins-app?
+> 
+> Can we know the solution, currently in 72.6 with the newArchitecture disabled and have react-navigation also have the same issue. 
+
+- faceyspacey mentioned
+
+- faceyspacey subscribed
+
+- Wahsner mentioned
+
+- Wahsner subscribed
+
+- mtjkln mentioned
+
+- mtjkln subscribed
+
+- skinsapp mentioned
+
+- skinsapp subscribed
+
+- christophliftoff mentioned
+
+- christophliftoff subscribed
+
+**mtjkln** commented on 2024-01-09T08:00:32Z:
+
+> @Siti-Shaufi 
+> 
+> The issue happens when new architecture is enabled. Apart from this I have never come across this issue.
+
+- Siti-Shaufi mentioned
+
+- Siti-Shaufi subscribed
+
+**Siti-Shaufi** commented on 2024-01-09T08:05:45Z:
+
+> > @Siti-Shaufi
+> > 
+> > The issue happens when new architecture is enabled. Apart from this I have never come across this issue.
+> 
+> Alright, I will check again. As my issue happen when the new architecture is disabled. Thanks!
+
+- Siti-Shaufi mentioned
+
+- Siti-Shaufi subscribed
+
+**mtjkln** commented on 2024-01-09T08:10:33Z:
+
+> @cipolleschi 
+> 
+> The issue happens when new architecture is enabled. Apart from this I have never come across this issue. 
+
+- cipolleschi mentioned
+
+- cipolleschi subscribed
+
+**Crhaj** commented on 2024-01-09T08:16:23Z:
+
+> > @cipolleschi
+> > 
+> > The issue happens when new architecture is enabled. Apart from this I have never come across this issue.
+> 
+> We (and other people here) have experienced the issue on the old architecture as well, so I don't think the architecture is the determining factor.
+
+- cipolleschi mentioned
+
+- cipolleschi subscribed
+
+**cipolleschi** commented on 2024-01-09T10:49:14Z:
+
+> @joemun sure! These are the relevant commits:
+> - Jan 4: https://github.com/facebook/react-native/commit/e4708d661bf3d01ec857635f04a4aabf9d954a5e
+> - Jan 2: https://github.com/facebook/react-native/commit/54166342f01fc74236ba6146a4c0f604189017e4
+
+- joemun mentioned
+
+- joemun subscribed
+
+- hollanderbart subscribed
+
+**hollanderbart** commented on 2024-01-09T21:48:48Z:
+
+> In which next version will these commits be included?
+
+**oliverphardman** commented on 2024-01-10T03:02:11Z:
+
+> Following as I am also experiencing this, even on Android 5, on old architecture. Reproducing is very difficult because often a re-render will fix the problem. ScrollViews still function normally, but Pressables don't respond at all. No feedback, not even an Android ripple.
+
+**cipolleschi** commented on 2024-01-10T11:11:12Z:
+
+> @hollanderbart for the time being, we are considering these for 0.74.
+> 
+> If this is something that is crippling your 0.73 app, please add them as a pick request in the discussion
+
+- hollanderbart mentioned
+
+- hollanderbart subscribed
+
+**Crhaj** commented on 2024-01-11T11:52:05Z:
+
+> Requested in the discussion thread. Please upvote if you want it cherry picked to 0.73
+
+**hollanderbart** commented on 2024-01-12T10:20:18Z:
+
+> Did anyone test if the relevant commit(s) actually resolved the issue? @joemun @Siti-Shaufi 
+
+- joemun mentioned
+
+- joemun subscribed
+
+- Siti-Shaufi mentioned
+
+- Siti-Shaufi subscribed
+
+- Bowlerr subscribed
+
+**Bowlerr** commented on 2024-01-15T12:54:15Z:
+
+> Having the same issue with react-native-gesture-handler on Android, are there any solutions to this? 
+
+**cipolleschi** commented on 2024-01-15T15:02:25Z:
+
+> @Crhaj, @joemun @Siti-Shaufi @Bowlerr can you try if the commits I linked above fixes the issues for you? 
+> 
+> Or can you provide a reproducer so I can try that out myself? (Pro tip: you can use 0.73 to repro the failure and then use a nightly to verify that it is solved)
+> 
+> Thank you so much! 🙏 
+
+- joemun mentioned
+
+- joemun subscribed
+
+- Crhaj mentioned
+
+- Crhaj subscribed
+
+- Bowlerr mentioned
+
+- Bowlerr subscribed
+
+- Siti-Shaufi mentioned
+
+- Siti-Shaufi subscribed
+
+**Crhaj** commented on 2024-01-15T15:07:02Z:
+
+> > @Crhaj, @joemun @Siti-Shaufi @Bowlerr can you try if the commits I linked above fixes the issues for you?
+> > 
+> > Or can you provide a reproducer so I can try that out myself? (Pro tip: you can use 0.73 to repro the failure and then use a nightly to verify that it is solved)
+> > 
+> > Thank you so much! 🙏
+> 
+> @cipolleschi unfortunately, in our case, we couldn't reliably reproduce the issue and it seemed to happen randomly.
+
+- cipolleschi mentioned
+
+- cipolleschi subscribed
+
+- joemun mentioned
+
+- joemun subscribed
+
+- Crhaj mentioned
+
+- Crhaj subscribed
+
+- Bowlerr mentioned
+
+- Bowlerr subscribed
+
+- Siti-Shaufi mentioned
+
+- Siti-Shaufi subscribed
+
+**Bowlerr** commented on 2024-01-15T15:09:44Z:
+
+> Same with @Crhaj, We couldn't reproduce the issue reliably.
+
+- Crhaj mentioned
+
+- Crhaj subscribed
+
+**joemun** commented on 2024-01-23T22:25:07Z:
+
+> > can you try if the commits I linked above fixes the issues for you?
+> 
+> @cipolleschi Sorry for the delay. I'm sad to say that those 2 commits (cherry-picked to our 72.3 branch) don't fix the issue for us.
+
+- cipolleschi mentioned
+
+- cipolleschi subscribed
+
+**skinsapp** commented on 2024-01-24T03:58:13Z:
+
+> The issue only occurs when `useNativeDriver` is set:
+> 
+> https://github.com/facebook/react-native/issues/36504#issuecomment-1586137079
+> 
+> So if various automated tests are neglecting to set that to `true`, then you won't see the issue. @sammy-SC at Facebook seems to have figured that out as he just re-opened the above related issue. 
+
+- sammy-SC mentioned
+
+- sammy-SC subscribed
+
+**cipolleschi** commented on 2024-01-24T12:20:29Z:
+
+> @joemun, thanks for letting us know.
+> 
+> We have this investigation marked as high priority, so we hopefully would be able to make progress on this as fast as we can.
+> 
+> To help us out, we would greatly appreciate a reproducer starting from this repo. I understand that the issue does not reproduce consistently, but if you can set up something and tell us how and how much we need to interact with the repro to get the issue happening, this will help us a lot.
+> 
+> Thank you all for the cooperation! 🙏 
+
+- joemun mentioned
+
+- joemun subscribed
+
+**rupeshkk-iprogrammer** commented on 2024-01-24T13:13:15Z:
+
+> 
+> 
+> The issue happens when new architecture is enabled and also in Reac-Native 73 new arch = true. Apart from this I have never come across this issue.
+> 
+
+**kchh90** commented on 2024-01-25T21:23:30Z:
+
+> I can confirm we're experiencing this issue as well on react-native 73.2 when new architecture is enabled for Android. The issue we face is with onPress only working intermittently on physical android devices. The issue does not occur on android emulator devices.
+> 
+> @cipolleschi I have been able to consistently reproduce this issue with the following repro by clicking the "CLICK ME" button multiple times and not seeing each click generate the expected timestamp output in the console.
+> 
+> For me this issue only present itself within a react-navigation screen, when a button is placed outside the react-navigation screen there is no issue with its onPress behaviour.
+
+- cipolleschi mentioned
+
+- cipolleschi subscribed
+
+- dppo unsubscribed
+
+**cortinico** commented on 2024-01-26T09:58:31Z:
+
+> > @cipolleschi I have been able to consistently reproduce this issue with the following repro by clicking the "CLICK ME" button multiple times and not seeing each click generate the expected timestamp output in the console.
+> 
+> @kchh90 thanks for the reproducer. However, it seems to work fine on my end. See the attached video:
+> 
+> 
+> https://github.com/facebook/react-native/assets/3001957/3af1c69e-c14b-4a6d-a9a0-6a47cb15cf20
+> 
+
+- kchh90 mentioned
+
+- kchh90 subscribed
+
+- cipolleschi mentioned
+
+- cipolleschi subscribed
+
+**Christofon** commented on 2024-01-26T10:02:48Z:
+
+> > > @cipolleschi I have been able to consistently reproduce this issue with the following repro by clicking the "CLICK ME" button multiple times and not seeing each click generate the expected timestamp output in the console.
+> > 
+> > @kchh90 thanks for the reproducer. However, it seems to work fine on my end. See the attached video:
+> > 
+> > Screen.Recording.2024-01-26.at.09.54.20.mov
+> 
+> This is only happening on physical devices, at least for me.
+
+- kchh90 mentioned
+
+- kchh90 subscribed
+
+- cipolleschi mentioned
+
+- cipolleschi subscribed
+
+**kchh90** commented on 2024-01-26T17:53:59Z:
+
+> > > @cipolleschi I have been able to consistently reproduce this issue with the following repro by clicking the "CLICK ME" button multiple times and not seeing each click generate the expected timestamp output in the console.
+> > 
+> > @kchh90 thanks for the reproducer. However, it seems to work fine on my end. See the attached video:
+> > 
+> > Screen.Recording.2024-01-26.at.09.54.20.mov
+> 
+> Yes sorry, I should have been more clear that the issue is only reproducible on physical android devices but not on android emulators.
+
+- kchh90 mentioned
+
+- kchh90 subscribed
+
+- cipolleschi mentioned
+
+- cipolleschi subscribed
+
+**kchh90** commented on 2024-01-26T19:07:13Z:
+
+> Here's a short recording of the issue occurring on a physical android device. I added an alert to the button's onPress behaviour to better showcase the issue directly on the device:
+> https://github.com/facebook/react-native/assets/1700361/21a28388-df28-492b-bfc0-9d3150866250
+> 
+> I'm running it on Android 14 Pixel 7 in this example, but have tried it on a few other physical android devices and see the same issue, so doesn't seem to be device specific.
+
+**cortinico** commented on 2024-02-01T14:37:26Z:
+
+> Hey @kchh90 thanks for your reproducer, after furhter investigation, we were able to reproduce (I'd like to stress once more how having a simple/small reproducer was crucial here! Thank you again).
+> 
+> 1. The issue happens on either emulator or physical device. The issue happens if you touch, move the finger, and release it.
+> 2. The issue seems to be related to `react-native-screens`. It won't happen on a vanilla native app (cc @WoLewicki)
+> 
+> We'll follow up with next steps once we have a solution for this
+
+- kchh90 mentioned
+
+- kchh90 subscribed
+
+- WoLewicki mentioned
+
+- WoLewicki subscribed
+
+- cortinico removed label "Needs: Repro"
+
+- cortinico removed label "Needs: Attention"
+
+- cortinico added label "Needs: React Native Team Attention"
+
+- cortinico added label "Never gets stale"
+
+- cortinico was assigned
+
+**kchh90** commented on 2024-02-02T00:06:38Z:
+
+> @cortinico Awesome, thank you very much for the effort in looking into this issue!
+> 
+> Through further testing, I've discovered that disabling the header for a given screen also appears to workaround this issue.
+> 
+> For example, by adding the following options to the screen in the repro as such:
+> ```
+> <Stack.Screen
+> name="Test"
+> component={TestScreen}
+> options={{
+> headerShown: false,
+> }}
+> />
+> ```
+
+- cortinico mentioned
+
+- cortinico subscribed
+
+**etodanik** commented on 2024-02-02T08:49:38Z:
+
+> I get this issue on expo-router without using screens. Not sure the current understanding of the bug is accurate if the assumption is that screens is a culprit. @cortinico 
+> 
+> I'll try to extract a minimal repro but the issue is very intermittent and elusive. 
+
+- cortinico mentioned
+
+- cortinico subscribed
+
+**cortinico** commented on 2024-02-02T11:25:25Z:
+
+> > I get this issue on expo-router without using screens. Not sure the current understanding of the bug is accurate if the assumption is that screens is a culprit. @cortinico
+> 
+> So the issue in the reproducer happens because of usages of `react-native-screens`. We'll have to patch the library to fix it. `expo-router` might also be affected by a similar problem, we haven't investigated it yet.
+
+- cortinico mentioned
+
+- cortinico subscribed
+
+**Wahsner** commented on 2024-02-02T11:41:39Z:
+
+> > I get this issue on expo-router without using screens. Not sure the current understanding of the bug is accurate if the assumption is that screens is a culprit. @cortinico
+> > 
+> > I'll try to extract a minimal repro but the issue is very intermittent and elusive.
+> 
+> expo-router is built on react-navigation according to their docs. https://docs.expo.dev/router/introduction/
+
+- cortinico mentioned
+
+- cortinico subscribed
+
+**WoLewicki** commented on 2024-02-05T11:52:15Z:
+
+> @etodanik by saying that you did not use screens, you mean you explicitly set this prop: https://reactnavigation.org/docs/stack-navigator/#detachinactivescreens to `false` ?
+> 
+> Also, @cortinico it kinda looks the same issue we reported quite a long time ago: https://discord.com/channels/514829729862516747/702994331711045732/1130887943867875488. It was then fixed (probably) by this PR: https://github.com/facebook/react-native/pull/37779. But we've just recently started seeing the issue again, so we'll have to investigate it once more.
+
+- etodanik mentioned
+
+- etodanik subscribed
+
+- cortinico mentioned
+
+- cortinico subscribed
+
+**cortinico** commented on 2024-02-05T12:21:14Z:
+
+> > Also, @cortinico it kinda looks the same issue we reported quite a long time ago: discord.com/channels/514829729862516747/702994331711045732/1130887943867875488. It was then fixed (probably) by this PR: #37779. But we've just recently started seeing the issue again, so we'll have to investigate it once more.
+> 
+> @WoLewicki that's correct. The issue is sort of similar
+
+- cortinico mentioned
+
+- cortinico subscribed
+
+- WoLewicki mentioned
+
+- WoLewicki subscribed
+
+**WoLewicki** commented on 2024-02-05T14:01:50Z:
+
+> Yeah, and it was not connected to RNScreens but to `Animated`. The current one on our side seems not to be the same one so we'll dig deeper.
+
+**WoLewicki** commented on 2024-02-07T16:30:00Z:
+
+> @etodanik @kchh90 @vrgimael can you check if applying https://github.com/software-mansion/react-native-screens/pull/2028 fixes your issue?
+
+- kchh90 mentioned
+
+- kchh90 subscribed
+
+- etodanik mentioned
+
+- etodanik subscribed
+
+- vrgimael mentioned
+
+- vrgimael subscribed
+
+- cortinico added label "Resolution: PR Submitted"
+
+**kchh90** commented on 2024-02-08T00:33:47Z:
+
+> @WoLewicki I can confirm applying https://github.com/software-mansion/react-native-screens/pull/2028 does indeed resolve this issue on the repro app, I appreciate the fast response in looking into this!
+
+- WoLewicki mentioned
+
+- WoLewicki subscribed
+
+**efstathiosntonas** commented on 2024-02-08T07:53:36Z:
+
+> @WoLewicki the fixes are for new arch only, not paper, right?
+
+- WoLewicki mentioned
+
+- WoLewicki subscribed
+
+- Rerup subscribed
+
+**idrakimuhamad** commented on 2024-02-19T15:24:25Z:
+
+> I'm facing similar (at least sounded similar), which cannot be replicated in a consistence manner, and the only consistency I can gather is it happened on Android almost all the time. We have almost no report that this happened on iOS, though we not ruling it out. It usually happened after playing the app for awhile, but there are cases also where it happened rather quickly. Same as others, the only way to get out of the froze is to kill and restart the app. The behaviour only happening in release app, we never encounter this in development mode, hence the difficulties to debug nor reproduce.
+> 
+> I can't give a re-producible repo obviously, nor I have recording, but when this happened, everything within a screen doesn't respond to any tap. Pressing buttons, text input, header back button, and physical button doesn't work. And if it suddenly happened during entering text in TextInput, I notice that text formatting doesn't work (I did some currency formatting when user is typing), as if the JS side just stop. The only thing that work is scrolling.
+> 
+> I'm thinking that this relates to performance of the app perhaps, so I did run system trace on my low end Android (Samsung A13) but I'm not familiar with reading the profile. I notice when the freezing happened, the mqt_js are not busy and nothing happened there. But render thread are definitely busy and not stopping some stuff and shown as "incomplete".
+> 
+> 
+> 
+> I'm about to try to patch my RN using the touchable fixes, and test it again.
+> 
+> I'm on RN 0.71.16 and not using new arch.
+> 
+> The recording, can't see the tap but i'm tapping like hell all the button that can be tapped.
+> 
+> https://github.com/facebook/react-native/assets/1400323/8183b3d6-eac7-49ec-81e3-5363baae5722
+> 
+
+**HadiModarres** commented on 2024-02-20T00:13:39Z:
+
+> This is not an old arch problem, if something so critical like detecting presses on screen didn't work properly, React Native would have never reached the adoption and popularity that it has.
+
+**meabed** commented on 2024-02-20T03:53:49Z:
+
+> This definitely not old arch / new arch issue, it's animation / transition issue, 
+> we disabled async calls and animations on buttons and navigation to get Android working. 
+
+**cortinico** commented on 2024-02-20T09:59:53Z:
+
+> Hey @idrakimuhamad @HadiModarres @meabed 
+> Please do not highjack the conversation here.
+> 
+> We identified the issue as being related to react-native-screens on New Architecture. The fix is forthcoming and has been confirmed and working by @kchh90.
+> If you have other issues with touchable, please open a separate issue and provide a reproducer.
+
+- meabed mentioned
+
+- meabed subscribed
+
+- idrakimuhamad mentioned
+
+- idrakimuhamad subscribed
+
+- kchh90 mentioned
+
+- kchh90 subscribed
+
+- HadiModarres mentioned
+
+- HadiModarres subscribed
+
+**Crhaj** commented on 2024-02-20T10:36:41Z:
+
+> @cortinico the original author of this issue however said he was not using the new architecture and several others (myself included) confirmed it is happening on old architecture as well. I mean no offense but if anything, the conversation has been hijacked by new architecture.
+
+- cortinico mentioned
+
+- cortinico subscribed
+
+**meabed** commented on 2024-02-20T13:53:19Z:
+
+> @cortinico i am not hijacking the conversation, I had this issue on Android without new architecture,
+> In build not in Android emulator, I also have commented earlier it's been like more than 6 months since. There was no new architecture when this issue happened for me 
+
+- cortinico mentioned
+
+- cortinico subscribed
+
+**cortinico** commented on 2024-02-20T14:09:13Z:
+
+> > the original author of this issue however said he was not using the new architecture and several others (myself included) confirmed it is happening on old architecture as well. I mean no offense but if anything, the conversation has been hijacked by new architecture.
+> 
+> Still to this day, no reproducer was provided to the problem you're referring to @Crhaj. The only meaningful reproducer which was effectively provided was the one from @kchh90 which was only on New Architecture. So we consider this issue related to that.
+> 
+> @Crhaj if you have a different issue, on Old/New Architecutre, **with a valid reproducer** please open a new issue and we will look into it. Commenting on this issue that you're also affected without providing a way to reproduce the issue, won't allow us to fix the problem at all.
+
+- kchh90 mentioned
+
+- kchh90 subscribed
+
+- Crhaj mentioned
+
+- Crhaj subscribed
+
+**Crhaj** commented on 2024-02-20T14:13:39Z:
+
+> @cortinico I understand. However, all I am saying is that the original opened issue is not answered and it was hijacked by (probably) different one. There is no reproducer because no one has been able to reproduce this reliable. This was not meant as a complaint that the issue is not solved but the fact is that this issue was opened in regards to something that is not solved (again probably due to the randomness of the occurence) and hence, to me, it makes sense it should not be closed or considered as such.
+
+- cortinico mentioned
+
+- cortinico subscribed
+
+**cortinico** commented on 2024-02-20T15:04:29Z:
+
+> > This was not meant as a complaint that the issue is not solved but the fact is that this issue was opened in regards to something that is not solved (again probably due to the randomness of the occurence) and hence, to me, it makes sense it should not be closed or considered as such.
+> 
+> We'll be closing this once https://github.com/software-mansion/react-native-screens/pull/2028 is merged and shipped in a new version of `react-native-screens`. If there is another issue which is not fixed by the PR I linked, you should open a new issue, and provide a reproducer.
+
+**Prasiddha-n** commented on 2024-02-20T17:28:03Z:
+
+> I am having this issue for both iOS and android. But the peculiar thing about this is that it is working as expected and touches are registering in the test environment (Expo Go, `npx expo run:ios` and `npx expo run:android`). But as soon as I create a build using `eas build -p ios/android -e "development" --non-interactive` and submit to appstoreconnect or create release for internal testing in android, then the app does not register the touches. Scroll horizontal and vertical are working as expected but it is not registering any kind of touch/press.
+> 
+> My project was on expo 48 and I just updated it to expo 50. I further updated other packages using `npx expo install --check`.
+> 
+> @cortinico I was just wondering, the fix from https://github.com/software-mansion/react-native-screens/pull/2028 will resolve that too? Please some insights on this will be very helpful.
+
+- cortinico mentioned
+
+- cortinico subscribed
+
+**felix-lambert** commented on 2024-02-21T16:39:40Z:
+
+> I'm also having this issue with expo-router and the new architecture. If i navigate to a new screen no touchable events are responding. Do you need to have a minimal reproduction of the problem ?
+
+**cipolleschi** commented on 2024-02-22T14:18:00Z:
+
+> @felix-lambert yes, please, but possibly without expo router. We need reproducers only using core, if possible. If the failing behavior happens after navigation only, is highly likely that the navigation library is the root cause of the issue. 
+> We worked with RNScreens maintainers and we already found an issue that they should have solved. 
+
+- felix-lambert mentioned
+
+- felix-lambert subscribed
+
+**felix-lambert** commented on 2024-02-22T22:17:38Z:
+
+> @cipolleschi here is a minimal reproduction without expo-router. https://github.com/felix-lambert/touchablenotworking. Hope that will help. It works if I use `onPressOut` but not `onPress` in a physical device
+
+- cipolleschi mentioned
+
+- cipolleschi subscribed
+
+**satya164** commented on 2024-02-23T00:09:28Z:
+
+> @felix-lambert is this different from https://github.com/software-mansion/react-native-screens/pull/2028 ?
+
+- felix-lambert mentioned
+
+- felix-lambert subscribed
+
+**felix-lambert** commented on 2024-02-23T19:10:54Z:
+
+> Hello @satya164. I `yarn add "software-mansion/react-native-screens#@wolewicki/proper-yoga-on-fabric"`and the onPress seems to work. However the navigation.navigate does not work anymore. If i do `yarn add react-native-screens` the onPress does not work but the navigation do. Is that normal? Here is my mini repro > https://github.com/felix-lambert/touchablenotworking . Hope that helps
+
+- satya164 mentioned
+
+- satya164 subscribed
+
+**aatiqDev1443** commented on 2024-03-04T08:27:44Z:
+
+> 
+> 
+> 
+> Touchable works properly after doing this one change .
+> 
+> File structure: gradle/android/gradle.properties
+
+**umarzaman** commented on 2024-03-05T21:45:38Z:
+
+> I am having the same issue on Expo Go cant tap on any TextInput, touchable or buttons nothing: I am having this issue on iphone 12 mini other wise it works fine on the iphone 12, oneplus or other android devices.
+> 
+> NOW THE WEIRD PART WHEN I SHAKE THE IPHONE 12 MINI EVERYTHING WORKS FINE . TOUCHABLE, TEXTINPUTS EVERYTHING
+> ANY SOLUTION FOR THIS PROBLEM.
+
+**hollanderbart** commented on 2024-03-06T13:21:49Z:
+
+> I appreciate all these "hint" messages, but I believe it's more efficient to wait until the fix has been finished & merged.
+> 
+> https://github.com/facebook/react-native/issues/36710#issuecomment-1954411870
+
+- Referenced by issue #405: onPress not firing on Samsung Galaxy S7 Edge Android 13 LineageOS 20.0
+
+**felix-lambert** commented on 2024-03-18T19:47:42Z:
+
+> The problem is still there even after the merge (https://github.com/software-mansion/react-native-screens/pull/2028). Is there an alternative solution? Thanks for the help :)
+
+**efstathiosntonas** commented on 2024-03-18T19:49:47Z:
+
+> @felix-lambert are you testing against Fabric or Paper? The PR is targeting Fabric
+
+- felix-lambert mentioned
+
+- felix-lambert subscribed
+
+**felix-lambert** commented on 2024-03-18T20:11:20Z:
+
+> @efstathiosntonas i'm testing against Fabric in my expo project with 
+> 
+> ` "plugins": [
+> [
+> "expo-build-properties",
+> {
+> "ios": {
+> "newArchEnabled": true,
+> "flipper": false
+> },
+> "android": {
+> "newArchEnabled": true
+> }
+> }
+> ],`
+> 
+> If I disable the new architecture it works. I'm using "react-native-screens": "~3.29.0" and "react-native": "0.73.6". I think @umarzaman and @aatiqJalanSWE are having the same problem with android
+
+- efstathiosntonas mentioned
+
+- efstathiosntonas subscribed
+
+- umarzaman mentioned
+
+- umarzaman subscribed
+
+- aatiqDev1443 mentioned
+
+- aatiqDev1443 subscribed
+
+- Referenced by issue #11900: Pressable interaction issue with StackNavigator on iPhone Xs + new architecture
+
+- Referenced by issue #43546: Pressable interaction issue with StackNavigator on iPhone Xs + new architecture
+
+**cortinico** commented on 2024-03-21T09:54:10Z:
+
+> We're closing this as the issue has been fixed on react-native-screen's end:
+> https://github.com/software-mansion/react-native-screens/pull/2028
+> 
+> If you're still facing similar issues, even after 0.74 + the react-native-screens patch, please open a separate issue and provide a reproducer.
+
+- cortinico closed
+
+- cortinico added label "Resolution: Issue in another tool or repo"
+
+- Referenced by issue #43500: Header height not getting calculated in pageY value for components in new architecture
+
+**dev-eyoungmin** commented on 2024-04-09T07:28:35Z:
+
+> @cortinico 
+> We updated react-native-screens to the latest version, but the above issues still occur. This issue should be reopened. 
+> 1. freezing on click while changing tabs via bottom tab, scrolling is possible, but events on subsequent touches are unresponsive.
+> 2. freezing occurs when launching the app and then launching the app again in the background or sleep. 
+
+- cortinico mentioned
+
+- cortinico subscribed
+
+**dev-eyoungmin** commented on 2024-04-09T07:34:50Z:
+
+> @vrgimael Has this issue been resolved by any chance?
+
+- vrgimael mentioned
+
+- vrgimael subscribed
+
+**cortinico** commented on 2024-04-09T09:42:09Z:
+
+> > We updated react-native-screens to the latest version, but the above issues still occur. This issue should be reopened.
+> 
+> @devym-37 please open a new issue + provide:
+> * your react-native version
+> * the react-native-screens version
+> * a reproducer using the https://github.com/react-native-community/reproducer-react-native
+
+- dev-eyoungmin mentioned
+
+- dev-eyoungmin subscribed
+
+- Referenced by issue #40108: [$1000] Android - Unable to access popup menu while "New message" marker is visible
+
+**amanShukla-amber** commented on 2024-04-30T06:29:46Z:
+
+> > > This was not meant as a complaint that the issue is not solved but the fact is that this issue was opened in regards to something that is not solved (again probably due to the randomness of the occurence) and hence, to me, it makes sense it should not be closed or considered as such.
+> > 
+> > We'll be closing this once software-mansion/react-native-screens#2028 is merged and shipped in a new version of `react-native-screens`. If there is another issue which is not fixed by the PR I linked, you should open a new issue, and provide a reproducer.
+> 
+> @cortinico 
+> As the above fix for React native screens is pushed into version 3.30.1, Can't we directly upgrade the React-native-screens version above 3.30.1 in our app instead of upgrading the React Native version?
+> as we have upgraded the react-native-screens to the latest version with RN 0.71 but the issue is still there, do we have to upgrade React native version to 0.74+ to get this issue fixed?
+
+- cortinico mentioned
+
+- cortinico subscribed
+
+**WoLewicki** commented on 2024-05-06T12:23:43Z:
+
+> @amanShukla-amber you can try and apply only this PR to the current version of `react-native-screens` you have by using e.g. patch-package. From quickly looking at the code, it might just work on previous versions also. Be sure to apply https://github.com/software-mansion/react-native-screens/pull/2107 too then as it is a needed follow-up for the issue.
+
+- amanShukla-amber mentioned
+
+- amanShukla-amber subscribed
+
+**spyshower** commented on 2024-05-09T12:04:42Z:
+
+> @vrgimael thank you for the detailed post man. We too have been struggling for months. Any chance you guys found out the issue?
+
+- vrgimael mentioned
+
+- vrgimael subscribed
+
+**emanu7478** commented on 2024-05-11T04:08:23Z:
+
+> > @vrgimael thank you for the detailed post man. We too have been struggling for months. Any chance you guys found out the issue?
+> 
+> "Hi @spyshower, We've been dealing with a similar issue for quite some time. Luckily, after thorough investigation, we managed to resolve it by upgrading the react-native-screen package to its latest release, version 3.31.1. Hopefully, this solution works for you too!"
+
+- spyshower mentioned
+
+- spyshower subscribed
+
+- vrgimael mentioned
+
+- vrgimael subscribed
+
+- Referenced by issue #44643: Some touchable components are not working (Native Android devices only)
+
+- Referenced by issue #44610: Pressable gets stuck under the new architecture
+
+- Referenced by PR #45865: Do not destroy views when there is a touch going on for New Architecture
+
+**peaktan** commented on 2024-12-25T06:07:44Z:
+
+> Hello, we have encountered this problem, could you tell me the latest version of the repair, see a fix to repair a similar problem before: https://github.com/facebook/react-native/pull/45865, don't know whether to fix the problem @vrgimael 
+
+- vrgimael mentioned
+
+- vrgimael subscribed
+
+**sakibb7** commented on 2024-12-30T04:33:03Z:
+
+> I'm using "react-native-screens": "~4.1.0" but still facing the same issue. onPress works but i need to click twice. This is very annoying. onPress works perfectly on android emulator but not on physical device.
+
+**cipolleschi** commented on 2024-12-31T10:45:17Z:
+
+> @sakibb7 the latest version of Screens is 4.4.0. Are you using RN Gesture Handler as well? If not, can you try to use it and report if the problem persists?
+
+- sakibb7 mentioned
+
+- sakibb7 subscribed
+
+- Referenced by issue #48387: [New Arch][Android] Touchable components stop responding randomly
+
+**Atom1er** commented on 2025-01-22T23:08:18Z:
+
+> This issue should be re-opened, this is driving us crazy, it is random, we tried using different type of touchable to no luck. Was happening on an old version, so we updated to the latest and it still happens.
+
+**Bowlerr** commented on 2025-01-22T23:11:22Z:
+
+> @Atom1er have you checked for any memory leaks? It has been over a year but that ended up being a part of the issue I was having back then. 
+> 
+> Touchables would stop being responsible after a while due to the memory leak 
+
+- Atom1er mentioned
+
+- Atom1er subscribed
+
+**RohovDmytro** commented on 2025-01-23T21:08:56Z:
+
+> I am investigating very, very random stop on onPress for a long time. I had to invent the concept of hope to survive.
+> 
+> onPress => Taps => Stop working. Google Pixel 7 phone, no error, nothing sus in the logs.
+> 
+> I am using BaseButton (`react-native-gesture-handler`) + Text component. Replacing with a basic react-native `Button` component solves the issue.
+
+**RohovDmytro** commented on 2025-01-23T21:19:43Z:
+
+> Do anybody anyhow anyway anychance has an estimation of a real-life production impact of this issue? Is it in the ranges of 1%, 10%, *?
+
+**spyshower** commented on 2025-01-23T21:22:09Z:
+
+> > Do anybody anyhow anyway anychance has an estimation of a real-life production impact of this issue? Is it in the ranges of 1%, 10%, *?
+> 
+> Im only replying because your comments made me laugh. If you ask in how many devices it happens, definitely <1%
+
+**Siti-Shaufi** commented on 2025-01-24T00:28:00Z:
+
+> Hi everyone, 
+> 
+> Our team hasn’t come across these issues since we decided to revamp the UI/UX for the entire app. We’re still looking into the root cause, but we suspect it might be related to memory leaks. What’s weird is that while it happens randomly, it always affects the same button on real devices but doesn’t show up on emulators. 
+> 
+> We also decide to just downgrade some of dependencies. 
+> 
+> ```
+> "react": "18.0.0",
+> "react-native": "0.69.12",
+> "react-native-screens": "^3.5.0",
+> ```
+
+- Wahsner unsubscribed
+
+**spyshower** commented on 2025-01-24T09:58:04Z:
+
+> @Atom1er @Siti-Shaufi I am willing to help you out with this problem if you are interested. While we hadn't fixed the problem in the company I was working for at the moment, I do have some insights and potential solutions that might work.
+
+- Atom1er mentioned
+
+- Atom1er subscribed
+
+- Siti-Shaufi mentioned
+
+- Siti-Shaufi subscribed
+
+**RohovDmytro** commented on 2025-01-24T12:08:22Z:
+
+> I have some progress finding the cause.
+> 
+> At least SOME parts of the app were freezing due to `key` property. Basically:
+> 
+> 1. Rendering an array of `BaseButton` each having `key={Math.random()}`
+> 2. Quickly pressing works at first, then the app stops responding to presses
+> 
+> I was able to reliably reproduce this error by switching keys from random to constant values.
+> 
+> I have parts of the app where presses stops working where key value does not seem to be the issue. Will keep pushing (ha-ha).
+
+**martinnov92** commented on 2025-01-27T12:33:48Z:
+
+> Similar issue is hapenning to me, but only when phone goes to sleeps for some time, then I wake the phone up and suddenly nothing works, except scrolling and after some the the app crashes. Even AppState change is not called...
+
+**spyshower** commented on 2025-01-27T12:35:50Z:
+
+> > Similar issue is hapenning to me, but only when phone goes to sleeps for some time, then I wake the phone up and suddenly nothing works, except scrolling and after some the the app crashes. Even AppState change is not called...
+> 
+> Yep, exact same problem.
+
+**spyshower** commented on 2025-01-27T12:43:17Z:
+
+> > > > Similar issue is hapenning to me, but only when phone goes to sleeps for some time, then I wake the phone up and suddenly nothing works, except scrolling and after some the the app crashes. Even AppState change is not called...
+> > > 
+> > > 
+> > > Yep, exact same problem.
+> > 
+> > Did you find any solution?
+> 
+> No man, read this thread. If someone wants to setup a chat/call so we can actually find out whats happening with this crazy issue instead of just reporting it, I will help.
+
+**amanShukla-amber** commented on 2025-01-27T14:11:50Z:
+
+> > > > This was not meant as a complaint that the issue is not solved but the fact is that this issue was opened in regards to something that is not solved (again probably due to the randomness of the occurence) and hence, to me, it makes sense it should not be closed or considered as such.
+> > > 
+> > > 
+> > > We'll be closing this once software-mansion/react-native-screens#2028 is merged and shipped in a new version of `react-native-screens`. If there is another issue which is not fixed by the PR I linked, you should open a new issue, and provide a reproducer.
+> > 
+> > @cortinico As the above fix for React native screens is pushed into version 3.30.1, Can't we directly upgrade the React-native-screens version above 3.30.1 in our app instead of upgrading the React Native version? as we have upgraded the react-native-screens to the latest version with RN 0.71 but the issue is still there, do we have to upgrade React native version to 0.74+ to get this issue fixed?
+> 
+> We encountered a similar issue where touchables were not responding as expected. After extensive debugging, we discovered that the native thread was busy handling other tasks, which caused the press event callback to not propagate from the native side to the JS layer. As a result, the actions or code written in JS were not being executed.
+> 
+> To resolve this, we optimized our screen to reduce the workload on the native thread, and since then, we haven't observed this issue. This was tested on React Native version 0.71.
+
+**kkafar** commented on 2025-01-27T18:52:00Z:
+
+> I've been looking into the issue from `react-native-screens` perspective today. 
+> 
+> I've tried both reproductions provided above:
+> 
+> * https://github.com/felix-lambert/touchablenotworking
+> * https://github.com/kchh90/repro-36710
+> 
+> and my own playground. 
+> 
+> I've used Xiaomi Redmi Note 8 Pro with Android 11 (5 yo device) and failed to reproduce for ~20 min. In case anyone is able to reproduce it / record a video of the bug in your app / provide some other useful info - please do (together with versions of used packages).
+
+- camilossantos2809 subscribed
+
+- yosmanyga subscribed
+
+- ddrozdov subscribed
+
+**ChristopherGabba** commented on 2025-02-28T17:09:42Z:
+
+> Hey everyone, I experienced this too in one of my screens.
+> 
+> Details:
+> - iOS
+> - react-native 0.76.7 (have not tried any later versions)
+> - old architecture (paper) (have not tried on the new architecture)
+> - react-native-screens 4.4.0 (I tried the v4.9.1 too)
+> - @react-navigation/bottom-tabs 6.3.2
+> - @react-navigation/native 6.0.2
+> - @react-navigation/native-stack 6.0.2
+> 
+> We spent hours and hours debugging this. Basically we have a screen (think like Snapchat or Instagram stories) where I user could click a bunch of different videos (when pressing one, it opens up a "WatchingScreen" with a video player in it) and close them one after the other. Seemingly at random, the user would close out of watching one of these and the entire "stories" panel was completely frozen. For some reason, the background scroll view could still be moved up and down but all the `Touchables` / `Pressables` on the page were completely locked up. It was a nasty bug -- and just like OP, it didn't happen on every video but maybe after 5 - 20 videos. It was also wayyy more present in production than it was in development. I also checked and I couldn't get `onPressIn()`, `onPressOut()`, or `onPress()` events to fire at all. We finally figured out the source for us:
+> 
+> ```typescript
+> <Stack.Screen
+> name="Watching"
+> component={Screens.WatchingScreen}
+> options={{
+> // presentation: "containedTransparentModal", // CANNOT USE
+> // presentation: "transparentModal", // CANNOT USE
+> }}
+> />
+> ```
+> 
+> I also think this could potentially be the same as the ` ` component from `react-native` as well when the `transparent` prop is set to true.
+> 
+> The conclusion we came to was that when calling `navigation.goBack()` on the "WatchingScreen" above and going back to this "stories page", somehow this `transparentModal` screen would not fully disappear (you couldn't see it or any of its contents) but it was like it was still there)? It's like it left some sort of invisible view barrier behind. This might not be the solution to some of your problems, but we are very confident this bug is "worked around" for now.
+> 
+
+- xccjk subscribed
+
+**shoxter** commented on 2025-04-05T15:02:15Z:
+
+> Happening to me too... Have the same component FAB using TouchableOpacity -- works perfectly on a busy screen and on an empty screen touchable opacity will: sometimes work, sometimes display opacity change and not trigger on press, sometimes not do anything.
+
+**Linuhusainnk** commented on 2025-04-06T14:49:35Z:
+
+> Am having issues after switching to RTL, any solutions?
+> 
+> RN : 0.76.9
+
+**kkafar** commented on 2025-04-07T07:53:21Z:
+
+> Hey, I've recently landed 
+> 
+> * https://github.com/software-mansion/react-native-screens/pull/2819 
+> 
+> in `react-native-screens`, which potentially resolves problems some of you encounter. It addresses cases where you have `react-native-gesture-handler` and the pressables happen to lose focus. This does not solve cases, where touchables can't gain focus at all, however it's worth trying out. This fix is released with `react-native-screens@4.11.0-beta.0`.
+> 
+> I want to reiterate on my previous comment - if anyone affected is able to provide a reproduction - please do - it'll be of great help. 
+
+- Referenced by issue #59953: [Due for payment 2026-04-14] [Due for payment 2026-04-07] [$375] Android: Investigate and fix onPress not working for Pressable in Tooltip
+
+**jorgetoh** commented on 2025-04-11T19:26:47Z:
+
+> I'm experiencing this too with: "expo": "~52.0.43" and iPhone 16 Pro Max simulator.
+
+- stereodenis subscribed
+
+**sergeymild** commented on 2025-04-27T08:27:01Z:
+
+> for me touchable not working on android if i set presentation: 'formSheet', show screen as BottomSheet it causes some android devices skip touches
+
+**technohobo23** commented on 2025-04-29T12:43:46Z:
+
+> for me this happened in a message list. After a certain number of pressable elements are added to the list only a couple of the elements at the top are pressable. the rest are not.
+
+**MandoMG** commented on 2025-05-08T19:01:54Z:
+
+> > Am having issues after switching to RTL, any solutions?
+> > 
+> > RN : 0.76.9
+> 
+> I'm having this issue only with RTL as well. LTR works fine. Did you find any solutions? @Linuhusainnk 
+> 
+> using RN: 0.76.9 and react-native-screens 4.0.0. 
+
+- Linuhusainnk mentioned
+
+- Linuhusainnk subscribed
+
+- buraks subscribed
+
+**therealkh** commented on 2025-05-26T08:50:54Z:
+
+> why is it closed after having so much complains and no solution?
+
+- Referenced by issue #51621: `onPress` not working while animating views
+
+**vaidyakhil** commented on 2025-06-02T19:07:21Z:
+
+> Hey everyone, sharing this as a potential repro of this issue:
+> https://github.com/vaidyakhil/OnPressBugRepro
+> 
+> Hope this is helpful
+> 
+> - react-native-screens and any navigation library is **NOT being used** and it's a simple hello world App.
+> - **Have attached a screen recording for reference in the repo (`demo_screen_recording.mp4`)**
+> - Tested only on iOS simulator
+> 
+> ---
+> 
+> I had just initialized a vanilla RN project with rn-cli when I faced this issue where sometimes a simple click listener was not getting called at all.
+> 
+> Eventually reached this issue. Based on the discussions above where it seems it was closed in favor of a `react-native-screens` issue.
+> 
+> 
+> https://github.com/user-attachments/assets/22a29ea5-80a8-4b8a-95c2-e488fb307589
+
+**syahbes** commented on 2025-06-03T12:41:27Z:
+
+> for me whats fixed this issue was to replace 'onPress' 
+> with 'onPressOut'
+> 
+> even with : 
+> ```
+> <TouchableOpacityonPressOut={() => { conssole.log("clicked")}>
+> Click me 
+> 
+> ```
+
+- liao02x subscribed
+
+**onyedikachi23** commented on 2025-07-05T02:23:19Z:
+
+> This also happens for Pressable. If only there was a workaround.
+
+- Dallas62 subscribed
+
+- alissonph subscribed
+
+**MorganNavel** commented on 2025-07-28T14:30:12Z:
+
+> I have the exact same problem as all of you. TouchableOpacity won't fire onPress (and even onPressOut) : 
+> 
+> ```ts
+> import { useThemeColor } from "@/hooks/useThemeColor";
+> import { TouchableOpacity, TouchableOpacityProps } from "react-native";
+> 
+> type ButtonProps = TouchableOpacityProps;
+> const Button = TouchableOpacity;
+> 
+> 
+> export function StyledButton({ style, ...props }: Readonly) {
+> const backgroundColor = useThemeColor("primary");
+> return;
+> }
+> export { Button };
+> 
+> 
+> // Example : 
+>  onPress={handleSubmit(onSubmit)}
+> style={styles.btn}
+> disabled={isLoading}
+> >
+> 
+>  type="defaultSemiBold"
+> style={{
+> color: onPrimary,
+> textAlign: "center",
+> }}
+> >
+> Click Me
+> 
+> 
+> ```
+> 
+> My concerned is that somehow when I only press on the right side (after the text) or the extreme left of my button, it will fire the event all the time, if I press in the middle or on the left part it doesn't work.
+> 
+> It happens both in debug and release.
+> 
+> I tested it on an Android 14
+> ```JSON
+> {
+> "dependencies": {
+> "@expo/vector-icons": "^14.1.0",
+> "@react-native-async-storage/async-storage": "^1.24.0",
+> "@react-native-community/blur": "^4.4.1",
+> "@react-native-firebase/app": "^22.4.0",
+> "@react-native-firebase/messaging": "^22.4.0",
+> "@react-navigation/bottom-tabs": "^7.3.10",
+> "@react-navigation/elements": "^2.3.8",
+> "@react-navigation/native": "^7.1.14",
+> "expo": "~53.0.11",
+> "expo-blur": "~14.1.5",
+> "expo-checkbox": "^4.1.4",
+> "expo-constants": "~17.1.6",
+> "expo-font": "~13.3.1",
+> "expo-haptics": "~14.1.4",
+> "expo-image": "~2.3.0",
+> "expo-linking": "~7.1.5",
+> "expo-notifications": "^0.31.4",
+> "expo-router": "~5.1.0",
+> "expo-secure-store": "~14.2.3",
+> "expo-splash-screen": "~0.30.9",
+> "expo-status-bar": "~2.2.3",
+> "expo-symbols": "~0.4.5",
+> "expo-system-ui": "~5.0.8",
+> "expo-web-browser": "~14.1.6",
+> "i18next": "^25.3.1",
+> "react": "^19.0.0",
+> "react-dom": "^19.0.0",
+> "react-hook-form": "^7.58.1",
+> "react-i18next": "^15.6.0",
+> "react-native": "0.79.3",
+> "react-native-collapsible": "^1.6.2",
+> "react-native-device-info": "^14.0.4",
+> "react-native-gesture-handler": "~2.24.0",
+> "react-native-pager-view": "6.7.1",
+> "react-native-reanimated": "~3.17.4",
+> "react-native-safe-area-context": "5.4.0",
+> "react-native-screens": "~4.11.1"
+> }
+> }
+> ```
+> EDIT: 
+> I managed to fix my problem. In my application, I was using a ScrollView and a Card component, and I was passing my button as a child. Initially, I realized that the issue was related (in my case) to elevation and z-index (for some reason, it would sometimes work and sometimes not, but it was consistent). Anyway, I had to explicitly add the z-index to my Card and my ScrollView.
+
+**globalYK** commented on 2025-08-06T12:45:12Z:
+
+> We also encountered this issue. Although it happens occasionally, the reproduction rate is quite high.
+> 
+> In our case, we wrapped a **TouchableOpacity** inside an **Animated.View**, and we were only able to receive onPressIn and onPressOut events — onPress was never triggered. We suspected that the problem lies in the JS side's handling of gesture events passed from native code.
+> 
+> To work around this, we switched to using **Pressable**, since it provides access to lower-level touch events. Then, we implemented our own custom onPress logic by mimicking how iOS handles tap gestures internally (based on distance and duration thresholds).
+> 
+> This approach successfully resolved the bug for us.
+> 
+> ` 
+> const handlePress = () => {
+> if (onPress && !disabled) {
+> onPress()
+> }
+> }
+> 
+> // iOS 使用 onPressIn 和 onPressOut 模拟 onPress，添加防滚动误触机制
+> const isPressedRef = useRef(false)
+> const pressStartTimeRef = useRef(0)
+> const pressStartPositionRef = useRef({ x: 0, y: 0 })
+> const movedBeyondSlopRef = useRef(false)
+> 
+> const handleTouchStart = (event: any) => {
+> logRNInfo('handleTouchStart')
+> if (!disabled) {
+> isPressedRef.current = true
+> pressStartTimeRef.current = Date.now()
+> 
+> // 记录按下时的位置 - 使用触摸事件的正确属性
+> if (event && event.nativeEvent && event.nativeEvent.touches && event.nativeEvent.touches[0]) {
+> const touch = event.nativeEvent?.touches?.[0]
+> pressStartPositionRef.current = {
+> x: touch.pageX,
+> y: touch.pageY
+> }
+> logRNInfo('handleTouchStart pressStartPositionRef', pressStartPositionRef.current)
+> }
+> }
+> }
+> 
+> const handleTouchEnd = (event: any) => {
+> logRNInfo('handleTouchEnd', event.nativeEvent?.touches?.[0])
+> if (!disabled && isPressedRef.current) {
+> const pressDuration = Date.now() - pressStartTimeRef.current
+> const isShortPress = pressDuration <= kMaxTapDuration // 短按时间阈值
+> logRNInfo('handleTouchEnd === pressDuration, isShortPress', pressDuration, isShortPress)
+> 
+> // 只有短按且移动距离小时才触发点击
+> if (isShortPress && !movedBeyondSlopRef.current) {
+> handlePress()
+> logRNInfo('handlePress')
+> }
+> 
+> isPressedRef.current = false
+> movedBeyondSlopRef.current = false
+> }
+> }
+> 
+> const handleTouchMove = (event: any) => {
+> if (event && event.nativeEvent && event.nativeEvent.touches && event.nativeEvent.touches[0]) {
+> logRNInfo('handleTouchMove', event.nativeEvent?.touches?.[0])
+> const touch = event.nativeEvent?.touches?.[0]
+> const {x, y} = touch
+> const moveDistance = Math.sqrt(
+> Math.pow(x - pressStartPositionRef.current.x, 2) +
+> Math.pow(y - pressStartPositionRef.current.y, 2)
+> )
+> if (moveDistance > kMaximumTapMovement) {
+> movedBeyondSlopRef.current = true
+> logRNInfo('handleTouchMove movedBeyondSlopRef', movedBeyondSlopRef.current)
+> }
+> }
+> }
+> `
+
+- Referenced by issue #18050: [Bug]: Touchables onPress is flaky on Android when nested in scroll views (ScrollView, FlatList)
+
+**Dallas62** commented on 2025-08-20T08:32:04Z:
+
+> Hello, just to add a small information, looks like the `locationY` is inconsistent on Android, while on iOS, looks correct. Found this on the `onPressOut` event.
+> Some times `locationY` is lower than the expected value. For exemple, the touch is outside of the element (height: 50) but the locationY is like 15. This seems to occur when another Pressable is close to the initial one. For example, list of button/pressable.
+> Some time `locationY` is equal to the `pageY`, when the touche occur outside of the screen.
+> Feels like there is some kind of reference shared across Pressable in the Android code.
+
+- Referenced by issue #53366: [Android][New Arch][Pressable] the `locationY` and `locationX` on Android are inconsistent
+
+- Regina-v subscribed
+
+- Referenced by issue #18838: Android OnPress Event Issue
+
+- keeslinp subscribed
+
+**JamesMahy** commented on 2025-09-28T19:11:59Z:
+
+> onPressOut seems to solve the issue for me on iOS on version `0.76` and the new architecture
+
+**Dallas62** commented on 2025-09-28T19:18:34Z:
+
+> @JamesMahy onPressOut is not a solution, it's an ugly workaround which also trigger when you scroll / move outside of the button.
+
+- JamesMahy mentioned
+
+- JamesMahy subscribed
+
+**JamesMahy** commented on 2025-09-28T19:21:35Z:
+
+> > @JamesMahy onPressOut is not a solution, it's an ugly workaround which also trigger when you scroll / move outside of the button.
+> 
+> it's solved my issue for now mostly and I've added checks to detect things like Longpress in to it. 
+> 
+> But I agree - it needs a proper solution
+> 
+
+**meabed** commented on 2025-09-28T19:25:26Z:
+
+> For everyone in the thread this is what we identified the cause and what we changed to fix the issue:
+> 
+> 
+> We found the main issue happens is not only onPress it was also happening when the app opens or the we route go to screen.
+> 
+> So basically is not only on button, it was actually related errors / or code the through exceptions that happens in background.
+> 
+> For example we had axios api calls that happen on screen mount or button press or happening on setIntervals and whenever we reactive an error for example 500 from backend that cause unhandled exception this was randomly causing the app to stop responding 
+> 
+> We also have SQLite that sometimes SQLite connection or tables are not initialized yet before using the connection and it was also causing this background exception that are not handled.
+> 
+> So we went in all code based and we ensured 2 things:
+> 
+> - Any operation that may through error have a proper try cache handler properly.
+> 
+> - we fixed some types and used optional chaining properly in while we accessing data and methods as sometimes we access objects or methods and assumes they are always defined - but they are not - for example, SQLite.collection.find() need to become SQLite?.collection?.find() 
+> 
+> 
+> After that - the issue totally disappeared so my guess it's something in react native that triggers when this errors happens and cause the app to stop responding for some reason - but for sure it's not only the button press.
+> 
+> 
+> Hope you get the idea and this helps 
+> 
+> 
+
+**JamesMahy** commented on 2025-09-28T19:30:51Z:
+
+> > For everyone in the thread this is what we identified the cause and what we changed to fix the issue:
+> > 
+> > We found the main issue happens is not only onPress it was also happening when the app opens or the we route go to screen.
+> > 
+> > So basically is not only on button, it was actually related errors / or code the through exceptions that happens in background.
+> > 
+> > For example we had axios api calls that happen on screen mount or button press or happening on setIntervals and whenever we reactive an error for example 500 from backend that cause unhandled exception this was randomly causing the app to stop responding
+> > 
+> > We also have SQLite that sometimes SQLite connection or tables are not initialized yet before using the connection and it was also causing this background exception that are not handled.
+> > 
+> > So we went in all code based and we ensured 2 things:
+> > 
+> > * Any operation that may through error have a proper try cache handler properly.
+> > * we fixed some types and used optional chaining properly in while we accessing data and methods as sometimes we access objects or methods and assumes they are always defined - but they are not - for example, SQLite.collection.find() need to become SQLite?.collection?.find()
+> > 
+> > After that - the issue totally disappeared so my guess it's something in react native that triggers when this errors happens and cause the app to stop responding for some reason - but for sure it's not only the button press.
+> > 
+> > Hope you get the idea and this helps
+> 
+> Thats isn't the same issue.
+> This bug relates to a pure Pressable / Touchable and a console.log on onPress.
+> 
+> It's intermittent and happens on only on the new architecture.
+
+**Dallas62** commented on 2025-09-28T19:33:18Z:
+
+> Here some details of the issue for Android: https://github.com/facebook/react-native/issues/53366
+
+**spyshower** commented on 2025-09-29T11:24:37Z:
+
+> > It's intermittent and happens on only on the new architecture.
+> 
+> Old and new.
+
+**JamesMahy** commented on 2025-09-29T11:26:15Z:
+
+> > > It's intermittent and happens on only on the new architecture.
+> > 
+> > Old and new.
+> 
+> I can't reproduce on old architecture.
+
+- blue86321 subscribed
+
+**MaxiAschenbrenner** commented on 2026-01-30T06:16:14Z:
+
+> Just wanted to ask if anyone has figured it out, or why this issue has been closed? 
+> We are encountering the same problem on Android using bare RN 81.4. 
+> OnPressIn and onPressOut are always firing, onPress sometimes doesnt. This happens both with the RN Pressable and the Pressable from gesture detector.
+> It only seems to happen in releases, not debug builds, which makes debugging this even more of a nightmare.
+
+**meabed** commented on 2026-01-30T06:27:40Z:
+
+> @MaxiAschenbrenner totally debugging is impossible for this it only happen on builds not on dev... 
+> We tried many different changes or different suggestions here but the issue was still happening.
+> the only thing that work for me was to ensure any thing happening like fetch / async operations in background or on navigation is wrapped in try catch with error handling - my guess in our case is something throwing an error in background like fetch error or access on undefined object and that was causing the navigation to freeze and buttons not to respond .. i am not sure how they are related but thats my observation. 
+> 
+> Try wrapping the code you have specially on the screen that is freezing in try cache with proper error handling and also some times make async then() so its not blocking for the navigation or screen components, hope this helps.
+
+- MaxiAschenbrenner mentioned
+
+- MaxiAschenbrenner subscribed
+
+**MaxiAschenbrenner** commented on 2026-01-30T07:37:05Z:
+
+> @meabed Thank you for the quick reply! 
+> I have read you comment above and and already tried this, it sadly didnt help.
+> One of the screens we can reproduce this on has three buttons, and only one exhibits this behaviour (not always the same button). OnPress also doesnt completely stop working, it just doesnt fire maybe 10% of the time, which imo further supports that it is not a general freeze.
+> 
+> ```
+> 
+> {/* other children */}
+> {console.log('Button 1 pressed')}} /> 
+> {console.log('Button 2 pressed')}} />
+> {console.log('Button 3 pressed')}} />
+> 
+> ```
+> 
+> In the simplified scenario above, two buttons would always work, while the third will not log sometimes (onPressIn and out always work though). 
+> 
+> On another screen we we have a nested Pressable, where the child exhibits the same random behaviour. In this case, the onPress of the parent Pressable will log.
+> 
+> ```
+> {console.log('parent')}}>
+> {/* other children */}
+> {console.log('child')}} />
+> 
+> ```
+> 
+> As i said in my comment above this happens both with the RN and the gesture handler Pressable.
+> 
+> 
+> As a workaround we are currently using a View wrapped in a GestureDetector with a tap gesture as a Pressable replacement on Android, but that is an ugly workaround for something that should work reliably out of the box.
+
+- meabed mentioned
+
+- meabed subscribed
+
+- kelset unsubscribed
+
+- ArekChr subscribed
+
+- sowee15 subscribed
+
+**Qdafengzi** commented on 2026-04-01T08:15:05Z:
+
+> Such a difficult problem to solve. The last time I upgraded to 0.79.2, because of this issue, I had to roll back to the old version.
+> 
+> This time I update RN to 0.82.1 problem still exist , if I change the TouchableOpacity from react-native-gesture-handler will be ok ,TouchableOpacity from react-native will be intermittent no response, and the response is also much slower.
+> 
+> SO COOL 🤪🤪🤪
+
+- NiuGuohui unsubscribed
+
+- sowee15 unsubscribed
+
+**ermakov95** commented on 2026-04-13T13:03:52Z:
+
+> Repeated in RN 0.81.6 + Wix-RNN 8.8.1
+
+- Referenced by PR #36: fix(android): restore React Native <0.82 Android build (2-arg JSTouchDispatcher overloads)
+
+**returnMarcco** commented on 2026-07-04T03:12:41Z:
+
+> We use react-navigation with react-native-screens.
+> 
+> We can reliably reproduce the issue in Android (iOS is fine) by:
+> 
+> 1. Navigating to a screen
+> 2. Rotating the phone (auto-rotate on) to landscape
+> 3. Rotate phone back to portrait 
+> 4. Navigate back to previous screen (nav.pop())
+> 5. Pressables on all previous screens do not fire onPress when tapping, but do so if swiping left or right from within the affected Pressable 
+> 
+> Potential layout issue?
+> 
+> This has also occurred when triggering a Theme change from within the app, but this hasn't been reproducible.
+
+- Referenced in commit 754d845
+
+- MarkCSmith subscribed
+
+- Referenced by issue #97: test(renderer): hit-testing during a running animation — the pressed node is the painted node
