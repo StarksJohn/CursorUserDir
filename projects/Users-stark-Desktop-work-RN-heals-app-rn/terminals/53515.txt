@@ -1,0 +1,17 @@
+---
+pid: 27356
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "mkdir -p /tmp/heals-live/frames && STAMP=$(adb -s 4ae24c72 shell date '+%m-%d %H:%M:%S.000' | tr -d '\\r') && echo \"$STAMP\" > /tmp/heals-live/mark.txt && echo \"STAMP=$STAMP\" && adb -s 4ae24c72 logcat -c >/dev/null 2>&1 || true && adb -s 4ae24c72 logcat -v time | rg --line-buffered \"\\(10864\\)|ReactNativeJS|ReactNative:|AndroidRuntime\" > /tmp/heals-live/app.log"
+title: "Record app logcat from this moment"
+status: aborted  
+started_at: 2026-11-24T08:08:09.225Z
+running_for_ms: 1421968  
+---
+date: Max 1 argument (see "date --help")
+STAMP=
+
+---
+exit_code: unknown
+elapsed_ms: 1421968
+ended_at: 2026-11-24T08:31:51.232Z
+---

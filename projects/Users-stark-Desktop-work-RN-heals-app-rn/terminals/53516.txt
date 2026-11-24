@@ -1,0 +1,40 @@
+---
+pid: 27373
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "adb -s 4ae24c72 logcat -v time | rg --line-buffered \"\\[api\\]|\\[api-plan\\]|api-client|ReactNativeJS|FATAL EXCEPTION|AndroidRuntime\""
+title: "Watch API and crash log lines"
+status: failed   
+started_at: 2026-11-24T08:08:09.480Z
+running_for_ms: 24357    
+---
+11-24 16:08:15.604 D/AndroidRuntime(16028): >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+11-24 16:08:15.609 I/AndroidRuntime(16028): Using default boot image
+11-24 16:08:15.609 I/AndroidRuntime(16028): Leaving lock profiling enabled
+11-24 16:08:15.720 D/AndroidRuntime(16028): Calling main entry com.android.commands.uiautomator.Launcher
+11-24 16:08:17.001 D/AndroidRuntime(16028): Shutting down VM
+11-24 16:08:20.205 D/AndroidRuntime(16064): >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+11-24 16:08:20.210 I/AndroidRuntime(16064): Using default boot image
+11-24 16:08:20.210 I/AndroidRuntime(16064): Leaving lock profiling enabled
+11-24 16:08:20.316 D/AndroidRuntime(16064): Calling main entry com.android.commands.uiautomator.Launcher
+11-24 16:08:21.661 D/AndroidRuntime(16064): Shutting down VM
+11-24 16:08:24.779 D/AndroidRuntime(16104): >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+11-24 16:08:24.783 I/AndroidRuntime(16104): Using default boot image
+11-24 16:08:24.783 I/AndroidRuntime(16104): Leaving lock profiling enabled
+11-24 16:08:24.890 D/AndroidRuntime(16104): Calling main entry com.android.commands.uiautomator.Launcher
+11-24 16:08:26.221 D/AndroidRuntime(16104): Shutting down VM
+11-24 16:08:29.359 D/AndroidRuntime(16471): >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+11-24 16:08:29.364 I/AndroidRuntime(16471): Using default boot image
+11-24 16:08:29.364 I/AndroidRuntime(16471): Leaving lock profiling enabled
+11-24 16:08:29.468 D/AndroidRuntime(16471): Calling main entry com.android.commands.uiautomator.Launcher
+11-24 16:08:30.782 D/AndroidRuntime(16471): Shutting down VM
+11-24 16:08:33.905 D/AndroidRuntime(16509): >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+11-24 16:08:33.909 I/AndroidRuntime(16509): Using default boot image
+11-24 16:08:33.909 I/AndroidRuntime(16509): Leaving lock profiling enabled
+11-24 16:08:34.015 D/AndroidRuntime(16509): Calling main entry com.android.commands.uiautomator.Launcher
+11-24 16:08:35.380 D/AndroidRuntime(16509): Shutting down VM
+
+---
+exit_code: unknown
+elapsed_ms: 24356
+ended_at: 2026-11-24T08:08:33.837Z
+---

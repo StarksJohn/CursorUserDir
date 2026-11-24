@@ -1,0 +1,145 @@
+---
+pid: 28004
+cwd: "/Users/stark/Desktop/work/RN/heals-app-rn"
+command: "adb -s 4ae24c72 logcat -v time | rg --line-buffered \"\\[api\\]|\\[api-plan\\]|api-client\\.ts|ReactNativeJS|FATAL EXCEPTION\""
+title: "Watch API logs without UI noise"
+status: failed   
+started_at: 2026-11-24T08:08:35.119Z
+running_for_ms: 195695   
+---
+11-24 16:10:48.923 I/ReactNativeJS(10864): [api] POST 201 https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request {"success":true,"keys":["success","data"]}
+11-24 16:10:48.927 I/ReactNativeJS(10864): 'api-client.ts postRequest :', { url: '/v1/health-passport/heals-pass-product/request',
+11-24 16:10:48.927 I/ReactNativeJS(10864):   data: 
+11-24 16:10:48.927 I/ReactNativeJS(10864):    { numberOfPasses: 1,
+11-24 16:10:48.927 I/ReactNativeJS(10864):      id: '6e931304-a037-4aee-bf7c-1d495422f7fc' },
+11-24 16:10:48.927 I/ReactNativeJS(10864):   config: { baseURL: 'https://heals-patient-gateway.heals.asia/api' },
+11-24 16:10:48.927 I/ReactNativeJS(10864):   response: 
+11-24 16:10:48.927 I/ReactNativeJS(10864):    { success: true,
+11-24 16:10:48.927 I/ReactNativeJS(10864):      data: 
+11-24 16:10:48.927 I/ReactNativeJS(10864):       { activationCodes: [],
+11-24 16:10:48.927 I/ReactNativeJS(10864):         id: '953b2a19-b735-416b-bbb4-f69cb477db9d',
+11-24 16:10:48.927 I/ReactNativeJS(10864):         productId: '6e931304-a037-4aee-bf7c-1d495422f7fc',
+11-24 16:10:48.927 I/ReactNativeJS(10864):         userId: 'a33e5ee4-3501-4938-9c7f-a965ab0b55ed',
+11-24 16:10:48.927 I/ReactNativeJS(10864):         numberOfPasses: 1,
+11-24 16:10:48.927 I/ReactNativeJS(10864):         currencyCode: 'HKD',
+11-24 16:10:48.927 I/ReactNativeJS(10864):         totalPrice: 200,
+11-24 16:10:48.927 I/ReactNativeJS(10864):         isSettled: false,
+11-24 16:10:48.927 I/ReactNativeJS(10864):         createdAt: '2026-11-24T08:10:48.450Z',
+11-24 16:10:48.927 I/ReactNativeJS(10864):         updatedAt: '2026-11-24T08:10:48.450Z',
+11-24 16:10:48.927 I/ReactNativeJS(10864):         transactionId: '6872c352-501e-4870-82df-52720887573a',
+11-24 16:10:48.927 I/ReactNativeJS(10864):         deletedAt: null } } }
+11-24 16:10:48.928 I/ReactNativeJS(10864): 'global-navigation.ts navigate name=', 'ProductWaitingRoomScreen', ' params=', { id: '953b2a19-b735-416b-bbb4-f69cb477db9d',
+11-24 16:10:48.928 I/ReactNativeJS(10864):   payUrl: 'https://payment.heals.asia/payment/6872c352-501e-4870-82df-52720887573a?lang=en' }
+11-24 16:10:48.978 I/ReactNativeJS(10864): 'common-modal-bt.tsx props.tag=', 'ProductWaitingRoomScreen'
+11-24 16:10:49.043 I/ReactNativeJS(10864): 'theme-provider.tsx changeStatusBarTextColor statusBarTextColor=', 'light-content'
+11-24 16:10:49.044 I/ReactNativeJS(10864): 'theme-provider.tsx changeStatusBarBackgroundColor statusBarBackgroundColor=', 'rgba(0, 172, 134, 1)'
+11-24 16:10:49.309 I/ReactNativeJS(10864): [api] GET 400 https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d {"success":false,"keys":["success","error"]}
+11-24 16:10:49.309 I/ReactNativeJS(10864): 'api-client.ts getRequest :', { url: 'https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d',
+11-24 16:10:49.309 I/ReactNativeJS(10864):   config: { validateStatus: [Function: validateStatus] },
+11-24 16:10:49.309 I/ReactNativeJS(10864):   response: 
+11-24 16:10:49.309 I/ReactNativeJS(10864):    { success: false,
+11-24 16:10:49.309 I/ReactNativeJS(10864):      error: 
+11-24 16:10:49.309 I/ReactNativeJS(10864):       { message: 'Transaction is not settled',
+11-24 16:10:49.309 I/ReactNativeJS(10864):         localize_key: 'error.TRANSACTION_NOT_SETTLED' } } }
+11-24 16:10:54.511 I/ReactNativeJS(10864): [api] GET 400 https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d {"success":false,"keys":["success","error"]}
+11-24 16:10:54.515 I/ReactNativeJS(10864): 'api-client.ts getRequest :', { url: 'https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d',
+11-24 16:10:54.515 I/ReactNativeJS(10864):   config: { validateStatus: [Function: validateStatus] },
+11-24 16:10:54.515 I/ReactNativeJS(10864):   response: 
+11-24 16:10:54.515 I/ReactNativeJS(10864):    { success: false,
+11-24 16:10:54.515 I/ReactNativeJS(10864):      error: 
+11-24 16:10:54.515 I/ReactNativeJS(10864):       { message: 'Transaction is not settled',
+11-24 16:10:54.515 I/ReactNativeJS(10864):         localize_key: 'error.TRANSACTION_NOT_SETTLED' } } }
+11-24 16:10:59.667 I/ReactNativeJS(10864): [api] GET 400 https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d {"success":false,"keys":["success","error"]}
+11-24 16:10:59.669 I/ReactNativeJS(10864): 'api-client.ts getRequest :', { url: 'https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d',
+11-24 16:10:59.669 I/ReactNativeJS(10864):   config: { validateStatus: [Function: validateStatus] },
+11-24 16:10:59.669 I/ReactNativeJS(10864):   response: 
+11-24 16:10:59.669 I/ReactNativeJS(10864):    { success: false,
+11-24 16:10:59.669 I/ReactNativeJS(10864):      error: 
+11-24 16:10:59.669 I/ReactNativeJS(10864):       { message: 'Transaction is not settled',
+11-24 16:10:59.669 I/ReactNativeJS(10864):         localize_key: 'error.TRANSACTION_NOT_SETTLED' } } }
+11-24 16:11:04.871 I/ReactNativeJS(10864): [api] GET 400 https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d {"success":false,"keys":["success","error"]}
+11-24 16:11:04.876 I/ReactNativeJS(10864): 'api-client.ts getRequest :', { url: 'https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d',
+11-24 16:11:04.876 I/ReactNativeJS(10864):   config: { validateStatus: [Function: validateStatus] },
+11-24 16:11:04.876 I/ReactNativeJS(10864):   response: 
+11-24 16:11:04.876 I/ReactNativeJS(10864):    { success: false,
+11-24 16:11:04.876 I/ReactNativeJS(10864):      error: 
+11-24 16:11:04.876 I/ReactNativeJS(10864):       { message: 'Transaction is not settled',
+11-24 16:11:04.876 I/ReactNativeJS(10864):         localize_key: 'error.TRANSACTION_NOT_SETTLED' } } }
+11-24 16:11:10.021 I/ReactNativeJS(10864): [api] GET 400 https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d {"success":false,"keys":["success","error"]}
+11-24 16:11:10.023 I/ReactNativeJS(10864): 'api-client.ts getRequest :', { url: 'https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d',
+11-24 16:11:10.023 I/ReactNativeJS(10864):   config: { validateStatus: [Function: validateStatus] },
+11-24 16:11:10.023 I/ReactNativeJS(10864):   response: 
+11-24 16:11:10.023 I/ReactNativeJS(10864):    { success: false,
+11-24 16:11:10.023 I/ReactNativeJS(10864):      error: 
+11-24 16:11:10.023 I/ReactNativeJS(10864):       { message: 'Transaction is not settled',
+11-24 16:11:10.023 I/ReactNativeJS(10864):         localize_key: 'error.TRANSACTION_NOT_SETTLED' } } }
+11-24 16:11:15.189 I/ReactNativeJS(10864): [api] GET 400 https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d {"success":false,"keys":["success","error"]}
+11-24 16:11:15.193 I/ReactNativeJS(10864): 'api-client.ts getRequest :', { url: 'https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d',
+11-24 16:11:15.193 I/ReactNativeJS(10864):   config: { validateStatus: [Function: validateStatus] },
+11-24 16:11:15.193 I/ReactNativeJS(10864):   response: 
+11-24 16:11:15.193 I/ReactNativeJS(10864):    { success: false,
+11-24 16:11:15.193 I/ReactNativeJS(10864):      error: 
+11-24 16:11:15.193 I/ReactNativeJS(10864):       { message: 'Transaction is not settled',
+11-24 16:11:15.193 I/ReactNativeJS(10864):         localize_key: 'error.TRANSACTION_NOT_SETTLED' } } }
+11-24 16:11:20.406 I/ReactNativeJS(10864): [api] GET 400 https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d {"success":false,"keys":["success","error"]}
+11-24 16:11:20.411 I/ReactNativeJS(10864): 'api-client.ts getRequest :', { url: 'https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d',
+11-24 16:11:20.411 I/ReactNativeJS(10864):   config: { validateStatus: [Function: validateStatus] },
+11-24 16:11:20.411 I/ReactNativeJS(10864):   response: 
+11-24 16:11:20.411 I/ReactNativeJS(10864):    { success: false,
+11-24 16:11:20.411 I/ReactNativeJS(10864):      error: 
+11-24 16:11:20.411 I/ReactNativeJS(10864):       { message: 'Transaction is not settled',
+11-24 16:11:20.411 I/ReactNativeJS(10864):         localize_key: 'error.TRANSACTION_NOT_SETTLED' } } }
+11-24 16:11:25.580 I/ReactNativeJS(10864): [api] GET 400 https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d {"success":false,"keys":["success","error"]}
+11-24 16:11:25.584 I/ReactNativeJS(10864): 'api-client.ts getRequest :', { url: 'https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d',
+11-24 16:11:25.584 I/ReactNativeJS(10864):   config: { validateStatus: [Function: validateStatus] },
+11-24 16:11:25.584 I/ReactNativeJS(10864):   response: 
+11-24 16:11:25.584 I/ReactNativeJS(10864):    { success: false,
+11-24 16:11:25.584 I/ReactNativeJS(10864):      error: 
+11-24 16:11:25.584 I/ReactNativeJS(10864):       { message: 'Transaction is not settled',
+11-24 16:11:25.584 I/ReactNativeJS(10864):         localize_key: 'error.TRANSACTION_NOT_SETTLED' } } }
+11-24 16:11:30.755 I/ReactNativeJS(10864): [api] GET 400 https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d {"success":false,"keys":["success","error"]}
+11-24 16:11:30.759 I/ReactNativeJS(10864): 'api-client.ts getRequest :', { url: 'https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d',
+11-24 16:11:30.759 I/ReactNativeJS(10864):   config: { validateStatus: [Function: validateStatus] },
+11-24 16:11:30.759 I/ReactNativeJS(10864):   response: 
+11-24 16:11:30.759 I/ReactNativeJS(10864):    { success: false,
+11-24 16:11:30.759 I/ReactNativeJS(10864):      error: 
+11-24 16:11:30.759 I/ReactNativeJS(10864):       { message: 'Transaction is not settled',
+11-24 16:11:30.759 I/ReactNativeJS(10864):         localize_key: 'error.TRANSACTION_NOT_SETTLED' } } }
+11-24 16:11:35.953 I/ReactNativeJS(10864): [api] GET 400 https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d {"success":false,"keys":["success","error"]}
+11-24 16:11:35.958 I/ReactNativeJS(10864): 'api-client.ts getRequest :', { url: 'https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d',
+11-24 16:11:35.958 I/ReactNativeJS(10864):   config: { validateStatus: [Function: validateStatus] },
+11-24 16:11:35.958 I/ReactNativeJS(10864):   response: 
+11-24 16:11:35.958 I/ReactNativeJS(10864):    { success: false,
+11-24 16:11:35.958 I/ReactNativeJS(10864):      error: 
+11-24 16:11:35.958 I/ReactNativeJS(10864):       { message: 'Transaction is not settled',
+11-24 16:11:35.958 I/ReactNativeJS(10864):         localize_key: 'error.TRANSACTION_NOT_SETTLED' } } }
+11-24 16:11:41.097 I/ReactNativeJS(10864): [api] GET 400 https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d {"success":false,"keys":["success","error"]}
+11-24 16:11:41.097 I/ReactNativeJS(10864): 'api-client.ts getRequest :', { url: 'https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d',
+11-24 16:11:41.097 I/ReactNativeJS(10864):   config: { validateStatus: [Function: validateStatus] },
+11-24 16:11:41.097 I/ReactNativeJS(10864):   response: 
+11-24 16:11:41.097 I/ReactNativeJS(10864):    { success: false,
+11-24 16:11:41.097 I/ReactNativeJS(10864):      error: 
+11-24 16:11:41.097 I/ReactNativeJS(10864):       { message: 'Transaction is not settled',
+11-24 16:11:41.097 I/ReactNativeJS(10864):         localize_key: 'error.TRANSACTION_NOT_SETTLED' } } }
+11-24 16:11:46.228 I/ReactNativeJS(10864): [api] GET 400 https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d {"success":false,"keys":["success","error"]}
+11-24 16:11:46.230 I/ReactNativeJS(10864): 'api-client.ts getRequest :', { url: 'https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d',
+11-24 16:11:46.230 I/ReactNativeJS(10864):   config: { validateStatus: [Function: validateStatus] },
+11-24 16:11:46.230 I/ReactNativeJS(10864):   response: 
+11-24 16:11:46.230 I/ReactNativeJS(10864):    { success: false,
+11-24 16:11:46.230 I/ReactNativeJS(10864):      error: 
+11-24 16:11:46.230 I/ReactNativeJS(10864):       { message: 'Transaction is not settled',
+11-24 16:11:46.230 I/ReactNativeJS(10864):         localize_key: 'error.TRANSACTION_NOT_SETTLED' } } }
+11-24 16:11:51.381 I/ReactNativeJS(10864): [api] GET 400 https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d {"success":false,"keys":["success","error"]}
+11-24 16:11:51.383 I/ReactNativeJS(10864): 'api-client.ts getRequest :', { url: 'https://heals-patient-gateway.heals.asia/api/v1/health-passport/heals-pass-product/request/finish/953b2a19-b735-416b-bbb4-f69cb477db9d',
+11-24 16:11:51.383 I/ReactNativeJS(10864):   config: { validateStatus: [Function: validateStatus] },
+11-24 16:11:51.383 I/ReactNativeJS(10864):   response: 
+11-24 16:11:51.383 I/ReactNativeJS(10864):    { success: false,
+11-24 16:11:51.383 I/ReactNativeJS(10864):      error: 
+11-24 16:11:51.383 I/ReactNativeJS(10864):       { message: 'Transaction is not settled',
+11-24 16:11:51.383 I/ReactNativeJS(10864):         localize_key: 'error.TRANSACTION_NOT_SETTLED' } } }
+
+---
+exit_code: unknown
+elapsed_ms: 195693
+ended_at: 2026-11-24T08:11:50.811Z
+---
