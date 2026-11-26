@@ -1,0 +1,45 @@
+{
+  "name": "weave_get_workflow",
+  "description": "Reads a Weave workflow's graph. With only `workflowId`, returns the outline: nodes as `id  type  model  name  outputs=N  at=x,y`, then edges; with `nodeIds`, those nodes in full. An input in `connectedInputs` is taken; `expandableUpTo: N` also accepts `<base>_2`..`<base>_N`. A node in a group ends with `in=<groupId>`; a `custom_group` line's name is the group's label. `at=` and `position` are relative to a `parentId` group. `generations` are in display order. Graphic nodes (Blur, Crop, Compositor) store no output: set `renderOutputs` to render them, which takes seconds, so only when you need to see one. A render that is refused or busy comes back as a note: ask again later, not right away. View a file with `curl -fL --proto =https --proto-redir =https -o <file> -- '<url>'`.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "workflowId": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The id of the Weave workflow to read."
+      },
+      "nodeIds": {
+        "description": "Ids from the outline to return in full, at most 5.",
+        "minItems": 1,
+        "maxItems": 5,
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "generationIds": {
+        "description": "Generation ids on the `nodeIds` nodes to return with their url or text.",
+        "minItems": 1,
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "renderOutputs": {
+        "description": "Render the `nodeIds` graphic nodes from the last save and return their outputs as URLs.",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "workflowId"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

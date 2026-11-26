@@ -1,0 +1,322 @@
+{
+  "name": "weave_build_workflow",
+  "description": "Builds a Weave workflow: creates one and/or applies a batch of node and edge additions, node duplications, edits and removals to its graph. Pass `createNew: true` (optionally with `name`) to start a new workflow, or `workflowId` to build into an existing one. Get the `nodeTypeId`s you need from weave_get_node_catalog first. Creating and populating a workflow in one call is the normal path; batch as much of a build as you can rather than making many small calls. Continue a build with the `workflowId` from the response; never create a second workflow to work around a missing id. A batch applies partially: fix and resend only what was skipped or ignored. Re-read the workflow only when the reply says to. Running a workflow is not supported here: say so, and give its Weave editor link from weave_get_workflow. If it has a tool, offer to run the tool instead (same id) and call weave_run_tool only if the user agrees. To run it from here later, the user can create a tool from it in the editor (https://help.weavy.ai/en/articles/12267755-tools). If it has no tool, you may offer to run its models one by one with weave_run_model, saying plainly that this is not running the workflow: only its model nodes run this way, so steps like crops, compositing and exports are skipped and nothing is saved back to the workflow, so results will differ. Never say you ran the workflow.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "workflowId": {
+        "description": "The id of an existing Weave workflow to build into (from weave_search_workspace or a previous weave_build_workflow response). Required unless `createNew` is true; takes precedence if both are given.",
+        "type": "string",
+        "minLength": 1
+      },
+      "createNew": {
+        "description": "True creates a new workflow and applies this call's batch to it. Pass this only when you mean to start a new workflow — never to work around a `workflowId` you have lost.",
+        "type": "boolean"
+      },
+      "name": {
+        "description": "Display name for a workflow created by this call, titled from what the user asked to build (ask them when the request implies none). Ignored unless `createNew` is true; Weave names it \"untitled\" when omitted.",
+        "type": "string",
+        "maxLength": 250
+      },
+      "addNodes": {
+        "description": "Nodes to add to the graph.",
+        "maxItems": 100,
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "refId": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Caller-chosen temporary id for this node (e.g. \"node_1\"); addEdges/removeEdges in this same call may reference it as source/target. The server resolves it to a real id and returns the mapping in `refIdMap`."
+            },
+            "nodeTypeId": {
+              "type": "string",
+              "minLength": 1,
+              "description": "An `id` from weave_get_node_catalog."
+            },
+            "data": {
+              "description": "Node data, keyed by the node type's `settableData` from weave_get_node_catalog.",
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "params": {
+              "description": "Node params, keyed by the node type's `settableParams` from weave_get_node_catalog.",
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "displayName": {
+              "description": "Node title shown on canvas. Pass it here, not inside `data`, where it is dropped.",
+              "type": "string",
+              "maxLength": 150
+            },
+            "position": {
+              "description": "Canvas position, relative to the group when `parentId` is set. Nodes render about 460 wide and up to 700 tall, taller for an import showing a portrait image: place columns 650 apart and stacked nodes 800 apart, clear of the `at=` positions in the weave_get_workflow outline. To replace a node, pass the removed node's `position` and `parentId` from weave_get_workflow. Omit to place the node beside its group's children, or right of the graph.",
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "description": "Canvas x coordinate."
+                },
+                "y": {
+                  "type": "number",
+                  "description": "Canvas y coordinate."
+                }
+              },
+              "required": [
+                "x",
+                "y"
+              ],
+              "additionalProperties": false
+            },
+            "parentId": {
+              "description": "Id of an existing group (a `custom_group` node) to add this node into. Without a `position`, core places it beside the group's children; the group grows to fit.",
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "refId",
+            "nodeTypeId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "duplicateNodes": {
+        "description": "Nodes to copy with their data, params and generated outputs, as Duplicate does on the canvas; use this, not addNodes, which starts a node without the original's outputs. Groups and Figma nodes are not copied.",
+        "maxItems": 100,
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "refId": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Caller-chosen temporary id for the copy; addEdges in this same call may reference it, and `refIdMap` returns its real id."
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the node already in the workflow to copy."
+            },
+            "position": {
+              "description": "Canvas position, relative to the source's group when it has one. Omit to place the copy beside its group's children, or right of the graph.",
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "description": "Canvas x coordinate."
+                },
+                "y": {
+                  "type": "number",
+                  "description": "Canvas y coordinate."
+                }
+              },
+              "required": [
+                "x",
+                "y"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "refId",
+            "id"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "updateNodes": {
+        "description": "Edits to nodes already in the graph.",
+        "maxItems": 100,
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of a node already in the workflow. Not a refId: an edit never creates a node."
+            },
+            "data": {
+              "description": "Node data to set, keyed by the node type's `settableData`. Only the keys you pass change. `generations` takes `{ remove?: [ids], select?: id }`, ids from weave_get_workflow; removal applies first. Confirm removals with the user. On a `custom_group`, `color` (#rrggbb or the default rgba) recolors the frame.",
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "params": {
+              "description": "Node params to set, keyed by the node type's `settableParams`. Only the keys you pass change; null clears one.",
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "displayName": {
+              "description": "New node title shown on canvas.",
+              "type": "string",
+              "maxLength": 150
+            },
+            "position": {
+              "description": "Canvas position to move the node to, relative to its group when it has a `parentId`.",
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "description": "Canvas x coordinate."
+                },
+                "y": {
+                  "type": "number",
+                  "description": "Canvas y coordinate."
+                }
+              },
+              "required": [
+                "x",
+                "y"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "addEdges": {
+        "description": "Edges to add to the graph, wiring together existing and/or newly-added nodes.",
+        "maxItems": 100,
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string",
+              "description": "Source node id, or a refId minted by this call's addNodes or duplicateNodes."
+            },
+            "sourceHandle": {
+              "type": "string",
+              "description": "Bare source handle name (not the ReactFlow composite form)."
+            },
+            "target": {
+              "type": "string",
+              "description": "Target node id, or a refId minted by this call's addNodes or duplicateNodes."
+            },
+            "targetHandle": {
+              "type": "string",
+              "description": "Bare target handle name (not the ReactFlow composite form)."
+            }
+          },
+          "required": [
+            "source",
+            "sourceHandle",
+            "target",
+            "targetHandle"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "removeNodes": {
+        "description": "Ids of nodes to remove from the graph.",
+        "maxItems": 100,
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "removeEdges": {
+        "description": "Edges to remove from the graph.",
+        "maxItems": 100,
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string",
+              "description": "Source node id or refId of the edge to remove."
+            },
+            "target": {
+              "type": "string",
+              "description": "Target node id or refId of the edge to remove."
+            },
+            "targetHandle": {
+              "type": "string",
+              "description": "Bare target handle name of the edge to remove."
+            }
+          },
+          "required": [
+            "source",
+            "target",
+            "targetHandle"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "groupNodes": {
+        "description": "Groups to create, each wrapping the given nodes. Group each distinct stage of a larger workflow (e.g. inputs, generation, post-processing); leave a workflow of a few nodes ungrouped. Groups do not nest, and a node already in a group must be ungrouped first.",
+        "maxItems": 100,
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "refId": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Caller-chosen temporary id for the new group; `refIdMap` returns its real id."
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 150,
+              "description": "Group label shown on canvas, named for what its nodes do together."
+            },
+            "nodeIds": {
+              "minItems": 1,
+              "maxItems": 100,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "Ids of nodes to wrap, or refIds minted by this call's addNodes or duplicateNodes."
+            },
+            "color": {
+              "description": "Frame color as #rrggbb, or the default rgba(227, 232, 236, 0.64). Set one on every group, distinct from the other groups, fitting its stage.",
+              "type": "string",
+              "pattern": "^(#[0-9a-fA-F]{6}|rgba\\(227, 232, 236, 0\\.64\\))$"
+            }
+          },
+          "required": [
+            "refId",
+            "name",
+            "nodeIds"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "ungroupNodes": {
+        "description": "Ids of groups to dissolve; their children stay where they are on canvas. Use this, not `removeNodes`, which also deletes the children.",
+        "maxItems": 100,
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

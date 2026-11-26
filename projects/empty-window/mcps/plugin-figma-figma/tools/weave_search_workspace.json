@@ -1,0 +1,20 @@
+{
+  "name": "weave_search_workspace",
+  "description": "Searches the Weave workflows the user owns in their active workspace, most recently updated first; teammates' workflows aren't included. For Weave tools created from workflows, use weave_list_tools. Use it to find a workflow's id when the user names it, passing the name as `search`, so you can read or edit it with weave_get_workflow or weave_build_workflow. Skip it when you already have the id (pasted, or the `<id>` in an app.weavy.ai/flow/<id> URL). If several match, ask the user which one. If none match, say so; don't create a workflow or guess an id.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "search": {
+        "description": "Case-insensitive substring matched against workflow names, to find a workflow the user named. Omit it to get the 20 most recently updated workflows.",
+        "type": "string",
+        "maxLength": 100
+      }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

@@ -1,0 +1,23 @@
+{
+  "name": "weave_find_model",
+  "description": "Finds a Weave AI model by name so it can be run directly with weave_run_model — no Weave tool needed. Use this when the user names a model (\"run nano banana 2 on this image\", \"make a video with veo 3\"). A model is not a Weave tool: for a tool created from a Weave workflow use weave_list_tools and weave_run_tool instead. Returns the model with an approximate cost and the contract to run it with — its inputs and tunable params, each with a type, whether it is required, and any allowed values — or a short list of candidates to choose between when the name matches more than one model. Running a workflow is not supported here: say so, and give its Weave editor link from weave_get_workflow. If it has a tool, offer to run the tool instead (same id) and call weave_run_tool only if the user agrees. To run it from here later, the user can create a tool from it in the editor (https://help.weavy.ai/en/articles/12267755-tools). If it has no tool, you may offer to run its models one by one with weave_run_model, saying plainly that this is not running the workflow: only its model nodes run this way, so steps like crops, compositing and exports are skipped and nothing is saved back to the workflow, so results will differ. Never say you ran the workflow.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "minLength": 3,
+        "description": "The model name as the user said it (\"nano banana 2\", \"veo 3\")."
+      }
+    },
+    "required": [
+      "query"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

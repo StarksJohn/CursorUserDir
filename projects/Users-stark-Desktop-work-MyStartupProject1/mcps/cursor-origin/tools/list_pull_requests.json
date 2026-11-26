@@ -1,6 +1,6 @@
 {
   "name": "list_pull_requests",
-  "description": "List pull requests in an Origin-hosted repository, filtered by state, head, author, base, stackId, mergeCommitShas, or inclusive mergedSince/mergedUntil bounds on mergedAt, and sorted by creation or update time in either direction. Items are compact summaries (author, timestamps, merged/closedAt/mergedAt, and stack membership when the pull request is stacked); they omit body and diff stats—use pull_request_read for those. author is an opaque user_…, app_…, or sa_… id; authorDisplayName and authorHandle name that actor when Origin resolves them, so say the name rather than the id. With stackId, the items are that stack's members in the requested sort order, not stack order; rebuild the tree from each member's stack.parent, and pass state all because the default open state leaves merged members out. mergeCommitShas matches pull requests whose merge commit equals any listed SHA; pass state merged or all because a merge commit is recorded only after landing. mergedSince and mergedUntil filter on mergedAt; unmerged pull requests never match, so pass state merged or all. Continuation calls must resend those filters with pageToken.",
+  "description": "List pull requests in an Origin-hosted repository, filtered by state, head, author, authorPerformedVia, base, stackId, mergeCommitShas, or inclusive mergedSince/mergedUntil bounds on mergedAt, and sorted by creation or update time in either direction. Items are compact summaries (author, timestamps, merged/closedAt/mergedAt, and stack membership when the pull request is stacked); they omit body and diff stats—use pull_request_read for those. author is an opaque user_…, app_…, or sa_… id; authorDisplayName and authorHandle name that actor when Origin resolves them, so say the name rather than the id. With stackId, the items are that stack's members in the requested sort order, not stack order; rebuild the tree from each member's stack.parent, and pass state all because the default open state leaves merged members out. mergeCommitShas matches pull requests whose merge commit equals any listed SHA; pass state merged or all because a merge commit is recorded only after landing. mergedSince and mergedUntil filter on mergedAt; unmerged pull requests never match, so pass state merged or all. Continuation calls must resend those filters with pageToken.",
   "arguments": {
     "type": "object",
     "properties": {
@@ -22,6 +22,10 @@
       },
       "author": {
         "description": "Actor id (user_…, app_…, or sa_…)",
+        "type": "string"
+      },
+      "authorPerformedVia": {
+        "description": "App or service account id (app_… or sa_…) the author acted through, as returned in a pull request's authorPerformedVia",
         "type": "string"
       },
       "base": {

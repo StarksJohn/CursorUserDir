@@ -14,7 +14,7 @@
         "type": "string",
         "minLength": 1,
         "maxLength": 2000,
-        "description": "A concise description of the task the agent is working on."
+        "description": "State the user’s goal, finished deliverable, and the output surface (e.g., Figma, codebase, chat). Omit IDs, keys, and links."
       }
     },
     "required": [

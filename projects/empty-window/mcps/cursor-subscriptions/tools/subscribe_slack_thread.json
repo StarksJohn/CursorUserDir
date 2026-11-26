@@ -1,0 +1,26 @@
+{
+  "name": "subscribe_slack_thread",
+  "description": "Subscribe this conversation to future Slack thread messages. After subscribing, state what you are waiting for and end your turn; the event arrives as a follow-up notification in this conversation.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "channelId": {
+        "type": "string"
+      },
+      "threadTs": {
+        "type": "string"
+      },
+      "includeOwnActions": {
+        "type": "boolean",
+        "description": "Also deliver messages this agent posted itself through the Slack MCP. Off by default, so the agent's own posts never wake it."
+      },
+      "expiresInSeconds": {
+        "type": "number"
+      }
+    },
+    "required": [
+      "channelId",
+      "threadTs"
+    ]
+  }
+}

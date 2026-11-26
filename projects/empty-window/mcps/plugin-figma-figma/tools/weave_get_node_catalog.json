@@ -1,0 +1,24 @@
+{
+  "name": "weave_get_node_catalog",
+  "description": "Gets the node types you can add to a Weave workflow graph in your workspace. Call it with no arguments to choose from the full list, then with `nodeTypeIds` for the node types you picked to get the handles and settable keys you need before adding them with weave_build_workflow.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "nodeTypeIds": {
+        "description": "Ids from the no-argument list to return in full. Omit to get the list.",
+        "minItems": 1,
+        "maxItems": 25,
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+  },
+  "plugin": "figma",
+  "marketplace": "cursor-public",
+  "pluginId": "657",
+  "marketplaceId": "34"
+}

@@ -1,0 +1,58 @@
+{
+  "name": "computer_key",
+  "description": "Press a key or shortcut, such as \"Return\", \"Escape\", \"Tab\", or a chord like \"cmd+l\" on macOS and \"ctrl+l\" on Windows. Combine modifiers with \"+\" (cmd, ctrl, alt, shift). Returns a screenshot taken after the key press. With an app target the result is text only; observe again before the next action.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "target": {
+        "description": "Default: {\"scope\":\"app\",\"pid\":…,\"target_id\":…} from computer_apps or computer_resolve_app. That drives one macOS app without taking screen control or moving the real cursor (a cursor overlay is still shown), and needs no computer_start_control. Omit (or {\"scope\":\"screen\"}) only to escalate to full-display remote control.",
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "type": "string",
+                "const": "screen"
+              }
+            },
+            "required": [
+              "scope"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "type": "string",
+                "const": "app"
+              },
+              "pid": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "pid from computer_apps or computer_resolve_app."
+              },
+              "target_id": {
+                "type": "string",
+                "minLength": 1,
+                "description": "target_id from computer_apps or computer_resolve_app."
+              }
+            },
+            "required": [
+              "scope",
+              "pid",
+              "target_id"
+            ]
+          }
+        ]
+      },
+      "key": {
+        "type": "string",
+        "maxLength": 100,
+        "description": "Key or shortcut, e.g. \"Return\", \"Tab\", or \"cmd+shift+s\"."
+      }
+    },
+    "required": [
+      "key"
+    ]
+  }
+}
