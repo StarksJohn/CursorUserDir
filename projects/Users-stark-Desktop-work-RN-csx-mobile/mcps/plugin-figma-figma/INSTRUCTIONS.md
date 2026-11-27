@@ -1,4 +1,4 @@
-The official Figma MCP server. Use this server whenever the user wants to create, generate, edit, implement, or sync any design, UI, screen, component, mockup, or visual — in Figma, FigJam, Figma Make, or Figma Slides — and whenever the user mentions Figma or provides a figma.com URL.
+The official Figma MCP server. Use this server whenever the user wants to create, generate, edit, implement, open, or sync any design, UI, screen, component, mockup, or visual — in Figma, FigJam, Figma Make, or Figma Slides — and whenever the user mentions Figma or provides a figma.com URL.
 
 This server bridges code and design in both directions, and supports designing from scratch using existing design systems and codebases.
 

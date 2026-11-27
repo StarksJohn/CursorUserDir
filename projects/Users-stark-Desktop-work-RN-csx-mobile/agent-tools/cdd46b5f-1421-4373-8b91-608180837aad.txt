@@ -1,0 +1,1078 @@
+diff --git a/src/pages/AllergyPage/AllergyPage.tsx b/src/pages/AllergyPage/AllergyPage.tsx
+index 579c3f21..da63efc9 100644
+--- a/src/pages/AllergyPage/AllergyPage.tsx
++++ b/src/pages/AllergyPage/AllergyPage.tsx
+@@ -355,22 +355,38 @@ const AllergyPage: React.FC<Props> = (props: Props, parentRef) => {
+                 //   setState({...state, ListHeaderRow0Selected: !state.ListHeaderRow0Selected});
+                 // }}
+               >
+                 {/* <Image source={!state.ListHeaderRow0Selected ? uncheck1 : checkbox1} style={styles.ListHeaderRow0Img} /> */}
+                 <Text style={styles.ListHeaderRow0Text}>{global.i18n.t('NKDA')}</Text>
+                 <CustomSwitch
+                   value={state.ListHeaderRow0Selected}
+                   onValueChange={(value: boolean) => {
+-                    setState((prevState) => {
+-                      return {
+-                        ...prevState,
+-                        ListHeaderRow0Selected: value,
++                    if (value === true && (state.Drug_allergy_disabled === false)) {
++                      setCommonAlertModalTitle(global.i18n.t('prompt'));
++                      setCommonAlertModalContent(global.i18n.t('nkda_enable_warning'));
++                      setCommonAlertModalConfirmTxt(global.i18n.t('confirm'));
++                      refOnConfirm.current = (): void => {
++                        setState((prevState) => {
++                          return {
++                            ...prevState,
++                            ListHeaderRow0Selected: value,
++                          };
++                        });
+                       };
+-                    });
++                      setCommonAlertModalCancelTxt(global.i18n.t('cancel'));
++                      setShowCommonAlertModal(true);
++                    } else {
++                      setState((prevState) => {
++                        return {
++                          ...prevState,
++                          ListHeaderRow0Selected: value,
++                        };
++                      });
++                    }
+                   }}
+                   trackColor={{
+                     false: '#E5E5EA', // 关闭状态：灰色
+                     true: '#34C759', // 开启状态：绿色
+                   }}
+                   thumbColor="#FFFFFF"
+                   ios_backgroundColor="#FFFFFF"
+                 />
+diff --git a/src/pages/AppointmentListPage/AppointmentListPage.tsx b/src/pages/AppointmentListPage/AppointmentListPage.tsx
+index 5740a4b9..1928517d 100644
+--- a/src/pages/AppointmentListPage/AppointmentListPage.tsx
++++ b/src/pages/AppointmentListPage/AppointmentListPage.tsx
+@@ -1644,17 +1644,17 @@ const AppointmentListPage: React.FC<Props> = (props: Props, parentRef) => {
+     ]
+   );
+   //获取 完成状态的等候中列表
+   const onPress_bookedList = useCallback(
+     (item: AppointmentCard) => {
+       console.log('onPress_bookedList', {
+         'pageData?.from': pageData?.from
+       })
+-      if (!pageData?.from) {
++      if (!pageData?.from || pageData?.from === routes.SignInEcPage.routeName) {
+         routes.navigate(navigation, routes.WaitingSchedulingDetailPage.routeName, {
+           pageData: {...item, type: 1, curClinicData: global.curClinicData, curDoctorData: global.curDoctorData},
+         });
+       } else if(pageData?.from === routes.DiagnosisPage.routeName) {
+         emitEvent(globalEventName.changePatientInfo, item);
+         // routes.navigate(navigation, routes.DiagnosisPage.routeName, {
+         //   pageData: {},
+         // });
+diff --git a/src/pages/CreateConsultationPage/CreateConsultationPage.tsx b/src/pages/CreateConsultationPage/CreateConsultationPage.tsx
+index bc67e70a..87d4025a 100644
+--- a/src/pages/CreateConsultationPage/CreateConsultationPage.tsx
++++ b/src/pages/CreateConsultationPage/CreateConsultationPage.tsx
+@@ -4878,17 +4878,17 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+               <View style={[styles.dividerStyle, styles.divider]} />
+             </>
+             {/*藥物名稱*/}
+             <RNAutoPositionedPopup
+                   key={i18n.t('medicine')}
+                   ref={ref_medicine}
+                   tag={i18n.t('medicine')}
+                   inputStyle={stableTransparentInputStyle}
+-                  TextInputProps={{textAlign: 'right', placeholderTextColor: uiTheme.colors.$placeholderTextColor}}
++                  TextInputProps={{ textAlign: 'left', placeholderTextColor: uiTheme.colors.$placeholderTextColor }}
+                   forceRemoveAllRootViewOnItemSelected={true}
+                   localSearch={false}
+                   useTextInput={false}
+                   internalSearch={true}
+                   themeMode={mode}
+                   placeholder={i18n.t('PleaseSelect')}
+                   selectedItem={state.get_drugbook_masters_by_names}
+                   CustomRow={renderMedicineCustomRow}
+@@ -5115,17 +5115,17 @@ const CreateConsultationPage: React.FC<pageProps> = (props: pageProps, parentRef
+             <>
+               <View style={[styles.usageRow]}>
+                 {/*日數*/}
+                 <RNAutoPositionedPopup
+                   key={i18n.t('days')}
+                   // ref={ref_frequency}
+                   tag={i18n.t('days')}
+                   inputStyle={stableTransparentInputStyle}
+-                  TextInputProps={{textAlign: 'right', placeholderTextColor: uiTheme.colors.$placeholderTextColor}}
++                  TextInputProps={{ textAlign: 'left', placeholderTextColor: uiTheme.colors.$placeholderTextColor }}
+                   forceRemoveAllRootViewOnItemSelected={true}
+                   localSearch={true}
+                   useTextInput={false}
+                   internalSearch={true}
+                   themeMode={mode}
+                   placeholder={i18n.t('Please_enter')}
+                   selectedItem={state.days}
+                   CustomRow={({
+diff --git a/src/pages/Diagnosis/DiagnosisPage.styles.ts b/src/pages/Diagnosis/DiagnosisPage.styles.ts
+index bf063ca7..15c4a790 100644
+--- a/src/pages/Diagnosis/DiagnosisPage.styles.ts
++++ b/src/pages/Diagnosis/DiagnosisPage.styles.ts
+@@ -1045,12 +1045,84 @@ const createStyles = () => {
+       shadowOpacity: 0.15,
+       shadowRadius: 4,
+       elevation: 4,
+     },
+     videoConferenceFabIcon: {
+       width: '28rem',
+       height: '20rem',
+     },
++    tcOptionContainer: {
++      marginTop: '12rem',
++      width: '360rem',
++      padding: '$pagePadding',
++      backgroundColor: $theme === 'light' ? EStyleSheet.value('$background') : EStyleSheet.value('$darkGray'),
++      borderRadius: '12rem',
++    },
++    rowCenter: {
++      flexDirection: 'row',
++      justifyContent: 'space-between',
++      alignItems: 'center'
++    },
++    startVideoTitle: {
++      fontSize: '16rem',
++      lineHeight: '21rem',
++      fontWeight: '400',
++      color: '$text',
++    },
++    copyTitle: {
++      fontSize: '13rem',
++      lineHeight: '18rem',
++      fontWeight: '400',
++      color: '$blueTxtColor',
++    },
++    tcLinkText: {
++      marginTop: '16rem',
++      fontSize: '14rem',
++      color: '$text',
++    },
++    grayDivider: {
++      marginTop: '8rem',
++      width: '100%',
++      height: '0.5rem',
++      backgroundColor: '$dividerBackground',
++    },
++    copySuccessText: {
++      textAlign: 'center',
++      fontSize: '14rem',
++      color: '$background',
++    },
++    toastContainer: {
++      backgroundColor: '$text',
++      opacity: 0.6,
++      borderRadius: 8
++    },
++    optionBtn: {
++      flex: 1,
++      flexDirection: 'row',
++      paddingVertical: '6rem',
++      paddingHorizontal: '18rem',
++      alignItems: 'center',
++      justifyContent: 'center',
++      borderRadius: 999,
++      gap: '6rem',
++    },
++    whatsAppBtn: {
++      backgroundColor: '#25D366',
++    },
++    videoBtn: {
++      backgroundColor: '$blueColor',
++    },
++    optionBtnText: {
++      fontWeight: '400',
++      fontSize: '15rem',
++      lineHeight: '20rem',
++      color: '$white',
++    },
++    copyTips: {
++      fontSize: '13rem',
++      lineHeight: '18rem',
++      color: '$grayText',
++    }
+   });
+ };
+ 
+ export default createStyles;
+diff --git a/src/pages/Diagnosis/DiagnosisPage.tsx b/src/pages/Diagnosis/DiagnosisPage.tsx
+index 0329da3b..6b2e7343 100644
+--- a/src/pages/Diagnosis/DiagnosisPage.tsx
++++ b/src/pages/Diagnosis/DiagnosisPage.tsx
+@@ -1,62 +1,70 @@
+-import { CallLogsItem, ConsultationQueryPage, ConsultationQueryPage_item, get_consultation_setting_Data, PatientQueryItems } from '@api/api-types.tsx';
++import { CallLogsItem, ConsultationQueryPage, ConsultationQueryPage_item, get_consultation_setting_Data, PatientQueryItems, VideoConferenceUser } from '@api/api-types.tsx';
+ import {
+   GetCurrentEncounterOverview,
+   billingsList,
+   call_logs,
+   consultationQueryPage,
+   getPatientConsultationStatus,
+   getPatientDetail,
+   get_consultation_setting,
+   patient_extend_medical_records,
+   patient_health_v1_get,
+   waitingList,
++  get_video_link,
++  get_consultation_config
+ } from 'api/api';
+-import { AlertIcon, ArrowRight, ArrowUpDown, PatientIcon, TranslucentClock, ArrowUp, ArrowDown, EmptyIcon, CallIn, CallOut, Doctor, ClinicIcon } from 'assets/svg/index';
++import { AlertIcon, ArrowRight, ArrowUpDown, PatientIcon, TranslucentClock, ArrowUp, ArrowDown, EmptyIcon, CallIn, CallOut, Doctor, ClinicIcon, WhatsApp, VideoIcon, InfoIcon } from 'assets/svg/index';
+ import { SafeView } from 'components';
+ import BillingRecordsCard from 'components/BillingRecordsCard/BillingRecordsCard';
+ import { ButtonDirection, useCommonAlertModal } from 'components/CommonAlertModal/CommonAlertModalContext';
+ import Health_information_of_patient_card from 'components/Health_information_of_patient_card/Health_information_of_patient_card';
+ import MedicalRecordsCard from 'components/MedicalRecordsCard/MedicalRecordsCard';
+ import PageMorebtComp from 'components/PageMorebtComp/PageMorebtComp.tsx';
+ import modalStyles from 'components/common-styles/modal.styles';
+ import scrollViewStyle from 'components/common-styles/scrollView.style';
+ import CommonModal from 'components/commonModal/CommonModal';
+ import commonModalStyle from 'components/commonModal/CommonModal.styles';
+ import { ThemeContext } from 'components/theme/theme-context';
+ import { useThemeProvider } from 'components/theme/theme-provider';
+ import { routes } from 'csxRoutes';
+ import { pageProps } from 'csxRoutes/csxRouter';
+ import moment from 'moment/moment';
+-import React, { forwardRef, memo, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
++import React, { forwardRef, memo, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState, useLayoutEffect } from 'react';
+ import {
+   Alert,
+   Animated,
+   Image,
+   NativeScrollEvent,
+   NativeSyntheticEvent,
+   ScrollView,
+   StyleProp,
+   Text,
+   TextStyle,
+   TouchableOpacity,
+   View,
+-  ViewStyle, ActivityIndicator
++  ViewStyle, ActivityIndicator,
++  Linking,
++  Modal,
+ } from 'react-native';
+ import { AppointmentCard, BillingData, waitingListItem } from 'tools/AllInterface';
+ import tool from 'tools/tool';
+ import { globalEventName, useGlobalEventEmitter, useGlobalEventListener } from 'tools/useGlobalEventEmitter';
+ import type { Theme } from 'types/Theme';
+ import { useLanguage } from 'useHooks/useLanguage';
+ import { format_XX_XX_XXXX_DateString, useMomentFormatStr } from 'useHooks/useMomentFormatStr';
+ import createStyles from './DiagnosisPage.styles';
+ import { addpatients, scansmall, searchPatients, video } from '/icon/icon';
+ import { useLoading } from "components/LoadingModal/LoadingContext.tsx";
+ import { useDispatch } from 'react-redux';
++import { constant } from "constant";
++import Clipboard from '@react-native-clipboard/clipboard';
++import { useToast } from "react-native-toast-notifications";
++import { useAgora } from 'components/AgoraProvider/AgoraProvider';
+ 
+ interface pageDataProps {
+   // type: number//1刷新页面 坑: 如果上次的 type=1, 下次再传 type=1 ,检测不到 type 的变化
+   // patients: object,
+   // autoOpenVideos: boolean,//如果从首页 一鍵視頻診症 -> 病人列表, 选择病人后先进 此页面,传true,然后再自动进 视频诊症页面
+ }
+ 
+ interface ConsultationStatus {
+@@ -85,16 +93,18 @@ interface StateProps {
+   currentTab: number;
+   get_consultation_setting: get_consultation_setting_Data | null;
+   consultationQueryPage_items: ConsultationQueryPage_item[] | null;
+   //未展示在第一页20条之外的 consultationQueryPage_items 数据
+   consultationQueryPage_items_remaining: ConsultationQueryPage_item[] | null;
+   loading_consultationQueryList: boolean;
+   loading_billingsList: boolean;
+   loading_CallHistoryList: boolean;
++  showTCOption: boolean;
++  videoLink: string;
+ }
+ 
+ interface NavigationBtsProps {
+   withTabRefs?: boolean;
+   navScrollViewRef?: React.RefObject<ScrollView | null>;
+   onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+   scrollEventThrottle?: number;
+   navScrollViewStyle: StyleProp<ViewStyle>;
+@@ -177,22 +187,32 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+     isToolBarOutOfView: false,
+     currentTab: 0,
+     get_consultation_setting: null,
+     consultationQueryPage_items: null,
+     consultationQueryPage_items_remaining: null,
+     loading_consultationQueryList: false,
+     loading_billingsList: false,
+     loading_CallHistoryList: false,
++    showTCOption: false,
++    videoLink: '',
+   });
+   const { mode, uiTheme, setMode } = useThemeProvider();
+   const styles = useMemo(() => createStyles(), [mode, uiTheme]);
+   const language = useLanguage();
+   const emitEvent = useGlobalEventEmitter();
+   const dispatch = useDispatch();
++  const toast = useToast();
++  const {
++    leaveChannel,
++    patients
++  } = useAgora();
++  const currentPatientIdRef = useRef<string | number | undefined>(state.patients?.id);
++  const prevPatientIdRef = useRef<string | number | undefined>(state.patients?.id);
++  const videoRequestSeqRef = useRef(0);
+   /**
+    * componentDidMount && componentWillUnmount
+    */
+   useEffect(
+     /*The async keyword cannot be added to the first parameter https://juejin.im/post/6844903985338400782#heading-27 */
+     () => {
+       (async () => {
+       })();
+@@ -203,16 +223,20 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+       };
+     },
+     []
+   );
+   useEffect(() => {
+     // 这里可以执行任何依赖于 patients 变化的代码
+     console.log('DiagnosisPage patients has changed=', state.patients);
+     if (state.patients) {
++      // 产品规定当切换诊症病人时，挂掉挂起的视频
++      if (patients?.id && (state.patients.id !== patients?.id)) {
++        leaveChannel()
++      }
+       if (state.patients.isReferral) {
+         setCommonAlertModalTitle(global.i18n.t('Secondary_diagnosis'));
+         setCommonAlertModalContent(
+           global.i18n.t('Secondary_diagnosis_patients').replace('%', state.patients.patientName)
+         );
+         setCommonAlertModalConfirmTxt(global.i18n.t('confirm'));
+         setCommonAlertModalCancelTxt('');
+         setShowCommonAlertModal(true);
+@@ -266,26 +290,30 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+             return {
+               ...prevState,
+               patients: {
+                 ...message,
+                 clinicId: message.clinicId !== '00000000-0000-0000-0000-000000000000' ? message.clinicId : global.curClinicData?.id || '',
+                 doctorId: message.doctorId !== '00000000-0000-0000-0000-000000000000' ? message.doctorId : global.curDoctorData?.id || '',
+               },
+               canDiagnostics: message.patientId !== undefined,
++              videoLink: '',
++              showTCOption: false,
+             };
+           });
+         } else {
+           setState((prevState) => {
+             return {
+               ...prevState,
+               patients: null,
+               currentTab: 0,
+               consultationQueryPage_items: [],
+               consultationQueryPage_items_remaining: null,
++              videoLink: '',
++              showTCOption: false,
+             };
+           });
+         }
+         (async () => {
+           await _GetCurrentEncounterOverview();
+           if (global.curClinicData?.id && global.curDoctorData?.id) {
+             await waitingList(global.curClinicData?.id, global.curDoctorData?.id, false, undefined, dispatch);
+           }
+@@ -300,16 +328,18 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+     useCallback(
+       (message: object) => {
+         console.log('DiagnosisPage.tsx One_click_video_diagnosis=', message); // 处理事件
+         if (message?.patients) {
+           setState((prevState) => {
+             return {
+               ...prevState,
+               patients: message.patients,
++              showTCOption: false,
++              videoLink: '',
+             };
+           });
+           if (message.autoOpenVideos) {
+             routes.navigate(navigation, routes.AgoraVideoCall.routeName, {
+               pageData: {
+                 patients: message?.patients,
+               },
+             });
+@@ -617,16 +647,18 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+               },
+             ],
+             showMoreModal: false,
+             call_logs_list: [],
+             PastMedicalRecordsData: null,
+             MedicationTakenInPastData: null,
+             patient_health_v1_get: null,
+             canDiagnostics: true,
++            videoLink: '',
++            showTCOption: false,
+           };
+         });
+       },
+       [state.patients]
+     )
+   );
+   useGlobalEventListener(
+     globalEventName.updatePatientInfoInDiagnosisPage,
+@@ -1612,16 +1644,17 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+               <Text style={styles.moreModalRowText}>{global.i18n.t('AddPatients')}</Text>
+               <Image source={addpatients} style={styles.scan}></Image>
+             </TouchableOpacity>
+           </View>
+         </CommonModal>
+       )
+     );
+   }, [state.showMoreModal]);
++
+   //繪製 請選擇病人 按鈕
+   const renderSelectPatientBt = () => {
+     return (
+       <TouchableOpacity
+         style={styles.selectPaientBtRow}
+         onPress={() => {
+           console.log('DiagnosisPage renderSelectPatientBt onPress navigation=', navigation);
+           routes.navigate(navigation, routes.AppointmentListPage.routeName, {
+@@ -2415,16 +2448,103 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+   const renderPatientInfoContainer = () => {
+     return (
+       <View ref={targetPatientInfoContainerRef} style={styles.medicalRecordsContainer}>
+         {renderSectionTitleRow0()}
+         {renderPatientInfoCard()}
+       </View>
+     );
+   };
++
++  useLayoutEffect(() => {
++    currentPatientIdRef.current = state.patients?.id;
++
++    if (prevPatientIdRef.current !== state.patients?.id) {
++      prevPatientIdRef.current = state.patients?.id;
++      videoRequestSeqRef.current += 1;
++      setLoading(false);
++    }
++  }, [state.patients?.id]);
++
++  const renderTCOptionContainer = useCallback((): React.ReactElement | null => {
++    if (!state.showTCOption || !state.videoLink) return null;
++    const message =
++      `您好，請點擊以下連結加入視訊診症。\n` +
++      `Hello, please click on the following link to join the video consultation.\n` +
++      `(${state.videoLink})`;
++    return (
++      <View style={styles.tcOptionContainer}>
++        <View style={styles.rowCenter}>
++          <Text style={styles.startVideoTitle}>{global.i18n.t('start_video_diagnosis')}</Text>
++          <Text style={styles.copyTitle} onPress={() => {
++            try {
++              Clipboard.setString(message);
++              toast.show(
++                <Text style={styles.copySuccessText}>
++                  {global.i18n.t('copy_success')}
++                </Text>,
++                {
++                  type: 'normal',
++                  placement: 'center',
++                  duration: 1000,
++                  style: styles.toastContainer
++                }
++              );
++            } catch (error) {
++              console.error('Clipboard setString failed:', error);
++            }
++          }}>
++            {global.i18n.t('copy_link')}
++          </Text>
++        </View>
++        <Text
++          selectable={true}
++          numberOfLines={1}
++          style={styles.tcLinkText}
++        >
++          {state.videoLink}
++        </Text>
++        <View style={styles.grayDivider} />
++        <View style={{ flexDirection: 'row', gap: 16, marginVertical: 16 }}>
++          <TouchableOpacity
++            style={[styles.optionBtn, styles.whatsAppBtn]}
++            onPress={async () => {
++              try {
++                const patient = state.patients as waitingListItem | AppointmentCard;
++                const areaCode = String(patient.patientMobileAreaCode ?? '').trim();
++                const phoneNumber = String(patient.patientMobile ?? '').trim();
++                const text = encodeURIComponent(message);
++
++                const url =
++                  areaCode && phoneNumber
++                    ? `https://api.whatsapp.com/send?phone=${areaCode}${phoneNumber}&text=${text}`
++                    : `https://api.whatsapp.com/send?text=${text}`;
++
++                await tool.openWhatsApp(url);
++              } catch (error) {
++                console.error('openWhatsApp failed:', error);
++              }
++            }}
++          >
++            <WhatsApp />
++            <Text style={styles.optionBtnText} numberOfLines={1}>{global.i18n.t('patient_video_consultation_link')}</Text>
++          </TouchableOpacity>
++          <TouchableOpacity style={[styles.optionBtn, styles.videoBtn]} onPress={() => {
++            navigationRef?.navigate(routes.AgoraVideoCall.routeName, {
++              pageData: { patients: state.patients },
++            });
++          }}>
++            <VideoIcon />
++            <Text style={styles.optionBtnText} numberOfLines={1}>{global.i18n.t('doctor_video_consultation')}</Text>
++          </TouchableOpacity>
++        </View>
++        <Text style={styles.copyTips}><InfoIcon />{'  '}{global.i18n.t('copy_and_send')}</Text>
++      </View>
++    );
++  }, [state.showTCOption, state.videoLink, uiTheme, state.patients]);
+   const renderThreeBts = () => {
+     console.log('DiagnosisPage.tsx renderThreeBts state.patients=', state.patients);
+     return state.patients && (
+       renderNavigationBts({
+         navScrollViewStyle: styles.threeBtsScrollView,
+         navScrollViewContentStyle: styles.threeBtsScrollViewContent,
+         containerStyle: styles.threeBtsContainer,
+         buttonStyle: styles.threeBt,
+@@ -2512,16 +2632,18 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+                               },
+                             });
+                           }}
+                         >
+                           <Text style={styles.addConsultationBtText}>{global.i18n.t('New_diagnosis')}</Text>
+                         </TouchableOpacity>
+                       )
+                     }
++                    {/*啟用視訊診症 模块*/}
++                    {state.showTCOption && renderTCOptionContainer()}
+                     {/*診症記錄 模块*/}
+                     {renderMedicalRecordsContainer()}
+                   </>
+                 }
+                 {/*帳單記錄 模块*/}
+                 {
+                   state.currentTab === 1 &&
+                   <>
+@@ -2550,37 +2672,88 @@ const DiagnosisPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+                         。
+                       </Text>
+                     }
+                     {renderThreeBts()}
+                     {renderCallHistoryContainer()}
+                   </>
+                 }
+               </ScrollView>
+-              {state.patients &&
+-                Boolean(
+-                  (state.patients as waitingListItem | AppointmentCard).isVideoConference
+-                ) && (
+-                  <TouchableOpacity
+-                    style={styles.videoConferenceFab}
+-                    activeOpacity={0.85}
+-                    accessibilityRole="button"
+-                    onPress={() => {
++              {/* 只有等候/预约列表选择的病人，才显示视频诊症按钮,此时appointmentStatus不为null */}
++              {(state.patients as waitingListItem | AppointmentCard)?.appointmentStatus != null &&
++                <TouchableOpacity
++                  style={styles.videoConferenceFab}
++                  activeOpacity={0.85}
++                  accessibilityRole={"button"}
++                  onPress={async (): Promise<void> => {
++                    if (Boolean((state.patients as waitingListItem | AppointmentCard).isVideoConference)) {
+                       navigationRef?.navigate(routes.AgoraVideoCall.routeName, {
+-                        pageData: {
+-                          patients: state.patients,
+-                        },
++                        pageData: { patients: state.patients },
+                       });
+-                    }}
+-                  >
+-                    <View style={styles.videoConferenceFabInner}>
+-                      <Image source={video} style={styles.videoConferenceFabIcon} />
+-                    </View>
+-                  </TouchableOpacity>
+-                )}
++                      return;
++                    }
++
++                    const requestPatientId = state.patients?.id || '';
++                    const requestSeq = ++videoRequestSeqRef.current;
++
++                    setLoading(true);
++                    try {
++                      const res = await get_video_link({
++                        appointmentId: requestPatientId,
++                        doctorid: global.curDoctorData?.id || '',
++                      });
++
++                      if (requestSeq !== videoRequestSeqRef.current) return;
++                      if (currentPatientIdRef.current !== requestPatientId) return;
++
++                      const patientData = res?.find((u) => u.uidType === 'patient');
++                      if (!patientData) throw new Error('patient participant not found');
++
++                      const curDomain = constant.API_BASE_VIDEO_URL;
++                      const query = new URLSearchParams({
++                        ticketId: '',
++                        appId: patientData.appId,
++                        uid: patientData.uid,
++                        channel: patientData.meetId,
++                        token: patientData.rtcToken,
++                      });
++                      const videoLink = `${curDomain}/en/teleconsult?${query.toString()}`;
++
++                      setState((prev) => {
++                        if (prev.patients?.id !== requestPatientId) return prev;
++                        return { ...prev, videoLink, showTCOption: true };
++                      });
++                    } catch (error) {
++                      console.error('get_video_link error=', error);
++
++                      if (requestSeq !== videoRequestSeqRef.current) return;
++                      if (currentPatientIdRef.current !== requestPatientId) return;
++
++                      setState((prev) => {
++                        if (prev.patients?.id !== requestPatientId) return prev;
++                        return { ...prev, videoLink: '', showTCOption: false };
++                      });
++
++                      setState((prev) => ({ ...prev, videoLink: '', showTCOption: false }));
++                      setCommonAlertModalTitle(global.i18n.t('prompt'));
++                      setCommonAlertModalContent(global.i18n.t('get_consultation_link_failed'));
++                      setCommonAlertModalCancelTxt(global.i18n.t('close'));
++                      setShowCommonAlertModal(true);
++                    } finally {
++                      if (requestSeq === videoRequestSeqRef.current) {
++                        setLoading(false);
++                      }
++                    }
++                  }}
++                >
++                  <View style={styles.videoConferenceFabInner}>
++                    <Image source={video} style={styles.videoConferenceFabIcon} />
++                  </View>
++                </TouchableOpacity>
++              }
+               {renderMoreModal()}
+             </View>
+           </SafeView>
+         );
+       }}
+     </ThemeContext.Consumer>
+   );
+ };
+diff --git a/src/pages/ImgFileAllPage/ImgFileAllPage.styles.ts b/src/pages/ImgFileAllPage/ImgFileAllPage.styles.ts
+index c307009f..e8d034f1 100644
+--- a/src/pages/ImgFileAllPage/ImgFileAllPage.styles.ts
++++ b/src/pages/ImgFileAllPage/ImgFileAllPage.styles.ts
+@@ -1,35 +1,39 @@
+ import EStyleSheet from 'react-native-extended-stylesheet';
+ import {Platform, StyleSheet} from 'react-native';
+ import borderStyle from "components/common-styles/borderStyle";
+-import pageContainer from 'components/common-styles/pageContainer.style'
+ 
+ export default EStyleSheet.create({
+   FlatList: {
+    backgroundColor:'transparent',
++    paddingHorizontal: '16rem',
+   },
+   headerStyle: {
+     paddingHorizontal:'8rem',
+     // backgroundColor:'$background',
+   },
+-  pageContainer,
++  pageContainer: {
++    flex: 1,
++    width: '100%',
++    backgroundColor: '$background',
++  },
+   checkedImage: {
+     width: '19rem',
+     height: '19rem',
+     position: 'absolute',
+     right: '10rem',
+     top: '143rem',
+   },
+   modalViewCard: {
+     width: '100%',
+     borderRadius: '14rem',
+     alignItems: 'center',
+     // marginBottom: '4rem',
+-    backgroundColor: '$modalViewBg',
++    backgroundColor: '$calendarBg',
+     ...borderStyle
+   },
+   modalViewStyle: {
+     // width: '98%',
+     maxHeight: 'auto',
+     shadowColor: 'transparent',
+     backgroundColor: 'transparent',
+     borderRadius: '0rem',
+@@ -62,17 +66,17 @@ export default EStyleSheet.create({
+     // ...borderStyle
+   },
+   modalViewRow1: {
+     marginVertical: '8rem',
+     height: '56rem',
+     justifyContent: 'center',
+     alignItems: 'center',
+     width: '98%',
+-    backgroundColor: '$modalViewBg',
++    backgroundColor: '$calendarBg',
+     borderRadius: '14rem',
+     overflow: 'hidden',
+     ...borderStyle
+   },
+   bottomBarImage1: {
+     width: '24rem',
+     height: '22rem',
+   },
+@@ -89,17 +93,17 @@ export default EStyleSheet.create({
+     justifyContent: 'center',
+     flex: 1,
+     ...borderStyle
+   },
+   bottomBar: {
+     width: '100%',
+     height: '36rem',
+     // marginTop: '8rem',
+-    // backgroundColor: 'white',
++    backgroundColor: '$background',
+     flexDirection: 'row',
+     alignItems: 'center',
+     ...borderStyle
+   },
+   bottomRow0Text1: {
+     fontSize: '11rem',
+     lineHeight: '13rem',
+     color: '$fontSize_15_color',
+diff --git a/src/pages/MedicalRecordsPage/MedicalRecordsPage.tsx b/src/pages/MedicalRecordsPage/MedicalRecordsPage.tsx
+index 541d6451..ac9a4caa 100644
+--- a/src/pages/MedicalRecordsPage/MedicalRecordsPage.tsx
++++ b/src/pages/MedicalRecordsPage/MedicalRecordsPage.tsx
+@@ -114,61 +114,63 @@ const MedicalRecordsPage: React.FC<pageProps> = (props: pageProps, parentRef) =>
+   );
+   const renderListEmptyComponent = useCallback(
+     () => {
+       console.log('MedicalRecordsPage.tsx renderListEmptyComponent ')
+       const str = global.i18n.t('Medical_records')
+       return <View style={styles.ListEmptyComponent}>
+         {EmptyIcon()}
+         <Text style={styles.customEmptyText}>{global.i18n.t('No{{str}}', {str})}</Text>
+-        <TouchableOpacity style={styles.ListEmptyComponentButton} onPress={() => {
+-          if (!pageData.canDiagnostics) {
+-            setCommonAlertModalTitle(global.i18n.t('prompt'))
+-            setCommonAlertModalContent(global.i18n.t('canDiagnostics'))
+-            setCommonAlertModalCancelTxt(global.i18n.t('cancel'))
+-            setShowCommonAlertModal(true);
+-            return
+-          }
+-          routes.navigate(navigation, routes.CreateConsultationPage.routeName, {
+-            pageData: {
+-              type: 0,//0新增 1編輯
+-              patients: pageData.patients,
+-              appointmentId: pageData.patients.id,
+-              barIndex: 0,
+-              from: routes.MedicalRecordsPage.routeName
+-            }
+-          })
+-        }}>
+-          <Text style={styles.ListEmptyComponentText}>{global.i18n.t('NewAddition')}{global.i18n.t('Medical_records')}</Text>
+-        </TouchableOpacity>
++        {pageData.canDiagnostics && 
++          <TouchableOpacity style={styles.ListEmptyComponentButton} onPress={() => {
++            // if (!pageData.canDiagnostics) {
++            //   setCommonAlertModalTitle(global.i18n.t('prompt'))
++            //   setCommonAlertModalContent(global.i18n.t('canDiagnostics'))
++            //   setCommonAlertModalCancelTxt(global.i18n.t('cancel'))
++            //   setShowCommonAlertModal(true);
++            //   return
++            // }
++            routes.navigate(navigation, routes.CreateConsultationPage.routeName, {
++              pageData: {
++                type: 0,//0新增 1編輯
++                patients: pageData.patients,
++                appointmentId: pageData.patients.id,
++                barIndex: 0,
++                from: routes.MedicalRecordsPage.routeName
++              }
++            })
++          }}>
++            <Text style={styles.ListEmptyComponentText}>{global.i18n.t('NewAddition')}{global.i18n.t('Medical_records')}</Text>
++          </TouchableOpacity>
++        }
+       </View>
+     },
+     [pageData],
+   );
+-  const renderListHeaderComponent = () => {
+-    return <TouchableOpacity style={styles.ListHeader} onPress={() => {
+-      if (!pageData.canDiagnostics) {
+-        setCommonAlertModalTitle(global.i18n.t('prompt'))
+-        setCommonAlertModalContent(global.i18n.t('canDiagnostics'))
+-        setCommonAlertModalCancelTxt(global.i18n.t('cancel'))
+-        setShowCommonAlertModal(true);
+-        return
+-      }
++  const renderListHeaderComponent = (): React.ReactElement | null => {
++    return pageData.canDiagnostics ? <TouchableOpacity style={styles.ListHeader} onPress={() => {
++  // if (!pageData.canDiagnostics) {
++  //   setCommonAlertModalTitle(global.i18n.t('prompt'))
++  //   setCommonAlertModalContent(global.i18n.t('canDiagnostics'))
++  //   setCommonAlertModalCancelTxt(global.i18n.t('cancel'))
++  //   setShowCommonAlertModal(true);
++  //   return
++  // }
+       navigationRef?.navigate(routes.CreateConsultationPage.routeName, {
+         pageData: {
+           patients: pageData.patients,
+           type: 0,//0新增 1編輯
+           barIndex: 0,
+           appointmentId: pageData.patients.id,
+           from: routes.MedicalRecordsPage.routeName
+         }
+       })
+     }}>
+       <Text style={styles.ListHeaderText}>{global.i18n.t('New_diagnosis')}</Text>
+-    </TouchableOpacity>
++    </TouchableOpacity> : null
+   }
+   const renderList = useCallback(
+     () => {
+       return (
+         <CsxFlatList
+           style={styles.FlatList}
+           keyExtractor={item => item.consultationId}
+           ref={refCsxFlatList}
+diff --git a/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx b/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx
+index 00066a82..8c8c0ec7 100644
+--- a/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx
++++ b/src/pages/NewlyAddedPatients/NewlyAddedPatients.tsx
+@@ -1492,17 +1492,17 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+                       title: state.areaCodeOptions.find((currentValue: AreaCode, index, arr) => {
+                         return item.mobileAreaCode === currentValue.code
+                       })?.code,
+                     }}
+                     themeMode={mode}
+                     CustomRow={({children}) => {
+                       return (
+                         <View style={[styles.AccordionListRow, {width: '60%',}]}>
+-                          {state.baseInfo.mobiles.length !== 1 && <TouchableOpacity style={styles.phoneLeftRemoveBt} onPress={() => {
++                          {index > 0 && <TouchableOpacity style={styles.phoneLeftRemoveBt} onPress={() => {
+                             setState(prevState => {
+                               let mobiles = [...prevState.baseInfo.mobiles];
+                               mobiles.splice(index, 1);
+                               mobiles = mobiles.map(
+                                 (item: MobileItem, _index, array) => {
+                                   return {
+                                     ...item,
+                                     id: `${_index}`,
+@@ -1611,17 +1611,17 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+                     keyboardType="phone-pad"
+                     underlineColorAndroid="transparent"
+                     // onSubmitEditing={on_insurance_code_SubmitEditing}
+                   />
+                   <View style={styles.divider2}></View>
+                 </View>
+                 <View style={[styles.AccordionListRow, { paddingLeft: 0 }]}>
+                   <View style={styles.AccordionListRemarkRow}>
+-                    <Text adjustsFontSizeToFit={true} numberOfLines={1} style={[styles.phoneTitleLabel, { marginLeft: state.baseInfo.mobiles.length === 1 ? 8 : 34 }]}>
++                    <Text adjustsFontSizeToFit={true} numberOfLines={1} style={[styles.phoneTitleLabel, { marginLeft: index === 0 ? 8 : 34 }]}>
+                       {global.i18n.t('Remarks')}
+                     </Text>
+                   </View>
+                   <TextInput
+                     style={styles.phonenRemarkInput}
+                     accessible={true}
+                     multiline={true}
+                     value={item.mobileRemark}
+@@ -1783,17 +1783,17 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+                         title: state.areaCodeOptions.find((currentValue: AreaCode, index, arr) => {
+                           return item.telephoneAreaCode === currentValue.code
+                         })?.code,
+                       }}
+                       themeMode={mode}
+                       CustomRow={({children}) => {
+                         return (
+                           <View style={[styles.AccordionListRow, {width: '60%'}]}>
+-                            {state.baseInfo.telephones.length !== 1 && <TouchableOpacity style={styles.phoneLeftRemoveBt} onPress={() => {
++                            {index > 0 && <TouchableOpacity style={styles.phoneLeftRemoveBt} onPress={() => {
+                               setState(prevState => {
+                                 let telephones = [...prevState.baseInfo.telephones];
+                                 telephones.splice(index, 1);
+                                 telephones = telephones.map(
+                                   (item: TelephoneItem, _index, array) => {
+                                     return {
+                                       ...item,
+                                       id: `${_index}`,
+@@ -1900,17 +1900,17 @@ const NewlyAddedPatients: React.FC<pageProps> = (props: pageProps, parentRef) =>
+                       keyboardType="phone-pad"
+                       underlineColorAndroid="transparent"
+                       // onSubmitEditing={on_insurance_code_SubmitEditing}
+                     />
+                   <View style={styles.divider2}></View>
+                   </View>
+                 <View style={[styles.AccordionListRow, { paddingLeft: 0 }]}>
+                   <View style={styles.AccordionListRemarkRow}>
+-                    <Text adjustsFontSizeToFit={true} numberOfLines={1} style={[styles.phoneTitleLabel, { marginLeft: state.baseInfo.telephones.length === 1 ? 8 : 34 }]}>
++                    <Text adjustsFontSizeToFit={true} numberOfLines={1} style={[styles.phoneTitleLabel, { marginLeft: index === 0 ? 8 : 34 }]}>
+                       {global.i18n.t('Remarks')}
+                     </Text>
+                   </View>
+                   <TextInput
+                     style={styles.phonenRemarkInput}
+                     accessible={true}
+                     multiline={true}
+                     value={item.telephoneRemark}
+diff --git a/src/pages/PatientInfoPage/PatientInfoPage.tsx b/src/pages/PatientInfoPage/PatientInfoPage.tsx
+index c09afe32..8e3fb962 100644
+--- a/src/pages/PatientInfoPage/PatientInfoPage.tsx
++++ b/src/pages/PatientInfoPage/PatientInfoPage.tsx
+@@ -21,17 +21,17 @@ import styles from "./PatientInfoPage.styles";
+ import {ThemeContext} from "components/theme/theme-context";
+ import type {Theme} from "types/Theme";
+ import {pageAddBt, pageSearchBt, PatientInfoPage0, barItemImg1, tabbarSelect_home, PatientInfoPage0_dark} from "/icon/icon";
+ import {GetCurrentEncounterOverview, PatientQuery} from "api/api";
+ import CsxFlatList from "components/CsxFlatList/CsxFlatList";
+ import PatientCell from "components/PatientCell/PatientCell";
+ import {routes} from "csxRoutes";
+ import {useGlobalEventListener, useGlobalEventEmitter, globalEventName} from 'tools/useGlobalEventEmitter'
+-import {Empty, TotalPatientData} from 'assets/svg/index';
++import { Empty, EmptyDark, TotalPatientData } from 'assets/svg/index';
+ 
+ /**
+  * 病人資料 首頁
+  * @param props
+  * @param parentRef
+  * @returns {*}
+  * @constructor
+  */
+@@ -203,17 +203,17 @@ const PatientInfoPage: React.FC<pageProps> = (props: pageProps, parentRef) => {
+           ref={refCsxFlatList}
+           autoRefresh={true}
+           fetchData={fetchingList}
+           renderItem={renderItem}
+           showListEmptyComponent={true}
+           ListEmptyComponent={() => {
+             const searchQuery = '';
+             return <View style={styles.ListEmptyComponent}>
+-              <Empty />
++              {theme.mode === 'light' ? <Empty /> : <EmptyDark />}
+               <Text style={styles.emptyText}>{global.i18n.t('No patient information', {searchQuery})}</Text>
+               <TouchableOpacity style={styles.AddNewPatientInfoBt} onPress={() => {
+                 routes.navigate(navigation, routes.NewlyAddedPatients.routeName, {
+                   pageData: {
+                     pageType: -1,
+                   }
+                 })
+               }}>
+diff --git a/src/pages/PatientInfoSearchPage/PatientInfoSearchPage.tsx b/src/pages/PatientInfoSearchPage/PatientInfoSearchPage.tsx
+index 37348298..170dcf9f 100644
+--- a/src/pages/PatientInfoSearchPage/PatientInfoSearchPage.tsx
++++ b/src/pages/PatientInfoSearchPage/PatientInfoSearchPage.tsx
+@@ -25,17 +25,17 @@ import {searchPatients0, searchPatients0_dark, searchPatients1, searchPatients1_
+ import {patientDataSetting, DoctorQuery, GetOptionSetting, PatientQuery, patientSeniorQuery, patient_intial_data} from "api/api";
+ import {routes} from "csxRoutes";
+ import CsxFlatList from "components/CsxFlatList/CsxFlatList";
+ import PatientCell from "components/PatientCell/PatientCell";
+ import CommonModal from "components/commonModal/CommonModal";
+ import {globalEventName, useGlobalEventListener} from "tools/useGlobalEventEmitter";
+ import {useLanguage} from "useHooks/useLanguage";
+ import CommonSearchBar from "components/CommonSearchBar/CommonSearchBar";
+-import {ArrowDown, ArrowUp, CheckMark, Date, DoctorCode, Empty, Hospital, PatientData} from "assets/svg";
++import { ArrowDown, ArrowUp, CheckMark, Date, DoctorCode, Empty, EmptyDark, Hospital, PatientData } from "assets/svg";
+ import {
+   Data_record_sharing_list_clinics,
+   Data_record_sharing_list_clinics_Doctor,
+   IdTypeOptions,
+   Patient_Query,
+   IGetOptionSetting,
+   IpatientDataSetting,
+   irefferalTypes,
+@@ -662,17 +662,17 @@ const PatientInfoSearchPage: React.FC<pageProps> = (props: pageProps, parentRef)
+           fetchData={fetchingList}
+           renderItem={renderItem}
+           showListEmptyComponent={true}
+           ListEmptyComponent={() => {
+             const searchQuery = state.searchQuery
+             return state.searchQuery
+               ?
+               <View style={styles.ListEmptyComponent}>
+-                <Empty />
++                {theme.mode === 'light' ? <Empty /> : <EmptyDark />}
+                 <Text style={styles.emptyText}>{global.i18n.t('No patient information', {searchQuery})}</Text>
+                 <TouchableOpacity style={styles.AddNewPatientInfoBt} onPress={() => {
+                   routes.navigate(navigation, routes.NewlyAddedPatients.routeName, {
+                     pageData: {
+                       pageType: -1,
+                     }
+                   })
+                 }}>
+diff --git a/src/pages/SearchPatients/SearchPatients.tsx b/src/pages/SearchPatients/SearchPatients.tsx
+index 2420ef04..20bdb499 100644
+--- a/src/pages/SearchPatients/SearchPatients.tsx
++++ b/src/pages/SearchPatients/SearchPatients.tsx
+@@ -1,11 +1,11 @@
+ import {PatientQuery} from 'api/api';
+ import {Patient_Query, PatientQueryItems} from 'api/api-types';
+-import {Empty} from 'assets/svg/index';
++import { Empty, EmptyDark } from 'assets/svg/index';
+ import {SafeView} from 'components';
+ import CommonSearchBar from 'components/CommonSearchBar/CommonSearchBar';
+ import CsxFlatList from 'components/CsxFlatList/CsxFlatList';
+ import CsxMobileHeader from 'components/csxMobileHeader/CsxMobileHeader';
+ import PatientCell from 'components/PatientCell/PatientCell';
+ import {ThemeContext} from 'components/theme/theme-context';
+ import {routes} from 'csxRoutes';
+ import {pageProps} from 'csxRoutes/csxRouter';
+@@ -362,17 +362,17 @@ const SearchPatients: React.FC<pageProps> = (props: pageProps, parentRef) => {
+                 flatListBoxStyle={styles.flatListBoxStyle}
+                 ref={flatListRef}
+                 fetchData={_PatientQuery}
+                 renderItem={renderItem}
+                 showListEmptyComponent={true}
+                 ListEmptyComponent={() => {
+                   return searchQuery ? (
+                     <View style={styles.ListEmptyComponent}>
+-                      <Empty />
++                      {theme.mode === 'light' ? <Empty /> : <EmptyDark />}
+                       <Text style={styles.emptyText}>{global.i18n.t('No patient information', {searchQuery})}</Text>
+                       <TouchableOpacity
+                         style={styles.AddNewPatientInfoBt}
+                         onPress={() => {
+                           routes.navigate(navigation, routes.NewlyAddedPatients.routeName, {
+                             pageData: {
+                               pageType: -1,
+                             },
+diff --git a/src/pages/SignInEcPage/SignInEcPages.tsx b/src/pages/SignInEcPage/SignInEcPages.tsx
+index ff1ebaaa..c38eebb4 100644
+--- a/src/pages/SignInEcPage/SignInEcPages.tsx
++++ b/src/pages/SignInEcPage/SignInEcPages.tsx
+@@ -141,17 +141,17 @@ const SignInEcPages: React.FC<pageProps> = (props: pageProps, parentRef) => {
+                     storage.setItem(appointmentId, {
+                         benefit_items: data.eligibilityCheckResult.benefits[0].benefit_items,
+                         default_currency_code: data.eligibilityCheckResult.benefits[0].default_currency_code
+                     });
+                 }
+ 
+                 if (!data.eligibilityChecked) {
+                     setLoading(false);
+-                    routes.navigate(navigation, routes.AppointmentListPage.routeName, {});
++                    routes.navigate(navigation, routes.AppointmentListPage.routeName, { pageData: { from: routes.SignInEcPage.routeName } });
+                     emitEvent(globalEventName.changehomeType, 0)
+                     return false;
+                 }
+ 
+                 // Show eligibility check failure alert if needed
+                 if (!data.eligibilityCheckResult.success && state.insuranceCompanies) {
+                   setCommonAlertModalTitle(global.i18n.t('prompt'));
+                   setCommonAlertModalContent(global.i18n.t('QualificationCheckfailed'));
